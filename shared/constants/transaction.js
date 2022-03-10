@@ -48,6 +48,7 @@ export const TRANSACTION_TYPES = {
   RETRY: 'retry',
   TOKEN_METHOD_TRANSFER: 'transfer',
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
   TOKEN_METHOD_APPROVE: 'approve',
   INCOMING: 'incoming',
   SIMPLE_SEND: 'simpleSend',

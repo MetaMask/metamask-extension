@@ -230,6 +230,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
       return t('transferFrom');
     }
+    case TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM: {
+      return t('safeTransferFrom');
+    }
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }

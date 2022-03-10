@@ -1,6 +1,7 @@
 import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
-import abi from 'human-standard-token-abi';
+// import abi from 'human-standard-token-abi';
+import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
 import { TRANSACTION_TYPES } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
@@ -18,7 +19,10 @@ import { isEqualCaseInsensitive } from './string-utils';
  *  code
  */
 
-const hstInterface = new ethers.utils.Interface(abi);
+// const hstInterface = new ethers.utils.Interface(abi);
+const erc20Interface = new ethers.utils.Interface(abiERC20);
+const erc721Interface = new ethers.utils.Interface(abiERC721);
+const erc1155Interface = new ethers.utils.Interface(abiERC1155);
 
 export function transactionMatchesNetwork(transaction, chainId, networkId) {
   if (typeof transaction.chainId !== 'undefined') {
@@ -83,6 +87,32 @@ export function txParamsAreDappSuggested(transaction) {
 }
 
 /**
+ * @param data
+ * @returns {EthersContractCall | undefined}
+ */
+ export function getTransactionData(data) {
+  try {
+    return erc20Interface.parseTransaction({ data });
+  } catch {
+    // ignore and next try to parse with erc721 ABI
+  }
+
+  try {
+    return erc721Interface.parseTransaction({ data });
+  } catch {
+    // ignore and next try to parse with erc1155 ABI
+  }
+
+  try {
+    return erc1155Interface.parseTransaction({ data });
+  } catch {
+    // ignore and return undefined
+  }
+
+  return undefined;
+}
+
+/**
  * Determines the type of the transaction by analyzing the txParams.
  * This method will return one of the types defined in shared/constants/transactions
  * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
@@ -97,7 +127,7 @@ export async function determineTransactionType(txParams, query) {
   const { data, to } = txParams;
   let name;
   try {
-    name = data && hstInterface.parseTransaction({ data }).name;
+    ({ name } = data && getTransactionData(data))
   } catch (error) {
     log.debug('Failed to parse transaction data.', error, data);
   }
@@ -106,6 +136,7 @@ export async function determineTransactionType(txParams, query) {
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ].find((methodName) => isEqualCaseInsensitive(methodName, name));
 
   let result;
