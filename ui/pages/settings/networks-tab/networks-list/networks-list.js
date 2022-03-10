@@ -17,10 +17,18 @@ const NetworksList = ({
   selectedRpcUrl,
 }) => {
   const t = useI18nContext();
-  const [networks, setNetworks] = useState([]);
+  const [searchedNetworks, setSearchedNetworks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const networksToRenderProperly =
-    networks.length === 0 && searchQuery === '' ? networksToRender : networks;
+  const searchedNetworksToRender =
+    searchedNetworks.length === 0 && searchQuery === ''
+      ? networksToRender
+      : searchedNetworks;
+  const searchedNetworksToRenderThatAreNotTestNetworks = searchedNetworksToRender.filter(
+    (network) => network.isATestNetwork === false,
+  );
+  const searchedNetworksToRenderThatAreTestNetworks = searchedNetworksToRender.filter(
+    (network) => network.isATestNetwork === true,
+  );
 
   return (
     <div
@@ -34,31 +42,28 @@ const NetworksList = ({
           searchQuery: newSearchQuery = '',
           results: newResults = [],
         }) => {
-          setNetworks(newResults);
+          setSearchedNetworks(newResults);
           setSearchQuery(newSearchQuery);
         }}
         error={
-          networksToRenderProperly.length === 0
+          searchedNetworksToRender.length === 0
             ? t('settingsSearchMatchingNotFound')
             : null
         }
         networksList={networksToRender}
         searchQueryInput={searchQuery}
       />
-      {networksToRenderProperly.map(
-        (network, index) =>
-          network.userIsCurrentlyOnATestNet === false && (
-            <NetworksListItem
-              key={`settings-network-list:${network.rpcUrl}`}
-              network={network}
-              networkIsSelected={networkIsSelected}
-              selectedRpcUrl={selectedRpcUrl}
-              networkIndex={index}
-              setSearchQuery={setSearchQuery}
-              setNetworks={setNetworks}
-            />
-          ),
-      )}
+      {searchedNetworksToRenderThatAreNotTestNetworks.map((network, index) => (
+        <NetworksListItem
+          key={`settings-network-list:${network.rpcUrl}`}
+          network={network}
+          networkIsSelected={networkIsSelected}
+          selectedRpcUrl={selectedRpcUrl}
+          networkIndex={index}
+          setSearchQuery={setSearchQuery}
+          setSearchedNetworks={setSearchedNetworks}
+        />
+      ))}
       {searchQuery === '' && (
         <Typography
           variant={TYPOGRAPHY.H6}
@@ -69,20 +74,17 @@ const NetworksList = ({
           {t('testNetworks')}
         </Typography>
       )}
-      {networksToRenderProperly.map(
-        (network, index) =>
-          network.userIsCurrentlyOnATestNet && (
-            <NetworksListItem
-              key={`settings-network-list:${network.rpcUrl}`}
-              network={network}
-              networkIsSelected={networkIsSelected}
-              selectedRpcUrl={selectedRpcUrl}
-              networkIndex={index}
-              setSearchQuery={setSearchQuery}
-              setNetworks={setNetworks}
-            />
-          ),
-      )}
+      {searchedNetworksToRenderThatAreTestNetworks.map((network, index) => (
+        <NetworksListItem
+          key={`settings-network-list:${network.rpcUrl}`}
+          network={network}
+          networkIsSelected={networkIsSelected}
+          selectedRpcUrl={selectedRpcUrl}
+          networkIndex={index}
+          setSearchQuery={setSearchQuery}
+          setSearchedNetworks={setSearchedNetworks}
+        />
+      ))}
     </div>
   );
 };

@@ -28,7 +28,7 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-  userIsCurrentlyOnATestNet: TEST_CHAINS.includes(network.chainId),
+  isATestNetwork: TEST_CHAINS.includes(network.chainId),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
@@ -54,7 +54,7 @@ const NetworksTab = ({ addNewNetwork }) => {
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
-      userIsCurrentlyOnATestNet: TEST_CHAINS.includes(rpc.chainId),
+      isATestNetwork: TEST_CHAINS.includes(rpc.chainId),
     };
   });
 

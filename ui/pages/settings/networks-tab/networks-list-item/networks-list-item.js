@@ -4,7 +4,10 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
+import {
+  NETWORK_TYPE_RPC,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../../shared/constants/network';
 import LockIcon from '../../../../components/ui/lock-icon';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
@@ -12,7 +15,6 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
 import Identicon from '../../../../components/ui/identicon';
-import { getNetworkImageByChainId } from '../../../swaps/swaps.util';
 import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
@@ -23,13 +25,12 @@ const NetworksListItem = ({
   selectedRpcUrl,
   networkIndex,
   setSearchQuery,
-  setNetworks,
+  setSearchedNetworks,
 }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
   const environmentType = getEnvironmentType();
-  const networkImageIcon = getNetworkImageByChainId(network.chainId);
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const provider = useSelector(getProvider);
   const {
@@ -64,7 +65,7 @@ const NetworksListItem = ({
       className="networks-tab__networks-list-item"
       onClick={() => {
         setSearchQuery('');
-        setNetworks([]);
+        setSearchedNetworks([]);
         dispatch(setSelectedSettingsRpcUrl(rpcUrl));
         if (!isFullScreen) {
           history.push(NETWORKS_FORM_ROUTE);
@@ -76,15 +77,15 @@ const NetworksListItem = ({
       ) : (
         <div className="networks-tab__content__check-icon__transparent">✓</div>
       )}
-      {networkImageIcon ? (
+      {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
           className="networks-tab__content__custom-image"
           diameter={24}
-          image={networkImageIcon}
+          image={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
           imageBorder
         />
       ) : (
-        network.userIsCurrentlyOnATestNet === false && (
+        network.isATestNetwork === false && (
           <UrlIcon
             className="networks-tab__content__icon-with-fallback"
             fallbackClassName="networks-tab__content__icon-with-fallback"
@@ -92,7 +93,7 @@ const NetworksListItem = ({
           />
         )
       )}
-      {network.userIsCurrentlyOnATestNet && (
+      {network.isATestNetwork && (
         <UrlIcon
           name={label || labelKey}
           fallbackClassName={classnames(
@@ -126,7 +127,7 @@ NetworksListItem.propTypes = {
   selectedRpcUrl: PropTypes.string,
   networkIndex: PropTypes.number,
   setSearchQuery: PropTypes.func,
-  setNetworks: PropTypes.func,
+  setSearchedNetworks: PropTypes.func,
 };
 
 export default NetworksListItem;

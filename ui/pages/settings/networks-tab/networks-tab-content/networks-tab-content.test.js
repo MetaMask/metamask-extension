@@ -26,7 +26,7 @@ const renderComponent = (props) => {
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-  userIsCurrentlyOnATestNet: true,
+  isATestNetwork: true,
 }));
 
 const props = {
@@ -41,7 +41,7 @@ const props = {
     blockExplorerUrl: '',
     viewOnly: false,
     rpcPrefs: {},
-    userIsCurrentlyOnATestNet: true,
+    isATestNetwork: true,
   },
   shouldRenderNetworkForm: true,
 };

@@ -25,7 +25,7 @@ const renderComponent = (props) => {
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-  userIsCurrentlyOnATestNet: true,
+  isATestNetwork: true,
 }));
 
 const props = {
@@ -33,7 +33,7 @@ const props = {
   networkIsSelected: false,
   networksToRender: defaultNetworks,
   selectedRpcUrl: 'http://localhost:8545',
-  userIsCurrentlyOnATestNet: true,
+  isATestNetwork: true,
 };
 
 describe('NetworksList Component', () => {
