@@ -1,6 +1,16 @@
 .onboarding-pin-extension {
   max-width: 800px;
 
+  @media screen and (min-width: $break-large) {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  @media screen and (max-width: $break-small) {
+    margin-top: 24px;
+    margin-bottom: 26px;
+  }
+
   .control-dots .dot {
     background: var(--color-icon-muted);
     box-shadow: none;

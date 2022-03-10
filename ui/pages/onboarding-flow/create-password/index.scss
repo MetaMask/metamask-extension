@@ -16,8 +16,14 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    max-width: 600px;
+    max-width: 800px;
     max-height: 750px;
+    margin-top: 24px;
+    margin-bottom: 40px;
+
+    @media screen and (min-width: $break-large) {
+      margin-top: 40px;
+    }
   }
 
   &__link-text {
@@ -25,7 +31,14 @@
   }
 
   &__form {
-    padding: 0 24px;
+    @media screen and (min-width: $break-large) {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 327px;
+    }
+
 
     &--password-button {
       background-color: transparent;
@@ -48,6 +61,10 @@
 
     .form-field__input {
       height: 50px;
+
+      @media screen and (min-width: $break-large) {
+        width: 327px;
+      }
     }
   }
 }

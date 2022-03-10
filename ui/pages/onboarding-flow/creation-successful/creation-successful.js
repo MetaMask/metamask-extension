@@ -8,6 +8,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TYPOGRAPHY,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -57,7 +58,13 @@ export default function CreationSuccessful() {
           {t('walletCreationSuccessDetail')}
         </Typography>
       </Box>
-      <Typography variant={TYPOGRAPHY.H4}>{t('remember')}</Typography>
+      <Typography
+        variant={TYPOGRAPHY.H4}
+        boxProps={{ align: ALIGN_ITEMS.LEFT }}
+        marginLeft={12}
+      >
+        {t('remember')}
+      </Typography>
       <ul>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>

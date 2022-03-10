@@ -75,7 +75,11 @@ export default function SecureYourWallet() {
         </Typography>
       </Box>
       <Box>
-        <video controls style={{ borderRadius: '10px' }}>
+        <video
+          className="secure-your-wallet__video"
+          controls
+          style={{ borderRadius: '10px' }}
+        >
           <source
             type="video/webm"
             src="./images/videos/recovery-onboarding/video.webm"
@@ -96,7 +100,6 @@ export default function SecureYourWallet() {
       </Box>
       <Box
         margin={8}
-        width="10/12"
         justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
         className="secure-your-wallet__actions"
       >
@@ -119,7 +122,7 @@ export default function SecureYourWallet() {
           {t('seedPhraseIntroRecommendedButtonCopy')}
         </Button>
       </Box>
-      <Box>
+      <Box className="secure-your-wallet__desc">
         <Box marginBottom={4}>
           <Typography
             tag="p"

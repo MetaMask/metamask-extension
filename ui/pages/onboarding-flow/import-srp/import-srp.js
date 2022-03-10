@@ -53,6 +53,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             srpText={t('typeYourSRP')}
           />
           <Button
+            className="import-srp__actions__button"
             type="primary"
             data-testid="import-srp-confirm"
             large

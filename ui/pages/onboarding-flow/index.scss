@@ -17,10 +17,15 @@
   align-items: center;
 
   &__wrapper {
-    margin-top: 40px;
-    padding: 32px;
+    margin-top: 60px;
+    margin-bottom: 40px;
     border: 1px solid var(--color-border-muted);
     border-radius: 20px;
+
+    @media screen and (max-width: $break-small) {
+      margin-top: 24px;
+      width: 90%;
+    }
   }
 
   &__twitter-button {

@@ -1,20 +1,28 @@
 .import-srp {
-  width: 840px;
+  // width: 840px;
 
-  @media screen and (max-width: 349px) {
-    width: 300px;
+  // @media screen and (max-width: 349px) {
+  //   width: 300px;
+  // }
+
+  // @media screen and (min-width: 350px) and (max-width: 460px) {
+  //   width: 357px;
+  // }
+
+  // @media screen and (min-width: 461px) and (max-width: $break-small) {
+  //   width: 450px;
+  // }
+
+  // @media screen and (min-width: $break-small) and (max-width: 840px) {
+  //   width: 580px;
+  // }
+  @media screen and (min-width: $break-large) {
+    width: 625px;
+    margin-top: 40px;
   }
 
-  @media screen and (min-width: 350px) and (max-width: 460px) {
-    width: 357px;
-  }
-
-  @media screen and (min-width: 461px) and (max-width: $break-small) {
-    width: 450px;
-  }
-
-  @media screen and (min-width: $break-small) and (max-width: 840px) {
-    width: 580px;
+  @media screen and (max-width: $break-small) {
+    margin-inline-start: 5px;
   }
 
   &__header {
@@ -55,6 +63,10 @@
       @include H6;
 
       margin-bottom: 12px;
+    }
+
+    &__button {
+      margin-bottom: 185px;
     }
   }
 

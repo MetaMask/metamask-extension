@@ -112,7 +112,10 @@ export default function OnboardingMetametrics() {
       >
         {t('metametricsTitle')}
       </Typography>
-      <Typography align={TEXT_ALIGN.CENTER}>
+      <Typography
+        className="onboarding-metametrics__desc"
+        align={TEXT_ALIGN.CENTER}
+      >
         {t('metametricsOptInDescription2')}
       </Typography>
       <ul>
@@ -157,6 +160,7 @@ export default function OnboardingMetametrics() {
       <div className="onboarding-metametrics__buttons">
         <Button
           data-testid="metametrics-no-thanks"
+          className="onboarding-metametrics__buttons__no-thanks"
           type="secondary"
           onClick={onCancel}
         >
