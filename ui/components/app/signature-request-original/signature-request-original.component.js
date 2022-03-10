@@ -360,7 +360,9 @@ export default class SignatureRequestOriginal extends Component {
           >
             {rejectNText}
           </Button>
-        ) : null}
+        ) : (
+          <></>
+        )}
       </div>
     );
   };
