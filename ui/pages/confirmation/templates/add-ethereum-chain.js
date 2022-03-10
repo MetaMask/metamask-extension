@@ -2,6 +2,9 @@ import { ethErrors } from 'eth-rpc-errors';
 import {
   SEVERITIES,
   TYPOGRAPHY,
+  TEXT_ALIGN,
+  JUSTIFY_CONTENT,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 
@@ -80,6 +83,11 @@ async function getAlerts(pendingApproval) {
   );
   let validated = Boolean(matchedChain);
 
+  const originIsMetaMask = pendingApproval.origin === 'metamask';
+  if (originIsMetaMask && validated) {
+    return [];
+  }
+
   if (matchedChain) {
     if (
       matchedChain.nativeCurrency?.decimals !== 18 ||
@@ -105,12 +113,37 @@ async function getAlerts(pendingApproval) {
 }
 
 function getValues(pendingApproval, t, actions) {
+  const originIsMetaMask = pendingApproval.origin === 'metamask';
+  console.log('pendingApproval', pendingApproval)
   return {
     content: [
       {
+        hide: !originIsMetaMask,
+        element: 'Box',
+        key: 'network-box',
+        props: {
+          textAlign: TEXT_ALIGN.CENTER,
+          display: DISPLAY.FLEX,
+          justifyContent: JUSTIFY_CONTENT.CENTER,
+          marginTop: 4,
+          marginBottom: 2,
+        },
+        children: [
+          {
+            element: 'Chip',
+            key: 'network-chip',
+            props: {
+              label: 'Test',
+              backgroundColor: 'Grey-000',
+              leftIconUrl: './images/avax-token.png',
+            },
+          },
+        ],
+      },
+      {
         element: 'Typography',
         key: 'title',
-        children: t('addEthereumChainConfirmationTitle'),
+        children: originIsMetaMask ? "Want to add this network?" : t('addEthereumChainConfirmationTitle'),
         props: {
           variant: TYPOGRAPHY.H3,
           align: 'center',
@@ -128,7 +161,7 @@ function getValues(pendingApproval, t, actions) {
           variant: TYPOGRAPHY.H7,
           align: 'center',
           boxProps: {
-            margin: [0, 0, 4],
+            margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
           },
         },
       },
@@ -165,7 +198,7 @@ function getValues(pendingApproval, t, actions) {
           variant: TYPOGRAPHY.H7,
           align: 'center',
           boxProps: {
-            margin: 0,
+            margin: originIsMetaMask ? [0, 8] : 0,
           },
         },
       },
@@ -206,7 +239,7 @@ function getValues(pendingApproval, t, actions) {
         pendingApproval.id,
         ethErrors.provider.userRejectedRequest(),
       ),
-    networkDisplay: true,
+    networkDisplay: !originIsMetaMask,
   };
 }
 

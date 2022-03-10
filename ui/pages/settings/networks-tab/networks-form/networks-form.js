@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
@@ -26,6 +26,7 @@ import {
   cancelQRHardwareSignRequest,
 } from '../../../../store/actions';
 import ConfirmationPage from '../../../../pages/confirmation';
+import { getUnapprovedConfirmations } from '../../../../selectors';
 import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
@@ -34,6 +35,7 @@ import {
 import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import AddNetwork from '../../../../components/app/add-network';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -82,6 +84,7 @@ const NetworksForm = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
+  const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const selectedNetworkName = label || (labelKey && t(labelKey));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [showPopover, setShowPopover] = useState(false);
@@ -180,6 +183,15 @@ const NetworksForm = ({
     setErrors,
     dispatch,
   ]);
+
+  useEffect(() => {
+    const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations.find(confirmation => {
+      return confirmation.origin === 'metamask' && confirmation.type === MESSAGE_TYPE.ADD_ETHEREUM_CHAIN;
+    })
+    if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
+      setShowPopover(true);
+    }
+  }, [unapprovedConfirmations, showPopover]);
 
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
@@ -571,7 +583,6 @@ const NetworksForm = ({
           featuredRPCS={FEATURED_RPCS}
           onAddNetworkClick={async () => {
             dispatch(addCustomNetworks());
-            setShowPopover(true);
           }}
         />
       </div>

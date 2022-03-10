@@ -192,13 +192,16 @@ export default function ConfirmationPage() {
             />
           </Box>
         ) : null}
-        <Box justifyContent="center" padding={[4, 4, 4]}>
+        {pendingConfirmation.origin === 'metamask'
+        ? null
+        : <Box justifyContent="center" padding={[4, 4, 4]}>
           <SiteOrigin
             siteOrigin={originMetadata.origin}
             iconSrc={originMetadata.iconUrl}
             iconName={originMetadata.hostname}
           />
         </Box>
+        }
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
       </div>
       <ConfirmationFooter
