@@ -1,10 +1,10 @@
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { getTransactionData } from '../../../shared/modules/transaction.utils';
 import { decimalToHex } from '../../helpers/utils/conversions.util';
 import {
   calcTokenValue,
   getTokenAddressParam,
 } from '../../helpers/utils/token-util';
-import { getTransactionData } from '../../helpers/utils/transactions.util';
 
 export function getCustomTxParamsData(
   data,

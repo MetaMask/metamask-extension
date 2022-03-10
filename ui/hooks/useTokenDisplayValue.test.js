@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import * as tokenUtil from '../helpers/utils/token-util';
-import * as txUtil from '../helpers/utils/transactions.util';
+import * as txUtil from '../../shared/modules/transaction.utils';
 import { useTokenDisplayValue } from './useTokenDisplayValue';
 
 const tests = [

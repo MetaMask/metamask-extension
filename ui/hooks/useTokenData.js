@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getTransactionData } from '../helpers/utils/transactions.util';
+import { getTransactionData } from '../../shared/modules/transaction.utils';
 
 /**
  * useTokenData

@@ -7,15 +7,14 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { ERC1155, ERC721 } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getTransactionData } from '../../../shared/modules/transaction.utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
-import { getTransactionData } from './transactions.util';
 
 const DEFAULT_SYMBOL = '';
 
 async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
-
   try {
     const result = await token.symbol();
     return result[0];

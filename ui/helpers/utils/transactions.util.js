@@ -1,6 +1,4 @@
 import { MethodRegistry } from 'eth-method-registry';
-import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
-import { ethers } from 'ethers';
 import log from 'loglevel';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
@@ -14,10 +12,6 @@ import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from './fetch-with-cache';
 
-const erc20Interface = new ethers.utils.Interface(abiERC20);
-const erc721Interface = new ethers.utils.Interface(abiERC721);
-const erc1155Interface = new ethers.utils.Interface(abiERC1155);
-
 /**
  * @typedef EthersContractCall
  * @type object
@@ -30,32 +24,6 @@ const erc1155Interface = new ethers.utils.Interface(abiERC1155);
  * @property {FunctionFragment} functionFragment - The Ethers function fragment
  * representation of the function.
  */
-
-/**
- * @param data
- * @returns {EthersContractCall | undefined}
- */
-export function getTransactionData(data) {
-  try {
-    return erc20Interface.parseTransaction({ data });
-  } catch {
-    // ignore and next try to parse with erc721 ABI
-  }
-
-  try {
-    return erc721Interface.parseTransaction({ data });
-  } catch {
-    // ignore and next try to parse with erc1155 ABI
-  }
-
-  try {
-    return erc1155Interface.parseTransaction({ data });
-  } catch {
-    // ignore and return undefined
-  }
-
-  return undefined;
-}
 
 async function getMethodFrom4Byte(fourBytePrefix) {
   const fourByteResponse = await fetchWithCache(
@@ -137,6 +105,7 @@ export function isTokenMethodAction(type) {
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ].includes(type);
 }
 

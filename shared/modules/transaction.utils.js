@@ -1,6 +1,5 @@
 import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
-// import abi from 'human-standard-token-abi';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
 import { TRANSACTION_TYPES } from '../constants/transaction';
@@ -19,7 +18,6 @@ import { isEqualCaseInsensitive } from './string-utils';
  *  code
  */
 
-// const hstInterface = new ethers.utils.Interface(abi);
 const erc20Interface = new ethers.utils.Interface(abiERC20);
 const erc721Interface = new ethers.utils.Interface(abiERC721);
 const erc1155Interface = new ethers.utils.Interface(abiERC1155);
@@ -90,7 +88,7 @@ export function txParamsAreDappSuggested(transaction) {
  * @param data
  * @returns {EthersContractCall | undefined}
  */
- export function getTransactionData(data) {
+export function getTransactionData(data) {
   try {
     return erc20Interface.parseTransaction({ data });
   } catch {
@@ -127,7 +125,7 @@ export async function determineTransactionType(txParams, query) {
   const { data, to } = txParams;
   let name;
   try {
-    ({ name } = data && getTransactionData(data))
+    ({ name } = data && getTransactionData(data));
   } catch (error) {
     log.debug('Failed to parse transaction data.', error, data);
   }

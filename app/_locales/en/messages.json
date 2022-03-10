@@ -2584,6 +2584,9 @@
   "rpcUrl": {
     "message": "New RPC URL"
   },
+  "safeTransferFrom": {
+    "message": "Safe Transfer From"
+  },
   "save": {
     "message": "Save"
   },
@@ -3634,9 +3637,6 @@
   },
   "transferFrom": {
     "message": "Transfer From"
-  },
-  "safeTransferFrom": {
-    "message": "Safe Transfer From"
   },
   "troubleConnectingToWallet": {
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
