@@ -3533,14 +3533,14 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "testNetworks": {
+    "message": "Test networks"
+  },
   "theme": {
     "message": "Theme"
   },
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
-  },
-  "testNetworks": {
-    "message": "Test networks"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
