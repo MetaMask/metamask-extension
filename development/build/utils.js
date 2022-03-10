@@ -1,16 +1,5 @@
 const semver = require('semver');
-const { version } = require('../../package.json');
-
-/**
- * The distribution this build is intended for.
- *
- * This should be kept in-sync with the `BuildType` map in `shared/constants/app.js`.
- */
-const BuildType = {
-  beta: 'beta',
-  flask: 'flask',
-  main: 'main',
-};
+const { BuildType } = require('../lib/build-type');
 
 /**
  * Map the current version to a format that is compatible with each browser.
@@ -20,11 +9,12 @@ const BuildType = {
  * where the build version is a positive integer.
  *
  * @param {string[]} platforms - A list of browsers to generate versions for.
+ * @param {string} version - The current version.
  * @returns {Object} An object with the browser as the key and the browser-specific version object
  * as the value.  For example, the version `9.6.0-beta.1` would return the object
  * `{ firefox: { version: '9.6.0.beta1' }, chrome: { version: '9.6.0.1', version_name: '9.6.0-beta.1' } }`.
  */
-function getBrowserVersionMap(platforms) {
+function getBrowserVersionMap(platforms, version) {
   const major = semver.major(version);
   const minor = semver.minor(version);
   const patch = semver.patch(version);
@@ -62,6 +52,5 @@ function getBrowserVersionMap(platforms) {
 }
 
 module.exports = {
-  BuildType,
   getBrowserVersionMap,
 };
