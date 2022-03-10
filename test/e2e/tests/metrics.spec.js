@@ -42,21 +42,19 @@ describe('Segment metrics', function () {
         }, 10000);
         const mockedRequests = await mockedEndpoints.getSeenRequests();
         assert.equal(mockedRequests.length, 3);
-        const firstMock = mockedRequests[0];
-        assert.equal(firstMock.body.json.batch[0].context.page.title, 'Home');
-        assert.equal(firstMock.body.json.batch[0].context.page.path, '/');
-        const secondMock = mockedRequests[1];
-        assert.equal(
-          secondMock.body.json.batch[0].context.page.title,
-          'Unlock Page',
-        );
-        assert.equal(
-          secondMock.body.json.batch[0].context.page.path,
-          '/unlock',
-        );
-        const thirdMock = mockedRequests[2];
-        assert.equal(thirdMock.body.json.batch[0].context.page.title, 'Home');
-        assert.equal(thirdMock.body.json.batch[0].context.page.path, '/');
+        const [firstMock, secondMock, thirdMock] = mockedRequests;
+        let [mockJson] = firstMock.body.json.batch;
+        let { title, path } = mockJson.context.page;
+        assert.equal(title, 'Home');
+        assert.equal(path, '/');
+        [mockJson] = secondMock.body.json.batch;
+        ({ title, path } = mockJson.context.page);
+        assert.equal(title, 'Unlock Page');
+        assert.equal(path, '/unlock');
+        [mockJson] = thirdMock.body.json.batch;
+        ({ title, path } = mockJson.context.page);
+        assert.equal(title, 'Home');
+        assert.equal(path, '/');
       },
     );
   });
