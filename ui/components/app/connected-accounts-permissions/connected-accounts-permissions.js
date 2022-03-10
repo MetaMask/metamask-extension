@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import CheckBox from '../../ui/check-box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePermissionDescriptions } from '../../../hooks/usePermissionDescriptions';
+import { getPermissionDescription } from '../../../helpers/utils/permission';
 
 const ConnectedAccountsPermissions = ({ permissions }) => {
   const t = useI18nContext();
   const [expanded, setExpanded] = useState(false);
-
-  const getPermissionDescription = usePermissionDescriptions();
 
   const toggleExpanded = () => {
     setExpanded((_expanded) => !_expanded);
@@ -56,7 +54,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
                 className="connected-accounts-permissions__checkbox"
               />
               <label htmlFor={permissionName}>
-                {getPermissionDescription(permissionName).label}
+                {getPermissionDescription(t, permissionName).label}
               </label>
             </li>
           ))}
