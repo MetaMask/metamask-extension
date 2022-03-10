@@ -58,9 +58,7 @@ export default function SkipSRPBackup({ handleClose }) {
           <label className="skip-srp-backup-popover__label">
             <Checkbox
               className="skip-srp-backup-popover__checkbox"
-              onClick={() => {
-                setChecked(!checked);
-              }}
+              onClick={() => setChecked(!checked)}
               checked={checked}
               dataTestId="skip-srp-backup-popover-checkbox"
             />
