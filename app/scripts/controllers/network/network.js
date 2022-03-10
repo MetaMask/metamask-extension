@@ -49,6 +49,7 @@ defaultProviderConfigOpts = {
   type: NETWORK_TYPE_RPC,
   rpcUrl: 'https://leucine0.node.alphacarbon.network',
   chainId: `0x${(31337).toString(16)}`,
+  ticker: 'TACT',
   nickname: 'Leucine100',
 };
 
