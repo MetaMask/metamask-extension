@@ -671,6 +671,24 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updateSwapApprovalTransaction(txId, txSwapApproval) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSwapApprovalTransaction(
+        txId,
+        txSwapApproval,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txSwapApproval;
+  };
+}
+
 export function updateEditableParams(txId, editableParams) {
   return async (dispatch) => {
     try {
@@ -682,12 +700,6 @@ export function updateEditableParams(txId, editableParams) {
       throw error;
     }
 
-    dispatch(
-      updateTransactionParams(editableParams.id, editableParams.txParams),
-    );
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: editableParams.id }));
     return editableParams;
   };
 }
@@ -703,11 +715,22 @@ export function updateTransactionGasFees(txId, txGasFees) {
       throw error;
     }
 
-    dispatch(updateTransactionParams(txGasFees.id, txGasFees.txParams));
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: txGasFees.id }));
     return txGasFees;
+  };
+}
+
+export function updateSwapTransaction(txId, txSwap) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSwapTransaction(txId, txSwap);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txSwap;
   };
 }
 
