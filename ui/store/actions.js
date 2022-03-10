@@ -10,6 +10,7 @@ import {
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
+  ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -412,6 +413,8 @@ export function connectHardware(deviceName, page, hdPath, t) {
   return async (dispatch, getState) => {
     const { ledgerTransportType } = getState().metamask;
 
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
     dispatch(
       showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
     );
@@ -423,7 +426,8 @@ export function connectHardware(deviceName, page, hdPath, t) {
       }
       if (
         deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        !isPopup
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
           filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
