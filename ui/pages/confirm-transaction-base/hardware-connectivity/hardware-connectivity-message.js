@@ -16,10 +16,14 @@ export default function HardwareConnectivityMessage({
       <ActionableMessage
         type={connected ? 'success' : 'warning'}
         withRightButton
-        primaryAction={{
-          label: t('hardwareWalletConnectivityNotConnectedConversion'),
-          onClick,
-        }}
+        primaryAction={
+          connected
+            ? null
+            : {
+                label: t('hardwareWalletConnectivityNotConnectedConversion'),
+                onClick,
+              }
+        }
         message={
           connected ? (
             <>
