@@ -99,7 +99,9 @@ export const useTransactionFunctions = ({
           );
         }
 
-        await dispatch(updateTransactionGasFees(updatedTxMeta.id, newGasSettings));
+        await dispatch(
+          updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
+        );
         dispatch(updateTransactionUserSettings(updatedTxMeta.id, userSettings));
       }
     },
