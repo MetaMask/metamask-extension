@@ -1,5 +1,5 @@
 const deepFreeze = require('deep-freeze-strict');
-const { BuildType } = require('../utils');
+const { BuildType } = require('../../lib/build-type');
 const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
