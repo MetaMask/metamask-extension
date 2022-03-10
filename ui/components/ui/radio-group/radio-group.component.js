@@ -48,7 +48,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
             <label className="radio-group__column-inner">
               {hasRecommendation && (
                 <Typography
-                  color={COLORS.SUCCESS3}
+                  color={COLORS.SUCCESS_DEFAULT}
                   className="radio-group__column-recommended"
                   variant={TYPOGRAPHY.H7}
                 >

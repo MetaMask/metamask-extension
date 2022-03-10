@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import Tooltip from '../tooltip';
+import IconCaretRight from '../icon/icon-caret-right';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
@@ -159,7 +160,7 @@ function Arrow({ variant }) {
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">
-      <img height="20" src="./images/caret-right.svg" alt="" />
+      <IconCaretRight />
     </div>
   );
 }

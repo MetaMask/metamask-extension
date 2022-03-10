@@ -133,7 +133,7 @@ export default function FeeCard({
                     <Typography
                       tag="span"
                       fontWeight={FONT_WEIGHT.BOLD}
-                      color={COLORS.UI4}
+                      color={COLORS.TEXT_ALTERNATIVE}
                       variant={TYPOGRAPHY.H7}
                     >
                       {t('maxFee')}

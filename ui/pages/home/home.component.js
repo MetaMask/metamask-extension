@@ -277,14 +277,14 @@ export default class Home extends PureComponent {
                     descriptionText={
                       <>
                         <Typography
-                          color={COLORS.UI1}
+                          color={COLORS.TEXT_MUTED}
                           variant={TYPOGRAPHY.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Typography>
                         <Typography
-                          color={COLORS.UI1}
+                          color={COLORS.TEXT_MUTED}
                           variant={TYPOGRAPHY.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
