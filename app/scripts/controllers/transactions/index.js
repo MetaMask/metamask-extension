@@ -441,17 +441,6 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId - transaction id
    * @param {object} txGasFees - holds the gas fees parameters
-   * <<<<<<< HEAD
-   * =======
-   * {
-   * gasLimit,
-   * gasPrice,
-   * maxPriorityFeePerGas,
-   * maxFeePerGas,
-   * estimateUsed,
-   * estimateSuggested
-   * }
-   * >>>>>>> 83652f84f (fix:)
    * @param {string} txGasFees.gasLimit
    * @param {string} txGasFees.gasPrice
    * @param {string} txGasFees.maxPriorityFeePerGas
