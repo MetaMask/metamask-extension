@@ -29,6 +29,7 @@ import {
 } from '../../../components/app/step-progress-bar';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType } from '../../../selectors';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 
 export default function CreatePassword({
   createNewAccount,
@@ -129,7 +130,10 @@ export default function CreatePassword({
       return;
     }
     // If secretRecoveryPhrase is defined we are in import wallet flow
-    if (secretRecoveryPhrase && firstTimeFlowType === 'import') {
+    if (
+      secretRecoveryPhrase &&
+      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+    ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
       history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
@@ -148,7 +152,8 @@ export default function CreatePassword({
 
   return (
     <div className="create-password__wrapper">
-      {secretRecoveryPhrase && firstTimeFlowType === 'import' ? (
+      {secretRecoveryPhrase &&
+      firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
         <TwoStepProgressBar stage={twoStepStages.PASSWORD_CREATE} />
       ) : (
         <ThreeStepProgressBar stage={threeStepStages.PASSWORD_CREATE} />
@@ -234,7 +239,8 @@ export default function CreatePassword({
           </Box>
           <Button
             data-testid={
-              secretRecoveryPhrase && firstTimeFlowType === 'import'
+              secretRecoveryPhrase &&
+              firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
                 ? 'create-password-import'
                 : 'create-password-wallet'
             }
@@ -243,7 +249,8 @@ export default function CreatePassword({
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
           >
-            {secretRecoveryPhrase && firstTimeFlowType === 'import'
+            {secretRecoveryPhrase &&
+            firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
               ? t('importMyWallet')
               : t('createNewWallet')}
           </Button>
