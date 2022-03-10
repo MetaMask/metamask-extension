@@ -99,6 +99,7 @@ export default class Home extends PureComponent {
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     defaultHomeActiveTabName: PropTypes.string,
     firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -498,6 +499,7 @@ export default class Home extends PureComponent {
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
+      completedOnboarding,
     } = this.props;
 
     if (forgottenPassword) {
@@ -507,7 +509,8 @@ export default class Home extends PureComponent {
     }
 
     const showWhatsNew =
-      firstTimeFlowType === 'import' &&
+      ((completedOnboarding && firstTimeFlowType === 'import') ||
+        !completedOnboarding) &&
       notificationsToShow &&
       showWhatsNewPopup;
 
