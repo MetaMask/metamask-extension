@@ -7,6 +7,8 @@ const path = require('path');
 const livereload = require('gulp-livereload');
 const minimist = require('minimist');
 const { sync: globby } = require('globby');
+const { getVersion } = require('../lib/get-version');
+const { BuildType } = require('../lib/build-type');
 const {
   createTask,
   composeSeries,
@@ -18,7 +20,7 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { BuildType, getBrowserVersionMap } = require('./utils');
+const { getBrowserVersionMap } = require('./utils');
 
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
@@ -58,11 +60,12 @@ function defineAndRunBuildTasks() {
     shouldIncludeLockdown,
     shouldLintFenceFiles,
     skipStats,
+    version,
   } = parseArgv();
 
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
-  const browserVersionMap = getBrowserVersionMap(browserPlatforms);
+  const browserVersionMap = getBrowserVersionMap(browserPlatforms, version);
 
   const ignoredFiles = getIgnoredFiles(buildType);
 
@@ -89,12 +92,14 @@ function defineAndRunBuildTasks() {
     livereload,
     policyOnly,
     shouldLintFenceFiles,
+    version,
   });
 
   const { clean, reload, zip } = createEtcTasks({
     livereload,
     browserPlatforms,
     buildType,
+    version,
   });
 
   // build for development (livereload)
@@ -162,6 +167,7 @@ function defineAndRunBuildTasks() {
 function parseArgv() {
   const NamedArgs = {
     BuildType: 'build-type',
+    BuildVersion: 'build-version',
     LintFenceFiles: 'lint-fence-files',
     Lockdown: 'lockdown',
     PolicyOnly: 'policy-only',
@@ -175,9 +181,10 @@ function parseArgv() {
       NamedArgs.PolicyOnly,
       NamedArgs.SkipStats,
     ],
-    string: [NamedArgs.BuildType],
+    string: [NamedArgs.BuildType, NamedArgs.BuildVersion],
     default: {
       [NamedArgs.BuildType]: BuildType.main,
+      [NamedArgs.BuildVersion]: '0',
       [NamedArgs.LintFenceFiles]: true,
       [NamedArgs.Lockdown]: true,
       [NamedArgs.PolicyOnly]: false,
@@ -201,6 +208,14 @@ function parseArgv() {
     throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
   }
 
+  const rawBuildVersion = argv[NamedArgs.BuildVersion];
+  const buildVersion = Number.parseInt(rawBuildVersion, 10);
+  if (rawBuildVersion.match(/^\d+$/u) === null || Number.isNaN(buildVersion)) {
+    throw new Error(
+      `MetaMask build: Invalid build version: "${rawBuildVersion}"`,
+    );
+  }
+
   // Manually default this to `false` for dev builds only.
   const shouldLintFenceFiles = process.argv.includes(
     `--${NamedArgs.LintFenceFiles}`,
@@ -210,6 +225,8 @@ function parseArgv() {
 
   const policyOnly = argv[NamedArgs.PolicyOnly];
 
+  const version = getVersion(buildType, buildVersion);
+
   return {
     buildType,
     entryTask,
@@ -218,6 +235,7 @@ function parseArgv() {
     shouldIncludeLockdown: argv[NamedArgs.Lockdown],
     shouldLintFenceFiles,
     skipStats: argv[NamedArgs.SkipStats],
+    version,
   };
 }
 
