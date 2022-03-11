@@ -7,6 +7,7 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
+import IconCaretLeft from '../../../../components/ui/icon/icon-caret-left';
 import Confusable from '../../../../components/ui/confusable';
 
 export default class AddRecipient extends Component {
@@ -172,7 +173,7 @@ export default class AddRecipient extends Component {
           className="send__select-recipient-wrapper__list__link"
           onClick={useContactListForRecipientSearch}
         >
-          <div className="send__select-recipient-wrapper__list__back-caret" />
+          <IconCaretLeft className="send__select-recipient-wrapper__list__back-caret" />
           {t('backToAll')}
         </Button>
         <RecipientGroup

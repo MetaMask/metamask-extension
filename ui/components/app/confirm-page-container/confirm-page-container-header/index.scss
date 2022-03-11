@@ -21,6 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: var(--color-primary-default);
 
     [dir='rtl'] & img {
       transform: rotate(180deg);
@@ -30,7 +31,6 @@
   &__back-button {
     @include Paragraph;
 
-    color: #2f9ae0;
     cursor: pointer;
     padding-left: 5px;
   }

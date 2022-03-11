@@ -83,7 +83,7 @@ function getValues(pendingApproval, t, actions) {
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest(),
+        ethErrors.provider.userRejectedRequest().serialize(),
       ),
     networkDisplay: true,
   };

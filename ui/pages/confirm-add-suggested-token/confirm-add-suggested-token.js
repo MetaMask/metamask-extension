@@ -1,16 +1,21 @@
-import React, { useContext, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/metametrics.new';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getSuggestedAssets } from '../../selectors';
+import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 
 function getTokenName(name, symbol) {
-  return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+  return name === undefined ? symbol : `${name} (${symbol})`;
 }
 
 /**
@@ -51,32 +56,16 @@ function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
   return Boolean(duplicate);
 }
 
-const ConfirmAddSuggestedToken = (props) => {
-  const {
-    acceptWatchAsset,
-    history,
-    mostRecentOverviewPage,
-    rejectWatchAsset,
-    suggestedAssets,
-    tokens,
-  } = props;
-
-  const metricsEvent = useContext(MetaMetricsContext);
+const ConfirmAddSuggestedToken = () => {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  const tokenAddedEvent = (asset) => {
-    metricsEvent({
-      event: 'Token Added',
-      category: 'Wallet',
-      sensitiveProperties: {
-        token_symbol: asset.symbol,
-        token_contract_address: asset.address,
-        token_decimal_precision: asset.decimals,
-        unlisted: asset.unlisted,
-        source: 'dapp',
-      },
-    });
-  };
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const suggestedAssets = useSelector(getSuggestedAssets);
+  const tokens = useSelector(getTokens);
+
+  const trackEvent = useContext(NewMetaMetricsContext);
 
   const knownTokenActionableMessage = useMemo(() => {
     return (
@@ -117,11 +106,38 @@ const ConfirmAddSuggestedToken = (props) => {
     );
   }, [suggestedAssets, tokens, t]);
 
-  useEffect(() => {
+  const handleAddTokensClick = useCallback(async () => {
+    await Promise.all(
+      suggestedAssets.map(async ({ asset, id }) => {
+        await dispatch(acceptWatchAsset(id));
+
+        trackEvent({
+          event: 'Token Added',
+          category: 'Wallet',
+          sensitiveProperties: {
+            token_symbol: asset.symbol,
+            token_contract_address: asset.address,
+            token_decimal_precision: asset.decimals,
+            unlisted: asset.unlisted,
+            source: 'dapp',
+          },
+        });
+      }),
+    );
+
+    history.push(mostRecentOverviewPage);
+  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
+
+  const goBackIfNoSuggestedAssetsOnFirstRender = () => {
     if (!suggestedAssets.length) {
       history.push(mostRecentOverviewPage);
     }
-  }, [history, suggestedAssets, mostRecentOverviewPage]);
+  };
+
+  useEffect(() => {
+    goBackIfNoSuggestedAssetsOnFirstRender();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="page-container">
@@ -134,30 +150,34 @@ const ConfirmAddSuggestedToken = (props) => {
         {reusedTokenNameActionableMessage}
       </div>
       <div className="page-container__content">
-        <div className="confirm-import-token">
-          <div className="confirm-import-token__header">
-            <div className="confirm-import-token__token">{t('token')}</div>
-            <div className="confirm-import-token__balance">{t('balance')}</div>
+        <div className="confirm-add-suggested-token">
+          <div className="confirm-add-suggested-token__header">
+            <div className="confirm-add-suggested-token__token">
+              {t('token')}
+            </div>
+            <div className="confirm-add-suggested-token__balance">
+              {t('balance')}
+            </div>
           </div>
-          <div className="confirm-import-token__token-list">
+          <div className="confirm-add-suggested-token__token-list">
             {suggestedAssets.map(({ asset }) => {
               return (
                 <div
-                  className="confirm-import-token__token-list-item"
+                  className="confirm-add-suggested-token__token-list-item"
                   key={asset.address}
                 >
-                  <div className="confirm-import-token__token confirm-import-token__data">
+                  <div className="confirm-add-suggested-token__token confirm-add-suggested-token__data">
                     <Identicon
-                      className="confirm-import-token__token-icon"
+                      className="confirm-add-suggested-token__token-icon"
                       diameter={48}
                       address={asset.address}
                       image={asset.image}
                     />
-                    <div className="confirm-import-token__name">
+                    <div className="confirm-add-suggested-token__name">
                       {getTokenName(asset.name, asset.symbol)}
                     </div>
                   </div>
-                  <div className="confirm-import-token__balance">
+                  <div className="confirm-add-suggested-token__balance">
                     <TokenBalance token={asset} />
                   </div>
                 </div>
@@ -174,7 +194,7 @@ const ConfirmAddSuggestedToken = (props) => {
             className="page-container__footer-button"
             onClick={async () => {
               await Promise.all(
-                suggestedAssets.map(async ({ id }) => rejectWatchAsset(id)),
+                suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
               );
               history.push(mostRecentOverviewPage);
             }}
@@ -186,15 +206,7 @@ const ConfirmAddSuggestedToken = (props) => {
             large
             className="page-container__footer-button"
             disabled={suggestedAssets.length === 0}
-            onClick={async () => {
-              await Promise.all(
-                suggestedAssets.map(async ({ asset, id }) => {
-                  await acceptWatchAsset(id);
-                  tokenAddedEvent(asset);
-                }),
-              );
-              history.push(mostRecentOverviewPage);
-            }}
+            onClick={handleAddTokensClick}
           >
             {t('addToken')}
           </Button>
@@ -202,15 +214,6 @@ const ConfirmAddSuggestedToken = (props) => {
       </div>
     </div>
   );
-};
-
-ConfirmAddSuggestedToken.propTypes = {
-  acceptWatchAsset: PropTypes.func,
-  history: PropTypes.object,
-  mostRecentOverviewPage: PropTypes.string.isRequired,
-  rejectWatchAsset: PropTypes.func,
-  suggestedAssets: PropTypes.array,
-  tokens: PropTypes.array,
 };
 
 export default ConfirmAddSuggestedToken;
