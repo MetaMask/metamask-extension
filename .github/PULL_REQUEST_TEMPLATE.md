@@ -1,28 +1,28 @@
-## Description
+## Explanation
 
 <!--
-This is a freeform area, but there are 3 questions you should try to answer:
+Thanks for the pull request. Take a moment to answer these questions so that reviewers have the information they need to properly understand your changes:
 
-* What information do reviewers need to have in order to understand your changes?
 * What is the current state of things and why does it need to change?
-* What is the solution your changes offer?
+* What is the solution your changes offer and how does it work?
 
 Below is a template to give you some ideas. Feel free to use your own words!
-
-(Hint: all of this should ideally go in your commit message so that people don't have to find this pull request in the future ;))
--->
 
 Currently, ...
 
 This is a problem because ...
 
-In order to solve this problem, ...
+In order to solve this problem, this pull request ...
+-->
 
 ## More information
 
-<!-- Any related issues or links to Slack conversations, Zendesk issues, etc. reviewers should consult to understand this pull request better? -->
+<!--
+Are there any issues, Slack conversations, Zendesk issues, user stories, etc. reviewers should consult to understand this pull request better? For instance:
 
-* Fixes #999999999999999999
+* Fixes #12345
+* See: #67890
+-->
 
 ## Screenshots/Screencaps
 
@@ -38,8 +38,10 @@ In order to solve this problem, ...
 
 ## Manual testing steps
 
-<!-- How should reviewers and QA manually test your changes? -->
+<!--
+How should reviewers and QA manually test your changes? For instance:
 
 - Go to this screen
 - Do this
 - Then do this
+-->
