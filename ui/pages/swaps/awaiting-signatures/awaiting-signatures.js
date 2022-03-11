@@ -89,7 +89,7 @@ export default function AwaitingSignatures() {
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
         </Box>
-        <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
+        <Typography color={COLORS.TEXT_DEFAULT} variant={TYPOGRAPHY.H3}>
           {headerText}
         </Typography>
         {needsTwoConfirmations && (

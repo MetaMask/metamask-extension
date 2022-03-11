@@ -6,12 +6,8 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../../../shared/constants/gas';
-import { SECONDARY } from '../../../../../helpers/constants/common';
-import {
-  bnGreaterThan,
-  bnLessThan,
-  roundToDecimalPlacesRemovingExtraZeroes,
-} from '../../../../../helpers/utils/util';
+import { PRIMARY } from '../../../../../helpers/constants/common';
+import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -23,7 +19,6 @@ import FormField from '../../../../ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { renderFeeRange } from '../utils';
 
 const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {
@@ -57,6 +52,7 @@ const BaseFeeInput = () => {
     editGasMode,
   } = useGasFeeContext();
   const {
+    gasLimit,
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
@@ -69,7 +65,7 @@ const BaseFeeInput = () => {
     baseFeeTrend,
   } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
@@ -85,8 +81,8 @@ const BaseFeeInput = () => {
     return maxFeePerGas;
   });
 
-  const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
-    decGWEIToHexWEI(baseFee),
+  const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
+    decGWEIToHexWEI(baseFee * gasLimit),
     { currency, numberOfDecimals },
   );
 
@@ -128,16 +124,13 @@ const BaseFeeInput = () => {
         titleUnit={`(${t('gwei')})`}
         tooltipText={t('advancedBaseGasFeeToolTip')}
         value={baseFee}
-        detailText={`≈ ${baseFeeInFiat}`}
+        detailText={`≈ ${baseFeeInPrimaryCurrency}`}
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={`${roundToDecimalPlacesRemovingExtraZeroes(
-          estimatedBaseFee,
-          2,
-        )} GWEI`}
-        historical={renderFeeRange(historicalBaseFeeRange)}
-        feeTrend={baseFeeTrend}
+        latest={estimatedBaseFee}
+        historical={historicalBaseFeeRange}
+        trend={baseFeeTrend}
       />
     </Box>
   );

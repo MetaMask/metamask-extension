@@ -23,13 +23,13 @@ const SnapsAuthorshipPill = ({ packageName, className, url }) => {
             <i className="fab fa-npm fa-lg snaps-authorship-icon" />
           </Box>
         }
-        backgroundColor={COLORS.WHITE}
+        backgroundColor={COLORS.BACKGROUND_DEFAULT}
       >
         <Typography
           className="chip__label"
           variant={TYPOGRAPHY.H7}
           tag="span"
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
         >
           {packageName}
         </Typography>

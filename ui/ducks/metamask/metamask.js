@@ -14,9 +14,9 @@ import {
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {

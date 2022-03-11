@@ -1279,18 +1279,11 @@
   "importAccountError": {
     "message": "Fehler beim Importieren des Kontos."
   },
-  "importAccountLinkText": {
-    "message": "mit einer Geheime Wiederherstellungsphrase importieren"
-  },
   "importAccountMsg": {
     "message": " Importierte Accounts werden nicht mit der Seed-Wörterfolge deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
-  },
-  "importAccountText": {
-    "message": "oder $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Geben Sie die Geheime Wiederherstellungsphrase (alias Seed Phrase) ein, die Sie beim Erstellen Ihrer Wallet erhalten haben. $1",
@@ -1532,7 +1525,7 @@
     "message": "niedrig"
   },
   "mainnet": {
-    "message": "Athereum Hauptnetz"
+    "message": "Ethereum Hauptnetz"
   },
   "makeAnotherSwap": {
     "message": "Eine neue Wallet erstellen"
@@ -1744,9 +1737,6 @@
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Sammelobjekt wurde nicht hinzugefügt, weil: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
@@ -2229,9 +2219,6 @@
   "restore": {
     "message": "Wiederherstellen"
   },
-  "restoreAccountWithSeed": {
-    "message": "Ihr Konto mit mnemonischer Phrase wiederherstellen"
-  },
   "restoreWalletPreferences": {
     "message": "$1 hat ein Backup Ihrer Daten gefunden. Möchten Sie die Präferenzen Ihrer Wallet wiederherstellen?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2285,6 @@
   },
   "secretPhrase": {
     "message": "Nur das erste Konto auf dieser Wallet wird automatisch geladen. Wenn Sie nach Abschluss dieses Vorgangs weitere Konten hinzufügen möchten, klicken Sie auf das Dropdown-Menü und wählen Sie dann Konto erstellen."
-  },
-  "secretPhraseWarning": {
-    "message": "Wenn Sie eine andere geheime Wiederherstellungsphrase verwenden, werden Ihre aktuelle Wallet, Ihre Konten und Vermögenswerte dauerhaft aus dieser App entfernt. Diese Aktion kann nicht rückgängig gemacht werden."
   },
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"

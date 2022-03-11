@@ -7,6 +7,7 @@ const {
   createSegmentServer,
 } = require('../../development/lib/create-segment-server');
 const { setupMocking } = require('../../development/mock-e2e');
+const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
@@ -15,6 +16,7 @@ const { ensureXServerIsRunning } = require('./x-server');
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
+const veryLargeDelayMs = largeDelayMs * 2;
 const dappPort = 8080;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
@@ -29,14 +31,18 @@ async function withFixtures(options, testSuite) {
     title,
     failOnConsoleError = true,
     dappPath = undefined,
+    testSpecificMock = function () {
+      // do nothing.
+    },
   } = options;
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const https = await mockttp.generateCACertificate();
+  const mockServer = mockttp.getLocal({ https });
   let secondaryGanacheServer;
   let dappServer;
   let segmentServer;
   let segmentStub;
-  let mockServer;
 
   let webDriver;
   let failed = false;
@@ -87,10 +93,8 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
-    const https = await mockttp.generateCACertificate();
-    mockServer = mockttp.getLocal({ https });
+    await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
-    setupMocking(mockServer);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
       process.env.CI === 'true'
@@ -153,9 +157,7 @@ async function withFixtures(options, testSuite) {
       if (segmentServer) {
         await segmentServer.stop();
       }
-      if (mockServer) {
-        await mockServer.stop();
-      }
+      await mockServer.stop();
     }
   }
 }
@@ -203,12 +205,80 @@ const connectDappWithExtensionPopup = async (driver) => {
   await driver.delay(regularDelayMs);
 };
 
+const completeImportSRPOnboardingFlow = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  if (process.env.ONBOARDING_V2 === '1') {
+    // welcome
+    await driver.clickElement('[data-testid="onboarding-import-wallet"]');
+
+    // metrics
+    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+    // import with recovery phrase
+    await driver.fill('[data-testid="import-srp-text"]', seedPhrase);
+    await driver.clickElement('[data-testid="import-srp-confirm"]');
+
+    // create password
+    await driver.fill('[data-testid="create-password-new"]', password);
+    await driver.fill('[data-testid="create-password-confirm"]', password);
+    await driver.clickElement('[data-testid="create-password-terms"]');
+    await driver.clickElement('[data-testid="create-password-import"]');
+
+    // complete
+    await driver.clickElement('[data-testid="onboarding-complete-done"]');
+
+    // pin extension
+    await driver.clickElement('[data-testid="pin-extension-next"]');
+    await driver.clickElement('[data-testid="pin-extension-done"]');
+  } else {
+    // clicks the continue button on the welcome screen
+    await driver.findElement('.welcome-page__header');
+    await driver.clickElement({
+      text: enLocaleMessages.getStarted.message,
+      tag: 'button',
+    });
+
+    // clicks the "Import Wallet" option
+    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
+
+    // clicks the "No thanks" option on the metametrics opt-in screen
+    await driver.clickElement('.btn-secondary');
+
+    // Import Secret Recovery Phrase
+    await driver.fill(
+      'input[placeholder="Enter your Secret Recovery Phrase"]',
+      seedPhrase,
+    );
+
+    await driver.fill('#password', password);
+    await driver.fill('#confirm-password', password);
+
+    await driver.clickElement(
+      '[data-testid="create-new-vault__terms-checkbox"]',
+    );
+
+    await driver.clickElement({ text: 'Import', tag: 'button' });
+
+    // clicks through the success screen
+    await driver.findElement({ text: 'Congratulations', tag: 'div' });
+    await driver.clickElement({
+      text: enLocaleMessages.endOfFlowMessage10.message,
+      tag: 'button',
+    });
+  }
+};
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
+  veryLargeDelayMs,
   withFixtures,
   connectDappWithExtensionPopup,
+  completeImportSRPOnboardingFlow,
 };

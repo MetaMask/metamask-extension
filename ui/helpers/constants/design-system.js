@@ -5,6 +5,57 @@
  * match the plural form of the thing. e.g. COLORS, TYPOGRAPHY
  */
 export const COLORS = {
+  BACKGROUND_DEFAULT: 'background-default',
+  BACKGROUND_ALTERNATIVE: 'background-alternative',
+  TEXT_DEFAULT: 'text-default',
+  TEXT_ALTERNATIVE: 'text-alternative',
+  TEXT_MUTED: 'text-muted',
+  ICON_DEFAULT: 'icon-default',
+  ICON_MUTED: 'icon-muted',
+  BORDER_DEFAULT: 'border-default',
+  BORDER_MUTED: 'border-muted',
+  OVERLAY_DEFAULT: 'overlay-default',
+  OVERLAY_INVERSE: 'overlay-inverse',
+  PRIMARY_DEFAULT: 'primary-default',
+  PRIMARY_ALTERNATIVE: 'primary-alternative',
+  PRIMARY_MUTED: 'primary-muted',
+  PRIMARY_INVERSE: 'primary-inverse',
+  PRIMARY_DISABLED: 'primary-disabled',
+  SECONDARY_DEFAULT: 'secondary-default',
+  SECONDARY_ALTERNATIVE: 'secondary-alternative',
+  SECONDARY_MUTED: 'secondary-muted',
+  SECONDARY_INVERSE: 'secondary-inverse',
+  SECONDARY_DISABLED: 'secondary-disabled',
+  ERROR_DEFAULT: 'error-default',
+  ERROR_ALTERNATIVE: 'error-alternative',
+  ERROR_MUTED: 'error-muted',
+  ERROR_INVERSE: 'error-inverse',
+  ERROR_DISABLED: 'error-disabled',
+  WARNING_DEFAULT: 'warning-default',
+  WARNING_ALTERNATIVE: 'warning-alternative',
+  WARNING_MUTED: 'warning-muted',
+  WARNING_INVERSE: 'warning-inverse',
+  WARNING_DISABLED: 'warning-disabled',
+  SUCCESS_DEFAULT: 'success-default',
+  SUCCESS_ALTERNATIVE: 'success-alternative',
+  SUCCESS_MUTED: 'success-muted',
+  SUCCESS_INVERSE: 'success-inverse',
+  SUCCESS_DISABLED: 'success-disabled',
+  INFO_DEFAULT: 'info-default',
+  INFO_ALTERNATIVE: 'info-alternative',
+  INFO_MUTED: 'info-muted',
+  INFO_INVERSE: 'info-inverse',
+  INFO_DISABLED: 'info-disabled',
+  MAINNET: 'mainnet',
+  ROPSTEN: 'ropsten',
+  KOVAN: 'kovan',
+  RINKEBY: 'rinkeby',
+  GOERLI: 'goerli',
+  TRANSPARENT: 'transparent',
+  LOCALHOST: 'localhost',
+  /**
+   * !!! DEPRECATED DO NOT USE!!!
+   */
   UI1: 'ui-1',
   UI2: 'ui-2',
   UI3: 'ui-3',
@@ -28,13 +79,6 @@ export const COLORS = {
   ALERT1: 'alert-1',
   ALERT2: 'alert-2',
   ALERT3: 'alert-3',
-  MAINNET: 'mainnet',
-  ROPSTEN: 'ropsten',
-  KOVAN: 'kovan',
-  RINKEBY: 'rinkeby',
-  GOERLI: 'goerli',
-  TRANSPARENT: 'transparent',
-  LOCALHOST: 'localhost',
 };
 
 export const TYPOGRAPHY = {
@@ -161,15 +205,6 @@ export const TEXT_ALIGN = {
 export const FONT_WEIGHT = {
   BOLD: 'bold',
   NORMAL: 'normal',
-  100: 100,
-  200: 200,
-  300: 300,
-  400: 400,
-  500: 500,
-  600: 600,
-  700: 700,
-  800: 800,
-  900: 900,
 };
 
 export const OVERFLOW_WRAP = {
@@ -180,7 +215,6 @@ export const OVERFLOW_WRAP = {
 export const FONT_STYLE = {
   ITALIC: 'italic',
   NORMAL: 'normal',
-  OBLIQUE: 'oblique',
 };
 
 export const SEVERITIES = {

@@ -9,7 +9,11 @@ import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
-import { errorCodes as rpcErrorCodes, ethErrors } from 'eth-rpc-errors';
+import {
+  errorCodes as rpcErrorCodes,
+  EthereumRpcError,
+  ethErrors,
+} from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
@@ -34,16 +38,12 @@ import {
   CollectiblesController,
   AssetsContractController,
   CollectibleDetectionController,
-} from '@metamask/controllers';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import {
   PermissionController,
   SubjectMetadataController,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SnapController,
-  ///: END:ONLY_INCLUDE_IN
-} from '@metamask/snap-controllers';
+} from '@metamask/controllers';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SnapController } from '@metamask/snap-controllers';
 import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
 ///: END:ONLY_INCLUDE_IN
 
@@ -74,6 +74,7 @@ import { MILLISECOND } from '../../shared/constants/time';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
+  PLATFORM_FIREFOX,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -82,7 +83,7 @@ import {
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
-import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -133,6 +134,10 @@ import {
   buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { getPlatform } from './lib/util';
+///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -230,9 +235,15 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
     });
 
-    this.assetsContractController = new AssetsContractController({
-      provider: this.provider,
-    });
+    this.assetsContractController = new AssetsContractController(
+      {
+        onPreferencesStateChange: (listener) =>
+          this.preferencesController.store.subscribe(listener),
+      },
+      {
+        provider: this.provider,
+      },
+    );
 
     this.collectiblesController = new CollectiblesController(
       {
@@ -601,7 +612,10 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const usingFirefox = getPlatform() === PLATFORM_FIREFOX;
+
     this.snapController = new SnapController({
+      npmRegistryUrl: usingFirefox ? 'https://registry.npmjs.cf/' : undefined,
       endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
@@ -700,6 +714,8 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
         this,
       ),
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -1269,7 +1285,6 @@ export default class MetamaskController extends EventEmitter {
       appStateController,
       collectiblesController,
       collectibleDetectionController,
-      assetsContractController,
       currencyRateController,
       detectTokensController,
       ensController,
@@ -1422,11 +1437,10 @@ export default class MetamaskController extends EventEmitter {
       setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
         preferencesController,
       ),
+      setTheme: preferencesController.setTheme.bind(preferencesController),
 
       // AssetsContractController
-      getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(
-        assetsContractController,
-      ),
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
       // CollectiblesController
       addCollectible: collectiblesController.addCollectible.bind(
@@ -1522,6 +1536,20 @@ export default class MetamaskController extends EventEmitter {
         txController,
       ),
       getTransactions: txController.getTransactions.bind(txController),
+
+      updateEditableParams: txController.updateEditableParams.bind(
+        txController,
+      ),
+      updateTransactionGasFees: txController.updateTransactionGasFees.bind(
+        txController,
+      ),
+
+      updateSwapApprovalTransaction: txController.updateSwapApprovalTransaction.bind(
+        txController,
+      ),
+      updateSwapTransaction: txController.updateSwapTransaction.bind(
+        txController,
+      ),
 
       // messageManager
       signMessage: this.signMessage.bind(this),
@@ -1707,7 +1735,12 @@ export default class MetamaskController extends EventEmitter {
       resolvePendingApproval: approvalController.accept.bind(
         approvalController,
       ),
-      rejectPendingApproval: approvalController.reject.bind(approvalController),
+      rejectPendingApproval: async (id, error) => {
+        approvalController.reject(
+          id,
+          new EthereumRpcError(error.code, error.message, error.data),
+        );
+      },
 
       // Notifications
       updateViewedNotifications: notificationController.updateViewed.bind(
@@ -1746,6 +1779,19 @@ export default class MetamaskController extends EventEmitter {
             collectibleDetectionController,
           )
         : null,
+    };
+  }
+
+  async getTokenStandardAndDetails(address, userAddress, tokenId) {
+    const details = await this.assetsContractController.getTokenStandardAndDetails(
+      address,
+      userAddress,
+      tokenId,
+    );
+    return {
+      ...details,
+      decimals: details?.decimals?.toString(10),
+      balance: details?.balance?.toString(10),
     };
   }
 
@@ -2187,6 +2233,54 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName);
     keyring.forgetDevice();
     return true;
+  }
+
+  /**
+   * Retrieves the keyring for the selected address and using the .type returns
+   * a subtype for the account. Either 'hardware', 'imported' or 'MetaMask'.
+   *
+   * @param {string} address - Address to retrieve keyring for
+   * @returns {'hardware' | 'imported' | 'MetaMask'}
+   */
+  async getAccountType(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    switch (keyring.type) {
+      case KEYRING_TYPES.TREZOR:
+      case KEYRING_TYPES.LATTICE:
+      case KEYRING_TYPES.QR:
+      case KEYRING_TYPES.LEDGER:
+        return 'hardware';
+      case KEYRING_TYPES.IMPORTED:
+        return 'imported';
+      default:
+        return 'MetaMask';
+    }
+  }
+
+  /**
+   * Retrieves the keyring for the selected address and using the .type
+   * determines if a more specific name for the device is available. Returns
+   * 'N/A' for non hardware wallets.
+   *
+   * @param {string} address - Address to retrieve keyring for
+   * @returns {'ledger' | 'lattice' | 'N/A' | string}
+   */
+  async getDeviceModel(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    switch (keyring.type) {
+      case KEYRING_TYPES.TREZOR:
+        return keyring.getModel();
+      case KEYRING_TYPES.QR:
+        return keyring.getName();
+      case KEYRING_TYPES.LEDGER:
+        // TODO: get model after ledger keyring exposes method
+        return DEVICE_NAMES.LEDGER;
+      case KEYRING_TYPES.LATTICE:
+        // TODO: get model after lattice keyring exposes method
+        return DEVICE_NAMES.LATTICE;
+      default:
+        return 'N/A';
+    }
   }
 
   /**

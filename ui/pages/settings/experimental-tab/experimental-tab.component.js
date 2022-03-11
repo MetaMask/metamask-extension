@@ -1,6 +1,16 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
+import {
+  getSettingsSectionNumber,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
+import Dropdown from '../../../components/ui/dropdown';
+
+import { THEME_TYPE } from './experimental-tab.constant';
+
+/*eslint-disable prefer-destructuring*/
+const DARK_MODE_V1 = process.env.DARK_MODE_V1;
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -17,14 +27,34 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     setEIP1559V2Enabled: PropTypes.func,
+    theme: PropTypes.string,
+    setTheme: PropTypes.func,
   };
+
+  settingsRefs = Array(
+    getSettingsSectionNumber(this.context.t, this.context.t('experimental')),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+  }
+
+  componentDidMount() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+  }
 
   renderTokenDetectionToggle() {
     const { t } = this.context;
     const { useTokenDetection, setUseTokenDetection } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useTokenDetection')}</span>
           <div className="settings-page__content-description">
@@ -68,7 +98,10 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row--dependent">
+      <div
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row--dependent"
+      >
         <div className="settings-page__content-item">
           <span>{t('useCollectibleDetection')}</span>
           <div className="settings-page__content-description">
@@ -114,7 +147,10 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row--parent">
+      <div
+        ref={this.settingsRefs[1]}
+        className="settings-page__content-row--parent"
+      >
         <div className="settings-page__content-item">
           <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
@@ -192,6 +228,46 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderTheme() {
+    if (!DARK_MODE_V1) {
+      return null;
+    }
+    const { t } = this.context;
+    const { theme, setTheme } = this.props;
+
+    const themesOptions = [
+      {
+        name: t('defaultTheme'),
+        value: THEME_TYPE.DEFAULT,
+      },
+      {
+        name: t('darkTheme'),
+        value: THEME_TYPE.DARK,
+      },
+    ];
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{this.context.t('theme')}</span>
+          <div className="settings-page__content-description">
+            {this.context.t('themeDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Dropdown
+              id="select-theme"
+              options={themesOptions}
+              selectedOption={theme}
+              onChange={async (newTheme) => setTheme(newTheme)}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
@@ -199,6 +275,7 @@ export default class ExperimentalTab extends PureComponent {
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
+        {this.renderTheme()}
       </div>
     );
   }

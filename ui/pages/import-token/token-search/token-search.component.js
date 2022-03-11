@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../components/ui/text-field';
-import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 export default class TokenSearch extends Component {
   static contextTypes = {

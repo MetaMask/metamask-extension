@@ -7,6 +7,7 @@ import {
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import NetworkDisplay from '../../network-display';
 import Identicon from '../../../ui/identicon';
+import IconCaretLeft from '../../../ui/icon/icon-caret-left';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -47,7 +48,7 @@ export default function ConfirmPageContainerHeader({
               visibility: showEdit ? 'initial' : 'hidden',
             }}
           >
-            <img src="./images/caret-left.svg" alt="" />
+            <IconCaretLeft />
             <span
               className="confirm-page-container-header__back-button"
               onClick={() => onEdit()}

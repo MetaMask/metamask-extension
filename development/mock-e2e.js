@@ -1,7 +1,7 @@
-function setupMocking(server) {
-  server.forAnyRequest().thenPassThrough();
+async function setupMocking(server, testSpecificMock) {
+  await server.forAnyRequest().thenPassThrough();
 
-  server
+  await server
     .forOptions('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
     .thenCallback(() => {
       return {
@@ -14,7 +14,7 @@ function setupMocking(server) {
       };
     });
 
-  server
+  await server
     .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
     .thenCallback(() => {
       return {
@@ -27,6 +27,8 @@ function setupMocking(server) {
         },
       };
     });
+
+  testSpecificMock(server);
 }
 
 module.exports = { setupMocking };

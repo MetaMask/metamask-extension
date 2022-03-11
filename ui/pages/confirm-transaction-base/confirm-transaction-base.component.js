@@ -60,6 +60,7 @@ import {
 
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 
 import TransactionAlerts from './transaction-alerts';
 
@@ -113,7 +114,7 @@ export default class ConfirmTransactionBase extends Component {
     dataHexComponent: PropTypes.node,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
-    identiconAddress: PropTypes.string,
+    tokenAddress: PropTypes.string,
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
@@ -144,6 +145,7 @@ export default class ConfirmTransactionBase extends Component {
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
+    showBuyModal: PropTypes.func,
   };
 
   state = {
@@ -323,6 +325,7 @@ export default class ConfirmTransactionBase extends Component {
       supportsEIP1559,
       isMultiLayerFeeNetwork,
       nativeCurrency,
+      showBuyModal,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -335,6 +338,7 @@ export default class ConfirmTransactionBase extends Component {
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
+    const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
 
     const renderTotalMaxAmount = () => {
       if (
@@ -537,7 +541,7 @@ export default class ConfirmTransactionBase extends Component {
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontStyle={FONT_STYLE.ITALIC}
-                  color={COLORS.UI4}
+                  color={COLORS.TEXT_ALTERNATIVE}
                 >
                   {t('transactionDetailDappGasMoreInfo')}
                 </Typography>
@@ -582,6 +586,11 @@ export default class ConfirmTransactionBase extends Component {
             this.setUserAcknowledgedGasMissing()
           }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          chainId={txData.chainId}
+          nativeCurrency={nativeCurrency}
+          networkName={networkName}
+          showBuyModal={showBuyModal}
+          type={txData.type}
         />
         <TransactionDetail
           disabled={isDisabled()}
@@ -989,7 +998,7 @@ export default class ConfirmTransactionBase extends Component {
       methodData,
       title,
       hideSubtitle,
-      identiconAddress,
+      tokenAddress,
       contentComponent,
       onEdit,
       nonce,
@@ -1035,7 +1044,11 @@ export default class ConfirmTransactionBase extends Component {
       return userAcknowledgedGasMissing ? false : !valid;
     };
 
-    let functionType = getMethodName(name);
+    let functionType;
+    if (txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+      functionType = getMethodName(name);
+    }
+
     if (!functionType) {
       if (type) {
         functionType = getTransactionTypeTitle(t, type, nativeCurrency);
@@ -1067,7 +1080,7 @@ export default class ConfirmTransactionBase extends Component {
           contentComponent={contentComponent}
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
-          identiconAddress={identiconAddress}
+          tokenAddress={tokenAddress}
           errorMessage={submitError}
           errorKey={errorKey}
           hasSimulationError={hasSimulationError}
@@ -1102,6 +1115,7 @@ export default class ConfirmTransactionBase extends Component {
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
+          nativeCurrency={nativeCurrency}
         />
       </TransactionModalContextProvider>
     );

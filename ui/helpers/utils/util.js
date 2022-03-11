@@ -65,14 +65,6 @@ export function isDefaultMetaMaskChain(chainId) {
   return false;
 }
 
-// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
-export function isEqualCaseInsensitive(value1, value2) {
-  if (typeof value1 !== 'string' || typeof value2 !== 'string') {
-    return false;
-  }
-  return value1.toLowerCase() === value2.toLowerCase();
-}
-
 export function valuesFor(obj) {
   if (!obj) {
     return [];
@@ -595,4 +587,15 @@ export function coinTypeToProtocolName(coinType) {
     return 'Test Networks';
   }
   return slip44[coinType]?.name || undefined;
+}
+
+/**
+ * Tests "nullishness". Used to guard a section of a component from being
+ * rendered based on a value.
+ *
+ * @param {any} value - A value (literally anything).
+ * @returns `true` if the value is null or undefined, `false` otherwise.
+ */
+export function isNullish(value) {
+  return value === null || value === undefined;
 }
