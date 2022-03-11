@@ -139,7 +139,7 @@
 
   height: 25px;
   width: 120px;
-  color: var(--color-background-default);
+  color: var(--color-overlay-inverse);
   text-align: center;
 }
 
@@ -156,7 +156,7 @@
     text-decoration: underline;
 
     &:hover {
-      color: var(--color-background-default);
+      color: var(--color-overlay-inverse);
     }
   }
 
