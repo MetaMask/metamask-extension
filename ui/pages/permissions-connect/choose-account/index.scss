@@ -7,6 +7,16 @@
     color: var(--Red-400);
   }
 
+  &__content {
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-top: 2px;
+  }
+
   &__footer-container {
     width: 100%;
     flex: 1;
@@ -27,7 +37,7 @@
     width: 100%;
     padding-top: 16px;
     padding-bottom: 16px;
-    margin-top: 8px;
+    margin-top: 12px;
     border-top: 1px solid #d6d9dc;
 
     @media screen and (min-width: $break-large) {

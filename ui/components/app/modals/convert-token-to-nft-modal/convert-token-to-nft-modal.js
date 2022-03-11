@@ -12,8 +12,8 @@ import {
   ASSET_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCollectibles } from '../../../../ducks/metamask/metamask';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { removeToken } from '../../../../store/actions';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
