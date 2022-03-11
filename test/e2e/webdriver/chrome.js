@@ -69,7 +69,7 @@ class ChromeDriver {
       for (let i = 0; i < extensions.length; i++) {
         const extension = extensions[i].shadowRoot
         const name = extension.querySelector('#name').textContent
-        if (name === "${extensionName}") {
+        if (name.startsWith("${extensionName}")) {
           return extensions[i].getAttribute("id")
         }
       }

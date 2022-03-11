@@ -4,7 +4,8 @@ const path = require('path');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const proxy = require('selenium-webdriver/proxy');
-const { version } = require('../../../package.json');
+const { getVersion } = require('../../../development/lib/get-version');
+const { BuildType } = require('../../../development/lib/build-type');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -31,9 +32,10 @@ class FirefoxDriver {
    * @param {Object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.type
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port }) {
+  static async build({ responsive, port, type }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
     options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
@@ -48,9 +50,14 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension(
-      `builds/metamask-firefox-${version}.zip`,
-    );
+    const version = getVersion(type || BuildType.main, 0);
+    let extensionString = `builds/metamask-firefox-${version}.zip`;
+
+    if (type) {
+      extensionString = `builds/metamask-${type}-firefox-${version}.zip`;
+    }
+
+    const extensionId = await fxDriver.installExtension(extensionString);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive) {

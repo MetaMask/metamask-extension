@@ -4,13 +4,13 @@ const gulpZip = require('gulp-zip');
 const del = require('del');
 const pify = require('pify');
 const pump = pify(require('pump'));
-const { version } = require('../../package.json');
+
+const { BuildType } = require('../lib/build-type');
 const { createTask, composeParallel } = require('./task');
-const { BuildType } = require('./utils');
 
 module.exports = createEtcTasks;
 
-function createEtcTasks({ browserPlatforms, buildType, livereload }) {
+function createEtcTasks({ browserPlatforms, buildType, livereload, version }) {
   const clean = createTask('clean', async function clean() {
     await del(['./dist/*']);
     await Promise.all(
@@ -28,14 +28,16 @@ function createEtcTasks({ browserPlatforms, buildType, livereload }) {
   const zip = createTask(
     'zip',
     composeParallel(
-      ...browserPlatforms.map((platform) => createZipTask(platform, buildType)),
+      ...browserPlatforms.map((platform) =>
+        createZipTask(platform, buildType, version),
+      ),
     ),
   );
 
   return { clean, reload, zip };
 }
 
-function createZipTask(platform, buildType) {
+function createZipTask(platform, buildType, version) {
   return async () => {
     const path =
       buildType === BuildType.main

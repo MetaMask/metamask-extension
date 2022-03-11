@@ -10,7 +10,6 @@ export default {
   title: 'Pages/ConfirmAddSuggestedToken',
   id: __filename,
   argTypes: {
-    // Data
     tokens: {
       control: 'array',
       table: { category: 'Data' },
@@ -18,26 +17,6 @@ export default {
     suggestedAssets: {
       control: 'array',
       table: { category: 'Data' },
-    },
-
-    // Text
-    mostRecentOverviewPage: {
-      control: { type: 'text', disable: true },
-      table: { category: 'Text' },
-    },
-
-    // Events
-    acceptWatchAsset: {
-      action: 'acceptWatchAsset',
-      table: { category: 'Events' },
-    },
-    history: {
-      action: 'history',
-      table: { category: 'Events' },
-    },
-    rejectWatchAsset: {
-      action: 'rejectWatchAsset',
-      table: { category: 'Events' },
     },
   },
 };
