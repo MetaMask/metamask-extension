@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { toNumber } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
@@ -168,7 +167,7 @@ export default function SlippageButtons({
                       <input
                         onChange={(event) => {
                           const { value } = event.target;
-                          const isValueNumeric = !isNaN(toNumber(value));
+                          const isValueNumeric = !isNaN(Number(value));
                           if (isValueNumeric) {
                             setCustomValue(value);
                             onSelect(Number(value));
