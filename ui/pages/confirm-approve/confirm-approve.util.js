@@ -1,5 +1,5 @@
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { getTransactionData } from '../../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { decimalToHex } from '../../helpers/utils/conversions.util';
 import {
   calcTokenValue,
@@ -10,7 +10,7 @@ export function getCustomTxParamsData(
   data,
   { customPermissionAmount, decimals },
 ) {
-  const tokenData = getTransactionData(data);
+  const tokenData = parseStandardTokenTransactionData(data);
 
   if (!tokenData) {
     throw new Error('Invalid data');

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTransactionData } from '../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
 import { ERC1155, ERC721, ERC20 } from '../helpers/constants/common';
 import {
@@ -83,7 +83,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       balance,
       decimals: currentAssetDecimals,
     } = currentAsset;
-    const tokenData = getTransactionData(transactionData);
+    const tokenData = parseStandardTokenTransactionData(transactionData);
     assetStandard = standard;
     assetAddress = tokenAddress;
     tokenSymbol = symbol;

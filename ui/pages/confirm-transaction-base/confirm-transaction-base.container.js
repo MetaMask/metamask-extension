@@ -43,7 +43,7 @@ import {
 } from '../../ducks/metamask/metamask';
 
 import {
-  getTransactionData,
+  parseStandardTokenTransactionData,
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
@@ -106,7 +106,7 @@ const mapStateToProps = (state, ownProps) => {
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
 
-  const transactionData = getTransactionData(data);
+  const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];

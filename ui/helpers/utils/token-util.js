@@ -7,7 +7,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { ERC1155, ERC721 } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getTransactionData } from '../../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -223,7 +223,7 @@ export async function getAssetDetails(
   transactionData,
   existingCollectibles,
 ) {
-  const tokenData = getTransactionData(transactionData);
+  const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
     throw new Error('Unable to detect valid token data');
   }

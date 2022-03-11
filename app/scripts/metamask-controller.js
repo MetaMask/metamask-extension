@@ -78,7 +78,7 @@ import {
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getTransactionData } from '../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -737,7 +737,7 @@ export default class MetamaskController extends EventEmitter {
             from: userAddress,
           } = txMeta.txParams;
           const { chainId } = txMeta;
-          const transactionData = getTransactionData(data);
+          const transactionData = parseStandardTokenTransactionData(data);
           const tokenAmountOrTokenId = getTokenValueParam(transactionData);
           const { allCollectibles } = this.collectiblesController.state;
 

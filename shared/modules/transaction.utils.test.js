@@ -5,13 +5,13 @@ import {
   determineTransactionType,
   isEIP1559Transaction,
   isLegacyTransaction,
-  getTransactionData,
+  parseStandardTokenTransactionData,
 } from './transaction.utils';
 
 describe('Transaction.utils', function () {
-  describe('getTransactionData', () => {
+  describe('parseStandardTokenTransactionData', () => {
     it('should return token data', () => {
-      const tokenData = getTransactionData(
+      const tokenData = parseStandardTokenTransactionData(
         '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
       );
       expect(tokenData).toStrictEqual(expect.anything());
@@ -24,7 +24,7 @@ describe('Transaction.utils', function () {
     });
 
     it('should not throw errors when called without arguments', () => {
-      expect(() => getTransactionData()).not.toThrow();
+      expect(() => parseStandardTokenTransactionData()).not.toThrow();
     });
   });
   describe('isEIP1559Transaction', function () {
