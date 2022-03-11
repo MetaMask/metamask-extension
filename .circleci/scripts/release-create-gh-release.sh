@@ -40,6 +40,17 @@ function print_flask_version ()
   echo "${flask_filename:$flask_build_filename_prefix_size}"
 }
 
+function publish_flask_tag ()
+{
+    local flask_version="${1}"; shift
+
+    git config user.email "metamaskbot@users.noreply.github.com"
+    git config user.name "MetaMask Bot"
+    git tag -a "v${flask_version}" -m "Flask version ${flask_version}"
+    repo_slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+    git push "https://$GITHUB_TOKEN@github.com/$repo_slug" "v${flask_version}"
+}
+
 current_commit_msg=$(git show -s --format='%s' HEAD)
 
 if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+) ]]
@@ -60,7 +71,8 @@ then
         --message "$release_body" \
         --commitish "$CIRCLE_SHA1" \
         "$tag"
-    git tag -a "v${flask_version}" -m "Flask version ${flask_version}"
+
+    publish_flask_tag "${flask_version}"
 else
     printf '%s\n' 'Version not found in commit message; skipping GitHub Release'
     exit 0
