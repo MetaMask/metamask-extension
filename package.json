@@ -425,7 +425,8 @@
       "react-devtools>electron": true,
       "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false,
       "@metamask/iframe-execution-environment-service>@metamask/execution-environments": false,
-      "@metamask/snap-controllers>@metamask/execution-environments": false
+      "@metamask/snap-controllers>@metamask/execution-environments": false,
+      "@metamask/iframe-execution-environment-service>@metamask/snap-controllers>@metamask/execution-environments": false
     }
   }
 }
