@@ -49,6 +49,7 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { SnapController } from '@metamask/snap-controllers';
 import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
 ///: END:ONLY_INCLUDE_IN
+
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
