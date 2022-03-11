@@ -82,6 +82,12 @@
   white-space: nowrap;
 }
 
+.network-check,
+.network-check__transparent {
+  color: var(--color-overlay-inverse);
+  margin-left: 7px;
+}
+
 .network-check__transparent {
   opacity: 0;
   width: 24px;
