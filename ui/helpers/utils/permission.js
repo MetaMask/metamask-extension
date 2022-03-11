@@ -1,3 +1,4 @@
+import deepFreeze from 'deep-freeze-strict';
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -11,6 +12,56 @@ import { coinTypeToProtocolName } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+const PERMISSION_DESCRIPTIONS = deepFreeze({
+  [RestrictedMethods.eth_accounts]: {
+    label: (t) => t('permission_ethereumAccounts'),
+    leftIcon: 'fas fa-eye',
+    rightIcon: null,
+  },
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  [RestrictedMethods.snap_confirm]: {
+    label: (t) => t('permission_customConfirmation'),
+    leftIcon: 'fas fa-user-check',
+    rightIcon: null,
+  },
+  [RestrictedMethods['snap_getBip44Entropy_*']]: {
+    label: (t, permissionName) => {
+      const coinType = permissionName.split('_').slice(-1);
+      return t('permission_manageBip44Keys', [
+        coinTypeToProtocolName(coinType) ||
+          `${coinType} (Unrecognized protocol)`,
+      ]);
+    },
+    leftIcon: 'fas fa-door-open',
+    rightIcon: null,
+  },
+  [RestrictedMethods.snap_manageState]: {
+    label: (t) => t('permission_manageState'),
+    leftIcon: 'fas fa-download',
+    rightIcon: null,
+  },
+  [RestrictedMethods['wallet_snap_*']]: {
+    label: (t, permissionName) => {
+      const snapId = permissionName.split('_').slice(-1);
+      return t('permission_accessSnap', [snapId]);
+    },
+    leftIcon: 'fas fa-bolt',
+    rightIcon: null,
+  },
+  [EndowmentPermissions['endowment:network-access']]: {
+    label: (t) => t('permission_accessNetwork'),
+    leftIcon: 'fas fa-wifi',
+    rightIcon: null,
+  },
+  ///: END:ONLY_INCLUDE_IN
+  [UNKNOWN_PERMISSION]: {
+    label: (t, permissionName) =>
+      t('permission_unknown', [permissionName ?? 'undefined']),
+    leftIcon: 'fas fa-times-circle',
+    rightIcon: null,
+  },
+});
+
 /**
  * @typedef {Object} PermissionLabelObject
  * @property {string} label - The text label.
@@ -19,74 +70,23 @@ const UNKNOWN_PERMISSION = Symbol('unknown');
  */
 
 /**
- * @param {Function} t
- * @param {string} permissionName
+ * @param {Function} t - The translation function
+ * @param {string} permissionName - The name of the permission to request
  * @returns {(permissionName:string) => PermissionLabelObject}
  */
 export const getPermissionDescription = (t, permissionName) => {
-  const permissionDescriptions = {
-    [RestrictedMethods.eth_accounts]: {
-      leftIcon: 'fas fa-eye',
-      label: t('permission_ethereumAccounts'),
-      rightIcon: null,
-    },
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    [RestrictedMethods.snap_confirm]: {
-      leftIcon: 'fas fa-user-check',
-      label: t('permission_customConfirmation'),
-      rightIcon: null,
-    },
-    [RestrictedMethods['snap_getBip44Entropy_*']]: () => {
-      const coinType = permissionName.split('_').slice(-1);
-      return {
-        leftIcon: 'fas fa-door-open',
-        label: t('permission_manageBip44Keys', [
-          coinTypeToProtocolName(coinType) ||
-            `${coinType} (Unrecognized protocol)`,
-        ]),
-        rightIcon: null,
-      };
-    },
-    [RestrictedMethods.snap_manageState]: {
-      leftIcon: 'fas fa-download',
-      label: t('permission_manageState'),
-      rightIcon: null,
-    },
-    [RestrictedMethods['wallet_snap_*']]: () => {
-      const snapId = permissionName.split('_').slice(-1);
-      return {
-        leftIcon: 'fas fa-bolt',
-        label: t('permission_accessSnap', [snapId]),
-        rightIcon: null,
-      };
-    },
-    [EndowmentPermissions['endowment:network-access']]: {
-      leftIcon: 'fas fa-wifi',
-      label: t('permission_accessNetwork'),
-      rightIcon: null,
-    },
-    ///: END:ONLY_INCLUDE_IN
-    [UNKNOWN_PERMISSION]: () => {
-      return {
-        leftIcon: 'fas fa-times-circle',
-        label: t('permission_unknown', [permissionName ?? 'undefined']),
-        rightIcon: null,
-      };
-    },
-  };
+  let value = PERMISSION_DESCRIPTIONS[UNKNOWN_PERMISSION];
 
-  let value = permissionDescriptions[UNKNOWN_PERMISSION];
-
-  if (Object.hasOwnProperty.call(permissionDescriptions, permissionName)) {
-    value = permissionDescriptions[permissionName];
+  if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
+    value = PERMISSION_DESCRIPTIONS[permissionName];
   }
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   for (const namespace of Object.keys(PermissionNamespaces)) {
     if (permissionName.startsWith(namespace)) {
-      value = permissionDescriptions[PermissionNamespaces[namespace]];
+      value = PERMISSION_DESCRIPTIONS[PermissionNamespaces[namespace]];
     }
   }
   ///: END:ONLY_INCLUDE_IN
 
-  return typeof value === 'function' ? value() : value;
+  return { ...value, label: value.label(t, permissionName) };
 };
