@@ -2102,10 +2102,12 @@ export function showSendTokenPage() {
 export function buyEth(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
-    global.platform.openTab({ url });
-    dispatch({
-      type: actionConstants.BUY_ETH,
-    });
+    if (url) {
+      global.platform.openTab({ url });
+      dispatch({
+        type: actionConstants.BUY_ETH,
+      });
+    }
   };
 }
 
