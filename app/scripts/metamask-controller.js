@@ -1838,15 +1838,12 @@ export default class MetamaskController extends EventEmitter {
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
-   * @param {number[]} encodedSeedPhrase - The seed phrase, encoded as an array
-   * of UTF-8 bytes.
+   * @param {string} seed
    */
-  async createNewVaultAndRestore(password, encodedSeedPhrase) {
+  async createNewVaultAndRestore(password, seed) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       let accounts, lastBalance;
-
-      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       const { keyringController } = this;
 
@@ -1868,7 +1865,7 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(
         password,
-        seedPhraseAsBuffer,
+        seed,
       );
 
       const ethQuery = new EthQuery(this.provider);
@@ -2376,8 +2373,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
-   * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
-   * encoded as an array of UTF-8 bytes.
+   * @returns {Promise<string>} Seed phrase to be confirmed by the user.
    */
   async verifySeedPhrase() {
     const primaryKeyring = this.keyringController.getKeyringsByType(
@@ -2388,7 +2384,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const serialized = await primaryKeyring.serialize();
-    const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
+    const seedWords = serialized.mnemonic;
 
     const accounts = await primaryKeyring.getAccounts();
     if (accounts.length < 1) {
@@ -2396,8 +2392,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
-      return Array.from(seedPhraseAsBuffer.values());
+      await seedPhraseVerifier.verifyAccounts(accounts, seedWords);
+      return seedWords;
     } catch (err) {
       log.error(err.message);
       throw err;
