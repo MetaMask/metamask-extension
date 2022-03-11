@@ -2748,6 +2748,7 @@
     web3-provider-engine "^16.0.3"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@metamask/controllers@^27.0.0":
   version "27.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-27.0.0.tgz#23fb24960880047635a7e0b226375b843f385ad1"
@@ -2797,6 +2798,12 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.4.1.tgz#e42ac76894c0e804e1b33088921512d07e6cfc9c"
   integrity sha512-FMcLQ6hL8Fv1Oddpj8q+3m0WnjtAe+F+/3IpzMlSwXB/NGnKwrLZfa5cS1KbdvVk7kvM/h1Zf+vjfeLg4NVWyw==
+>>>>>>> bump @metamask/design-tokens
+=======
+"@metamask/design-tokens@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.4.2.tgz#023030f3eca181b10bf89c5813a9656f4e7e2852"
+  integrity sha512-kS63Tx+WOUloBTz4pDDG3DcisoXwaT+06/a2KTSDI0n1t3IQPLo1FCMsijqtYWFPfAI06tWOjtaslpFTB+dsAg==
 >>>>>>> bump @metamask/design-tokens
 
 "@metamask/eslint-config-jest@^9.0.0":
