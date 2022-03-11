@@ -7,11 +7,7 @@ import {
   PRIORITY_LEVELS,
 } from '../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
-import {
-  bnGreaterThan,
-  bnLessThan,
-  roundToDecimalPlacesRemovingExtraZeroes,
-} from '../../../../../helpers/utils/util';
+import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -23,7 +19,6 @@ import FormField from '../../../../ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { renderFeeRange } from '../utils';
 
 const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {
@@ -133,12 +128,9 @@ const BaseFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={`${roundToDecimalPlacesRemovingExtraZeroes(
-          estimatedBaseFee,
-          2,
-        )} GWEI`}
-        historical={renderFeeRange(historicalBaseFeeRange)}
-        feeTrend={baseFeeTrend}
+        latest={estimatedBaseFee}
+        historical={historicalBaseFeeRange}
+        trend={baseFeeTrend}
       />
     </Box>
   );
