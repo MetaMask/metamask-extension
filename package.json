@@ -126,7 +126,7 @@
     "@metamask/rpc-methods": "^0.10.0",
     "@metamask/slip44": "^2.0.0",
     "@metamask/smart-transactions-controller": "^1.9.1",
-    "@metamask/snap-controllers": "^0.10.0",
+    "@metamask/snap-controllers": "^0.10.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
@@ -424,7 +424,8 @@
       "geckodriver": true,
       "react-devtools>electron": true,
       "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false,
-      "@metamask/iframe-execution-environment-service>@metamask/execution-environments": false
+      "@metamask/iframe-execution-environment-service>@metamask/execution-environments": false,
+      "@metamask/snap-controllers>@metamask/execution-environments": false
     }
   }
 }

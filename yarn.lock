@@ -2811,15 +2811,15 @@
   resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-2.1.0.tgz#c0be8e68445b7b83cf85bcc03a56cdf8e256c973"
   integrity sha512-ADuWlTUkFfN2vXlz81Bg/0BA+XRor+CdK1055p6k7H6BLIPoDKn9SBOFld9haQFuR9cKh/JYHcnlSIv5R4fUEw==
 
-"@metamask/execution-environments@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.10.0.tgz#66dc91648c715dc190533c044477c5c69a5c03c6"
-  integrity sha512-/LGCjyRoDcRWG4K83gR27jaHj0xj0YkxSCsWA3F4WNwu3WKK3FRGpQJFsnWUyegtM0OGNUjIJDN0YVjGxtFRxA==
+"@metamask/execution-environments@^0.10.0", "@metamask/execution-environments@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.10.1.tgz#4fc7f369c4a1eff98336efb5fb6a4f4f7339e972"
+  integrity sha512-oSLp65Hwa1kMK78xkZAknlyEMlVprFWcPg7V7IVpujhlXv+PnwVD6LwgdT1bTc9ixzXOzxqaKuVj7ywh9u2kag==
   dependencies:
-    "@metamask/inpage-provider" "^8.1.0"
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/post-message-stream" "^4.0.0"
-    "@metamask/snap-types" "^0.10.0"
+    "@metamask/providers" "^8.1.1"
+    "@metamask/snap-types" "^0.10.1"
     cross-fetch "^3.1.5"
     eth-rpc-errors "^4.0.3"
     pump "^3.0.0"
@@ -2987,13 +2987,13 @@
     isomorphic-fetch "^3.0.0"
     lodash "^4.17.21"
 
-"@metamask/snap-controllers@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.10.0.tgz#b2a5da457449ad7de2958ff86f4dda92b2bbec18"
-  integrity sha512-g7QGp/p2oAn0Ll26xAERt+8xEf/ZITEioJmZsQTrVeuMUFBUn9FYFKpXK5keKRZx2PhqkHdhcHXEn1ZCIA0ChQ==
+"@metamask/snap-controllers@^0.10.0", "@metamask/snap-controllers@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.10.1.tgz#06b3045f8746274eea9841dd584fb80fcbe5edc9"
+  integrity sha512-MR41ZVxLPhzijh/iwKrkLPRHukcq550waK+dAHtCSCmIM57AfhNSAOtkZUwAGvdGSlPoTEhlX/iyvkrTv1+M5Q==
   dependencies:
     "@metamask/controllers" "^26.0.0"
-    "@metamask/execution-environments" "^0.10.0"
+    "@metamask/execution-environments" "^0.10.1"
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^7.0.0"
     "@metamask/post-message-stream" "4.0.0"
@@ -3016,10 +3016,10 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
-"@metamask/snap-types@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.10.0.tgz#98fd5078385a3d618a9002ab24b5758bca5862b5"
-  integrity sha512-kYgVYFW0a0T/8BbDvdZgggvMEDUBlWZfA3/B96DxUXE4hHz2CwAIYj1WbFFUlj32dN+Y4a2QVtFC3q7nWdofLQ==
+"@metamask/snap-types@^0.10.0", "@metamask/snap-types@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.10.1.tgz#dd170813d38091473f9ae1fd1e9d64c46666ba0c"
+  integrity sha512-DsTAMSNmVWH/wXL4OWvnI4Wxh247d7PPD0jjxlMC3hEKB6hSdbCW3umwxqBCxgrU18gJOGwNJMygTolxO0SUrA==
   dependencies:
     "@metamask/controllers" "^26.0.0"
 
@@ -19755,11 +19755,6 @@ node-fetch@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
   integrity sha1-q4hOjn5X44qUR1POxwb3iNF2i7U=
-
-node-fetch@2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
-  integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
 node-fetch@2.6.7, node-fetch@^2.3.0, node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@~2.6.1:
   version "2.6.7"
