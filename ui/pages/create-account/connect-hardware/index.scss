@@ -178,11 +178,11 @@
   }
 
   &__item:nth-of-type(even) {
-    background-color: #fbfbfb;
+    background-color: var(--color-background-default);
   }
 
   &__item:nth-of-type(odd) {
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--color-background-alternative);
   }
 
   &__item:hover {
@@ -236,10 +236,10 @@
   &__button {
     @include H6;
 
-    background: #fff;
+    background: var(--color-background-default);
     height: 19px;
     display: flex;
-    color: #33a4e7;
+    color: var(--color-primary-default);
     border: none;
     min-width: 46px;
     margin-right: 0;
@@ -292,7 +292,7 @@
   a {
     @include H6;
 
-    color: #2f9ae0;
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 }
