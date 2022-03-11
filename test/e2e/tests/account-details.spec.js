@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const LoginPage = require('../page-objects/login.page');
+const AccountDetailsMenu = require('../components/account-details-menu');
 
 describe('Show account details', function () {
   const ganacheOptions = {
@@ -20,18 +21,17 @@ describe('Show account details', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
+        // Page Objects and Components
         const loginPage = new LoginPage(driver);
+        const accountDetailsMenu = new AccountDetailsMenu(driver);
+
+        // Actions and Assertions
         await driver.navigate();
-        await loginPage.unlock('correct horse battery staple');
+        await loginPage.unlock();
+        await accountDetailsMenu.openMenu();
+        await accountDetailsMenu.seeAccountDetails();
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
-        );
-
-        const qrCode = await driver.findElement('.qr-code__wrapper');
+        const qrCode = await accountDetailsMenu.getQrCode();
         assert.equal(await qrCode.isDisplayed(), true);
       },
     );

@@ -1,5 +1,6 @@
 class SettingsMenu {
   constructor(driver) {
+    // Selectors
     this.driver = driver;
     this.btnGeneral = { text: 'General' };
     this.btnAdvanced = { text: 'Advanced' };
@@ -11,6 +12,7 @@ class SettingsMenu {
     this.btnAbout = { text: 'About' };
   }
 
+  // Methods
   async goToGeneral() {
     await this.driver.clickElement(this.btnGeneral);
   }
