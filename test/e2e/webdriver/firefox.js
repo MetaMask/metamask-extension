@@ -4,7 +4,8 @@ const path = require('path');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const proxy = require('selenium-webdriver/proxy');
-const { version } = require('../../../package.json');
+const { getVersion } = require('../../../development/lib/get-version');
+const { BuildType } = require('../../../development/lib/build-type');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -49,6 +50,7 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
+    const version = getVersion(type || BuildType.main, 0);
     let extensionString = `builds/metamask-firefox-${version}.zip`;
 
     if (type) {
