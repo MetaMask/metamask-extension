@@ -76,6 +76,14 @@ export const TEST_CHAINS = [
   LOCALHOST_CHAIN_ID,
 ];
 
+export const NETWORKS_FOR_BUYING_TOKENS = [
+  MAINNET_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+  FANTOM_CHAIN_ID,
+  CELO_CHAIN_ID,
+];
+
 /**
  * Map of all build-in Infura networks to their network and chain IDs.
  */

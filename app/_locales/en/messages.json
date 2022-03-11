@@ -420,7 +420,8 @@
     "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyEth": {
-    "message": "Buy ETH"
+    "message": "Buy $1",
+    "description": "$1 represents currency for the current network"
   },
   "buyOther": {
     "message": "Buy $1 or deposit from another account.",

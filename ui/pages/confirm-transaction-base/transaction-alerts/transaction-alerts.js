@@ -12,7 +12,7 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { NETWORKS_FOR_BUYING_TOKENS } from '../../../../shared/constants/network';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -97,7 +97,7 @@ const TransactionAlerts = ({
         />
       )}
       {balanceError &&
-      chainId === MAINNET_CHAIN_ID &&
+      NETWORKS_FOR_BUYING_TOKENS.indexOf(chainId) !== -1 &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
@@ -109,7 +109,7 @@ const TransactionAlerts = ({
                 className="transaction-alerts__link"
                 onClick={showBuyModal}
               >
-                {t('buyEth')}
+                {t('buyEth', [nativeCurrency])}
               </Button>{' '}
               {t('orDeposit')}
             </Typography>
@@ -120,7 +120,7 @@ const TransactionAlerts = ({
         />
       ) : null}
       {balanceError &&
-      chainId !== MAINNET_CHAIN_ID &&
+      NETWORKS_FOR_BUYING_TOKENS.indexOf(chainId) === -1 &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"

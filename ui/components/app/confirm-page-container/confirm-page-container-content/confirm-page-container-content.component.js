@@ -10,7 +10,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
+import { NETWORKS_FOR_BUYING_TOKENS } from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -197,22 +197,14 @@ export default class ConfirmPageContainerContent extends Component {
           )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
-            {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
+            {NETWORKS_FOR_BUYING_TOKENS.indexOf(currentTransaction.chainId) ===
+            -1 ? (
               <ActionableMessage
                 className="actionable-message--warning"
                 message={
                   <Typography variant={TYPOGRAPHY.H7} align="left">
                     {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    <Button
-                      key="link"
-                      type="secondary"
-                      className="confirm-page-container-content__link"
-                      onClick={showBuyModal}
-                    >
-                      {t('buyEth')}
-                    </Button>
-
-                    {t('orDeposit')}
+                    {t('buyOther', [nativeCurrency])}
                   </Typography>
                 }
                 useIcon
@@ -225,7 +217,16 @@ export default class ConfirmPageContainerContent extends Component {
                 message={
                   <Typography variant={TYPOGRAPHY.H7} align="left">
                     {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    {t('buyOther', [nativeCurrency])}
+                    <Button
+                      key="link"
+                      type="secondary"
+                      className="confirm-page-container-content__link"
+                      onClick={showBuyModal}
+                    >
+                      {t('buyEth', [nativeCurrency])}
+                    </Button>
+
+                    {t('orDeposit')}
                   </Typography>
                 }
                 useIcon
