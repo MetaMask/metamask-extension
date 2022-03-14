@@ -589,7 +589,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.3.1',
+        'https://metamask.github.io/iframe-execution-environment/0.4.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -607,6 +607,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:getEndowments`,
         `${this.permissionController.name}:getPermissions`,
         `${this.permissionController.name}:hasPermission`,
+        `${this.permissionController.name}:hasPermissions`,
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
       ],
