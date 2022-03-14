@@ -13,11 +13,6 @@ import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
 
-const numberOfWordsOptions = [];
-for (let i = 12; i <= 24; i += 3) {
-  numberOfWordsOptions.push({ name: `${i}`, value: `${i}` });
-}
-
 const defaultNumberOfWords = 12;
 
 export default function SrpInput({ onChange }) {
@@ -109,6 +104,14 @@ export default function SrpInput({ onChange }) {
     },
     [numberOfWords, onSrpChange, setPasteFailed],
   );
+
+  const numberOfWordsOptions = [];
+  for (let i = 12; i <= 24; i += 3) {
+    numberOfWordsOptions.push({
+      name: t('srpInputNumberOfWords', [`${i}`]),
+      value: `${i}`,
+    });
+  }
 
   return (
     <div className="import-srp__container">
