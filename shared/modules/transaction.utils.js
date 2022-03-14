@@ -176,24 +176,22 @@ export async function determineTransactionAssetType(
   ].find((methodName) => isEqualCaseInsensitive(methodName, inferrableType));
 
   if (isTokenMethod) {
-    let details;
     try {
-      details = await getTokenStandardAndDetails(
+      const details = await getTokenStandardAndDetails(
         txMeta.txParams.to,
         txMeta.txParams.from,
       );
+      if (details.standard) {
+        return {
+          assetType:
+            details.standard === TOKEN_STANDARDS.ERC20
+              ? ASSET_TYPES.TOKEN
+              : ASSET_TYPES.COLLECTIBLE,
+          tokenStandard: details.standard,
+        };
+      }
     } catch {
       // noop
-    }
-
-    if (details.standard) {
-      return {
-        assetType:
-          details.standard === TOKEN_STANDARDS.ERC20
-            ? ASSET_TYPES.TOKEN
-            : ASSET_TYPES.COLLECTIBLE,
-        tokenStandard: details.standard,
-      };
     }
   }
 
