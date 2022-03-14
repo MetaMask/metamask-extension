@@ -21,4 +21,7 @@ export const PermissionNamespaces = Object.freeze({
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
 });
+
+// Methods / permissions in external packages that we are temporarily excluding.
+export const ExcludedSnapPermissions = new Set(['snap_notify']);
 ///: END:ONLY_INCLUDE_IN
