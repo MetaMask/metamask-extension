@@ -2769,6 +2769,10 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found"
   },
+  "shorthandVersion": {
+    "message": "v$1",
+    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
+  },
   "show": {
     "message": "Show"
   },

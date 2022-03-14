@@ -5,12 +5,24 @@ import Box from '../../ui/box';
 import {
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  COLORS,
+  TYPOGRAPHY,
+  TEXT_ALIGN,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
+import Typography from '../../ui/typography';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   static propTypes = {
     iconUrl: PropTypes.string,
     iconName: PropTypes.string.isRequired,
@@ -20,6 +32,7 @@ export default class PermissionsConnectHeader extends Component {
     headerText: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     npmPackageName: PropTypes.string,
+    snapVersion: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -47,10 +60,12 @@ export default class PermissionsConnectHeader extends Component {
       headerText,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       npmPackageName,
+      snapVersion,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const npmPackageUrl = `https://www.npmjs.com/package/${npmPackageName}`;
+    const { t } = this.context;
     ///: END:ONLY_INCLUDE_IN
     return (
       <Box
@@ -69,6 +84,24 @@ export default class PermissionsConnectHeader extends Component {
               url={npmPackageUrl}
             />
           ) : null
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          snapVersion && (
+            <Typography
+              boxProps={{
+                margin: [2, 0],
+              }}
+              color={COLORS.TEXT_MUTED}
+              variant={TYPOGRAPHY.H7}
+              align={TEXT_ALIGN.CENTER}
+              tag="span"
+              className="version"
+            >
+              {t('shorthandVersion', [snapVersion])}
+            </Typography>
+          )
           ///: END:ONLY_INCLUDE_IN
         }
         <div className="permissions-connect-header__subtitle">{headerText}</div>
