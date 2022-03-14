@@ -1,7 +1,6 @@
 import { useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
-import { MetaMetricsContext } from '../contexts/metametrics';
 import { MetaMetricsContext as NewMetaMetricsContext } from '../contexts/metametrics.new';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
@@ -12,16 +11,6 @@ import { useEqualityCheck } from './useEqualityCheck';
  * @typedef {import('../contexts/metametrics.new').UIMetricsEventPayload} UIMetricsEventPayload
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
  */
-
-export function useMetricEvent(config = {}, overrides = {}) {
-  const metricsEvent = useContext(MetaMetricsContext);
-  const trackEvent = useCallback(() => metricsEvent(config, overrides), [
-    config,
-    metricsEvent,
-    overrides,
-  ]);
-  return trackEvent;
-}
 
 /**
  * track a metametrics event using segment
