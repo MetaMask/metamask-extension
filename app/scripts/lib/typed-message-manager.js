@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
-import { ethErrors } from 'eth-rpc-errors';
+import { errorCodes, EthereumProviderError, ethErrors } from 'eth-rpc-errors';
 import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util';
 import log from 'loglevel';
 import jsonschema from 'jsonschema';
@@ -192,11 +192,18 @@ export default class TypedMessageManager extends EventEmitter {
           data.primaryType in data.types,
           `Primary type of "${data.primaryType}" has no type definition.`,
         );
-        assert.equal(
-          validation.errors.length,
-          0,
-          'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
-        );
+        if (validation.errors.length !== 0) {
+          throw new EthereumProviderError(
+            4009,
+            'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
+            validation.errors.map((v) => v.message.toString()),
+          );
+        }
+        // assert.equal(
+        //   validation.errors.length,
+        //   0,
+        //   `Signing data must conform to EIP-712 schema. See https://git.io/fNtcx. \n Errors: ${validation.errors.join('\n')}`,
+        // );
         let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);
