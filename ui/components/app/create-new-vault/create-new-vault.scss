@@ -2,6 +2,11 @@
   &__form {
     display: flex;
     flex-direction: column;
+  }
+
+  &__create-password {
+    display: flex;
+    flex-direction: column;
     width: 360px;
   }
 

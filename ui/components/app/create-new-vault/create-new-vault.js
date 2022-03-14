@@ -108,28 +108,30 @@ export default function CreateNewVault({
   return (
     <form className="create-new-vault__form" onSubmit={onImport}>
       <SrpInput onChange={setSeedPhrase} />
-      <TextField
-        id="password"
-        label={t('newPassword')}
-        type="password"
-        value={password}
-        onChange={(event) => onPasswordChange(event.target.value)}
-        error={passwordError}
-        autoComplete="new-password"
-        margin="normal"
-        largeLabel
-      />
-      <TextField
-        id="confirm-password"
-        label={t('confirmPassword')}
-        type="password"
-        value={confirmPassword}
-        onChange={(event) => onConfirmPasswordChange(event.target.value)}
-        error={confirmPasswordError}
-        autoComplete="new-password"
-        margin="normal"
-        largeLabel
-      />
+      <div className="create-new-vault__create-password">
+        <TextField
+          id="password"
+          label={t('newPassword')}
+          type="password"
+          value={password}
+          onChange={(event) => onPasswordChange(event.target.value)}
+          error={passwordError}
+          autoComplete="new-password"
+          margin="normal"
+          largeLabel
+        />
+        <TextField
+          id="confirm-password"
+          label={t('confirmPassword')}
+          type="password"
+          value={confirmPassword}
+          onChange={(event) => onConfirmPasswordChange(event.target.value)}
+          error={confirmPasswordError}
+          autoComplete="new-password"
+          margin="normal"
+          largeLabel
+        />
+      </div>
       {includeTerms ? (
         <div className="create-new-vault__terms">
           <CheckBox
