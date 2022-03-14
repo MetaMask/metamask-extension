@@ -695,6 +695,7 @@
     },
     "@metamask/rpc-methods": {
       "packages": {
+        "@metamask/controllers": true,
         "@metamask/key-tree": true,
         "@metamask/snap-controllers": true,
         "eth-rpc-errors": true
@@ -734,25 +735,23 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/controllers": true,
+        "@metamask/execution-environments": true,
         "@metamask/object-multiplex": true,
         "@metamask/obs-store": true,
         "@metamask/post-message-stream": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snap-workers": true,
         "ajv": true,
         "buffer": true,
         "concat-stream": true,
+        "cross-fetch": true,
         "crypto-browserify": true,
-        "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "fast-deep-equal": true,
         "gunzip-maybe": true,
-        "immer": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "nanoid": true,
