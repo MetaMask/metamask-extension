@@ -75,6 +75,7 @@ export default function SnapInstall({
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={targetSubjectMetadata.origin}
           npmPackageName={npmId}
+          snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
         <Typography></Typography>
