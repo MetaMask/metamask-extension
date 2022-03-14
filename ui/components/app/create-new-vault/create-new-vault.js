@@ -107,9 +107,7 @@ export default function CreateNewVault({
 
   return (
     <form className="create-new-vault__form" onSubmit={onImport}>
-      <div className="create-new-vault__srp-section">
-        <SrpInput onChange={setSeedPhrase} />
-      </div>
+      <SrpInput onChange={setSeedPhrase} />
       <TextField
         id="password"
         label={t('newPassword')}
