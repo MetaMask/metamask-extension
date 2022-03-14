@@ -469,8 +469,11 @@ function setupController(initState, initLangCode) {
     if (count) {
       label = String(count);
     }
-    extension.browserAction.setBadgeText({ text: label });
-    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+
+    extension.action.setBadgeText({ text: label });
+    extension.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    // extension.browserAction.setBadgeText({ text: label });
+    // extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
   }
 
   function getUnapprovedTransactionCount() {
