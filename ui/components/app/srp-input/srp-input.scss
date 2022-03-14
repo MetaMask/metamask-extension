@@ -11,8 +11,12 @@
   }
 
   &__srp-label {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
     grid-area: title;
+  }
+
+  &__number-of-words-dropdown {
+    margin-bottom: 16px;
   }
 
   &__srp {
