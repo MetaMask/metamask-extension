@@ -17,6 +17,12 @@ import Typography from '../../ui/typography';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   static propTypes = {
     iconUrl: PropTypes.string,
     iconName: PropTypes.string.isRequired,
@@ -59,6 +65,7 @@ export default class PermissionsConnectHeader extends Component {
     } = this.props;
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const npmPackageUrl = `https://www.npmjs.com/package/${npmPackageName}`;
+    const { t } = this.context;
     ///: END:ONLY_INCLUDE_IN
     return (
       <Box
@@ -92,7 +99,7 @@ export default class PermissionsConnectHeader extends Component {
               tag="span"
               className="version"
             >
-              v{snapVersion}
+              {t('shorthandVersion', [snapVersion])}
             </Typography>
           )
           ///: END:ONLY_INCLUDE_IN
