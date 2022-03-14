@@ -78,14 +78,15 @@ export default function SnapInstall({
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
-        <Typography></Typography>
-        <Box
-          className="snap-requests-permission"
-          padding={4}
-          tag={TYPOGRAPHY.H7}
+        <Typography
+          boxProps={{
+            padding: [4, 4, 0, 4],
+          }}
+          variant={TYPOGRAPHY.H7}
+          tag="span"
         >
-          <span>{t('snapRequestsPermission')}</span>
-        </Box>
+          {t('snapRequestsPermission')}
+        </Typography>
         <PermissionsConnectPermissionList
           permissions={request.permissions || {}}
         />
@@ -150,5 +151,6 @@ SnapInstall.propTypes = {
     name: PropTypes.string,
     origin: PropTypes.string.isRequired,
     sourceCode: PropTypes.string,
+    version: PropTypes.string,
   }).isRequired,
 };
