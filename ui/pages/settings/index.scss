@@ -89,7 +89,7 @@
           padding: 16px;
           border-top: 1px solid var(--ui-2);
           cursor: pointer;
-          grid-template-columns: 16px minmax(20px, max-content) 8px auto;
+          grid-template-columns: 16px max-content 24px auto;
           gap: 8px;
 
           &__icon {
@@ -108,28 +108,13 @@
             color: var(--ui-4);
           }
 
-          &__tab-multiple-lines {
-            @media screen and (max-width: $break-small) {
-              width: 90px;
-            }
-          }
-
           &__section-multiple-lines {
             @media screen and (max-width: $break-small) {
-              width: 170px;
               margin-left: 10px;
             }
           }
 
           &__caret {
-            background-image: url('/images/caret-right.svg');
-            width: 8px;
-            height: 10px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            margin: 0 4px;
-
             [dir='rtl'] & {
               transform: rotate(180deg);
             }

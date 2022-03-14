@@ -45,7 +45,7 @@ const SnapListTab = () => {
             </Typography>
             <Typography
               variant={TYPOGRAPHY.H6}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               marginBottom={2}
             >
               {t('manageSnaps')}
@@ -82,7 +82,7 @@ const SnapListTab = () => {
           justifyContent={JUSTIFY_CONTENT.CENTER}
           alignItems={ALIGN_ITEMS.CENTER}
         >
-          <Typography variant={TYPOGRAPHY.H4} color={COLORS.UI4}>
+          <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_ALTERNATIVE}>
             <span>{t('noSnaps')}</span>
           </Typography>
         </Box>

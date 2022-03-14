@@ -17,7 +17,6 @@ ul.two-steps {
   font-size: 12px;
   position: relative;
   text-align: center;
-  text-transform: uppercase;
   color: #7d7d7d;
   z-index: 2;
 }
@@ -84,7 +83,7 @@ ul.two-steps {
   }
 }
 
-.progressbar li.active + li::after {
+.progressbar li.complete + li::after {
   background-color: var(--primary-blue);
   z-index: -1;
 

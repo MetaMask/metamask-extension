@@ -83,7 +83,7 @@ export default function CollectiblesTab({ onAddNFT }) {
             className="collectibles-tab__link"
           >
             <Typography
-              color={COLORS.UI3}
+              color={COLORS.TEXT_MUTED}
               variant={TYPOGRAPHY.H4}
               align={TEXT_ALIGN.CENTER}
               fontWeight={FONT_WEIGHT.BOLD}
@@ -107,7 +107,7 @@ export default function CollectiblesTab({ onAddNFT }) {
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Typography
-          color={COLORS.UI3}
+          color={COLORS.TEXT_MUTED}
           variant={TYPOGRAPHY.H5}
           align={TEXT_ALIGN.CENTER}
         >
@@ -134,7 +134,7 @@ export default function CollectiblesTab({ onAddNFT }) {
                 )}
               </Box>
               <Typography
-                color={COLORS.UI3}
+                color={COLORS.TEXT_MUTED}
                 variant={TYPOGRAPHY.H6}
                 align={TEXT_ALIGN.CENTER}
               >

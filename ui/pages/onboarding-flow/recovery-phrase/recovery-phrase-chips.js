@@ -21,6 +21,7 @@ export default function RecoveryPhraseChips({
   setInputValue,
   inputValue,
   indicesToCheck,
+  hiddenPhrase,
 }) {
   const t = useI18nContext();
   const hideSeedPhrase = phraseRevealed === false;
@@ -83,14 +84,18 @@ export default function RecoveryPhraseChips({
 
       {hideSeedPhrase && (
         <div className="recovery-phrase__secret-blocker">
-          <i className="far fa-eye-slash" color="white" />
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.WHITE}
-            className="recovery-phrase__secret-blocker--text"
-          >
-            {t('makeSureNoOneWatching')}
-          </Typography>
+          {!hiddenPhrase && (
+            <>
+              <i className="far fa-eye" color="white" />
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.OVERLAY_INVERSE}
+                className="recovery-phrase__secret-blocker--text"
+              >
+                {t('makeSureNoOneWatching')}
+              </Typography>
+            </>
+          )}
         </div>
       )}
     </Box>
@@ -104,4 +109,5 @@ RecoveryPhraseChips.propTypes = {
   setInputValue: PropTypes.func,
   inputValue: PropTypes.string,
   indicesToCheck: PropTypes.array,
+  hiddenPhrase: PropTypes.bool,
 };

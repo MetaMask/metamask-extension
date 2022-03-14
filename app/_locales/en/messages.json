@@ -58,6 +58,10 @@
     "message": "$1 may access and spend up to this max amount",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 may access and spend this asset",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -278,6 +282,9 @@
   },
   "approvedAmountWithColon": {
     "message": "Approved amount:"
+  },
+  "approvedAsset": {
+    "message": "Approved asset"
   },
   "areYouDeveloper": {
     "message": "Are you a developer?"
@@ -848,6 +855,9 @@
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
+  "downArrow": {
+    "message": "down arrow"
+  },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
@@ -1412,6 +1422,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideSeedPhrase": {
+    "message": "Hide seed phrase"
+  },
   "hideToken": {
     "message": "Hide token"
   },
@@ -1683,6 +1696,9 @@
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
+  },
+  "levelArrow": {
+    "message": "level arrow"
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
@@ -2356,6 +2372,9 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pleaseConfirm": {
+    "message": "Please confirm"
+  },
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -2497,6 +2516,10 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
+  "removeSnapConfirmation": {
+    "message": "Are you sure you want to remove $1?",
+    "description": "$1 represents the name of the snap"
+  },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
   },
@@ -2554,6 +2577,9 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DO NOT share this phrase with anyone!"
+  },
+  "revealTheSeedPhrase": {
+    "message": "Reveal seed phrase"
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -3692,6 +3718,9 @@
   },
   "unverifiedContractAddressMessage": {
     "message": "We cannot verify this contract. Make sure you trust this address."
+  },
+  "upArrow": {
+    "message": "up arrow"
   },
   "updatedWithDate": {
     "message": "Updated $1"
