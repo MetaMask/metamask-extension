@@ -9,8 +9,11 @@ import {
   ETH_SYMBOL,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
-import { TRANSAK_API_KEY } from '../constants/on-ramp';
-import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
+import { TRANSAK_API_KEY, MOONPAY_API_KEY } from '../constants/on-ramp';
+import {
+  SWAPS_API_V2_BASE_URL,
+  SWAPS_DEV_API_V2_BASE_URL,
+} from '../../../shared/constants/swaps';
 import getBuyUrl from './buy-url';
 
 const WYRE_ACCOUNT_ID = 'AC-7AG3W4XH4N2';
@@ -113,5 +116,37 @@ describe('buy-url', () => {
   it('returns kovan github test faucet for network 42', async () => {
     const kovanUrl = await getBuyUrl(KOVAN);
     expect(kovanUrl).toStrictEqual('https://github.com/kovan-testnet/faucet');
+  });
+
+  it('returns a MoonPay url with a prefilled wallet address for the Ethereum network', async () => {
+    const {
+      moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {},
+    } = BUYABLE_CHAINS_MAP[MAINNET.chainId];
+    const moonPayQueryParams = new URLSearchParams({
+      apiKey: MOONPAY_API_KEY,
+      walletAddress: MAINNET.address,
+      defaultCurrencyCode,
+      showOnlyCurrencies,
+    });
+    const queryParams = new URLSearchParams({
+      url: `https://buy-sandbox.moonpay.com?${moonPayQueryParams}`,
+      // url: `https://buy.moonpay.com?${moonPayQueryParams}`, TODO: Use this line once prod is enabled.
+      context: 'extension',
+    });
+    nock(SWAPS_DEV_API_V2_BASE_URL) // TODO: Use a prod URL once it's enabled.
+      .get(`/moonpaySign/?${queryParams}`)
+      .reply(200, {
+        url: `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=eth%2Cusdt%2Cusdc%2Cdai&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
+      });
+    const moonPayUrl = await getBuyUrl({ ...MAINNET, service: 'moonpay' });
+    expect(moonPayUrl).toStrictEqual(
+      `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=eth%2Cusdt%2Cusdc%2Cdai&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
+    );
+    nock.cleanAll();
+  });
+
+  it('returns an empty string if generating a MoonPay url fails', async () => {
+    const moonPayUrl = await getBuyUrl({ ...MAINNET, service: 'moonpay' });
+    expect(moonPayUrl).toStrictEqual('');
   });
 });
