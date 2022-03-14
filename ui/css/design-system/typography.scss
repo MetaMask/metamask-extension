@@ -68,7 +68,55 @@ $fa-font-path: 'fonts/fontawesome';
   src: url('fonts/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
 }
 
-$font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 100;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Thin.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 300;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 400;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 500;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 700;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 800;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Rounded';
+  font-style: italic;
+  font-weight: 900;
+  src: url('fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Black.ttf') format('truetype');
+}
+
+$font-family:Rounded,Euclid, Roboto, Helvetica, Arial, sans-serif;
 
 $typography-variants: (
   'h1': 2.5rem,
@@ -141,4 +189,14 @@ $font-size-h9: map-get($typography-variants, 'h9');
 
 @mixin H9 {
   @include typography('h9');
+}
+
+@mixin roundeNormal{
+  font-family: Rounded;
+  font-weight: 400;
+}
+
+@mixin roundeBold{
+  font-family: Rounded;
+  font-weight: 700;
 }

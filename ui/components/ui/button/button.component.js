@@ -11,11 +11,17 @@ const CLASSNAME_LARGE = 'btn--large';
 const CLASSNAME_ROUNDED = 'btn--rounded';
 const CLASSNAME_FIRST_TIME = 'btn--first-time';
 const CLASSNAME_INLINE = 'btn--inline';
+const CLASSNAME_CANCEL = 'btn-cancel';
+//add linear gradient button
+const CLASSNAME_PRIMARY_GRADIENT = 'btn-primary-gradient';
+const CLASSNAME_SECONDARY_GRADIENT = 'btn-secondary-gradient';
 
 const typeHash = {
   default: CLASSNAME_DEFAULT,
   primary: CLASSNAME_PRIMARY,
   secondary: CLASSNAME_SECONDARY,
+  primaryGradient: CLASSNAME_PRIMARY_GRADIENT,
+  secondaryGradient: CLASSNAME_SECONDARY_GRADIENT,
   warning: 'btn-warning',
   danger: 'btn-danger',
   'danger-primary': 'btn-danger-primary',
@@ -25,6 +31,7 @@ const typeHash = {
   confirm: CLASSNAME_CONFIRM,
   raised: CLASSNAME_RAISED,
   'first-time': CLASSNAME_FIRST_TIME,
+  cancel: CLASSNAME_CANCEL,
 };
 
 const Button = ({

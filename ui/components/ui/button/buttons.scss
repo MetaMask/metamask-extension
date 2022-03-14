@@ -10,7 +10,11 @@
   --hover-red-primary: #c72837;
   --hover-orange: #ffd3b5;
   --warning-light-orange: #f8b588;
-
+  --primary-gradient:linear-gradient(91.07deg, #227BFF 4.72%, #451DFF 73%);
+  --primary-gradient-active:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(91.07deg, #227BFF 4.72%, #451DFF 73%);
+  --secondary-gradient: linear-gradient(111.99deg, #451DFF 9.4%, #FF1D7C 92.26%);
+  --secondary-gradient-active:linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(111.99deg, #451DFF 9.4%, #FF1D7C 92.26%);
+  
   @include H6;
 
   font-weight: 500;
@@ -49,6 +53,27 @@
   &:active {
     background: var(--Blue-000);
     border-color: var(--Blue-500);
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
+    color: var(--hover-secondary);
+  }
+}
+
+.btn-secondary-gradient {
+  color: var(--white);
+  background: var(--secondary-gradient);
+  border-radius: 20px;
+  &:hover {
+    // border-color: var(--Blue-500);
+
+  }
+
+  &:active {
+    background: var(--secondary-gradient-active);
+    // border-color: var(--Blue-500);
   }
 
   &--disabled,
@@ -164,6 +189,25 @@
     background-color: var(--hover-secondary);
   }
 }
+.btn-primary-gradient{
+  color: var(--white);
+  background: var(--primary-gradient);
+
+  &:hover {
+    // border-color: var(--hover-confirm);
+  }
+
+  &:active {
+   background: var(--primary-gradient-active);
+    // border-color: var(--Blue-600);
+  }
+
+  &--disabled,
+  &[disabled] {
+    border-color: var(--hover-secondary);
+    background-color: var(--hover-secondary);
+  }
+}
 
 .btn-link {
   @include H4;
@@ -228,7 +272,7 @@ input[type="submit"][disabled] {
 }
 
 .btn--rounded {
-  border-radius: 100px;
+  border-radius: 20px;
   will-change: box-shadow;
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
 
@@ -341,6 +385,26 @@ input[type="submit"][disabled] {
     cursor: auto;
     opacity: 1;
     pointer-events: none;
+    color: var(--hover-secondary);
+  }
+}
+
+.btn-cancel {
+  color: var(--white);
+  background-color: var(--gray-3);
+
+  &:hover {
+    // border-color: var(--Blue-500);
+  }
+
+  &:active {
+    // background: var(--Blue-000);
+    // border-color: var(--Blue-500);
+  }
+
+  &--disabled,
+  &[disabled] {
+    opacity: 1;
     color: var(--hover-secondary);
   }
 }
