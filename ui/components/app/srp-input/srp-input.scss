@@ -4,6 +4,12 @@
     grid-template-areas: "title dropdown" "input input" "error error";
   }
 
+  @media (max-width: 767px) {
+    &__container {
+      grid-template-areas: "title" "dropdown" "input" "error";
+    }
+  }
+
   &__srp-label {
     margin-bottom: 8px;
     grid-area: title;
@@ -15,8 +21,20 @@
     grid-area: input;
   }
 
+  @media (max-width: 767px) {
+    &__srp {
+      grid-template-columns: 1fr;
+    }
+  }
+
   &__srp-word {
     display: flex;
+    align-items: center;
+    margin: 8px;
+  }
+
+  &__srp-word-label {
+    width: 2em;
   }
 
   &__srp-error {

@@ -150,7 +150,7 @@ export default function SrpInput({ onChange }) {
           const id = `import-srp__srp-word-${index}`;
           return (
             <div key={index} className="import-srp__srp-word">
-              <label htmlFor={id}>
+              <label htmlFor={id} className="import-srp__srp-word-label">
                 <Typography>{`${index + 1}.`}</Typography>
               </label>
               <TextField
