@@ -111,7 +111,7 @@ export default function SrpInput({ onChange }) {
   );
 
   return (
-    <>
+    <div className="import-srp__container">
       {pasteFailed ? (
         <Popover
           onClose={() => setPasteFailed(false)}
@@ -191,7 +191,7 @@ export default function SrpInput({ onChange }) {
           {srpError}
         </Typography>
       ) : null}
-    </>
+    </div>
   );
 }
 

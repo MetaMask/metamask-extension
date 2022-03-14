@@ -1,11 +1,18 @@
 .import-srp {
+  &__container {
+    display: grid;
+    grid-template-areas: "title dropdown" "input input" "error error";
+  }
+
   &__srp-label {
     margin-bottom: 8px;
+    grid-area: title;
   }
 
   &__srp {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-area: input;
   }
 
   &__srp-word {
@@ -14,5 +21,6 @@
 
   &__srp-error {
     margin-top: 4px;
+    grid-area: error;
   }
 }
