@@ -6,8 +6,7 @@ import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
-// import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill';
 import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 import { captureException } from '@sentry/browser';
@@ -473,8 +472,6 @@ function setupController(initState, initLangCode) {
 
     browser.action.setBadgeText({ text: label });
     browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
-    // extension.browserAction.setBadgeText({ text: label });
-    // extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
   }
 
   function getUnapprovedTransactionCount() {

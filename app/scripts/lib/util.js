@@ -1,5 +1,4 @@
-// import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill';
 
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';

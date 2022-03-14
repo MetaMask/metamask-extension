@@ -1,7 +1,6 @@
 import base32Encode from 'base32-encode';
 import base64 from 'base64-js';
-// import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill';
 
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';

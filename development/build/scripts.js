@@ -306,7 +306,6 @@ function createScriptTasks({
   function createTaskForBundleContentscript({ devMode, testing }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
-    const browserpolyfill = 'browserpolyfill';
     return composeSeries(
       createNormalBundle({
         buildType,

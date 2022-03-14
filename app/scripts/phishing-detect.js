@@ -1,7 +1,6 @@
 import querystring from 'querystring';
 import PortStream from 'extension-port-stream';
-// import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill';
 import createRandomId from '../../shared/modules/random-id';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';

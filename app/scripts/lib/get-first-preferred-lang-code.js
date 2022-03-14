@@ -1,6 +1,4 @@
-import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
-
+import browser from 'webextension-polyfill';
 import promisify from 'pify';
 import allLocales from '../../_locales/index.json';
 

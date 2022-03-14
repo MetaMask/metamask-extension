@@ -1,6 +1,4 @@
-// import extension from 'extensionizer';
 import browser from 'webextension-polyfill';
-
 import log from 'loglevel';
 import { checkForError } from './util';
 

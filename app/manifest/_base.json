@@ -1,8 +1,4 @@
 {
-  "author": "https://metamask.io",
-  "background": {
-    "service_worker": "background.js"
-  },
   "action": {
     "default_icon": {
       "16": "images/icon-16.png",
@@ -15,6 +11,10 @@
     },
     "default_title": "MetaMask",
     "default_popup": "popup.html"
+  },
+  "author": "https://metamask.io",
+  "background": {
+    "service_worker": "background.js"
   },
   "commands": {
     "_execute_browser_action": {
@@ -47,6 +47,12 @@
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
+  "host_permissions": [
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://wallet.gridplus.io/*",
+    "*://*.eth/"
+  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -66,12 +72,6 @@
     "activeTab",
     "webRequest",
     "notifications"
-  ],
-  "host_permissions": [
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://wallet.gridplus.io/*",
-    "*://*.eth/"
   ],
   "short_name": "__MSG_appName__",
   "web_accessible_resources": [

@@ -5,8 +5,7 @@ import '@formatjs/intl-relativetimeformat/polyfill';
 import 'react-devtools';
 
 import PortStream from 'extension-port-stream';
-// import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill';
 
 import Eth from 'ethjs';
 import EthQuery from 'eth-query';
@@ -73,7 +72,7 @@ async function queryCurrentActiveTab(windowType) {
       return;
     }
 
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       const [activeTab] = tabs;
       const { id, title, url } = activeTab;
       const { origin, protocol } = url ? new URL(url) : {};

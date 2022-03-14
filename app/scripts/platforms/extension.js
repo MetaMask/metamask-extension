@@ -1,5 +1,4 @@
-// import extension from 'extensionizer';
-import browser from 'webextension-polyfill'
+import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { getEnvironmentType, checkForError } from '../lib/util';
@@ -138,9 +137,9 @@ export default class ExtensionPlatform {
 
   getPlatformInfo(cb) {
     try {
-     const platformInfo = browser.runtime.getPlatformInfo()
-        cb(platformInfo);
-      
+      const platformInfo = browser.runtime.getPlatformInfo();
+      cb(platformInfo);
+      return;
     } catch (e) {
       cb(e);
       // eslint-disable-next-line no-useless-return
