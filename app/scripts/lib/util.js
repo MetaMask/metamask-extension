@@ -1,4 +1,6 @@
-import extension from 'extensionizer';
+// import extension from 'extensionizer';
+import browser from 'webextension-polyfill'
+
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -102,7 +104,7 @@ function BnMultiplyByFraction(targetBN, numerator, denominator) {
  * @returns {Error|undefined}
  */
 function checkForError() {
-  const { lastError } = extension.runtime;
+  const { lastError } = browser.runtime;
   if (!lastError) {
     return undefined;
   }

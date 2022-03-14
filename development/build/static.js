@@ -143,6 +143,10 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `loading.html`,
     },
     {
+      src: `./node_modules/webextension-polyfill/dist/browser-polyfill.js`,
+      dest: `globalthis.js`,
+    },
+    {
       src: `./node_modules/globalthis/dist/browser.js`,
       dest: `globalthis.js`,
     },

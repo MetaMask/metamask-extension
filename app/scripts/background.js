@@ -6,7 +6,8 @@ import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
-import extension from 'extensionizer';
+// import extension from 'extensionizer';
+import browser from 'webextension-polyfill'
 import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 import { captureException } from '@sentry/browser';
@@ -222,7 +223,7 @@ function setupController(initState, initLangCode) {
     // platform specific api
     platform,
     notificationManager,
-    extension,
+    browser,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds;
     },
@@ -292,8 +293,8 @@ function setupController(initState, initLangCode) {
   //
   // connect to other contexts
   //
-  extension.runtime.onConnect.addListener(connectRemote);
-  extension.runtime.onConnectExternal.addListener(connectExternal);
+  browser.runtime.onConnect.addListener(connectRemote);
+  browser.runtime.onConnectExternal.addListener(connectExternal);
 
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
@@ -470,8 +471,8 @@ function setupController(initState, initLangCode) {
       label = String(count);
     }
 
-    extension.action.setBadgeText({ text: label });
-    extension.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    browser.action.setBadgeText({ text: label });
+    browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
     // extension.browserAction.setBadgeText({ text: label });
     // extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
   }
@@ -618,7 +619,7 @@ async function openPopup() {
 }
 
 // On first install, open a new tab with MetaMask
-extension.runtime.onInstalled.addListener(({ reason }) => {
+browser.runtime.onInstalled.addListener(({ reason }) => {
   if (
     reason === 'install' &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
