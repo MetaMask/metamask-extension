@@ -11,11 +11,7 @@ export default {
 };
 
 const Template = (args) => {
-  return (
-    <div style={{ width: '600px' }}>
-      <SrpInput {...args} />
-    </div>
-  );
+  return <SrpInput {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
