@@ -3,6 +3,7 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
+import browser from 'webextension-polyfill';
 
 process.env.IN_TEST = true;
 
@@ -38,6 +39,7 @@ global.log = log;
 //
 // polyfills
 //
+browser = {};
 
 // dom
 const jsdom = new JSDOM();
