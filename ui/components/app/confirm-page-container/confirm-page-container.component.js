@@ -262,25 +262,7 @@ export default class ConfirmPageContainer extends Component {
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
-              {NETWORKS_FOR_BUYING_TOKENS.indexOf(
-                currentTransaction.chainId,
-              ) === -1 ? (
-                <ActionableMessage
-                  message={
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      align="left"
-                      margin={[0, 0]}
-                    >
-                      {t('insufficientCurrency', [nativeCurrency, networkName])}
-                      {t('buyOther', [nativeCurrency])}
-                    </Typography>
-                  }
-                  useIcon
-                  iconFillColor="#d73a49"
-                  type="danger"
-                />
-              ) : (
+              {NETWORKS_FOR_BUYING_TOKENS.indexOf(currentTransaction.chainId) !== -1 ? (
                 <ActionableMessage
                   message={
                     <Typography variant={TYPOGRAPHY.H7} align="left">
@@ -294,6 +276,22 @@ export default class ConfirmPageContainer extends Component {
                       </Button>
 
                       {t('orDeposit')}
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              ) : (
+                <ActionableMessage
+                  message={
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      align="left"
+                      margin={[0, 0]}
+                    >
+                      {t('insufficientCurrency', [nativeCurrency, networkName])}
+                      {t('buyOther', [nativeCurrency])}
                     </Typography>
                   }
                   useIcon
