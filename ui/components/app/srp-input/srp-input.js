@@ -8,7 +8,7 @@ import CheckBox from '../../ui/check-box';
 import Dropdown from '../../ui/dropdown';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
@@ -120,7 +120,9 @@ export default function SrpInput({ onChange }) {
         />
       ) : null}
       <label className="import-srp__srp-label">
-        <Typography>{t('secretRecoveryPhrase')}</Typography>
+        <Typography variant={TYPOGRAPHY.H4}>
+          {t('secretRecoveryPhrase')}
+        </Typography>
       </label>
       <Dropdown
         className="import-srp__number-of-words-dropdown"
