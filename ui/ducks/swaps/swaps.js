@@ -915,6 +915,9 @@ export const signAndSendSwapsSmartTransaction = ({
       const smartTransactionFees = await dispatch(
         fetchSwapsSmartTransactionFees(unsignedTransaction),
       );
+      unsignedTransaction.gas = `0x${decimalToHex(
+        smartTransactionFees?.gasLimit || 0,
+      )}`;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,

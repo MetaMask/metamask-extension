@@ -111,7 +111,9 @@ describe('Actions', () => {
 
       actions._setBackgroundConnection(background);
 
-      await store.dispatch(actions.createNewVaultAndRestore());
+      await store.dispatch(
+        actions.createNewVaultAndRestore('password', 'test'),
+      );
       expect(createNewVaultAndRestore.callCount).toStrictEqual(1);
     });
 
@@ -134,7 +136,9 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.createNewVaultAndRestore());
+      await store.dispatch(
+        actions.createNewVaultAndRestore('password', 'test'),
+      );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
@@ -155,7 +159,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.createNewVaultAndRestore()),
+        store.dispatch(actions.createNewVaultAndRestore('password', 'test')),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -174,7 +178,7 @@ describe('Actions', () => {
         cb(),
       );
       const verifySeedPhrase = background.verifySeedPhrase.callsFake((cb) =>
-        cb(),
+        cb(null, Array.from(Buffer.from('test').values())),
       );
 
       actions._setBackgroundConnection(background);
