@@ -19,6 +19,13 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  GOERLI_CHAIN_ID,
+  BSC_CHAIN_ID,
+  OPTIMISM_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+  FANTOM_CHAIN_ID,
+  ARBITRUM_CHAIN_ID,
 } from '../../../shared/constants/network';
 
 import {
@@ -26,6 +33,13 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+  SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+  SINGLE_CALL_BALANCES_ADDRESS_BSC,
+  SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
+  SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+  SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
+  SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
+  SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
 } from '../constants/contracts';
 import { bnToHex } from './util';
 
@@ -227,6 +241,55 @@ export default class AccountTracker {
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+        );
+        break;
+
+      case GOERLI_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
+        );
+        break;
+
+      case BSC_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_BSC,
+        );
+        break;
+
+      case OPTIMISM_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
+        );
+        break;
+
+      case POLYGON_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+        );
+        break;
+
+      case AVALANCHE_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
+        );
+        break;
+
+      case FANTOM_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
+        );
+        break;
+
+      case ARBITRUM_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
         );
         break;
 
