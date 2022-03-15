@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../ui/identicon';
 // import MetaFoxLogo from '../../ui/metafox-logo';
-import AlphaCarbonLogo from '../../ui/alpha-carbon-logo';
+import AlphaCarbonLogoGradient from '../../ui/alpha-carbon-logo-gradient';
 import { DEFAULT_ROUTE, UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import NetworkDisplay from '../network-display';
 
@@ -104,7 +104,7 @@ export default class AppHeader extends PureComponent {
     } = this.props;
     const pathname = history?.location?.pathname;
     const logoShow = pathname === UNLOCK_ROUTE;
-    console.log(!logoShow, 'logoShow');
+
     return (
       <div
         className={classnames('app-header', {
@@ -121,7 +121,7 @@ export default class AppHeader extends PureComponent {
               history.push(DEFAULT_ROUTE);
             }}
           /> */}
-          {!logoShow ? <AlphaCarbonLogo
+          {!logoShow ? <AlphaCarbonLogoGradient
             unsetIconHeight
             onClick={async () => {
               if (onClick) {
@@ -133,7 +133,7 @@ export default class AppHeader extends PureComponent {
 
           <div className="app-header__account-menu-container">
             {!hideNetworkIndicator && (
-              <div className={classnames('app-header__network-component-wrapper', { 'center': logoShow })}>
+              <div className='app-header__network-component-wrapper'>
                 <NetworkDisplay
                   colored={false}
                   outline
