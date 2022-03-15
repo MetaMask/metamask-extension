@@ -154,7 +154,7 @@ export default class DepositEtherModal extends Component {
             })}
             {this.renderRow({
               logo: (
-                <LogoMoonPay className="deposit-ether-modal__logo logo-moonpay" />
+                <LogoMoonPay className="deposit-ether-modal__logo--moonpay" />
               ),
               title: t('buyCryptoWithMoonPay', [symbol]),
               text: t('buyCryptoWithMoonPayDescription', [symbol]),

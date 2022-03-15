@@ -5,9 +5,7 @@ import LogoMoonPay from './logo-moonpay';
 
 describe('LogoMoonPay', () => {
   it('renders the LogoMoonPay component', () => {
-    const { container } = renderWithProvider(
-      <LogoMoonPay className="deposit-ether-modal__logo logo-moonpay" />,
-    );
+    const { container } = renderWithProvider(<LogoMoonPay />);
     expect(container).toMatchSnapshot();
   });
 });
