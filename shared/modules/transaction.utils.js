@@ -176,7 +176,7 @@ export async function determineTransactionAssetType(
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-  ].find((methodName) => isEqualCaseInsensitive(methodName, inferrableType));
+  ].find((methodName) => methodName === inferrableType);
 
   if (
     isTokenMethod ||
