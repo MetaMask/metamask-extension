@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import IconEye from '../icon/icon-eye';
+import IconEyeSlash from '../icon/icon-eye-slash';
 
 const ShowHideToggle = ({
   id,
@@ -25,11 +26,14 @@ const ShowHideToggle = ({
         disabled={disabled}
       />
       <label htmlFor={id} className="show-hide-toggle__label">
-        <IconEye
-          ariaLabel={ariaLabel}
-          className="show-hide-toggle__icon"
-          slash={!checked}
-        />
+        {checked ? (
+          <IconEye ariaLabel={ariaLabel} className="show-hide-toggle__icon" />
+        ) : (
+          <IconEyeSlash
+            ariaLabel={ariaLabel}
+            className="show-hide-toggle__icon"
+          />
+        )}
       </label>
     </div>
   );

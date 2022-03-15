@@ -37,6 +37,7 @@ import IconImport from './icon-import';
 import IconSpeechBubbles from './icon-speech-bubbles';
 import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
+import IconEyeSlash from './icon-eye-slash';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -155,6 +156,7 @@ export const DefaultStory = (args) => (
         <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
+        <IconItem Component={<IconEyeSlash {...args} />} />
       </div>
     </Box>
   </div>
