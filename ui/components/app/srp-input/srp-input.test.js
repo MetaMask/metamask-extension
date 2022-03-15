@@ -1407,7 +1407,10 @@ describe('srp-input', () => {
       );
 
       expect(
-        queryByRole('option', { name: '12', selected: true }),
+        queryByRole('option', {
+          name: enLocale.srpInputNumberOfWords.message.replace('$1', '12'),
+          selected: true,
+        }),
       ).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-11')).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-12')).toBeNull();
@@ -1425,7 +1428,10 @@ describe('srp-input', () => {
       await userEvent.paste(new Array(15).fill('test').join(' '));
 
       expect(
-        queryByRole('option', { name: '15', selected: true }),
+        queryByRole('option', {
+          name: enLocale.srpInputNumberOfWords.message.replace('$1', '15'),
+          selected: true,
+        }),
       ).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-14')).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-15')).toBeNull();
@@ -1445,7 +1451,10 @@ describe('srp-input', () => {
       await userEvent.paste(correct);
 
       expect(
-        queryByRole('option', { name: '12', selected: true }),
+        queryByRole('option', {
+          name: enLocale.srpInputNumberOfWords.message.replace('$1', '12'),
+          selected: true,
+        }),
       ).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-11')).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-12')).toBeNull();
@@ -1463,7 +1472,10 @@ describe('srp-input', () => {
       await userEvent.paste(invalidWordCount);
 
       expect(
-        queryByRole('option', { name: '15', selected: true }),
+        queryByRole('option', {
+          name: enLocale.srpInputNumberOfWords.message.replace('$1', '15'),
+          selected: true,
+        }),
       ).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-14')).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-15')).toBeNull();
@@ -1478,7 +1490,10 @@ describe('srp-input', () => {
       await userEvent.selectOptions(getByRole('combobox'), '24');
 
       expect(
-        queryByRole('option', { name: '24', selected: true }),
+        queryByRole('option', {
+          name: enLocale.srpInputNumberOfWords.message.replace('$1', '24'),
+          selected: true,
+        }),
       ).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-23')).not.toBeNull();
       expect(queryByTestId('import-srp__srp-word-24')).toBeNull();
