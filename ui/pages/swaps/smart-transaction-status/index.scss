@@ -21,7 +21,7 @@
 
   &__loading-bar {
     height: 3px;
-    background: var(--Blue-500);
+    background: var(--text-primary-color);
     transition: width 0.5s linear;
   }
 
@@ -58,11 +58,11 @@
   }
 
   a {
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
   }
 
   &__support-link {
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
     margin-top: 24px;
     cursor: pointer;
   }

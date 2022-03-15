@@ -5,7 +5,7 @@
   align-items: center;
   position: relative;
   width: 100%;
-  color: var(--Black-100);
+  color: var(--color-text-default);
   margin-top: 28px;
   margin-bottom: 56px;
 
@@ -53,7 +53,7 @@
 
   &__destination-row-symbol {
     margin-left: 5px;
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__icon,

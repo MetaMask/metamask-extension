@@ -23,7 +23,7 @@
     @include H6;
 
     font-weight: bold;
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
   }
 
   &__quote-link-container {
@@ -35,13 +35,13 @@
   &__quote-link-text {
     @include H7;
 
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
     cursor: pointer;
     padding-right: 4px;
   }
 
   &__caret-right {
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
     width: 6px;
     height: 6px;
     display: flex;
@@ -84,7 +84,7 @@
   }
 
   &__row-header-text--bold {
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__row-header-text {
@@ -147,12 +147,12 @@
 
   &__link,
   &__link:hover {
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
     cursor: pointer;
   }
 
   &__edit-link {
-    color: var(--Blue-500);
+    color: var(--text-primary-color);
     cursor: pointer;
     padding-left: 6px;
   }
@@ -193,7 +193,7 @@
   }
 
   &__row-header-primary--bold {
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__row-header-text--bold,

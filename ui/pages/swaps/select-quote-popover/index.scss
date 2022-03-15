@@ -58,7 +58,7 @@
     @include H8;
 
     font-weight: bold;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     height: 43px;
     margin-bottom: 4px;
   }
@@ -82,7 +82,7 @@
     border: none;
 
     &:hover {
-      border: 1px solid var(--Blue-500);
+      border: 1px solid var(--text-primary-color);
       width: 101%;
       padding-right: 11px;
       padding-left: 19.5px;
@@ -99,7 +99,7 @@
 
     &--selected {
       color: var(--white);
-      background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
+      background: linear-gradient(90deg, var(--text-primary-color) 0%, var(--Blue-400) 101.32%);
       box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
       border-radius: 8px;
       border-bottom: none;
@@ -107,7 +107,7 @@
       height: 64px;
 
       &:hover {
-        background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
+        background: linear-gradient(90deg, var(--text-primary-color) 0%, var(--Blue-400) 101.32%);
         width: 100%;
         padding-left: 20px;
         padding-right: 12px;
@@ -160,7 +160,7 @@
     &:hover {
       border-radius: 8px;
       background: white;
-      border: 1px solid var(--Blue-500);
+      border: 1px solid var(--text-primary-color);
     }
   }
 
