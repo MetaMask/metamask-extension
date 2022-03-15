@@ -169,18 +169,26 @@ export async function determineTransactionAssetType(
     inferrableType = result.type;
   }
 
+  // If the inferred type of the transaction is one of those that are part of
+  // the token contract standards, we can use the getTokenStandardAndDetails
+  // method to get the asset type.
   const isTokenMethod = [
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
   ].find((methodName) => isEqualCaseInsensitive(methodName, inferrableType));
 
-  if (isTokenMethod) {
+  if (
+    isTokenMethod ||
+    // We can also check any contract interaction type to see if the to address
+    // is a token contract. If it isn't, then the method will throw and we can
+    // fall through to the other checks.
+    inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION
+  ) {
     try {
-      const details = await getTokenStandardAndDetails(
-        txMeta.txParams.to,
-        txMeta.txParams.from,
-      );
+      // We don't need a balance check, so the second parameter to
+      // getTokenStandardAndDetails is omitted.
+      const details = await getTokenStandardAndDetails(txMeta.txParams.to);
       if (details.standard) {
         return {
           assetType:
@@ -191,7 +199,8 @@ export async function determineTransactionAssetType(
         };
       }
     } catch {
-      // noop
+      // noop, We expect errors here but we don't need to report them or do
+      // anything in response.
     }
   }
 
