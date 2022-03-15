@@ -149,6 +149,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
           filters:
@@ -338,7 +339,7 @@ jobs:
           root: .
           paths:
             - storybook-build
-  
+
   test-storybook:
     executor: node-browsers
     steps:
@@ -631,8 +632,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: sentry sourcemaps upload
-          command: SENTRY_ORG=metamask SENTRY_PROJECT=metamask yarn sentry:publish
+          name: Publish main release to Sentry
+          command: yarn sentry:publish
+      - run:
+          name: Publish Flask release to Sentry
+          command: yarn sentry:publish --build-type flask
       - run:
           name: Create GitHub release
           command: |
