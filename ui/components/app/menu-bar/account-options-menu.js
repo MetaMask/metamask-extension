@@ -15,7 +15,6 @@ import {
   getSelectedIdentity,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
@@ -35,16 +34,6 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const blockExplorerLinkClickedEvent = useNewMetricEvent({
-    category: 'Navigation',
-    event: 'Clicked Block Explorer Link',
-    properties: {
-      link_type: 'Account Tracker',
-      action: 'Account Options',
-      block_explorer_domain: getURLHostName(addressLink),
-    },
-  });
-
   const isRemovable = keyring.type !== 'HD Key Tree';
 
   return (
@@ -55,7 +44,15 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
     >
       <MenuItem
         onClick={() => {
-          blockExplorerLinkClickedEvent();
+          trackEvent({
+            event: 'Clicked Block Explorer Link',
+            category: 'Navigation',
+            properties: {
+              link_type: 'Account Tracker',
+              action: 'Account Options',
+              block_explorer_domain: getURLHostName(addressLink),
+            },
+          });
           global.platform.openTab({
             url: addressLink,
           });

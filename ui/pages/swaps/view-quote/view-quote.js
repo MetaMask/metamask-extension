@@ -8,7 +8,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
@@ -495,76 +494,6 @@ export default function ViewQuote() {
 
   const numberOfQuotes = Object.values(quotes).length;
   const bestQuoteReviewedEventSent = useRef();
-  const eventObjectBase = {
-    token_from: sourceTokenSymbol,
-    token_from_amount: sourceTokenValue,
-    token_to: destinationTokenSymbol,
-    token_to_amount: destinationTokenValue,
-    request_type: fetchParams?.balanceError,
-    slippage: fetchParams?.slippage,
-    custom_slippage: fetchParams?.slippage !== 2,
-    response_time: fetchParams?.responseTime,
-    best_quote_source: topQuote?.aggregator,
-    available_quotes: numberOfQuotes,
-    is_hardware_wallet: hardwareWalletUsed,
-    hardware_wallet_type: hardwareWalletType,
-    stx_enabled: smartTransactionsEnabled,
-    current_stx_enabled: currentSmartTransactionsEnabled,
-    stx_user_opt_in: smartTransactionsOptInStatus,
-  };
-
-  const allAvailableQuotesOpened = useNewMetricEvent({
-    event: 'All Available Quotes Opened',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source:
-        usedQuote?.aggregator === topQuote?.aggregator
-          ? null
-          : usedQuote?.aggregator,
-    },
-  });
-  const quoteDetailsOpened = useNewMetricEvent({
-    event: 'Quote Details Opened',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source:
-        usedQuote?.aggregator === topQuote?.aggregator
-          ? null
-          : usedQuote?.aggregator,
-    },
-  });
-  const editSpendLimitOpened = useNewMetricEvent({
-    event: 'Edit Spend Limit Opened',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      custom_spend_limit_set: originalApproveAmount === approveAmount,
-      custom_spend_limit_amount:
-        originalApproveAmount === approveAmount ? null : approveAmount,
-    },
-  });
-
-  const bestQuoteReviewedEvent = useNewMetricEvent({
-    event: 'Best Quote Reviewed',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      network_fees: feeInFiat,
-    },
-  });
-
-  const viewQuotePageLoadedEvent = useNewMetricEvent({
-    event: 'View Quote Page Loaded',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      response_time: currentTimestamp - reviewSwapClickedTimestamp,
-    },
-  });
 
   useEffect(() => {
     if (
@@ -581,24 +510,76 @@ export default function ViewQuote() {
       ].every((dep) => dep !== null && dep !== undefined)
     ) {
       bestQuoteReviewedEventSent.current = true;
-      bestQuoteReviewedEvent();
+      metaMetricsEvent({
+        event: 'Best Quote Reviewed',
+        category: 'swaps',
+        sensitiveProperties: {
+          token_from: sourceTokenSymbol,
+          token_from_amount: sourceTokenValue,
+          token_to: destinationTokenSymbol,
+          token_to_amount: destinationTokenValue,
+          request_type: fetchParams?.balanceError,
+          slippage: fetchParams?.slippage,
+          custom_slippage: fetchParams?.slippage !== 2,
+          response_time: fetchParams?.responseTime,
+          best_quote_source: topQuote?.aggregator,
+          available_quotes: numberOfQuotes,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
+          stx_enabled: smartTransactionsEnabled,
+          current_stx_enabled: currentSmartTransactionsEnabled,
+          stx_user_opt_in: smartTransactionsOptInStatus,
+          network_fees: feeInFiat,
+        },
+      });
     }
   }, [
-    sourceTokenSymbol,
-    sourceTokenValue,
-    destinationTokenSymbol,
-    destinationTokenValue,
     fetchParams,
     topQuote,
     numberOfQuotes,
     feeInFiat,
-    bestQuoteReviewedEvent,
+    currentSmartTransactionsEnabled,
+    destinationTokenSymbol,
+    destinationTokenValue,
+    fetchParams?.balanceError,
+    fetchParams?.responseTime,
+    fetchParams?.slippage,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    smartTransactionsOptInStatus,
+    sourceTokenSymbol,
+    sourceTokenValue,
+    topQuote?.aggregator,
+    metaMetricsEvent,
   ]);
 
   const metaMaskFee = usedQuote.fee;
 
   const onFeeCardTokenApprovalClick = () => {
-    editSpendLimitOpened();
+    metaMetricsEvent({
+      event: 'Edit Spend Limit Opened',
+      category: 'swaps',
+      sensitiveProperties: {
+        token_from: sourceTokenSymbol,
+        token_from_amount: sourceTokenValue,
+        token_to: destinationTokenSymbol,
+        token_to_amount: destinationTokenValue,
+        request_type: fetchParams?.balanceError,
+        slippage: fetchParams?.slippage,
+        custom_slippage: fetchParams?.slippage !== 2,
+        response_time: fetchParams?.responseTime,
+        best_quote_source: topQuote?.aggregator,
+        available_quotes: numberOfQuotes,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+        custom_spend_limit_set: originalApproveAmount === approveAmount,
+        custom_spend_limit_amount:
+          originalApproveAmount === approveAmount ? null : approveAmount,
+      },
+    });
     dispatch(
       showModal({
         name: 'EDIT_APPROVAL_PERMISSION',
@@ -827,9 +808,47 @@ export default function ViewQuote() {
     // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
     if (reviewSwapClickedTimestamp) {
-      viewQuotePageLoadedEvent();
+      metaMetricsEvent({
+        event: 'View Quote Page Loaded',
+        category: 'swaps',
+        sensitiveProperties: {
+          token_from: sourceTokenSymbol,
+          token_from_amount: sourceTokenValue,
+          token_to: destinationTokenSymbol,
+          token_to_amount: destinationTokenValue,
+          request_type: fetchParams?.balanceError,
+          slippage: fetchParams?.slippage,
+          custom_slippage: fetchParams?.slippage !== 2,
+          best_quote_source: topQuote?.aggregator,
+          available_quotes: numberOfQuotes,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
+          stx_enabled: smartTransactionsEnabled,
+          current_stx_enabled: currentSmartTransactionsEnabled,
+          stx_user_opt_in: smartTransactionsOptInStatus,
+          response_time: currentTimestamp - reviewSwapClickedTimestamp,
+        },
+      });
     }
-  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
+  }, [
+    dispatch,
+    metaMetricsEvent,
+    numberOfQuotes,
+    currentSmartTransactionsEnabled,
+    destinationTokenSymbol,
+    destinationTokenValue,
+    fetchParams?.balanceError,
+    fetchParams?.responseTime,
+    fetchParams?.slippage,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    smartTransactionsOptInStatus,
+    sourceTokenSymbol,
+    sourceTokenValue,
+    topQuote?.aggregator,
+    currentTimestamp,
+    reviewSwapClickedTimestamp,
+  ]);
 
   useEffect(() => {
     // if smart transaction error is turned off, reset submit clicked boolean
@@ -877,7 +896,33 @@ export default function ViewQuote() {
                 onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
                 swapToSymbol={destinationTokenSymbol}
                 initialAggId={usedQuote.aggregator}
-                onQuoteDetailsIsOpened={quoteDetailsOpened}
+                onQuoteDetailsIsOpened={metaMetricsEvent({
+                  event: 'Quote Details Opened',
+                  category: 'swaps',
+                  sensitiveProperties: {
+                    token_from: sourceTokenSymbol,
+                    token_from_amount: sourceTokenValue,
+                    token_to: destinationTokenSymbol,
+                    token_to_amount: destinationTokenValue,
+                    request_type: fetchParams?.balanceError,
+                    slippage: fetchParams?.slippage,
+                    custom_slippage: fetchParams?.slippage !== 2,
+                    response_time: fetchParams?.responseTime,
+                    best_quote_source: topQuote?.aggregator,
+                    available_quotes: numberOfQuotes,
+                    is_hardware_wallet: hardwareWalletUsed,
+                    hardware_wallet_type: hardwareWalletType,
+                    stx_enabled: smartTransactionsEnabled,
+                    current_stx_enabled: currentSmartTransactionsEnabled,
+                    stx_user_opt_in: smartTransactionsOptInStatus,
+                    other_quote_selected:
+                      usedQuote?.aggregator !== topQuote?.aggregator,
+                    other_quote_selected_source:
+                      usedQuote?.aggregator === topQuote?.aggregator
+                        ? null
+                        : usedQuote?.aggregator,
+                  },
+                })}
                 hideEstimatedGasFee={
                   smartTransactionsEnabled && smartTransactionsOptInStatus
                 }
@@ -973,7 +1018,33 @@ export default function ViewQuote() {
                   metaMaskFee={String(metaMaskFee)}
                   numberOfQuotes={Object.values(quotes).length}
                   onQuotesClick={() => {
-                    allAvailableQuotesOpened();
+                    metaMetricsEvent({
+                      event: 'All Available Quotes Opened',
+                      category: 'swaps',
+                      sensitiveProperties: {
+                        token_from: sourceTokenSymbol,
+                        token_from_amount: sourceTokenValue,
+                        token_to: destinationTokenSymbol,
+                        token_to_amount: destinationTokenValue,
+                        request_type: fetchParams?.balanceError,
+                        slippage: fetchParams?.slippage,
+                        custom_slippage: fetchParams?.slippage !== 2,
+                        response_time: fetchParams?.responseTime,
+                        best_quote_source: topQuote?.aggregator,
+                        available_quotes: numberOfQuotes,
+                        is_hardware_wallet: hardwareWalletUsed,
+                        hardware_wallet_type: hardwareWalletType,
+                        stx_enabled: smartTransactionsEnabled,
+                        current_stx_enabled: currentSmartTransactionsEnabled,
+                        stx_user_opt_in: smartTransactionsOptInStatus,
+                        other_quote_selected:
+                          usedQuote?.aggregator !== topQuote?.aggregator,
+                        other_quote_selected_source:
+                          usedQuote?.aggregator === topQuote?.aggregator
+                            ? null
+                            : usedQuote?.aggregator,
+                      },
+                    });
                     setSelectQuotePopoverShown(true);
                   }}
                   chainId={chainId}

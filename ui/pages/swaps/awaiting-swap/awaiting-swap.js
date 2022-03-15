@@ -7,7 +7,6 @@ import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 
 import {
@@ -131,16 +130,6 @@ export default function AwaitingSwap({
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
-  const quotesExpiredEvent = useNewMetricEvent({
-    event: 'Quotes Timed Out',
-    sensitiveProperties,
-    category: 'swaps',
-  });
-  const makeAnotherSwapEvent = useNewMetricEvent({
-    event: 'Make Another Swap',
-    sensitiveProperties,
-    category: 'swaps',
-  });
 
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
@@ -197,7 +186,11 @@ export default function AwaitingSwap({
 
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true);
-      quotesExpiredEvent();
+      metaMetricsEvent({
+        event: 'Quotes Timed Out',
+        category: 'swaps',
+        sensitiveProperties,
+      });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle');
@@ -260,7 +253,11 @@ export default function AwaitingSwap({
         <a
           href="#"
           onClick={async () => {
-            makeAnotherSwapEvent();
+            metaMetricsEvent({
+              event: 'Make Another Swap',
+              category: 'swaps',
+              sensitiveProperties,
+            });
             await dispatch(navigateBackToBuildQuote(history));
             dispatch(setSwapsFromToken(defaultSwapsToken));
           }}
