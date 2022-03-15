@@ -1,8 +1,7 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "page": "background.html",
-    "persistent": true
+    "service_worker": "app-init.js"
   },
   "browser_action": {
     "default_icon": {
