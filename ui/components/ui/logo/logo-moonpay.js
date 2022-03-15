@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const LogoMoonPay = ({ className }) => {
+const LogoMoonPay = ({ className, color = '#7d00ff' }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1920 349.9062"
-      fill="#7d00ff"
+      fill={color}
       className={className}
     >
       <g id="MP_LOGO" data-name="MP LOGO">
@@ -26,6 +26,11 @@ LogoMoonPay.propTypes = {
    * Additional className to add to the root svg
    */
   className: PropTypes.string.isRequired,
+
+  /**
+   * The color of the logo.
+   */
+  color: PropTypes.string,
 };
 
 export default LogoMoonPay;
