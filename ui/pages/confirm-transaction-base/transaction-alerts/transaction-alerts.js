@@ -12,12 +12,11 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { getIsBuyableTransakChain } from '../../../selectors';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
-  chainId,
   nativeCurrency,
   networkName,
   showBuyModal,
@@ -31,9 +30,10 @@ const TransactionAlerts = ({
     isNetworkBusy,
   } = useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
+  const isBuyableTransakChain = useSelector(getIsBuyableTransakChain);
   const t = useI18nContext();
 
-  if (!supportsEIP1559V2) {
+  if (!supportsEIP1559V2 && !isBuyableTransakChain) {
     return null;
   }
 
@@ -97,7 +97,7 @@ const TransactionAlerts = ({
         />
       )}
       {balanceError &&
-      chainId === MAINNET_CHAIN_ID &&
+      isBuyableTransakChain &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
@@ -109,8 +109,8 @@ const TransactionAlerts = ({
                 className="transaction-alerts__link"
                 onClick={showBuyModal}
               >
-                {t('buyEth')}
-              </Button>{' '}
+                {t('buyToken', [nativeCurrency])}
+              </Button>
               {t('orDeposit')}
             </Typography>
           }
@@ -120,7 +120,7 @@ const TransactionAlerts = ({
         />
       ) : null}
       {balanceError &&
-      chainId !== MAINNET_CHAIN_ID &&
+      !isBuyableTransakChain &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
@@ -177,7 +177,6 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
-  chainId: PropTypes.string,
   nativeCurrency: PropTypes.string,
   networkName: PropTypes.string,
   showBuyModal: PropTypes.func,

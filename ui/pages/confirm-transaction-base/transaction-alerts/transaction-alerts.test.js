@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
+import { getIsBuyableTransakChain } from '../../../selectors';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
@@ -14,17 +15,26 @@ jest.mock('../../../selectors/transactions', () => {
   };
 });
 
+jest.mock('../../../selectors', () => {
+  return {
+    ...jest.requireActual('../../../selectors'),
+    getIsBuyableTransakChain: jest.fn(),
+  };
+});
+
 jest.mock('../../../contexts/gasFee');
 
 function render({
   componentProps = {},
   useGasFeeContextValue = {},
   submittedPendingTransactionsSelectorValue = null,
+  getIsBuyableTransakChainValue = null,
 }) {
   useGasFeeContext.mockReturnValue(useGasFeeContextValue);
   submittedPendingTransactionsSelector.mockReturnValue(
     submittedPendingTransactionsSelectorValue,
   );
+  getIsBuyableTransakChain.mockReturnValue(getIsBuyableTransakChainValue);
   const store = configureStore({});
   return renderWithProvider(<TransactionAlerts {...componentProps} />, store);
 }
@@ -153,7 +163,6 @@ describe('TransactionAlerts', () => {
             nativeCurrency: 'ETH',
             networkName: 'Ropsten',
             showBuyModal: jest.fn(),
-            chainId: '0x1',
             type: TRANSACTION_TYPES.DEPLOY_CONTRACT,
           },
         });

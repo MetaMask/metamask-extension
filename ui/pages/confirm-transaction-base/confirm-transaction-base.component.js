@@ -586,7 +586,6 @@ export default class ConfirmTransactionBase extends Component {
             this.setUserAcknowledgedGasMissing()
           }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          chainId={txData.chainId}
           nativeCurrency={nativeCurrency}
           networkName={networkName}
           showBuyModal={showBuyModal}

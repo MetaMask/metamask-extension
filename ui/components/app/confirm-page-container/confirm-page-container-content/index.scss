@@ -104,8 +104,9 @@
   &__link {
     background: transparent;
     border: 0 transparent;
-    display: inline;
-    padding: 0;
-    font-size: $font-size-h7;
+    display: inline !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: $font-size-h7 !important;
   }
 }
