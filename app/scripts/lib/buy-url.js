@@ -85,12 +85,10 @@ const createMoonPayUrl = async (walletAddress, chainId) => {
     showOnlyCurrencies,
   });
   const queryParams = new URLSearchParams({
-    url: `https://buy-sandbox.moonpay.com?${moonPayQueryParams}`,
-    // url: `https://buy.moonpay.com?${moonPayQueryParams}`, TODO: Use this line once prod is enabled.
+    url: `https://buy.moonpay.com?${moonPayQueryParams}`,
     context: 'extension',
   });
-  const moonPaySignUrl = `https://swap.metaswap-dev.codefi.network/moonpaySign/?${queryParams}`;
-  // const moonPaySignUrl = `https://swap.metaswap.codefi.network/moonpaySign/?${queryParams}`; TODO: Use this line once prod is enabled.
+  const moonPaySignUrl = `https://swap.metaswap.codefi.network/moonpaySign/?${queryParams}`;
   try {
     const response = await fetchWithTimeout(moonPaySignUrl, {
       method: 'GET',
