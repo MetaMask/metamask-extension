@@ -2846,7 +2846,7 @@
   resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-2.1.0.tgz#c0be8e68445b7b83cf85bcc03a56cdf8e256c973"
   integrity sha512-ADuWlTUkFfN2vXlz81Bg/0BA+XRor+CdK1055p6k7H6BLIPoDKn9SBOFld9haQFuR9cKh/JYHcnlSIv5R4fUEw==
 
-"@metamask/execution-environments@^0.10.1", "@metamask/execution-environments@^0.10.2":
+"@metamask/execution-environments@^0.10.2":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.10.2.tgz#dfa4750a0eee4f51d9bc7e3c75a0e80a18798093"
   integrity sha512-4bqDTk0oPRiju21M8KNaoxT8eiGaygyC2pldIrCDByfDqiIVkIpv8neol6EEH7ebMQkNiC4sr8IhfNFL7cJIdA==
