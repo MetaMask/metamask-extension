@@ -17,7 +17,7 @@
       &::before {
         content: '';
         position: absolute;
-        border: 1px solid var(--color-text-default);
+        border: 1px solid var(--color-icon-default);
         width: 100%;
         left: 0;
         top: calc(50% - 1px);
@@ -49,5 +49,9 @@
         cursor: auto;
       }
     }
+  }
+
+  &__icon {
+    color: var(--color-icon-default);
   }
 }
