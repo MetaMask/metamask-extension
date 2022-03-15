@@ -25,7 +25,11 @@ const ShowHideToggle = ({
         disabled={disabled}
       />
       <label htmlFor={id} className="show-hide-toggle__label">
-        <IconEye ariaLabel={ariaLabel} className="show-hide-toggle__icon" />
+        <IconEye
+          ariaLabel={ariaLabel}
+          className="show-hide-toggle__icon"
+          slash={!checked}
+        />
       </label>
     </div>
   );

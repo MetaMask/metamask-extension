@@ -3,46 +3,23 @@
   display: inline-flex;
 
   &__input {
-    position: absolute;
-    margin-left: -9999px;
-    // visibility: hidden;
+    appearance: none;
 
     + .show-hide-toggle__label {
-      display: flex;
-      position: relative;
       cursor: pointer;
-      outline: none;
       user-select: none;
-
-      &::before {
-        content: '';
-        position: absolute;
-        border: 1px solid var(--color-icon-default);
-        width: 100%;
-        left: 0;
-        top: calc(50% - 1px);
-        transform: translateY(50%) rotate(130deg);
-      }
     }
 
     /* Focused when tabbing with keyboard */
     &:focus,
     &:focus-visible {
+      outline: none;
+
       + .show-hide-toggle__label {
-        outline: -webkit-focus-ring-color auto 1px;
+        outline: Highlight auto 1px;
       }
     }
 
-    /* Default and Checked */
-    &:checked {
-      + .show-hide-toggle__label {
-        &::before {
-          opacity: 0;
-        }
-      }
-    }
-
-    /* Disabled and Unchecked */
     &:disabled {
       + label {
         opacity: 0.5;
