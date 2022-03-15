@@ -7,25 +7,17 @@
     position: relative;
     padding-left: 24px;
     padding-bottom: 10px;
+    font-weight: bold;
+
+    i {
+      margin-inline-start: -20px;
+      margin-inline-end: 10px;
+    }
 
     &::-webkit-details-marker,
     &::marker {
       display: none;
       content: '';
-    }
-
-    &::before {
-      position: absolute;
-      content: ' ';
-      flex: 0 0 auto;
-      height: 16px;
-      width: 16px;
-      background-image: url('images/icons/expand.svg');
-      background-size: contain;
-      background-repeat: no-repeat;
-      cursor: pointer;
-      left: 0;
-      top: 2px;
     }
   }
 
