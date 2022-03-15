@@ -9,13 +9,10 @@ export default {
     id: {
       control: 'text',
     },
-    checked: {
-      control: 'boolean',
+    ariaLabelHidden: {
+      control: 'text',
     },
-    onChange: {
-      action: 'onChange',
-    },
-    ariaLabel: {
+    ariaLabelShown: {
       control: 'text',
     },
     className: {
@@ -27,22 +24,28 @@ export default {
     disabled: {
       control: 'boolean',
     },
+    onChange: {
+      action: 'onChange',
+    },
+    shown: {
+      control: 'boolean',
+    },
   },
 };
 
 export const DefaultStory = (args) => {
-  const [{ checked }, updateArgs] = useArgs();
+  const [{ shown }, updateArgs] = useArgs();
   const handleOnToggle = () => {
-    updateArgs({ checked: !checked });
+    updateArgs({ shown: !shown });
   };
-  return (
-    <ShowHideToggle {...args} checked={checked} onChange={handleOnToggle} />
-  );
+  return <ShowHideToggle {...args} shown={shown} onChange={handleOnToggle} />;
 };
 
 DefaultStory.args = {
   id: 'showHideToggle',
-  checked: false,
+  ariaLabelHidden: 'hidden',
+  ariaLabelShown: 'shown',
+  shown: false,
 };
 
 DefaultStory.storyName = 'Default';

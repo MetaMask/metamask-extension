@@ -7,12 +7,14 @@ import IconEyeSlash from '../icon/icon-eye-slash';
 
 const ShowHideToggle = ({
   id,
-  checked,
+  shown,
   onChange,
-  ariaLabel,
+  ariaLabelHidden,
+  ariaLabelShown,
   className,
-  dataTestId,
+  'data-testid': dataTestId,
   disabled,
+  title,
 }) => {
   return (
     <div className={classnames('show-hide-toggle', className)}>
@@ -20,17 +22,20 @@ const ShowHideToggle = ({
         className="show-hide-toggle__input"
         id={id}
         type="checkbox"
-        checked={checked}
+        checked={shown}
         onChange={onChange}
         data-testid={dataTestId}
         disabled={disabled}
       />
-      <label htmlFor={id} className="show-hide-toggle__label">
-        {checked ? (
-          <IconEye ariaLabel={ariaLabel} className="show-hide-toggle__icon" />
+      <label htmlFor={id} className="show-hide-toggle__label" title={title}>
+        {shown ? (
+          <IconEye
+            ariaLabel={ariaLabelShown}
+            className="show-hide-toggle__icon"
+          />
         ) : (
           <IconEyeSlash
-            ariaLabel={ariaLabel}
+            ariaLabel={ariaLabelHidden}
             className="show-hide-toggle__icon"
           />
         )}
@@ -45,17 +50,21 @@ ShowHideToggle.propTypes = {
    */
   id: PropTypes.string.isRequired,
   /**
-   * If the ShowHideToggle is checked or not
+   * If the ShowHideToggle is in the "shown" state or not
    */
-  checked: PropTypes.bool.isRequired,
+  shown: PropTypes.bool.isRequired,
   /**
    * The onChange handler of the ShowHideToggle
    */
   onChange: PropTypes.func.isRequired,
   /**
-   * The aria-label of the IconEye svg component
+   * The aria-label of the icon representing the "hidden" state
    */
-  ariaLabel: PropTypes.string,
+  ariaLabelHidden: PropTypes.string.isRequired,
+  /**
+   * The aria-label of the icon representing the "shown" state
+   */
+  ariaLabelShown: PropTypes.string.isRequired,
   /**
    * An additional className to give the ShowHideToggle
    */
@@ -63,11 +72,15 @@ ShowHideToggle.propTypes = {
   /**
    * The data test id of the input
    */
-  dataTestId: PropTypes.string,
+  'data-testid': PropTypes.string,
   /**
    * Whether the input is disabled or not
    */
   disabled: PropTypes.bool,
+  /**
+   * The title for the toggle. This is shown in a tooltip on hover.
+   */
+  title: PropTypes.string,
 };
 
 export default ShowHideToggle;
