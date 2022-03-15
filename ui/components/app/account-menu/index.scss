@@ -4,10 +4,10 @@
   top: 58px;
   width: 320px;
   border-radius: 4px;
-  background: var(--color-overlay-alternative);
+  background: var(--color-background-default);
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
-  color: var(--color-overlay-inverse);
+  color: var(--color-text-default);
 
   @media screen and (max-width: $break-small) {
     right: 16px;
@@ -42,13 +42,11 @@
       cursor: pointer;
 
       &:hover {
-        background-color: var(--color-overlay-alternative);
-        opacity: 0.05; //@TODO: fix opacity
+        background-color: var(--color-background-alternative);
       }
 
       &:active {
-        background-color: var(--color-overlay-alternative);
-        opacity: 0.1; //@TODO: fix opacity
+        background-color: var(--color-background-alternative);
       }
     }
 
@@ -69,7 +67,7 @@
   }
 
   &__divider {
-    background-color: var(--color-background-alternative);
+    background-color: var(--color-border-muted);
     width: 100%;
     height: 1px;
   }
@@ -102,19 +100,8 @@
   & &__lock-button {
     @include H7;
 
-    border: 1px solid var(--color-overlay-inverse);
-    background-color: transparent;
     padding: 3.5px 5px;
-    color: var(--color-overlay-inverse);
     width: 59px;
-
-    &:hover {
-      background-color: rgba($dusty-gray, 0.05);
-    }
-
-    &:active {
-      background-color: rgba($dusty-gray, 0.1);
-    }
   }
 
   &__accounts-container {
@@ -183,7 +170,7 @@
       .remove-account-icon::after {
         content: '\00D7';
         font-size: 25px;
-        color: var(--color-overlay-inverse);
+        color: var(--color-text-default);
         cursor: pointer;
         position: absolute;
         margin-top: -5px;
@@ -210,7 +197,7 @@
   &__name {
     @include H4;
 
-    color: var(--color-overlay-inverse);
+    color: var(--color-text-default);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -220,7 +207,7 @@
   &__balance {
     @include H6;
 
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
   }
 
   &__action {

@@ -49,7 +49,7 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--color-background-default);
+  background: var(--color-background-alternative);
 
   @media screen and (max-width: $break-small) {
     background-color: var(--color-background-default);
