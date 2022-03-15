@@ -838,21 +838,25 @@ export default class ConfirmTransactionBase extends Component {
         sendTransaction(txData)
           .then(() => {
             clearConfirmTransaction();
-            this.setState(
-              {
-                submitting: false,
-              },
-              () => {
-                history.push(mostRecentOverviewPage);
-                updateCustomNonce('');
-              },
-            );
+            if (this._isMounted) {
+              this.setState(
+                {
+                  submitting: false,
+                },
+                () => {
+                  history.push(mostRecentOverviewPage);
+                  updateCustomNonce('');
+                },
+              );
+            }
           })
           .catch((error) => {
-            this.setState({
-              submitting: false,
-              submitError: error.message,
-            });
+            if (this._isMounted) {
+              this.setState({
+                submitting: false,
+                submitError: error.message,
+              });
+            }
             updateCustomNonce('');
           });
       },

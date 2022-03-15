@@ -51,7 +51,10 @@ export default class ConfirmPageContainerContent extends Component {
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
-    currentTransaction: PropTypes.string,
+    currentTransaction: PropTypes.shape({
+      type: PropTypes.string,
+      chainId: PropTypes.string,
+    }),
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
     showBuyModal: PropTypes.func,

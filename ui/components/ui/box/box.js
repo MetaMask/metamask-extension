@@ -264,6 +264,7 @@ Box.propTypes = {
   display: PropTypes.oneOf(Object.values(DISPLAY)),
   width: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
-  backgroundColor: PropTypes.oneOf(Object.values(ValidBackgroundColors)),
+  // backgroundColor: PropTypes.oneOf(Object.values(ValidBackgroundColors)),
+  backgroundColor: PropTypes.string,
   className: PropTypes.string,
 };

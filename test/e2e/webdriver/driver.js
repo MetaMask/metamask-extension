@@ -155,6 +155,18 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
+  async waitForAbsenceOfSelector(rawLocator, { timeout = this.timeout } = {}) {
+    const selector = this.buildLocator(rawLocator);
+    await this.driver.wait(
+      async (driver) => {
+        const elements = await driver.findElements(selector);
+        return elements.length === 0;
+      },
+      timeout,
+      'Timed out waiting for element to not exist',
+    );
+  }
+
   async quit() {
     await this.driver.quit();
   }
