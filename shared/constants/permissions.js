@@ -24,5 +24,5 @@ export const EndowmentPermissions = Object.freeze({
 });
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedSnapPermissions = new Set(['snap_notify']);
+export const ExcludedSnapPermissions = new Set([]);
 ///: END:ONLY_INCLUDE_IN
