@@ -58,7 +58,7 @@
   right: 2px;
 
   .color-indicator {
-    margin: 0 14px;
+    margin: 0 14px 0 4px;
   }
 
   @media screen and (min-width: $break-large) {
@@ -82,16 +82,9 @@
   white-space: nowrap;
 }
 
-.network-check,
-.network-check__transparent {
-  color: var(--white);
-  margin-left: 7px;
-}
-
 .network-check__transparent {
   opacity: 0;
-  width: 16px;
-  margin: 0;
+  width: 24px;
 }
 
 .menu-icon-circle,
