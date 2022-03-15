@@ -5,6 +5,7 @@ import {
   BUYABLE_CHAINS_MAP,
 } from '../../../../../shared/constants/network';
 import Button from '../../../ui/button';
+import LogoMoonPay from '../../../ui/logo/logo-moonpay';
 
 export default class DepositEtherModal extends Component {
   static contextTypes = {
@@ -153,13 +154,7 @@ export default class DepositEtherModal extends Component {
             })}
             {this.renderRow({
               logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/moonpay.svg')",
-                    height: '60px',
-                  }}
-                />
+                <LogoMoonPay className="deposit-ether-modal__logo logo-moonpay" />
               ),
               title: t('buyCryptoWithMoonPay', [symbol]),
               text: t('buyCryptoWithMoonPayDescription', [symbol]),
