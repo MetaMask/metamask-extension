@@ -358,15 +358,15 @@ async function bundleAppInitialiser({
   );
   const jsTemplate = readFileSync('./app/scripts/app-init.js', 'utf8');
   const jsOutput = jsTemplate.replace('/** FILE NAMES */', fileList);
-  const dest = `./dist/${mv3BrowserPlatforms[0]}/app-init.temp.js`;
-  writeFileSync(dest, jsOutput);
+  const appInitTemp = `./dist/${mv3BrowserPlatforms[0]}/app-init.temp.js`;
+  writeFileSync(appInitTemp, jsOutput);
 
   await createNormalBundle({
     browserPlatforms: mv3BrowserPlatforms,
     buildType,
     destFilepath: 'app-init.js',
     devMode,
-    entryFilepath: dest,
+    entryFilepath: appInitTemp,
     ignoredFiles,
     label,
     testing,
@@ -374,7 +374,7 @@ async function bundleAppInitialiser({
     shouldLintFenceFiles,
   })();
 
-  unlinkSync(dest);
+  unlinkSync(appInitTemp);
 }
 
 function createFactoredBuild({
