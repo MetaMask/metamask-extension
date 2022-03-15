@@ -3,7 +3,8 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   padding: 30px;
   font-weight: 400;
   color: var(--silver-chalice);
