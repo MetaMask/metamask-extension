@@ -46,6 +46,7 @@
 }
 
 .dropdown-menu-item .fa.delete {
+  color: var(--color-icon-default);
   margin-right: 10px;
   display: none;
 }
@@ -55,6 +56,8 @@
 }
 
 .network-droppo {
+  background-color: var(--color-background-default);
+  border-radius: 4px;
   right: 2px;
 
   .color-indicator {
@@ -76,7 +79,6 @@
 
 .network-name-item {
   flex: 1;
-  color: var(--color-text-muted);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -99,8 +101,8 @@
 }
 
 .menu-icon-circle--active {
-  border: 1px solid var(--color-background-default);
-  background: var(--color-overlay-default);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-background-default);
 }
 
 .menu-icon-circle div,
@@ -139,7 +141,7 @@
 
   height: 25px;
   width: 120px;
-  color: var(--color-overlay-inverse);
+  color: var(--color-text-default);
   text-align: center;
 }
 
@@ -148,26 +150,24 @@
 
   min-height: 36px;
   width: 265px;
-  color: var(--color-text-muted);
+  color: var(--color-text-default);
 
   &--link {
-    color: var(--color-background-default);
+    color: var(--color-primary-default);
     cursor: pointer;
     text-decoration: underline;
 
     &:hover {
-      color: var(--color-overlay-inverse);
+      color: var(--color-primary-alternative);
     }
   }
 
   &--dismiss {
-    color: inherit;
-    background: inherit;
     position: absolute;
     top: 63px;
     right: 10px;
-    border: 1px solid var(--color-border-default);
-    border-radius: 10px;
+    padding: 2px 8px;
+    width: auto;
   }
 }
 
@@ -190,4 +190,8 @@
     top: -5px;
     left: -6px;
   }
+}
+
+.network__add-network-button {
+  padding: 0 16px;
 }
