@@ -1,4 +1,10 @@
 .reveal-seed-phrase {
+  display: flex;
+  margin-top: 40px;
+  @media screen and (max-width: $break-normalpoint){
+    flex-direction: column;
+  }
+    
   @media screen and (max-width: $break-small) {
     display: flex;
     flex-direction: column;
@@ -11,22 +17,40 @@
     position: relative;
     display: flex;
     justify-content: center;
-    border: 1px solid #cdcdcd;
-    border-radius: 6px;
+    border-radius: 10px;
     background-color: var(--white);
-    padding: 18px;
     margin-top: 36px;
-    max-width: 350px;
+    max-width: 640px;
+    width: 100%;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   &__secret-words {
     @include H4;
-
-    width: 310px;
     text-align: center;
-
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24px;
+    justify-content: space-around;
     &--hidden {
       filter: blur(5px);
+    }
+    &-item{
+      width: 45%;
+      border: 1px solid #525252;
+      box-sizing: border-box;
+      border-radius: 10px;
+      margin-top: 24px;
+      color:var(--black);
+      @include roundeNormal;
+      @include H5;
+      &>span{
+        padding: 0px 5px;
+      }
+      &:nth-child(1),&:nth-child(2){
+        margin-top:0px;
+      }
     }
   }
 
@@ -56,9 +80,12 @@
   }
 
   &__export-text {
-    color: var(--primary-blue);
+    color: var(--white);
     cursor: pointer;
     font-weight: 500;
+    &:hover{
+      color:var(--white);
+    }
   }
 
   button {
@@ -67,7 +94,7 @@
 
   &__buttons {
     display: flex;
-    margin-top: 10px;
+    margin-top: 30px;
 
     .first-time-flow__button:last-of-type {
       margin-left: 10px;

@@ -1,32 +1,46 @@
 .confirm-seed-phrase {
   &__back-button {
+    margin-top: 45px;
     margin-bottom: 12px;
   }
 
   &__sorted-seed-words {
-    max-width: $break-small;
+    max-width: 600px;
+    margin-bottom: 40px;
   }
+  
 
   &__seed-word {
+    position: relative;
     display: inline-flex;
     flex-flow: row nowrap;
     align-items: center;
     justify-content: center;
     padding: 8px 18px;
-    width: 128px;
-    height: 41px;
-    margin: 4px;
+    width: 42%;
+    height: 24px;
+    margin: 10px 0px;
     text-align: center;
     border-radius: 4px;
     cursor: move;
+    border-radius: 10px;
 
     &--sorted {
       cursor: pointer;
       margin: 6px;
+      width: 136px;
+      height: 36px;
+      border-radius: 20px;
     }
 
     &--selected {
       color: var(--white);
+      background: var(--gray-3);
+      border: transparent;
+      &:hover{
+        background: var(--gray-3);
+        border: transparent;
+      }
     }
 
     &--dragging {
@@ -36,12 +50,14 @@
     &--empty {
       background-color: transparent;
       border-color: transparent;
+      background: transparent;
+      border: 1px dashed var(--gray-4);
       cursor: default;
-
+      margin-bottom: 12px;
       &:hover,
       &:active {
         background-color: transparent;
-        border-color: transparent;
+        border-color: var(--gray-4);
         cursor: default;
         box-shadow: none !important;
       }
@@ -69,13 +85,14 @@
     direction: ltr;
     display: flex;
     flex-flow: row wrap;
+    justify-content: space-around;
     min-height: 161px;
-    max-width: $break-small;
+    max-width: 640px;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
     background-color: var(--white);
     margin: 24px 0 36px;
-    padding: 12px;
+    padding: 24px 10px 24px 40px;
 
     &__pending-seed {
       display: none;
@@ -98,5 +115,10 @@
         display: none;
       }
     }
+  }
+  &__index{
+    position: absolute;
+    left: -32px;
+    color:var(--black);
   }
 }

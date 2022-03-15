@@ -2,20 +2,67 @@
   &__form {
     display: flex;
     flex-direction: column;
-    width: 360px;
-  }
+    width: 100%;
+    & #create-new-vault__srp{
+      &::placeholder{
+        color:var(--gray-3);
+      }
+    }
 
+    & #password, #confirm-password{
+      &::placeholder{
+        color:var(--gray-3);
+      }
+    }
+
+    & #password-label, #confirm-password-label{
+      color:var(--white);
+      @include roundeBold;
+    }
+
+    & .TextField-inputRoot-12{
+      background-color: var(--white);
+    }
+  }
+  &__txt{
+    color:var(--white);
+    @include roundeBold;
+  }
   &__srp-shown {
     @include Paragraph;
-
+    height: 100px;
+    border-radius: 4px;
     padding: 8px 16px;
+    &::placeholder{
+      color:var(--gray-3);
+    }
+  }
+  
+  &__show-btn{
+    position: absolute;
+    right: 0;
+    &>button{
+      background-color: transparent;
+      border: transparent;
+      outline: none;
+      color:var(--white);
+      @include H5;
+      @include roundeNormal;
+    }
   }
 
   &__srp-section {
     display: flex;
     flex-direction: column;
+    position: relative;
+    margin-bottom: 30px;
+    & .TextField-inputRoot-12 {
+      background-color: var(--white);
+      height: 100px;
+      border-radius: 4px;
+    }
   }
-
+  
   &__srp-label {
     margin-bottom: 8px;
   }
@@ -33,21 +80,47 @@
     margin-left: 8px;
   }
 
+  &__password-wrap{
+    position: relative;
+    &>div:nth-child(1){
+      width: 100%;
+    }
+    &-btn{
+      position: absolute;
+      top:10px;
+      right: 0;
+      &>button{
+        background-color: transparent;
+        border: transparent;
+        outline: none;
+        color:var(--white);
+        @include H5;
+        @include roundeNormal;
+      }
+    }
+  }
+
   &__terms {
     margin-top: 16px;
     margin-bottom: 16px;
+    display: flex;
+    align-items: center;
   }
-
+  &__terms-txt{
+    color:var(--white);
+  }
   &__terms-label {
     margin-left: 8px;
   }
 
   &__terms-link {
-    color: var(--primary-1);
+    color: var(--white);
+    text-decoration: underline;
   }
 
   &__submit-button#{&}__submit-button {
     margin-top: 16px;
-    width: 170px;
+    width: 312px;
+    height: 40px;
   }
 }

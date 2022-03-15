@@ -48,19 +48,23 @@ export default class Welcome extends PureComponent {
     return (
       <div className="welcome-page__wrapper">
         <div className="welcome-page">
-          <Mascot
+          {/* <Mascot
             animationEventEmitter={this.animationEventEmitter}
             width="125"
             height="125"
-          />
+          /> */}
+          <img src='./images/alphaCarbon/logo.png' alt="alpha-carbon-logo" />
           {isBeta() ? <BetaWelcomeFooter /> : <WelcomeFooter />}
-          <Button
-            type="primary"
-            className="first-time-flow__button"
-            onClick={this.handleContinue}
-          >
-            {t('getStarted')}
-          </Button>
+          <div className="first-time-flow__button-wrap">
+            <Button
+              type="secondaryGradient"
+              className="first-time-flow__button"
+              onClick={this.handleContinue}
+            >
+              {t('getStarted')}
+            </Button>
+          </div>
+
         </div>
       </div>
     );

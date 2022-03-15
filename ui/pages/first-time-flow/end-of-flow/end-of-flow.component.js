@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import Snackbar from '../../../components/ui/snackbar';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
+// import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import AlphaCarbonLogo from '../../../components/ui/alpha-carbon-logo';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { returnToOnboardingInitiator } from '../onboarding-initiator-util';
@@ -68,7 +69,12 @@ export default class EndOfFlowScreen extends PureComponent {
 
     return (
       <div className="end-of-flow">
-        <MetaFoxLogo />
+        {/* <MetaFoxLogo /> */}
+        <div className="end-of-flow-logo-wrap">
+          <AlphaCarbonLogo />
+          <span>{t('carbonWallet')}</span>
+        </div>
+
         <div className="end-of-flow__emoji">🎉</div>
         <div className="first-time-flow__header">{t('congratulations')}</div>
         <div className="first-time-flow__text-block end-of-flow__text-1">
@@ -117,7 +123,7 @@ export default class EndOfFlowScreen extends PureComponent {
           </a>
         </div>
         <Button
-          type="primary"
+          type="secondaryGradient"
           className="first-time-flow__button"
           onClick={this.onComplete}
         >

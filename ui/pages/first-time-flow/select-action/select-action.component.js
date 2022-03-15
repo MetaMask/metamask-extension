@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
-import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE } from '../../../helpers/constants/routes';
+import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE, INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE, INITIALIZE_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 
 export default class SelectAction extends PureComponent {
   static propTypes = {
@@ -26,12 +26,12 @@ export default class SelectAction extends PureComponent {
 
   handleCreate = () => {
     this.props.setFirstTimeFlowType('create');
-    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE);
   };
 
   handleImport = () => {
     this.props.setFirstTimeFlowType('import');
-    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    this.props.history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE);
   };
 
   render() {
@@ -39,16 +39,24 @@ export default class SelectAction extends PureComponent {
 
     return (
       <div className="select-action">
-        <MetaFoxLogo />
+        {/* <MetaFoxLogo /> */}
 
         <div className="select-action__wrapper">
           <div className="select-action__body">
+
+            <img src='./images/alphaCarbon/logo.png' alt="alpha-carbon-logo" />
             <div className="select-action__body-header">
-              {t('newToMetaMask')}
+              {t('carbonWallet')}
+            </div>
+            <div className="select-action__body-header-title">
+              {t('extension')}
+            </div>
+            <div className="select-action__body-header-description">
+              <p>{t('createGetStart')}</p>
             </div>
             <div className="select-action__select-buttons">
               <div className="select-action__select-button">
-                <div className="select-action__button-content">
+                {/* <div className="select-action__button-content">
                   <div className="select-action__button-symbol">
                     <img src="./images/download-alt.svg" alt="" />
                   </div>
@@ -58,9 +66,9 @@ export default class SelectAction extends PureComponent {
                   <div className="select-action__button-text-small">
                     {t('importYourExisting')}
                   </div>
-                </div>
+                </div> */}
                 <Button
-                  type="primary"
+                  type="primaryGradient"
                   className="first-time-flow__button"
                   onClick={this.handleImport}
                 >
@@ -68,19 +76,19 @@ export default class SelectAction extends PureComponent {
                 </Button>
               </div>
               <div className="select-action__select-button">
-                <div className="select-action__button-content">
+                {/* <div className="select-action__button-content">
                   <div className="select-action__button-symbol">
                     <img src="./images/thin-plus.svg" alt="" />
-                  </div>
+                  </div> 
                   <div className="select-action__button-text-big">
                     {t('letsGoSetUp')}
                   </div>
                   <div className="select-action__button-text-small">
                     {t('thisWillCreate')}
                   </div>
-                </div>
+                </div> */}
                 <Button
-                  type="primary"
+                  type="secondaryGradient"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
                 >

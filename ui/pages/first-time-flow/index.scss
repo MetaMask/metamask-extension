@@ -7,9 +7,10 @@
 
 .first-time-flow {
   width: 100%;
-  background-color: var(--white);
+  background: var(--primary-background);
   display: flex;
   justify-content: center;
+  color:var(--gray-3);
 
   &__wrapper {
     @media screen and (min-width: $break-large) {
@@ -28,6 +29,30 @@
       }
     }
   }
+  &__logo{
+    display: flex;
+    align-items: center;
+
+    &-wrap{
+      display: flex;
+      align-items: center;
+      &>span{
+        color:var(--white);
+        @include H4;
+        @include roundeNormal;
+      }
+    }
+    &>img{
+      width: 33px;
+      // height: 37px;
+      margin-right: 10px;
+    }
+    &>p{
+      @include H3;
+      @include roundeNormal;
+      color:var(--white);
+    }
+  }
 
   &__import,
   &__form {
@@ -36,6 +61,7 @@
   }
 
   &__create-back {
+    margin-top: 44px;
     margin-bottom: 16px;
   }
 
@@ -43,16 +69,50 @@
     @include H1;
 
     margin-bottom: 24px;
-    color: black;
+    color: var(--white);
   }
-
+  &__inputWrap{
+    position: relative;
+    & .TextField-inputRoot-27 {
+      background-color: var(--white);
+    }
+  }
+  &__show_btn{
+    position: absolute;
+    right: 0;
+    top: 15px;
+    border: transparent;
+    background-color: transparent;
+    outline: none;
+    color:var(--white);
+    @include roundeNormal;
+    @include H5;
+  }
   &__input {
-    max-width: 350px;
+    max-width: 100%;
+    &>label{
+      color:var(--white) !important;
+    }
+    & .TextField-inputRoot-12{
+      background: #FFFFFF;
+      border: 1px solid #222222;
+      border-radius: 4px;
+      height: 32px;
+      padding: 0px 8px;
+    }
+    & #create-password , #confirm-password{
+      &::placeholder{
+        font-size: 13px;
+        color:var(--gray-3);
+        @include roundeNormal;
+      }
+    }
+    
   }
 
   &__text-block {
     margin-bottom: 24px;
-    color: black;
+    color: var(--gray-3);
 
     @media screen and (max-width: $break-small) {
       @include H6;
@@ -62,45 +122,49 @@
   }
 
   &__button {
-    margin: 35px 0 14px;
-    width: 170px;
-    height: 44px;
+    // margin: 35px 0 14px;
+    width: 312px;
+    height: 40px;
   }
 
   &__checkbox-container {
     display: flex;
     align-items: center;
     margin-top: 24px;
+    margin-bottom: 80px;
   }
 
   &__checkbox {
-    background: #fff;
-    border: 1px solid #cdcdcd;
+    background: transparent;
     box-sizing: border-box;
-    height: 34px;
-    width: 34px;
+    height: 16px;
+    width: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid #FFFFFF;
+    border-radius: 4px;
 
     &:hover {
       border: 1.5px solid #2f9ae0;
     }
 
     .fa-check {
-      color: #2f9ae0;
+      color: var(--white);
     }
   }
 
   &__checkbox-label {
     @include H4;
+    @include roundeNormal;
 
-    color: #939090;
-    margin-left: 18px;
+    color: var(--white);
+    margin-left: 8px;
   }
 
   &__link-text {
-    color: var(--primary-blue);
+    color: var(--white);
+    text-decoration: underline;
   }
 }
 
@@ -110,6 +174,17 @@
   }
 
   @media screen and (max-width: 1010px) {
+    padding: 0 20px;
+  }
+}
+
+.first-time-flow__wrapper.seedPhrase {
+  @media screen and (min-width: $break-large) {
+    max-width: 1200px;
+  }
+
+  @media screen and (max-width: 1200px) {
+    max-width: 640px;
     padding: 0 20px;
   }
 }

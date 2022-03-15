@@ -42,14 +42,14 @@ export default function SeedPhraseIntro() {
       <div className="seed-phrase-intro__sections">
         <div className="seed-phrase-intro__left">
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.WHITE}
             variant={TYPOGRAPHY.H1}
             boxProps={{ marginTop: 0, marginBottom: 4 }}
           >
             {t('seedPhraseIntroTitle')}
           </Typography>
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.WHITE}
             boxProps={{ marginBottom: 4 }}
             variant={TYPOGRAPHY.Paragraph}
             className="seed-phrase-intro__copy"
@@ -77,7 +77,7 @@ export default function SeedPhraseIntro() {
             </video>
           </Box>
           <Box width={BLOCK_SIZES.ONE_THIRD}>
-            <Button type="primary" onClick={handleNextStep}>
+            <Button type="primaryGradient" onClick={handleNextStep}>
               {t('next')}
             </Button>
           </Box>
@@ -93,7 +93,7 @@ export default function SeedPhraseIntro() {
             <Box marginBottom={4}>
               <Typography
                 tag="span"
-                color={COLORS.BLACK}
+                color={COLORS.WHITE}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
               >
@@ -104,7 +104,7 @@ export default function SeedPhraseIntro() {
             <Box marginBottom={4}>
               <Typography
                 tag="span"
-                color={COLORS.BLACK}
+                color={COLORS.WHITE}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
               >
@@ -120,7 +120,7 @@ export default function SeedPhraseIntro() {
             <Box marginBottom={4}>
               <Typography
                 tag="span"
-                color={COLORS.BLACK}
+                color={COLORS.WHITE}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
               >

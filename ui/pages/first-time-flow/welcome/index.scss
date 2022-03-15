@@ -5,33 +5,32 @@
   align-items: center;
   max-width: 442px;
   padding: 0 18px;
-  color: black;
+  color: var(--white);
 
   &__wrapper {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     height: 100%;
-    margin-top: 110px;
   }
 
   &__header {
     @include H3;
-
-    margin-bottom: 22px;
-    margin-top: 50px;
+    @include roundeBold;
+    margin-top: 12px;
+    margin-bottom: 16px;
     text-align: center;
   }
 
   &__description {
     text-align: center;
-
+    color:var(--gray-3);
     p {
       @include Paragraph;
 
-      text-align: start;
-      margin-bottom: 22px;
+      text-align: center;
+      margin-bottom: 40px;
     }
 
     a {
@@ -44,8 +43,21 @@
   }
 
   .first-time-flow__button {
-    width: 184px;
+    &-wrap{
+      margin-top: 44px;
+      position: relative;
+    }
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 312px;
+    height: 40px;
     font-weight: 500;
-    margin-top: 44px;
+    transition: ease-in-out .4s;
+    transform-origin: center;
+    &:hover{
+      // width: 316px;
+      // height: 44px;
+    }
   }
 }

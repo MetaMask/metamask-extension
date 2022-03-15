@@ -85,7 +85,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           </a>
         </div>
         <div className="first-time-flow__header">
-          {t('importAccountSeedPhrase')}
+          {t('importFromSeed')}
         </div>
         <div className="first-time-flow__text-block">{t('secretPhrase')}</div>
         <CreateNewVault

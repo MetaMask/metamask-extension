@@ -187,7 +187,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           })}
         </div>
         <Button
-          type="primary"
+          type="secondaryGradient"
           className="first-time-flow__button"
           onClick={this.handleSubmit}
           disabled={!this.isValid()}
@@ -220,6 +220,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
           setHoveringIndex={this.setHoveringIndex}
           onDrop={this.onDrop}
           draggable
+          indexShow
         />
       );
     });

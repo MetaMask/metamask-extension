@@ -1,9 +1,10 @@
 .select-action {
+  display: flex;
+  align-items: center;
   .app-header__logo-container {
     width: 742px;
     margin-top: 3%;
   }
-
   &__body {
     display: flex;
     flex-direction: column;
@@ -11,35 +12,51 @@
   }
 
   &__body-header {
-    @include H3;
+    @include H2;
 
     text-align: center;
-    margin-top: 65px;
-    color: black;
+    margin-top: 28px;
+    color: var(--white);
+    @include roundeBold;
+    &-title{
+      color:var(--gray-3);
+      @include H3;
+      @include roundeNormal;
+    }
+    &-description{
+      color:var(--gray-3);
+    }
   }
 
   &__select-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    margin-top: 40px;
+    // display: grid;
+    // grid-template-columns: repeat(2, 1fr);
+    // gap: 24px;
+    // margin-top: 40px;
+    margin-top: 110px;
   }
 
   &__select-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
-    width: 388px;
-    height: 278px;
-    border: 1px solid #d8d8d8;
+    // justify-content: space-evenly;
+    // width: 388px;
+    // height: 278px;
+    // border: 1px solid #d8d8d8;
     box-sizing: border-box;
-    border-radius: 10px;
-    padding: 8px;
+    // border-radius: 10px;
+    padding: 12px;
 
     .first-time-flow__button {
-      max-width: 221px;
-      height: 44px;
+      max-width: 312px;
+      height: 40px;
+      // transition: ease-in-out .4s;
+      // transform-origin: center;
+      &:hover{
+      //   max-width: 316px;
+      // height: 44px;
+      }
     }
   }
 
@@ -53,7 +70,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 144px;
+    // height: 144px;
   }
 
   &__button-text-big {
@@ -74,6 +91,6 @@
 
   button {
     font-weight: 500;
-    width: 221px;
+    width: 312px;
   }
 }

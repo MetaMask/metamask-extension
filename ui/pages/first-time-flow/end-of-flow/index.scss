@@ -2,15 +2,16 @@
   color: black;
   font-style: normal;
 
-  .app-header__logo-container {
-    width: 742px;
+  &-logo-wrap{
+    display: flex;
+    align-items: center;
     margin-top: 3%;
-
-    @media screen and (max-width: $break-small) {
-      width: 100%;
+    &>span{
+      @include roundeNormal;
+      @include H5;
+      color:var(--white);
     }
   }
-
   &__text-1,
   &__text-3 {
     @include Paragraph;
@@ -21,18 +22,17 @@
 
   &__text-2 {
     @include Paragraph;
-
-    font-weight: bold;
+    @include roundeBold;
+    color: var(--white);
     margin-top: 26px;
   }
 
   &__text-3 {
     margin-top: 2px;
     margin-bottom: 2px;
-
+    color:var(--gray-3);
     @media screen and (max-width: $break-small) {
       @include H6;
-
       margin-bottom: 16px;
     }
   }
@@ -42,7 +42,8 @@
   }
 
   button {
-    width: 207px;
+    width: 312px;
+    height: 40px;
   }
 
   &__start-over-button {
@@ -51,6 +52,6 @@
 
   &__emoji {
     font-size: 80px;
-    margin-top: 70px;
+    margin-top: 30px;
   }
 }

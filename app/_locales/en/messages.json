@@ -1951,7 +1951,7 @@
     "message": "“$1” was successfully added!"
   },
   "newPassword": {
-    "message": "New password (min 8 chars)"
+    "message": "New password"
   },
   "newToMetaMask": {
     "message": "New to MetaMask?"
@@ -3780,5 +3780,17 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "carbonWallet":{
+    "message": "Carbon Wallet"
+  },
+  "extension":{
+    "message": "Extension"
+  },
+  "createGetStart":{
+    "message": "To get started, create a new wallet or use one you already have."
+  },
+  "importFromSeed":{
+    "message": "Import from seed"
   }
 }

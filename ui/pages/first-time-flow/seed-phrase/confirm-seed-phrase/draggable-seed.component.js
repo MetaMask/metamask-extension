@@ -18,6 +18,7 @@ class DraggableSeed extends Component {
     word: PropTypes.string,
     className: PropTypes.string,
     selected: PropTypes.bool,
+    indexShow: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -44,6 +45,7 @@ class DraggableSeed extends Component {
       onClick,
       isOver,
       canDrop,
+      indexShow,
     } = this.props;
 
     return connectDropTarget(
@@ -51,7 +53,7 @@ class DraggableSeed extends Component {
         <div
           key={index}
           className={classnames(
-            'btn-secondary notranslate confirm-seed-phrase__seed-word',
+            'btn-secondary-3 notranslate confirm-seed-phrase__seed-word',
             className,
             {
               'confirm-seed-phrase__seed-word--selected btn-primary': selected,
@@ -64,6 +66,7 @@ class DraggableSeed extends Component {
           onClick={onClick}
           data-testid={`draggable-seed-${selected ? 'selected-' : ''}${word}`}
         >
+          {indexShow ? <span className='confirm-seed-phrase__index'>{index + 1}.</span> : null}
           {word}
         </div>,
       ),

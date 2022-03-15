@@ -20,8 +20,12 @@ export default function CreateNewVault({
   submitText,
 }) {
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
+  const [confirmPasswordType, setConfirmPasswordType] = useState('password');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordShow, setPasswordShow] = useState(false);
+  const [passwordType, setPasswordType] = useState('password');
   const [passwordError, setPasswordError] = useState('');
   const [seedPhrase, setSeedPhrase] = useState('');
   const [seedPhraseError, setSeedPhraseError] = useState('');
@@ -144,7 +148,8 @@ export default function CreateNewVault({
           htmlFor="create-new-vault__srp"
           className="create-new-vault__srp-label"
         >
-          <Typography>{t('secretRecoveryPhrase')}</Typography>
+          {/* <Typography>{t('secretRecoveryPhrase')}</Typography> */}
+          <p className="create-new-vault__txt">{t('secretRecoveryPhrase')}</p>
         </label>
         {showSeedPhrase ? (
           <textarea
@@ -176,7 +181,12 @@ export default function CreateNewVault({
             {seedPhraseError}
           </Typography>
         ) : null}
-        <div className="create-new-vault__show-srp">
+        <div className='create-new-vault__show-btn'>
+          <button onClick={toggleShowSeedPhrase}>
+            {showSeedPhrase ? t('hide') : t('show')}
+          </button>
+        </div>
+        {/* <div className="create-new-vault__show-srp">
           <CheckBox
             id="create-new-vault__show-srp-checkbox"
             checked={showSeedPhrase}
@@ -189,30 +199,59 @@ export default function CreateNewVault({
           >
             <Typography tag="span">{t('showSeedPhrase')}</Typography>
           </label>
+        </div> */}
+      </div>
+      <div className='create-new-vault__password-wrap'>
+        <TextField
+          id="password"
+          label={t('newPassword')}
+          type={passwordType}
+          value={password}
+          onChange={(event) => onPasswordChange(event.target.value)}
+          error={passwordError}
+          autoComplete="new-password"
+          margin="normal"
+          largeLabel
+          placeholder={t('newPassword')}
+        />
+        <div className='create-new-vault__password-wrap-btn'>
+          <button onClick={(e) => {
+            e.preventDefault();
+            !passwordShow ?
+              setPasswordType('text') :
+              setPasswordType('password')
+            setPasswordShow(!passwordShow)
+          }}>
+            {passwordShow ? t('hide') : t('show')}
+          </button>
         </div>
       </div>
-      <TextField
-        id="password"
-        label={t('newPassword')}
-        type="password"
-        value={password}
-        onChange={(event) => onPasswordChange(event.target.value)}
-        error={passwordError}
-        autoComplete="new-password"
-        margin="normal"
-        largeLabel
-      />
-      <TextField
-        id="confirm-password"
-        label={t('confirmPassword')}
-        type="password"
-        value={confirmPassword}
-        onChange={(event) => onConfirmPasswordChange(event.target.value)}
-        error={confirmPasswordError}
-        autoComplete="new-password"
-        margin="normal"
-        largeLabel
-      />
+      <div className='create-new-vault__password-wrap'>
+        <TextField
+          id="confirm-password"
+          label={t('confirmPassword')}
+          type={confirmPasswordType}
+          value={confirmPassword}
+          onChange={(event) => onConfirmPasswordChange(event.target.value)}
+          error={confirmPasswordError}
+          autoComplete="new-password"
+          margin="normal"
+          largeLabel
+          placeholder={t('confirmPassword')}
+        />
+        <div className='create-new-vault__password-wrap-btn'>
+          <button onClick={(e) => {
+            e.preventDefault();
+            !confirmPasswordShow ?
+              setConfirmPasswordType('text') :
+              setConfirmPasswordType('password')
+            setConfirmPasswordShow(!confirmPasswordShow)
+          }}>
+            {showSeedPhrase ? t('hide') : t('show')}
+          </button>
+        </div>
+      </div>
+
       {includeTerms ? (
         <div className="create-new-vault__terms">
           <CheckBox
@@ -225,13 +264,14 @@ export default function CreateNewVault({
             className="create-new-vault__terms-label"
             htmlFor="create-new-vault__terms-checkbox"
           >
-            <Typography tag="span">{termsOfUse}</Typography>
+            {/* <Typography tag="span">{termsOfUse}</Typography> */}
+            <span className="create-new-vault__terms-txt">{termsOfUse}</span>
           </label>
         </div>
       ) : null}
       <Button
         className="create-new-vault__submit-button"
-        type="primary"
+        type="secondaryGradient"
         submit
         disabled={!isValid}
       >

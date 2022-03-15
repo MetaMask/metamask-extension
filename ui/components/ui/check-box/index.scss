@@ -1,18 +1,20 @@
 .check-box {
   -webkit-appearance: none;
   appearance: none;
-  background: var(--white);
-  color: var(--Grey-100);
+  // background: var(--white);
+  background: transparent;
+  color: var(--white);
   width: 18px;
   height: 18px;
   font-size: 21px;
   line-height: 0.9;
-  border-radius: 2px;
+  border-radius: 4px;
   display: flex;
 
   &__checked,
   &__indeterminate {
-    color: var(--primary-blue);
+    // color: var(--primary-blue);
+    color: var(--white);
     border-color: var(--primary-blue);
   }
 

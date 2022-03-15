@@ -21,19 +21,32 @@
   }
 
   &__side {
-    flex: 2;
     min-width: 0;
-
-    @media screen and (min-width: $break-large) {
-      margin-left: 81px;
-    }
-
-    @media screen and (max-width: $break-small) {
+    max-width: 308px;
+    background:rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-left: 40px;
+    @media screen and (max-width: $break-normalpoint) {
       margin-top: 24px;
+      margin-left: 0px;
+      margin-bottom: 30px;
+      max-width: 100%;
     }
 
     .first-time-flow__text-block {
-      color: #5a5a5a;
+      padding: 16px;
+      color: var(--white);
+      @media screen and (max-width: $break-normalpoint) {
+        padding: 8px 16px;
+        margin-bottom: 0px;
+      }
+      &__bottom{
+        margin-bottom: 16px;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #227BFF;;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        
+      }
     }
   }
 }
