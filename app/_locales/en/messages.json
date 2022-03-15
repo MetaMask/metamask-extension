@@ -3519,8 +3519,14 @@
   "tokenDetails": {
     "message": "Token details"
   },
+  "tokenDetection": {
+    "message": "Token detection"
+  },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
+  },
+  "tokenDetectionToggleDescription": {
+    "message": "ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import."
   },
   "tokenId": {
     "message": "Token ID"

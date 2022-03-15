@@ -35,6 +35,7 @@ const metamaskrc = require('rc')('metamask', {
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
   DARK_MODE_V1: process.env.DARK_MODE_V1,
+  TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
@@ -812,6 +813,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     DARK_MODE_V1: metamaskrc.DARK_MODE_V1 === '1',
+    TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
   };
 }
 
