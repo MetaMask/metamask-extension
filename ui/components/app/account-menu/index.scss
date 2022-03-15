@@ -51,9 +51,8 @@
     }
 
     &__icon {
-      height: 16px;
-      width: 16px;
-      margin-right: 14px;
+      margin-right: 8px;
+      display: flex;
     }
 
     &__text {
@@ -114,11 +113,6 @@
     &:active {
       background-color: rgba($dusty-gray, 0.1);
     }
-  }
-
-  &__item-icon {
-    width: 16px;
-    height: 16px;
   }
 
   &__accounts-container {
@@ -202,19 +196,8 @@
   }
 
   &__check-mark {
-    width: 14px;
-    margin-right: 12px;
+    margin-right: 8px;
     flex: 0 0 auto;
-  }
-
-  &__check-mark-icon {
-    background-image: url("/images/check-white.svg");
-    height: 18px;
-    width: 18px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    margin: 3px 0;
   }
 
   .identicon {
