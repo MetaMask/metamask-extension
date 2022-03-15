@@ -41,7 +41,12 @@
 
   &.chip {
     margin: 0;
-    max-width: 100%;
+    max-width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 180px;
   }
 
   & .chip__label {
@@ -55,7 +60,8 @@
   }
 
   & .chip__right-icon {
-    margin-right: 4px;
+   position: absolute;
+   right: 12px;
   }
 
   &__icon {

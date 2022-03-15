@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/constants/network';
 
 import LoadingIndicator from '../../ui/loading-indicator';
-import ColorIndicator from '../../ui/color-indicator';
+// import ColorIndicator from '../../ui/color-indicator';
 import {
   COLORS,
   SIZES,
@@ -36,8 +36,8 @@ export default function NetworkDisplay({
   const frequentRpcListDetail = useSelector((state) => (
     state.metamask.frequentRpcListDetail
   ));
-  const selectedNetwork = frequentRpcListDetail.filter((network) => network.nickname === currentNetwork.nickname)[0]
-  const labelKey = selectedNetwork ? selectedNetwork.labelKey : COLORS.UI4
+  // const selectedNetwork = frequentRpcListDetail.filter((network) => network.nickname === currentNetwork.nickname)[0]
+  // const labelKey = selectedNetwork ? selectedNetwork.labelKey : COLORS.UI4
 
   const t = useI18nContext();
 
@@ -46,7 +46,7 @@ export default function NetworkDisplay({
 
   return (
     <Chip
-      borderColor={outline ? COLORS.UI3 : COLORS.TRANSPARENT}
+      borderColor={outline ? COLORS.GRAY3 : COLORS.TRANSPARENT}
       onClick={onClick}
       leftIcon={
         <LoadingIndicator
@@ -54,16 +54,16 @@ export default function NetworkDisplay({
           title={t('attemptingConnect')}
           isLoading={networkIsLoading}
         >
-          <ColorIndicator
+          {/* <ColorIndicator
             color={labelKey}
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
-          // iconClassName={
-          //   networkType === NETWORK_TYPE_RPC && indicatorSize !== SIZES.XS
-          //     ? 'fa fa-question'
-          //     : undefined
-          // }
-          />
+          iconClassName={
+            networkType === NETWORK_TYPE_RPC && indicatorSize !== SIZES.XS
+              ? 'fa fa-question'
+              : undefined
+          }
+          /> */}
         </LoadingIndicator>
       }
       rightIcon={

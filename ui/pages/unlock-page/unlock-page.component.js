@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
-import Mascot from '../../components/ui/mascot';
+// import Mascot from '../../components/ui/mascot';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
@@ -88,7 +88,8 @@ export default class UnlockPage extends Component {
         newState.participateInMetaMetrics === null ||
         newState.participateInMetaMetrics === undefined
       ) {
-        showOptInModal();
+        //close MetaMetricsOptInModal 
+        // showOptInModal();
       }
     } catch ({ message }) {
       if (message === 'Incorrect password') {
@@ -128,18 +129,18 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton() {
     const style = {
-      backgroundColor: '#037dd6',
       color: 'white',
       marginTop: '20px',
-      height: '60px',
-      fontWeight: '400',
+      height: '40px',
+      fontWeight: '700',
       boxShadow: 'none',
-      borderRadius: '100px',
+      borderRadius: '20px',
+      width: '240px',
     };
 
     return (
       <Button
-        type="submit"
+        type="primaryGradient"
         style={style}
         disabled={!this.state.password}
         variant="contained"
@@ -160,14 +161,15 @@ export default class UnlockPage extends Component {
       <div className="unlock-page__container">
         <div className="unlock-page">
           <div className="unlock-page__mascot-container">
-            <Mascot
+            {/* <Mascot
               animationEventEmitter={this.animationEventEmitter}
               width="120"
               height="120"
-            />
+            /> */}
+            <img src="./images/alphaCarbon/logo_gradient.svg" alt="AlphaCarbon" />
           </div>
-          <h1 className="unlock-page__title">{t('welcomeBack')}</h1>
-          <div>{t('unlockMessage')}</div>
+          <h1 className="unlock-page__title">{t('carbonWallet')}</h1>
+          {/* <div>{t('unlockMessage')}</div> */}
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
@@ -178,8 +180,9 @@ export default class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
-              theme="material"
+              // theme="material"
               fullWidth
+              placeholder={t('password')}
             />
           </form>
           {this.renderSubmitButton()}
@@ -194,7 +197,7 @@ export default class UnlockPage extends Component {
               </button>,
             ])}
           </div>
-          <div className="unlock-page__support">
+          {/* <div className="unlock-page__support">
             {t('needHelp', [
               <a
                 href={SUPPORT_LINK}
@@ -205,7 +208,7 @@ export default class UnlockPage extends Component {
                 {t('needHelpLinkText')}
               </a>,
             ])}
-          </div>
+          </div> */}
         </div>
       </div>
     );

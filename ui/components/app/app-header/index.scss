@@ -1,6 +1,6 @@
 .app-header {
   align-items: center;
-  background: var(--Grey-000);
+  background: var(--background);
   position: relative;
   z-index: $header-z-index;
   display: flex;
@@ -96,6 +96,9 @@
     flex: 1 0 auto;
     width: 0;
     justify-content: flex-end;
+    &.center{
+      justify-content: center;
+    }
   }
 
   &__network-down-arrow {
