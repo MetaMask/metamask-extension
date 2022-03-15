@@ -6,7 +6,6 @@ import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import {
   NETWORK_TO_NAME_MAP,
-  NETWORKS_FOR_BUYING_TOKENS,
 } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
@@ -98,6 +97,7 @@ export default class ConfirmPageContainer extends Component {
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     showBuyModal: PropTypes.func,
+    isBuyableTransakChain: PropTypes.bool,
   };
 
   render() {
@@ -152,6 +152,7 @@ export default class ConfirmPageContainer extends Component {
       supportsEIP1559V2,
       nativeCurrency,
       showBuyModal,
+      isBuyableTransakChain,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -258,11 +259,12 @@ export default class ConfirmPageContainer extends Component {
               showBuyModal={showBuyModal}
               toAddress={toAddress}
               transactionType={currentTransaction.type}
+              isBuyableTransakChain={isBuyableTransakChain}
             />
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
-              {NETWORKS_FOR_BUYING_TOKENS.indexOf(currentTransaction.chainId) !== -1 ? (
+              {isBuyableTransakChain ? (
                 <ActionableMessage
                   message={
                     <Typography variant={TYPOGRAPHY.H7} align="left">
@@ -272,7 +274,7 @@ export default class ConfirmPageContainer extends Component {
                         className="page-container__link"
                         onClick={showBuyModal}
                       >
-                        {t('buyEth', [nativeCurrency])}
+                        {t('buyToken', [nativeCurrency])}
                       </Button>
 
                       {t('orDeposit')}

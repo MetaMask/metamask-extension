@@ -10,8 +10,6 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import { NETWORKS_FOR_BUYING_TOKENS } from '../../../../../shared/constants/network';
-
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -57,6 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     showBuyModal: PropTypes.func,
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
+    isBuyableTransakChain: PropTypes.bool,
   };
 
   renderContent() {
@@ -132,6 +131,7 @@ export default class ConfirmPageContainerContent extends Component {
       showBuyModal,
       toAddress,
       transactionType,
+      isBuyableTransakChain,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -197,7 +197,7 @@ export default class ConfirmPageContainerContent extends Component {
           )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
-            {NETWORKS_FOR_BUYING_TOKENS.indexOf(currentTransaction.chainId) !== -1 ? (
+            {isBuyableTransakChain ? (
               <ActionableMessage
                 className="actionable-message--warning"
                 message={
@@ -209,7 +209,7 @@ export default class ConfirmPageContainerContent extends Component {
                       className="confirm-page-container-content__link"
                       onClick={showBuyModal}
                     >
-                      {t('buyEth', [nativeCurrency])}
+                      {t('buyToken', [nativeCurrency])}
                     </Button>
 
                     {t('orDeposit')}

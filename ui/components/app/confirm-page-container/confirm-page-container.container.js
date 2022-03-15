@@ -1,10 +1,11 @@
-import { connect } from 'react-redux';
-import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
+import { connect, useSelector } from 'react-redux';
+import { getAccountsWithLabels, getAddressBookEntry, getIsBuyableTransakChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
   const to = ownProps.toAddress;
+  const isBuyableTransakChain = useSelector(getIsBuyableTransakChain);
 
   const contact = getAddressBookEntry(state, to);
   return {
@@ -14,6 +15,7 @@ function mapStateToProps(state, ownProps) {
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),
     to,
+    isBuyableTransakChain,
   };
 }
 

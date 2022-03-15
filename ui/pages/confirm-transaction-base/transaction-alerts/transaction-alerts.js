@@ -12,7 +12,7 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { NETWORKS_FOR_BUYING_TOKENS } from '../../../../shared/constants/network';
+import { getIsBuyableTransakChain } from '../../../selectors';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -32,6 +32,7 @@ const TransactionAlerts = ({
   } = useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
+  const isBuyableTransakChain = useSelector(getIsBuyableTransakChain);
 
   if (!supportsEIP1559V2) {
     return null;
@@ -97,7 +98,7 @@ const TransactionAlerts = ({
         />
       )}
       {balanceError &&
-      NETWORKS_FOR_BUYING_TOKENS.indexOf(chainId) !== -1 &&
+      isBuyableTransakChain &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
@@ -109,7 +110,7 @@ const TransactionAlerts = ({
                 className="transaction-alerts__link"
                 onClick={showBuyModal}
               >
-                {t('buyEth', [nativeCurrency])}
+                {t('buyToken', [nativeCurrency])}
               </Button>{' '}
               {t('orDeposit')}
             </Typography>
@@ -120,7 +121,7 @@ const TransactionAlerts = ({
         />
       ) : null}
       {balanceError &&
-      NETWORKS_FOR_BUYING_TOKENS.indexOf(chainId) === -1 &&
+      !isBuyableTransakChain &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
