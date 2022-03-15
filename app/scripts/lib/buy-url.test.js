@@ -10,10 +10,7 @@ import {
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
 import { TRANSAK_API_KEY, MOONPAY_API_KEY } from '../constants/on-ramp';
-import {
-  SWAPS_API_V2_BASE_URL,
-  SWAPS_DEV_API_V2_BASE_URL,
-} from '../../../shared/constants/swaps';
+import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import getBuyUrl from './buy-url';
 
 const WYRE_ACCOUNT_ID = 'AC-7AG3W4XH4N2';
@@ -129,11 +126,10 @@ describe('buy-url', () => {
       showOnlyCurrencies,
     });
     const queryParams = new URLSearchParams({
-      url: `https://buy-sandbox.moonpay.com?${moonPayQueryParams}`,
-      // url: `https://buy.moonpay.com?${moonPayQueryParams}`, TODO: Use this line once prod is enabled.
+      url: `https://buy.moonpay.com?${moonPayQueryParams}`,
       context: 'extension',
     });
-    nock(SWAPS_DEV_API_V2_BASE_URL) // TODO: Use a prod URL once it's enabled.
+    nock(SWAPS_API_V2_BASE_URL)
       .get(`/moonpaySign/?${queryParams}`)
       .reply(200, {
         url: `https://buy.moonpay.com/?apiKey=${MOONPAY_API_KEY}&walletAddress=${MAINNET.address}&defaultCurrencyCode=${defaultCurrencyCode}&showOnlyCurrencies=eth%2Cusdt%2Cusdc%2Cdai&signature=laefTlgkESEc2hv8AZEH9F25VjLEJUADY27D6MccE54%3D`,
