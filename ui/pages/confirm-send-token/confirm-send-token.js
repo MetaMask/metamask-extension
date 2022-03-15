@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base/confirm-token-transaction-base';
 import { SEND_ROUTE } from '../../helpers/constants/routes';
-import { ASSET_TYPES, editTransaction } from '../../ducks/send';
+import { editTransaction } from '../../ducks/send';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -16,6 +16,7 @@ import {
 import { ERC20, ERC721 } from '../../helpers/constants/common';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 export default function ConfirmSendToken({
   assetStandard,
