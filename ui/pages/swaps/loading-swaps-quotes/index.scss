@@ -17,7 +17,7 @@
   &__quote-counter {
     @include H7;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-top: 3px;
     display: flex;
     justify-content: center;
@@ -123,7 +123,7 @@
   &__loading-bar-container {
     width: 248px;
     height: 3px;
-    background: var(--Grey-100);
+    background: var(--color-background-alternative);
     display: flex;
     margin-top: 16px;
   }

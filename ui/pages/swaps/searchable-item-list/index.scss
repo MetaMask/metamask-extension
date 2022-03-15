@@ -18,22 +18,22 @@
         line-height: 100%;
 
         &::-webkit-input-placeholder {
-          color: var(--color-text-muted); /* TODO */
+          color: var(--color-text-muted);
           opacity: 1;
         }
 
         &:-moz-placeholder {
-          color: var(--color-text-muted); /* TODO */
+          color: var(--color-text-muted);
           opacity: 1;
         }
 
         &::-moz-placeholder {
-          color: var(--color-text-muted); /* TODO */
+          color: var(--color-text-muted);
           opacity: 1;
         }
 
         &::placeholder {
-          color: var(--color-text-muted); /* TODO */
+          color: var(--color-text-muted);
           opacity: 1;
         }
       }

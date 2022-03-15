@@ -158,7 +158,7 @@
   }
 
   &__total-box {
-    border-top: 1px solid var(--Grey-100);
+    border-top: 1px solid var(--color-background-alternative);
     padding: 12px 16px 16px 16px;
   }
 
@@ -174,13 +174,13 @@
     display: flex;
     justify-content: flex-end;
     font-weight: bold;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-top: 4px;
   }
 
   &__row-header-secondary,
   &__row-header-secondary--bold {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__row-header-secondary,
@@ -189,7 +189,7 @@
   }
 
   &__row-header-primary {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__row-header-primary--bold {

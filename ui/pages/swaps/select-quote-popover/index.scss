@@ -28,7 +28,7 @@
   &__popover-bg {
     height: 100%;
     width: 100%;
-    background: var(--Grey-100);
+    background: var(--color-background-alternative);
     opacity: 1;
 
     @media screen and (min-width: $break-large) {
@@ -74,7 +74,7 @@
     cursor: pointer;
     color: var(--black);
     height: 49px;
-    border-bottom: 1px solid var(--Grey-100);
+    border-bottom: 1px solid var(--color-background-alternative);
     margin-bottom: 8px;
     border-radius: 8px;
     background: var(--Grey-000);
@@ -90,7 +90,7 @@
 
     &--no-hover {
       &:hover {
-        border: 1px solid var(--Grey-100);
+        border: 1px solid var(--color-background-alternative);
         width: 100%;
         padding-right: 12px;
         padding-left: 20px;
@@ -118,7 +118,7 @@
         color: var(--white);
 
         &:hover {
-          color: var(--Grey-500);
+          color: var(--color-text-alternative);
         }
       }
 
@@ -146,7 +146,7 @@
   }
 
   &__caret-right {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     width: 32px;
     height: 32px;
     display: flex;
@@ -211,7 +211,7 @@
 
 
   &__receiving-symbol {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
 
     > div {
       width: 12px;

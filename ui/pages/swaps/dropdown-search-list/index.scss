@@ -92,7 +92,7 @@
 
   &__search-list--open {
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border: 1px solid var(--Grey-100); /* TODO! */
+    border: 1px solid var(--color-background-alternative); /* TODO! */
   }
 
   &__default-dropdown-icon {
@@ -125,7 +125,7 @@
     @include H6;
 
     padding: 16px;
-    color: var(--Grey-500); /* TODO! */
+    color: var(--color-text-alternative); /* TODO! */
     min-height: 300px;
     position: relative;
     z-index: 1002;
@@ -149,7 +149,7 @@
     padding: 16px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border-top: 1px solid var(--Grey-100); /* TODO! */
+    border-top: 1px solid var(--color-background-alternative); /* TODO! */
     position: relative;
     z-index: 1;
     background: var(--color-background-default);
