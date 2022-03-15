@@ -812,9 +812,6 @@
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Atdaliet katru vārdu ar vienu atstarpi"
-  },
   "seedPhraseReq": {
     "message": "Atkopšanas frāzes ir 12 vārdus garas"
   },

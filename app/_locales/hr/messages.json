@@ -809,9 +809,6 @@
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
-  },
   "seedPhraseReq": {
     "message": "Početne rečenice imaju 12 riječi"
   },

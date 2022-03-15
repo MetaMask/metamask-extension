@@ -809,9 +809,6 @@
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
-  "seedPhrasePlaceholder": {
-    "message": "A szavakat egy-egy szóközzel válassza el"
-  },
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"
   },

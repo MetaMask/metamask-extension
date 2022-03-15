@@ -803,9 +803,6 @@
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
-  },
   "seedPhraseReq": {
     "message": "Expresiile seed sunt lungi de 12 cuvinte"
   },

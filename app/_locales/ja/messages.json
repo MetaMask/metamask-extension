@@ -2343,12 +2343,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "始める前に、この短いビデオを見て、シークレットリカバリーフレーズとウォレットを安全に保つ方法について確認してください。"
   },
-  "seedPhrasePlaceholder": {
-    "message": "単語ごとにスペースを1つ置いて分離します"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "クリップボードからシークレット リカバリー フレーズを貼り付けます"
-  },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
   },

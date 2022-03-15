@@ -810,9 +810,6 @@
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Oddziel słowa pojedynczą spacją"
-  },
   "seedPhraseReq": {
     "message": "Frazy seed mają 12 słów"
   },

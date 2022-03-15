@@ -800,9 +800,6 @@
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Skill hvert ord med ett enkelt mellomrom"
-  },
   "seedPhraseReq": {
     "message": "Mnemoniske gjenopprettingsfraser består av 12 ord "
   },

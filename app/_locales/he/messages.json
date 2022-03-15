@@ -810,9 +810,6 @@
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
-  "seedPhrasePlaceholder": {
-    "message": "הפרד/י בין המילים ברווח אחד"
-  },
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"
   },

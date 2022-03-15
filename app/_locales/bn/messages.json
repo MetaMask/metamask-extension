@@ -816,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
-  "seedPhrasePlaceholder": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
-  },
   "seedPhraseReq": {
     "message": "সীড ফ্রেজগুলি 12 শব্দের"
   },

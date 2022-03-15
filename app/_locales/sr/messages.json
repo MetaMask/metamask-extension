@@ -807,9 +807,6 @@
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Odvojite svaku reč jednim razmakom"
-  },
   "seedPhraseReq": {
     "message": "Šifre za oporavak naloga (seed phrases) imaju 12 reči"
   },

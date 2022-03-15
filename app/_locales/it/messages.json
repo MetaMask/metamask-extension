@@ -1216,12 +1216,6 @@
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separa ogni parola con un singolo spazio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Incolla frase seed dagli appunti"
-  },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
   },

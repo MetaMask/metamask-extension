@@ -797,9 +797,6 @@
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Adskil hvert ord med et enkelt mellemrum"
-  },
   "seedPhraseReq": {
     "message": "Backupsætninger er 12 ord lange"
   },

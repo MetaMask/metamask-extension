@@ -804,9 +804,6 @@
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Vsako besedo ločite z enim presledkom"
-  },
   "seedPhraseReq": {
     "message": "Seed phrase mora biti dolg 12 besed"
   },

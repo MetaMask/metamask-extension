@@ -806,9 +806,6 @@
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Eraldage iga sõna ühe tühikuga"
-  },
   "seedPhraseReq": {
     "message": "Seemnefraasid on 12 sõna pikad"
   },

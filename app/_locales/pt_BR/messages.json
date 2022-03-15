@@ -2376,12 +2376,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Antes de iniciar, assista a esse vídeo curto para aprender sobre sua Frase de Recuperação Secreta e sobre como manter sua carteira segura."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separe cada palavra com um único espaço"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Cole a Frase de recuperação secreta da área de transferência"
-  },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },

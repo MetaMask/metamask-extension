@@ -2343,12 +2343,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
   },
-  "seedPhrasePlaceholder": {
-    "message": "用空格分隔每个单词"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "从剪贴板粘贴账户助记词"
-  },
   "seedPhraseReq": {
     "message": "账户助记词由 12、15、18、21 或 24 个单词组成"
   },

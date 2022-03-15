@@ -816,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
-  "seedPhrasePlaceholder": {
-    "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
-  },
   "seedPhraseReq": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳು 12 ಪದಗಳಷ್ಟು ದೀರ್ಘವಾಗಿವೆ"
   },

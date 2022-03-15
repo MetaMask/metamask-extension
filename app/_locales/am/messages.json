@@ -801,9 +801,6 @@
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
-  "seedPhrasePlaceholder": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
-  },
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"
   },

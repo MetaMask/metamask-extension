@@ -2343,12 +2343,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Avant de commencer, regardez cette courte vidéo pour vous informer sur votre phrase secrète de récupération et sur la manière de sécuriser votre portefeuille."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Séparez chaque mot par un espace simple"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Collez la Phrase secrète de récupération depuis le presse-papiers"
-  },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
   },

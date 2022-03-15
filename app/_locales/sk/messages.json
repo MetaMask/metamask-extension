@@ -779,9 +779,6 @@
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Každé slovo oddeľte jednou medzerou"
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },

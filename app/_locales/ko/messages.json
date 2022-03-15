@@ -2343,12 +2343,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "시작하기 전에 이 짧은 동영상을 보고 비밀 복구 구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
   },
-  "seedPhrasePlaceholder": {
-    "message": "공백 한 칸으로 각 단어를 구분하세요."
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "클립보드에서 비밀 복구 구문 붙여넣기"
-  },
   "seedPhraseReq": {
     "message": "비밀 복구 구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
   },

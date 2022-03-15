@@ -2343,9 +2343,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Bevor Sie loslegen, schauen Sie sich dieses kurze Video an, um mehr über Ihre Geheime Wiederherstellungsphrase zu erfahren und wie Sie Ihre Wallet sicher halten können."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Trennen Sie jedes Wort durch ein einzelnes Leerzeichen."
-  },
   "seedPhraseReq": {
     "message": "Seed-Wörterfolgen bestehen aus 12 Wörtern"
   },
