@@ -5189,6 +5189,15 @@
         "utf8": true
       }
     },
+    "webextension-polyfill": {
+      "globals": {
+        "browser": true,
+        "chrome": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
+      }
+    },
     "webrtcsupport": {
       "globals": {
         "AudioContext": true,

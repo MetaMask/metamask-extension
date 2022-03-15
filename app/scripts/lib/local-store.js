@@ -1,4 +1,4 @@
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { checkForError } from './util';
 
@@ -7,7 +7,7 @@ import { checkForError } from './util';
  */
 export default class ExtensionStore {
   constructor() {
-    this.isSupported = Boolean(extension.storage.local);
+    this.isSupported = Boolean(browser.storage.local);
     if (!this.isSupported) {
       log.error('Storage local API not available.');
     }
@@ -48,9 +48,9 @@ export default class ExtensionStore {
    * @returns {Object} the key-value map from local storage
    */
   _get() {
-    const { local } = extension.storage;
+    const { local } = browser.storage;
     return new Promise((resolve, reject) => {
-      local.get(null, (/** @type {any} */ result) => {
+      local.get(null).then((/** @type {any} */ result) => {
         const err = checkForError();
         if (err) {
           reject(err);
@@ -69,9 +69,9 @@ export default class ExtensionStore {
    * @private
    */
   _set(obj) {
-    const { local } = extension.storage;
+    const { local } = browser.storage;
     return new Promise((resolve, reject) => {
-      local.set(obj, () => {
+      local.set(obj).then(() => {
         const err = checkForError();
         if (err) {
           reject(err);
