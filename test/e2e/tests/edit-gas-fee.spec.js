@@ -40,11 +40,10 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        const timeElement = await driver.findElement({
-          text: '--',
+        await driver.waitForSelector({
+          text: 'sec',
           tag: 'span',
         });
-        await driver.waitForElementContainingValue(timeElement, 'sec');
         await driver.clickElement('[data-testid="edit-gas-fee-item-high"]');
         await driver.waitForSelector({ text: '🦍' });
         await driver.waitForSelector({
@@ -120,7 +119,10 @@ describe('Editing Confirm Transaction', function () {
 
         // update estimates to high
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          text: 'sec',
+          tag: 'span',
+        });
         await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
         await driver.delay(regularDelayMs);
 
@@ -230,7 +232,10 @@ describe('Editing Confirm Transaction', function () {
         });
 
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          text: 'sec',
+          tag: 'span',
+        });
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-dappSuggested"]',
         );

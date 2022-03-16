@@ -256,11 +256,7 @@ class Driver {
       return false;
     }
   }
-
-  async waitForElementContainingValue(element, value) {
-    await this.driver.wait(until.elementTextContains(element, value));
-  }
-
+  
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
