@@ -1,7 +1,11 @@
 .import-srp {
   &__container {
     display: grid;
-    grid-template-areas: "title dropdown" "input input" "error error";
+    grid-template-areas:
+      "title dropdown"
+      "input input"
+      "error error"
+      "too-many-words-error too-many-words-error";
   }
 
   @media (max-width: 767px) {
@@ -44,5 +48,10 @@
   &__srp-error {
     margin-top: 4px;
     grid-area: error;
+  }
+
+  &__srp-too-many-words-error {
+    margin-top: 4px;
+    grid-area: too-many-words-error;
   }
 }

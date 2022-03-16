@@ -1520,7 +1520,7 @@ describe('srp-input', () => {
   });
 
   describe('paste error', () => {
-    it('should show error popup when too many words are pasted', async () => {
+    it('should show paste error when too many words are pasted', async () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryByText } = renderWithLocalization(
@@ -1532,10 +1532,24 @@ describe('srp-input', () => {
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
       ).not.toBeNull();
-      expect(queryByText(enLocale.srpPasteFailed.message)).not.toBeNull();
     });
 
-    it('should allow dismissing the error popup', async () => {
+    it('should allow dismissing the paste error', async () => {
+      const onChange = jest.fn();
+
+      const { getByTestId, getByText, queryByText } = renderWithLocalization(
+        <SrpInput onChange={onChange} />,
+      );
+      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.paste(tooManyWords);
+      await userEvent.click(getByText('Dismiss'));
+
+      expect(
+        queryByText(enLocale.srpPasteFailedTooManyWords.message),
+      ).toBeNull();
+    });
+
+    it('should dismiss the paste error after paste with fewer than 24 words', async () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryByText } = renderWithLocalization(
@@ -1543,12 +1557,41 @@ describe('srp-input', () => {
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
-      await userEvent.click(getByTestId('popover-close'));
+      await userEvent.paste(correct);
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
       ).toBeNull();
-      expect(queryByText(enLocale.srpPasteFailed.message)).toBeNull();
+    });
+
+    it('should not dismiss the paste error after a second paste with over 24 words', async () => {
+      const onChange = jest.fn();
+
+      const { getByTestId, queryByText } = renderWithLocalization(
+        <SrpInput onChange={onChange} />,
+      );
+      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.paste(tooManyWords);
+      await userEvent.paste(tooManyWords);
+
+      expect(
+        queryByText(enLocale.srpPasteFailedTooManyWords.message),
+      ).not.toBeNull();
+    });
+
+    it('should dismiss the paste error after typing', async () => {
+      const onChange = jest.fn();
+
+      const { getByTestId, queryByText } = renderWithLocalization(
+        <SrpInput onChange={onChange} />,
+      );
+      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.paste(tooManyWords);
+      await userEvent.keyboard('test');
+
+      expect(
+        queryByText(enLocale.srpPasteFailedTooManyWords.message),
+      ).toBeNull();
     });
   });
 });

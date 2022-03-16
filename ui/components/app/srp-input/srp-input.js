@@ -6,7 +6,6 @@ import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
 import ActionableMessage from '../../ui/actionable-message';
 import Dropdown from '../../ui/dropdown';
-import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
@@ -64,11 +63,14 @@ export default function SrpInput({ onChange }) {
 
   const onSrpWordChange = useCallback(
     (index, newWord) => {
+      if (pasteFailed) {
+        setPasteFailed(false);
+      }
       const newSrp = draftSrp.slice();
       newSrp[index] = newWord.trim();
       onSrpChange(newSrp);
     },
-    [draftSrp, onSrpChange],
+    [draftSrp, onSrpChange, pasteFailed],
   );
 
   const onSrpPaste = useCallback(
@@ -79,6 +81,8 @@ export default function SrpInput({ onChange }) {
       if (newDraftSrp.length > 24) {
         setPasteFailed(true);
         return;
+      } else if (pasteFailed) {
+        setPasteFailed(false);
       }
 
       let newNumberOfWords = numberOfWords;
@@ -103,7 +107,7 @@ export default function SrpInput({ onChange }) {
       onSrpChange(newDraftSrp);
       clearClipboard();
     },
-    [numberOfWords, onSrpChange, setPasteFailed],
+    [numberOfWords, onSrpChange, pasteFailed, setPasteFailed],
   );
 
   const numberOfWordsOptions = [];
@@ -116,13 +120,6 @@ export default function SrpInput({ onChange }) {
 
   return (
     <div className="import-srp__container">
-      {pasteFailed ? (
-        <Popover
-          onClose={() => setPasteFailed(false)}
-          subtitle={t('srpPasteFailedTooManyWords')}
-          title={t('srpPasteFailed')}
-        />
-      ) : null}
       <label className="import-srp__srp-label">
         <Typography variant={TYPOGRAPHY.H4}>
           {t('secretRecoveryPhrase')}
@@ -193,9 +190,23 @@ export default function SrpInput({ onChange }) {
       </div>
       {srpError ? (
         <ActionableMessage
+          className="import-srp__srp-error"
+          iconFillColor="#d73a49" // This is `--color-error-default`
           message={srpError}
           type="danger"
+          useIcon
+        />
+      ) : null}
+      {pasteFailed ? (
+        <ActionableMessage
+          className="import-srp__srp-too-many-words-error"
           iconFillColor="#d73a49" // This is `--color-error-default`
+          message={t('srpPasteFailedTooManyWords')}
+          primaryAction={{
+            label: t('dismiss'),
+            onClick: () => setPasteFailed(false),
+          }}
+          type="danger"
           useIcon
         />
       ) : null}
