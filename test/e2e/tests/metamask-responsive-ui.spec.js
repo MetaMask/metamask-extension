@@ -172,7 +172,7 @@ describe('Metamask Responsive UI', function () {
         );
         await restoreSeedLink.click();
 
-        await driver.fill(
+        await driver.pasteIntoField(
           'input[placeholder="Enter your Secret Recovery Phrase"]',
           testSeedPhrase,
         );

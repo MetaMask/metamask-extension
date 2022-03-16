@@ -76,7 +76,7 @@ describe('Metamask Import UI', function () {
           await driver.clickElement('.btn-secondary');
 
           // Import Secret Recovery Phrase
-          await driver.fill(
+          await driver.pasteIntoField(
             'input[placeholder="Enter your Secret Recovery Phrase"]',
             testSeedPhrase,
           );
