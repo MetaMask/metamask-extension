@@ -256,7 +256,7 @@ class Driver {
       return false;
     }
   }
-  
+
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
