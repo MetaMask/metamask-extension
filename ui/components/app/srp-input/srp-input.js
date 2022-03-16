@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
-import CheckBox from '../../ui/check-box';
 import Dropdown from '../../ui/dropdown';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
+import ShowHideToggle from '../../ui/show-hide-toggle';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
@@ -177,11 +177,14 @@ export default function SrpInput({ onChange }) {
                   }
                 }}
               />
-              <CheckBox
-                checked={showSrp[index]}
+              <ShowHideToggle
+                id={`${id}-checkbox`}
+                ariaLabelHidden={t('srpWordHidden')}
+                ariaLabelShown={t('srpWordShown')}
+                shown={showSrp[index]}
                 dataTestId={`${id}-checkbox`}
-                onClick={() => toggleShowSrp(index)}
-                title={t('showSeedPhrase')}
+                onChange={() => toggleShowSrp(index)}
+                title={t('srpToggleShow')}
               />
             </div>
           );
