@@ -99,7 +99,7 @@
       }
 
       &::-ms-input-placeholder { /* Microsoft Edge */
-        color: var(--color-text-default);
+        color: var(--color-primary-inverse);
       }
 
       &::placeholder { /* Most modern browsers support this now. */
