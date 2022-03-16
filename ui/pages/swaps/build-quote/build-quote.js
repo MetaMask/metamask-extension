@@ -338,9 +338,7 @@ export default function BuildQuote({
     null, // no holderAddress
     {
       blockExplorerUrl:
-        rpcPrefs.blockExplorerUrl ??
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
-        null,
+        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
     },
   );
 
