@@ -115,7 +115,7 @@
   &__header-edit {
     @include H7;
 
-    color: var(--color-text-primary);
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-left: 24px;
     flex: 1;
