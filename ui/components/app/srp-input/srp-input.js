@@ -182,7 +182,7 @@ export default function SrpInput({ onChange }) {
                 ariaLabelHidden={t('srpWordHidden')}
                 ariaLabelShown={t('srpWordShown')}
                 shown={showSrp[index]}
-                dataTestId={`${id}-checkbox`}
+                data-testid={`${id}-checkbox`}
                 onChange={() => toggleShowSrp(index)}
                 title={t('srpToggleShow')}
               />
