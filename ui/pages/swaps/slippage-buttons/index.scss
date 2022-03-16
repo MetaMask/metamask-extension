@@ -81,7 +81,7 @@
       font-weight: inherit;
 
       &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color: var(--color-text-default);
+        color: var(--color-primary-inverse);
       }
 
       &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
