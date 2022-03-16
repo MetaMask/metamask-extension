@@ -25,6 +25,7 @@ describe('Deploy contract and call contract methods', function () {
         dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
       },
       async ({ driver }) => {

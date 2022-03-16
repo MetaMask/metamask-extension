@@ -15,7 +15,7 @@ export default class ExtensionPlatform {
 
   openTab(options) {
     return new Promise((resolve, reject) => {
-      browser.tabs.create(options, (newTab) => {
+      browser.tabs.create(options).then((newTab) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -27,7 +27,7 @@ export default class ExtensionPlatform {
 
   openWindow(options) {
     return new Promise((resolve, reject) => {
-      browser.windows.create(options, (newWindow) => {
+      browser.windows.create(options).then((newWindow) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -39,7 +39,7 @@ export default class ExtensionPlatform {
 
   focusWindow(windowId) {
     return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, { focused: true }, () => {
+      browser.windows.update(windowId, { focused: true }).then(() => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -51,7 +51,7 @@ export default class ExtensionPlatform {
 
   updateWindowPosition(windowId, left, top) {
     return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, { left, top }, () => {
+      browser.windows.update(windowId, { left, top }).then(() => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -63,7 +63,7 @@ export default class ExtensionPlatform {
 
   getLastFocusedWindow() {
     return new Promise((resolve, reject) => {
-      browser.windows.getLastFocused((windowObject) => {
+      browser.windows.getLastFocused().then((windowObject) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -74,7 +74,7 @@ export default class ExtensionPlatform {
   }
 
   closeCurrentWindow() {
-    return browser.windows.getCurrent((windowDetails) => {
+    return browser.windows.getCurrent().then((windowDetails) => {
       return browser.windows.remove(windowDetails.id);
     });
   }
@@ -169,7 +169,7 @@ export default class ExtensionPlatform {
 
   getAllWindows() {
     return new Promise((resolve, reject) => {
-      browser.windows.getAll((windows) => {
+      browser.windows.getAll().then((windows) => {
         const error = checkForError();
         if (error) {
           return reject(error);
