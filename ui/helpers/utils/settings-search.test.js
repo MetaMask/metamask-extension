@@ -226,7 +226,6 @@ describe('Settings Search Utils', () => {
           section: 'Advanced gas controls',
           tab: 'Advanced',
         },
-        {},
         {
           description:
             'Select this to show the hex data field on the send screen',

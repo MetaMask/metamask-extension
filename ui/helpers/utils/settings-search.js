@@ -103,16 +103,6 @@ export function getSettingsRoutes(t) {
       route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
       icon: 'fas fa-sliders-h',
     },
-    process.env.TOKEN_DETECTION_V2
-      ? {
-          tab: t('advanced'),
-          section: t('tokenDetection'),
-          description: t('tokenDetectionToggleDescription'),
-          route: `${ADVANCED_ROUTE}#token-description`,
-          image: 'advanced-icon.svg',
-          id: 10,
-        }
-      : {},
     {
       tab: t('advanced'),
       section: t('showHexData'),
