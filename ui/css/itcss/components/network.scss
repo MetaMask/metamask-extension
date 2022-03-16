@@ -7,7 +7,7 @@
 }
 
 .network-component.pointer {
-  border: 1px solid var(--Grey-200);
+  border: 1px solid var(--color-border-muted);
   border-radius: 82px;
   padding: 6px 3px;
   flex: 0 0 auto;
@@ -46,6 +46,7 @@
 }
 
 .dropdown-menu-item .fa.delete {
+  color: var(--color-icon-default);
   margin-right: 10px;
   display: none;
 }
@@ -55,10 +56,12 @@
 }
 
 .network-droppo {
+  background-color: var(--color-background-default);
+  border-radius: 4px;
   right: 2px;
 
   .color-indicator {
-    margin: 0 14px;
+    margin: 0 14px 0 4px;
   }
 
   @media screen and (min-width: $break-large) {
@@ -76,22 +79,14 @@
 
 .network-name-item {
   flex: 1;
-  color: var(--dusty-gray);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.network-check,
-.network-check__transparent {
-  color: var(--white);
-  margin-left: 7px;
-}
-
 .network-check__transparent {
   opacity: 0;
-  width: 16px;
-  margin: 0;
+  width: 24px;
 }
 
 .menu-icon-circle,
@@ -106,8 +101,8 @@
 }
 
 .menu-icon-circle--active {
-  border: 1px solid var(--white);
-  background: rgba(100, 100, 100, 0.4);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-background-default);
 }
 
 .menu-icon-circle div,
@@ -138,7 +133,7 @@
   width: 100%;
   height: 1px;
   margin: 10px 0;
-  background-color: var(--scorpion);
+  background-color: var(--color-border-default);
 }
 
 .network-dropdown-title {
@@ -146,7 +141,7 @@
 
   height: 25px;
   width: 120px;
-  color: var(--white);
+  color: var(--color-text-default);
   text-align: center;
 }
 
@@ -155,26 +150,24 @@
 
   min-height: 36px;
   width: 265px;
-  color: var(--dusty-gray);
+  color: var(--color-text-default);
 
   &--link {
-    color: var(--white);
+    color: var(--color-primary-default);
     cursor: pointer;
     text-decoration: underline;
 
     &:hover {
-      color: var(--white);
+      color: var(--color-primary-alternative);
     }
   }
 
   &--dismiss {
-    color: inherit;
-    background: inherit;
     position: absolute;
     top: 63px;
     right: 10px;
-    border: 1px solid var(--dusty-gray);
-    border-radius: 10px;
+    padding: 2px 8px;
+    width: auto;
   }
 }
 
@@ -197,4 +190,8 @@
     top: -5px;
     left: -6px;
   }
+}
+
+.network__add-network-button {
+  padding: 0 16px;
 }

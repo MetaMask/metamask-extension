@@ -9,7 +9,7 @@
   flex-direction: column;
 
   &--with-top-border {
-    border-top: 1px solid var(--geyser);
+    border-top: 1px solid var(--color-border-muted);
   }
 
   &__error-container {
@@ -23,7 +23,7 @@
 
   &__data {
     padding: 16px;
-    color: var(--oslo-gray);
+    color: var(--color-text-alternative);
 
     & > .disclosure {
       margin-top: 0;
@@ -33,7 +33,7 @@
   &__data-box {
     @include H7;
 
-    background-color: #f9fafa;
+    background-color: var(--color-background-alternative);
     padding: 12px;
     word-wrap: break-word;
     overflow-y: auto;
@@ -61,7 +61,7 @@
   }
 
   &__gas-fee {
-    border-bottom: 1px solid var(--geyser);
+    border-bottom: 1px solid var(--color-border-muted);
 
     .advanced-gas-inputs__gas-edit-rows {
       margin-bottom: 16px;
@@ -73,20 +73,20 @@
 
     font-weight: 500;
     text-transform: capitalize;
-    color: var(--black);
+    color: var(--color-text-default);
     padding-left: 5px;
   }
 
   &__tab {
     @include H7;
 
-    color: #8c8e94;
+    color: var(--color-text-alternative);
     text-transform: uppercase;
     margin: 0 8px;
 
     & button {
       font-size: unset;
-      color: #8c8e94;
+      color: var(--color-text-alternative);
       text-transform: uppercase;
     }
   }

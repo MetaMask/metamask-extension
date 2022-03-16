@@ -17,7 +17,7 @@ export class Dropdown extends Component {
     const innerStyleDefaults = {
       borderRadius: '4px',
       padding: '8px 16px',
-      background: 'rgba(0, 0, 0, 0.8)',
+      background: 'var(--color-background-default)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       ...innerStyle,
     };
@@ -35,11 +35,10 @@ export class Dropdown extends Component {
         <style>
           {`
             li.dropdown-menu-item:hover {
-              color:rgb(225, 225, 225);
-              background-color: rgba(255, 255, 255, 0.05);
+              color:var(--color-text-default);
+              background-color: var(--color-background-alternative);
               border-radius: 4px;
             }
-            li.dropdown-menu-item { color: rgb(185, 185, 185); }
           `}
         </style>
         {children}
@@ -88,7 +87,6 @@ export class DropdownMenuItem extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          color: 'white',
           ...style,
         }}
         tabIndex="0"

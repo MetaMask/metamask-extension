@@ -56,11 +56,11 @@
   &__activity-text {
     @include H7;
 
-    color: var(--dusty-gray);
+    color: var(--color-text-alternate);
     cursor: pointer;
 
     &:hover {
-      color: var(--black);
+      color: var(--color-text-default);
     }
   }
 
