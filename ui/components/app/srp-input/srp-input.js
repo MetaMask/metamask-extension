@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
+import ActionableMessage from '../../ui/actionable-message';
 import Dropdown from '../../ui/dropdown';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
@@ -191,13 +192,12 @@ export default function SrpInput({ onChange }) {
         })}
       </div>
       {srpError ? (
-        <Typography
-          color={COLORS.ERROR_DEFAULT}
-          tag="span"
-          className="import-srp__srp-error"
-        >
-          {srpError}
-        </Typography>
+        <ActionableMessage
+          message={srpError}
+          type="danger"
+          iconFillColor="#d73a49" // This is `--color-error-default`
+          useIcon
+        />
       ) : null}
     </div>
   );
