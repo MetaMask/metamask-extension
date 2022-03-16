@@ -136,3 +136,87 @@
     margin-right: 0;
   }
 }
+.act-overview{
+  &__wrapper{
+    background: var(--gray-1);
+    max-width: 360px;
+    width: calc(100% - 40px);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0px;
+  }
+  &__balance{
+    display: flex;
+    align-items: center;
+    &-head{
+      margin-right: 10px;
+      &>img{
+        vertical-align: middle;
+      }
+    }
+    &-info{
+      &-account{
+        display: flex;
+        align-items: center;
+        color:var(--white);
+        &>span:nth-child(1){
+          margin-right: 5px;
+        }
+      }
+      &-address{
+        color:var(--secondary-4);
+        &>span:nth-child(1){
+          margin-right: 5px;
+        }
+      }
+      &-copy{
+        background: transparent;
+        padding: 0;
+      }
+    }
+    &-token{
+      text-align: right;
+      color:var(--white);
+      margin-top: 8px;
+      margin-bottom: 16px;
+      @include roundeNormal;
+      &-currency{
+        margin-right: 3px;
+        position: relative;
+        bottom:4px;
+      }
+    }
+  }
+  &__buttons{
+    display: flex;
+    justify-content: space-between;
+    &-icon{
+      margin-right: 12px;
+    }
+    &>button{
+      width:45%;
+      height: 32px;
+      color:var(--white);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      @include H5;
+      @include roundeNormal;
+      transition: ease-in-out .4s;
+    }
+    &-receive{
+      background: linear-gradient(111.99deg, var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
+      
+      &:hover{
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(111.99deg,var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
+      }
+    }
+    &-send{
+      background: linear-gradient(91.07deg, var(--secondary-2-start) 4.72%, var(--secondary-2-end) 73%);
+      &:hover{
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(91.07deg, var(--secondary-2-start) 4.72%, var(--secondary-2-end) 73%);
+      }
+    }
+  }
+}
