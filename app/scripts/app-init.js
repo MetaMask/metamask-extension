@@ -14,10 +14,9 @@ function tryImport(...fileNames) {
 self.oninstall = () => {
   tryImport('./globalthis.js');
   tryImport('./sentry-install.js');
-  tryImport('./lockdown-install.js');
-  tryImport('./lockdown-run.js');
+  tryImport('./runtime-lavamoat.js');
   tryImport('./lockdown-more.js');
-  tryImport('./runtime-cjs.js');
+  tryImport('./policy-load.js');
 
   const fileList = [
     /** FILE NAMES */
