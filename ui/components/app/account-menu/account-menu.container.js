@@ -6,6 +6,7 @@ import {
   showAccountDetail,
   lockMetamask,
   hideWarning,
+  autoDetectAccounts,
 } from '../../../store/actions';
 import {
   getAddressConnectedSubjectMap,
@@ -26,8 +27,11 @@ const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5;
 
 function mapStateToProps(state) {
   const {
+    appState,
     metamask: { isAccountMenuOpen },
   } = state;
+  const { isLoading } = appState;
+
   const accounts = getMetaMaskAccountsOrdered(state);
   const origin = getOriginOfCurrentTab(state);
   const selectedAddress = getSelectedAddress(state);
@@ -37,6 +41,7 @@ function mapStateToProps(state) {
   return {
     isAccountMenuOpen,
     addressConnectedSubjectMap: getAddressConnectedSubjectMap(state),
+    isLoading,
     originOfCurrentTab: origin,
     selectedAddress,
     keyrings: getMetaMaskKeyrings(state),
@@ -54,6 +59,9 @@ function mapDispatchToProps(dispatch) {
     showAccountDetail: (address) => {
       dispatch(showAccountDetail(address));
       dispatch(toggleAccountMenu());
+    },
+    autoDetectAccounts: () => {
+      return dispatch(autoDetectAccounts());
     },
     lockMetamask: () => {
       dispatch(lockMetamask());

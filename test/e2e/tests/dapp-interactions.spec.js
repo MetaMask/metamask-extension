@@ -77,6 +77,7 @@ describe('Dapp interactions', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // Connect to Dapp0
         await connectDappWithExtensionPopup(driver, 0);
@@ -102,6 +103,8 @@ describe('Dapp interactions', function () {
         await driver.switchToWindow(popup);
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Connect', tag: 'button' });
 
@@ -109,6 +112,8 @@ describe('Dapp interactions', function () {
         await driver.switchToWindow(extension);
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );

@@ -33,6 +33,7 @@ describe('Editing Confirm Transaction', function () {
         const transactionFee = transactionAmounts[1];
         assert.equal(await transactionFee.getText(), '0.00025');
 
+        await driver.delay(2000);
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
         );
@@ -102,6 +103,7 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',

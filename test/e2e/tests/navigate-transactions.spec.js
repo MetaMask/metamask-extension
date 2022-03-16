@@ -22,6 +22,7 @@ describe('Navigate transactions', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
@@ -110,6 +111,7 @@ describe('Navigate transactions', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
@@ -157,6 +159,7 @@ describe('Navigate transactions', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -188,6 +191,7 @@ describe('Navigate transactions', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -219,6 +223,7 @@ describe('Navigate transactions', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });

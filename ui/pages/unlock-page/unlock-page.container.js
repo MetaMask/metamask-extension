@@ -13,6 +13,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
   showModal,
+  autoDetectAccounts,
 } from '../../store/actions';
 import UnlockPage from './unlock-page.component';
 
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch) => {
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     showOptInModal: () =>
       dispatch(showModal({ name: 'METAMETRICS_OPT_IN_MODAL' })),
+    autoDetectAccounts: () => {
+      return dispatch(autoDetectAccounts());
+    },
   };
 };
 

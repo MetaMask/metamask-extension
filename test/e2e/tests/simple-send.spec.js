@@ -17,6 +17,8 @@ describe('Simple send', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
           '[data-testid="ens-input"]',

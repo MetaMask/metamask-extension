@@ -41,6 +41,7 @@ describe('State logs', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // Download state logs
         await driver.clickElement('.account-menu__icon');

@@ -22,6 +22,7 @@ describe('Hide token', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.waitForSelector({
           css: '.asset-list-item__token-button',
@@ -80,6 +81,7 @@ describe('Add existing token using search', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement({ text: 'import tokens', tag: 'a' });
         await driver.fill('#search-tokens', 'BAT');

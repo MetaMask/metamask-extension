@@ -25,6 +25,7 @@ describe('Stores custom RPC history', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
@@ -75,6 +76,7 @@ describe('Stores custom RPC history', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
@@ -112,6 +114,7 @@ describe('Stores custom RPC history', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // duplicate network
         const newRpcUrl = 'http://localhost:8544';
@@ -158,6 +161,7 @@ describe('Stores custom RPC history', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.delay(largeDelayMs);
 
@@ -179,6 +183,7 @@ describe('Stores custom RPC history', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.delay(largeDelayMs);
         await driver.clickElement('.network-display');
@@ -209,6 +214,7 @@ describe('Stores custom RPC history', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.delay(largeDelayMs);
         await driver.clickElement('.network-display');

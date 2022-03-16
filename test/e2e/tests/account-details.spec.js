@@ -22,6 +22,7 @@ describe('Show account details', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

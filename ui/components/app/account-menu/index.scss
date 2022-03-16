@@ -107,9 +107,9 @@
 
   &__header {
     display: flex;
-    flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
+    height: 100%;
   }
 
   & &__lock-button {
@@ -118,6 +118,32 @@
     padding: 0.25rem 0.5rem;
     min-width: 59px;
     width: auto;
+  }
+
+  &__refresh-button {
+    color: var(--color-primary-default);
+  }
+
+  &__my-accounts {
+    position: relative;
+  }
+
+  &__refreshing-accounts {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0.95;
+    z-index: 202;
+
+    &__logo {
+      display: flex;
+      margin: auto;
+      width: 80px;
+    }
+
+    &__loading-overlay__spinner {
+      width: 18px;
+    }
   }
 
   &__accounts-container {

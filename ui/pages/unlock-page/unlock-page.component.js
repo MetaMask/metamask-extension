@@ -44,6 +44,10 @@ export default class UnlockPage extends Component {
      * Event handler to show metametrics modal
      */
     showOptInModal: PropTypes.func,
+    /**
+     * Function to detect a new account
+     */
+    autoDetectAccounts: PropTypes.func,
   };
 
   state = {
@@ -70,7 +74,12 @@ export default class UnlockPage extends Component {
     event.stopPropagation();
 
     const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState, showOptInModal } = this.props;
+    const {
+      onSubmit,
+      forceUpdateMetamaskState,
+      showOptInModal,
+      autoDetectAccounts,
+    } = this.props;
 
     if (password === '' || this.submitting) {
       return;
@@ -101,6 +110,7 @@ export default class UnlockPage extends Component {
       ) {
         showOptInModal();
       }
+      autoDetectAccounts();
     } catch ({ message }) {
       this.failed_attempts += 1;
 

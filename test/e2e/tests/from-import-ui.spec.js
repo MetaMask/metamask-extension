@@ -70,6 +70,7 @@ describe('MetaMask Import UI', function () {
         // accepts the account password after lock
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // Create a new account
         // switches to localhost
@@ -200,6 +201,7 @@ describe('MetaMask Import UI', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // Imports an account with private key
         // choose Create account from the account menu
@@ -214,16 +216,16 @@ describe('MetaMask Import UI', function () {
         const importedAccountName = await driver.findElement(
           '.selected-account__name',
         );
-        assert.equal(await importedAccountName.getText(), 'Account 4');
+        assert.equal(await importedAccountName.getText(), 'Account 2');
 
         // should show the imported label
         await driver.clickElement('.account-menu__icon');
-        // confirm 4th account is account 4, as expected
-        const accountMenuItemSelector = '.account-menu__account:nth-child(4)';
+        // confirm 2nd account is account 2, as expected
+        const accountMenuItemSelector = '.account-menu__account:nth-child(2)';
         const fourthAccountName = await driver.findElement(
           `${accountMenuItemSelector} .account-menu__name`,
         );
-        assert.equal(await fourthAccountName.getText(), 'Account 4');
+        assert.equal(await fourthAccountName.getText(), 'Account 2');
         // confirm label is present on the same menu item
         const importedLabel = await driver.findElement(
           `${accountMenuItemSelector} .keyring-label`,
@@ -241,12 +243,12 @@ describe('MetaMask Import UI', function () {
         const importedAccount2Name = await driver.findElement(
           '.selected-account__name',
         );
-        assert.equal(await importedAccount2Name.getText(), 'Account 5');
+        assert.equal(await importedAccount2Name.getText(), 'Account 3');
         await driver.clickElement('.account-menu__icon');
         const accountListItems = await driver.findElements(
           '.account-menu__account',
         );
-        assert.equal(accountListItems.length, 5);
+        assert.equal(accountListItems.length, 3);
 
         await driver.clickPoint('.account-menu__icon', 0, 0);
 
@@ -277,7 +279,7 @@ describe('MetaMask Import UI', function () {
         const accountListItemsAfterRemoval = await driver.findElements(
           '.account-menu__account',
         );
-        assert.equal(accountListItemsAfterRemoval.length, 4);
+        assert.equal(accountListItemsAfterRemoval.length, 2);
       },
     );
   });
@@ -303,6 +305,7 @@ describe('MetaMask Import UI', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // Imports an account with JSON file
         await driver.clickElement('.account-menu__icon');
@@ -330,16 +333,16 @@ describe('MetaMask Import UI', function () {
         const importedAccountName = await driver.findElement(
           '.selected-account__name',
         );
-        assert.equal(await importedAccountName.getText(), 'Account 4');
+        assert.equal(await importedAccountName.getText(), 'Account 2');
 
         // should show the imported label
         await driver.clickElement('.account-menu__icon');
-        // confirm 4th account is account 4, as expected
-        const accountMenuItemSelector = '.account-menu__account:nth-child(4)';
+        // confirm 2nd account is account 2, as expected
+        const accountMenuItemSelector = '.account-menu__account:nth-child(2)';
         const fourthAccountName = await driver.findElement(
           `${accountMenuItemSelector} .account-menu__name`,
         );
-        assert.equal(await fourthAccountName.getText(), 'Account 4');
+        assert.equal(await fourthAccountName.getText(), 'Account 2');
         // confirm label is present on the same menu item
         const importedLabel = await driver.findElement(
           `${accountMenuItemSelector} .keyring-label`,
@@ -349,7 +352,7 @@ describe('MetaMask Import UI', function () {
         const accountListItems = await driver.findElements(
           '.account-menu__account',
         );
-        assert.equal(accountListItems.length, 4);
+        assert.equal(accountListItems.length, 2);
       },
     );
   });
@@ -376,6 +379,7 @@ describe('MetaMask Import UI', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // choose Import Account from the account menu
         await driver.clickElement('.account-menu__icon');
@@ -415,6 +419,7 @@ describe('MetaMask Import UI', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // choose Connect hardware wallet from the account menu
         await driver.clickElement('.account-menu__icon');

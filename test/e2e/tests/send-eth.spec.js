@@ -22,6 +22,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -113,6 +114,7 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -162,6 +164,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -229,6 +232,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');

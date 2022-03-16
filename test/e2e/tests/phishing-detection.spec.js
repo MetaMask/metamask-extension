@@ -54,6 +54,8 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.openNewPage('http://127.0.0.1:8080');
         await driver.clickElement({
           text: 'continuing at your own risk',
@@ -82,6 +84,8 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.openNewPage('http://localhost:8080/');
 
         const iframe = await driver.findElement('iframe');
@@ -118,6 +122,8 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -153,6 +159,8 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         await driver.openNewPage('http://127.0.0.1:8080');
         const newIssueLink = await driver.findElements(
           "a[href='https://github.com/phishfort/phishfort-lists/issues/new?title=[Legitimate%20Site%20Blocked]%20127.0.0.1&body=http%3A%2F%2F127.0.0.1%3A8080%2F']",

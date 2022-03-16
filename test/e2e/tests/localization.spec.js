@@ -18,6 +18,8 @@ describe('Localization', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
+
         const secondaryBalance = await driver.findElement(
           '[data-testid="eth-overview__secondary-currency"]',
         );

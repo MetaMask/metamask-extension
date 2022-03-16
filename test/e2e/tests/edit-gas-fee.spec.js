@@ -29,6 +29,7 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
@@ -107,6 +108,7 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',

@@ -1749,6 +1749,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      autoDetectAccounts: this.autoDetectAccounts.bind(this),
       exportAccount: keyringController.exportAccount.bind(keyringController),
 
       // txController
@@ -2211,6 +2212,113 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
       return vault;
+    } finally {
+      releaseLock();
+    }
+  }
+
+  /**
+   * Restore accounts with balance.
+   */
+  async autoDetectAccounts() {
+    const releaseLock = await this.createVaultMutex.acquire();
+    try {
+      let accounts, lastBalance;
+
+      const { keyringController } = this;
+
+      const ethQuery = new EthQuery(this.provider);
+      accounts = await keyringController.getAccounts();
+      lastBalance = await this.getBalance(
+        accounts[accounts.length - 1],
+        ethQuery,
+      );
+
+      const [primaryKeyring] = keyringController.getKeyringsByType(
+        'HD Key Tree',
+      );
+      if (!primaryKeyring) {
+        throw new Error('MetamaskController - No HD Key Tree found');
+      }
+
+      // return all accounts till zero balance account
+      while (lastBalance !== '0x0') {
+        await keyringController.addNewAccount(primaryKeyring);
+        accounts = await keyringController.getAccounts();
+        lastBalance = await this.getBalance(
+          accounts[accounts.length - 1],
+          ethQuery,
+        );
+      }
+
+      // remove extra zero balance account potentially created from seeking ahead
+      while (accounts.length > 1 && lastBalance === '0x0') {
+        await this.removeAccount(accounts[accounts.length - 1]);
+        accounts = await keyringController.getAccounts();
+        lastBalance = await this.getBalance(
+          accounts[accounts.length - 1],
+          ethQuery,
+        );
+      }
+
+      // check balance of next three accounts, if all accounts doesn't have balance remove them
+      for (let index = 0; index < 3; index++) {
+        await keyringController.addNewAccount(primaryKeyring);
+      }
+
+      accounts = await keyringController.getAccounts();
+
+      lastBalance = await this.getBalance(
+        accounts[accounts.length - 1],
+        ethQuery,
+      );
+
+      const preLastBalance = await this.getBalance(
+        accounts[accounts.length - 2],
+        ethQuery,
+      );
+
+      const prePreLastBalance = await this.getBalance(
+        accounts[accounts.length - 3],
+        ethQuery,
+      );
+
+      if (
+        lastBalance === '0x0' &&
+        preLastBalance === '0x0' &&
+        prePreLastBalance === '0x0'
+      ) {
+        await this.removeAccount(accounts[accounts.length - 3]);
+        await this.removeAccount(accounts[accounts.length - 2]);
+        await this.removeAccount(accounts[accounts.length - 1]);
+        accounts = await keyringController.getAccounts();
+      } else {
+        while (lastBalance !== '0x0') {
+          await keyringController.addNewAccount(primaryKeyring);
+          accounts = await keyringController.getAccounts();
+          lastBalance = await this.getBalance(
+            accounts[accounts.length - 1],
+            ethQuery,
+          );
+        }
+        if (accounts.length > 1 && lastBalance === '0x0') {
+          await this.removeAccount(accounts[accounts.length - 1]);
+          accounts = await keyringController.getAccounts();
+        }
+      }
+
+      // This must be set as soon as possible to communicate to the
+      // keyring's iframe and have the setting initialized properly
+      // Optimistically called to not block Metamask login due to
+      // Ledger Keyring GitHub downtime
+      const transportPreference = this.preferencesController.getLedgerTransportPreference();
+      this.setLedgerTransportPreference(transportPreference);
+
+      // set new identities
+      this.preferencesController.setAddresses(accounts);
+      this.selectFirstIdentity();
+
+      return accounts;
     } finally {
       releaseLock();
     }

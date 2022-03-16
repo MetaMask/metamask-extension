@@ -22,6 +22,7 @@ describe('Lock and unlock', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement('.account-menu__icon');
         const lockButton = await driver.findClickableElement(

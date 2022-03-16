@@ -32,8 +32,10 @@ describe('Add account', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.clickElement('.account-menu__icon');
+        await driver.waitForSelector('.account-menu__accounts');
         await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
@@ -213,10 +215,12 @@ describe('Add account', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForLoader();
 
         await driver.delay(regularDelayMs);
 
         await driver.clickElement('.account-menu__icon');
+        await driver.waitForSelector('.account-menu__accounts');
         await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });

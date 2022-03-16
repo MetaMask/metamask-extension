@@ -76,6 +76,9 @@ function mapDispatchToProps(dispatch) {
       );
     },
     hideTestNetMessage: () => actions.hideTestNetMessage(),
+    autoDetectAccounts: () => {
+      return dispatch(actions.autoDetectAccounts());
+    },
   };
 }
 
@@ -102,6 +105,7 @@ class NetworkDropdown extends Component {
     showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
     showTestnetMessageInDropdown: PropTypes.bool.isRequired,
     hideTestNetMessage: PropTypes.func.isRequired,
+    autoDetectAccounts: PropTypes.func,
     history: PropTypes.object,
     addPopularNetworkFeatureToggledOn: PropTypes.bool,
   };
@@ -110,6 +114,7 @@ class NetworkDropdown extends Component {
     const {
       provider: { type: providerType },
       setProviderType,
+      autoDetectAccounts,
     } = this.props;
     const { trackEvent } = this.context;
 
@@ -122,6 +127,9 @@ class NetworkDropdown extends Component {
       },
     });
     setProviderType(newProviderType);
+    setTimeout(() => {
+      autoDetectAccounts();
+    }, 1000);
   }
 
   renderAddCustomButton() {
@@ -148,6 +156,7 @@ class NetworkDropdown extends Component {
 
   renderCustomRpcList(rpcListDetail, provider, opts = {}) {
     const reversedRpcListDetail = rpcListDetail.slice().reverse();
+    const { autoDetectAccounts } = this.props;
 
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry;
@@ -161,6 +170,7 @@ class NetworkDropdown extends Component {
           onClick={() => {
             if (isPrefixedFormattedHexString(chainId)) {
               this.props.setRpcTarget(rpcUrl, chainId, ticker, nickname);
+              autoDetectAccounts();
             } else {
               this.props.displayInvalidCustomNetworkAlert(nickname || rpcUrl);
             }

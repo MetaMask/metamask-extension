@@ -263,6 +263,22 @@ class Driver {
     }
   }
 
+  async waitForLoader() {
+    await this.wait(async () => {
+      this.timeout = 500;
+
+      const isLoading = await this.driver.wait(
+        this.isElementPresent('.loading-overlay'),
+      );
+
+      if (!isLoading) {
+        this.timeout = 10000;
+        return !isLoading;
+      }
+      return false;
+    });
+  }
+
   /**
    * Paste a string into a field.
    *
