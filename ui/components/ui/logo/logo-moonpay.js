@@ -10,7 +10,6 @@ const LogoMoonPay = ({
 }) => {
   return (
     <svg
-      fill={color}
       size={size}
       className={className}
       viewBox="0 0 1920 350"
