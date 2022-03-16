@@ -89,7 +89,7 @@
   &--error {
     input,
     .send-screen-gas-input {
-      border-color: var(--red) !important;
+      border-color: var(--color-error-default) !important;
     }
 
     .send-screen-input-wrapper__error-message {
@@ -99,7 +99,7 @@
       position: absolute;
       bottom: 4px;
       left: 8px;
-      color: var(--red);
+      color: var(--color-error-default);
     }
   }
 
@@ -110,7 +110,7 @@
     position: absolute;
     bottom: 4px;
     left: 8px;
-    color: var(--red);
+    color: var(--color-error-default);
   }
 }
 
@@ -296,7 +296,7 @@
   &__title {
     @include H4;
 
-    color: var(--scorpion);
+    color: var(--color-text-alternative);
   }
 
   &__subtitle {
@@ -518,7 +518,7 @@
     @include H7;
 
     left: 8px;
-    color: var(--red);
+    color: var(--color-error-default);
   }
 
   &__error-amount {
@@ -533,7 +533,7 @@
   }
 
   &__error-border {
-    color: var(--red);
+    color: var(--color-error-default);
   }
 
   &__form {
@@ -604,10 +604,10 @@
     @include H7;
 
     width: 100%;
-    border: 1px solid var(--alto);
+    border: 1px solid var(--color-border-default);
     border-radius: 4px;
-    background-color: var(--white);
-    color: var(--tundora);
+    background-color: var(--color-background-alternative);
+    color: var(--color-text-default);
     position: relative;
 
     &__close-area {
@@ -648,10 +648,6 @@
       flex-flow: row nowrap;
       align-items: center;
       padding: 8px 8px;
-
-      &:hover {
-        background-color: rgba($alto, 0.2);
-      }
     }
 
     &__caret {
@@ -665,10 +661,6 @@
       align-items: center;
       padding: 0 8px;
       cursor: pointer;
-
-      &:hover {
-        background-color: rgba($alto, 0.2);
-      }
     }
 
     &__asset-icon {
@@ -720,9 +712,9 @@
       position: absolute;
       height: 220px;
       width: 100%;
-      border: 1px solid var(--geyser);
+      border: 1px solid var(--color-border-default);
       border-radius: 4px;
-      background-color: var(--white);
+      background-color: var(--color-background-alternative);
       box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       top: 65px;
       left: 0;
@@ -737,7 +729,7 @@
     }
 
     &__input-wrapper {
-      border: 1px solid var(--alto);
+      border: 1px solid var(--color-border-default);
       border-radius: 4px;
       height: 100%;
 
@@ -750,7 +742,7 @@
         height: 100%;
 
         &:hover {
-          background-color: var(--white);
+          background-color: rgba(222, 222, 222, 0.2); /* TODO -- what color? */
         }
       }
     }
@@ -801,7 +793,7 @@
       width: 56px;
       height: 20px;
       position: absolute;
-      border: 1px solid #b0d7f2;
+      border: 1px solid var(--color-primary-muted);
       border-radius: 100px;
       cursor: pointer;
       top: 0;
@@ -811,8 +803,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #2f9ae0;
-      background: #fff;
+      color: var(--color-primary-default);
+      background: var(--color-background-default);
 
       &__disabled {
         color: #b0d7f2;
