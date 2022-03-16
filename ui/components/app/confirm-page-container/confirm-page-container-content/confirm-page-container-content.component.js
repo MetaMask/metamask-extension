@@ -144,7 +144,6 @@ export default class ConfirmPageContainerContent extends Component {
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559V2 &&
       !hasSimulationError &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
