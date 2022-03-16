@@ -120,7 +120,7 @@ export default function ViewQuote() {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
@@ -510,7 +510,7 @@ export default function ViewQuote() {
       ].every((dep) => dep !== null && dep !== undefined)
     ) {
       bestQuoteReviewedEventSent.current = true;
-      metaMetricsEvent({
+      trackEvent({
         event: 'Best Quote Reviewed',
         category: 'swaps',
         sensitiveProperties: {
@@ -550,13 +550,13 @@ export default function ViewQuote() {
     sourceTokenSymbol,
     sourceTokenValue,
     topQuote?.aggregator,
-    metaMetricsEvent,
+    trackEvent,
   ]);
 
   const metaMaskFee = usedQuote.fee;
 
   const onFeeCardTokenApprovalClick = () => {
-    metaMetricsEvent({
+    trackEvent({
       event: 'Edit Spend Limit Opened',
       category: 'swaps',
       sensitiveProperties: {
@@ -808,7 +808,7 @@ export default function ViewQuote() {
     // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
     if (reviewSwapClickedTimestamp) {
-      metaMetricsEvent({
+      trackEvent({
         event: 'View Quote Page Loaded',
         category: 'swaps',
         sensitiveProperties: {
@@ -832,7 +832,7 @@ export default function ViewQuote() {
     }
   }, [
     dispatch,
-    metaMetricsEvent,
+    trackEvent,
     numberOfQuotes,
     currentSmartTransactionsEnabled,
     destinationTokenSymbol,
@@ -896,7 +896,7 @@ export default function ViewQuote() {
                 onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
                 swapToSymbol={destinationTokenSymbol}
                 initialAggId={usedQuote.aggregator}
-                onQuoteDetailsIsOpened={metaMetricsEvent({
+                onQuoteDetailsIsOpened={trackEvent({
                   event: 'Quote Details Opened',
                   category: 'swaps',
                   sensitiveProperties: {
@@ -1018,7 +1018,7 @@ export default function ViewQuote() {
                   metaMaskFee={String(metaMaskFee)}
                   numberOfQuotes={Object.values(quotes).length}
                   onQuotesClick={() => {
-                    metaMetricsEvent({
+                    trackEvent({
                       event: 'All Available Quotes Opened',
                       category: 'swaps',
                       sensitiveProperties: {
@@ -1073,19 +1073,13 @@ export default function ViewQuote() {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
                       unsignedTransaction,
-                      metaMetricsEvent,
+                      trackEvent,
                       history,
                       additionalTrackingParams,
                     }),
                   );
                 } else {
-                  dispatch(
-                    signAndSendTransactions(
-                      history,
-                      metaMetricsEvent,
-                      additionalTrackingParams,
-                    ),
-                  );
+                  dispatch(signAndSendTransactions(history, trackEvent, additionalTrackingParams));
                 }
               } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
                 history.push(DEFAULT_ROUTE);

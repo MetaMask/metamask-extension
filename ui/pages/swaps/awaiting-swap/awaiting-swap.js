@@ -68,7 +68,7 @@ export default function AwaitingSwap({
   submittingSwap,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const animationEventEmitter = useRef(new EventEmitter());
@@ -186,7 +186,7 @@ export default function AwaitingSwap({
 
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true);
-      metaMetricsEvent({
+      trackEvent({
         event: 'Quotes Timed Out',
         category: 'swaps',
         sensitiveProperties,
@@ -253,7 +253,7 @@ export default function AwaitingSwap({
         <a
           href="#"
           onClick={async () => {
-            metaMetricsEvent({
+            trackEvent({
               event: 'Make Another Swap',
               category: 'swaps',
               sensitiveProperties,
@@ -303,7 +303,7 @@ export default function AwaitingSwap({
                 history,
                 fromTokenInputValue,
                 maxSlippage,
-                metaMetricsEvent,
+                trackEvent,
               ),
             );
           } else if (errorKey) {
