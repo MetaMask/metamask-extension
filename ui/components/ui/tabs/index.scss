@@ -5,6 +5,10 @@
   // Just for Firefox — https://github.com/MetaMask/metamask-extension/issues/8700
   -moz-transform: translateZ(0);
 
+  &__content{
+    padding:0px 15px;
+    margin-top: 30px;
+  }
   &__list {
     display: flex;
     justify-content: flex-start;

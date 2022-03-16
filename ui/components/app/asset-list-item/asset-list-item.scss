@@ -14,11 +14,16 @@
     }
 
     & span {
-      padding-right: 5px;
+      @include H6;
+      @include roundeBold;
+      margin-left: 8px;
     }
   }
 
   &__token-value {
+    @include roundeNormal;
+    @include H3;
+    color:var(--gray-1);
     flex: 1;
     padding-right: 5px;
     white-space: nowrap;

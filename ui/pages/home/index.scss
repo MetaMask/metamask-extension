@@ -22,24 +22,47 @@
 
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
   &__main-view &__tabs {
-    border: none;
-    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    // box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    background-color: var(--background);
+    border-bottom: 1px solid var(--gray-4);
   }
 
   &__main-view &__tab {
     @include H6;
-
     flex-grow: 1;
-    color: var(--Grey-500);
+    color: var(--gray-3);
     font-weight: 500;
+    display: flex;
+    padding: 0px 20px;
+    cursor: pointer;
   }
 
   &__main-view &__tab--active {
-    color: var(--Blue-500);
+    position: relative;
+   
+    &>button{
+      background: linear-gradient(91.07deg, var(--secondary-1-start) 4.72%, var(--secondary-1-end) 73%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &::before{
+      content: "";
+      position: absolute;
+      width: calc(100% - 30px);
+      bottom: -2px;
+      left: 50%;
+      height: 2px;
+      background: linear-gradient(91.07deg, var(--secondary-1-start) 4.72%, var(--secondary-1-end) 73%);
+      border-radius: 10px;
+      transform: translateX(-50%);
+    }
   }
 
   &__main-view &__tab button {
     padding: 16px 8px;
+    width: auto;
+    margin: auto;
+    @include roundeBold;
   }
 
   &__connect-status-text {
@@ -123,6 +146,12 @@
   &__connected-status-popover-bg-container {
     height: 100%;
     width: 100%;
+  }
+
+  &__import-token{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
   }
 
   &__support {

@@ -24,6 +24,8 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
+import ImportTokenLink from '../../components/app/import-token-link';
+
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -580,7 +582,12 @@ export default class Home extends PureComponent {
                 <TransactionList />
               </Tab>
             </Tabs>
-            <div className="home__support">
+
+            <div className="home__import-token">
+              <p>{t('missingToken')}</p>
+              <ImportTokenLink />
+            </div>
+            {/* <div className="home__support">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(main)
                 t('needHelp', [
@@ -605,7 +612,7 @@ export default class Home extends PureComponent {
                 <FlaskHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }
-            </div>
+            </div> */}
           </div>
 
           {this.renderNotifications()}

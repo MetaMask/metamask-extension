@@ -14,6 +14,7 @@ import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
+import ActAvatar from '../../ui/icon/act-avatar-icon.component';
 
 const AssetListItem = ({
   className,
@@ -112,7 +113,7 @@ const AssetListItem = ({
           title={`${primary} ${tokenSymbol}`}
         >
           <h2>
-            <span className="asset-list-item__token-value">{primary}</span>
+            {/* <span className="asset-list-item__token-value">{primary}</span> */}
             <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
           </h2>
         </button>
@@ -121,21 +122,23 @@ const AssetListItem = ({
       subtitle={secondary ? <h3 title={secondary}>{secondary}</h3> : null}
       onClick={onClick}
       icon={
-        <Identicon
-          className={iconClassName}
-          diameter={32}
-          address={tokenAddress}
-          image={tokenImage}
-          alt={`${primary} ${tokenSymbol}`}
-          imageBorder={identiconBorder}
-        />
+        // <Identicon
+        //   className={iconClassName}
+        //   diameter={32}
+        //   address={tokenAddress}
+        //   image={tokenImage}
+        //   alt={`${primary} ${tokenSymbol}`}
+        //   imageBorder={identiconBorder}
+        // />
+        <ActAvatar />
       }
       midContent={midContent}
       rightContent={
         !isERC721 && (
           <>
-            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+            {/* <i className="fas fa-chevron-right asset-list-item__chevron-right" /> */}
             {sendTokenButton}
+            <span className="asset-list-item__token-value">{primary}</span>
           </>
         )
       }
