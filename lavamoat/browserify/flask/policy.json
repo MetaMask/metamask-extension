@@ -2259,12 +2259,6 @@
         "stream-browserify": true
       }
     },
-    "extensionizer": {
-      "globals": {
-        "browser": true,
-        "chrome": true
-      }
-    },
     "faker": {
       "globals": {
         "console.error": true,
