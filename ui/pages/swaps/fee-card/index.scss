@@ -35,7 +35,7 @@
   &__quote-link-text {
     @include H7;
 
-    color: var(--text-primary-color);
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-right: 4px;
   }
