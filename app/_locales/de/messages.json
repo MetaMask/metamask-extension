@@ -2441,9 +2441,6 @@
   "showRecommendations": {
     "message": "Empfehlungen anzeigen"
   },
-  "showSeedPhrase": {
-    "message": "Geheime Wiederherstellungsphrase zeigen"
-  },
   "showTestnetNetworks": {
     "message": "Test-Netzwerke anzeigen"
   },

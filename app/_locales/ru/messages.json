@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "Показать рекомендации"
   },
-  "showSeedPhrase": {
-    "message": "Показать секретную фразу для восстановления"
-  },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"
   },

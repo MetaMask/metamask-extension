@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "추천 보기"
   },
-  "showSeedPhrase": {
-    "message": "비밀 복구 구문 표시"
-  },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 보기"
   },

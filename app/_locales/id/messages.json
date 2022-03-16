@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "Tampilkan Rekomendasi"
   },
-  "showSeedPhrase": {
-    "message": "Tampilkan Frasa Pemulihan Rahasia"
-  },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
   },

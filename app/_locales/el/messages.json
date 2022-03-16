@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "Εμφάνιση Προτάσεων"
   },
-  "showSeedPhrase": {
-    "message": "Εμφάνιση Μυστικής Φράσης Ανάκτησης"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },

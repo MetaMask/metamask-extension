@@ -2480,9 +2480,6 @@
   "showRecommendations": {
     "message": "Mostrar recomendações"
   },
-  "showSeedPhrase": {
-    "message": "Mostrar Frase de Recuperação Secreta"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
   },

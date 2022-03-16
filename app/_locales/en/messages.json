@@ -2814,9 +2814,6 @@
   "showRecommendations": {
     "message": "Show Recommendations"
   },
-  "showSeedPhrase": {
-    "message": "Show Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },

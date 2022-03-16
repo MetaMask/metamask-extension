@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "显示建议"
   },
-  "showSeedPhrase": {
-    "message": "显示账户助记词"
-  },
   "showTestnetNetworks": {
     "message": "显示测试网络"
   },

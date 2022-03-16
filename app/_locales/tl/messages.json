@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "Ipakita ang mga Rekomendasyon"
   },
-  "showSeedPhrase": {
-    "message": "Ipakita ang Secret Recovery Phrase"
-  },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"
   },

@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "अनुशंसा दिखाएं"
   },
-  "showSeedPhrase": {
-    "message": "गुप्त रिकवरी फ्रेज दिखाएं"
-  },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
   },

@@ -2444,9 +2444,6 @@
   "showRecommendations": {
     "message": "Afficher les recommandations"
   },
-  "showSeedPhrase": {
-    "message": "Afficher la phrase secrète de récupération"
-  },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
   },
