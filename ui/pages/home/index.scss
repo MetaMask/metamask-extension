@@ -6,7 +6,7 @@
 
   &__main-view {
     flex: 1 1 66.5%;
-    background: var(--white);
+    background: var(--color-background-default);
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -30,12 +30,12 @@
     @include H6;
 
     flex-grow: 1;
-    color: var(--Grey-500);
+    color: var(--color-icon-default);
     font-weight: 500;
   }
 
   &__main-view &__tab--active {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
   }
 
   &__main-view &__tab button {
@@ -50,7 +50,7 @@
 
     padding-left: 24px;
     padding-right: 24px;
-    color: var(--Grey-800);
+    color: var(--color-text-default);
 
     div {
       margin-bottom: 20px;
@@ -103,7 +103,7 @@
 
       a,
       a:hover {
-        color: var(--dodger-blue);
+        color: var(--color-primary-alternative);
         cursor: pointer;
       }
     }
@@ -130,7 +130,7 @@
     text-align: center;
 
     a {
-      color: var(--primary-1);
+      color: var(--color-primary-default);
     }
   }
 
@@ -148,7 +148,7 @@
   }
 
   &__close {
-    color: var(--ui-black);
+    color: var(--color-text-default);
     background: none;
     margin-left: 20px;
   }

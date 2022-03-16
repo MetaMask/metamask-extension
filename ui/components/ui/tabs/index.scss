@@ -8,8 +8,8 @@
   &__list {
     display: flex;
     justify-content: flex-start;
-    border-bottom: 1px solid var(--geyser);
-    background-color: var(--white);
+    border-bottom: 1px solid var(--color-border-default);
+    background-color: var(--color-background-default);
     position: sticky;
     top: 0;
     z-index: 1;

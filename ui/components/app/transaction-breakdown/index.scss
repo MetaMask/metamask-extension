@@ -5,7 +5,7 @@
     padding-bottom: 4px;
     padding-top: 8px;
     font-size: 14px;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     font-weight: bold;
     text-transform: capitalize;
   }
@@ -23,12 +23,12 @@
 
     &--eth-total {
       font-weight: bold;
-      color: var(--Black-100);
+      color: var(--color-text-default);
     }
 
     &--amount {
       font-weight: bold;
-      color: var(--Black-100);
+      color: var(--color-text-default);
     }
   }
 }

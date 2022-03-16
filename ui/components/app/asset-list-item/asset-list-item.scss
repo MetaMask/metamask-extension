@@ -8,6 +8,7 @@
     min-width: 0;
     min-height: 0;
     text-align: start;
+    color: var(--color-text-default);
 
     & h2 {
       display: flex;
@@ -29,7 +30,7 @@
   }
 
   &__chevron-right {
-    color: var(--Grey-500);
+    color: var(--color-icon-default);
   }
 
   .list-item__right-content {
