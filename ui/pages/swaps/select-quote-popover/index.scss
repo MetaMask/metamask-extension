@@ -99,7 +99,7 @@
 
     &--selected {
       color: var(--white);
-      background: linear-gradient(90deg, var(--text-primary-color) 0%, var(--Blue-400) 101.32%);
+      background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--primary-alternative) 101.32%);
       box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
       border-radius: 8px;
       border-bottom: none;
