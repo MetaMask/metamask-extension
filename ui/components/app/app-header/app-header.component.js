@@ -6,6 +6,7 @@ import Identicon from '../../ui/identicon';
 import AlphaCarbonLogoGradient from '../../ui/alpha-carbon-logo-gradient';
 import { DEFAULT_ROUTE, UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import NetworkDisplay from '../network-display';
+import MenuIcon from '../../ui/icon/menu-icon.component';
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
@@ -87,7 +88,8 @@ export default class AppHeader extends PureComponent {
             }
           }}
         >
-          <Identicon address={selectedAddress} diameter={32} addBorder />
+          {/* <Identicon address={selectedAddress} diameter={32} addBorder /> */}
+          <MenuIcon />
         </div>
       )
     );
