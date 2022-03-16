@@ -177,11 +177,11 @@ export default function BuildQuote({
 
   const onCloseSmartTransactionsOptInPopover = (e) => {
     e?.preventDefault();
-    setSmartTransactionsOptInStatus(false);
+    setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
   };
 
   const onEnableSmartTransactionsClick = () =>
-    setSmartTransactionsOptInStatus(true);
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,

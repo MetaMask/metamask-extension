@@ -219,7 +219,7 @@ export default function SlippageButtons({
                 <ToggleButton
                   value={smartTransactionsOptInStatus}
                   onToggle={(value) => {
-                    setSmartTransactionsOptInStatus(!value);
+                    setSmartTransactionsOptInStatus(!value, value);
                   }}
                   offLabel={t('off')}
                   onLabel={t('on')}
