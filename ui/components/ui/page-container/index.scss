@@ -115,7 +115,7 @@
     @include H6;
 
     padding-top: 0.5rem;
-    color: var(--color-icon-default);
+    color: var(--color-text-alternative);
   }
 
   &__tabs {
@@ -127,7 +127,7 @@
     @include Paragraph;
 
     min-width: 5rem;
-    color: var(--color-icon-default);
+    color: var(--color-text-alternative);
     border-bottom: none;
     margin-right: 16px;
 

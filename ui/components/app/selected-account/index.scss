@@ -42,12 +42,9 @@
     width: 100%;
     background-color: unset;
 
-    &:hover {
-      background-color: var(--color-background-alternative);
-    }
-
+    &:hover,
     &:active {
-      background-color: var(--color-background-default);
+      background-color: var(--color-background-alternative);
     }
   }
 

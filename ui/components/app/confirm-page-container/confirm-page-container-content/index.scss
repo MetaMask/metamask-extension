@@ -23,7 +23,7 @@
 
   &__data {
     padding: 16px;
-    color: var(--color-icon-default);
+    color: var(--color-text-alternative);
 
     & > .disclosure {
       margin-top: 0;
@@ -80,13 +80,13 @@
   &__tab {
     @include H7;
 
-    color: var(--color-icon-default);
+    color: var(--color-text-alternative);
     text-transform: uppercase;
     margin: 0 8px;
 
     & button {
       font-size: unset;
-      color: var(--color-icon-default);
+      color: var(--color-text-alternative);
       text-transform: uppercase;
     }
   }
