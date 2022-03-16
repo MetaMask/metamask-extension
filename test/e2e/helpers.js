@@ -1,13 +1,9 @@
 const path = require('path');
-const sinon = require('sinon');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
-const {
-  createSegmentServer,
-} = require('../../development/lib/create-segment-server');
-const { setupMocking } = require('../../development/mock-e2e');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
+const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
@@ -27,7 +23,6 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     driverOptions,
-    mockSegment,
     title,
     failOnConsoleError = true,
     dappPath = undefined,
@@ -38,11 +33,9 @@ async function withFixtures(options, testSuite) {
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
   const https = await mockttp.generateCACertificate();
-  const mockServer = mockttp.getLocal({ https });
+  const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
   let dappServer;
-  let segmentServer;
-  let segmentStub;
 
   let webDriver;
   let failed = false;
@@ -82,17 +75,6 @@ async function withFixtures(options, testSuite) {
         dappServer.on('error', reject);
       });
     }
-    if (mockSegment) {
-      segmentStub = sinon.stub();
-      segmentServer = createSegmentServer((_request, response, events) => {
-        for (const event of events) {
-          segmentStub(event);
-        }
-        response.statusCode = 200;
-        response.end();
-      });
-      await segmentServer.start(9090);
-    }
     await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
@@ -106,7 +88,6 @@ async function withFixtures(options, testSuite) {
 
     await testSuite({
       driver,
-      segmentStub,
       mockServer,
     });
 
@@ -153,9 +134,6 @@ async function withFixtures(options, testSuite) {
             return resolve();
           });
         });
-      }
-      if (segmentServer) {
-        await segmentServer.stop();
       }
       await mockServer.stop();
     }

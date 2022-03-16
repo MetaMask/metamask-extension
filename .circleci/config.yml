@@ -56,9 +56,6 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
-      - prep-build-test-metrics:
-          requires:
-            - prep-deps
       - test-storybook:
           requires:
             - prep-deps
@@ -87,12 +84,6 @@ workflows:
       - test-e2e-firefox-snaps:
           requires:
             - prep-build-test-flask
-      - test-e2e-chrome-metrics:
-          requires:
-            - prep-build-test-metrics
-      - test-e2e-firefox-metrics:
-          requires:
-            - prep-build-test-metrics
       - test-unit:
           requires:
             - prep-deps
@@ -137,8 +128,6 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-chrome-metrics
-            - test-e2e-firefox-metrics
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
       - benchmark:
@@ -338,27 +327,6 @@ jobs:
             - dist-test
             - builds-test
 
-  prep-build-test-metrics:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing metrics
-          command: yarn build:test:metrics
-      - run:
-          name: Move test build to 'dist-test-metrics' to avoid conflict with production build
-          command: mv ./dist ./dist-test-metrics
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-metrics
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-metrics
-            - builds-test-metrics
-
   prep-build-storybook:
     executor: node-browsers
     steps:
@@ -553,33 +521,6 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
-  test-e2e-chrome-metrics:
-    executor: node-browsers
-    steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-metrics ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-metrics ./builds
-      - run:
-          name: test:e2e:chrome:metrics
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:chrome:metrics --retries 2
-            fi
-          no_output_timeout: 20m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
   test-e2e-firefox:
     executor: node-browsers-medium-plus
     steps:
@@ -601,33 +542,6 @@ jobs:
             if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:firefox --retries 2
-            fi
-          no_output_timeout: 20m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
-  test-e2e-firefox-metrics:
-    executor: node-browsers
-    steps:
-      - checkout
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-metrics ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-metrics ./builds
-      - run:
-          name: test:e2e:firefox:metrics
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:firefox:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:

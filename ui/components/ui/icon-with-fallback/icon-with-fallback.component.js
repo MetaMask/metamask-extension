@@ -23,14 +23,14 @@ const IconWithFallback = ({
       src={icon}
       style={style}
       className={className}
-      alt={name.length ? name : 'icon'}
+      alt={name || 'icon'}
       {...props}
     />
   ) : (
     <span
       className={classnames('icon-with-fallback__fallback', fallbackClassName)}
     >
-      {name.length ? name.charAt(0).toUpperCase() : ''}
+      {name && name.length ? name.charAt(0).toUpperCase() : ''}
     </span>
   );
 };
