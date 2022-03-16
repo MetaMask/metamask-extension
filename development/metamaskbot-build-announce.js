@@ -3,7 +3,7 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
-const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
+const VERSION = require('../package.json').version;
 const { getHighlights } = require('./highlights');
 
 start().catch(console.error);

@@ -216,26 +216,28 @@ export default function CreatePassword({
             justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             marginBottom={4}
           >
-            <CheckBox
-              dataTestId="create-password-terms"
-              onClick={() => setTermsChecked(!termsChecked)}
-              checked={termsChecked}
-            />
-            <Typography variant={TYPOGRAPHY.H5} boxProps={{ marginLeft: 3 }}>
-              {t('passwordTermsWarning', [
-                <a
-                  onClick={(e) => e.stopPropagation()}
-                  key="create-password__link-text"
-                  href={ZENDESK_URLS.PASSWORD_ARTICLE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="create-password__link-text">
-                    {t('learnMoreUpperCase')}
-                  </span>
-                </a>,
-              ])}
-            </Typography>
+            <label className="create-password__form__terms-label">
+              <CheckBox
+                dataTestId="create-password-terms"
+                onClick={() => setTermsChecked(!termsChecked)}
+                checked={termsChecked}
+              />
+              <Typography variant={TYPOGRAPHY.H5} boxProps={{ marginLeft: 3 }}>
+                {t('passwordTermsWarning', [
+                  <a
+                    onClick={(e) => e.stopPropagation()}
+                    key="create-password__link-text"
+                    href={ZENDESK_URLS.PASSWORD_ARTICLE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="create-password__link-text">
+                      {t('learnMoreUpperCase')}
+                    </span>
+                  </a>,
+                ])}
+              </Typography>
+            </label>
           </Box>
           <Button
             data-testid={

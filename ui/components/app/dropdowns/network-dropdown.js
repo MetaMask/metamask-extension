@@ -21,6 +21,8 @@ import {
   ADD_NETWORK_ROUTE,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
+import IconCheck from '../../ui/icon/icon-check';
+
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -185,7 +187,7 @@ class NetworkDropdown extends Component {
           }}
         >
           {isCurrentRpcTarget ? (
-            <i className="fa fa-check" />
+            <IconCheck color="var(--color-success-default)" />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
@@ -257,7 +259,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <i className="fa fa-check" />
+          <IconCheck color="var(--color-success-default)" />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}

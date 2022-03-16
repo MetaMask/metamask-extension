@@ -1,6 +1,10 @@
-import { endowmentPermissionBuilders } from '@metamask/snap-controllers';
+import { endowmentPermissionBuilders } from '@metamask/controllers';
 import { restrictedMethodPermissionBuilders } from '@metamask/rpc-methods';
-import { EndowmentPermissions, RestrictedMethods } from './permissions';
+import {
+  EndowmentPermissions,
+  ExcludedSnapPermissions,
+  RestrictedMethods,
+} from './permissions';
 
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
@@ -15,7 +19,9 @@ describe('RestrictedMethods', () => {
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
         'eth_accounts',
-        ...Object.keys(restrictedMethodPermissionBuilders),
+        ...Object.keys(restrictedMethodPermissionBuilders).filter(
+          (targetKey) => !ExcludedSnapPermissions.has(targetKey),
+        ),
       ].sort(),
     );
   });
