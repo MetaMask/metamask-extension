@@ -348,7 +348,7 @@ async function bundleAppInitialiser({
   shouldLintFenceFiles,
 }) {
   const label = 'app-init';
-  // TODO: remove this filter once MV3 is supported in firefox
+  // TODO: remove this filter for firefox once MV3 is supported in it
   const mv3BrowserPlatforms = browserPlatforms.filter(
     (platform) => platform !== 'firefox',
   );
