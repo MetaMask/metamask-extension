@@ -2942,6 +2942,18 @@
     "message": "The paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
     "description": "Description of SRP paste erorr when the pasted content has too many words"
   },
+  "srpToggleShow": {
+    "message": "Show/Hide this word of the secret recovery phrase",
+    "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
+  },
+  "srpWordHidden": {
+    "message": "This word is hidden",
+    "description": "Explains that a word in the secret recovery phrase is hidden"
+  },
+  "srpWordShown": {
+    "message": "This word is being shown",
+    "description": "Explains that a word in the secret recovery phrase is being shown"
+  },
   "stable": {
     "message": "Stable"
   },

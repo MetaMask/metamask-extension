@@ -179,10 +179,12 @@ export default function SrpInput({ onChange }) {
               />
               <ShowHideToggle
                 id={`${id}-checkbox`}
-                checked={showSrp[index]}
+                ariaLabelHidden={t('srpWordHidden')}
+                ariaLabelShown={t('srpWordShown')}
+                shown={showSrp[index]}
                 dataTestId={`${id}-checkbox`}
                 onChange={() => toggleShowSrp(index)}
-                ariaLabel={t('showSeedPhrase')}
+                title={t('srpToggleShow')}
               />
             </div>
           );
