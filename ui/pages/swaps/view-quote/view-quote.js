@@ -205,40 +205,6 @@ export default function ViewQuote() {
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
-  useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
-      const unsignedTx = {
-        from: unsignedTransaction.from,
-        to: unsignedTransaction.to,
-        value: unsignedTransaction.value,
-        data: unsignedTransaction.data,
-        gas: unsignedTransaction.gas,
-        chainId,
-      };
-      intervalId = setInterval(() => {
-        dispatch(
-          estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
-        );
-      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
-      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
-    } else if (intervalId) {
-      clearInterval(intervalId);
-    }
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line
-  }, [
-    dispatch,
-    currentSmartTransactionsEnabled,
-    smartTransactionsOptInStatus,
-    unsignedTransaction.data,
-    unsignedTransaction.from,
-    unsignedTransaction.value,
-    unsignedTransaction.gas,
-    unsignedTransaction.to,
-    chainId,
-    swapsRefreshRates.stxGetTransactionsRefreshTime,
-  ]);
-
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
@@ -809,6 +775,55 @@ export default function ViewQuote() {
     submitClicked,
   ]);
 
+  const isSwapButtonDisabled =
+    submitClicked ||
+    balanceError ||
+    tokenBalanceUnavailable ||
+    disableSubmissionDueToPriceWarning ||
+    (networkAndAccountSupports1559 && baseAndPriorityFeePerGas === undefined) ||
+    (!networkAndAccountSupports1559 &&
+      (gasPrice === null || gasPrice === undefined)) ||
+    (currentSmartTransactionsEnabled && currentSmartTransactionsError);
+
+  useEffect(() => {
+    if (
+      currentSmartTransactionsEnabled &&
+      smartTransactionsOptInStatus &&
+      !isSwapButtonDisabled
+    ) {
+      const unsignedTx = {
+        from: unsignedTransaction.from,
+        to: unsignedTransaction.to,
+        value: unsignedTransaction.value,
+        data: unsignedTransaction.data,
+        gas: unsignedTransaction.gas,
+        chainId,
+      };
+      intervalId = setInterval(() => {
+        dispatch(
+          estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
+        );
+      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
+      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
+    } else if (intervalId) {
+      clearInterval(intervalId);
+    }
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line
+  }, [
+    dispatch,
+    currentSmartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+    unsignedTransaction.data,
+    unsignedTransaction.from,
+    unsignedTransaction.value,
+    unsignedTransaction.gas,
+    unsignedTransaction.to,
+    chainId,
+    swapsRefreshRates.stxGetTransactionsRefreshTime,
+    isSwapButtonDisabled,
+  ]);
+
   const transaction = {
     userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
     txParams: {
@@ -986,17 +1001,7 @@ export default function ViewQuote() {
                 : t('swap')
             }
             hideCancel
-            disabled={
-              submitClicked ||
-              balanceError ||
-              tokenBalanceUnavailable ||
-              disableSubmissionDueToPriceWarning ||
-              (networkAndAccountSupports1559 &&
-                baseAndPriorityFeePerGas === undefined) ||
-              (!networkAndAccountSupports1559 &&
-                (gasPrice === null || gasPrice === undefined)) ||
-              (currentSmartTransactionsEnabled && currentSmartTransactionsError)
-            }
+            disabled={isSwapButtonDisabled}
             className={isShowingWarning && 'view-quote__thin-swaps-footer'}
             showTopBorder
           />
