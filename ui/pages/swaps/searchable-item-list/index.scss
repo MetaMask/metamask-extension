@@ -14,7 +14,7 @@
       input {
         @include H6;
 
-        color: var(--color-text-muted);
+        color: var(--color-text-default);
         line-height: 100%;
 
         &::-webkit-input-placeholder {
