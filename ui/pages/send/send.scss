@@ -182,6 +182,10 @@
       height: 1.125rem;
       margin: 0.25rem 0.5rem 0.25rem 0.25rem;
 
+      [data-theme='dark'] & {
+        background-image: url('/images/search.svg');
+      }
+
       &--valid {
         background-image: url('/images/check-green-solid.svg');
       }
@@ -194,6 +198,8 @@
       width: 0;
       border: 0;
       outline: none;
+      color: var(--color-text-default);
+      background-color: var(--color-background-default);
 
       &::placeholder {
         color: var(--Grey-200);
