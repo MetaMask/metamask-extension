@@ -337,7 +337,7 @@ function createScriptTasks({
   }
 }
 
-async function bundleAppInitialiser({
+function bundleAppInitialiser({
   jsBundles,
   browserPlatforms,
   buildType,
@@ -361,7 +361,7 @@ async function bundleAppInitialiser({
   const appInitTemp = `./dist/${mv3BrowserPlatforms[0]}/app-init.temp.js`;
   writeFileSync(appInitTemp, jsOutput);
 
-  await createNormalBundle({
+  createNormalBundle({
     browserPlatforms: mv3BrowserPlatforms,
     buildType,
     destFilepath: 'app-init.js',
@@ -372,9 +372,10 @@ async function bundleAppInitialiser({
     testing,
     policyOnly,
     shouldLintFenceFiles,
-  })();
-
-  unlinkSync(appInitTemp);
+  })().then(() => {
+    unlinkSync(appInitTemp);
+    console.log(`Bundle end: service worker app-init.js`);
+  });
 }
 
 function createFactoredBuild({
@@ -488,7 +489,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', async () => {
+    events.on('bundleDone', () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -537,7 +538,7 @@ function createFactoredBuild({
             const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
               (label) => `./${label}.js`,
             );
-            await bundleAppInitialiser({
+            bundleAppInitialiser({
               jsBundles,
               browserPlatforms,
               buildType,
