@@ -53,6 +53,7 @@
     }
 
     &__requested {
+      width: 100%;
       text-align: left;
     }
 
@@ -91,6 +92,7 @@
   }
 
   &__permissions-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 38px;
