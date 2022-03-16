@@ -13,8 +13,8 @@
     @include H6;
 
     flex: 0 0 auto;
-    color: var(--Grey-400);
-    border-bottom: 1px solid var(--Grey-100);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border-muted);
     padding: 8px 0 8px 20px;
 
     @media screen and (max-width: $break-small) {
@@ -41,7 +41,7 @@
     grid-row-start: 2;
     display: flex;
     justify-content: center;
-    color: var(--silver);
+    color: var(--color-text-muted);
   }
 
   &__view-more {

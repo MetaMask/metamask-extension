@@ -6,7 +6,7 @@
   width: 100%;
   height: 100%;
   position: relative;
-  background: white;
+  background: var(--color-background-default);
   display: flex;
   flex-direction: column;
 
@@ -27,7 +27,7 @@
   &__back {
     @include H7;
 
-    color: var(--Grey-500);
+    color: var(--color-text-default);
     font-weight: bold;
     cursor: pointer;
 
@@ -39,7 +39,7 @@
   &__page-count {
     @include H7;
 
-    color: var(--Grey-500);
+    color: var(--color-icon-default);
     grid-column: 2;
     justify-self: end;
     font-weight: bold;
