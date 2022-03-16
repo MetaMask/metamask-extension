@@ -206,16 +206,15 @@
       transition: ease-in-out .4s;
     }
     &-receive{
-      background: linear-gradient(111.99deg, var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
-      
-      &:hover{
-        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(111.99deg,var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
-      }
-    }
-    &-send{
       background: linear-gradient(91.07deg, var(--secondary-2-start) 4.72%, var(--secondary-2-end) 73%);
       &:hover{
         background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(91.07deg, var(--secondary-2-start) 4.72%, var(--secondary-2-end) 73%);
+      }
+    }
+    &-send{
+      background: linear-gradient(111.99deg, var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
+      &:hover{
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(111.99deg,var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
       }
     }
   }
