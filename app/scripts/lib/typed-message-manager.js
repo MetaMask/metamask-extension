@@ -194,7 +194,7 @@ export default class TypedMessageManager extends EventEmitter {
         );
         if (validation.errors.length !== 0) {
           throw new EthereumRpcError(
-            -32602,
+            ethErrors.rpc.invalidParams,
             'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
             validation.errors.map((v) => v.message.toString()),
           );
