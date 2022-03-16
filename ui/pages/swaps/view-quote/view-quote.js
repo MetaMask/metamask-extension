@@ -748,33 +748,6 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
-  const onCloseEditGasPopover = () => {
-    setShowEditGasPopover(false);
-  };
-
-  useEffect(() => {
-    // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
-    dispatch(setSwapsQuotesPollingLimitEnabled(true));
-    if (reviewSwapClickedTimestamp) {
-      viewQuotePageLoadedEvent();
-    }
-  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
-
-  useEffect(() => {
-    // if smart transaction error is turned off, reset submit clicked boolean
-    if (
-      !currentSmartTransactionsEnabled &&
-      currentSmartTransactionsError &&
-      submitClicked
-    ) {
-      setSubmitClicked(false);
-    }
-  }, [
-    currentSmartTransactionsEnabled,
-    currentSmartTransactionsError,
-    submitClicked,
-  ]);
-
   const isSwapButtonDisabled =
     submitClicked ||
     balanceError ||
@@ -822,6 +795,33 @@ export default function ViewQuote() {
     chainId,
     swapsRefreshRates.stxGetTransactionsRefreshTime,
     isSwapButtonDisabled,
+  ]);
+
+  const onCloseEditGasPopover = () => {
+    setShowEditGasPopover(false);
+  };
+
+  useEffect(() => {
+    // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
+    dispatch(setSwapsQuotesPollingLimitEnabled(true));
+    if (reviewSwapClickedTimestamp) {
+      viewQuotePageLoadedEvent();
+    }
+  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
+
+  useEffect(() => {
+    // if smart transaction error is turned off, reset submit clicked boolean
+    if (
+      !currentSmartTransactionsEnabled &&
+      currentSmartTransactionsError &&
+      submitClicked
+    ) {
+      setSubmitClicked(false);
+    }
+  }, [
+    currentSmartTransactionsEnabled,
+    currentSmartTransactionsError,
+    submitClicked,
   ]);
 
   const transaction = {
