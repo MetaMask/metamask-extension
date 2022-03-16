@@ -3,6 +3,7 @@
     display: grid;
     grid-template-areas:
       "title dropdown"
+      "paste-tip paste-tip"
       "input input"
       "error error"
       "too-many-words-error too-many-words-error";
@@ -15,12 +16,19 @@
   }
 
   &__srp-label {
-    margin-bottom: 16px;
     grid-area: title;
   }
 
   &__number-of-words-dropdown {
-    margin-bottom: 16px;
+    grid-area: dropdown;
+  }
+
+  &__paste-tip {
+    margin-bottom: 8px;
+    grid-area: paste-tip;
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   &__srp {

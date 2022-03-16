@@ -125,6 +125,13 @@ export default function SrpInput({ onChange }) {
           {t('secretRecoveryPhrase')}
         </Typography>
       </label>
+      <ActionableMessage
+        className="import-srp__paste-tip"
+        iconFillColor="#037dd6" // This is `--color-info-default`
+        message={t('srpPasteTip')}
+        type="info"
+        useIcon
+      />
       <Dropdown
         className="import-srp__number-of-words-dropdown"
         onChange={(newSelectedOption) => {
