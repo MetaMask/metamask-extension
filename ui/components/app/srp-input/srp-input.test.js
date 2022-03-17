@@ -157,8 +157,7 @@ describe('srp-input', () => {
           getByTestId(`import-srp__srp-word-${index}`).focus();
           await userEvent.keyboard(srpParts[index]);
         }
-        getByTestId(`import-srp__srp-word-0`).focus();
-        await userEvent.keyboard('{Control>}A{/Control}{Backspace}');
+        await userEvent.clear(getByTestId('import-srp__srp-word-0'));
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -175,8 +174,9 @@ describe('srp-input', () => {
           getByTestId(`import-srp__srp-word-${index}`).focus();
           await userEvent.keyboard(srpParts[index]);
         }
+        await userEvent.clear(getByTestId('import-srp__srp-word-0'));
         getByTestId(`import-srp__srp-word-0`).focus();
-        await userEvent.keyboard('{Control>}A{/Control}{Backspace}ball');
+        await userEvent.keyboard('ball');
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -272,8 +272,7 @@ describe('srp-input', () => {
           getByTestId(`import-srp__srp-word-${index}`).focus();
           await userEvent.paste(srpParts[index]);
         }
-        getByTestId(`import-srp__srp-word-0`).focus();
-        await userEvent.keyboard('{Control>}A{/Control}{Backspace}');
+        await userEvent.clear(getByTestId('import-srp__srp-word-0'));
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -290,8 +289,8 @@ describe('srp-input', () => {
           getByTestId(`import-srp__srp-word-${index}`).focus();
           await userEvent.keyboard(srpParts[index]);
         }
-        getByTestId(`import-srp__srp-word-0`).focus();
-        await userEvent.keyboard('{Control>}A{/Control}{Backspace}');
+        await userEvent.clear(getByTestId('import-srp__srp-word-0'));
+        getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste('ball');
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -619,8 +618,12 @@ describe('srp-input', () => {
       );
       await waitFor(() => getByText(enLocale.secretRecoveryPhrase.message));
 
-      expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-      expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+      expect(
+        queryByText(enLocale.seedPhraseReq.message),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByText(enLocale.invalidSeedPhrase.message),
+      ).not.toBeInTheDocument();
     });
 
     describe('typed', () => {
@@ -636,8 +639,10 @@ describe('srp-input', () => {
           await userEvent.keyboard(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', async () => {
@@ -653,8 +658,10 @@ describe('srp-input', () => {
           await userEvent.keyboard(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       it('should show invalid SRP error if SRP is correct length but has an invalid checksum', async () => {
@@ -669,8 +676,12 @@ describe('srp-input', () => {
           await userEvent.keyboard(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).toBeInTheDocument();
       });
 
       it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', async () => {
@@ -685,8 +696,12 @@ describe('srp-input', () => {
           await userEvent.keyboard(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).toBeInTheDocument();
       });
 
       it('should not show error for valid SRP', async () => {
@@ -701,8 +716,12 @@ describe('srp-input', () => {
           await userEvent.keyboard(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       for (const whitespaceCharacter of whitespaceCharacters) {
@@ -722,8 +741,12 @@ describe('srp-input', () => {
             );
           }
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
 
         it(`should not show error for a valid SRP followed by a '${whitespaceCharacter}'`, async () => {
@@ -742,8 +765,12 @@ describe('srp-input', () => {
             );
           }
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
 
         it(`should not show error for a valid SRP where each word is followed by a'${whitespaceCharacter}'`, async () => {
@@ -760,8 +787,12 @@ describe('srp-input', () => {
             );
           }
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
       }
     });
@@ -779,8 +810,10 @@ describe('srp-input', () => {
           await userEvent.paste(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', async () => {
@@ -796,8 +829,10 @@ describe('srp-input', () => {
           await userEvent.paste(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       it('should show invalid SRP error if SRP is correct length but has an invalid checksum', async () => {
@@ -812,8 +847,12 @@ describe('srp-input', () => {
           await userEvent.paste(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).toBeInTheDocument();
       });
 
       it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', async () => {
@@ -828,8 +867,12 @@ describe('srp-input', () => {
           await userEvent.paste(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).toBeInTheDocument();
       });
 
       it('should not show error for valid SRP', async () => {
@@ -844,8 +887,12 @@ describe('srp-input', () => {
           await userEvent.paste(srpParts[index]);
         }
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       for (const whitespaceCharacter of whitespaceCharacters) {
@@ -865,8 +912,12 @@ describe('srp-input', () => {
             );
           }
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
 
         it(`should not show error for a valid SRP followed by a '${whitespaceCharacter}'`, async () => {
@@ -885,8 +936,12 @@ describe('srp-input', () => {
             );
           }
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
 
         it(`should not show error for a valid SRP where each word is followed by a'${whitespaceCharacter}'`, async () => {
@@ -901,8 +956,12 @@ describe('srp-input', () => {
             await userEvent.paste(`${srpParts[index]}${whitespaceCharacter}`);
           }
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
       }
     });
@@ -917,8 +976,10 @@ describe('srp-input', () => {
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(tooFewWords);
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', async () => {
@@ -930,8 +991,10 @@ describe('srp-input', () => {
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidWordCount);
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       it('should show invalid SRP error if SRP is correct length but has an invalid checksum', async () => {
@@ -943,8 +1006,12 @@ describe('srp-input', () => {
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidChecksum);
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).toBeInTheDocument();
       });
 
       it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', async () => {
@@ -956,8 +1023,12 @@ describe('srp-input', () => {
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidWordCorrectChecksum);
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).toBeInTheDocument();
       });
 
       it('should not show error for valid SRP', async () => {
@@ -969,8 +1040,12 @@ describe('srp-input', () => {
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(correct);
 
-        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-        expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+        expect(
+          queryByText(enLocale.seedPhraseReq.message),
+        ).not.toBeInTheDocument();
+        expect(
+          queryByText(enLocale.invalidSeedPhrase.message),
+        ).not.toBeInTheDocument();
       });
 
       for (const poorlyFormattedInput of poorlyFormattedInputs) {
@@ -983,8 +1058,12 @@ describe('srp-input', () => {
           getByTestId('import-srp__srp-word-0').focus();
           await userEvent.paste(poorlyFormattedInput);
 
-          expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
-          expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
+          expect(
+            queryByText(enLocale.seedPhraseReq.message),
+          ).not.toBeInTheDocument();
+          expect(
+            queryByText(enLocale.invalidSeedPhrase.message),
+          ).not.toBeInTheDocument();
         });
       }
     });
@@ -1411,9 +1490,9 @@ describe('srp-input', () => {
           name: enLocale.srpInputNumberOfWords.message.replace('$1', '12'),
           selected: true,
         }),
-      ).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-11')).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-12')).toBeNull();
+      ).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-11')).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-12')).not.toBeInTheDocument();
     });
 
     it('should be updated on paste to allow room for a longer SRP', async () => {
@@ -1432,9 +1511,9 @@ describe('srp-input', () => {
           name: enLocale.srpInputNumberOfWords.message.replace('$1', '15'),
           selected: true,
         }),
-      ).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-14')).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-15')).toBeNull();
+      ).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-14')).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-15')).not.toBeInTheDocument();
     });
 
     it('should be updated on paste to match the size of a shorter SRP', async () => {
@@ -1455,9 +1534,9 @@ describe('srp-input', () => {
           name: enLocale.srpInputNumberOfWords.message.replace('$1', '12'),
           selected: true,
         }),
-      ).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-11')).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-12')).toBeNull();
+      ).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-11')).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-12')).not.toBeInTheDocument();
     });
 
     it('should round up to nearest valid size on paste when SRP has an invalid number of words', async () => {
@@ -1476,9 +1555,9 @@ describe('srp-input', () => {
           name: enLocale.srpInputNumberOfWords.message.replace('$1', '15'),
           selected: true,
         }),
-      ).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-14')).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-15')).toBeNull();
+      ).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-14')).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-15')).not.toBeInTheDocument();
     });
 
     it('should update the number of fields', async () => {
@@ -1494,9 +1573,9 @@ describe('srp-input', () => {
           name: enLocale.srpInputNumberOfWords.message.replace('$1', '24'),
           selected: true,
         }),
-      ).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-23')).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-24')).toBeNull();
+      ).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-23')).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-24')).not.toBeInTheDocument();
     });
 
     it('should forget any field state that is no longer shown', async () => {
@@ -1510,8 +1589,8 @@ describe('srp-input', () => {
       await userEvent.selectOptions(getByRole('combobox'), '12');
       await userEvent.selectOptions(getByRole('combobox'), '15');
 
-      expect(queryByTestId('import-srp__srp-word-14')).not.toBeNull();
-      expect(queryByTestId('import-srp__srp-word-15')).toBeNull();
+      expect(queryByTestId('import-srp__srp-word-14')).toBeInTheDocument();
+      expect(queryByTestId('import-srp__srp-word-15')).not.toBeInTheDocument();
       expect(queryByTestId('import-srp__srp-word-11').value).toBe('test');
       expect(queryByTestId('import-srp__srp-word-12').value).toBe('');
       expect(queryByTestId('import-srp__srp-word-13').value).toBe('');
@@ -1531,7 +1610,7 @@ describe('srp-input', () => {
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
-      ).not.toBeNull();
+      ).toBeInTheDocument();
     });
 
     it('should allow dismissing the paste error', async () => {
@@ -1546,7 +1625,7 @@ describe('srp-input', () => {
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
-      ).toBeNull();
+      ).not.toBeInTheDocument();
     });
 
     it('should dismiss the paste error after paste with fewer than 24 words', async () => {
@@ -1561,7 +1640,7 @@ describe('srp-input', () => {
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
-      ).toBeNull();
+      ).not.toBeInTheDocument();
     });
 
     it('should not dismiss the paste error after a second paste with over 24 words', async () => {
@@ -1576,7 +1655,7 @@ describe('srp-input', () => {
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
-      ).not.toBeNull();
+      ).toBeInTheDocument();
     });
 
     it('should dismiss the paste error after typing', async () => {
@@ -1591,7 +1670,7 @@ describe('srp-input', () => {
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
-      ).toBeNull();
+      ).not.toBeInTheDocument();
     });
   });
 });
