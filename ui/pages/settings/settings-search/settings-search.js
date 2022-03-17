@@ -15,6 +15,9 @@ export default function SettingsSearch({
   const t = useContext(I18nContext);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchIconColor, setSearchIconColor] = useState(
+    'var(--color-icon-default)',
+  );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
@@ -30,6 +33,11 @@ export default function SettingsSearch({
   // eslint-disable-next-line no-shadow
   const handleSearch = (searchQuery) => {
     setSearchQuery(searchQuery);
+    if (searchQuery === '') {
+      setSearchIconColor('var(--color-icon-muted)');
+    } else {
+      setSearchIconColor('var(--color-text-default)');
+    }
     const fuseSearchResult = settingsSearchFuse.search(searchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
       return (
@@ -46,7 +54,7 @@ export default function SettingsSearch({
   const renderStartAdornment = () => {
     return (
       <InputAdornment position="start" style={{ marginRight: '12px' }}>
-        <SearchIcon color="var(--color-icon-muted)" />
+        <SearchIcon color={searchIconColor} />
       </InputAdornment>
     );
   };
