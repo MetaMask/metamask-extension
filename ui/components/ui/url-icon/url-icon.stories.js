@@ -5,8 +5,8 @@ export default {
   title: 'Components/UI/UrlIcon',
   id: __filename,
   argType: {
-    name: { description: 'Icon Name', control: 'text' },
-    url: { description: 'Icon File URL', control: 'text' },
+    name: { control: 'text' },
+    url: { control: 'text' },
     className: { control: 'text' },
     fallbackClassName: { control: 'text' },
   },
