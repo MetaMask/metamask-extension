@@ -70,3 +70,6 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
 };
+
+export const METAMASK_PROD_BUILD_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
+export const METAMASK_FLASK_BUILD_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';

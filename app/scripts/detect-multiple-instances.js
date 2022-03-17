@@ -5,11 +5,12 @@
  * versions running simultaneously.
  */
 
-import extension from 'extensionizer';
+import {
+  METAMASK_PROD_BUILD_ID,
+  METAMASK_FLASK_BUILD_ID,
+} from '../../shared/constants/app';
 
-// TODO: add IDs from other browsers
-const PROD_BUILD_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
-const FLASK_BUILD_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
+import extension from 'extensionizer';
 
 const MESSAGE_TEXT = 'isRunning';
 
@@ -19,12 +20,9 @@ const MESSAGE_TEXT = 'isRunning';
 export const onMessageReceived = (message, sender, sendResponse) => {
   if (message === MESSAGE_TEXT) {
     sendResponse({
-      type: 'success',
       isRunning: true,
     });
-    return true;
   }
-  return false;
 };
 
 /**
@@ -33,7 +31,9 @@ export const onMessageReceived = (message, sender, sendResponse) => {
  */
 export const onExtensionConnect = () => {
   const idToPing =
-    extension.runtime.id === FLASK_BUILD_ID ? PROD_BUILD_ID : FLASK_BUILD_ID;
+    extension.runtime.id === METAMASK_FLASK_BUILD_ID
+      ? METAMASK_PROD_BUILD_ID
+      : METAMASK_FLASK_BUILD_ID;
 
   extension.runtime.sendMessage(idToPing, MESSAGE_TEXT, (response) => {
     if (extension.runtime.lastError || !response) {
