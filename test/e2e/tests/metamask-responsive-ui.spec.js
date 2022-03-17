@@ -169,7 +169,7 @@ describe('Metamask Responsive UI', function () {
         assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
         await restoreSeedLink.click();
 
-        await driver.fill(
+        await driver.pasteIntoField(
           'input[placeholder="Enter your Secret Recovery Phrase"]',
           testSeedPhrase,
         );
