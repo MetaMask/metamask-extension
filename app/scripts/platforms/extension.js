@@ -193,7 +193,7 @@ export default class ExtensionPlatform {
 
   currentTab() {
     return new Promise((resolve, reject) => {
-      browser.tabs.getCurrent((tab) => {
+      browser.tabs.getCurrent().then((tab) => {
         const err = checkForError();
         if (err) {
           reject(err);
@@ -206,7 +206,7 @@ export default class ExtensionPlatform {
 
   switchToTab(tabId) {
     return new Promise((resolve, reject) => {
-      browser.tabs.update(tabId, { highlighted: true }, (tab) => {
+      browser.tabs.update(tabId, { highlighted: true }).then((tab) => {
         const err = checkForError();
         if (err) {
           reject(err);
@@ -219,7 +219,7 @@ export default class ExtensionPlatform {
 
   closeTab(tabId) {
     return new Promise((resolve, reject) => {
-      browser.tabs.remove(tabId, () => {
+      browser.tabs.remove(tabId).then(() => {
         const err = checkForError();
         if (err) {
           reject(err);
