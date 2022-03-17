@@ -16,7 +16,7 @@ const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
  *  referrer?: MetaMetricsReferrerObject
  * }}
  */
-export function useMetaMetricsContext() {
+export function useMetaMetrics() {
   const match = useRouteMatch({
     path: PATHS_TO_CHECK,
     exact: true,

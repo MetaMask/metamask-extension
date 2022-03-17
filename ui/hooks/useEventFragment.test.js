@@ -13,8 +13,8 @@ jest.mock('../store/actions', () => ({
   createEventFragment: jest.fn(),
 }));
 
-jest.mock('./useMetricEvent', () => ({
-  useMetaMetricsContext: jest.fn(() => ({ page: '/' })),
+jest.mock('./useMetaMetrics', () => ({
+  useMetaMetrics: jest.fn(() => ({ page: '/' })),
 }));
 
 jest.mock('react-redux', () => ({

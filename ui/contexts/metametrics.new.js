@@ -10,15 +10,14 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation, useRouteMatch } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom';
 import { captureException, captureMessage } from '@sentry/browser';
 
 import { omit } from 'lodash';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
-import { txDataSelector } from '../selectors';
+import { useMetaMetrics } from '../hooks/useMetaMetrics';
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
@@ -54,47 +53,9 @@ export const MetaMetricsContext = createContext(() => {
 
 const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
 
-/**
- * Returns the current page if it matches out route map, as well as the origin
- * if there is a confirmation that was triggered by a dapp
- *
- * @returns {{
- *  page?: MetaMetricsPageObject
- *  referrer?: MetaMetricsReferrerObject
- * }}
- */
-function useSegmentContext() {
-  const match = useRouteMatch({
-    path: PATHS_TO_CHECK,
-    exact: true,
-    strict: true,
-  });
-  const txData = useSelector(txDataSelector) || {};
-  const confirmTransactionOrigin = txData.origin;
-
-  const referrer = confirmTransactionOrigin
-    ? {
-        url: confirmTransactionOrigin,
-      }
-    : undefined;
-
-  const page = match
-    ? {
-        path: match.path,
-        title: PATH_NAME_MAP[match.path],
-        url: match.path,
-      }
-    : undefined;
-
-  return {
-    page,
-    referrer,
-  };
-}
-
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
-  const context = useSegmentContext();
+  const context = useMetaMetrics();
 
   /**
    * @type {UITrackEventMethod}
