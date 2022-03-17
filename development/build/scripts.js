@@ -1,6 +1,6 @@
 const { callbackify } = require('util');
 const path = require('path');
-const { writeFileSync, readFileSync } = require('fs');
+const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
@@ -337,6 +337,47 @@ function createScriptTasks({
   }
 }
 
+function bundleAppInitialiser({
+  jsBundles,
+  browserPlatforms,
+  buildType,
+  devMode,
+  ignoredFiles,
+  testing,
+  policyOnly,
+  shouldLintFenceFiles,
+}) {
+  const label = 'app-init';
+  // TODO: remove this filter for firefox once MV3 is supported in it
+  const mv3BrowserPlatforms = browserPlatforms.filter(
+    (platform) => platform !== 'firefox',
+  );
+  const fileList = jsBundles.reduce(
+    (result, file) => `${result}'${file}',\n    `,
+    '',
+  );
+  const jsTemplate = readFileSync('./app/scripts/app-init.js', 'utf8');
+  const jsOutput = jsTemplate.replace('/** FILE NAMES */', fileList);
+  const appInitTemp = `./dist/${mv3BrowserPlatforms[0]}/app-init.temp.js`;
+  writeFileSync(appInitTemp, jsOutput);
+
+  createNormalBundle({
+    browserPlatforms: mv3BrowserPlatforms,
+    buildType,
+    destFilepath: 'app-init.js',
+    devMode,
+    entryFilepath: appInitTemp,
+    ignoredFiles,
+    label,
+    testing,
+    policyOnly,
+    shouldLintFenceFiles,
+  })().then(() => {
+    unlinkSync(appInitTemp);
+    console.log(`Bundle end: service worker app-init.js`);
+  });
+}
+
 function createFactoredBuild({
   browserPlatforms,
   buildType,
@@ -493,6 +534,19 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               useLavamoat: true,
+            });
+            const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
+              (label) => `./${label}.js`,
+            );
+            bundleAppInitialiser({
+              jsBundles,
+              browserPlatforms,
+              buildType,
+              devMode,
+              ignoredFiles,
+              testing,
+              policyOnly,
+              shouldLintFenceFiles,
             });
             break;
           }

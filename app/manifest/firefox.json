@@ -4,5 +4,9 @@
       "id": "webextension@metamask.io",
       "strict_min_version": "68.0"
     }
+  },
+  "background": {
+    "page": "background.html",
+    "persistent": true
   }
 }
