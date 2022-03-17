@@ -39,6 +39,10 @@
     margin: 8px 12px 0 0;
   }
 
+  &__label {
+    display: flex;
+  }
+
   &__footer {
     button {
       width: 140px;

@@ -89,7 +89,7 @@ export default function RecoveryPhraseChips({
               <i className="far fa-eye" color="white" />
               <Typography
                 variant={TYPOGRAPHY.H6}
-                color={COLORS.WHITE}
+                color={COLORS.OVERLAY_INVERSE}
                 className="recovery-phrase__secret-blocker--text"
               >
                 {t('makeSureNoOneWatching')}

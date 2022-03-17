@@ -18,36 +18,39 @@
 
   &__error,
   &__error h6 {
-    color: var(--error-1) !important;
+    color: var(--color-error-default) !important;
     padding-top: 6px;
   }
 
   h6 {
     padding-bottom: 6px;
     margin-inline-end: 6px;
+    color: var(--color-text-default);
   }
 
   i {
-    color: #dadada;
+    color: var(--color-icon-default);
     font-size: $font-size-h7;
   }
 
   &__input {
     width: 100%;
-    border: solid 1px var(--ui-3);
     padding: 10px;
     border-radius: 6px;
+    background-color: var(--color-background-default);
+    color: var(--color-text-default);
+    border: 2px solid var(--color-border-default);
 
     &:focus {
-      border: solid 2px var(--primary-1);
+      border: solid 2px var(--color-primary-default);
     }
 
     &--error {
-      border-color: var(--error-1);
+      border-color: var(--color-error-default);
     }
 
     &--warning {
-      border-color: var(--alert-3);
+      border-color: var(--color-warning-default);
     }
   }
 }

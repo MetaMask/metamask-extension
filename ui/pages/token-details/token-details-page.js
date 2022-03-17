@@ -74,7 +74,7 @@ export default function TokenDetailsPage() {
           fontWeight={FONT_WEIGHT.BOLD}
           margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H6}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           className="token-details__title"
         >
           {t('tokenDetails')}
@@ -90,7 +90,7 @@ export default function TokenDetailsPage() {
             fontWeight={FONT_WEIGHT.BOLD}
             margin={[0, 5, 0, 0]}
             variant={TYPOGRAPHY.H4}
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             className="token-details__token-value"
           >
             {tokenBalance || ''}
@@ -106,14 +106,14 @@ export default function TokenDetailsPage() {
         <Typography
           margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H7}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
         >
           {tokenCurrencyBalance || ''}
         </Typography>
         <Typography
           margin={[6, 0, 0, 0]}
           variant={TYPOGRAPHY.H9}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenContractAddress')}
@@ -122,7 +122,7 @@ export default function TokenDetailsPage() {
           <Typography
             variant={TYPOGRAPHY.H7}
             margin={[2, 0, 0, 0]}
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             className="token-details__token-address"
           >
@@ -147,7 +147,7 @@ export default function TokenDetailsPage() {
         <Typography
           variant={TYPOGRAPHY.H9}
           margin={[4, 0, 0, 0]}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenDecimalTitle')}
@@ -155,14 +155,14 @@ export default function TokenDetailsPage() {
         <Typography
           variant={TYPOGRAPHY.H7}
           margin={[1, 0, 0, 0]}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
         >
           {token.decimals}
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H9}
           margin={[4, 0, 0, 0]}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('network')}
@@ -170,7 +170,7 @@ export default function TokenDetailsPage() {
         <Typography
           variant={TYPOGRAPHY.H7}
           margin={[1, 0, 0, 0]}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
         >
           {networkType === NETWORK_TYPE_RPC
             ? networkNickname ?? t('privateNetwork')
@@ -185,7 +185,7 @@ export default function TokenDetailsPage() {
             );
           }}
         >
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
+          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
             {t('hideToken')}
           </Typography>
         </Button>

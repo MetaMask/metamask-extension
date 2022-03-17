@@ -9,7 +9,7 @@ import {
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
-import { ASSET_TYPES } from '../../../ducks/send';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';

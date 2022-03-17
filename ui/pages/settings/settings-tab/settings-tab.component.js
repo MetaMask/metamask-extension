@@ -193,7 +193,7 @@ export default class SettingsTab extends PureComponent {
         id="blockie-optin"
       >
         <div className="settings-page__content-item">
-          <Typography variant={TYPOGRAPHY.H5} color={COLORS.BLACK}>
+          <Typography variant={TYPOGRAPHY.H5} color={COLORS.TEXT_DEFAULT}>
             {t('accountIdenticon')}
           </Typography>
           <span className="settings-page__content-item__description">
@@ -221,7 +221,7 @@ export default class SettingsTab extends PureComponent {
                 />
               </div>
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
                 margin={[0, 12, 0, 3]}
               >
@@ -247,7 +247,7 @@ export default class SettingsTab extends PureComponent {
                 />
               </div>
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
                 margin={[0, 0, 0, 3]}
               >

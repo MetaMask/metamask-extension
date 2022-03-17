@@ -8,7 +8,6 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -22,7 +21,6 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  getTokenList,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -673,6 +671,24 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updateSwapApprovalTransaction(txId, txSwapApproval) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSwapApprovalTransaction(
+        txId,
+        txSwapApproval,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txSwapApproval;
+  };
+}
+
 export function updateEditableParams(txId, editableParams) {
   return async (dispatch) => {
     try {
@@ -684,12 +700,6 @@ export function updateEditableParams(txId, editableParams) {
       throw error;
     }
 
-    dispatch(
-      updateTransactionParams(editableParams.id, editableParams.txParams),
-    );
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: editableParams.id }));
     return editableParams;
   };
 }
@@ -705,11 +715,22 @@ export function updateTransactionGasFees(txId, txGasFees) {
       throw error;
     }
 
-    dispatch(updateTransactionParams(txGasFees.id, txGasFees.txParams));
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: txGasFees.id }));
     return txGasFees;
+  };
+}
+
+export function updateSwapTransaction(txId, txSwap) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSwapTransaction(txId, txSwap);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txSwap;
   };
 }
 
@@ -2868,46 +2889,6 @@ export function loadingTokenParamsStarted() {
 export function loadingTokenParamsFinished() {
   return {
     type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
-  };
-}
-
-export function getTokenParams(address) {
-  return (dispatch, getState) => {
-    const tokenList = getTokenList(getState());
-    const existingTokens = getState().metamask.tokens;
-    const { selectedAddress } = getState().metamask;
-    const { chainId } = getState().metamask.provider;
-    const existingCollectibles = getState().metamask?.allCollectibles?.[
-      selectedAddress
-    ]?.[chainId];
-    const existingToken = existingTokens.find(({ address: tokenAddress }) =>
-      isEqualCaseInsensitive(address, tokenAddress),
-    );
-    const existingCollectible = existingCollectibles?.find(
-      ({ address: collectibleAddress }) =>
-        isEqualCaseInsensitive(address, collectibleAddress),
-    );
-
-    if (existingCollectible) {
-      return null;
-    }
-
-    if (existingToken) {
-      return Promise.resolve({
-        symbol: existingToken.symbol,
-        decimals: existingToken.decimals,
-      });
-    }
-
-    dispatch(loadingTokenParamsStarted());
-    log.debug(`loadingTokenParams`);
-
-    return getSymbolAndDecimals(address, tokenList).then(
-      ({ symbol, decimals }) => {
-        dispatch(addToken(address, symbol, Number(decimals)));
-        dispatch(loadingTokenParamsFinished());
-      },
-    );
   };
 }
 

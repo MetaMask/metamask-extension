@@ -481,6 +481,10 @@ function getSuggestedAssetCount(state) {
   return suggestedAssets.length;
 }
 
+export function getSuggestedAssets(state) {
+  return state.metamask.suggestedAssets;
+}
+
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
   return chainId === MAINNET_CHAIN_ID;

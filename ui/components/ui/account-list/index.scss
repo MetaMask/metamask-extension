@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
+  overflow-y: auto;
 
   &__header--one-item,
   &__header--multiple-items {
@@ -33,9 +34,9 @@
   }
 
   &__wrapper {
-    width: 92%;
     display: flex;
     overflow: hidden;
+    width: 100%;
   }
 
   &__list {

@@ -11,6 +11,8 @@ import useAddressDetails from '../../../../../hooks/useAddressDetails';
 import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
+import Typography from '../../../../ui/typography';
+import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -116,9 +118,15 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__title">
           {renderImage()}
           {!hideTitle ? (
-            <div className="confirm-page-container-summary__title-text">
+            <Typography
+              className="confirm-page-container-summary__title-text"
+              variant={
+                title && title.length < 10 ? TYPOGRAPHY.H1 : TYPOGRAPHY.H3
+              }
+              title={title}
+            >
               {titleComponent || title}
-            </div>
+            </Typography>
           ) : null}
         </div>
         {hideSubtitle ? null : (

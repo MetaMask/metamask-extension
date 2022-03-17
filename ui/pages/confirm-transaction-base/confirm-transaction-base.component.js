@@ -541,7 +541,7 @@ export default class ConfirmTransactionBase extends Component {
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontStyle={FONT_STYLE.ITALIC}
-                  color={COLORS.UI4}
+                  color={COLORS.TEXT_ALTERNATIVE}
                 >
                   {t('transactionDetailDappGasMoreInfo')}
                 </Typography>

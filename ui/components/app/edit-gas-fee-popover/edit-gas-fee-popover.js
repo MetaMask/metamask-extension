@@ -91,7 +91,7 @@ const EditGasFeePopover = () => {
               <Typography
                 className="edit-gas-fee-popover__know-more"
                 align="center"
-                color={COLORS.UI4}
+                color={COLORS.TEXT_ALTERNATIVE}
                 tag={TYPOGRAPHY.Paragraph}
                 variant={TYPOGRAPHY.H7}
               >

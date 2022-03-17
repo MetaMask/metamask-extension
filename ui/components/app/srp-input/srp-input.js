@@ -72,7 +72,7 @@ export default function SrpInput({ onChange }) {
       )}
       {srpError ? (
         <Typography
-          color={COLORS.ERROR1}
+          color={COLORS.ERROR_DEFAULT}
           tag="span"
           className="import-srp__srp-error"
         >

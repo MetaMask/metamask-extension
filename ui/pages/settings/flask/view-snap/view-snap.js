@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../components/ui/button';
@@ -12,6 +12,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
 import Box from '../../../../components/ui/box';
+import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
@@ -38,6 +39,8 @@ function ViewSnap() {
       const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
       return snapState.id === decoded;
     });
+
+  const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
 
   useEffect(() => {
     if (!snap) {
@@ -104,7 +107,7 @@ function ViewSnap() {
           <div className="view-snap__section">
             <Typography
               variant={TYPOGRAPHY.H6}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ marginTop: 5 }}
             >
               {snap.manifest.description}
@@ -112,7 +115,7 @@ function ViewSnap() {
           </div>
           <div className="view-snap__section view-snap__permission-list">
             <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
-            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+            <Typography variant={TYPOGRAPHY.H6} color={COLORS.TEXT_ALTERNATIVE}>
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
             <Box width={FRACTIONS.TEN_TWELFTHS}>
@@ -126,7 +129,10 @@ function ViewSnap() {
               <Typography variant={TYPOGRAPHY.H4}>
                 {t('connectedSites')}
               </Typography>
-              <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
                 {t('connectedSnapSites', [snap.manifest.proposedName])}
               </Typography>
               <ConnectedSitesList
@@ -141,7 +147,7 @@ function ViewSnap() {
             <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
             <Typography
               variant={TYPOGRAPHY.H6}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ paddingBottom: 3 }}
             >
               {t('removeSnapDescription')}
@@ -152,12 +158,19 @@ function ViewSnap() {
               css={{
                 maxWidth: '175px',
               }}
-              onClick={() => {
-                dispatch(removeSnap(snap));
-              }}
+              onClick={() => setIsShowingRemoveWarning(true)}
             >
               {t('removeSnap')}
             </Button>
+            {isShowingRemoveWarning && (
+              <SnapRemoveWarning
+                onCancel={() => setIsShowingRemoveWarning(false)}
+                onSubmit={async () => {
+                  await dispatch(removeSnap(snap));
+                }}
+                snapName={snap.manifest.proposedName}
+              />
+            )}
           </div>
         </Box>
       </div>
