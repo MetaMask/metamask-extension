@@ -223,7 +223,7 @@ export default class ConfirmPageContainerContent extends Component {
                 className="actionable-message--warning"
                 message={
                   <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}
+                    {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
                     {t('buyOther', [nativeCurrency])}
                   </Typography>
                 }

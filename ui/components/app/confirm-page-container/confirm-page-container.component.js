@@ -290,7 +290,7 @@ export default class ConfirmPageContainer extends Component {
                       align="left"
                       margin={[0, 0]}
                     >
-                      {t('insufficientCurrency', [nativeCurrency, networkName])}
+                      {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
                       {t('buyOther', [nativeCurrency])}
                     </Typography>
                   }
