@@ -55,6 +55,7 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
+const USD_CURRENCY_CODE = 'usd';
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
@@ -515,12 +516,12 @@ export const getFeeForSmartTransaction = ({
     numberOfDecimals: 2,
   });
   let feeInUsd;
-  if (currentCurrency === 'usd') {
+  if (currentCurrency === USD_CURRENCY_CODE) {
     feeInUsd = rawNetworkFees;
   } else {
     feeInUsd = getValueFromWeiHex({
       value: feeInWeiHex,
-      toCurrency: 'usd',
+      toCurrency: USD_CURRENCY_CODE,
       conversionRate,
       numberOfDecimals: 2,
     });
@@ -578,12 +579,12 @@ export function getRenderableNetworkFeesForQuote({
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
 
   let feeInUsd;
-  if (currentCurrency === 'usd') {
+  if (currentCurrency === USD_CURRENCY_CODE) {
     feeInUsd = rawNetworkFees;
   } else {
     feeInUsd = getValueFromWeiHex({
       value: totalWeiCost,
-      toCurrency: 'usd',
+      toCurrency: USD_CURRENCY_CODE,
       conversionRate,
       numberOfDecimals: 2,
     });
