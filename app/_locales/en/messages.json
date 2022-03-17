@@ -855,6 +855,9 @@
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
+  "downArrow": {
+    "message": "down arrow"
+  },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
@@ -1693,6 +1696,9 @@
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
+  },
+  "levelArrow": {
+    "message": "level arrow"
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
@@ -2766,6 +2772,10 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found"
   },
+  "shorthandVersion": {
+    "message": "v$1",
+    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
+  },
   "show": {
     "message": "Show"
   },
@@ -3715,6 +3725,9 @@
   },
   "unverifiedContractAddressMessage": {
     "message": "We cannot verify this contract. Make sure you trust this address."
+  },
+  "upArrow": {
+    "message": "up arrow"
   },
   "updatedWithDate": {
     "message": "Updated $1"

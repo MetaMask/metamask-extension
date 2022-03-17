@@ -305,7 +305,7 @@ export default class Home extends PureComponent {
         }
         {newCollectibleAddedMessage === 'success' ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
@@ -330,7 +330,7 @@ export default class Home extends PureComponent {
         ) : null}
         {newNetworkAdded ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">

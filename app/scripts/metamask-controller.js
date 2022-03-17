@@ -9,7 +9,11 @@ import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
-import { errorCodes as rpcErrorCodes, ethErrors } from 'eth-rpc-errors';
+import {
+  errorCodes as rpcErrorCodes,
+  EthereumRpcError,
+  ethErrors,
+} from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
@@ -70,6 +74,7 @@ import { MILLISECOND } from '../../shared/constants/time';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
+  PLATFORM_FIREFOX,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -129,6 +134,10 @@ import {
   buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { getPlatform } from './lib/util';
+///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -580,7 +589,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.3.1',
+        'https://metamask.github.io/iframe-execution-environment/0.4.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -598,12 +607,16 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:getEndowments`,
         `${this.permissionController.name}:getPermissions`,
         `${this.permissionController.name}:hasPermission`,
+        `${this.permissionController.name}:hasPermissions`,
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
       ],
     });
 
+    const usingFirefox = getPlatform() === PLATFORM_FIREFOX;
+
     this.snapController = new SnapController({
+      npmRegistryUrl: usingFirefox ? 'https://registry.npmjs.cf/' : undefined,
       endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
@@ -704,6 +717,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
+      getTokenStandardAndDetails: this.assetsContractController.getTokenStandardAndDetails.bind(
+        this.assetsContractController,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -1723,7 +1739,12 @@ export default class MetamaskController extends EventEmitter {
       resolvePendingApproval: approvalController.accept.bind(
         approvalController,
       ),
-      rejectPendingApproval: approvalController.reject.bind(approvalController),
+      rejectPendingApproval: async (id, error) => {
+        approvalController.reject(
+          id,
+          new EthereumRpcError(error.code, error.message, error.data),
+        );
+      },
 
       // Notifications
       updateViewedNotifications: notificationController.updateViewed.bind(

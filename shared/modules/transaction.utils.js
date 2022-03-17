@@ -2,7 +2,8 @@ import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import { TRANSACTION_TYPES } from '../constants/transaction';
+import { TOKEN_STANDARDS } from '../../ui/helpers/constants/common';
+import { ASSET_TYPES, TRANSACTION_TYPES } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -176,4 +177,87 @@ export async function determineTransactionType(txParams, query) {
   }
 
   return { type: result, getCodeResponse: contractCode };
+}
+
+const INFERRABLE_TRANSACTION_TYPES = [
+  TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  TRANSACTION_TYPES.CONTRACT_INTERACTION,
+  TRANSACTION_TYPES.SIMPLE_SEND,
+];
+
+/**
+ * Given a transaction meta object, determine the asset type that the
+ * transaction is dealing with, as well as the standard for the token if it
+ * is a token transaction.
+ *
+ * @param {import('../constants/transaction').TransactionMeta} txMeta -
+ *  transaction meta object
+ * @param {EthQuery} query - EthQuery instance
+ * @param {Function} getTokenStandardAndDetails - function to get token
+ *  standards and details.
+ * @returns {{ assetType: string, tokenStandard: string}}
+ */
+export async function determineTransactionAssetType(
+  txMeta,
+  query,
+  getTokenStandardAndDetails,
+) {
+  // If the transaction type is already one of the inferrable types, then we do
+  // not need to re-establish the type.
+  let inferrableType = txMeta.type;
+  if (INFERRABLE_TRANSACTION_TYPES.includes(txMeta.type) === false) {
+    // Because we will deal with all types of transactions (including swaps)
+    // we want to get an inferrable type of transaction that isn't special cased
+    // that way we can narrow the number of logic gates required.
+    const result = await determineTransactionType(txMeta.txParams, query);
+    inferrableType = result.type;
+  }
+
+  // If the inferred type of the transaction is one of those that are part of
+  // the token contract standards, we can use the getTokenStandardAndDetails
+  // method to get the asset type.
+  const isTokenMethod = [
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ].find((methodName) => methodName === inferrableType);
+
+  if (
+    isTokenMethod ||
+    // We can also check any contract interaction type to see if the to address
+    // is a token contract. If it isn't, then the method will throw and we can
+    // fall through to the other checks.
+    inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION
+  ) {
+    try {
+      // We don't need a balance check, so the second parameter to
+      // getTokenStandardAndDetails is omitted.
+      const details = await getTokenStandardAndDetails(txMeta.txParams.to);
+      if (details.standard) {
+        return {
+          assetType:
+            details.standard === TOKEN_STANDARDS.ERC20
+              ? ASSET_TYPES.TOKEN
+              : ASSET_TYPES.COLLECTIBLE,
+          tokenStandard: details.standard,
+        };
+      }
+    } catch {
+      // noop, We expect errors here but we don't need to report them or do
+      // anything in response.
+    }
+  }
+
+  // If the transaction is interacting with a contract but isn't a token method
+  // we use the 'UNKNOWN' value to show that it isn't a transaction sending any
+  // particular asset.
+  if (inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+    return {
+      assetType: ASSET_TYPES.UNKNOWN,
+      tokenStandard: TOKEN_STANDARDS.NONE,
+    };
+  }
+  return { assetType: ASSET_TYPES.NATIVE, tokenStandard: TOKEN_STANDARDS.NONE };
 }

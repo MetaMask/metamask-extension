@@ -22,9 +22,9 @@ const Dropdown = ({
   );
 
   return (
-    <div className="dropdown-container">
+    <div className={classnames('dropdown', className)}>
       <select
-        className={classnames('dropdown', className)}
+        className="dropdown__select"
         disabled={disabled}
         title={title}
         onChange={_onChange}
@@ -39,10 +39,7 @@ const Dropdown = ({
           );
         })}
       </select>
-      <IconCaretDown
-        size={16}
-        className="dropdown-container__icon-caret-down"
-      />
+      <IconCaretDown size={16} className="dropdown__icon-caret-down" />
     </div>
   );
 };
