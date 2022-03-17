@@ -275,36 +275,22 @@ describe('preferences controller', function () {
   });
   describe('setUseTokenDetection', function () {
     it('should default to true', function () {
+      process.env.TOKEN_DETECTION_V2 = true;
       const state = preferencesController.store.getState();
-      if (process.env.TOKEN_DETECTION_V2) {
-        assert.equal(state.useTokenDetection, true);
-      } else {
-        assert.equal(state.useTokenDetection, false);
-      }
+      assert.equal(state.useTokenDetection, true);
     });
 
     it('should set the useTokenDetection property in state', function () {
-      if (process.env.TOKEN_DETECTION_V2) {
-        assert.equal(
-          preferencesController.store.getState().useTokenDetection,
-          true,
-        );
-        preferencesController.setUseTokenDetection(false);
-        assert.equal(
-          preferencesController.store.getState().useTokenDetection,
-          false,
-        );
-      } else {
-        assert.equal(
-          preferencesController.store.getState().useTokenDetection,
-          false,
-        );
-        preferencesController.setUseTokenDetection(true);
-        assert.equal(
-          preferencesController.store.getState().useTokenDetection,
-          true,
-        );
-      }
+      process.env.TOKEN_DETECTION_V2 = true;
+      assert.equal(
+        preferencesController.store.getState().useTokenDetection,
+        true,
+      );
+      preferencesController.setUseTokenDetection(false);
+      assert.equal(
+        preferencesController.store.getState().useTokenDetection,
+        false,
+      );
     });
   });
 
