@@ -129,11 +129,10 @@ describe('Add account', function () {
         await restoreSeedLink.click();
         await driver.delay(regularDelayMs);
 
-        await driver.fill(
+        await driver.pasteIntoField(
           'input[placeholder="Enter your Secret Recovery Phrase"]',
           testSeedPhrase,
         );
-        await driver.delay(regularDelayMs);
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
