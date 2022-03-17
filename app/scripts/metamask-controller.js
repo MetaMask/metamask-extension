@@ -40,6 +40,9 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  RateLimitController,
+  ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -634,6 +637,27 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapController,
       messenger: snapControllerMessenger,
     });
+
+    this.rateLimitController = new RateLimitController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'RateLimitController',
+      }),
+      implementations: {
+        showNativeNotification: (origin, message) => {
+          const subjectMetadataState = this.controllerMessenger.call(
+            'SubjectMetadataController:getState',
+          );
+
+          const originMetadata = subjectMetadataState.subjectMetadata[origin];
+
+          this.platform._showNotification(
+            originMetadata?.name ?? origin,
+            message,
+          );
+          return null;
+        },
+      },
+    });
     ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
@@ -1036,6 +1060,14 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
+        showNotification: (origin, args) =>
+          this.controllerMessenger.call(
+            'RateLimitController:call',
+            origin,
+            'showNativeNotification',
+            origin,
+            args.message,
+          ),
         updateSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:updateSnapState',
