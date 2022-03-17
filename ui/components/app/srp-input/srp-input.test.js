@@ -410,7 +410,7 @@ describe('srp-input', () => {
       });
 
       for (const whitespaceCharacter of whitespaceCharacters) {
-        it(`should fire event with a valid SRP preceeded by a '${whitespaceCharacter}'`, async () => {
+        it(`should fire event with a valid SRP preceded by a '${whitespaceCharacter}'`, async () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
@@ -500,7 +500,7 @@ describe('srp-input', () => {
       });
 
       for (const whitespaceCharacter of whitespaceCharacters) {
-        it(`should fire event with a valid SRP preceeded by a '${whitespaceCharacter}'`, async () => {
+        it(`should fire event with a valid SRP preceded by a '${whitespaceCharacter}'`, async () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
@@ -725,7 +725,7 @@ describe('srp-input', () => {
       });
 
       for (const whitespaceCharacter of whitespaceCharacters) {
-        it(`should not show error for a valid SRP preceeded by a '${whitespaceCharacter}'`, async () => {
+        it(`should not show error for a valid SRP preceded by a '${whitespaceCharacter}'`, async () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
@@ -896,7 +896,7 @@ describe('srp-input', () => {
       });
 
       for (const whitespaceCharacter of whitespaceCharacters) {
-        it(`should not show error for a valid SRP preceeded by a '${whitespaceCharacter}'`, async () => {
+        it(`should not show error for a valid SRP preceded by a '${whitespaceCharacter}'`, async () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
