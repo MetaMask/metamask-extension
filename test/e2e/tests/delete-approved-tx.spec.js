@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
-describe('Failed approved but not submitted transaction on boot', function () {
+describe('Fail approved but not submitted transaction on boot', function () {
   const ganacheOptions = {
     accounts: [
       {
