@@ -896,33 +896,35 @@ export default function ViewQuote() {
                 onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
                 swapToSymbol={destinationTokenSymbol}
                 initialAggId={usedQuote.aggregator}
-                onQuoteDetailsIsOpened={trackEvent({
-                  event: 'Quote Details Opened',
-                  category: 'swaps',
-                  sensitiveProperties: {
-                    token_from: sourceTokenSymbol,
-                    token_from_amount: sourceTokenValue,
-                    token_to: destinationTokenSymbol,
-                    token_to_amount: destinationTokenValue,
-                    request_type: fetchParams?.balanceError,
-                    slippage: fetchParams?.slippage,
-                    custom_slippage: fetchParams?.slippage !== 2,
-                    response_time: fetchParams?.responseTime,
-                    best_quote_source: topQuote?.aggregator,
-                    available_quotes: numberOfQuotes,
-                    is_hardware_wallet: hardwareWalletUsed,
-                    hardware_wallet_type: hardwareWalletType,
-                    stx_enabled: smartTransactionsEnabled,
-                    current_stx_enabled: currentSmartTransactionsEnabled,
-                    stx_user_opt_in: smartTransactionsOptInStatus,
-                    other_quote_selected:
-                      usedQuote?.aggregator !== topQuote?.aggregator,
-                    other_quote_selected_source:
-                      usedQuote?.aggregator === topQuote?.aggregator
-                        ? null
-                        : usedQuote?.aggregator,
-                  },
-                })}
+                onQuoteDetailsIsOpened={() =>
+                  trackEvent({
+                    event: 'Quote Details Opened',
+                    category: 'swaps',
+                    sensitiveProperties: {
+                      token_from: sourceTokenSymbol,
+                      token_from_amount: sourceTokenValue,
+                      token_to: destinationTokenSymbol,
+                      token_to_amount: destinationTokenValue,
+                      request_type: fetchParams?.balanceError,
+                      slippage: fetchParams?.slippage,
+                      custom_slippage: fetchParams?.slippage !== 2,
+                      response_time: fetchParams?.responseTime,
+                      best_quote_source: topQuote?.aggregator,
+                      available_quotes: numberOfQuotes,
+                      is_hardware_wallet: hardwareWalletUsed,
+                      hardware_wallet_type: hardwareWalletType,
+                      stx_enabled: smartTransactionsEnabled,
+                      current_stx_enabled: currentSmartTransactionsEnabled,
+                      stx_user_opt_in: smartTransactionsOptInStatus,
+                      other_quote_selected:
+                        usedQuote?.aggregator !== topQuote?.aggregator,
+                      other_quote_selected_source:
+                        usedQuote?.aggregator === topQuote?.aggregator
+                          ? null
+                          : usedQuote?.aggregator,
+                    },
+                  })
+                }
                 hideEstimatedGasFee={
                   smartTransactionsEnabled && smartTransactionsOptInStatus
                 }
