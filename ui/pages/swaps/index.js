@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
@@ -106,6 +106,7 @@ export default function Swap() {
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
 
+  const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
@@ -307,10 +308,11 @@ export default function Swap() {
     },
   });
   useEffect(() => {
-    if (currentSmartTransactionsError) {
+    if (currentSmartTransactionsError && !currentStxErrorTracked) {
+      setCurrentStxErrorTracked(true);
       errorStxEvent();
     }
-  }, [errorStxEvent, currentSmartTransactionsError]);
+  }, [errorStxEvent, currentSmartTransactionsError, currentStxErrorTracked]);
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
