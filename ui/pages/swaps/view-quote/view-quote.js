@@ -117,6 +117,17 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
 
+const feeEstimatesForTracking = {
+  reg_tx_fee_in_fiat: undefined,
+  reg_tx_fee_in_eth: undefined,
+  reg_tx_max_fee_in_fiat: undefined,
+  reg_tx_max_fee_in_eth: undefined,
+  stx_fee_in_fiat: undefined,
+  stx_fee_in_eth: undefined,
+  stx_max_fee_in_fiat: undefined,
+  stx_max_fee_in_eth: undefined,
+};
+
 export default function ViewQuote() {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -354,6 +365,8 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
+  feeEstimatesForTracking.reg_tx_fee_in_fiat = feeInFiat;
+  feeEstimatesForTracking.reg_tx_fee_in_eth = feeInEth;
 
   const renderableMaxFees = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
@@ -369,6 +382,8 @@ export default function ViewQuote() {
   });
   let { feeInFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = renderableMaxFees;
   const { nonGasFee } = renderableMaxFees;
+  feeEstimatesForTracking.reg_tx_max_fee_in_fiat = maxFeeInFiat;
+  feeEstimatesForTracking.reg_tx_max_fee_in_eth = maxFeeInEth;
 
   if (
     currentSmartTransactionsEnabled &&
@@ -386,6 +401,8 @@ export default function ViewQuote() {
       nativeCurrencySymbol,
       feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
+    feeEstimatesForTracking.stx_fee_in_fiat = feeInFiat;
+    feeEstimatesForTracking.stx_fee_in_eth = feeInEth;
     ({
       feeInFiat: maxFeeInFiat,
       feeInEth: maxFeeInEth,
@@ -396,6 +413,8 @@ export default function ViewQuote() {
       nativeCurrencySymbol,
       feeInWeiDec: stxMaxFeeInWeiDec,
     }));
+    feeEstimatesForTracking.stx_max_fee_in_fiat = maxFeeInFiat;
+    feeEstimatesForTracking.stx_max_fee_in_eth = maxFeeInEth;
   }
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
@@ -982,10 +1001,17 @@ export default function ViewQuote() {
                       unsignedTransaction,
                       metaMetricsEvent,
                       history,
+                      feeEstimatesForTracking,
                     }),
                   );
                 } else {
-                  dispatch(signAndSendTransactions(history, metaMetricsEvent));
+                  dispatch(
+                    signAndSendTransactions(
+                      history,
+                      metaMetricsEvent,
+                      feeEstimatesForTracking,
+                    ),
+                  );
                 }
               } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
                 history.push(DEFAULT_ROUTE);
