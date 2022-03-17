@@ -403,6 +403,8 @@ export default function ViewQuote() {
     }));
     feeEstimatesForTracking.stx_fee_in_fiat = feeInFiat;
     feeEstimatesForTracking.stx_fee_in_eth = feeInEth;
+    feeEstimatesForTracking.estimated_gas =
+      smartTransactionEstimatedGas.txData.gasLimit;
     ({
       feeInFiat: maxFeeInFiat,
       feeInEth: maxFeeInEth,
