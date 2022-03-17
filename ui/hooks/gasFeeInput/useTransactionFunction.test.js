@@ -86,7 +86,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
       maxFeePerGas: '0x582c',
       maxPriorityFeePerGas: '0x582c',
       userEditedGasLimit: undefined,
-      userFeeLevel: 'tenPercentIncreased'
+      userFeeLevel: 'tenPercentIncreased',
     });
   });
 
@@ -108,7 +108,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
       maxFeePerGas: 'c570bd200',
       maxPriorityFeePerGas: 'b2d05e00',
       userEditedGasLimit: undefined,
-      userFeeLevel: 'low'
+      userFeeLevel: 'low',
     });
   });
 
@@ -136,7 +136,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
       maxFeePerGas: '0x5028',
       maxPriorityFeePerGas: '0x5028',
       userEditedGasLimit: undefined,
-      userFeeLevel: "dappSuggested"
+      userFeeLevel: 'dappSuggested',
     });
   });
 });

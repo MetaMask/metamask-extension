@@ -31,7 +31,7 @@ import {
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
   hideLoadingIndication,
-  showLoadingIndication
+  showLoadingIndication,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
@@ -195,7 +195,7 @@ export default function EditGasPopover({
         dispatch(showLoadingIndication());
         await dispatch(
           updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
-        );        
+        );
         dispatch(hideLoadingIndication());
         break;
       case EDIT_GAS_MODES.SWAPS:
