@@ -98,12 +98,12 @@
       }
 
       &__i-wrap:hover {
-        background: var(--color-primary-muted);
-        color: var(--color-background-default);
+        background: var(--color-primary-default);
+        color: var(--color-primary-inverse);
       }
 
       i:hover {
-        background: #4eade7;
+        background: var(--color-primary-muted);
       }
 
       i {

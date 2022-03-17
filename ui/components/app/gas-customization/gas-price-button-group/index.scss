@@ -191,8 +191,8 @@
   .button-group__button,
   .button-group__button--active {
     height: 78px;
-    background: var(--color-text-default);
-    color: var(--color-primary-muted);
+    background: var(--color-background-default);
+    color: var(--color-text-default);
     width: 108px;
     height: 97px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
@@ -222,10 +222,10 @@
 
   .button-group__button--active {
     background: var(--color-background-alternative);
-    border-color: var(--color-primary-muted);
+    border-color: var(--color-primary-default);
 
     &:first-child {
-      border-color: var(--color-primary-muted);
+      border-color: var(--color-primary-default);
     }
 
     .button-check-wrapper {
