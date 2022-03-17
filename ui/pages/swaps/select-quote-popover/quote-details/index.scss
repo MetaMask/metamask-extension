@@ -15,7 +15,7 @@
   &__detail-content {
     @include H6;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
 
     > div {
       justify-content: flex-start;
@@ -23,17 +23,17 @@
   }
 
   &__conversion-rate {
-    color: var(--Black-100);
+    color: var(--color-text-default);
     justify-content: flex-start;
     align-items: center;
     height: inherit;
 
     .view-quote__conversion-rate-eth-label {
-      color: var(--Black-100);
+      color: var(--color-text-default);
     }
 
     i {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
     }
 
     * {
@@ -62,7 +62,7 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    border-top: 1px solid var(--Grey-100);
+    border-top: 1px solid var(--color-background-alternative);
 
     &--high {
       min-height: 60px;
@@ -73,7 +73,7 @@
   .view-quote__conversion-rate-token-label {
     @include H6;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
     font-weight: bold;
     margin-left: 2px;
   }
