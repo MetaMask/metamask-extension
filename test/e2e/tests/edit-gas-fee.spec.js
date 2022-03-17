@@ -206,7 +206,6 @@ describe('Editing Confirm Transaction', function () {
         fixtures: 'eip-1559-v2-dapp',
         ganacheOptions,
         title: this.test.title,
-        failOnConsoleError: false,
         dapp: true,
       },
       async ({ driver }) => {
