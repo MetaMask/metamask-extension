@@ -118,13 +118,13 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 let intervalId;
 
 const feeEstimatesForTracking = {
-  reg_tx_fee_in_fiat: undefined,
+  reg_tx_fee_in_usd: undefined,
   reg_tx_fee_in_eth: undefined,
-  reg_tx_max_fee_in_fiat: undefined,
+  reg_tx_max_fee_in_usd: undefined,
   reg_tx_max_fee_in_eth: undefined,
-  stx_fee_in_fiat: undefined,
+  stx_fee_in_usd: undefined,
   stx_fee_in_eth: undefined,
-  stx_max_fee_in_fiat: undefined,
+  stx_max_fee_in_usd: undefined,
   stx_max_fee_in_eth: undefined,
 };
 
@@ -351,7 +351,12 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  let { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
+  let {
+    feeInFiat,
+    feeInEth,
+    rawEthFee,
+    feeInUsd,
+  } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
     gasPrice: networkAndAccountSupports1559
@@ -365,8 +370,8 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
-  feeEstimatesForTracking.reg_tx_fee_in_fiat = feeInFiat;
-  feeEstimatesForTracking.reg_tx_fee_in_eth = feeInEth;
+  feeEstimatesForTracking.reg_tx_fee_in_usd = Number(feeInUsd);
+  feeEstimatesForTracking.reg_tx_fee_in_eth = Number(rawEthFee);
 
   const renderableMaxFees = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
@@ -380,10 +385,15 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
-  let { feeInFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = renderableMaxFees;
+  let {
+    feeInFiat: maxFeeInFiat,
+    feeInEth: maxFeeInEth,
+    rawEthFee: maxRawEthFee,
+    feeInUsd: maxFeeInUsd,
+  } = renderableMaxFees;
   const { nonGasFee } = renderableMaxFees;
-  feeEstimatesForTracking.reg_tx_max_fee_in_fiat = maxFeeInFiat;
-  feeEstimatesForTracking.reg_tx_max_fee_in_eth = maxFeeInEth;
+  feeEstimatesForTracking.reg_tx_max_fee_in_usd = Number(maxFeeInUsd);
+  feeEstimatesForTracking.reg_tx_max_fee_in_eth = Number(maxRawEthFee);
 
   if (
     currentSmartTransactionsEnabled &&
@@ -394,20 +404,22 @@ export default function ViewQuote() {
       smartTransactionEstimatedGas.txData.feeEstimate +
       (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
     const stxMaxFeeInWeiDec = stxEstimatedFeeInWeiDec * 2;
-    ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
+    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
       feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
-    feeEstimatesForTracking.stx_fee_in_fiat = feeInFiat;
-    feeEstimatesForTracking.stx_fee_in_eth = feeInEth;
+    feeEstimatesForTracking.stx_fee_in_usd = Number(feeInUsd);
+    feeEstimatesForTracking.stx_fee_in_eth = Number(rawEthFee);
     feeEstimatesForTracking.estimated_gas =
       smartTransactionEstimatedGas.txData.gasLimit;
     ({
       feeInFiat: maxFeeInFiat,
       feeInEth: maxFeeInEth,
+      rawEthFee: maxRawEthFee,
+      feeInUsd: maxFeeInUsd,
     } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
@@ -415,8 +427,8 @@ export default function ViewQuote() {
       nativeCurrencySymbol,
       feeInWeiDec: stxMaxFeeInWeiDec,
     }));
-    feeEstimatesForTracking.stx_max_fee_in_fiat = maxFeeInFiat;
-    feeEstimatesForTracking.stx_max_fee_in_eth = maxFeeInEth;
+    feeEstimatesForTracking.stx_max_fee_in_usd = Number(maxFeeInUsd);
+    feeEstimatesForTracking.stx_max_fee_in_eth = Number(maxRawEthFee);
   }
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);

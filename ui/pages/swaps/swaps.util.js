@@ -514,12 +514,25 @@ export const getFeeForSmartTransaction = ({
     conversionRate,
     numberOfDecimals: 2,
   });
+  let feeInUsd;
+  if (currentCurrency === 'usd') {
+    feeInUsd = rawNetworkFees;
+  } else {
+    feeInUsd = getValueFromWeiHex({
+      value: feeInWeiHex,
+      toCurrency: 'usd',
+      conversionRate,
+      numberOfDecimals: 2,
+    });
+  }
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
   return {
+    feeInUsd,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
+    rawEthFee: ethFee,
   };
 };
 
@@ -564,11 +577,24 @@ export function getRenderableNetworkFeesForQuote({
   });
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
 
+  let feeInUsd;
+  if (currentCurrency === 'usd') {
+    feeInUsd = rawNetworkFees;
+  } else {
+    feeInUsd = getValueFromWeiHex({
+      value: totalWeiCost,
+      toCurrency: 'usd',
+      conversionRate,
+      numberOfDecimals: 2,
+    });
+  }
+
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {
     rawNetworkFees,
+    feeInUsd,
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
