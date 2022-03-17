@@ -75,10 +75,6 @@ describe('useMaxPriorityFeePerGasInput', () => {
       .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
 
-    const mockUpdateUserSettings = jest
-      .spyOn(Actions, 'updateTransactionUserSettings')
-      .mockImplementation(() => ({ type: '' }));
-
     const { result } = renderUseTransactionFunctions();
     await result.current.updateTransactionToTenPercentIncreasedGasFee();
     expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
@@ -89,21 +85,14 @@ describe('useMaxPriorityFeePerGasInput', () => {
       gasLimit: '5208',
       maxFeePerGas: '0x582c',
       maxPriorityFeePerGas: '0x582c',
-    });
-
-    expect(mockUpdateUserSettings).toHaveBeenCalledTimes(1);
-    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
-      userFeeLevel: 'tenPercentIncreased',
+      userEditedGasLimit: undefined,
+      userFeeLevel: 'tenPercentIncreased'
     });
   });
 
   it('should invoke action updateTransaction with estimate gas values fee when updateTransactionUsingEstimate callback is invoked', async () => {
     const mockUpdateGasFees = jest
       .spyOn(Actions, 'updateTransactionGasFees')
-      .mockImplementation(() => ({ type: '' }));
-
-    const mockUpdateUserSettings = jest
-      .spyOn(Actions, 'updateTransactionUserSettings')
       .mockImplementation(() => ({ type: '' }));
 
     const { result } = renderUseTransactionFunctions();
@@ -118,21 +107,14 @@ describe('useMaxPriorityFeePerGasInput', () => {
       gasLimit: '5208',
       maxFeePerGas: 'c570bd200',
       maxPriorityFeePerGas: 'b2d05e00',
-    });
-
-    expect(mockUpdateUserSettings).toHaveBeenCalledTimes(1);
-    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
-      userFeeLevel: 'low',
+      userEditedGasLimit: undefined,
+      userFeeLevel: 'low'
     });
   });
 
   it('should invoke action updateTransaction with dappSuggestedValues values fee when updateTransactionUsingDAPPSuggestedValues callback is invoked', async () => {
     const mockUpdateGasFees = jest
       .spyOn(Actions, 'updateTransactionGasFees')
-      .mockImplementation(() => ({ type: '' }));
-
-    const mockUpdateUserSettings = jest
-      .spyOn(Actions, 'updateTransactionUserSettings')
       .mockImplementation(() => ({ type: '' }));
 
     const { result } = renderUseTransactionFunctions({
@@ -153,10 +135,8 @@ describe('useMaxPriorityFeePerGasInput', () => {
       gasLimit: '5208',
       maxFeePerGas: '0x5028',
       maxPriorityFeePerGas: '0x5028',
-    });
-
-    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
-      userFeeLevel: 'dappSuggested',
+      userEditedGasLimit: undefined,
+      userFeeLevel: "dappSuggested"
     });
   });
 });

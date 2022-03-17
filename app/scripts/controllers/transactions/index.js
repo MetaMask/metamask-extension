@@ -464,6 +464,8 @@ export default class TransactionController extends EventEmitter {
       estimateSuggested,
       defaultGasEstimates,
       originalGasEstimate,
+      userEditedGasLimit,
+      userFeeLevel
     },
   ) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
@@ -484,6 +486,8 @@ export default class TransactionController extends EventEmitter {
       estimateSuggested,
       defaultGasEstimates,
       originalGasEstimate,
+      userEditedGasLimit,
+      userFeeLevel
     };
 
     // only update what is defined

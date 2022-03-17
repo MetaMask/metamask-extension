@@ -1590,10 +1590,6 @@ export default class MetamaskController extends EventEmitter {
       updatePreviousGasParams: txController.updatePreviousGasParams.bind(
         txController,
       ),
-
-      updateTransactionUserSettings: txController.updateTransactionUserSettings.bind(
-        txController,
-      ),
       // messageManager
       signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),

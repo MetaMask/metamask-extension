@@ -28,9 +28,10 @@ import {
   createSpeedUpTransaction,
   hideModal,
   updateTransactionGasFees,
-  updateTransactionUserSettings,
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
+  hideLoadingIndication,
+  showLoadingIndication
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
@@ -172,7 +173,6 @@ export default function EditGasPopover({
       },
     };
 
-    const userSettings = {};
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
         dispatch(
@@ -189,13 +189,14 @@ export default function EditGasPopover({
         );
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
-        userSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
-        userSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
+        newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
+        newGasSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
 
+        dispatch(showLoadingIndication());
         await dispatch(
           updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
-        );
-        dispatch(updateTransactionUserSettings(updatedTxMeta.id, userSettings));
+        );        
+        dispatch(hideLoadingIndication());
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.

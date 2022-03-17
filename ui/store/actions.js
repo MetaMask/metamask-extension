@@ -688,23 +688,6 @@ export function updatePreviousGasParams(txId, previousGasParams) {
   };
 }
 
-export function updateTransactionUserSettings(txId, txUserSettings) {
-  return async (dispatch) => {
-    try {
-      await promisifiedBackground.updateTransactionUserSettings(
-        txId,
-        txUserSettings,
-      );
-    } catch (error) {
-      dispatch(txError(error));
-      log.error(error.message);
-      throw error;
-    }
-
-    return txUserSettings;
-  };
-}
-
 export function updateSwapApprovalTransaction(txId, txSwapApproval) {
   return async (dispatch) => {
     let updatedTransaction;
