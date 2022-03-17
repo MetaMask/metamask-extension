@@ -12,6 +12,7 @@ describe('preferences controller', function () {
   const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
+    process.env.TOKEN_DETECTION_V2 = true;
     const sandbox = sinon.createSandbox();
     currentChainId = MAINNET_CHAIN_ID;
     const networkControllerProviderConfig = {
@@ -39,6 +40,7 @@ describe('preferences controller', function () {
   });
 
   afterEach(function () {
+    process.env.TOKEN_DETECTION_V2 = false;
     sinon.restore();
   });
 
@@ -275,13 +277,11 @@ describe('preferences controller', function () {
   });
   describe('setUseTokenDetection', function () {
     it('should default to true', function () {
-      process.env.TOKEN_DETECTION_V2 = true;
       const state = preferencesController.store.getState();
       assert.equal(state.useTokenDetection, true);
     });
 
     it('should set the useTokenDetection property in state', function () {
-      process.env.TOKEN_DETECTION_V2 = true;
       assert.equal(
         preferencesController.store.getState().useTokenDetection,
         true,
