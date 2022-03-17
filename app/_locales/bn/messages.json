@@ -765,9 +765,6 @@
   "restore": {
     "message": "পুনরুদ্ধার করুন"
   },
-  "restoreAccountWithSeed": {
-    "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
-  },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },

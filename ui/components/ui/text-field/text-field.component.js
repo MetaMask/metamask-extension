@@ -7,39 +7,42 @@ const inputLabelBase = {
   transform: 'none',
   transition: 'none',
   position: 'initial',
-  color: '#5b5b5b',
+  color: 'var(--color-text-default)',
 };
 
 const styles = {
   materialLabel: {
     '&$materialFocused': {
-      color: '#aeaeae',
+      color: 'var(--color-text-alternative)',
     },
     '&$materialError': {
-      color: '#aeaeae',
+      color: 'var(--color-text-alternative)',
     },
     fontWeight: '400',
-    color: '#aeaeae',
+    color: 'var(--color-text-alternative)',
   },
   materialFocused: {},
   materialUnderline: {
+    '&:before': {
+      borderBottom: '1px solid var(--color-text-default) !important', // Visible bottom border
+    },
     '&:after': {
-      borderBottom: `2px solid rgb(3, 125, 214)`,
+      borderBottom: `2px solid rgb(3, 125, 214)`, // Animated bottom border
     },
   },
   materialError: {},
   materialWhitePaddedRoot: {
-    color: '#aeaeae',
+    color: 'var(--color-text-alternative)',
   },
   materialWhitePaddedInput: {
     padding: '8px',
 
     '&::placeholder': {
-      color: '#aeaeae',
+      color: 'var(--color-text-alternative)',
     },
   },
   materialWhitePaddedFocused: {
-    color: '#fff',
+    color: 'var(--color-background-default)',
   },
   materialWhitePaddedUnderline: {
     '&:after': {
@@ -61,14 +64,15 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
-    border: '1px solid #BBC0C5',
+    border: '1px solid var(--color-border-default)',
+    color: 'var(--color-text-default)',
     height: '48px',
     borderRadius: '6px',
     padding: '0 16px',
     display: 'flex',
     alignItems: 'center',
     '&$inputFocused': {
-      border: '1px solid #2f9ae0',
+      border: '1px solid var(--color-primary-default)',
     },
   },
   largeInputLabel: {
@@ -88,6 +92,7 @@ const getMaterialThemeInputProps = ({
   dir,
   classes: { materialLabel, materialFocused, materialError, materialUnderline },
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
@@ -101,6 +106,7 @@ const getMaterialThemeInputProps = ({
   },
   InputProps: {
     startAdornment,
+    endAdornment,
     classes: {
       underline: materialUnderline,
     },
@@ -122,12 +128,14 @@ const getMaterialWhitePaddedThemeInputProps = ({
     materialWhitePaddedUnderline,
   },
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
 }) => ({
   InputProps: {
     startAdornment,
+    endAdornment,
     classes: {
       root: materialWhitePaddedRoot,
       focused: materialWhitePaddedFocused,
@@ -157,6 +165,7 @@ const getBorderedThemeInputProps = ({
   },
   largeLabel,
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
@@ -172,6 +181,7 @@ const getBorderedThemeInputProps = ({
   },
   InputProps: {
     startAdornment,
+    endAdornment,
     disableUnderline: true,
     classes: {
       root: inputRoot,
@@ -194,10 +204,12 @@ const themeToInputProps = {
 };
 
 const TextField = ({
+  'data-testid': dataTestId,
   error,
   classes,
   theme,
   startAdornment,
+  endAdornment,
   largeLabel,
   dir,
   min,
@@ -209,6 +221,7 @@ const TextField = ({
   const inputProps = themeToInputProps[theme]({
     classes,
     startAdornment,
+    endAdornment,
     largeLabel,
     dir,
     min,
@@ -216,7 +229,7 @@ const TextField = ({
     autoComplete,
   });
 
-  if (onPaste) {
+  if (onPaste || dataTestId) {
     if (!inputProps.InputProps) {
       inputProps.InputProps = {};
     }
@@ -224,6 +237,7 @@ const TextField = ({
       inputProps.InputProps.inputProps = {};
     }
     inputProps.InputProps.inputProps.onPaste = onPaste;
+    inputProps.InputProps.inputProps['data-testid'] = dataTestId;
   }
 
   return (
@@ -244,6 +258,10 @@ TextField.defaultProps = {
 
 TextField.propTypes = {
   /**
+   * A test ID that gets set on the input element
+   */
+  'data-testid': PropTypes.string,
+  /**
    * Show error message
    */
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
@@ -257,6 +275,7 @@ TextField.propTypes = {
    */
   theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
+  endAdornment: PropTypes.element,
   /**
    * Show large label
    */

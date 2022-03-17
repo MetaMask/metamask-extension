@@ -756,9 +756,6 @@
   "restore": {
     "message": "Поново отвори"
   },
-  "restoreAccountWithSeed": {
-    "message": "Povratite svoj nalog uz pomoć seed fraze"
-  },
   "revealSeedWords": {
     "message": "Otkrivanje početnih reči"
   },

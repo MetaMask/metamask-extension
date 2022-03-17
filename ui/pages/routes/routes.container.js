@@ -5,6 +5,7 @@ import {
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
+  getTheme,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -36,6 +37,7 @@ function mapStateToProps(state) {
     browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
     providerId: getNetworkIdentifier(state),
     providerType: state.metamask.provider?.type,
+    theme: getTheme(state),
   };
 }
 

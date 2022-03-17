@@ -746,9 +746,6 @@
   "restore": {
     "message": "Gendan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gendan din konto med Seed-sætning"
-  },
   "revealSeedWords": {
     "message": "Vis Seedord"
   },

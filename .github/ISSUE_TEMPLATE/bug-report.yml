@@ -89,6 +89,7 @@ body:
        - Trezor
        - Keystone
        - GridPlus Lattice1
+       - AirGap Vault
        - Other (please elaborate in the "Additional Context" section)
  - type: textarea
    id: additional

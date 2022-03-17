@@ -5,12 +5,12 @@ import PageContainerHeader from '../../../components/ui/page-container/page-cont
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ASSET_TYPES,
   getSendAsset,
   getSendStage,
   resetSendState,
   SEND_STAGES,
 } from '../../../ducks/send';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 
 export default function SendHeader() {
   const history = useHistory();

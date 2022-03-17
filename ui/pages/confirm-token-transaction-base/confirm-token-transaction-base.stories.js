@@ -1,6 +1,6 @@
 import React from 'react';
 import { store } from '../../../.storybook/preview';
-import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component';
+import ConfirmTokenTransactionBase from './confirm-token-transaction-base';
 
 export default {
   title: 'Pages/ConfirmTokenTransactionBase',

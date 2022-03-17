@@ -226,17 +226,9 @@
 
     @media screen and (max-width: $break-small) {
       display: block;
-      background-image: url('/images/caret-right.svg');
-      width: 24px;
-      height: 24px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
       right: 10px;
       cursor: pointer;
       position: absolute;
-      width: 24px;
-      height: 24px;
       margin: 0 5px;
 
       [dir='rtl'] & {
@@ -247,7 +239,7 @@
 
   &__networks-list-name--selected {
     font-weight: bold;
-    color: #000;
+    color: var(--color-text-default);
   }
 
   &__networks-list-name--disabled {

@@ -277,14 +277,14 @@ export default class Home extends PureComponent {
                     descriptionText={
                       <>
                         <Typography
-                          color={COLORS.UI1}
+                          color={COLORS.TEXT_MUTED}
                           variant={TYPOGRAPHY.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Typography>
                         <Typography
-                          color={COLORS.UI1}
+                          color={COLORS.TEXT_MUTED}
                           variant={TYPOGRAPHY.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
@@ -303,27 +303,21 @@ export default class Home extends PureComponent {
             : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {newCollectibleAddedMessage ? (
+        {newCollectibleAddedMessage === 'success' ? (
           <ActionableMessage
-            type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
-                {newCollectibleAddedMessage === 'success' ? (
-                  <img
-                    src="./images/check_circle.svg"
-                    className="home__new-network-notification-message--image"
-                  />
-                ) : null}
+                <img
+                  src="./images/check_circle.svg"
+                  className="home__new-network-notification-message--image"
+                />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {newCollectibleAddedMessage === 'success'
-                    ? t('newCollectibleAddedMessage')
-                    : t('newCollectibleAddFailed', [
-                        newCollectibleAddedMessage,
-                      ])}
+                  {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__close"
@@ -336,7 +330,7 @@ export default class Home extends PureComponent {
         ) : null}
         {newNetworkAdded ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">

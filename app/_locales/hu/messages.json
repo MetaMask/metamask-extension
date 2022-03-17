@@ -758,9 +758,6 @@
   "restore": {
     "message": "Visszaállítás"
   },
-  "restoreAccountWithSeed": {
-    "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },

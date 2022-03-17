@@ -749,9 +749,6 @@
   "restore": {
     "message": "Återställ"
   },
-  "restoreAccountWithSeed": {
-    "message": "Återställ ditt konto med seedphrase"
-  },
   "revealSeedWords": {
     "message": "Visa seed-ord"
   },

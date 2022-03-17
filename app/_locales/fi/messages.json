@@ -762,9 +762,6 @@
   "restore": {
     "message": "Palauta"
   },
-  "restoreAccountWithSeed": {
-    "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
-  },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },

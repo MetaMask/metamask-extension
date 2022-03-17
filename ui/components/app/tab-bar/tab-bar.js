@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import IconCaretRight from '../../ui/icon/icon-caret-right';
+
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
 
@@ -19,7 +21,7 @@ const TabBar = (props) => {
             <div className="tab-bar__tab__content__icon">{icon}</div>
             <div className="tab-bar__tab__content__title">{content}</div>
           </div>
-          <div className="tab-bar__tab__caret" />
+          <IconCaretRight className="tab-bar__tab__caret" />
         </button>
       ))}
     </div>

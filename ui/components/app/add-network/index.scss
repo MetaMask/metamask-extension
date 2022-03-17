@@ -1,0 +1,42 @@
+.add-network {
+  &__header {
+    border-bottom: 1px solid var(--ui-grey);
+
+    &__back-icon {
+      margin-left: 24px;
+      margin-right: 16px;
+    }
+  }
+
+  &__token-image {
+    margin-right: 7px;
+    height: 24px;
+    width: 24px;
+  }
+
+  &__add-icon {
+    height: 16px;
+    width: 12px;
+    color: var(--ui-4);
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  &__footer {
+    border-top: 1px solid var(--ui-2);
+
+    & .btn-link {
+      display: initial;
+      padding: 0;
+    }
+
+    &__link {
+      color: var(--primary-1);
+    }
+
+    & .actionable-message--warning .actionable-message__message,
+    .actionable-message--warning .actionable-message__action {
+      color: var(--ui-4);
+    }
+  }
+}

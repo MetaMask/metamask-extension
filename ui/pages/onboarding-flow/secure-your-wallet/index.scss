@@ -8,6 +8,7 @@
 
   &__details {
     max-width: 550px;
+    padding-inline-end: 10px;
   }
 
   &__actions {
@@ -36,6 +37,10 @@
 
   &__checkbox {
     margin: 8px 12px 0 0;
+  }
+
+  &__label {
+    display: flex;
   }
 
   &__footer {

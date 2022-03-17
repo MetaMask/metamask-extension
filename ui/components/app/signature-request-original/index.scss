@@ -2,7 +2,7 @@
   &__container {
     width: 380px;
     border-radius: 8px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
@@ -76,7 +76,7 @@
   &__header__tip {
     height: 25px;
     width: 25px;
-    background: var(--athens-grey);
+    background: var(--color-background-alternative);
     transform: rotate(45deg);
     position: absolute;
     bottom: -8px;
@@ -103,7 +103,7 @@
     @include H7;
 
     height: 22px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     width: 124px;
 
     .account-list-item {

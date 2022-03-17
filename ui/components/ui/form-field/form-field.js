@@ -32,6 +32,8 @@ export default function FormField({
   disabled,
   placeholder,
   warning,
+  passwordStrength,
+  passwordStrengthText,
 }) {
   return (
     <div
@@ -56,7 +58,7 @@ export default function FormField({
               <Typography
                 tag={TYPOGRAPHY.H6}
                 variant={TYPOGRAPHY.H6}
-                color={COLORS.UI4}
+                color={COLORS.TEXT_ALTERNATIVE}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               >
                 {titleUnit}
@@ -106,7 +108,7 @@ export default function FormField({
         )}
         {error && (
           <Typography
-            color={COLORS.ERROR1}
+            color={COLORS.ERROR_DEFAULT}
             variant={TYPOGRAPHY.H7}
             className="form-field__error"
           >
@@ -115,11 +117,29 @@ export default function FormField({
         )}
         {warning && (
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H7}
             className="form-field__warning"
           >
             {warning}
+          </Typography>
+        )}
+        {passwordStrength && (
+          <Typography
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__password-strength"
+          >
+            {passwordStrength}
+          </Typography>
+        )}
+        {passwordStrengthText && (
+          <Typography
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H8}
+            className="form-field__password-strength-text"
+          >
+            {passwordStrengthText}
           </Typography>
         )}
       </label>
@@ -192,6 +212,14 @@ FormField.propTypes = {
    * Set the placeholder text for the input field
    */
   placeholder: PropTypes.string,
+  /**
+   * Show password strength according to the score
+   */
+  passwordStrength: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show password strength description
+   */
+  passwordStrengthText: PropTypes.string,
 };
 
 FormField.defaultProps = {

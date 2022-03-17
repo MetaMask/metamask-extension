@@ -752,9 +752,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },

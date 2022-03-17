@@ -4,8 +4,8 @@ const {
   withFixtures,
   regularDelayMs,
   largeDelayMs,
+  completeImportSRPOnboardingFlow,
 } = require('../helpers');
-const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Import UI', function () {
   it('Importing wallet using Secret Recovery Phrase', async function () {
@@ -20,6 +20,7 @@ describe('Metamask Import UI', function () {
     };
     const testSeedPhrase =
       'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+    const testPassword = 'correct horse battery staple';
     const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
     await withFixtures(
@@ -32,74 +33,11 @@ describe('Metamask Import UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        if (process.env.ONBOARDING_V2 === '1') {
-          // welcome
-          await driver.clickElement('[data-testid="onboarding-import-wallet"]');
-
-          // metrics
-          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-
-          // import with recovery phrase
-          await driver.fill('[data-testid="import-srp-text"]', testSeedPhrase);
-          await driver.clickElement('[data-testid="import-srp-confirm"]');
-
-          // create password
-          await driver.fill(
-            '[data-testid="create-password-new"]',
-            'correct horse battery staple',
-          );
-          await driver.fill(
-            '[data-testid="create-password-confirm"]',
-            'correct horse battery staple',
-          );
-          await driver.clickElement('[data-testid="create-password-terms"]');
-          await driver.clickElement('[data-testid="create-password-import"]');
-
-          // complete
-          await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-          // pin extension
-          await driver.clickElement('[data-testid="pin-extension-next"]');
-          await driver.clickElement('[data-testid="pin-extension-done"]');
-        } else {
-          // clicks the continue button on the welcome screen
-          await driver.findElement('.welcome-page__header');
-          await driver.clickElement({
-            text: enLocaleMessages.getStarted.message,
-            tag: 'button',
-          });
-
-          // clicks the "Import Wallet" option
-          await driver.clickElement({ text: 'Import wallet', tag: 'button' });
-
-          // clicks the "No thanks" option on the metametrics opt-in screen
-          await driver.clickElement('.btn-secondary');
-
-          // Import Secret Recovery Phrase
-          await driver.fill(
-            'input[placeholder="Enter your Secret Recovery Phrase"]',
-            testSeedPhrase,
-          );
-
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.fill(
-            '#confirm-password',
-            'correct horse battery staple',
-          );
-
-          await driver.clickElement(
-            '[data-testid="create-new-vault__terms-checkbox"]',
-          );
-
-          await driver.clickElement({ text: 'Import', tag: 'button' });
-
-          // clicks through the success screen
-          await driver.findElement({ text: 'Congratulations', tag: 'div' });
-          await driver.clickElement({
-            text: enLocaleMessages.endOfFlowMessage10.message,
-            tag: 'button',
-          });
-        }
+        await completeImportSRPOnboardingFlow(
+          driver,
+          testSeedPhrase,
+          testPassword,
+        );
 
         // Show account information
         await driver.clickElement(
@@ -293,6 +231,47 @@ describe('Metamask Import UI', function () {
       },
     );
   });
+
+  it('Import Account using private key of an already active account should result in an error', async function () {
+    const testPrivateKey =
+      '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9';
+    const ganacheOptions = {
+      accounts: [
+        {
+          secretKey: testPrivateKey,
+          balance: convertToHexValue(25000000000000000000),
+        },
+      ],
+    };
+
+    await withFixtures(
+      {
+        fixtures: 'import-ui',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // choose Import Account from the account menu
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+
+        // enter private key',
+        await driver.fill('#private-key-box', testPrivateKey);
+        await driver.clickElement({ text: 'Import', tag: 'button' });
+
+        // error should occur
+        await driver.waitForSelector({
+          css: '.error',
+          text: "The account you're are trying to import is a duplicate",
+        });
+      },
+    );
+  });
+
   it('Connects to a Hardware wallet', async function () {
     const ganacheOptions = {
       accounts: [

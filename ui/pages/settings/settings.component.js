@@ -22,6 +22,8 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
+import { getSettingsRoutes } from '../../helpers/utils/settings-search';
+
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -34,6 +36,8 @@ import ExperimentalTab from './experimental-tab';
 import SnapListTab from './flask/snaps-list-tab';
 import ViewSnap from './flask/view-snap';
 ///: END:ONLY_INCLUDE_IN
+import SettingsSearch from './settings-search';
+import SettingsSearchList from './settings-search-list';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -59,6 +63,9 @@ class SettingsPage extends PureComponent {
 
   state = {
     lastFetchedConversionDate: null,
+    searchResults: [],
+    isSearchList: false,
+    searchText: '',
   };
 
   componentDidMount() {
@@ -76,6 +83,15 @@ class SettingsPage extends PureComponent {
     }
   }
 
+  handleClickSetting(setting) {
+    const { history } = this.props;
+    history.push(setting.route);
+    this.setState({
+      searchResults: '',
+      isSearchList: '',
+    });
+  }
+
   render() {
     const {
       history,
@@ -85,6 +101,10 @@ class SettingsPage extends PureComponent {
       addNewNetwork,
       isSnapViewPage,
     } = this.props;
+
+    const { searchResults, isSearchList, searchText } = this.state;
+    const { t } = this.context;
+
     return (
       <div
         className={classnames('main-container settings-page', {
@@ -98,18 +118,42 @@ class SettingsPage extends PureComponent {
               onClick={() => history.push(backRoute)}
             />
           )}
-          {this.renderTitle()}
-          <div
-            className="settings-page__close-button"
-            onClick={() => {
-              if (addNewNetwork) {
-                history.push(NETWORKS_ROUTE);
-              } else {
-                history.push(mostRecentOverviewPage);
-              }
-            }}
-          />
+          <div className="settings-page__header__title-container">
+            {this.renderTitle()}
+
+            <div
+              className="settings-page__header__title-container__close-button"
+              onClick={() => {
+                if (addNewNetwork) {
+                  history.push(NETWORKS_ROUTE);
+                } else {
+                  history.push(mostRecentOverviewPage);
+                }
+              }}
+            />
+          </div>
+
+          <div className="settings-page__header__search">
+            <SettingsSearch
+              onSearch={({ searchQuery = '', results = [] }) => {
+                this.setState({
+                  searchResults: results,
+                  isSearchList: searchQuery !== '',
+                  searchText: searchQuery,
+                });
+              }}
+              settingsRoutesList={getSettingsRoutes(t)}
+            />
+            {isSearchList && searchText.length >= 3 && (
+              <SettingsSearchList
+                key=""
+                results={searchResults}
+                onClickSetting={(setting) => this.handleClickSetting(setting)}
+              />
+            )}
+          </div>
         </div>
+
         <div className="settings-page__content">
           <div className="settings-page__content__tabs">
             {this.renderTabs()}
@@ -142,7 +186,11 @@ class SettingsPage extends PureComponent {
       titleText = t('settings');
     }
 
-    return <div className="settings-page__header__title">{titleText}</div>;
+    return (
+      <div className="settings-page__header__title-container__title">
+        {titleText}
+      </div>
+    );
   }
 
   renderSubHeader() {

@@ -8,8 +8,6 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import { getSymbolAndDecimals } from '../helpers/utils/token-util';
-import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -23,7 +21,6 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  getTokenList,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -35,6 +32,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -82,39 +80,20 @@ export function tryUnlockMetamask(password) {
   };
 }
 
-/**
- * Adds a new account where all data is encrypted using the given password and
- * where all addresses are generated from a given seed phrase.
- *
- * @param {string} password - The password.
- * @param {string} seedPhrase - The seed phrase.
- * @returns {Object} The updated state of the keyring controller.
- */
-export function createNewVaultAndRestore(password, seedPhrase) {
+export function createNewVaultAndRestore(password, seed) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
-
-    // Encode the secret recovery phrase as an array of integers so that it is
-    // serialized as JSON properly.
-    const encodedSeedPhrase = Array.from(
-      Buffer.from(seedPhrase, 'utf8').values(),
-    );
-
     let vault;
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(
-        password,
-        encodedSeedPhrase,
-        (err, _vault) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          vault = _vault;
-          resolve();
-        },
-      );
+      background.createNewVaultAndRestore(password, seed, (err, _vault) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        vault = _vault;
+        resolve();
+      });
     })
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
@@ -136,8 +115,8 @@ export function createNewVaultAndGetSeedPhrase(password) {
 
     try {
       await createNewVault(password);
-      const seedPhrase = await verifySeedPhrase();
-      return seedPhrase;
+      const seedWords = await verifySeedPhrase();
+      return seedWords;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -153,9 +132,9 @@ export function unlockAndGetSeedPhrase(password) {
 
     try {
       await submitPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedWords = await verifySeedPhrase();
       await forceUpdateMetamaskState(dispatch);
-      return seedPhrase;
+      return seedWords;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -204,9 +183,17 @@ export function verifyPassword(password) {
   });
 }
 
-export async function verifySeedPhrase() {
-  const encodedSeedPhrase = await promisifiedBackground.verifySeedPhrase();
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+export function verifySeedPhrase() {
+  return new Promise((resolve, reject) => {
+    background.verifySeedPhrase((error, seedWords) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve(seedWords);
+    });
+  });
 }
 
 export function requestRevealSeedWords(password) {
@@ -216,11 +203,11 @@ export function requestRevealSeedWords(password) {
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await verifySeedPhrase();
-      return seedPhrase;
+      const seedWords = await verifySeedPhrase();
+      return seedWords;
     } catch (error) {
       dispatch(displayWarning(error.message));
-      throw error;
+      throw new Error(error.message);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -683,6 +670,69 @@ const updateMetamaskStateFromBackground = () => {
     });
   });
 };
+
+export function updateSwapApprovalTransaction(txId, txSwapApproval) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSwapApprovalTransaction(
+        txId,
+        txSwapApproval,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txSwapApproval;
+  };
+}
+
+export function updateEditableParams(txId, editableParams) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateEditableParams(txId, editableParams);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return editableParams;
+  };
+}
+
+export function updateTransactionGasFees(txId, txGasFees) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateTransactionGasFees(txId, txGasFees);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txGasFees;
+  };
+}
+
+export function updateSwapTransaction(txId, txSwap) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSwapTransaction(txId, txSwap);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    return txSwap;
+  };
+}
 
 export function updateTransaction(txData, dontShowLoadingIndicator) {
   return async (dispatch) => {
@@ -2336,6 +2386,18 @@ export function setEIP1559V2Enabled(val) {
   };
 }
 
+export function setTheme(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setTheme`);
+    try {
+      await promisifiedBackground.setTheme(val);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2827,46 +2889,6 @@ export function loadingTokenParamsStarted() {
 export function loadingTokenParamsFinished() {
   return {
     type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
-  };
-}
-
-export function getTokenParams(address) {
-  return (dispatch, getState) => {
-    const tokenList = getTokenList(getState());
-    const existingTokens = getState().metamask.tokens;
-    const { selectedAddress } = getState().metamask;
-    const { chainId } = getState().metamask.provider;
-    const existingCollectibles = getState().metamask?.allCollectibles?.[
-      selectedAddress
-    ]?.[chainId];
-    const existingToken = existingTokens.find(({ address: tokenAddress }) =>
-      isEqualCaseInsensitive(address, tokenAddress),
-    );
-    const existingCollectible = existingCollectibles?.find(
-      ({ address: collectibleAddress }) =>
-        isEqualCaseInsensitive(address, collectibleAddress),
-    );
-
-    if (existingCollectible) {
-      return null;
-    }
-
-    if (existingToken) {
-      return Promise.resolve({
-        symbol: existingToken.symbol,
-        decimals: existingToken.decimals,
-      });
-    }
-
-    dispatch(loadingTokenParamsStarted());
-    log.debug(`loadingTokenParams`);
-
-    return getSymbolAndDecimals(address, tokenList).then(
-      ({ symbol, decimals }) => {
-        dispatch(addToken(address, symbol, Number(decimals)));
-        dispatch(loadingTokenParamsFinished());
-      },
-    );
   };
 }
 
