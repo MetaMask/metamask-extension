@@ -974,15 +974,15 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Lazily update the store with the current extension environment
-    const os = this.extension.runtime.getPlatformInfo();
-
-    this.appStateController.setBrowserEnvironment(
-      os,
-      // This method is presently only supported by Firefox
-      this.extension.runtime.getBrowserInfo === undefined
-        ? 'chrome'
-        : 'firefox',
-    );
+    this.extension.runtime.getPlatformInfo().then(({ os }) => {
+      this.appStateController.setBrowserEnvironment(
+        os,
+        // This method is presently only supported by Firefox
+        this.extension.runtime.getBrowserInfo === undefined
+          ? 'chrome'
+          : 'firefox',
+      );
+    });
 
     this.setupControllerEventSubscriptions();
 
