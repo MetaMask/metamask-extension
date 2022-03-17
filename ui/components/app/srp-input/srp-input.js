@@ -129,7 +129,6 @@ export default function SrpInput({ onChange }) {
         className="import-srp__paste-tip"
         iconFillColor="#037dd6" // This is `--color-info-default`
         message={t('srpPasteTip')}
-        type="info"
         useIcon
       />
       <Dropdown
