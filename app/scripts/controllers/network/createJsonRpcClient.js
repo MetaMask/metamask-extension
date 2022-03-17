@@ -9,55 +9,17 @@ import {
 } from 'eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
-import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { calculateAverageBlockTimeInMs } from './calculateAverageBlockTime';
 
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
-
-const getBlockTimestamp = async (rpcUrl, block) => {
-  const res = await fetchWithTimeout(rpcUrl, {
-    method: 'POST',
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'eth_getBlockByNumber',
-      params: [`0x${block.toString(16)}`, false],
-      id: 1,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  return Number.parseInt((await res.json()).result.timestamp, 16) * 1000;
-};
 
 const getChainOpts = async (rpcUrl) => {
   try {
-    const response = await fetchWithTimeout(rpcUrl, {
-      method: 'POST',
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'eth_blockNumber',
-        params: [],
-        id: 1,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const NUM_PAST = 5;
-    const latestBlock = Number.parseInt((await response.json()).result, 16);
-    const latestBlockTimestamp = await getBlockTimestamp(rpcUrl, latestBlock);
-    const pastBlockTimestamp = await getBlockTimestamp(
-      rpcUrl,
-      latestBlock - NUM_PAST,
-    );
+    const averageBlockTimeInMs = await calculateAverageBlockTimeInMs(rpcUrl);
 
     return {
-      pollingInterval:
-        ((latestBlockTimestamp - pastBlockTimestamp) / NUM_PAST) * 0.75,
+      pollingInterval: averageBlockTimeInMs * 0.75,
     };
   } catch {
     return {};
