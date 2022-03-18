@@ -36,7 +36,7 @@ export default function SettingsSearch({
     if (searchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');
     } else {
-      setSearchIconColor('var(--color-text-default)');
+      setSearchIconColor('var(--color-icon-default)');
     }
     const fuseSearchResult = settingsSearchFuse.search(searchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
