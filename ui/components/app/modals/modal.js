@@ -26,7 +26,6 @@ import FadeModal from './fade-modal';
 import MetaMetricsOptInModal from './metametrics-opt-in-modal';
 import RejectTransactions from './reject-transactions';
 import ConfirmDeleteNetwork from './confirm-delete-network';
-import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
