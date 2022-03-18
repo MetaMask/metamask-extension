@@ -12,7 +12,7 @@
     &::after {
       font-size: 24px;
       content: '\00D7';
-      color: var(--black);
+      color: var(--color-icon-default);
     }
   }
 
@@ -44,6 +44,7 @@
   }
 
   .btn--rounded.btn-primary {
-    background-color: #fff;
+    background-color: var(--color-primary-inverse);
+    color: var(--color-primary-default);
   }
 }
