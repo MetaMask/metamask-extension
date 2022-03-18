@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import TextField from '../../ui/text-field';
 import Button from '../../ui/button';
 import CheckBox from '../../ui/check-box';
@@ -22,7 +22,7 @@ export default function CreateNewVault({
   const [termsChecked, setTermsChecked] = useState(false);
 
   const t = useI18nContext();
-  const metricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onPasswordChange = useCallback(
     (newPassword) => {
@@ -82,16 +82,17 @@ export default function CreateNewVault({
   );
 
   const toggleTermsCheck = useCallback(() => {
-    metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    trackEvent({
+      category: 'Onboarding',
+      event: 'Check ToS',
+      properties: {
         action: 'Import Seed Phrase',
-        name: 'Check ToS',
+        legacy_event: true,
       },
     });
 
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
-  }, [metricsEvent]);
+  }, [trackEvent]);
 
   const termsOfUse = t('acceptTermsOfUse', [
     <a
