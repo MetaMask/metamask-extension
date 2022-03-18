@@ -78,6 +78,7 @@ describe('Add account', function () {
 
         const detailsModal = await driver.findVisibleElement('span .modal');
         // get the public address for the "second account"
+        await driver.waitForSelector('.qr-code__address');
         const secondAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
@@ -103,6 +104,7 @@ describe('Add account', function () {
         const secondDetailsModal = await driver.findVisibleElement(
           'span .modal',
         );
+        await driver.waitForSelector('.qr-code__address');
         const thirdAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
@@ -158,6 +160,7 @@ describe('Add account', function () {
           'span .modal',
         );
         // get the public address for the "second account"
+        await driver.waitForSelector('.qr-code__address');
         const recreatedSecondAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
@@ -184,6 +187,7 @@ describe('Add account', function () {
         );
 
         // get the public address for the "third account"
+        await driver.waitForSelector('.qr-code__address');
         const recreatedThirdAccountAddress = await driver.findElement(
           '.qr-code__address',
         );

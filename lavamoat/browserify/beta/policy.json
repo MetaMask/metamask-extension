@@ -2240,12 +2240,6 @@
         "stream-browserify": true
       }
     },
-    "extensionizer": {
-      "globals": {
-        "browser": true,
-        "chrome": true
-      }
-    },
     "faker": {
       "globals": {
         "console.error": true,
@@ -5187,6 +5181,15 @@
         "number-to-bn": true,
         "randombytes": true,
         "utf8": true
+      }
+    },
+    "webextension-polyfill": {
+      "globals": {
+        "browser": true,
+        "chrome": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
       }
     },
     "webrtcsupport": {

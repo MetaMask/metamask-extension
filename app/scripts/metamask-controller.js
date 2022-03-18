@@ -164,7 +164,7 @@ export default class MetamaskController extends EventEmitter {
       MILLISECOND * 200,
     );
     this.opts = opts;
-    this.extension = opts.extension;
+    this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
@@ -1001,7 +1001,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Lazily update the store with the current extension environment
-    this.extension.runtime.getPlatformInfo(({ os }) => {
+    this.extension.runtime.getPlatformInfo().then(({ os }) => {
       this.appStateController.setBrowserEnvironment(
         os,
         // This method is presently only supported by Firefox

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SelectedAccount from '../selected-account';
@@ -26,7 +26,7 @@ export default function MenuBar() {
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
-    origin !== extension.runtime.id;
+    origin !== browser.runtime.id;
 
   return (
     <div className="menu-bar">

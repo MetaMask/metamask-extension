@@ -22,7 +22,6 @@ import { isNetworkLoading } from '../../../selectors';
 export default function NetworkDisplay({
   colored,
   outline,
-  iconClassName,
   indicatorSize,
   disabled,
   labelProps,
@@ -61,14 +60,7 @@ export default function NetworkDisplay({
           />
         </LoadingIndicator>
       }
-      rightIcon={
-        iconClassName && (
-          <IconCaretDown
-            size={16}
-            className={classnames('network-display__icon', iconClassName)}
-          />
-        )
-      }
+      rightIcon={<IconCaretDown size={16} className="network-display__icon" />}
       label={
         networkType === NETWORK_TYPE_RPC
           ? networkNickname ?? t('privateNetwork')
@@ -100,7 +92,6 @@ NetworkDisplay.propTypes = {
   }),
   outline: PropTypes.bool,
   disabled: PropTypes.bool,
-  iconClassName: PropTypes.string,
   onClick: PropTypes.func,
 };
 
