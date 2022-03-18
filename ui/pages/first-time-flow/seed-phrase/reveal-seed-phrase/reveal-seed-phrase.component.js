@@ -12,6 +12,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import { exportAsFile } from '../../../../helpers/utils/util';
 import { returnToOnboardingInitiator } from '../../onboarding-initiator-util';
+import BackIcon from '../../../../components/ui/icon/back-icon.component';
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -149,7 +150,7 @@ export default class RevealSeedPhrase extends PureComponent {
                     history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
                   }}
                 >
-                  {`< ${t('back')}`}
+                  <BackIcon className="mr-2" />{t('back')}
                 </a>
               </Box>
               <div className="first-time-flow__header">

@@ -61,6 +61,13 @@
       height: 100px;
       border-radius: 4px;
     }
+    & .MuiFormControl-root{
+      &>div{
+        background-color: var(--white);
+        height: 100px;
+        border-radius: 4px;
+      }
+    }
   }
   
   &__srp-label {
@@ -96,6 +103,11 @@
         color:var(--white);
         @include H5;
         @include roundeNormal;
+      }
+    }
+    & .MuiFormControl-root{
+      &>div{
+        background-color: var(--white);
       }
     }
   }

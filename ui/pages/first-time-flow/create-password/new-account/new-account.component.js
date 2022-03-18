@@ -4,8 +4,10 @@ import Button from '../../../../components/ui/button';
 import {
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE
 } from '../../../../helpers/constants/routes';
 import TextField from '../../../../components/ui/text-field';
+import BackIcon from '../../../../components/ui/icon/back-icon.component';
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
@@ -115,7 +117,9 @@ export default class NewAccount extends PureComponent {
         },
       });
 
-      history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
+      // history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
+      history.push(INITIALIZE_SEED_PHRASE_ROUTE);
+
     } catch (error) {
       this.setState({ passwordError: error.message });
     }
@@ -172,7 +176,7 @@ export default class NewAccount extends PureComponent {
             }}
             href="#"
           >
-            {`< ${t('back')}`}
+            <BackIcon className="mr-2" />{t('back')}
           </a>
         </div>
         <div className="first-time-flow__header">{t('createPassword')}</div>

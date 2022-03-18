@@ -73,8 +73,10 @@
   }
   &__inputWrap{
     position: relative;
-    & .TextField-inputRoot-27 {
-      background-color: var(--white);
+    & .MuiFormControl-root {
+      &>div{
+        background-color: var(--white);
+      }  
     }
   }
   &__show_btn{

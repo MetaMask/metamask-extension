@@ -75,7 +75,9 @@ export default class EndOfFlowScreen extends PureComponent {
           <span>{t('carbonWallet')}</span>
         </div>
 
-        <div className="end-of-flow__emoji">🎉</div>
+        <div className="end-of-flow__emoji">
+          <img src="./images/alphaCarbon/congratulations.png" alt="congratulations" />
+        </div>
         <div className="first-time-flow__header">{t('congratulations')}</div>
         <div className="first-time-flow__text-block end-of-flow__text-1">
           {t('endOfFlowMessage1')}
