@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Feat/settings search ([#13214](https://github.com/MetaMask/metamask-extension/pull/13214))
 - Add AirGap Vault detail links ([#13650](https://github.com/MetaMask/metamask-extension/pull/13650))
+- **[FLASK]** Snap removal confirmation ([#13619](https://github.com/MetaMask/metamask-extension/pull/13619))
 
 ### Changed
 - Improve slippage input validation in Swaps ([#13914](https://github.com/MetaMask/metamask-extension/pull/13914))
@@ -32,6 +33,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement Network specific insufficient currency warning #12965 ([#13182](https://github.com/MetaMask/metamask-extension/pull/13182))
 - Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
 - Confirm transaction page: use method name only for contract transactions ([#13643](https://github.com/MetaMask/metamask-extension/pull/13643))
+- **[FLASK]** Update MetaMask Flask
+  - This is the first release of [MetaMask Flask](https://metamask.io/flask) since the initial release on January 18. This release includes a significant number of fixes and DevX improvements. Flask will henceforth be released at a more frequent cadence, usually in close proximity to releases of the regular MetaMask Extension.
+  - [#13462](https://github.com/MetaMask/metamask-extension/pull/13462) is mostly representative of the initial Flask release.
+- **[FLASK]** Update Snaps packages to version `^0.10.3` ([#13901](https://github.com/MetaMask/metamask-extension/pull/13901), [#14041](https://github.com/MetaMask/metamask-extension/pull/14041))
+  - Updates the following packages from `0.9.0` to `0.10.3`:
+    - `@metamask/iframe-execution-environment-service`
+    - `@metamask/rpc-methods`
+    - `@metamask/snap-controllers`
+  - These changes encompass a variety of fixes and devX improvements. See the [releases](https://github.com/MetaMask/snaps-skunkworks/releases) of the Snaps monorepo for details.
 
 ### Fixed
 - Fix spelling of 'Ethereum' in German translation ([#13915](https://github.com/MetaMask/metamask-extension/pull/13915))
@@ -49,7 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix registerOnboarding method to correctly access completedOnboarding state value ([#13723](https://github.com/MetaMask/metamask-extension/pull/13723))
 - Fix permission screen overflow ([#13592](https://github.com/MetaMask/metamask-extension/pull/13592))
 - Shows the sign and cancel button fully in signature page ([#13686](https://github.com/MetaMask/metamask-extension/pull/13686))
-
+- **[FLASK]** Fix Snaps permission request confirmation page title ([#13342](https://github.com/MetaMask/metamask-extension/pull/13342))
+- **[FLASK]** Fix Snaps custom confirmation `textarea` height ([#13572](https://github.com/MetaMask/metamask-extension/pull/13572))
+- **[FLASK]** Fix various Snaps UI issues ([#13577](https://github.com/MetaMask/metamask-extension/pull/13577))
+- **[FLASK]** Fix Snap key management install warning appearance ([#13844](https://github.com/MetaMask/metamask-extension/pull/13844))
+- **[FLASK]** Fix Snap permission request confirmation page site origin overflow ([#13868](https://github.com/MetaMask/metamask-extension/pull/13868))
+- **[FLASK]** Fix Snap permission list item shrinkage with short permission names ([#13613](https://github.com/MetaMask/metamask-extension/pull/13613))
 
 ## [10.11.1]
 ### Changed
