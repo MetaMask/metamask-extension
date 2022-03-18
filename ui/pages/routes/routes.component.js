@@ -83,6 +83,7 @@ export default class Routes extends Component {
     alertOpen: PropTypes.bool,
     isUnlocked: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
+    networkDropdownOpen: PropTypes.bool,
     setLastActiveTime: PropTypes.func,
     history: PropTypes.object,
     location: PropTypes.object,
@@ -314,6 +315,7 @@ export default class Routes extends Component {
       setMouseUserState,
       isMouseUser,
       isAccountMenuOpen,
+      networkDropdownOpen,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
     } = this.props;
@@ -359,8 +361,8 @@ export default class Routes extends Component {
           // className="main-container-wrapper"
           className={
             classnames('main-container-wrapper', {
-
-              'main-container-wrapper--filter': isAccountMenuOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN
+              'main-container-wrapper--filter': isAccountMenuOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN,
+              'main-container-wrapper--filter': networkDropdownOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN,
             })}
         >
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

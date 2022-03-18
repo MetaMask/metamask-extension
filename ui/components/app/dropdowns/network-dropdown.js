@@ -22,6 +22,9 @@ import {
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
+import NetWorkTreeIcon from '../../ui/icon/network-tree-icon.component';
+import CheckIcon from '../../ui/icon/check-icon.component';
+import CloseIcon from '../../ui/icon/close-icon.component';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -123,17 +126,19 @@ class NetworkDropdown extends Component {
 
   renderAddCustomButton() {
     const style = {
-      width: '100%',
-      left: '40px',
+      width: '272px',
       color: 'white',
-      background: 'rgba(0, 0, 0, 0.75)',
+      // background: 'rgba(0, 0, 0, 0.75)',
       borderRadius: '20px',
       textTransform: 'none',
+      margin: 'auto',
+      height: '32px',
     };
 
     return (
       <Button
-        type="submit"
+        className="network-dropdown__button"
+        type="primaryGradient"
         style={style}
         variant="contained"
         size="large"
@@ -169,55 +174,62 @@ class NetworkDropdown extends Component {
       }
 
       return (
-        <DropdownMenuItem
-          key={`common${rpcUrl}`}
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => {
-            if (isPrefixedFormattedHexString(chainId)) {
-              this.props.setRpcTarget(rpcUrl, chainId, ticker, nickname);
-            } else {
-              this.props.displayInvalidCustomNetworkAlert(nickname || rpcUrl);
-            }
-          }}
-          style={{
-            fontSize: '16px',
-            lineHeight: '20px',
-            padding: '12px 0',
-          }}
-        >
-          {isCurrentRpcTarget ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <ColorIndicator
-            // color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
-            color={opts.isLocalHost ? 'localhost' : labelKey || COLORS.UI4}
-            size={SIZES.LG}
-            type={ColorIndicator.TYPES.FILLED}
-            borderColor={borderColor}
-          />
-          <span
-            className="network-name-item"
+        <div>
+          <DropdownMenuItem
+            key={`common${rpcUrl}`}
+            closeMenu={() => this.props.hideNetworkDropdown()}
+            onClick={() => {
+              if (isPrefixedFormattedHexString(chainId)) {
+                this.props.setRpcTarget(rpcUrl, chainId, ticker, nickname);
+              } else {
+                this.props.displayInvalidCustomNetworkAlert(nickname || rpcUrl);
+              }
+            }}
             style={{
-              color: isCurrentRpcTarget ? '#ffffff' : '#9b9b9b',
+              fontSize: '16px',
+              lineHeight: '20px',
+              padding: '12px 0',
             }}
           >
-            {nickname || rpcUrl}
-          </span>
-          {isCurrentRpcTarget ? null : (
-            <i
-              className="fa fa-times delete"
-              onClick={(e) => {
-                e.stopPropagation();
-                this.props.showConfirmDeleteNetworkModal({
-                  target: rpcUrl,
-                  onConfirm: () => undefined,
-                });
+            <div className='network-check__wrap'>
+              {isCurrentRpcTarget ? (
+                // <i className="fa fa-check" />
+                <CheckIcon />
+              ) : (
+                <div className="network-check__transparent">✓</div>
+              )}
+            </div>
+            {/* <ColorIndicator
+              // color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
+              color={opts.isLocalHost ? 'localhost' : labelKey || COLORS.UI4}
+              size={SIZES.LG}
+              type={ColorIndicator.TYPES.FILLED}
+              borderColor={borderColor}
+            /> */}
+            <span
+              className="network-name-item"
+              style={{
+                // color: isCurrentRpcTarget ? '#ffffff' : '#9b9b9b',
               }}
-            />
-          )}
-        </DropdownMenuItem>
+            >
+              {nickname || rpcUrl}
+            </span>
+            {isCurrentRpcTarget ? null : (
+              <i
+                className="fa fa-times delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.props.showConfirmDeleteNetworkModal({
+                    target: rpcUrl,
+                    onConfirm: () => undefined,
+                  });
+                }}
+              />
+            )}
+          </DropdownMenuItem>
+          <div className="network-dropdown-divider" />
+        </div>
+
       );
     });
   }
@@ -304,6 +316,7 @@ class NetworkDropdown extends Component {
     return (
       <Dropdown
         isOpen={isOpen}
+        isFilter
         onClickOutside={(event) => {
           const { classList } = event.target;
           const isInClassList = (className) => classList.contains(className);
@@ -319,19 +332,38 @@ class NetworkDropdown extends Component {
         containerClassName="network-droppo"
         zIndex={55}
         style={{
-          position: 'absolute',
-          top: '58px',
-          width: '309px',
-          zIndex: '55px',
+          position: 'unset',
+          // top: '50%',
+          // transform: 'translate(-50%,-50%)',
+          // left: '50%',
+          // width: '352px',
+          // zIndex: '55px',
         }}
         innerStyle={{
-          padding: '18px 8px',
+          padding: '15px 13px',
+          background: '#FFFFFF',
+          'border-radius': '10px',
+          'box-shadow:': 'none',
+          'min-height': '400px',
+          display: 'flex',
+          'flex-direction': 'column',
+          position: 'absolute',
+          top: '50%',
+          transform: 'translate(-50%,-50%)',
+          left: '50%',
+          'max-width': '352px',
+          width: '90%',
+          'z-index': '55',
         }}
       >
+        <div className='network-dropdown-close' onClick={() => hideNetworkDropdown()}>
+          <CloseIcon />
+        </div>
         <div className="network-dropdown-header">
+          <NetWorkTreeIcon />
           <div className="network-dropdown-title">{t('networks')}</div>
           <div className="network-dropdown-divider" />
-          {showTestnetMessageInDropdown ? (
+          {/* {showTestnetMessageInDropdown ? (
             <div className="network-dropdown-content">
               {t('toggleTestNetworks', [
                 <a
@@ -354,7 +386,7 @@ class NetworkDropdown extends Component {
                 {t('dismiss')}
               </button>
             </div>
-          ) : null}
+          ) : null} */}
         </div>
 
         <div className="network-dropdown-list">

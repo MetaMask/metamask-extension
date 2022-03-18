@@ -104,6 +104,7 @@ export default class AppHeader extends PureComponent {
       history,
       isUnlocked,
       isAccountMenuOpen,
+      networkDropdownOpen,
       hideNetworkIndicator,
       disableNetworkIndicator,
       disabled,
@@ -117,6 +118,7 @@ export default class AppHeader extends PureComponent {
         className={classnames('app-header', {
           'app-header--back-drop': isUnlocked,
           'app-header--filter': isAccountMenuOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN,
+          'app-header--filter': networkDropdownOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN,
         })}
       >
         <div className="app-header__contents">
