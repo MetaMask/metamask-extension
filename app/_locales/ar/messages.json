@@ -52,12 +52,6 @@
   "addSuggestedTokens": {
     "message": "أضف العملات الرمزية المقترحة"
   },
-  "addToAddressBook": {
-    "message": "إضافة إلى دفتر العناوين"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلا جون دي"
-  },
   "addToken": {
     "message": "إضافة عملة رمزية"
   },
@@ -347,9 +341,6 @@
   },
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
-  },
-  "enterAnAlias": {
-    "message": "أدخل اسمًا مستعارًا"
   },
   "enterPassword": {
     "message": "أدخل كلمة مرور"
