@@ -118,4 +118,35 @@ describe('AdvancedTab Component', () => {
     toggleButton.first().simulate('toggle');
     expect(toggleTokenDetection.calledOnce).toStrictEqual(true);
   });
+
+  it('should not show token detection toggle', () => {
+    process.env.TOKEN_DETECTION_V2 = false;
+    component = shallow(
+      <AdvancedTab
+        ipfsGateway=""
+        setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
+        setIpfsGateway={() => undefined}
+        setShowFiatConversionOnTestnetsPreference={() => undefined}
+        setThreeBoxSyncingPermission={() => undefined}
+        setShowTestNetworks={toggleTestnet}
+        showTestNetworks={false}
+        threeBoxDisabled
+        threeBoxSyncingAllowed={false}
+        ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
+        setLedgerTransportPreference={() => undefined}
+        setDismissSeedBackUpReminder={() => undefined}
+        dismissSeedBackUpReminder={false}
+        useTokenDetection
+        setUseTokenDetection={toggleTokenDetection}
+      />,
+      {
+        context: {
+          metricsEvent: () => undefined,
+          t: (s) => `_${s}`,
+        },
+      },
+    );
+    const tokenDetectionText = component.find({ text: 'Token detection' });
+    expect(tokenDetectionText).toHaveLength(0);
+  });
 });
