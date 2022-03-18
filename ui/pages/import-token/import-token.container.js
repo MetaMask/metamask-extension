@@ -29,12 +29,8 @@ const mapStateToProps = (state) => {
       selectedAddress,
     },
   } = state;
-  const showSearchTabCustomNetwork =
-    useTokenDetection && Boolean(Object.keys(tokenList).length);
   const showSearchTab =
-    getIsTokenDetectionSupported(state) ||
-    showSearchTabCustomNetwork ||
-    process.env.IN_TEST;
+    getIsTokenDetectionSupported(state) || process.env.IN_TEST;
   return {
     identities,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
