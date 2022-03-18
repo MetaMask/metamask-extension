@@ -243,7 +243,7 @@ export default function ViewQuote() {
   const nonCustomMaxGasLimit = usedQuote?.gasEstimate
     ? usedGasLimitWithMultiplier
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
-  let maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
@@ -264,17 +264,6 @@ export default function ViewQuote() {
       decGWEIToHexWEI(estimatedBaseFee),
       maxPriorityFeePerGas,
     );
-  }
-
-  // Smart Transactions gas fees.
-  if (
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    smartTransactionEstimatedGas?.txData
-  ) {
-    maxGasLimit = `0x${decimalToHex(
-      smartTransactionEstimatedGas?.txData.gasLimit || 0,
-    )}`;
   }
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
