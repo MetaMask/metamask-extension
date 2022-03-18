@@ -117,7 +117,7 @@ const t = (key) => {
     case 'useTokenDetectionDescription':
       return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.';
     case 'tokenDetection':
-      return 'Token Detection';
+      return 'Token detection';
     case 'tokenDetectionToggleDescription':
       return 'ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import.';
     case 'enableOpenSeaAPI':

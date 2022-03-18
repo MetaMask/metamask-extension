@@ -84,7 +84,7 @@ describe('AdvancedTab Component', () => {
     expect(toggleTestnet.calledOnce).toStrictEqual(true);
   });
 
-  it('toggles Token detection', () => {
+  it('should toggle token detection', () => {
     process.env.TOKEN_DETECTION_V2 = true;
     component = shallow(
       <AdvancedTab
