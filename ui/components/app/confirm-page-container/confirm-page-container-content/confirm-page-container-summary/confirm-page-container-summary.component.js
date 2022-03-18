@@ -38,6 +38,7 @@ const ConfirmPageContainerSummary = (props) => {
     TRANSACTION_TYPES.CONTRACT_INTERACTION,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ];
   const isContractTypeTransaction = contractInitiatedTransactionType.includes(
     transactionType,
@@ -49,7 +50,8 @@ const ConfirmPageContainerSummary = (props) => {
     // type of contract interaction it is passed as toAddress
     contractAddress =
       transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
         ? tokenAddress
         : toAddress;
   }

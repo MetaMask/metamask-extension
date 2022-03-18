@@ -2914,7 +2914,7 @@
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
 
-"@metamask/metamask-eth-abis@3.0.0":
+"@metamask/metamask-eth-abis@3.0.0", "@metamask/metamask-eth-abis@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==

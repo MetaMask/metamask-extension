@@ -73,7 +73,7 @@
     cursor: pointer;
     border-radius: 28px;
     padding: 5px 18px;
-    background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
+    background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
 
 
     @media screen and (min-width: $break-large) {
@@ -122,7 +122,7 @@
       &.low {
         .actionable-message {
           button {
-            background: var(--Blue-500);
+            background: var(--color-primary-default);
             color: #fff;
           }
         }
@@ -217,7 +217,7 @@
   &__metamask-rate-text {
     @include H7;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__metamask-rate-info-icon {
