@@ -20,12 +20,16 @@ function mapStateToProps(state) {
   const { appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
+  const {
+    metamask: { isAccountMenuOpen },
+  } = state;
 
   return {
     alertOpen,
     alertMessage,
     textDirection: state.metamask.textDirection,
     isLoading,
+    isAccountMenuOpen,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
     isNetworkLoading: isNetworkLoading(state),

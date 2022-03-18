@@ -81,6 +81,7 @@ export default class Routes extends Component {
     isNetworkLoading: PropTypes.bool,
     alertOpen: PropTypes.bool,
     isUnlocked: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
     setLastActiveTime: PropTypes.func,
     history: PropTypes.object,
     location: PropTypes.object,
@@ -311,6 +312,7 @@ export default class Routes extends Component {
       isNetworkLoading,
       setMouseUserState,
       isMouseUser,
+      isAccountMenuOpen,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
     } = this.props;
@@ -318,7 +320,6 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
-
     return (
       <div
         className={classnames('app', {
@@ -353,7 +354,13 @@ export default class Routes extends Component {
         )}
         <NetworkDropdown />
         <AccountMenu />
-        <div className="main-container-wrapper">
+        <div
+          // className="main-container-wrapper"
+          className={
+            classnames('main-container-wrapper', {
+              'main-container-wrapper--filter': isAccountMenuOpen
+            })}
+        >
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}

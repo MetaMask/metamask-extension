@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+// import { useSelector } from 'react-redux';
 import Identicon from '../../ui/identicon';
 // import MetaFoxLogo from '../../ui/metafox-logo';
 import AlphaCarbonLogoGradient from '../../ui/alpha-carbon-logo-gradient';
 import { DEFAULT_ROUTE, UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import NetworkDisplay from '../network-display';
 import MenuIcon from '../../ui/icon/menu-icon.component';
-
+// import { getAccountMenuState } from '../../../ducks/metamask/metamask';
 export default class AppHeader extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
@@ -67,7 +68,8 @@ export default class AppHeader extends PureComponent {
       disabled,
       isAccountMenuOpen,
     } = this.props;
-
+    // const accountMenuState = useSelector(getAccountMenuState);
+    // console.log(accountMenuState, 'getAccountMenuState');
     return (
       isUnlocked && (
         <div
@@ -99,6 +101,7 @@ export default class AppHeader extends PureComponent {
     const {
       history,
       isUnlocked,
+      isAccountMenuOpen,
       hideNetworkIndicator,
       disableNetworkIndicator,
       disabled,
@@ -111,6 +114,7 @@ export default class AppHeader extends PureComponent {
       <div
         className={classnames('app-header', {
           'app-header--back-drop': isUnlocked,
+          'app-header--filter': isAccountMenuOpen,
         })}
       >
         <div className="app-header__contents">

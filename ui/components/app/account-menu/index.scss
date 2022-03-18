@@ -1,16 +1,17 @@
 .account-menu {
   position: absolute;
   z-index: 100;
-  top: 58px;
+  top: 0px;
   width: 320px;
-  border-radius: 4px;
-  background: rgba($black, 0.8);
-  box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
+  background: var(--gray-1);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 0px 0px 0px 40px;
   min-width: 150px;
   color: var(--white);
 
   @media screen and (max-width: $break-small) {
-    right: 16px;
+    right: 0px;
+    min-height: 100vh;
   }
 
   @media screen and (min-width: $break-large) {
@@ -26,7 +27,7 @@
   }
 
   &__item {
-    padding: 18px;
+    padding: 8px 24px;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
@@ -34,8 +35,8 @@
     z-index: 201;
 
     @media screen and (max-width: $break-small) {
-      padding: 14px;
-      height: 54px;
+      padding: 8px 18px 8px 24px;
+      height: auto;
     }
 
     &--clickable {
@@ -53,11 +54,13 @@
     &__icon {
       height: 16px;
       width: 16px;
-      margin-right: 14px;
+      margin-right: 8px;
     }
 
     &__text {
-      @include Paragraph;
+      // @include Paragraph;
+      @include roundeNormal;
+      @include H5;
     }
 
     &__subtext {
@@ -71,6 +74,9 @@
     background-color: var(--scorpion);
     width: 100%;
     height: 1px;
+    @media screen and (max-width: $break-small) {
+      margin-bottom: 10px;
+    }
   }
 
   &__close-area {
@@ -80,6 +86,7 @@
     top: 0;
     left: 0;
     z-index: 100;
+    background: rgba(34, 34, 34, 0.5);
   }
 
   &__icon {
@@ -97,15 +104,35 @@
     justify-content: space-between;
     align-items: center;
   }
-
+  &__expend-button{
+    background: transparent;
+    &>svg{
+      vertical-align: middle;
+    }
+  }
+  &__lock-wrap{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 201;
+    @media screen and (max-width: $break-small) {
+      position: absolute;
+      bottom: 0px;
+      right: 0;
+    }
+  }
   & &__lock-button {
-    @include H7;
+    @include H6;
+    @include roundeNormal;
 
-    border: 1px solid var(--ui-white);
+    border: 1px solid var(--gray-3);
     background-color: transparent;
-    padding: 3.5px 5px;
-    color: var(--white);
-    width: 59px;
+    padding: 4px 16px;
+    color: var(--gray-3);
+    width: 62px;
+    border-radius: 20px;
 
     &:hover {
       background-color: rgba($dusty-gray, 0.05);
@@ -166,10 +193,15 @@
 
     padding: 16px 14px;
   }
-
+  &__img{
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
+  }
   &__account {
     display: flex;
     flex-flow: row nowrap;
+    align-items: center;
     padding: 16px 14px;
     flex: 0 0 auto;
 
