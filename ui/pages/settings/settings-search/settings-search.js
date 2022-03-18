@@ -16,7 +16,7 @@ export default function SettingsSearch({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchIconColor, setSearchIconColor] = useState(
-    'var(--color-icon-default)',
+    'var(--color-icon-muted)',
   );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
