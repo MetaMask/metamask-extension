@@ -117,7 +117,7 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
 
-const feeEstimatesForTracking = {
+const additionalTrackingParams = {
   reg_tx_fee_in_usd: undefined,
   reg_tx_fee_in_eth: undefined,
   reg_tx_max_fee_in_usd: undefined,
@@ -370,8 +370,8 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
-  feeEstimatesForTracking.reg_tx_fee_in_usd = Number(feeInUsd);
-  feeEstimatesForTracking.reg_tx_fee_in_eth = Number(rawEthFee);
+  additionalTrackingParams.reg_tx_fee_in_usd = Number(feeInUsd);
+  additionalTrackingParams.reg_tx_fee_in_eth = Number(rawEthFee);
 
   const renderableMaxFees = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
@@ -392,8 +392,8 @@ export default function ViewQuote() {
     feeInUsd: maxFeeInUsd,
   } = renderableMaxFees;
   const { nonGasFee } = renderableMaxFees;
-  feeEstimatesForTracking.reg_tx_max_fee_in_usd = Number(maxFeeInUsd);
-  feeEstimatesForTracking.reg_tx_max_fee_in_eth = Number(maxRawEthFee);
+  additionalTrackingParams.reg_tx_max_fee_in_usd = Number(maxFeeInUsd);
+  additionalTrackingParams.reg_tx_max_fee_in_eth = Number(maxRawEthFee);
 
   if (
     currentSmartTransactionsEnabled &&
@@ -411,9 +411,9 @@ export default function ViewQuote() {
       nativeCurrencySymbol,
       feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
-    feeEstimatesForTracking.stx_fee_in_usd = Number(feeInUsd);
-    feeEstimatesForTracking.stx_fee_in_eth = Number(rawEthFee);
-    feeEstimatesForTracking.estimated_gas =
+    additionalTrackingParams.stx_fee_in_usd = Number(feeInUsd);
+    additionalTrackingParams.stx_fee_in_eth = Number(rawEthFee);
+    additionalTrackingParams.estimated_gas =
       smartTransactionEstimatedGas.txData.gasLimit;
     ({
       feeInFiat: maxFeeInFiat,
@@ -427,8 +427,8 @@ export default function ViewQuote() {
       nativeCurrencySymbol,
       feeInWeiDec: stxMaxFeeInWeiDec,
     }));
-    feeEstimatesForTracking.stx_max_fee_in_usd = Number(maxFeeInUsd);
-    feeEstimatesForTracking.stx_max_fee_in_eth = Number(maxRawEthFee);
+    additionalTrackingParams.stx_max_fee_in_usd = Number(maxFeeInUsd);
+    additionalTrackingParams.stx_max_fee_in_eth = Number(maxRawEthFee);
   }
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
@@ -1015,7 +1015,7 @@ export default function ViewQuote() {
                       unsignedTransaction,
                       metaMetricsEvent,
                       history,
-                      feeEstimatesForTracking,
+                      additionalTrackingParams,
                     }),
                   );
                 } else {
@@ -1023,7 +1023,7 @@ export default function ViewQuote() {
                     signAndSendTransactions(
                       history,
                       metaMetricsEvent,
-                      feeEstimatesForTracking,
+                      additionalTrackingParams,
                     ),
                   );
                 }

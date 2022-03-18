@@ -820,7 +820,7 @@ export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
   metaMetricsEvent,
   history,
-  feeEstimatesForTracking,
+  additionalTrackingParams,
 }) => {
   return async (dispatch, getState) => {
     dispatch(setSwapsSTXSubmitLoading(true));
@@ -872,7 +872,7 @@ export const signAndSendSwapsSmartTransaction = ({
       stx_enabled: smartTransactionsEnabled,
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
-      ...feeEstimatesForTracking,
+      ...additionalTrackingParams,
     };
     metaMetricsEvent({
       event: 'STX Swap Started',
@@ -971,7 +971,7 @@ export const signAndSendSwapsSmartTransaction = ({
 export const signAndSendTransactions = (
   history,
   metaMetricsEvent,
-  feeEstimatesForTracking,
+  additionalTrackingParams,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -1112,7 +1112,7 @@ export const signAndSendTransactions = (
       hardware_wallet_type: getHardwareWalletType(state),
       stx_enabled: smartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
-      ...feeEstimatesForTracking,
+      ...additionalTrackingParams,
     };
     if (networkAndAccountSupports1559) {
       swapMetaData.max_fee_per_gas = maxFeePerGas;
