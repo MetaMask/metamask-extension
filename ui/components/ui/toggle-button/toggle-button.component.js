@@ -52,7 +52,7 @@ const ToggleButton = (props) => {
   const modifier = value ? 'on' : 'off';
 
   return (
-    <div
+    <label
       tabIndex="0"
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
@@ -82,7 +82,7 @@ const ToggleButton = (props) => {
         <span className="toggle-button__label-off">{offLabel}</span>
         <span className="toggle-button__label-on">{onLabel}</span>
       </div>
-    </div>
+    </label>
   );
 };
 
