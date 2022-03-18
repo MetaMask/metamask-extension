@@ -2594,6 +2594,9 @@
   "rpcUrl": {
     "message": "New RPC URL"
   },
+  "safeTransferFrom": {
+    "message": "Safe Transfer From"
+  },
   "save": {
     "message": "Save"
   },

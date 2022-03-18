@@ -43,6 +43,7 @@ import {
 } from '../../ducks/metamask/metamask';
 
 import {
+  parseStandardTokenTransactionData,
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
@@ -52,6 +53,7 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -104,9 +106,12 @@ const mapStateToProps = (state, ownProps) => {
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
 
+  const transactionData = parseStandardTokenTransactionData(data);
+  const tokenToAddress = getTokenAddressParam(transactionData);
+
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  const toAddress = propsToAddress || txParamsToAddress;
+  const toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
