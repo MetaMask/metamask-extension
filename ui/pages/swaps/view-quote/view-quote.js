@@ -117,17 +117,6 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
 
-const additionalTrackingParams = {
-  reg_tx_fee_in_usd: undefined,
-  reg_tx_fee_in_eth: undefined,
-  reg_tx_max_fee_in_usd: undefined,
-  reg_tx_max_fee_in_eth: undefined,
-  stx_fee_in_usd: undefined,
-  stx_fee_in_eth: undefined,
-  stx_max_fee_in_usd: undefined,
-  stx_max_fee_in_eth: undefined,
-};
-
 export default function ViewQuote() {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -228,6 +217,17 @@ export default function ViewQuote() {
   const { isBestQuote } = usedQuote;
 
   const fetchParamsSourceToken = fetchParams?.sourceToken;
+
+  const additionalTrackingParams = {
+    reg_tx_fee_in_usd: undefined,
+    reg_tx_fee_in_eth: undefined,
+    reg_tx_max_fee_in_usd: undefined,
+    reg_tx_max_fee_in_eth: undefined,
+    stx_fee_in_usd: undefined,
+    stx_fee_in_eth: undefined,
+    stx_max_fee_in_usd: undefined,
+    stx_max_fee_in_eth: undefined,
+  };
 
   const usedGasLimit =
     usedQuote?.gasEstimateWithRefund ||
