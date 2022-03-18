@@ -25,6 +25,7 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
 import ImportTokenLink from '../../components/app/import-token-link';
+import { detectNewTokens } from '../../store/actions';
 
 import {
   TYPOGRAPHY,
@@ -584,7 +585,15 @@ export default class Home extends PureComponent {
             </Tabs>
 
             <div className="home__import-token">
-              <p>{t('missingToken')}</p>
+              <p className='mr-1'>{t('missingToken')}</p>
+              <Button
+                className="import-token-link__link mr-1"
+                type="link"
+                onClick={() => detectNewTokens()}
+              >
+                {t('refreshList')}
+              </Button>
+              {t('or')}
               <ImportTokenLink />
             </div>
             {/* <div className="home__support">

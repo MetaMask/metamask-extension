@@ -226,8 +226,10 @@
 }
 
 .btn-link {
-  @include H4;
-
+  @include H5;
+  display: inline-block;
+  width: auto;
+  padding: 0px;
   color:var(--secondary-3);
   cursor: pointer;
   background-color: transparent;
