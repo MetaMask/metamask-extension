@@ -420,12 +420,13 @@
     "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
     "description": "$1 represents the cypto symbol to be purchased"
   },
-  "buyEth": {
-    "message": "Buy ETH"
+  "buyNativeCurrency": {
+    "message": "$1 or deposit from another account.",
+    "description": "$1 is the key 'buy' and the ticker symbol of the native currency of the chain the user is currently on wrapped in a button"
   },
-  "buyOther": {
-    "message": "Buy $1 or deposit from another account.",
-    "description": "$1 is a token symbol"
+  "depositFromOtherAccount": {
+    "message": "Deposit $1 from another account.",
+    "description": "$1 is the ticker symbol of the native currency of the chain the user is currently on"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
