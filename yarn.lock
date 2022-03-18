@@ -12040,11 +12040,6 @@ extension-port-stream@^2.0.0, extension-port-stream@^2.0.1:
   dependencies:
     webextension-polyfill-ts "^0.22.0"
 
-extensionizer@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/extensionizer/-/extensionizer-1.0.1.tgz#504544239a7610ba8404b15c1832091a37768d09"
-  integrity sha512-UES5CSOYqshNsWFrpORcQR47+ph6UvQK25mguD44IyeMemt40CG+LTZrH1PgpGUHX3w7ACtNQnmM0J+qEe8G0Q==
-
 external-editor@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/external-editor/-/external-editor-3.0.3.tgz#5866db29a97826dbe4bf3afd24070ead9ea43a27"
@@ -27760,6 +27755,11 @@ webextension-polyfill@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.7.0.tgz#0df1120ff0266056319ce1a622b09ad8d4a56505"
   integrity sha512-su48BkMLxqzTTvPSE1eWxKToPS2Tv5DLGxKexLEVpwFd6Po6N8hhSLIvG6acPAg7qERoEaDL+Y5HQJeJeml5Aw==
+
+webextension-polyfill@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.8.0.tgz#f80e9f4b7f81820c420abd6ffbebfa838c60e041"
+  integrity sha512-a19+DzlT6Kp9/UI+mF9XQopeZ+n2ussjhxHJ4/pmIGge9ijCDz7Gn93mNnjpZAk95T4Tae8iHZ6sSf869txqiQ==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
