@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.11.1",
+  "version": "10.11.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -117,6 +117,7 @@
     "@metamask/iframe-execution-environment-service": "^0.10.2",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^3.1.1",
+    "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/obs-store": "^5.0.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",

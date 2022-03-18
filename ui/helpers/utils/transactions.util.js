@@ -1,6 +1,4 @@
 import { MethodRegistry } from 'eth-method-registry';
-import abi from 'human-standard-token-abi';
-import { ethers } from 'ethers';
 import log from 'loglevel';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
@@ -14,8 +12,6 @@ import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from './fetch-with-cache';
 
-const hstInterface = new ethers.utils.Interface(abi);
-
 /**
  * @typedef EthersContractCall
  * @type object
@@ -28,19 +24,6 @@ const hstInterface = new ethers.utils.Interface(abi);
  * @property {FunctionFragment} functionFragment - The Ethers function fragment
  * representation of the function.
  */
-
-/**
- * @param data
- * @returns {EthersContractCall | undefined}
- */
-export function getTransactionData(data) {
-  try {
-    return hstInterface.parseTransaction({ data });
-  } catch (error) {
-    log.debug('Failed to parse transaction data.', error, data);
-    return undefined;
-  }
-}
 
 async function getMethodFrom4Byte(fourBytePrefix) {
   const fourByteResponse = await fetchWithCache(
@@ -122,6 +105,7 @@ export function isTokenMethodAction(type) {
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ].includes(type);
 }
 
@@ -214,6 +198,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
       return t('transferFrom');
+    }
+    case TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM: {
+      return t('safeTransferFrom');
     }
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');

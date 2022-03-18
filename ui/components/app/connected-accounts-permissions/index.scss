@@ -21,7 +21,7 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    color: #24292e;
+    color: var(--color-text-default);
 
     button {
       font-size: $font-size-paragraph;

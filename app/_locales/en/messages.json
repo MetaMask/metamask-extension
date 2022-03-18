@@ -2372,6 +2372,10 @@
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
   },
+  "permission_notifications": {
+    "message": "Show notifications.",
+    "description": "The description for the `snap_notify` permission"
+  },
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
@@ -2599,6 +2603,9 @@
   },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "safeTransferFrom": {
+    "message": "Safe Transfer From"
   },
   "save": {
     "message": "Save"
