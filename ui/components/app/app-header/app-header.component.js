@@ -8,6 +8,8 @@ import AlphaCarbonLogoGradient from '../../ui/alpha-carbon-logo-gradient';
 import { DEFAULT_ROUTE, UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import NetworkDisplay from '../network-display';
 import MenuIcon from '../../ui/icon/menu-icon.component';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 // import { getAccountMenuState } from '../../../ducks/metamask/metamask';
 export default class AppHeader extends PureComponent {
   static propTypes = {
@@ -114,7 +116,7 @@ export default class AppHeader extends PureComponent {
       <div
         className={classnames('app-header', {
           'app-header--back-drop': isUnlocked,
-          'app-header--filter': isAccountMenuOpen,
+          'app-header--filter': isAccountMenuOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN,
         })}
       >
         <div className="app-header__contents">

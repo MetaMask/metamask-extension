@@ -64,6 +64,7 @@ import {
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
@@ -358,7 +359,8 @@ export default class Routes extends Component {
           // className="main-container-wrapper"
           className={
             classnames('main-container-wrapper', {
-              'main-container-wrapper--filter': isAccountMenuOpen
+
+              'main-container-wrapper--filter': isAccountMenuOpen && getEnvironmentType() != ENVIRONMENT_TYPE_FULLSCREEN
             })}
         >
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
