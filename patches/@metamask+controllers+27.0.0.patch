@@ -1,0 +1,13 @@
+diff --git a/node_modules/@metamask/controllers/dist/permissions/endowments/network-access.js b/node_modules/@metamask/controllers/dist/permissions/endowments/network-access.js
+index bfd4c65..3bf9272 100644
+--- a/node_modules/@metamask/controllers/dist/permissions/endowments/network-access.js
++++ b/node_modules/@metamask/controllers/dist/permissions/endowments/network-access.js
+@@ -17,7 +17,7 @@ const specificationBuilder = (_builderOptions) => {
+         targetKey: permissionName,
+         allowedCaveats: null,
+         endowmentGetter: (_getterOptions) => {
+-            return ['fetch', 'WebSocket'];
++            return ['fetch', 'WebSocket', 'XMLHttpRequest'];
+         },
+     };
+ };

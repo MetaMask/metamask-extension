@@ -1,0 +1,270 @@
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.d.ts b/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.d.ts
+index d118736..2e8495a 100644
+--- a/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.d.ts
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.d.ts
+@@ -27,9 +27,7 @@ export declare class IframeExecutionService extends AbstractExecutionService<Env
+     iframeUrl: URL;
+     private _createWindowTimeout;
+     constructor({ setupSnapProvider, iframeUrl, messenger, unresponsivePollingInterval, unresponsiveTimeout, createWindowTimeout, }: IframeExecutionEnvironmentServiceArgs);
+-    private _setJob;
+-    private _deleteJob;
+-    terminate(jobId: string): void;
++    protected _terminate(jobWrapper: EnvMetadata): void;
+     protected _initJob(): Promise<EnvMetadata>;
+     private _initStreams;
+     private _createWindow;
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js b/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js
+index 4b2cffc..21c6563 100644
+--- a/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js
+@@ -22,39 +22,9 @@ class IframeExecutionService extends snap_controllers_1.AbstractExecutionService
+         this._createWindowTimeout = createWindowTimeout;
+         this.iframeUrl = iframeUrl;
+     }
+-    _setJob(jobId, jobWrapper) {
+-        this.jobs.set(jobId, jobWrapper);
+-    }
+-    _deleteJob(jobId) {
+-        this.jobs.delete(jobId);
+-    }
+-    terminate(jobId) {
++    _terminate(jobWrapper) {
+         var _a;
+-        const jobWrapper = this.jobs.get(jobId);
+-        if (!jobWrapper) {
+-            throw new Error(`Job with id "${jobId}" not found.`);
+-        }
+-        const snapId = this.jobToSnapMap.get(jobId);
+-        if (!snapId) {
+-            throw new Error(`Failed to find a snap for job with id "${jobId}"`);
+-        }
+-        Object.values(jobWrapper.streams).forEach((stream) => {
+-            try {
+-                if (stream && !stream.destroyed) {
+-                    stream.destroy();
+-                    stream.removeAllListeners();
+-                }
+-            }
+-            catch (err) {
+-                console.log('Error while destroying stream', err);
+-            }
+-        });
+         (_a = document.getElementById(jobWrapper.id)) === null || _a === void 0 ? void 0 : _a.remove();
+-        clearTimeout(this._timeoutForUnresponsiveMap.get(snapId));
+-        this._timeoutForUnresponsiveMap.delete(snapId);
+-        this._removeSnapAndJobMapping(jobId);
+-        this._deleteJob(jobId);
+-        console.log(`job: "${jobId}" terminated`);
+     }
+     async _initJob() {
+         const jobId = nanoid_1.nanoid();
+@@ -68,7 +38,7 @@ class IframeExecutionService extends snap_controllers_1.AbstractExecutionService
+             streams,
+             rpcEngine,
+         };
+-        this._setJob(jobId, envMetadata);
++        this.jobs.set(jobId, envMetadata);
+         await this._command(jobId, {
+             jsonrpc: '2.0',
+             method: 'ping',
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js.map b/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js.map
+index b06ab82..2f4cfa5 100644
+--- a/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js.map
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/IframeExecutionService.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"IframeExecutionService.js","sourceRoot":"","sources":["../src/IframeExecutionService.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"IframeExecutionService.js","sourceRoot":"","sources":["../src/IframeExecutionService.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.d.ts b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.d.ts
+new file mode 100644
+index 0000000..2e8495a
+--- /dev/null
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.d.ts
+@@ -0,0 +1,35 @@
++/// <reference types="node" />
++import { Duplex } from 'stream';
++import { WindowPostMessageStream } from '@metamask/post-message-stream';
++import { AbstractExecutionService, SetupSnapProvider } from '@metamask/snap-controllers';
++import { ExecutionServiceMessenger } from '@metamask/snap-types';
++import { JsonRpcEngine } from 'json-rpc-engine';
++declare type IframeExecutionEnvironmentServiceArgs = {
++    createWindowTimeout?: number;
++    setupSnapProvider: SetupSnapProvider;
++    iframeUrl: URL;
++    messenger: ExecutionServiceMessenger;
++    unresponsivePollingInterval?: number;
++    unresponsiveTimeout?: number;
++};
++declare type JobStreams = {
++    command: Duplex;
++    rpc: Duplex | null;
++    _connection: WindowPostMessageStream;
++};
++declare type EnvMetadata = {
++    id: string;
++    streams: JobStreams;
++    rpcEngine: JsonRpcEngine;
++};
++export declare class IframeExecutionService extends AbstractExecutionService<EnvMetadata> {
++    _iframeWindow?: Window;
++    iframeUrl: URL;
++    private _createWindowTimeout;
++    constructor({ setupSnapProvider, iframeUrl, messenger, unresponsivePollingInterval, unresponsiveTimeout, createWindowTimeout, }: IframeExecutionEnvironmentServiceArgs);
++    protected _terminate(jobWrapper: EnvMetadata): void;
++    protected _initJob(): Promise<EnvMetadata>;
++    private _initStreams;
++    private _createWindow;
++}
++export {};
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.js b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.js
+new file mode 100644
+index 0000000..21c6563
+--- /dev/null
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.js
+@@ -0,0 +1,100 @@
++"use strict";
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.IframeExecutionService = void 0;
++const post_message_stream_1 = require("@metamask/post-message-stream");
++const snap_controllers_1 = require("@metamask/snap-controllers");
++const execution_environments_1 = require("@metamask/execution-environments");
++const json_rpc_engine_1 = require("json-rpc-engine");
++const json_rpc_middleware_stream_1 = require("json-rpc-middleware-stream");
++const nanoid_1 = require("nanoid");
++const pump_1 = __importDefault(require("pump"));
++class IframeExecutionService extends snap_controllers_1.AbstractExecutionService {
++    constructor({ setupSnapProvider, iframeUrl, messenger, unresponsivePollingInterval = 5000, unresponsiveTimeout = 30000, createWindowTimeout = 60000, }) {
++        super({
++            setupSnapProvider,
++            messenger,
++            unresponsivePollingInterval,
++            unresponsiveTimeout,
++        });
++        this._createWindowTimeout = createWindowTimeout;
++        this.iframeUrl = iframeUrl;
++    }
++    _terminate(jobWrapper) {
++        var _a;
++        (_a = document.getElementById(jobWrapper.id)) === null || _a === void 0 ? void 0 : _a.remove();
++    }
++    async _initJob() {
++        const jobId = nanoid_1.nanoid();
++        const streams = await this._initStreams(jobId);
++        const rpcEngine = new json_rpc_engine_1.JsonRpcEngine();
++        const jsonRpcConnection = json_rpc_middleware_stream_1.createStreamMiddleware();
++        pump_1.default(jsonRpcConnection.stream, streams.command, jsonRpcConnection.stream);
++        rpcEngine.push(jsonRpcConnection.middleware);
++        const envMetadata = {
++            id: jobId,
++            streams,
++            rpcEngine,
++        };
++        this.jobs.set(jobId, envMetadata);
++        await this._command(jobId, {
++            jsonrpc: '2.0',
++            method: 'ping',
++            id: nanoid_1.nanoid(),
++        });
++        return envMetadata;
++    }
++    async _initStreams(jobId) {
++        this._iframeWindow = await this._createWindow(this.iframeUrl.toString(), jobId, this._createWindowTimeout);
++        const envStream = new post_message_stream_1.WindowPostMessageStream({
++            name: 'parent',
++            target: 'child',
++            targetWindow: this._iframeWindow,
++        });
++        // Typecast justification: stream type mismatch
++        const mux = snap_controllers_1.setupMultiplex(envStream, `Job: "${jobId}"`);
++        const commandStream = mux.createStream(execution_environments_1.SNAP_STREAM_NAMES.COMMAND);
++        // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
++        const errorHandler = (data) => {
++            if (data.error &&
++                (data.id === null || data.id === undefined) // only out of band errors (i.e. no id)
++            ) {
++                const snapId = this.jobToSnapMap.get(jobId);
++                if (snapId) {
++                    this._messenger.publish('ExecutionService:unhandledError', snapId, data.error);
++                }
++                commandStream.removeListener('data', errorHandler);
++            }
++        };
++        commandStream.on('data', errorHandler);
++        const rpcStream = mux.createStream(execution_environments_1.SNAP_STREAM_NAMES.JSON_RPC);
++        // Typecast: stream type mismatch
++        return {
++            command: commandStream,
++            rpc: rpcStream,
++            _connection: envStream,
++        };
++    }
++    _createWindow(uri, jobId, timeout) {
++        const iframe = document.createElement('iframe');
++        return new Promise((resolve, reject) => {
++            const errorTimeout = setTimeout(() => {
++                iframe.remove();
++                reject(new Error(`Timed out creating iframe window: "${uri}"`));
++            }, timeout);
++            iframe.addEventListener('load', () => {
++                if (iframe.contentWindow) {
++                    clearTimeout(errorTimeout);
++                    resolve(iframe.contentWindow);
++                }
++            });
++            document.body.appendChild(iframe);
++            iframe.setAttribute('src', uri);
++            iframe.setAttribute('id', jobId);
++        });
++    }
++}
++exports.IframeExecutionService = IframeExecutionService;
++//# sourceMappingURL=IframeExecutionService.js.map
+\ No newline at end of file
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.js.map b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.js.map
+new file mode 100644
+index 0000000..2f4cfa5
+--- /dev/null
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/IframeExecutionService.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"IframeExecutionService.js","sourceRoot":"","sources":["../src/IframeExecutionService.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.d.ts b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.d.ts
+new file mode 100644
+index 0000000..ce6b348
+--- /dev/null
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.d.ts
+@@ -0,0 +1 @@
++export * from './IframeExecutionService';
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.js b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.js
+new file mode 100644
+index 0000000..5f48319
+--- /dev/null
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.js
+@@ -0,0 +1,14 @@
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __exportStar = (this && this.__exportStar) || function(m, exports) {
++    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++__exportStar(require("./IframeExecutionService"), exports);
++//# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.js.map b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.js.map
+new file mode 100644
+index 0000000..e8a8d39
+--- /dev/null
++++ b/node_modules/@metamask/iframe-execution-environment-service/dist/dist/index.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,2DAAyC"}
+\ No newline at end of file
