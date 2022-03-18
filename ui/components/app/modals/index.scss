@@ -35,7 +35,7 @@
     bottom: 0;
     left: 0;
     z-index: 1040;
-    background-color: #373a47; /* TODO: What color here? */
+    background-color: var(--color-overlay-alterantive);
     animation-fill-mode: forwards;
     animation-duration: 0.3s;
   }
