@@ -39,6 +39,9 @@ export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
+export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
+export const POLYGON_DISPLAY_NAME = 'Polygon';
+export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
 
 const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({ network, excludeProjectId = false }) =>

@@ -20,10 +20,18 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  DISPLAY,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
+
+/*eslint-disable prefer-destructuring*/
+const TOKEN_DETECTION_V2 = process.env.TOKEN_DETECTION_V2;
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
@@ -50,6 +58,12 @@ class ImportToken extends Component {
     useTokenDetection: PropTypes.bool,
     getTokenStandardAndDetails: PropTypes.func,
     selectedAddress: PropTypes.string,
+    isTokenDetectionSupported: PropTypes.bool.isRequired,
+    networkName: PropTypes.string.isRequired,
+    tokenDetectionNoticeDismissed: PropTypes.bool.isRequired,
+    tokenDetectionWarningDismissed: PropTypes.bool.isRequired,
+    setTokenDetectionNoticeDismissed: PropTypes.func,
+    setTokenDetectionWarningDismissed: PropTypes.func,
   };
 
   static defaultProps = {
@@ -324,6 +338,7 @@ class ImportToken extends Component {
   }
 
   renderCustomTokenForm() {
+    const { t } = this.context;
     const {
       customAddress,
       customSymbol,
@@ -338,7 +353,13 @@ class ImportToken extends Component {
       collectibleAddressError,
     } = this.state;
 
-    const { chainId, rpcPrefs } = this.props;
+    const {
+      chainId,
+      rpcPrefs,
+      isTokenDetectionSupported,
+      tokenDetectionWarningDismissed,
+      setTokenDetectionWarningDismissed,
+    } = this.props;
     const blockExplorerTokenLink = getTokenTrackerLink(
       customAddress,
       chainId,
@@ -348,31 +369,74 @@ class ImportToken extends Component {
     );
     const blockExplorerLabel = rpcPrefs?.blockExplorerUrl
       ? getURLHostName(blockExplorerTokenLink)
-      : this.context.t('etherscan');
+      : t('etherscan');
 
     return (
       <div className="import-token__custom-token-form">
-        <ActionableMessage
-          message={this.context.t('fakeTokenWarning', [
-            <Button
-              type="link"
-              key="import-token-fake-token-warning"
-              className="import-token__link"
-              rel="noopener noreferrer"
-              target="_blank"
-              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-            >
-              {this.context.t('learnScamRisk')}
-            </Button>,
-          ])}
-          type="warning"
-          withRightButton
-          useIcon
-          iconFillColor="var(--color-warning-default)"
-        />
+        {TOKEN_DETECTION_V2 ? (
+          !tokenDetectionWarningDismissed && (
+            <ActionableMessage
+              type={isTokenDetectionSupported ? 'warning' : 'info'}
+              message={
+                <Box display={DISPLAY.INLINE_FLEX}>
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    margin={0}
+                  >
+                    {t(
+                      isTokenDetectionSupported
+                        ? 'customTokenWarningInTokenDetectionNetwork'
+                        : 'customTokenWarningInNonTokenDetectionNetwork',
+                      [
+                        <Button
+                          type="link"
+                          key="import-token-fake-token-warning"
+                          className="import-token__link"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                        >
+                          {t('learnScamRisk')}
+                        </Button>,
+                      ],
+                    )}
+                  </Typography>
+                  <button
+                    className="fas fa-times import-token__close"
+                    title={t('close')}
+                    onClick={() => setTokenDetectionWarningDismissed()}
+                  />
+                </Box>
+              }
+              withRightButton
+              useIcon
+              iconFillColor={isTokenDetectionSupported ? '#f8c000' : '#037DD6'}
+            />
+          )
+        ) : (
+          <ActionableMessage
+            message={this.context.t('fakeTokenWarning', [
+              <Button
+                type="link"
+                key="import-token-fake-token-warning"
+                className="import-token__link"
+                rel="noopener noreferrer"
+                target="_blank"
+                href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+              >
+                {this.context.t('learnScamRisk')}
+              </Button>,
+            ])}
+            type="warning"
+            withRightButton
+            useIcon
+            iconFillColor="var(--color-warning-default)"
+          />
+        )}
         <TextField
           id="custom-address"
-          label={this.context.t('tokenContractAddress')}
+          label={t('tokenContractAddress')}
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
@@ -388,14 +452,14 @@ class ImportToken extends Component {
           label={
             <div className="import-token__custom-symbol__label-wrapper">
               <span className="import-token__custom-symbol__label">
-                {this.context.t('tokenSymbol')}
+                {t('tokenSymbol')}
               </span>
               {symbolAutoFilled && !forceEditSymbol && (
                 <div
                   className="import-token__custom-symbol__edit"
                   onClick={() => this.setState({ forceEditSymbol: true })}
                 >
-                  {this.context.t('edit')}
+                  {t('edit')}
                 </div>
               )}
             </div>
@@ -410,7 +474,7 @@ class ImportToken extends Component {
         />
         <TextField
           id="custom-decimals"
-          label={this.context.t('decimal')}
+          label={t('decimal')}
           type="number"
           value={customDecimals}
           onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}
@@ -429,13 +493,13 @@ class ImportToken extends Component {
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {this.context.t('tokenDecimalFetchFailed')}
+                  {t('tokenDecimalFetchFailed')}
                 </Typography>
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {this.context.t('verifyThisTokenDecimalOn', [
+                  {t('verifyThisTokenDecimalOn', [
                     <Button
                       type="link"
                       key="import-token-verify-token-decimal"
@@ -460,22 +524,59 @@ class ImportToken extends Component {
   }
 
   renderSearchToken() {
-    const { tokenList, history, useTokenDetection } = this.props;
+    const { t } = this.context;
+    const {
+      tokenList,
+      history,
+      useTokenDetection,
+      networkName,
+      tokenDetectionNoticeDismissed,
+      setTokenDetectionNoticeDismissed,
+    } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="import-token__search-token">
-        {!useTokenDetection && (
+        {!useTokenDetection && !tokenDetectionNoticeDismissed && (
           <ActionableMessage
-            message={this.context.t('tokenDetectionAnnouncement', [
-              <Button
-                type="link"
-                key="token-detection-announcement"
-                className="import-token__link"
-                onClick={() => history.push(EXPERIMENTAL_ROUTE)}
-              >
-                {this.context.t('enableFromSettings')}
-              </Button>,
-            ])}
+            message={
+              TOKEN_DETECTION_V2 ? (
+                <Box display={DISPLAY.INLINE_FLEX}>
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    margin={0}
+                  >
+                    {t('tokenDetectionAlertMessage', [
+                      networkName,
+                      <Button
+                        type="link"
+                        key="token-detection-announcement"
+                        className="import-token__link"
+                        onClick={() => history.push(EXPERIMENTAL_ROUTE)}
+                      >
+                        {t('enableFromSettings')}
+                      </Button>,
+                    ])}
+                  </Typography>
+                  <button
+                    className="fas fa-times import-token__close"
+                    title={t('close')}
+                    onClick={() => setTokenDetectionNoticeDismissed()}
+                  />
+                </Box>
+              ) : (
+                this.context.t('tokenDetectionAnnouncement', [
+                  <Button
+                    type="link"
+                    key="token-detection-announcement"
+                    className="import-token__link"
+                    onClick={() => history.push(EXPERIMENTAL_ROUTE)}
+                  >
+                    {t('enableFromSettings')}
+                  </Button>,
+                ])
+              )
+            }
             withRightButton
             useIcon
             iconFillColor="var(--color-primary-default)"
@@ -501,18 +602,19 @@ class ImportToken extends Component {
   }
 
   renderTabs() {
+    const { t } = this.context;
     const { showSearchTab } = this.props;
     const tabs = [];
 
     if (showSearchTab) {
       tabs.push(
-        <Tab name={this.context.t('search')} key="search-tab">
+        <Tab name={t('search')} key="search-tab">
           {this.renderSearchToken()}
         </Tab>,
       );
     }
     tabs.push(
-      <Tab name={this.context.t('customToken')} key="custom-tab">
+      <Tab name={t('customToken')} key="custom-tab">
         {this.renderCustomTokenForm()}
       </Tab>,
     );
