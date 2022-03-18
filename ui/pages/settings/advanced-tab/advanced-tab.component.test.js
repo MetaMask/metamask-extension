@@ -119,6 +119,7 @@ describe('AdvancedTab Component', () => {
     expect(toggleTokenDetection.calledOnce).toStrictEqual(true);
   });
 
+  /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
   it('should not show token detection toggle', () => {
     process.env.TOKEN_DETECTION_V2 = false;
     component = shallow(

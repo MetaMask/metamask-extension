@@ -23,6 +23,7 @@ describe('Experimental Tab', () => {
     expect(props.setUseTokenDetection.calledOnce).toStrictEqual(true);
   });
 
+  /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
   it('should not show use token detection toggle', () => {
     process.env.TOKEN_DETECTION_V2 = true;
     wrapper = mount(<ExperimentalTab.WrappedComponent {...props} />, {
