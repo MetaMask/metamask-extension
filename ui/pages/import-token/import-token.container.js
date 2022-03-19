@@ -4,16 +4,12 @@ import {
   setPendingTokens,
   clearPendingTokens,
   getTokenStandardAndDetails,
-  setTokenDetectionNoticeDismissed,
-  setTokenDetectionWarningDismissed,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   getRpcPrefsForCurrentProvider,
   getIsTokenDetectionSupported,
   getTokenDetectionSupportNetworkByChainId,
-  getTokenDetectionNoticeDismissed,
-  getTokenDetectionWarningDismissed,
 } from '../../selectors/selectors';
 import ImportToken from './import-token.component';
 
@@ -44,8 +40,6 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isTokenDetectionSupported: getIsTokenDetectionSupported(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
-    tokenDetectionNoticeDismissed: getTokenDetectionNoticeDismissed(state),
-    tokenDetectionWarningDismissed: getTokenDetectionWarningDismissed(state),
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -54,10 +48,6 @@ const mapDispatchToProps = (dispatch) => {
     clearPendingTokens: () => dispatch(clearPendingTokens()),
     getTokenStandardAndDetails: (address, selectedAddress) =>
       getTokenStandardAndDetails(address, selectedAddress, null),
-    setTokenDetectionNoticeDismissed: () =>
-      dispatch(setTokenDetectionNoticeDismissed()),
-    setTokenDetectionWarningDismissed: () =>
-      dispatch(setTokenDetectionWarningDismissed()),
   };
 };
 

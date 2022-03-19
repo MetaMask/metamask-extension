@@ -20,13 +20,8 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
-import {
-  TYPOGRAPHY,
-  FONT_WEIGHT,
-  DISPLAY,
-} from '../../helpers/constants/design-system';
+import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 
@@ -60,10 +55,6 @@ class ImportToken extends Component {
     selectedAddress: PropTypes.string,
     isTokenDetectionSupported: PropTypes.bool.isRequired,
     networkName: PropTypes.string.isRequired,
-    tokenDetectionNoticeDismissed: PropTypes.bool.isRequired,
-    tokenDetectionWarningDismissed: PropTypes.bool.isRequired,
-    setTokenDetectionNoticeDismissed: PropTypes.func,
-    setTokenDetectionWarningDismissed: PropTypes.func,
   };
 
   static defaultProps = {
@@ -353,13 +344,7 @@ class ImportToken extends Component {
       collectibleAddressError,
     } = this.state;
 
-    const {
-      chainId,
-      rpcPrefs,
-      isTokenDetectionSupported,
-      tokenDetectionWarningDismissed,
-      setTokenDetectionWarningDismissed,
-    } = this.props;
+    const { chainId, rpcPrefs, isTokenDetectionSupported } = this.props;
     const blockExplorerTokenLink = getTokenTrackerLink(
       customAddress,
       chainId,
@@ -374,46 +359,29 @@ class ImportToken extends Component {
     return (
       <div className="import-token__custom-token-form">
         {TOKEN_DETECTION_V2 ? (
-          !tokenDetectionWarningDismissed && (
-            <ActionableMessage
-              type={isTokenDetectionSupported ? 'warning' : 'info'}
-              message={
-                <Box display={DISPLAY.INLINE_FLEX}>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    margin={0}
-                  >
-                    {t(
-                      isTokenDetectionSupported
-                        ? 'customTokenWarningInTokenDetectionNetwork'
-                        : 'customTokenWarningInNonTokenDetectionNetwork',
-                      [
-                        <Button
-                          type="link"
-                          key="import-token-fake-token-warning"
-                          className="import-token__link"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-                        >
-                          {t('learnScamRisk')}
-                        </Button>,
-                      ],
-                    )}
-                  </Typography>
-                  <button
-                    className="fas fa-times import-token__close"
-                    title={t('close')}
-                    onClick={() => setTokenDetectionWarningDismissed()}
-                  />
-                </Box>
-              }
-              withRightButton
-              useIcon
-              iconFillColor={isTokenDetectionSupported ? '#f8c000' : '#037DD6'}
-            />
-          )
+          <ActionableMessage
+            type={isTokenDetectionSupported ? 'warning' : 'info'}
+            message={t(
+              isTokenDetectionSupported
+                ? 'customTokenWarningInTokenDetectionNetwork'
+                : 'customTokenWarningInNonTokenDetectionNetwork',
+              [
+                <Button
+                  type="link"
+                  key="import-token-fake-token-warning"
+                  className="import-token__link"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                >
+                  {t('learnScamRisk')}
+                </Button>,
+              ],
+            )}
+            withRightButton
+            useIcon
+            iconFillColor={isTokenDetectionSupported ? '#f8c000' : '#037DD6'}
+          />
         ) : (
           <ActionableMessage
             message={this.context.t('fakeTokenWarning', [
@@ -525,57 +493,36 @@ class ImportToken extends Component {
 
   renderSearchToken() {
     const { t } = this.context;
-    const {
-      tokenList,
-      history,
-      useTokenDetection,
-      networkName,
-      tokenDetectionNoticeDismissed,
-      setTokenDetectionNoticeDismissed,
-    } = this.props;
+    const { tokenList, history, useTokenDetection, networkName } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="import-token__search-token">
-        {!useTokenDetection && !tokenDetectionNoticeDismissed && (
+        {!useTokenDetection && (
           <ActionableMessage
             message={
-              TOKEN_DETECTION_V2 ? (
-                <Box display={DISPLAY.INLINE_FLEX}>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    margin={0}
-                  >
-                    {t('tokenDetectionAlertMessage', [
-                      networkName,
-                      <Button
-                        type="link"
-                        key="token-detection-announcement"
-                        className="import-token__link"
-                        onClick={() => history.push(EXPERIMENTAL_ROUTE)}
-                      >
-                        {t('enableFromSettings')}
-                      </Button>,
-                    ])}
-                  </Typography>
-                  <button
-                    className="fas fa-times import-token__close"
-                    title={t('close')}
-                    onClick={() => setTokenDetectionNoticeDismissed()}
-                  />
-                </Box>
-              ) : (
-                this.context.t('tokenDetectionAnnouncement', [
-                  <Button
-                    type="link"
-                    key="token-detection-announcement"
-                    className="import-token__link"
-                    onClick={() => history.push(EXPERIMENTAL_ROUTE)}
-                  >
-                    {t('enableFromSettings')}
-                  </Button>,
-                ])
-              )
+              TOKEN_DETECTION_V2
+                ? t('tokenDetectionAlertMessage', [
+                    networkName,
+                    <Button
+                      type="link"
+                      key="token-detection-announcement"
+                      className="import-token__link"
+                      onClick={() => history.push(`${EXPERIMENTAL_ROUTE}#token-description`)}
+                      // onClick={() => history.push(`${ADVANCED_ROUTE}#token-description`)}
+                    >
+                      {t('enableFromSettings')}
+                    </Button>,
+                  ])
+                : this.context.t('tokenDetectionAnnouncement', [
+                    <Button
+                      type="link"
+                      key="token-detection-announcement"
+                      className="import-token__link"
+                      onClick={() => history.push(`${EXPERIMENTAL_ROUTE}#token-description`)}
+                    >
+                      {t('enableFromSettings')}
+                    </Button>,
+                  ])
             }
             withRightButton
             useIcon

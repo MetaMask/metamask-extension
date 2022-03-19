@@ -32,8 +32,6 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderLastShown: new Date().getTime(),
       collectiblesDetectionNoticeDismissed: false,
       enableEIP1559V2NoticeDismissed: false,
-      tokenDetectionNoticeDismissed: false,
-      tokenDetectionWarningDismissed: false,
       showTestnetMessageInDropdown: true,
       trezorModel: null,
       ...initState,
@@ -294,28 +292,6 @@ export default class AppStateController extends EventEmitter {
   updateCollectibleDropDownState(collectiblesDropdownState) {
     this.store.updateState({
       collectiblesDropdownState,
-    });
-  }
-
-  /**
-   * A setter for the `tokenDetectionNoticeDismissed` property
-   *
-   * @param tokenDetectionNoticeDismissed
-   */
-  setTokenDetectionNoticeDismissed(tokenDetectionNoticeDismissed) {
-    this.store.updateState({
-      tokenDetectionNoticeDismissed,
-    });
-  }
-
-  /**
-   * A setter for the `tokenDetectionWarningDismissed` property
-   *
-   * @param tokenDetectionWarningDismissed
-   */
-  setTokenDetectionWarningDismissed(tokenDetectionWarningDismissed) {
-    this.store.updateState({
-      tokenDetectionWarningDismissed,
     });
   }
 }

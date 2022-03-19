@@ -3468,13 +3468,6 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
-export function setTokenDetectionNoticeDismissed() {
-  return promisifiedBackground.setTokenDetectionNoticeDismissed(true);
-}
-export function setTokenDetectionWarningDismissed() {
-  return promisifiedBackground.setTokenDetectionWarningDismissed(true);
-}
-
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
