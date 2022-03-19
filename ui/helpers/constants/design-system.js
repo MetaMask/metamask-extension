@@ -60,7 +60,6 @@ export const COLORS = {
   UI2: 'ui-2',
   UI3: 'ui-3',
   UI4: 'ui-4',
-  BLACK: 'black',
   GREY: 'grey',
   NEUTRAL_GREY: 'neutral-grey',
   WHITE: 'white',
