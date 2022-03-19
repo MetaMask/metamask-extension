@@ -66,6 +66,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        &__icon {
+          color: var(--color-icon-muted);
+        }
       }
 
       &__name {

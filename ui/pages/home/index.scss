@@ -141,9 +141,11 @@
   &__new-network-notification-message {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
-    &--image {
-      margin-right: 10px;
+    &--icon {
+      margin-right: 8px;
+      color: var(--color-success-default);
     }
   }
 
