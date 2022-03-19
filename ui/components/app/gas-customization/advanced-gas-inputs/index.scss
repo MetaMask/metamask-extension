@@ -23,12 +23,12 @@
       }
 
       .fa-info-circle {
-        color: var(--silver);
+        color: var(--color-icon-default);
         cursor: pointer;
       }
 
       .fa-info-circle:hover {
-        color: var(--mid-gray);
+        color: var(--color-icon-muted);
       }
     }
 
@@ -53,9 +53,9 @@
       @include Paragraph;
 
       direction: ltr;
-      border: 1px solid var(--dusty-gray);
+      border: 1px solid var(--color-border-muted);
       border-radius: 4px;
-      color: var(--mid-gray);
+      color: var(--color-text-alternative);
       height: 24px;
       width: 100%;
       padding-left: 8px;
@@ -64,11 +64,11 @@
     }
 
     &__input--error {
-      border: 1px solid var(--red);
+      border: 1px solid var(--color-error-default);
     }
 
     &__input--warning {
-      border: 1px solid var(--orange);
+      border: 1px solid var(--color-warning-default);
     }
 
     &__input-arrows {
@@ -98,12 +98,12 @@
       }
 
       &__i-wrap:hover {
-        background: #4eade7;
-        color: var(--white);
+        background: var(--color-primary-default);
+        color: var(--color-primary-inverse);
       }
 
       i:hover {
-        background: #4eade7;
+        background: var(--color-primary-muted);
       }
 
       i {
@@ -116,11 +116,11 @@
     }
 
     &__input-arrows--error {
-      border: 1px solid var(--red);
+      border: 1px solid var(--color-error-default);
     }
 
     &__input-arrows--warning {
-      border: 1px solid var(--orange);
+      border: 1px solid var(--color-warning-default);
     }
 
     input[type="number"] {
@@ -145,7 +145,7 @@
       position: absolute;
       top: 8px;
       right: 10px;
-      color: var(--dusty-gray);
+      color: var(--color-text-muted);
     }
 
     &__custom-text {
