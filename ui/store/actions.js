@@ -1939,6 +1939,50 @@ export function hideWarning() {
   };
 }
 
+export function getPrivateKey(address) {
+  return function (dispatch) {
+    // return 'hello';
+    return new Promise((resolve, reject) => {
+      background.exportAccount(address, function (err2, result) {
+        // dispatch(hideLoadingIndication());
+
+        if (err2) {
+          log.error(err2);
+          dispatch(displayWarning('Had a problem exporting the account.'));
+          reject(err2);
+          return;
+        }
+        // dispatch(showPrivateKey(result));
+        // console.log('err4', result)
+        resolve(result);
+      });
+      //   background.verifyPassword(password, function (err) {
+      //     if (err) {
+      //       log.error('Error in verifying password.');
+      //       dispatch(hideLoadingIndication());
+      //       dispatch(displayWarning('Incorrect Password.'));
+      //       reject(err);
+      //       return;
+      //     }
+      //     log.debug(`background.exportAccount`);
+      //     background.exportAccount(address, function (err2, result) {
+      //       dispatch(hideLoadingIndication());
+
+      //       if (err2) {
+      //         log.error(err2);
+      //         dispatch(displayWarning('Had a problem exporting the account.'));
+      //         reject(err2);
+      //         return;
+      //       }
+
+      //       dispatch(showPrivateKey(result));
+      //       resolve(result);
+      //     });
+      //   });
+    });
+  };
+}
+
 export function exportAccount(password, address) {
   return function (dispatch) {
     dispatch(showLoadingIndication());

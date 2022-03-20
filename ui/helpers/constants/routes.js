@@ -28,6 +28,7 @@ const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 const SEND_ROUTE = '/send';
+const KYC_FLOW = '/verify';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -125,6 +126,7 @@ const PATH_NAME_MAP = {
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   [SEND_ROUTE]: 'Send Page',
+  [KYC_FLOW]: 'KYC Flow',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
   [`${CONNECT_ROUTE}/:id`]: 'Connect To Site Confirmation Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`]: 'Grant Connected Site Permissions Confirmation Page',
@@ -184,6 +186,7 @@ export {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
+  KYC_FLOW,
   TOKEN_DETAILS,
   INITIALIZE_ROUTE,
   INITIALIZE_WELCOME_ROUTE,

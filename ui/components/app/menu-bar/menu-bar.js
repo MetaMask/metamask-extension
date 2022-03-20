@@ -3,6 +3,7 @@ import extension from 'extensionizer';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SelectedAccount from '../selected-account';
+import KycStatus from '../kyc-status';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -44,16 +45,19 @@ export default function MenuBar() {
 
       <SelectedAccount />
 
-      <button
-        className="fas fa-ellipsis-v menu-bar__account-options"
-        data-testid="account-options-menu-button"
-        ref={setAccountOptionsButtonElement}
-        title={t('accountOptions')}
-        onClick={() => {
-          openAccountOptionsEvent();
-          setAccountOptionsMenuOpen(true);
-        }}
-      />
+      <div className="kyc-block">
+        <KycStatus />
+        <button
+          className="fas fa-ellipsis-v menu-bar__account-options"
+          data-id="account-options-menu-button"
+          ref={setAccountOptionsButtonElement}
+          title={t('accountOptions')}
+          onClick={() => {
+            openAccountOptionsEvent();
+            setAccountOptionsMenuOpen(true);
+          }}
+        />
+      </div>
 
       {accountOptionsMenuOpen && (
         <AccountOptionsMenu

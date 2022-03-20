@@ -6,6 +6,7 @@ import IdleTimer from 'react-idle-timer';
 
 import FirstTimeFlow from '../first-time-flow';
 import SendTransactionScreen from '../send';
+import KycFlowScreen from '../kyc';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
@@ -49,6 +50,7 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
+  KYC_FLOW,
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
@@ -154,6 +156,7 @@ export default class Routes extends Component {
           component={SendTransactionScreen}
           exact
         />
+        <Authenticated path={KYC_FLOW} component={KycFlowScreen} exact />
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
