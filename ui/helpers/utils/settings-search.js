@@ -8,6 +8,10 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAPS_LIST_ROUTE,
+  SNAPS_VIEW_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../constants/routes';
 
 function showHideSettings(t, settings) {
@@ -175,6 +179,15 @@ export function getSettingsRoutes(t) {
       image: 'contacts-icon.svg',
       id: 19,
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    {
+      tab: t('snaps'),
+      section: t('snaps'),
+      description: t('snaps'),
+      route: SNAPS_LIST_ROUTE,
+      image: '?',
+    },
+    ///: END:ONLY_INCLUDE_IN
     {
       tab: t('securityAndPrivacy'),
       section: t('revealSeedWords'),
