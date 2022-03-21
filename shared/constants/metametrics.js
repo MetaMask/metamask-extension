@@ -156,17 +156,10 @@
 
 /**
  * @typedef {Object} Traits
- * @property {string} [USER_TRAITS] - when specific user traits from preferences state object change, we identify the user_traits trait @see {@link https://github.com/MetaMask/metamask-extension/issues/14048}
  * @property {string} [LEDGER_CONNECTION_TYPE] - when the ledger live connnection type is changed we identify the ledger_connection_type trait @see {@link https://github.com/MetaMask/metamask-extension/issues/13534}
  * @property {string} [NETWORKS_ADDED] - when the user modifies networks we identify the networks_added trait @see {@link https://github.com/MetaMask/metamask-extension/issues/13532}.
  * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we identity the new number_of_accounts trait @see {@link https://github.com/MetaMask/metamask-extension/issues/13531}.
  * @property {string} [THREE_BOX_ENABLED] - when the 3box feature is toggled we identify the 3box_enabled trait @see {@link https://github.com/MetaMask/metamask-extension/issues/13533}.
- * @property {string} [CLICKED_LEDGER_CLICK_TO_CONNECT] - whenever the user clicks the "Click to Connect" button on the amber background when the Ledger is not connected on the confirmation transaction screen @see {@link https://github.com/MetaMask/metamask-extension/issues/14014}
- * @property {string} [LEDGER_IS_READY] - whenever the "Ledger is ready" text on the green background is shown on the transaction confirmation screen @see {@link https://github.com/MetaMask/metamask-extension/issues/14014}.
- * @property {string} [LEDGER_DISCONNECTED] - whenever the Ledger is disconnected @see {@link https://github.com/MetaMask/metamask-extension/issues/14014}.
- * @property {string} [RPC_METHOD_CALLED] - whenever an RPC method is called @see {@link https://github.com/MetaMask/metamask-extension/issues/13582}.
- * @property {string} [SIMULATION_FAILED_REJECTED] - whenever simulation fails and user rejected the transactions @see {@link https://github.com/MetaMask/metamask-extension/issues/13286}.
- * @property {string} [SIMULATION_FAILED_APPROVED] - whenever simulation fails and user clicks "I will try anyways" @see {@link https://github.com/MetaMask/metamask-extension/issues/13286}..
  */
 
 /**
@@ -175,17 +168,10 @@
  */
 
 export const TRAITS = {
-  USER_TRAITS: 'User Traits Trait',
-  LEDGER_CONNECTION_TYPE: 'Ledger Connection Type Trait',
-  NETWORKS_ADDED: 'Networks Added Trait',
-  NUMBER_OF_ACCOUNTS: 'Number of Accounts Trait',
-  THREE_BOX_ENABLED: '3 Box Enabled Trait',
-  CLICKED_LEDGER_CLICK_TO_CONNECT: 'Clicked Ledger Click to Connect Trait',
-  LEDGER_IS_READY: 'Ledger is Ready Trait',
-  LEDGER_DISCONNECTED: 'Ledger Disconnected Trait',
-  RPC_METHOD_CALLED: 'RPC Method Called Trait',
-  SIMULATION_FAILED_REJECTED: 'Simulation Failed Rejected Trait',
-  SIMULATION_FAILED_APPROVED: 'Simulation Failed Approved Trait',
+  LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
+  THREE_BOX_ENABLED: 'three_box_enabled',
+  NUMBER_OF_ACCOUNTS: 'number_of_accounts',  
+  NETWORKS_ADDED: 'networks_added',  
 };
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
