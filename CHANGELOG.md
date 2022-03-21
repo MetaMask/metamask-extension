@@ -36,11 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[FLASK]** Update MetaMask Flask
   - This is the first release of [MetaMask Flask](https://metamask.io/flask) since the initial release on January 18. This release includes a significant number of fixes and DevX improvements. Flask will henceforth be released at a more frequent cadence, usually in close proximity to releases of the regular MetaMask Extension.
   - [#13462](https://github.com/MetaMask/metamask-extension/pull/13462) is mostly representative of the initial Flask release.
-- **[FLASK]** Update Snaps packages to version `^0.10.3` ([#13901](https://github.com/MetaMask/metamask-extension/pull/13901), [#14041](https://github.com/MetaMask/metamask-extension/pull/14041))
-  - Updates the following packages from `0.9.0` to `0.10.3`:
+- **[FLASK]** Update Snaps packages to version `^0.10.6` ([#13901](https://github.com/MetaMask/metamask-extension/pull/13901), [#14041](https://github.com/MetaMask/metamask-extension/pull/14041), [#14070](https://github.com/MetaMask/metamask-extension/pull/14070))
+  - Updates the following packages from `0.9.0` to `0.10.6`:
     - `@metamask/iframe-execution-environment-service`
     - `@metamask/rpc-methods`
     - `@metamask/snap-controllers`
+  - Updates the targeted [`iframe-execution-environment`](https://github.com/MetaMask/iframe-execution-environment) version from `0.3.1` to `0.4.2`.
   - These changes encompass a variety of fixes and devX improvements. See the [releases](https://github.com/MetaMask/snaps-skunkworks/releases) of the Snaps monorepo for details.
 
 ### Fixed
