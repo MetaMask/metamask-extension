@@ -33,9 +33,9 @@ import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-t
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
-  border: '1px solid #CCCFD1',
+  border: '1px solid var(--color-border-default)',
   borderRadius: '8px',
-  backgroundColor: '#FFFFFF',
+  backgroundColor: 'var(--color-background-default)',
   boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
 };
 
