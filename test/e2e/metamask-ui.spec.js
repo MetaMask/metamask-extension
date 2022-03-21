@@ -203,7 +203,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.pasteIntoField(
-        'input[placeholder="Enter your Secret Recovery Phrase"]',
+        '[data-testid="import-srp__srp-word-0"]',
         testSeedPhrase,
       );
 
