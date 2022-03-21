@@ -47,7 +47,23 @@ export default class KycFlowScreen extends Component {
     userCountry: '',
     ajaxSuccess: false,
     isLoading: false,
-    localStorageKey: 'is-kyc-submitted',
+    address: '',
+    storageKeySubmitted: '',
+  };
+
+  componentDidMount() {
+    this.updateStorageKey();
+  }
+
+  updateStorageKey = () => {
+    const { currentAddress: address } = this.props;
+    if (this.state.address !== address) {
+      const lastStr = address.slice(-7);
+      this.setState({
+        address,
+        storageKeySubmitted: `submitted_${lastStr}`,
+      });
+    }
   };
 
   async onSubmit() {
@@ -74,7 +90,7 @@ export default class KycFlowScreen extends Component {
 
       console.log('res', res);
 
-      await setStorageItem(this.state.localStorageKey, true);
+      await setStorageItem(this.state.storageKeySubmitted, true);
       this.setState({
         ajaxSuccess: true,
       });

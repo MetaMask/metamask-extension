@@ -1,3 +1,4 @@
 {
-  "host": "http://localhost"
+  "host": "http://localhost",
+  "ipfs": "http://localhost/ipfs"
 }
