@@ -27,6 +27,10 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 See the [build system readme](./development/build/README.md) for build system usage information.
 
+### Custom KYC Flow Config
+
+Copy the `kyc.config.sample.json` file to `kyc.config.json` and fill in the host before building.
+
 ## Contributing
 
 ### Development builds
