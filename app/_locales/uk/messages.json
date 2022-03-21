@@ -819,9 +819,6 @@
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Відділіть кожне слово одним пробілом"
-  },
   "seedPhraseReq": {
     "message": "Початкові фрази мають 12 слів"
   },
