@@ -311,10 +311,11 @@ export default class Home extends PureComponent {
             className="home__new-network-notification"
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
-                <img
-                  src="./images/check_circle.svg"
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                {/* <img
+                  src="./images/check-green-solid.svg"
                   className="home__new-nft-notification-image"
-                />
+                /> */}
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -336,10 +337,11 @@ export default class Home extends PureComponent {
             className="home__new-network-notification"
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
-                <img
-                  src="./images/check_circle.svg"
+                <i className="fa fa-check-circle home__new-network-notification-icon" />
+                {/* <img
+                  src="./images/check-green-solid.svg"
                   className="home__new-network-notification-image"
-                />
+                /> */}
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
