@@ -481,6 +481,10 @@ function getSuggestedAssetCount(state) {
   return suggestedAssets.length;
 }
 
+export function getSuggestedAssets(state) {
+  return state.metamask.suggestedAssets;
+}
+
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
   return chainId === MAINNET_CHAIN_ID;
@@ -666,6 +670,11 @@ export function getIsBuyableChain(state) {
 export function getIsBuyableTransakChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
+}
+
+export function getIsBuyableMoonPayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
 }
 
 export function getNativeCurrencyImage(state) {

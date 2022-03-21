@@ -7,15 +7,14 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { ERC1155, ERC721 } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
-import { getTransactionData } from './transactions.util';
 
 const DEFAULT_SYMBOL = '';
 
 async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
-
   try {
     const result = await token.symbol();
     return result[0];
@@ -136,7 +135,8 @@ export function calcTokenValue(value, decimals) {
  * @returns {string | undefined} A lowercase address string.
  */
 export function getTokenAddressParam(tokenData = {}) {
-  const value = tokenData?.args?._to || tokenData?.args?.[0];
+  const value =
+    tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
   return value?.toString().toLowerCase();
 }
 
@@ -223,7 +223,7 @@ export async function getAssetDetails(
   transactionData,
   existingCollectibles,
 ) {
-  const tokenData = getTransactionData(transactionData);
+  const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
     throw new Error('Unable to detect valid token data');
   }

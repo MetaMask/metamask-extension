@@ -69,7 +69,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 isLast={index === options.length - 1}
               />
               <Typography
-                color={checked ? COLORS.BLACK : COLORS.UI4}
+                color={checked ? COLORS.TEXT_DEFAULT : COLORS.TEXT_MUTED}
                 fontWeight={FONT_WEIGHT.BOLD}
                 variant={TYPOGRAPHY.H7}
                 className="radio-group__column-label"

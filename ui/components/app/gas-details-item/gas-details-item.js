@@ -36,7 +36,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     <TransactionDetailItem
       key="gas-item"
       detailTitle={<GasDetailsItemTitle />}
-      detailTitleColor={COLORS.BLACK}
+      detailTitleColor={COLORS.TEXT_DEFAULT}
       detailText={
         <div className="gas-details-item__currency-container">
           <LoadingHeartBeat estimateUsed={estimateUsed} />

@@ -166,11 +166,15 @@ export default function SlippageButtons({
                     >
                       <input
                         onChange={(event) => {
-                          setCustomValue(event.target.value);
-                          onSelect(Number(event.target.value));
+                          const { value } = event.target;
+                          const isValueNumeric = !isNaN(Number(value));
+                          if (isValueNumeric) {
+                            setCustomValue(value);
+                            onSelect(Number(value));
+                          }
                         }}
-                        type="number"
-                        step="0.1"
+                        type="text"
+                        maxLength="4"
                         ref={setInputRef}
                         onBlur={() => {
                           setEnteringCustomValue(false);

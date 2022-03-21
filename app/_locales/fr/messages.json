@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
-  "addToAddressBook": {
-    "message": "Ajouter au carnet d’adresses"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Ajouter un jeton"
   },
@@ -951,9 +945,6 @@
   },
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
-  },
-  "enterAnAlias": {
-    "message": "Saisissez un pseudonyme"
   },
   "enterMaxSpendLimit": {
     "message": "Saisissez la limite de dépenses maximale"

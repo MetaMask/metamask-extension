@@ -4,14 +4,14 @@ const Driver = require('./driver');
 const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
 
-async function buildWebDriver({ responsive, port } = {}) {
+async function buildWebDriver({ responsive, port, type } = {}) {
   const browser = process.env.SELENIUM_BROWSER;
 
   const {
     driver: seleniumDriver,
     extensionId,
     extensionUrl,
-  } = await buildBrowserWebDriver(browser, { responsive, port });
+  } = await buildBrowserWebDriver(browser, { responsive, port, type });
   await setupFetchMocking(seleniumDriver);
   const driver = new Driver(seleniumDriver, browser, extensionUrl);
 
@@ -48,7 +48,7 @@ async function setupFetchMocking(driver) {
         return { json: async () => clone(mockResponses.gasPricesBasic) };
       } else if (url.match(/chromeextensionmm/u)) {
         return { json: async () => clone(mockResponses.metametrics) };
-      } else if (url.match(/^https:\/\/(api2\.metaswap\.codefi\.network)/u)) {
+      } else if (url.match(/^https:\/\/(swap\.metaswap\.codefi\.network)/u)) {
         if (url.match(/featureFlags$/u)) {
           return { json: async () => clone(mockResponses.swaps.featureFlags) };
         }

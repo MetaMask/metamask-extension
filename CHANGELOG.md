@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.11.2]
+### Fixed
+- Fix bug that users who are connected to another extension would hit when viewing connected sites ([#13974](https://github.com/MetaMask/metamask-extension/pull/13974))
+
+## [10.11.1]
+### Changed
+- Fixes GridPlus Lattice bugs by upgrading to `gridplus-sdk` v1.0.0, `eth-lattice-keyring` v0.5.0 and to compatibility with v0.14.0 ([#13834](https://github.com/MetaMask/metamask-extension/pull/13834))
+- Increases transaction data in state logs
+    - Preserves fewer transactions with shared nonces across networks, decreasing number of old transactions that are not deleted ([#13669](https://github.com/MetaMask/metamask-extension/pull/13669))
+    - Increase the number of transactions saved in state logs to 60 ([#13743](https://github.com/MetaMask/metamask-extension/pull/13743))
+
+### Fixed
+- Ensure that MetaMask popup is shown when a user attempts to connect to a dapp they are already connected to ([#13840](https://github.com/MetaMask/metamask-extension/pull/13840))
+- Submit correct gas limit for Swaps Smart Transactions ([#13891](https://github.com/MetaMask/metamask-extension/pull/13891))
+
 ## [10.11.0]
 ### Added
 - Swaps: Add support for Smart Transactions on Mainnet and Rinkeby ([#12676](https://github.com/MetaMask/metamask-extension/pull/12676))
@@ -2764,7 +2779,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...HEAD
+[10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
+[10.11.1]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...v10.11.1
 [10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...v10.11.0
 [10.10.2]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.10.2
 [10.10.1]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.10.1

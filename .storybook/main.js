@@ -23,6 +23,7 @@ module.exports = {
     config.node = {
       __filename: true,
     };
+    config.resolve.alias['webextension-polyfill'] = require.resolve('./__mocks__/webextension-polyfill.js')
     config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,

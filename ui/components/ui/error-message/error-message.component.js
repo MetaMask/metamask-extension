@@ -7,11 +7,7 @@ const ErrorMessage = (props, context) => {
 
   return (
     <div className="error-message">
-      <img
-        src="./images/alert-red.svg"
-        alt=""
-        className="error-message__icon"
-      />
+      <i className="fa fa-exclamation-circle error-message__icon" />
       <div className="error-message__text">{error}</div>
     </div>
   );

@@ -15,7 +15,7 @@
 
   &__time-estimate {
     margin-top: 5.5px;
-    color: var(--silver-chalice);
+    color: var(--color-text-alternative);
     height: 15.4px;
   }
 
@@ -34,9 +34,9 @@
     display: flex;
     padding-top: 17px;
     border-radius: 4px;
-    border-color: var(--spindle);
-    background: var(--white);
-    color: var(--scorpion);
+    border-color: var(--color-primary-muted);
+    background: var(--color-background-default);
+    color: var(--color-text-alternative);
 
     div {
       display: flex;
@@ -52,13 +52,13 @@
   }
 
   .button-group__button--active {
-    border-color: var(--primary-blue);
-    color: var(--scorpion);
+    border-color: var(--color-primary-default);
+    color: var(--color-text-alternative);
 
     i {
       &:last-child {
         display: flex;
-        color: var(--primary-blue);
+        color: var(--color-primary-default);
         margin-top: 8px;
       }
     }
@@ -114,8 +114,8 @@
 
   .button-group__button,
   .button-group__button--active {
-    background: white;
-    color: var(--scorpion);
+    background: var(--color-background-default);
+    color: var(--color-text-alternative);
     padding: 4px;
 
     div {
@@ -133,13 +133,13 @@
   }
 
   .button-group__button--active {
-    color: var(--white);
-    background: var(--dodger-blue);
+    color: var(--color-background-default);
+    background: var(--color-primary-muted);
 
     i {
       &:last-child {
         display: flex;
-        color: var(--primary-blue);
+        color: var(--color-primary-default);
         margin-top: 10px;
       }
     }
@@ -185,14 +185,14 @@
 
     font-weight: 500;
     margin-top: 4px;
-    color: var(--black);
+    color: var(--color-text-default);
   }
 
   .button-group__button,
   .button-group__button--active {
     height: 78px;
-    background: white;
-    color: #2a4055;
+    background: var(--color-background-default);
+    color: var(--color-text-default);
     width: 108px;
     height: 97px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
@@ -221,11 +221,11 @@
   }
 
   .button-group__button--active {
-    background: #f7fcff;
-    border-color: #2c8bdc;
+    background: var(--color-background-alternative);
+    border-color: var(--color-primary-default);
 
     &:first-child {
-      border-color: #2c8bdc;
+      border-color: var(--color-primary-default);
     }
 
     .button-check-wrapper {
@@ -235,7 +235,7 @@
       position: absolute;
       top: -11px;
       right: -10px;
-      background: #d5ecfa;
+      background: var(--color-background-alternative);
       display: flex;
       flex-flow: row;
       justify-content: center;
@@ -244,7 +244,7 @@
 
     i {
       display: flex;
-      color: var(--primary-blue);
+      color: var(--color-primary-default);
       font-weight: 900;
     }
   }

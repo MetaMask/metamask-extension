@@ -305,14 +305,11 @@ export default class Home extends PureComponent {
         }
         {newCollectibleAddedMessage === 'success' ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
+                <i className="fa fa-check-circle home__new-network-notification-message--icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -330,14 +327,11 @@ export default class Home extends PureComponent {
         ) : null}
         {newNetworkAdded ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
+                <i className="fa fa-check-circle home__new-network-notification-message--icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}

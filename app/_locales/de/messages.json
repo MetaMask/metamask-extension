@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Vorgeschlagene Token hinzufügen"
   },
-  "addToAddressBook": {
-    "message": "Zum Adressbuch hinzufügen"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "z.B. Max M."
-  },
   "addToken": {
     "message": "Token hinzufügen"
   },
@@ -962,9 +956,6 @@
   "ensUnknownError": {
     "message": "ENS Lookup fehlgeschlagen."
   },
-  "enterAnAlias": {
-    "message": "Ein Alias eingeben"
-  },
   "enterMaxSpendLimit": {
     "message": "Max. Ausgabelimit eingeben"
   },
@@ -1525,7 +1516,7 @@
     "message": "niedrig"
   },
   "mainnet": {
-    "message": "Athereum Hauptnetz"
+    "message": "Ethereum Hauptnetz"
   },
   "makeAnotherSwap": {
     "message": "Eine neue Wallet erstellen"

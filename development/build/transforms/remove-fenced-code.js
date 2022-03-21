@@ -1,6 +1,6 @@
 const path = require('path');
 const { PassThrough, Transform } = require('stream');
-const { BuildType } = require('../utils');
+const { BuildType } = require('../../lib/build-type');
 const { lintTransformedFile } = require('./utils');
 
 const hasKey = (obj, key) => Reflect.hasOwnProperty.call(obj, key);

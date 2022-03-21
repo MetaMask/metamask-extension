@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import {
   CONFIRM_APPROVE_PATH,
+  CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_TRANSFER_FROM_PATH,
@@ -84,7 +85,30 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             transaction={transaction}
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
-            hexTransactionTotal={hexTransactionTotal}
+            hexMaximumTransactionFee={hexMaximumTransactionFee}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SAFE_TRANSFER_FROM_PATH}`}
+        render={() => (
+          <ConfirmTokenTransactionBase
+            assetStandard={assetStandard}
+            assetName={assetName}
+            userBalance={userBalance}
+            tokenSymbol={tokenSymbol}
+            decimals={decimals}
+            image={tokenImage}
+            tokenAddress={tokenAddress}
+            toAddress={toAddress}
+            tokenAmount={tokenAmount}
+            tokenId={tokenId}
+            userAddress={userAddress}
+            transaction={transaction}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            hexMaximumTransactionFee={hexMaximumTransactionFee}
           />
         )}
       />

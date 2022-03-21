@@ -2,7 +2,7 @@ import querystring from 'querystring';
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 
@@ -14,7 +14,7 @@ const inpageContent = fs.readFileSync(
   path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
   'utf8',
 );
-const inpageSuffix = `//# sourceURL=${extension.runtime.getURL('inpage.js')}\n`;
+const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
 const inpageBundle = inpageContent + inpageSuffix;
 
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -61,7 +61,7 @@ async function setupStreams() {
     name: CONTENT_SCRIPT,
     target: INPAGE,
   });
-  const extensionPort = extension.runtime.connect({ name: CONTENT_SCRIPT });
+  const extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   const extensionStream = new PortStream(extensionPort);
 
   // create and connect channel muxers
@@ -301,7 +301,7 @@ function blockedDomainCheck() {
  */
 function redirectToPhishingWarning() {
   console.debug('MetaMask: Routing to Phishing Warning component.');
-  const extensionURL = extension.runtime.getURL('phishing.html');
+  const extensionURL = browser.runtime.getURL('phishing.html');
   window.location.href = `${extensionURL}#${querystring.stringify({
     hostname: window.location.hostname,
     href: window.location.href,
