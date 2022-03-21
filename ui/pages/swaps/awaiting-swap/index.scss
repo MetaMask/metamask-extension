@@ -21,7 +21,7 @@
   }
 
   a {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
   }
 
   &__status-image {
@@ -32,13 +32,13 @@
   &__header {
     @include H3;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__main-description {
     @include H6;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-top: 16px;
     width: 100%;
   }
@@ -46,7 +46,7 @@
   &__time-estimate {
     @include H7;
 
-    color: var(--Black-100);
+    color: var(--color-text-default);
     margin-top: 20px;
     font-style: italic;
 
@@ -66,7 +66,7 @@
 
   &__view-on-etherscan,
   &__support-link {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     margin-top: 24px;
     cursor: pointer;
   }
@@ -90,7 +90,7 @@
   }
 
   &__amount-and-symbol {
-    color: var(--Black-100);
+    color: var(--color-text-default);
     font-weight: bold;
   }
 }

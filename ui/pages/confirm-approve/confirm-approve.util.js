@@ -1,16 +1,16 @@
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { decimalToHex } from '../../helpers/utils/conversions.util';
 import {
   calcTokenValue,
   getTokenAddressParam,
 } from '../../helpers/utils/token-util';
-import { getTransactionData } from '../../helpers/utils/transactions.util';
 
 export function getCustomTxParamsData(
   data,
   { customPermissionAmount, decimals },
 ) {
-  const tokenData = getTransactionData(data);
+  const tokenData = parseStandardTokenTransactionData(data);
 
   if (!tokenData) {
     throw new Error('Invalid data');

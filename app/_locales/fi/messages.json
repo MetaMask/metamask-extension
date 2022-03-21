@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lisää ehdotetut käyttötunnukset"
   },
-  "addToAddressBook": {
-    "message": "Lisää osoitekirjaan"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "esim. Jukka E."
-  },
   "addToken": {
     "message": "Lisää tietue"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Virhe ENS-nimen rekisteröinnissä"
-  },
-  "enterAnAlias": {
-    "message": "Anna peitenimi"
   },
   "enterPassword": {
     "message": "Kirjoita salasana"

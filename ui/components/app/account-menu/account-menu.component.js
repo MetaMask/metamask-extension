@@ -316,6 +316,7 @@ export default class AccountMenu extends Component {
           {t('myAccounts')}
           <Button
             className="account-menu__lock-button"
+            type="secondary"
             onClick={() => {
               lockMetamask();
               history.push(DEFAULT_ROUTE);
@@ -351,7 +352,7 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus />}
+          icon={<IconPlus color="var(--color-icon-default)" />}
           text={t('createAccount')}
         />
         <AccountMenuItem
@@ -366,7 +367,12 @@ export default class AccountMenu extends Component {
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
-          icon={<IconImport ariaLabel={t('importAccount')} />}
+          icon={
+            <IconImport
+              color="var(--color-icon-default)"
+              ariaLabel={t('importAccount')}
+            />
+          }
           text={t('importAccount')}
         />
         <AccountMenuItem
@@ -385,7 +391,12 @@ export default class AccountMenu extends Component {
               history.push(CONNECT_HARDWARE_ROUTE);
             }
           }}
-          icon={<IconConnect ariaLabel={t('connectHardwareWallet')} />}
+          icon={
+            <IconConnect
+              color="var(--color-icon-default)"
+              ariaLabel={t('connectHardwareWallet')}
+            />
+          }
           text={t('connectHardwareWallet')}
         />
         <div className="account-menu__divider" />
@@ -393,7 +404,12 @@ export default class AccountMenu extends Component {
           onClick={() => {
             global.platform.openTab({ url: supportLink });
           }}
-          icon={<IconSpeechBubbles ariaLabel={supportText} />}
+          icon={
+            <IconSpeechBubbles
+              color="var(--color-icon-default)"
+              ariaLabel={supportText}
+            />
+          }
           text={supportText}
         />
 
@@ -409,7 +425,12 @@ export default class AccountMenu extends Component {
               },
             });
           }}
-          icon={<IconCog ariaLabel={t('settings')} />}
+          icon={
+            <IconCog
+              color="var(--color-icon-default)"
+              ariaLabel={t('settings')}
+            />
+          }
           text={t('settings')}
         />
       </div>

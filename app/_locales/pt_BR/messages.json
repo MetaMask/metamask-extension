@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Adicionar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Adicionar à agenda de endereços"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "por ex., João S."
-  },
   "addToken": {
     "message": "Adicionar token"
   },
@@ -965,9 +959,6 @@
   },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
-  },
-  "enterAnAlias": {
-    "message": "Digite um pseudônimo"
   },
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"

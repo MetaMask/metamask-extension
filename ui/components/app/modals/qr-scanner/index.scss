@@ -1,7 +1,7 @@
 .qr-scanner {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--color-background-default);
   display: flex;
   flex-flow: column;
   border-radius: 8px;
@@ -67,16 +67,16 @@
 
     button:last-of-type {
       margin-right: 0;
-      background-color: #009eec;
+      background-color: var(--color-primary-default);
       border: none;
-      color: #fff;
+      color: var(--color-primary-inverse);
     }
   }
 
   &__close::after {
     content: '\00D7';
     font-size: 35px;
-    color: #9b9b9b;
+    color: var(--color-icon-default);
     position: absolute;
     top: 4px;
     right: 20px;

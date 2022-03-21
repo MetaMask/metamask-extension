@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
-  "addToAddressBook": {
-    "message": "Dodaj do książki adresowej"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "np. John D."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
-  },
-  "enterAnAlias": {
-    "message": "Wpisz alias"
   },
   "enterPassword": {
     "message": "Wpisz hasło"

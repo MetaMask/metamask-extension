@@ -13,7 +13,7 @@
     @include H3;
 
     text-align: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     margin-top: 16px;
     font-weight: bold;
   }
@@ -22,7 +22,7 @@
     @include H6;
 
     text-align: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__subtitle {

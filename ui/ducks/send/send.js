@@ -99,7 +99,10 @@ import {
   ETH,
   GWEI,
 } from '../../helpers/constants/common';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
+} from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -162,18 +165,6 @@ export const GAS_INPUT_MODES = {
   BASIC: 'BASIC',
   INLINE: 'INLINE',
   CUSTOM: 'CUSTOM',
-};
-
-/**
- * The types of assets that a user can send
- * 1. NATIVE - The native asset for the current network, such as ETH
- * 2. TOKEN - An ERC20 token.
- * 2. COLLECTIBLE - An ERC721 or ERC1155 token.
- */
-export const ASSET_TYPES = {
-  NATIVE: 'NATIVE',
-  TOKEN: 'TOKEN',
-  COLLECTIBLE: 'COLLECTIBLE',
 };
 
 /**

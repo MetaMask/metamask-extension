@@ -1,6 +1,6 @@
 .gas-details-item {
   &__gas-fee-warning {
-    color: var(--secondary-1);
+    color: var(--color-secondary-default); //@TODO: revisit when warning color tokens are revisited
   }
 
   &__currency-container,

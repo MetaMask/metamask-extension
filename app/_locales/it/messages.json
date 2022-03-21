@@ -55,12 +55,6 @@
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },
-  "addToAddressBook": {
-    "message": "Aggiungi alla rubrica"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Ad esempio, John D."
-  },
   "addToken": {
     "message": "Aggiungi Token"
   },
@@ -526,9 +520,6 @@
   },
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
-  },
-  "enterAnAlias": {
-    "message": "Inserisci un alias"
   },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"

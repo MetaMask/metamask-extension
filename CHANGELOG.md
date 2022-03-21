@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.11.2]
+### Fixed
+- Fix bug that users who are connected to another extension would hit when viewing connected sites ([#13974](https://github.com/MetaMask/metamask-extension/pull/13974))
+
 ## [10.11.1]
 ### Changed
 - Fixes GridPlus Lattice bugs by upgrading to `gridplus-sdk` v1.0.0, `eth-lattice-keyring` v0.5.0 and to compatibility with v0.14.0 ([#13834](https://github.com/MetaMask/metamask-extension/pull/13834))
@@ -2775,7 +2779,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...HEAD
+[10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
 [10.11.1]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...v10.11.1
 [10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...v10.11.0
 [10.10.2]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.10.2

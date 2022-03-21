@@ -156,12 +156,6 @@
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
   },
-  "addToAddressBook": {
-    "message": "Add to address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "e.g. John D."
-  },
   "addToken": {
     "message": "Add Token"
   },
@@ -411,6 +405,13 @@
   "buy": {
     "message": "Buy"
   },
+  "buyCryptoWithMoonPay": {
+    "message": "Buy $1 with MoonPay",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithMoonPayDescription": {
+    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 146+ countries. Tokens deposit into your MetaMask account."
+  },
   "buyCryptoWithTransak": {
     "message": "Buy $1 with Transak",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -448,7 +449,7 @@
     "message": "Cancel transaction"
   },
   "cancelSpeedUp": {
-    "message": "cancel or speed up a tranaction."
+    "message": "cancel or speed up a transaction."
   },
   "cancelSpeedUpLabel": {
     "message": "This gas fee will $1 the original.",
@@ -616,6 +617,9 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "continueToMoonPay": {
+    "message": "Continue to MoonPay"
   },
   "continueToTransak": {
     "message": "Continue to Transak"
@@ -1095,9 +1099,6 @@
   },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
-  },
-  "enterAnAlias": {
-    "message": "Enter an alias"
   },
   "enterMaxSpendLimit": {
     "message": "Enter Max Spend Limit"
@@ -2362,6 +2363,10 @@
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
   },
+  "permission_notifications": {
+    "message": "Show notifications.",
+    "description": "The description for the `snap_notify` permission"
+  },
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
@@ -2589,6 +2594,9 @@
   },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "safeTransferFrom": {
+    "message": "Safe Transfer From"
   },
   "save": {
     "message": "Save"
