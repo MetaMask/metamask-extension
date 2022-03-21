@@ -32,7 +32,7 @@ export function getSettingsRoutes(t) {
       section: t('currencyConversion'),
       description: '',
       route: `${GENERAL_ROUTE}#currency-conversion`,
-      image: 'general-icon.svg',
+      icon: 'fa fa-cog',
       id: 1,
     },
     {
@@ -40,7 +40,7 @@ export function getSettingsRoutes(t) {
       section: t('primaryCurrencySetting'),
       description: t('primaryCurrencySettingDescription'),
       route: `${GENERAL_ROUTE}#primary-currency`,
-      image: 'general-icon.svg',
+      icon: 'fa fa-cog',
       id: 2,
     },
     {
@@ -48,7 +48,7 @@ export function getSettingsRoutes(t) {
       section: t('currentLanguage'),
       description: '',
       route: `${GENERAL_ROUTE}#current-language`,
-      image: 'general-icon.svg',
+      icon: 'fa fa-cog',
       id: 3,
     },
     {
@@ -56,7 +56,7 @@ export function getSettingsRoutes(t) {
       section: t('accountIdenticon'),
       description: '',
       route: `${GENERAL_ROUTE}#account-identicon`,
-      image: 'general-icon.svg',
+      icon: 'fa fa-cog',
       id: 4,
     },
     {
@@ -64,7 +64,7 @@ export function getSettingsRoutes(t) {
       section: t('hideZeroBalanceTokens'),
       description: '',
       route: `${GENERAL_ROUTE}#zero-balancetokens`,
-      image: 'general-icon.svg',
+      icon: 'fa fa-cog',
       id: 5,
     },
     {
@@ -72,7 +72,7 @@ export function getSettingsRoutes(t) {
       section: t('stateLogs'),
       description: t('stateLogsDescription'),
       route: `${ADVANCED_ROUTE}#state-logs`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 6,
     },
     {
@@ -80,7 +80,7 @@ export function getSettingsRoutes(t) {
       section: t('syncWithMobile'),
       description: '',
       route: `${ADVANCED_ROUTE}#sync-withmobile`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 7,
     },
     {
@@ -88,7 +88,7 @@ export function getSettingsRoutes(t) {
       section: t('resetAccount'),
       description: t('resetAccountDescription'),
       route: `${ADVANCED_ROUTE}#reset-account`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 8,
     },
     {
@@ -96,7 +96,7 @@ export function getSettingsRoutes(t) {
       section: t('showAdvancedGasInline'),
       description: t('showAdvancedGasInlineDescription'),
       route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 9,
     },
     {
@@ -104,7 +104,7 @@ export function getSettingsRoutes(t) {
       section: t('showHexData'),
       description: t('showHexDataDescription'),
       route: `${ADVANCED_ROUTE}#show-hexdata`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 10,
     },
     {
@@ -112,7 +112,7 @@ export function getSettingsRoutes(t) {
       section: t('showFiatConversionInTestnets'),
       description: t('showFiatConversionInTestnetsDescription'),
       route: `${ADVANCED_ROUTE}#conversion-testnetworks`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 11,
     },
     {
@@ -120,7 +120,7 @@ export function getSettingsRoutes(t) {
       section: t('showTestnetNetworks'),
       description: t('showTestnetNetworksDescription'),
       route: `${ADVANCED_ROUTE}#show-testnets`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 12,
     },
     {
@@ -128,7 +128,7 @@ export function getSettingsRoutes(t) {
       section: t('nonceField'),
       description: t('nonceFieldDescription'),
       route: `${ADVANCED_ROUTE}#customize-nonce`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 13,
     },
     {
@@ -136,7 +136,7 @@ export function getSettingsRoutes(t) {
       section: t('autoLockTimeLimit'),
       description: t('autoLockTimeLimitDescription'),
       route: `${ADVANCED_ROUTE}#autolock-timer`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 14,
     },
     {
@@ -144,7 +144,7 @@ export function getSettingsRoutes(t) {
       section: t('syncWithThreeBox'),
       description: t('syncWithThreeBoxDescription'),
       route: `${ADVANCED_ROUTE}#sync-with3box`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 15,
     },
     {
@@ -152,7 +152,7 @@ export function getSettingsRoutes(t) {
       section: t('ipfsGateway'),
       description: t('ipfsGatewayDescription'),
       route: `${ADVANCED_ROUTE}#ipfs-gateway`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 16,
     },
     {
@@ -160,7 +160,7 @@ export function getSettingsRoutes(t) {
       section: t('preferredLedgerConnectionType'),
       description: t('preferredLedgerConnectionType'),
       route: `${ADVANCED_ROUTE}#ledger-connection`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 17,
     },
     {
@@ -168,7 +168,7 @@ export function getSettingsRoutes(t) {
       section: t('dismissReminderField'),
       description: t('dismissReminderDescriptionField'),
       route: `${ADVANCED_ROUTE}#dimiss-secretrecovery`,
-      image: 'advanced-icon.svg',
+      icon: 'fas fa-sliders-h',
       id: 18,
     },
     {
@@ -176,7 +176,7 @@ export function getSettingsRoutes(t) {
       section: t('contacts'),
       description: t('contacts'),
       route: CONTACT_LIST_ROUTE,
-      image: 'contacts-icon.svg',
+      icon: 'fa fa-address-book',
       id: 19,
     },
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -185,7 +185,7 @@ export function getSettingsRoutes(t) {
       section: t('snaps'),
       description: t('snaps'),
       route: SNAPS_LIST_ROUTE,
-      image: '?',
+      icon: 'fa fa-flask',
     },
     ///: END:ONLY_INCLUDE_IN
     {
@@ -193,7 +193,7 @@ export function getSettingsRoutes(t) {
       section: t('revealSeedWords'),
       description: t('revealSeedWords'),
       route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
-      image: 'security-icon.svg',
+      icon: 'fa fa-lock',
       id: 20,
     },
     {
@@ -201,7 +201,7 @@ export function getSettingsRoutes(t) {
       section: t('showIncomingTransactions'),
       description: t('showIncomingTransactionsDescription'),
       route: `${SECURITY_ROUTE}#incoming-transaction`,
-      image: 'security-icon.svg',
+      icon: 'fa fa-lock',
       id: 21,
     },
     {
@@ -209,7 +209,7 @@ export function getSettingsRoutes(t) {
       section: t('usePhishingDetection'),
       description: t('usePhishingDetectionDescription'),
       route: `${SECURITY_ROUTE}#phishing-detection`,
-      image: 'security-icon.svg',
+      icon: 'fa fa-lock',
       id: 22,
     },
     {
@@ -217,7 +217,7 @@ export function getSettingsRoutes(t) {
       section: t('participateInMetaMetrics'),
       description: t('participateInMetaMetricsDescription'),
       route: `${SECURITY_ROUTE}#metrametrics`,
-      image: 'security-icon.svg',
+      icon: 'fa fa-lock',
       id: 23,
     },
     {
@@ -225,7 +225,7 @@ export function getSettingsRoutes(t) {
       section: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccount'),
       route: `${ALERTS_ROUTE}#unconnected-account`,
-      image: 'alerts-icon.svg',
+      icon: 'fa fa-bell',
       id: 24,
     },
     {
@@ -233,7 +233,7 @@ export function getSettingsRoutes(t) {
       section: t('alertSettingsWeb3ShimUsage'),
       description: t('alertSettingsWeb3ShimUsage'),
       route: `${ALERTS_ROUTE}#web3-shimusage`,
-      image: 'alerts-icon.svg',
+      icon: 'fa fa-bell',
       id: 25,
     },
     {
@@ -241,7 +241,7 @@ export function getSettingsRoutes(t) {
       section: t('mainnet'),
       description: t('mainnet'),
       route: `${NETWORKS_ROUTE}#networks-mainnet`,
-      image: 'network-icon.svg',
+      icon: 'fa fa-plug',
       id: 26,
     },
     {
@@ -249,7 +249,7 @@ export function getSettingsRoutes(t) {
       section: t('ropsten'),
       description: t('ropsten'),
       route: `${NETWORKS_ROUTE}#networks-ropsten`,
-      image: 'network-icon.svg',
+      icon: 'fa fa-plug',
       id: 27,
     },
     {
@@ -257,7 +257,7 @@ export function getSettingsRoutes(t) {
       section: t('rinkeby'),
       description: t('rinkeby'),
       route: `${NETWORKS_ROUTE}#networks-rinkeby`,
-      image: 'network-icon.svg',
+      icon: 'fa fa-plug',
       id: 28,
     },
     {
@@ -265,7 +265,7 @@ export function getSettingsRoutes(t) {
       section: t('goerli'),
       description: t('goerli'),
       route: `${NETWORKS_ROUTE}#networks-goerli`,
-      image: 'network-icon.svg',
+      icon: 'fa fa-plug',
       id: 29,
     },
     {
@@ -273,7 +273,7 @@ export function getSettingsRoutes(t) {
       section: t('kovan'),
       description: t('kovan'),
       route: `${NETWORKS_ROUTE}#networtks-kovan`,
-      image: 'network-icon.svg',
+      icon: 'fa fa-plug',
       id: 30,
     },
     {
@@ -281,7 +281,7 @@ export function getSettingsRoutes(t) {
       section: t('localhost'),
       description: t('localhost'),
       route: `${NETWORKS_ROUTE}#network-localhost`,
-      image: 'network-icon.svg',
+      icon: 'fa fa-plug',
       id: 31,
     },
     {
@@ -289,7 +289,7 @@ export function getSettingsRoutes(t) {
       section: t('useTokenDetection'),
       description: t('useTokenDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#token-description`,
-      image: 'experimental-icon.svg',
+      icon: 'fa fa-flask',
       id: 32,
     },
     {
@@ -297,7 +297,7 @@ export function getSettingsRoutes(t) {
       section: t('enableOpenSeaAPI'),
       description: t('enableOpenSeaAPIDescription'),
       route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
-      image: 'experimental-icon.svg',
+      icon: 'fa fa-flask',
       id: 33,
     },
     {
@@ -305,7 +305,7 @@ export function getSettingsRoutes(t) {
       section: t('useCollectibleDetection'),
       description: t('useCollectibleDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
-      image: 'experimental-icon.svg',
+      icon: 'fa fa-flask',
       id: 34,
     },
 
@@ -314,7 +314,7 @@ export function getSettingsRoutes(t) {
       section: t('metamaskVersion'),
       description: t('builtAroundTheWorld'),
       route: `${ABOUT_US_ROUTE}#version`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 35,
     },
     {
@@ -322,7 +322,7 @@ export function getSettingsRoutes(t) {
       section: t('links'),
       description: '',
       route: `${ABOUT_US_ROUTE}#links`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 36,
     },
     {
@@ -330,7 +330,7 @@ export function getSettingsRoutes(t) {
       section: t('privacyMsg'),
       description: t('privacyMsg'),
       route: `${ABOUT_US_ROUTE}#privacy-policy`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 37,
     },
     {
@@ -338,7 +338,7 @@ export function getSettingsRoutes(t) {
       section: t('terms'),
       description: t('terms'),
       route: `${ABOUT_US_ROUTE}#terms`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 38,
     },
 
@@ -347,7 +347,7 @@ export function getSettingsRoutes(t) {
       section: t('attributions'),
       description: t('attributions'),
       route: `${ABOUT_US_ROUTE}#attributions`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 39,
     },
 
@@ -356,7 +356,7 @@ export function getSettingsRoutes(t) {
       section: t('supportCenter'),
       description: t('supportCenter'),
       route: `${ABOUT_US_ROUTE}#supportcenter`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 40,
     },
 
@@ -365,7 +365,7 @@ export function getSettingsRoutes(t) {
       section: t('visitWebSite'),
       description: t('visitWebSite'),
       route: `${ABOUT_US_ROUTE}#visitwebsite`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 41,
     },
 
@@ -374,7 +374,7 @@ export function getSettingsRoutes(t) {
       section: t('contactUs'),
       description: t('contactUs'),
       route: `${ABOUT_US_ROUTE}#contactus`,
-      image: 'info-icon.svg',
+      icon: 'fa fa-info-circle',
       id: 42,
     },
   ];
