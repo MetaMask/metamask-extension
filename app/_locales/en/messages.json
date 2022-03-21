@@ -411,6 +411,13 @@
   "buy": {
     "message": "Buy"
   },
+  "buyCryptoWithMoonPay": {
+    "message": "Buy $1 with MoonPay",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithMoonPayDescription": {
+    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 146+ countries. Tokens deposit into your MetaMask account."
+  },
   "buyCryptoWithTransak": {
     "message": "Buy $1 with Transak",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -616,6 +623,9 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "continueToMoonPay": {
+    "message": "Continue to MoonPay"
   },
   "continueToTransak": {
     "message": "Continue to Transak"

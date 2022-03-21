@@ -26,6 +26,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &--moonpay {
+      height: 30px;
+    }
   }
 
   &__buy-row {

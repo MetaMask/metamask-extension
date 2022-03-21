@@ -23,15 +23,9 @@ export default {
     disabled: {
       control: 'boolean',
     },
-    iconClassName: {
-      control: 'text',
-    },
     onClick: {
       action: 'onClick',
     },
-  },
-  args: {
-    iconClassName: 'caret',
   },
 };
 

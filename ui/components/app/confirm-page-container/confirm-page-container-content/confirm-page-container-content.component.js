@@ -146,8 +146,7 @@ export default class ConfirmPageContainerContent extends Component {
       supportsEIP1559V2 &&
       !hasSimulationError &&
       (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
-      currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND;
+      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div

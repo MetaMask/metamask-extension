@@ -11,14 +11,14 @@
     @include Paragraph;
 
     margin-top: 19px;
-    color: var(--black);
+    color: var(--color-text-default);
   }
 
   &__blurb {
     @include H7;
 
     width: 95%;
-    color: var(--black);
+    color: var(--color-text-default);
     margin-top: 5px;
     margin-bottom: 15px;
   }
@@ -27,7 +27,7 @@
     @include H7;
 
     width: 95%;
-    color: #979797;
+    color: var(--color-text-alternative);
     margin-top: 15px;
   }
 }
