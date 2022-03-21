@@ -177,7 +177,7 @@ export default function TokenDetailsPage() {
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
-        {aggregators && (
+        {process.env.TOKEN_DETECTION_V2 && aggregators && (
           <>
             <Typography
               variant={TYPOGRAPHY.H9}
