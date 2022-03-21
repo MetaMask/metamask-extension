@@ -490,7 +490,6 @@ export default class ConfirmTransactionBase extends Component {
               </>
             )
           }
-          detailTitleColor={COLORS.BLACK}
           detailText={
             !isMultiLayerFeeNetwork && (
               <div className="confirm-page-container-content__currency-container">
