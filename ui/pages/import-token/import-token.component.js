@@ -12,6 +12,7 @@ import {
   ADD_COLLECTIBLE_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   EXPERIMENTAL_ROUTE,
+  ADVANCED_ROUTE,
 } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
@@ -507,8 +508,9 @@ class ImportToken extends Component {
                       type="link"
                       key="token-detection-announcement"
                       className="import-token__link"
-                      onClick={() => history.push(`${EXPERIMENTAL_ROUTE}#token-description`)}
-                      // onClick={() => history.push(`${ADVANCED_ROUTE}#token-description`)}
+                      onClick={() =>
+                        history.push(`${ADVANCED_ROUTE}#token-description`)
+                      }
                     >
                       {t('enableFromSettings')}
                     </Button>,
@@ -518,7 +520,7 @@ class ImportToken extends Component {
                       type="link"
                       key="token-detection-announcement"
                       className="import-token__link"
-                      onClick={() => history.push(`${EXPERIMENTAL_ROUTE}#token-description`)}
+                      onClick={() => history.push(`${EXPERIMENTAL_ROUTE}`)}
                     >
                       {t('enableFromSettings')}
                     </Button>,
