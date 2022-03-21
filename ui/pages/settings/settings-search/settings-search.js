@@ -15,7 +15,9 @@ export default function SettingsSearch({
   const t = useContext(I18nContext);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchIconColor, setSearchIconColor] = useState('#9b9b9b');
+  const [searchIconColor, setSearchIconColor] = useState(
+    'var(--color-icon-muted)',
+  );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
@@ -32,9 +34,9 @@ export default function SettingsSearch({
   const handleSearch = (searchQuery) => {
     setSearchQuery(searchQuery);
     if (searchQuery === '') {
-      setSearchIconColor('#9b9b9b');
+      setSearchIconColor('var(--color-icon-muted)');
     } else {
-      setSearchIconColor('#24292E');
+      setSearchIconColor('var(--color-icon-default)');
     }
     const fuseSearchResult = settingsSearchFuse.search(searchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
@@ -91,7 +93,6 @@ export default function SettingsSearch({
       fullWidth
       autoFocus
       autoComplete="off"
-      style={{ backgroundColor: '#fff' }}
       startAdornment={renderStartAdornment()}
       endAdornment={renderEndAdornment()}
     />

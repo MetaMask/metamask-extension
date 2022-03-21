@@ -7,6 +7,7 @@ import { clearClipboard } from '../../../helpers/utils/util';
 import CheckBox from '../../ui/check-box';
 import Typography from '../../ui/typography';
 import { COLORS } from '../../../helpers/constants/design-system';
+import Textarea from '../../ui/textarea';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
@@ -50,7 +51,7 @@ export default function SrpInput({ onChange }) {
         <Typography>{t('secretRecoveryPhrase')}</Typography>
       </label>
       {showSrp ? (
-        <textarea
+        <Textarea
           id="import-srp__srp"
           className="import-srp__srp-shown"
           onChange={onSrpChange}
