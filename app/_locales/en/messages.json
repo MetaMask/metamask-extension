@@ -449,7 +449,7 @@
     "message": "Cancel transaction"
   },
   "cancelSpeedUp": {
-    "message": "cancel or speed up a tranaction."
+    "message": "cancel or speed up a transaction."
   },
   "cancelSpeedUpLabel": {
     "message": "This gas fee will $1 the original.",
