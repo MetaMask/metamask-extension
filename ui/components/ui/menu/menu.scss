@@ -10,7 +10,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 16px;
     z-index: 1050;
   }
 
@@ -32,9 +31,14 @@
   text-align: start;
   align-items: center;
   width: 100%;
-  padding: 14px 0;
+  padding: 14px 16px;
   cursor: pointer;
   color: inherit;
+
+  &:hover,
+  &:active {
+    background: var(--color-background-alternative);
+  }
 
   &__icon {
     margin-right: 8px;
