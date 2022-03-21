@@ -422,9 +422,9 @@
     "message": "Buy $1 with Transak",
     "description": "$1 represents the cypto symbol to be purchased"
   },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
-    "description": "$1 represents the cypto symbol to be purchased"
+  "buyCryptoWithTransakDescriptionV2": {
+    "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyEth": {
     "message": "Buy ETH"

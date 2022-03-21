@@ -138,7 +138,7 @@ export default class DepositEtherModal extends Component {
                 />
               ),
               title: t('buyCryptoWithTransak', [symbol]),
-              text: t('buyCryptoWithTransakDescription', [symbol]),
+              text: t('buyCryptoWithTransakDescriptionV2', [symbol]),
               buttonLabel: t('continueToTransak'),
               onButtonClick: () => {
                 this.context.metricsEvent({
