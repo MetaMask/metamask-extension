@@ -672,6 +672,11 @@ export function getIsBuyableTransakChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
 }
 
+export function getIsBuyableMoonPayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];

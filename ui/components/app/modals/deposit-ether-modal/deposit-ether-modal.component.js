@@ -5,6 +5,7 @@ import {
   BUYABLE_CHAINS_MAP,
 } from '../../../../../shared/constants/network';
 import Button from '../../../ui/button';
+import LogoMoonPay from '../../../ui/logo/logo-moonpay';
 
 export default class DepositEtherModal extends Component {
   static contextTypes = {
@@ -17,8 +18,10 @@ export default class DepositEtherModal extends Component {
     isTestnet: PropTypes.bool.isRequired,
     isMainnet: PropTypes.bool.isRequired,
     isBuyableTransakChain: PropTypes.bool.isRequired,
+    isBuyableMoonPayChain: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
     toTransak: PropTypes.func.isRequired,
+    toMoonPay: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
     toFaucet: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
@@ -93,11 +96,13 @@ export default class DepositEtherModal extends Component {
       chainId,
       toWyre,
       toTransak,
+      toMoonPay,
       address,
       toFaucet,
       isTestnet,
       isMainnet,
       isBuyableTransakChain,
+      isBuyableMoonPayChain,
     } = this.props;
     const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
@@ -127,31 +132,6 @@ export default class DepositEtherModal extends Component {
                 <div
                   className="deposit-ether-modal__logo"
                   style={{
-                    backgroundImage: "url('./images/wyre.svg')",
-                    height: '40px',
-                  }}
-                />
-              ),
-              title: t('buyWithWyre'),
-              text: t('buyWithWyreDescription'),
-              buttonLabel: t('continueToWyre'),
-              onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
-                    action: 'Deposit Ether',
-                    name: 'Click buy Ether via Wyre',
-                  },
-                });
-                toWyre(address);
-              },
-              hide: !isMainnet,
-            })}
-            {this.renderRow({
-              logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
                     backgroundImage: "url('./images/transak.svg')",
                     height: '60px',
                   }}
@@ -171,6 +151,50 @@ export default class DepositEtherModal extends Component {
                 toTransak(address, chainId);
               },
               hide: !isBuyableTransakChain,
+            })}
+            {this.renderRow({
+              logo: (
+                <LogoMoonPay className="deposit-ether-modal__logo--moonpay" />
+              ),
+              title: t('buyCryptoWithMoonPay', [symbol]),
+              text: t('buyCryptoWithMoonPayDescription', [symbol]),
+              buttonLabel: t('continueToMoonPay'),
+              onButtonClick: () => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'Deposit tokens',
+                    name: 'Click buy tokens via MoonPay',
+                  },
+                });
+                toMoonPay(address, chainId);
+              },
+              hide: !isBuyableMoonPayChain,
+            })}
+            {this.renderRow({
+              logo: (
+                <div
+                  className="deposit-ether-modal__logo"
+                  style={{
+                    backgroundImage: "url('./images/wyre.svg')",
+                    height: '40px',
+                  }}
+                />
+              ),
+              title: t('buyWithWyre'),
+              text: t('buyWithWyreDescription'),
+              buttonLabel: t('continueToWyre'),
+              onButtonClick: () => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'Deposit Ether',
+                    name: 'Click buy Ether via Wyre',
+                  },
+                });
+                toWyre(address);
+              },
+              hide: !isMainnet,
             })}
             {this.renderRow({
               logo: (
