@@ -266,8 +266,20 @@ export default class ConfirmPageContainer extends Component {
                 <ActionableMessage
                   message={
                     <Typography variant={TYPOGRAPHY.H7} align="left">
-                      {t('insufficientCurrency', [nativeCurrency, networkName])}
-                      <Button
+                      {t('insufficientCurrencyBuyOrDeposit', [
+                        nativeCurrency,
+                        networkName,
+                        <Button
+                          type="link"
+                          className="page-container__link"
+                          onClick={showBuyModal}
+                        >
+                          {t('buy')}
+                          {nativeCurrency}
+                          {t('or')}
+                        </Button>,
+                      ])}
+                      {/* <Button
                         type="link"
                         className="page-container__link"
                         onClick={showBuyModal}
@@ -275,7 +287,7 @@ export default class ConfirmPageContainer extends Component {
                         {t('buyEth')}
                       </Button>
 
-                      {t('orDeposit')}
+                      {t('orDeposit')} */}
                     </Typography>
                   }
                   useIcon

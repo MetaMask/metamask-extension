@@ -10,7 +10,10 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
+import {
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+} from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -196,42 +199,46 @@ export default class ConfirmPageContainerContent extends Component {
           )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
-            {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
-              <ActionableMessage
-                className="actionable-message--warning"
-                message={
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    <Button
-                      key="link"
-                      type="secondary"
-                      className="confirm-page-container-content__link"
-                      onClick={showBuyModal}
-                    >
-                      {t('buyEth')}
-                    </Button>
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={
+                <Typography variant={TYPOGRAPHY.H7} align="left">
+                  {t('insufficientCurrencyBuyOrDeposit', [
+                    nativeCurrency,
+                    networkName,
+                    [MAINNET_CHAIN_ID, RINKEBY_CHAIN_ID].includes(
+                      currentTransaction.chainId,
+                    ) ? (
+                      <Typography variant={TYPOGRAPHY.H7} align="left">
+                        <Button
+                          type="link"
+                          className="page-container__link"
+                          onClick={showBuyModal}
+                        >
+                          {t('buy')}
+                          {nativeCurrency}{' '}
+                        </Button>
+                        {t('or')}
+                      </Typography>
+                    ) : (
+                      ''
+                    ),
+                  ])}
+                  {/* <Button
+                        type="link"
+                        className="page-container__link"
+                        onClick={showBuyModal}
+                      >
+                        {t('buyEth')}
+                      </Button>
 
-                    {t('orDeposit')}
-                  </Typography>
-                }
-                useIcon
-                iconFillColor="#d73a49"
-                type="danger"
-              />
-            ) : (
-              <ActionableMessage
-                className="actionable-message--warning"
-                message={
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
-                    {t('buyOther', [nativeCurrency])}
-                  </Typography>
-                }
-                useIcon
-                iconFillColor="#d73a49"
-                type="danger"
-              />
-            )}
+                      {t('orDeposit')} */}
+                </Typography>
+              }
+              useIcon
+              iconFillColor="#d73a49"
+              type="danger"
+            />
           </div>
         )}
 

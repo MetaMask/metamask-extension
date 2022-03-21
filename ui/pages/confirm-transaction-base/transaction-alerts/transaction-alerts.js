@@ -103,16 +103,29 @@ const TransactionAlerts = ({
           className="actionable-message--warning"
           message={
             <Typography variant={TYPOGRAPHY.H7} align="left">
-              {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
-              <Button
-                type="link"
-                className="transaction-alerts__link"
-                onClick={showBuyModal}
-              >
-                {t('buyEth')}
-              </Button>{' '}
-              {t('orDeposit')}
-            </Typography>
+                      {t('insufficientCurrencyBuyOrDeposit', [
+                        nativeCurrency,
+                        networkName,
+                        <Button
+                          type="link"
+                          className="page-container__link"
+                          onClick={showBuyModal}
+                        >
+                          {t('buy')}
+                          {nativeCurrency}
+                          {t('or')}
+                        </Button>,
+                      ])}
+                      {/* <Button
+                        type="link"
+                        className="page-container__link"
+                        onClick={showBuyModal}
+                      >
+                        {t('buyEth')}
+                      </Button>
+
+                      {t('orDeposit')} */}
+                    </Typography>
           }
           useIcon
           iconFillColor="#d73a49"
