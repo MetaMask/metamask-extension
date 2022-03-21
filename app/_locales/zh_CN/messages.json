@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "添加推荐代币"
   },
-  "addToAddressBook": {
-    "message": "添加地址簿"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如：John D."
-  },
   "addToken": {
     "message": "添加代币"
   },
@@ -951,9 +945,6 @@
   },
   "ensUnknownError": {
     "message": "ENS 查找失败。"
-  },
-  "enterAnAlias": {
-    "message": "输入别名"
   },
   "enterMaxSpendLimit": {
     "message": "输入最高消费额度"

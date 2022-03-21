@@ -156,12 +156,6 @@
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
   },
-  "addToAddressBook": {
-    "message": "Add to address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "e.g. John D."
-  },
   "addToken": {
     "message": "Add Token"
   },
@@ -1105,9 +1099,6 @@
   },
   "ensUnknownError": {
     "message": "ENS Lookup failed."
-  },
-  "enterAnAlias": {
-    "message": "Enter an alias"
   },
   "enterMaxSpendLimit": {
     "message": "Enter Max Spend Limit"

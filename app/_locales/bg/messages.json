@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },
-  "addToAddressBook": {
-    "message": "Добавяне към адресната книга"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр. Джон Д."
-  },
   "addToken": {
     "message": "Добавяне на жетон"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
-  },
-  "enterAnAlias": {
-    "message": "Въведете псевдоним"
   },
   "enterPassword": {
     "message": "Въведете парола"

@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
-  "addToAddressBook": {
-    "message": "ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಿ"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ಉದಾ. ಜಾನ್ ಡಿ."
-  },
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
-  "enterAnAlias": {
-    "message": "ಆಲಿಯಾಸ್ ಅನ್ನು ನಮೂದಿಸಿ"
   },
   "enterPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್‌ ಅನ್ನು ನಮೂದಿಸಿ"

@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminungkahing Token"
   },
-  "addToAddressBook": {
-    "message": "Idagdag sa address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "hal. Juan D."
-  },
   "addToken": {
     "message": "Magdagdag ng Token"
   },
@@ -315,9 +309,6 @@
   },
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
-  },
-  "enterAnAlias": {
-    "message": "Maglagay ng alias"
   },
   "enterPassword": {
     "message": "Ilagay ang password"

@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Legg til foreslåtte tokener "
   },
-  "addToAddressBook": {
-    "message": "Legg til adressebok "
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "dvs. John D. "
-  },
   "addToken": {
     "message": "Legg til token "
   },
@@ -336,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Feil i ENS-navneregistrering"
-  },
-  "enterAnAlias": {
-    "message": "Oppgi et alias"
   },
   "enterPassword": {
     "message": "Skriv inn passord "

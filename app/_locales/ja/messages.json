@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "推奨されたトークンを追加"
   },
-  "addToAddressBook": {
-    "message": "アドレス帳に追加"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "例: John D."
-  },
   "addToken": {
     "message": "トークンを追加"
   },
@@ -951,9 +945,6 @@
   },
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
-  },
-  "enterAnAlias": {
-    "message": "別名を入力してください"
   },
   "enterMaxSpendLimit": {
     "message": "使用限度額の最大値を入力してください"
