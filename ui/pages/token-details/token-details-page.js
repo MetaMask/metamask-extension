@@ -177,7 +177,7 @@ export default function TokenDetailsPage() {
             : t(networkType)}
         </Typography>
         <Button
-          type="primary"
+          type="secondary"
           className="token-details__hide-token-button"
           onClick={() => {
             dispatch(
