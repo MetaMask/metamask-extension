@@ -933,11 +933,11 @@
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
   "editGasSubTextAmountLabel": {
-    "message": "Max amount:",
+    "message": "Max amount",
     "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
-    "message": "Max fee:"
+    "message": "Max fee"
   },
   "editGasTitle": {
     "message": "Edit priority"
