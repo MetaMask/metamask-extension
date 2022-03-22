@@ -43,10 +43,6 @@ export const ValidColors = [
   COLORS.PRIMARY3,
   COLORS.SECONDARY1,
   COLORS.SECONDARY3,
-  COLORS.SUCCESS1,
-  COLORS.SUCCESS3,
-  COLORS.ERROR1,
-  COLORS.ALERT1,
 ];
 
 export const ValidTags = [

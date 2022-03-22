@@ -67,10 +67,6 @@ export const COLORS = {
   PRIMARY3: 'primary-3',
   SECONDARY1: 'secondary-1',
   SECONDARY3: 'secondary-3',
-  SUCCESS1: 'success-1',
-  SUCCESS3: 'success-3',
-  ERROR1: 'error-1',
-  ALERT1: 'alert-1',
 };
 
 export const TYPOGRAPHY = {
