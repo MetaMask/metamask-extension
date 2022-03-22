@@ -28,10 +28,7 @@ import {
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
 
-import {
-  abi,
-  address as ca,
-} from './fnsExports';
+import { abi, address as ca } from './fnsExports';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -44,9 +41,9 @@ const initialState = {
   network: null,
 };
 
-
+// prettier-ignore
 const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
-const fns = new ethers.Contract(ca,abi,ethersProvFantom);
+const fns = new ethers.Contract(ca, abi, ethersProvFantom);
 
 export const ensInitialState = initialState;
 
@@ -158,7 +155,7 @@ export function initializeEnsSlice() {
 
 async function isFnsName(fnsName) {
   if (fnsName.toString().toLowerCase.endsWith('.eth')) {
-    return  false;
+    return false;
   }
   return await fns.functions.isOwnedByMapping(fnsName.toUpperCase());
 }
@@ -176,7 +173,8 @@ export function lookupEnsName(ensName) {
     }
     state = getState();
     if (
-      (state[name].stage === 'NO_NETWORK_SUPPORT' && getCurrentChainId(state) !== 250) &&
+      (state[name].stage === 'NO_NETWORK_SUPPORT' && 
+      getCurrentChainId(state) !== 250) &&
       !(
         isBurnAddress(trimmedEnsName) === false &&
         isValidHexAddress(trimmedEnsName, { mixedCaseUseChecksum: true })
@@ -189,12 +187,12 @@ export function lookupEnsName(ensName) {
       let address;
       let error;
       const isFns = await isFnsName(ensName);
-      console.log("isFns:")
-      console.log(isFns)
+      console.log('isFns:');
+      console.log(isFns);
       try {
         if (isFns[0]) {
           address = await resolveFnsName(trimmedEnsName);
-          console.log("address:")
+          console.log('address:');
           console.log(address);
           address = address[0];
         } else {
