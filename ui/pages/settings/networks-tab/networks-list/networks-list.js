@@ -24,7 +24,7 @@ const NetworksList = ({
       ? networksToRender
       : searchedNetworks;
   const searchedNetworksToRenderThatAreNotTestNetworks = searchedNetworksToRender.filter(
-    (network) => network.isATestNetwork === false,
+    (network) => !network.isATestNetwork,
   );
   const searchedNetworksToRenderThatAreTestNetworks = searchedNetworksToRender.filter(
     (network) => network.isATestNetwork,
