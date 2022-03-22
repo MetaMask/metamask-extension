@@ -930,18 +930,23 @@ export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-export const stxErrorTypes = ['unavailable', 'not_enough_funds'];
-
-const smartTransactionsErrorMap = {
-  unavailable: 'Smart Transactions are temporarily unavailable.',
-  not_enough_funds: 'Not enough funds for a smart transaction.',
+export const stxErrorTypes = {
+  UNAVAILABLE: 'unavailable',
+  NOT_ENOUGH_FUNDS: 'not_enough_funds',
+  REGULAR_TX_PENDING: 'regular_tx_pending',
 };
 
-export const smartTransactionsErrorMessages = (errorType) => {
-  return (
-    smartTransactionsErrorMap[errorType] ||
-    smartTransactionsErrorMap.unavailable
-  );
+export const getTranslatedStxErrorMessage = (errorType, t) => {
+  switch (errorType) {
+    case stxErrorTypes.UNAVAILABLE:
+      return t('stxErrorUnavailable');
+    case stxErrorTypes.NOT_ENOUGH_FUNDS:
+      return t('stxErrorNotEnoughFunds');
+    case stxErrorTypes.REGULAR_TX_PENDING:
+      return t('stxErrorRegularTxPending');
+    default:
+      return t('stxErrorUnavailable');
+  }
 };
 
 export const parseSmartTransactionsError = (errorMessage) => {

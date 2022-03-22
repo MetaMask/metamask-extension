@@ -3047,6 +3047,15 @@
   "stxDescription": {
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
   },
+  "stxErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart transaction."
+  },
+  "stxErrorRegularTxPending": {
+    "message": "Regular transaction is pending, Smart Transactions are disabled."
+  },
+  "stxErrorUnavailable": {
+    "message": "Smart Transactions are temporarily unavailable."
+  },
   "stxFailure": {
     "message": "Swap failed"
   },
