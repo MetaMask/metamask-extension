@@ -50,7 +50,7 @@
 
     &--active {
       background: var(--color-primary-default);
-      color: white;
+      color: var(--color-primary-inverse);
       border: none;
     }
 
@@ -67,7 +67,7 @@
 
   .radio-button--active.radio-button--danger {
     border: 1px solid var(--color-error-default);
-    color: white;
+    color: var(--color-error-inverse);
     background: var(--color-error-default);
   }
 }
