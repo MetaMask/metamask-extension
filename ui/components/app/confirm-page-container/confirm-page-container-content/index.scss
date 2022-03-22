@@ -101,12 +101,11 @@
     position: relative;
   }
 
-  &__link {
+  &__link.button {
     background: transparent;
     border: 0 transparent;
-    display: inline !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: $font-size-h7 !important;
+    display: inline;
+    padding: 0;
+    font-size: $font-size-h7;
   }
 }
