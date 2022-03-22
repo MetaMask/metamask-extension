@@ -10,7 +10,6 @@ import {
   EXPERIMENTAL_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAPS_LIST_ROUTE,
-  SNAPS_VIEW_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../constants/routes';
 
@@ -32,80 +31,61 @@ export function getSettingsRoutes(t) {
       section: t('currencyConversion'),
       description: '',
       route: `${GENERAL_ROUTE}#currency-conversion`,
-      icon: 'fa fa-cog',
-      id: 1,
-    },
+      icon: 'fa fa-cog',    },
     {
       tab: t('general'),
       section: t('primaryCurrencySetting'),
       description: t('primaryCurrencySettingDescription'),
       route: `${GENERAL_ROUTE}#primary-currency`,
-      icon: 'fa fa-cog',
-      id: 2,
-    },
+      icon: 'fa fa-cog',    },
     {
       tab: t('general'),
       section: t('currentLanguage'),
       description: '',
       route: `${GENERAL_ROUTE}#current-language`,
-      icon: 'fa fa-cog',
-      id: 3,
-    },
+      icon: 'fa fa-cog',    },
     {
       tab: t('general'),
       section: t('accountIdenticon'),
       description: '',
       route: `${GENERAL_ROUTE}#account-identicon`,
-      icon: 'fa fa-cog',
-      id: 4,
-    },
+      icon: 'fa fa-cog',    },
     {
       tab: t('general'),
       section: t('hideZeroBalanceTokens'),
       description: '',
       route: `${GENERAL_ROUTE}#zero-balancetokens`,
-      icon: 'fa fa-cog',
-      id: 5,
-    },
+      icon: 'fa fa-cog',    },
     {
       tab: t('advanced'),
       section: t('stateLogs'),
       description: t('stateLogsDescription'),
       route: `${ADVANCED_ROUTE}#state-logs`,
-      icon: 'fas fa-sliders-h',
-      id: 6,
-    },
+      icon: 'fas fa-sliders-h',    },
     {
       tab: t('advanced'),
       section: t('syncWithMobile'),
       description: '',
       route: `${ADVANCED_ROUTE}#sync-withmobile`,
-      icon: 'fas fa-sliders-h',
-      id: 7,
-    },
+      icon: 'fas fa-sliders-h',    },
     {
       tab: t('advanced'),
       section: t('resetAccount'),
       description: t('resetAccountDescription'),
       route: `${ADVANCED_ROUTE}#reset-account`,
-      icon: 'fas fa-sliders-h',
-      id: 8,
-    },
+      icon: 'fas fa-sliders-h',    },
     {
       tab: t('advanced'),
       section: t('showAdvancedGasInline'),
       description: t('showAdvancedGasInlineDescription'),
       route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
-      icon: 'fas fa-sliders-h',
-      id: 9,
-    },
+      icon: 'fas fa-sliders-h',    },
     {
       tab: t('advanced'),
       section: t('showHexData'),
       description: t('showHexDataDescription'),
       route: `${ADVANCED_ROUTE}#show-hexdata`,
       icon: 'fas fa-sliders-h',
-      id: 10,
     },
     {
       tab: t('advanced'),
@@ -113,7 +93,6 @@ export function getSettingsRoutes(t) {
       description: t('showFiatConversionInTestnetsDescription'),
       route: `${ADVANCED_ROUTE}#conversion-testnetworks`,
       icon: 'fas fa-sliders-h',
-      id: 11,
     },
     {
       tab: t('advanced'),
@@ -121,7 +100,6 @@ export function getSettingsRoutes(t) {
       description: t('showTestnetNetworksDescription'),
       route: `${ADVANCED_ROUTE}#show-testnets`,
       icon: 'fas fa-sliders-h',
-      id: 12,
     },
     {
       tab: t('advanced'),
@@ -129,7 +107,6 @@ export function getSettingsRoutes(t) {
       description: t('nonceFieldDescription'),
       route: `${ADVANCED_ROUTE}#customize-nonce`,
       icon: 'fas fa-sliders-h',
-      id: 13,
     },
     {
       tab: t('advanced'),
@@ -137,7 +114,6 @@ export function getSettingsRoutes(t) {
       description: t('autoLockTimeLimitDescription'),
       route: `${ADVANCED_ROUTE}#autolock-timer`,
       icon: 'fas fa-sliders-h',
-      id: 14,
     },
     {
       tab: t('advanced'),
@@ -145,7 +121,6 @@ export function getSettingsRoutes(t) {
       description: t('syncWithThreeBoxDescription'),
       route: `${ADVANCED_ROUTE}#sync-with3box`,
       icon: 'fas fa-sliders-h',
-      id: 15,
     },
     {
       tab: t('advanced'),
@@ -153,7 +128,6 @@ export function getSettingsRoutes(t) {
       description: t('ipfsGatewayDescription'),
       route: `${ADVANCED_ROUTE}#ipfs-gateway`,
       icon: 'fas fa-sliders-h',
-      id: 16,
     },
     {
       tab: t('advanced'),
@@ -161,7 +135,6 @@ export function getSettingsRoutes(t) {
       description: t('preferredLedgerConnectionType'),
       route: `${ADVANCED_ROUTE}#ledger-connection`,
       icon: 'fas fa-sliders-h',
-      id: 17,
     },
     {
       tab: t('advanced'),
@@ -169,7 +142,6 @@ export function getSettingsRoutes(t) {
       description: t('dismissReminderDescriptionField'),
       route: `${ADVANCED_ROUTE}#dimiss-secretrecovery`,
       icon: 'fas fa-sliders-h',
-      id: 18,
     },
     {
       tab: t('contacts'),
@@ -177,7 +149,6 @@ export function getSettingsRoutes(t) {
       description: t('contacts'),
       route: CONTACT_LIST_ROUTE,
       icon: 'fa fa-address-book',
-      id: 19,
     },
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     {
@@ -194,7 +165,6 @@ export function getSettingsRoutes(t) {
       description: t('revealSeedWords'),
       route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
       icon: 'fa fa-lock',
-      id: 20,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -202,7 +172,6 @@ export function getSettingsRoutes(t) {
       description: t('showIncomingTransactionsDescription'),
       route: `${SECURITY_ROUTE}#incoming-transaction`,
       icon: 'fa fa-lock',
-      id: 21,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -210,7 +179,6 @@ export function getSettingsRoutes(t) {
       description: t('usePhishingDetectionDescription'),
       route: `${SECURITY_ROUTE}#phishing-detection`,
       icon: 'fa fa-lock',
-      id: 22,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -218,7 +186,6 @@ export function getSettingsRoutes(t) {
       description: t('participateInMetaMetricsDescription'),
       route: `${SECURITY_ROUTE}#metrametrics`,
       icon: 'fa fa-lock',
-      id: 23,
     },
     {
       tab: t('alerts'),
@@ -226,7 +193,6 @@ export function getSettingsRoutes(t) {
       description: t('alertSettingsUnconnectedAccount'),
       route: `${ALERTS_ROUTE}#unconnected-account`,
       icon: 'fa fa-bell',
-      id: 24,
     },
     {
       tab: t('alerts'),
@@ -234,7 +200,6 @@ export function getSettingsRoutes(t) {
       description: t('alertSettingsWeb3ShimUsage'),
       route: `${ALERTS_ROUTE}#web3-shimusage`,
       icon: 'fa fa-bell',
-      id: 25,
     },
     {
       tab: t('networks'),
@@ -242,7 +207,6 @@ export function getSettingsRoutes(t) {
       description: t('mainnet'),
       route: `${NETWORKS_ROUTE}#networks-mainnet`,
       icon: 'fa fa-plug',
-      id: 26,
     },
     {
       tab: t('networks'),
@@ -250,7 +214,6 @@ export function getSettingsRoutes(t) {
       description: t('ropsten'),
       route: `${NETWORKS_ROUTE}#networks-ropsten`,
       icon: 'fa fa-plug',
-      id: 27,
     },
     {
       tab: t('networks'),
@@ -258,7 +221,6 @@ export function getSettingsRoutes(t) {
       description: t('rinkeby'),
       route: `${NETWORKS_ROUTE}#networks-rinkeby`,
       icon: 'fa fa-plug',
-      id: 28,
     },
     {
       tab: t('networks'),
@@ -266,7 +228,6 @@ export function getSettingsRoutes(t) {
       description: t('goerli'),
       route: `${NETWORKS_ROUTE}#networks-goerli`,
       icon: 'fa fa-plug',
-      id: 29,
     },
     {
       tab: t('networks'),
@@ -274,7 +235,6 @@ export function getSettingsRoutes(t) {
       description: t('kovan'),
       route: `${NETWORKS_ROUTE}#networtks-kovan`,
       icon: 'fa fa-plug',
-      id: 30,
     },
     {
       tab: t('networks'),
@@ -282,7 +242,6 @@ export function getSettingsRoutes(t) {
       description: t('localhost'),
       route: `${NETWORKS_ROUTE}#network-localhost`,
       icon: 'fa fa-plug',
-      id: 31,
     },
     {
       tab: t('experimental'),
@@ -290,7 +249,6 @@ export function getSettingsRoutes(t) {
       description: t('useTokenDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#token-description`,
       icon: 'fa fa-flask',
-      id: 32,
     },
     {
       tab: t('experimental'),
@@ -298,7 +256,6 @@ export function getSettingsRoutes(t) {
       description: t('enableOpenSeaAPIDescription'),
       route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
       icon: 'fa fa-flask',
-      id: 33,
     },
     {
       tab: t('experimental'),
@@ -306,7 +263,6 @@ export function getSettingsRoutes(t) {
       description: t('useCollectibleDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       icon: 'fa fa-flask',
-      id: 34,
     },
 
     {
@@ -315,7 +271,6 @@ export function getSettingsRoutes(t) {
       description: t('builtAroundTheWorld'),
       route: `${ABOUT_US_ROUTE}#version`,
       icon: 'fa fa-info-circle',
-      id: 35,
     },
     {
       tab: t('about'),
@@ -323,7 +278,6 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${ABOUT_US_ROUTE}#links`,
       icon: 'fa fa-info-circle',
-      id: 36,
     },
     {
       tab: t('about'),
@@ -331,7 +285,6 @@ export function getSettingsRoutes(t) {
       description: t('privacyMsg'),
       route: `${ABOUT_US_ROUTE}#privacy-policy`,
       icon: 'fa fa-info-circle',
-      id: 37,
     },
     {
       tab: t('about'),
@@ -339,7 +292,6 @@ export function getSettingsRoutes(t) {
       description: t('terms'),
       route: `${ABOUT_US_ROUTE}#terms`,
       icon: 'fa fa-info-circle',
-      id: 38,
     },
 
     {
@@ -348,7 +300,6 @@ export function getSettingsRoutes(t) {
       description: t('attributions'),
       route: `${ABOUT_US_ROUTE}#attributions`,
       icon: 'fa fa-info-circle',
-      id: 39,
     },
 
     {
@@ -357,7 +308,6 @@ export function getSettingsRoutes(t) {
       description: t('supportCenter'),
       route: `${ABOUT_US_ROUTE}#supportcenter`,
       icon: 'fa fa-info-circle',
-      id: 40,
     },
 
     {
@@ -366,7 +316,6 @@ export function getSettingsRoutes(t) {
       description: t('visitWebSite'),
       route: `${ABOUT_US_ROUTE}#visitwebsite`,
       icon: 'fa fa-info-circle',
-      id: 41,
     },
 
     {
@@ -375,10 +324,11 @@ export function getSettingsRoutes(t) {
       description: t('contactUs'),
       route: `${ABOUT_US_ROUTE}#contactus`,
       icon: 'fa fa-info-circle',
-      id: 42,
     },
   ];
-
+  for (let i = 0; i < settingsRoutesList.length; i++) {
+    settingsRoutesList[i].id = i + 1;
+  }
   // TODO: write to json file?
   return showHideSettings(t, settingsRoutesList);
 }
