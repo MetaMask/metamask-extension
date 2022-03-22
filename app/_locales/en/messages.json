@@ -3527,6 +3527,9 @@
   "token": {
     "message": "Token"
   },
+  "tokenAddress": {
+    "message": "Token address"
+  },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
