@@ -30,7 +30,7 @@ export default function CustomContentSearch({
     if (searchQuery === '') {
       setSearchIconColor('#9b9b9b');
     } else {
-      setSearchIconColor('#24292E');
+      setSearchIconColor('var(--color-icon-default)');
     }
 
     const fuseSearchResult = networksSearchFuse.search(searchQuery);
