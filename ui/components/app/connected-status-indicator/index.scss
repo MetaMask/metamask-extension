@@ -32,11 +32,11 @@
   }
 
   &__green-circle {
-    border-color: #4cd964;
+    border-color: var(--color-success-default);
   }
 
   &__green-circle &__inner-circle {
-    background-color: #4cd964;
+    background-color: var(--color-success-default);
   }
 
   &__yellow-circle {
