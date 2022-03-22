@@ -193,10 +193,11 @@
 
     @media screen and (max-width: $break-small) {
       display: block;
-      margin-right: 16px;
+      margin-right: 8px;
       cursor: pointer;
 
       [dir='rtl'] & {
+        margin: 0 0 0 8px;
         transform: rotate(180deg);
       }
     }
