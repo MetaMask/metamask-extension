@@ -273,7 +273,6 @@ export function getSettingsRoutes(t) {
       route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       icon: 'fa fa-flask',
     },
-
     {
       tab: t('about'),
       section: t('metamaskVersion'),
