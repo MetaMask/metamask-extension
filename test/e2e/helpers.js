@@ -14,12 +14,14 @@ const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
 const dappPort = 8080;
+const dappPort2 = 8081;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 async function withFixtures(options, testSuite) {
   const {
     dapp,
+    dapp2,
     fixtures,
     ganacheOptions,
     driverOptions,
@@ -70,6 +72,28 @@ async function withFixtures(options, testSuite) {
       }
       dappServer = createStaticServer(dappDirectory);
       dappServer.listen(dappPort);
+      await new Promise((resolve, reject) => {
+        dappServer.on('listening', resolve);
+        dappServer.on('error', reject);
+      });
+    }
+    if (dapp2) {
+      let dappDirectory;
+      if (dappPath) {
+        dappDirectory = path.resolve(__dirname, dappPath);
+      } else {
+        dappDirectory = path.resolve(
+          __dirname,
+          '..',
+          '..',
+          'node_modules',
+          '@metamask',
+          'test-dapp',
+          'dist',
+        );
+      }
+      dappServer = createStaticServer(dappDirectory);
+      dappServer.listen(dappPort2);
       await new Promise((resolve, reject) => {
         dappServer.on('listening', resolve);
         dappServer.on('error', reject);
