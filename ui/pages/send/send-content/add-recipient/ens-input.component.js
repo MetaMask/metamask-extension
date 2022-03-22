@@ -123,7 +123,13 @@ export default class EnsInput extends Component {
                 onClick={this.props.onReset}
                 className="ens-input__wrapper__action-icon-button"
               >
-                <i className="fa fa-times" title={t('close')} />
+                <i
+                  className="fa fa-times"
+                  style={{
+                    color: 'var(--color-icon-default)',
+                  }}
+                  title={t('close')}
+                />
               </button>
             </>
           ) : (
