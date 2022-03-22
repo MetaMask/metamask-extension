@@ -56,13 +56,6 @@ export const COLORS = {
   /**
    * !!! DEPRECATED DO NOT USE!!!
    */
-  UI1: 'ui-1',
-  UI2: 'ui-2',
-  UI3: 'ui-3',
-  UI4: 'ui-4',
-  GREY: 'grey',
-  NEUTRAL_GREY: 'neutral-grey',
-  WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY3: 'primary-3',
   SECONDARY1: 'secondary-1',
