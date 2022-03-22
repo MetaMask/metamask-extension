@@ -11,10 +11,10 @@ const seedPhraseVerifier = {
    * - The keyring always creates the accounts in the same sequence.
    *
    * @param {Array} createdAccounts - The accounts to restore
-   * @param {Buffer} seedPhrase - The seed words to verify, encoded as a Buffer
-   * @returns {Promise<void>}
+   * @param {string} seedWords - The seed words to verify
+   * @returns {Promise<void>} Promises undefined
    */
-  async verifyAccounts(createdAccounts, seedPhrase) {
+  async verifyAccounts(createdAccounts, seedWords) {
     if (!createdAccounts || createdAccounts.length < 1) {
       throw new Error('No created accounts defined.');
     }
@@ -22,7 +22,7 @@ const seedPhraseVerifier = {
     const keyringController = new KeyringController({});
     const Keyring = keyringController.getKeyringClassForType('HD Key Tree');
     const opts = {
-      mnemonic: seedPhrase,
+      mnemonic: seedWords,
       numberOfAccounts: createdAccounts.length,
     };
 

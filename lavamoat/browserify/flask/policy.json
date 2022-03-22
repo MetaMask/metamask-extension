@@ -637,9 +637,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/execution-environments": true,
         "@metamask/post-message-stream": true,
         "@metamask/snap-controllers": true,
-        "@metamask/snap-workers": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "nanoid": true,
@@ -714,6 +714,7 @@
     },
     "@metamask/rpc-methods": {
       "packages": {
+        "@metamask/controllers": true,
         "@metamask/key-tree": true,
         "@metamask/snap-controllers": true,
         "eth-rpc-errors": true
@@ -753,25 +754,23 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/controllers": true,
+        "@metamask/execution-environments": true,
         "@metamask/object-multiplex": true,
         "@metamask/obs-store": true,
         "@metamask/post-message-stream": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snap-workers": true,
         "ajv": true,
         "buffer": true,
         "concat-stream": true,
+        "cross-fetch": true,
         "crypto-browserify": true,
-        "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "fast-deep-equal": true,
         "gunzip-maybe": true,
-        "immer": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "nanoid": true,
@@ -1197,9 +1196,6 @@
       }
     },
     "bip39": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "buffer": true,
         "create-hash": true,
@@ -1914,7 +1910,6 @@
     "eth-hd-keyring": {
       "packages": {
         "bip39": true,
-        "buffer": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
         "ethereumjs-wallet": true
@@ -1973,7 +1968,6 @@
       "packages": {
         "bip39": true,
         "browser-passworder": true,
-        "buffer": true,
         "eth-hd-keyring": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
@@ -2263,12 +2257,6 @@
       "packages": {
         "buffer": true,
         "stream-browserify": true
-      }
-    },
-    "extensionizer": {
-      "globals": {
-        "browser": true,
-        "chrome": true
       }
     },
     "faker": {
@@ -5212,6 +5200,15 @@
         "number-to-bn": true,
         "randombytes": true,
         "utf8": true
+      }
+    },
+    "webextension-polyfill": {
+      "globals": {
+        "browser": true,
+        "chrome": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
       }
     },
     "webrtcsupport": {

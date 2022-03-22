@@ -12,7 +12,7 @@
     &::after {
       font-size: 24px;
       content: '\00D7';
-      color: var(--black);
+      color: var(--color-icon-default);
     }
   }
 
@@ -41,9 +41,5 @@
     @media screen and (min-width: $break-large) {
       margin-inline-start: 20px;
     }
-  }
-
-  .btn--rounded.btn-primary {
-    background-color: #fff;
   }
 }

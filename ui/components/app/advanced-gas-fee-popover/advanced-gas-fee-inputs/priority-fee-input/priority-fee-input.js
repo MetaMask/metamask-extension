@@ -6,7 +6,7 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../../../shared/constants/gas';
-import { SECONDARY } from '../../../../../helpers/constants/common';
+import { PRIMARY } from '../../../../../helpers/constants/common';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
@@ -19,7 +19,6 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { renderFeeRange } from '../utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
   if (value <= 0) {
@@ -48,6 +47,7 @@ const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const {
+    gasLimit,
     setErrorValue,
     setMaxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
@@ -75,10 +75,10 @@ const PriorityFeeInput = () => {
     return maxPriorityFeePerGas;
   });
 
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
-  const [, { value: priorityFeeInFiat }] = useCurrencyDisplay(
-    decGWEIToHexWEI(priorityFee),
+  const [priorityFeeInPrimaryCurrency] = useCurrencyDisplay(
+    decGWEIToHexWEI(priorityFee * gasLimit),
     { currency, numberOfDecimals },
   );
 
@@ -112,13 +112,13 @@ const PriorityFeeInput = () => {
         titleUnit={`(${t('gwei')})`}
         tooltipText={t('advancedPriorityFeeToolTip')}
         value={priorityFee}
-        detailText={`≈ ${priorityFeeInFiat}`}
+        detailText={`≈ ${priorityFeeInPrimaryCurrency}`}
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={renderFeeRange(latestPriorityFeeRange)}
-        historical={renderFeeRange(historicalPriorityFeeRange)}
-        feeTrend={priorityFeeTrend}
+        latest={latestPriorityFeeRange}
+        historical={historicalPriorityFeeRange}
+        trend={priorityFeeTrend}
       />
     </Box>
   );

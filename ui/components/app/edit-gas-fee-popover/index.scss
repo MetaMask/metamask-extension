@@ -2,7 +2,7 @@
   height: 500px;
 
   &__wrapper {
-    border-top: 1px solid var(--ui-grey);
+    border-top: 1px solid var(--color-border-default);
     height: 100%;
   }
 
@@ -19,7 +19,7 @@
     }
 
     &__header {
-      color: var(--ui-4);
+      color: var(--color-text-alternative);
       font-size: 10px;
       font-weight: 700;
       margin: 0 12px;
@@ -41,7 +41,7 @@
     }
 
     &__separator {
-      border-top: 1px solid var(--ui-grey);
+      border-top: 1px solid var(--color-border-default);
       margin: 8px 12px;
     }
   }
@@ -51,6 +51,6 @@
   }
 
   &__know-more a {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 }

@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
   },
-  "addToAddressBook": {
-    "message": "주소록에 추가"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "예: John D."
-  },
   "addToken": {
     "message": "토큰 추가"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
   },
-  "enterAnAlias": {
-    "message": "별칭 입력"
-  },
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"
   },
@@ -1273,18 +1264,11 @@
   "importAccountError": {
     "message": "계정 가져오기 오류"
   },
-  "importAccountLinkText": {
-    "message": "비밀 복구 구문을 사용해 가져오기"
-  },
   "importAccountMsg": {
     "message": "가져온 계정은 본래 생성한 MetaMask 계정 비밀 복구 구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
   },
   "importAccountSeedPhrase": {
     "message": "비밀 복구 구문으로 계정 가져오기"
-  },
-  "importAccountText": {
-    "message": "또는 $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "지갑을 만들 때 받은 비밀 복구 구문(시드 구문)을 입력하세요. $1",
@@ -1744,9 +1728,6 @@
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "다음 이유 때문에 수집 금액이 추가되지 않았습니다: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "수집이 성공적으로 추가되었습니다!"
@@ -2229,9 +2210,6 @@
   "restore": {
     "message": "복구"
   },
-  "restoreAccountWithSeed": {
-    "message": "비밀 복구 구문으로 계정 복구"
-  },
   "restoreWalletPreferences": {
     "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복원할까요?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2276,6 @@
   },
   "secretPhrase": {
     "message": "금고를 복구하려면 비밀 구문을 여기에 입력하세요."
-  },
-  "secretPhraseWarning": {
-    "message": "다른 비밀 복구 구문을 사용하여 복구하면 현재 지갑, 계정 및 자산이 이 앱에서 영구적으로 제거됩니다. 이 작업은 취소할 수 없습니다."
   },
   "secretRecoveryPhrase": {
     "message": "비밀 복구 구문"

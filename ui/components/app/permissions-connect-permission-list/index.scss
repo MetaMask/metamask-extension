@@ -1,20 +1,23 @@
 .permissions-connect-permission-list {
+  width: 100%;
+
   .permission {
     @include H6;
 
+    width: 100%;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--Grey-100);
+    border-bottom: 1px solid var(--color-border-default);
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
 
     i {
       display: block;
       padding: 16px;
       min-width: 16px;
       min-height: 16px;
-      color: var(--Grey-500);
+      color: var(--color-icon-default);
       font-size: 1rem;
     }
   }

@@ -18,6 +18,8 @@ ignores:
   - '@metamask/auto-changelog' # invoked as `auto-changelog`
   - '@metamask/forwarder'
   - '@metamask/test-dapp'
+  - '@metamask/design-tokens' # Only imported in index.css
+  - '@tsconfig/node14' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta
@@ -34,6 +36,7 @@ ignores:
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - 'storybook-dark-mode'
   - 'style-loader'
   - 'css-loader'
   - 'sass-loader'

@@ -33,7 +33,7 @@
   }
 
   &__password--error {
-    color: var(--crimson);
+    color: var(--color-error-default);
     margin-bottom: 0;
   }
 
@@ -55,7 +55,7 @@
     border-radius: 8px;
     background-color: #fff6f6;
     font-weight: 500;
-    color: var(--crimson);
+    color: var(--color-error-default);
     width: 292px;
     padding: 9px 15px;
     margin-top: 18px;
@@ -71,7 +71,7 @@
   &__password-display-textarea {
     @include Paragraph;
 
-    color: var(--crimson);
+    color: var(--color-error-default);
     border: none;
     height: 75px;
     width: 100%;

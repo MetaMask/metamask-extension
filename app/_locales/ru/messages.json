@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Добавить рекомендованные токены"
   },
-  "addToAddressBook": {
-    "message": "Добавить в адресную книгу"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр., Джон Д."
-  },
   "addToken": {
     "message": "Добавить токен"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Ошибка поиска ENS."
   },
-  "enterAnAlias": {
-    "message": "Ввести псевдоним"
-  },
   "enterMaxSpendLimit": {
     "message": "Введите максимальный лимит расходов"
   },
@@ -1273,18 +1264,11 @@
   "importAccountError": {
     "message": "Ошибка импорта счета."
   },
-  "importAccountLinkText": {
-    "message": "импортировать с использованием секретной фразы для восстановления"
-  },
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с секретной фразой для восстановления вашего изначально созданного счета MetaMask. Узнайте больше об импортированных счетах"
   },
   "importAccountSeedPhrase": {
     "message": "Импорт кошелька с помощью секретной фразы для восстановления"
-  },
-  "importAccountText": {
-    "message": "или $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Введите секретную фразу для восстановления (также известную как «сид-фраза»), которую вы получили при создании кошелька. $1",
@@ -1744,9 +1728,6 @@
   "newAccountNumberName": {
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Причина, по которой не был добавлен коллекционный актив: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Коллекционный актив успешно добавлен!"
@@ -2229,9 +2210,6 @@
   "restore": {
     "message": "Восстановить"
   },
-  "restoreAccountWithSeed": {
-    "message": "Восстановите свой счет с помощью секретной фразы для восстановления"
-  },
   "restoreWalletPreferences": {
     "message": "Найдена резервная копия ваших данных из $1. Хотите восстановить настройки кошелька?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2276,6 @@
   },
   "secretPhrase": {
     "message": "Автоматически загружается только первый счет в этом кошельке. Для добавления дополнительных счетов, после завершения этого процесса нажмите на выпадающее меню, а затем выберите «Создать счет»."
-  },
-  "secretPhraseWarning": {
-    "message": "Если вы выполняете восстановление с использованием другой секретной фразы для восстановления, ваш текущий кошелек, счета и активы будут удалены из этого приложения без возможности восстановления. Это действие нельзя отменить."
   },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"

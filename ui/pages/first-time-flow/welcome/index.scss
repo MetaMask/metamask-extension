@@ -5,7 +5,7 @@
   align-items: center;
   max-width: 442px;
   padding: 0 18px;
-  color: black;
+  color: var(--color-text-default);
 
   &__wrapper {
     display: flex;
@@ -35,7 +35,7 @@
     }
 
     a {
-      color: var(--primary-1);
+      color: var(--color-primary-default);
     }
 
     @media screen and (max-width: $break-small) {

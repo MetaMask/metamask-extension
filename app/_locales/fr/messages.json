@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
-  "addToAddressBook": {
-    "message": "Ajouter au carnet d’adresses"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Ajouter un jeton"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
   },
-  "enterAnAlias": {
-    "message": "Saisissez un pseudonyme"
-  },
   "enterMaxSpendLimit": {
     "message": "Saisissez la limite de dépenses maximale"
   },
@@ -1273,18 +1264,11 @@
   "importAccountError": {
     "message": "Erreur d’importation de compte."
   },
-  "importAccountLinkText": {
-    "message": "importer en utilisant la phrase secrète de récupération"
-  },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
   },
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
-  },
-  "importAccountText": {
-    "message": "ou $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Saisissez la phrase secrète de récupération (aussi appelée « phrase mnémonique » ou « seed ») qui vous a été attribuée lors de la création de votre portefeuille. $1",
@@ -1744,9 +1728,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Le collectible n’a pas été ajouté, car : $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Le collectible a été ajouté avec succès !"
@@ -2229,9 +2210,6 @@
   "restore": {
     "message": "Restaurer"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurer votre compte avec une phrase Seed."
-  },
   "restoreWalletPreferences": {
     "message": "Une sauvegarde de vos données de $1 a été trouvée. Voulez-vous restaurer vos préférences de portefeuille ?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2276,6 @@
   },
   "secretPhrase": {
     "message": "Seul le premier compte de ce portefeuille sera chargé automatiquement. Après avoir terminé ce processus, pour ajouter des comptes supplémentaires, cliquez sur le menu déroulant, puis sélectionnez Créer un compte."
-  },
-  "secretPhraseWarning": {
-    "message": "Si vous effectuez une restauration à l’aide d’une autre phrase secrète de récupération, votre portefeuille, vos comptes et vos actifs actuels seront définitivement supprimés de cette application. Cette action est irréversible."
   },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"

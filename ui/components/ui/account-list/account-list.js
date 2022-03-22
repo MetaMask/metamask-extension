@@ -21,7 +21,6 @@ const AccountList = ({
 }) => {
   const t = useI18nContext();
   const selectedAccountScrollRef = useRef(null);
-
   useLayoutEffect(() => {
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
@@ -103,7 +102,7 @@ const AccountList = ({
                       className="choose-account-list__account__balance"
                       type={PRIMARY}
                       value={balance}
-                      style={{ color: '#6A737D' }}
+                      style={{ color: 'var(--color-text-alternative)' }}
                       suffix={nativeCurrency}
                     />
                   </div>

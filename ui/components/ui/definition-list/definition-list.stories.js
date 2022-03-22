@@ -58,7 +58,7 @@ export const WithTypographyControl = () => (
     gapSize={select('gapSize', SIZES, SIZES.SM)}
     termTypography={{
       variant: select('termTypography.variant', TYPOGRAPHY, TYPOGRAPHY.H6),
-      color: select('termTypography.color', COLORS, COLORS.BLACK),
+      color: select('termTypography.color', COLORS, COLORS.TEXT_DEFAULT),
     }}
     definitionTypography={{
       variant: select(
@@ -66,7 +66,7 @@ export const WithTypographyControl = () => (
         TYPOGRAPHY,
         TYPOGRAPHY.H6,
       ),
-      color: select('definitionTypography.color', COLORS, COLORS.BLACK),
+      color: select('definitionTypography.color', COLORS, COLORS.TEXT_DEFAULT),
     }}
   />
 );
