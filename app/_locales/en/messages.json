@@ -420,18 +420,6 @@
     "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
     "description": "$1 represents the cypto symbol to be purchased"
   },
-  "insufficientCurrency": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network"
-  },
-  "insufficientCurrencyBuyOrDeposit": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 Deposit from another account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain + the key 'or' all wrapped in a button"
-  },
-  "depositFromOtherAccount": {
-    "message": "Deposit $1 from another account.",
-    "description": "$1 is the ticker symbol of the native currency of the chain the user is currently on"
-  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -1529,6 +1517,10 @@
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
+  },
+  "insufficientCurrencyBuyOrDeposit": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 Deposit from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain + the key 'or' all wrapped in a button"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."

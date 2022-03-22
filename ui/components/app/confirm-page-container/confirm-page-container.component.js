@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import {
-  NETWORK_TO_NAME_MAP,
-  MAINNET_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
@@ -262,55 +259,29 @@ export default class ConfirmPageContainer extends Component {
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
-              {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
-                <ActionableMessage
-                  message={
-                    <Typography variant={TYPOGRAPHY.H7} align="left">
-                      {t('insufficientCurrencyBuyOrDeposit', [
-                        nativeCurrency,
-                        networkName,
-                        <Button
-                          type="link"
-                          className="page-container__link"
-                          onClick={showBuyModal}
-                        >
-                          {t('buy')}
-                          {nativeCurrency}
-                          {t('or')}
-                        </Button>,
-                      ])}
-                      {/* <Button
-                        type="link"
+              <ActionableMessage
+                message={
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyBuyOrDeposit', [
+                      nativeCurrency,
+                      networkName,
+                      <Button
+                        key="buy-button"
+                        type="inline"
                         className="page-container__link"
                         onClick={showBuyModal}
                       >
-                        {t('buyEth')}
-                      </Button>
-
-                      {t('orDeposit')} */}
-                    </Typography>
-                  }
-                  useIcon
-                  iconFillColor="#d73a49"
-                  type="danger"
-                />
-              ) : (
-                <ActionableMessage
-                  message={
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      align="left"
-                      margin={[0, 0]}
-                    >
-                      {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
-                      {t('buyOther', [nativeCurrency])}
-                    </Typography>
-                  }
-                  useIcon
-                  iconFillColor="#d73a49"
-                  type="danger"
-                />
-              )}
+                        {t('buy')}
+                        {`${nativeCurrency} `}
+                        {t('or')}
+                      </Button>,
+                    ])}
+                  </Typography>
+                }
+                useIcon
+                iconFillColor="#d73a49"
+                type="danger"
+              />
             </div>
           )}
           {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (

@@ -12,7 +12,7 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { BUYABLE_CHAINS_MAP } from '../../../../shared/constants/network';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -96,51 +96,30 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {balanceError &&
-      chainId === MAINNET_CHAIN_ID &&
-      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
+      {balanceError && type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
           message={
             <Typography variant={TYPOGRAPHY.H7} align="left">
-                      {t('insufficientCurrencyBuyOrDeposit', [
-                        nativeCurrency,
-                        networkName,
-                        <Button
-                          type="link"
-                          className="page-container__link"
-                          onClick={showBuyModal}
-                        >
-                          {t('buy')}
-                          {nativeCurrency}
-                          {t('or')}
-                        </Button>,
-                      ])}
-                      {/* <Button
-                        type="link"
-                        className="page-container__link"
-                        onClick={showBuyModal}
-                      >
-                        {t('buyEth')}
-                      </Button>
-
-                      {t('orDeposit')} */}
-                    </Typography>
-          }
-          useIcon
-          iconFillColor="#d73a49"
-          type="danger"
-        />
-      ) : null}
-      {balanceError &&
-      chainId !== MAINNET_CHAIN_ID &&
-      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
-        <ActionableMessage
-          className="actionable-message--warning"
-          message={
-            <Typography variant={TYPOGRAPHY.H7} align="left">
-              {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
-              {t('buyOther', [nativeCurrency])}
+              {t('insufficientCurrencyBuyOrDeposit', [
+                nativeCurrency,
+                networkName,
+                Object.keys(BUYABLE_CHAINS_MAP).includes(chainId) ? (
+                  <>
+                    <Button
+                      type="inline"
+                      className="transaction-alerts__link"
+                      onClick={showBuyModal}
+                    >
+                      {t('buy')}
+                      {` ${nativeCurrency} `}
+                    </Button>
+                    {t('or')}
+                  </>
+                ) : (
+                  ''
+                ),
+              ])}
             </Typography>
           }
           useIcon

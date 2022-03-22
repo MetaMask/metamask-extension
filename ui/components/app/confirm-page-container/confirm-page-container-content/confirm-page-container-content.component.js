@@ -10,10 +10,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import {
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-} from '../../../../../shared/constants/network';
+import { BUYABLE_CHAINS_MAP } from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -206,33 +203,24 @@ export default class ConfirmPageContainerContent extends Component {
                   {t('insufficientCurrencyBuyOrDeposit', [
                     nativeCurrency,
                     networkName,
-                    [MAINNET_CHAIN_ID, RINKEBY_CHAIN_ID].includes(
+                    Object.keys(BUYABLE_CHAINS_MAP).includes(
                       currentTransaction.chainId,
                     ) ? (
-                      <Typography variant={TYPOGRAPHY.H7} align="left">
+                      <>
                         <Button
-                          type="link"
-                          className="page-container__link"
+                          type="inline"
+                          className="confirm-page-container-content__link"
                           onClick={showBuyModal}
                         >
                           {t('buy')}
-                          {nativeCurrency}{' '}
+                          {` ${nativeCurrency} `}
                         </Button>
                         {t('or')}
-                      </Typography>
+                      </>
                     ) : (
                       ''
                     ),
                   ])}
-                  {/* <Button
-                        type="link"
-                        className="page-container__link"
-                        onClick={showBuyModal}
-                      >
-                        {t('buyEth')}
-                      </Button>
-
-                      {t('orDeposit')} */}
                 </Typography>
               }
               useIcon
