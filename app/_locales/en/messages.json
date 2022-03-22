@@ -3554,6 +3554,9 @@
   "tokenId": {
     "message": "Token ID"
   },
+  "tokenList": {
+    "message": "Token lists:"
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },
