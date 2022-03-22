@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
@@ -22,7 +22,7 @@ const SnapListTab = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const snaps = useSelector(getSnaps);
-  const settingsRef = useRef();
+  const settingsRef = useMemo(() => [React.createRef()], []);
   const onClick = (snap) => {
     const route = `${SNAPS_VIEW_ROUTE}/${window.btoa(
       unescape(encodeURIComponent(snap.id)),
@@ -38,7 +38,7 @@ const SnapListTab = () => {
   };
 
   useEffect(() => {
-    handleSettingsRefs(t, t('snaps'));
+    handleSettingsRefs(t, t('snaps'), settingsRef);
   }, [t, settingsRef]);
 
   return (

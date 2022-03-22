@@ -346,7 +346,6 @@ export function handleSettingsRefs(t, tabName, settingsRefs) {
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (s) => s.route.substring(1) === window.location.hash.substring(1),
   );
-
   if (
     settingsRefsIndex !== -1 &&
     settingsRefs[settingsRefsIndex].current !== null
