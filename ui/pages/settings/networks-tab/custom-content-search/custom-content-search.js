@@ -28,7 +28,7 @@ export default function CustomContentSearch({
 
   const handleSearch = async (searchQuery) => {
     if (searchQuery === '') {
-      setSearchIconColor('#9b9b9b');
+      setSearchIconColor('var(--color-icon-muted)');
     } else {
       setSearchIconColor('var(--color-icon-default)');
     }
