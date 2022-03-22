@@ -6,7 +6,6 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
-import CopyIcon from '../../../ui/icon/copy-icon.component';
 import Tooltip from '../../../ui/tooltip';
 
 import { COLORS, DISPLAY } from '../../../../helpers/constants/design-system';
@@ -36,7 +35,7 @@ const TokenAddress = ({ address }) => {
             handleCopy(address);
           }}
         >
-          <CopyIcon size={11} color="#037DD6" />
+          <i className="fa fa-copy" />
         </Button>
       </Tooltip>
     </Box>
