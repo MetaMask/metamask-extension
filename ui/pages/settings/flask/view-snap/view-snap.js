@@ -71,6 +71,7 @@ function ViewSnap() {
   if (!snap) {
     return null;
   }
+  console.log(snap);
   return (
     <div className="view-snap">
       <div className="settings-page__content-row">
@@ -100,6 +101,18 @@ function ViewSnap() {
             </Box>
           </Box>
         </div>
+        <Box
+          className="view-snap__install-details"
+          display="flex"
+          justifyContent="space-between"
+          padding={2}
+        >
+          {/* TODO: Add data for below */}
+          <Typography variant={TYPOGRAPHY.H8}>Added on bla</Typography>
+          <Typography className="view-snap__version" variant={TYPOGRAPHY.H7}>
+            {t('shorthandVersion', [snap.manifest.version])}
+          </Typography>
+        </Box>
         <Box
           className="view-snap__content-container"
           width={FRACTIONS.SEVEN_TWELFTHS}

@@ -24,6 +24,19 @@
     }
   }
 
+  &__install-details {
+    border-bottom: 1px solid var(--alto);
+    margin-right: 24px;
+
+    @media screen and (max-width: $break-small) {
+      margin-right: 0;
+    }
+  }
+
+  &__version {
+   font-family: monospace;
+  }
+
   &__title {
     @media screen and (max-width: $break-small) {
       padding-bottom: 16px;
