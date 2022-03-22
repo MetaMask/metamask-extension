@@ -404,22 +404,6 @@ describe('Settings Search Utils', () => {
           tab: 'Experimental',
         },
         {
-          description:
-            "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.",
-          icon: 'fa fa-flask',
-          route: '/settings/experimental#opensea-api',
-          section: 'Enable OpenSea API',
-          tab: 'Experimental',
-        },
-        {
-          description:
-            'Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services.',
-          icon: 'fa fa-flask',
-          route: '/settings/experimental#autodetect-nfts',
-          section: 'Autodetect NFTs',
-          tab: 'Experimental',
-        },
-        {
           description: 'MetaMask is designed and built around the world.',
           icon: 'fa fa-info-circle',
           route: '/settings/about-us#version',
