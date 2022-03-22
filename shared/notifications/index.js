@@ -46,6 +46,18 @@ export const UI_NOTIFICATIONS = {
       width: '80%',
     },
   },
+  10: {
+    id: 10,
+    date: '2022-04-18',
+    image: {
+      src: 'images/token-detection.svg',
+      width: '100%',
+    },
+  },
+  11: {
+    id: 10,
+    date: '2022-04-18',
+  },
 };
 
 export const getTranslatedUINoficiations = (t, locale) => {
@@ -130,6 +142,28 @@ export const getTranslatedUINoficiations = (t, locale) => {
       ],
       date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[9].date),
+      ),
+    },
+    10: {
+      ...UI_NOTIFICATIONS[10],
+      title: t('notifications10Title'),
+      description: [
+        t('notifications10DescriptionOne'),
+        t('notifications10DescriptionTwo'),
+        t('notifications10DescriptionThree'),
+      ],
+      actionText: t('notifications10ActionText'),
+      date: new Intl.DateTimeFormat(formattedLocale).format(
+        new Date(UI_NOTIFICATIONS[10].date),
+      ),
+    },
+    11: {
+      ...UI_NOTIFICATIONS[11],
+      title: t('notifications11Title'),
+      description: t('notifications11Description'),
+      actionText: t('notifications11ActionText'),
+      date: new Intl.DateTimeFormat(formattedLocale).format(
+        new Date(UI_NOTIFICATIONS[11].date),
       ),
     },
   };
