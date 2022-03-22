@@ -5,15 +5,11 @@ export default {
   title: 'Components/UI/QrCodeView',
   id: __filename,
   argTypes: {
-    warning: {
-      control: 'text',
-    },
     Qr: {
       control: 'object',
     },
   },
   args: {
-    warning: 'This is a warning',
     Qr: {
       message: <div>message</div>,
       data: 'data',
@@ -21,8 +17,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <QrCodeView {...args} warning="this is a warning" />
-);
+export const DefaultStory = (args) => <QrCodeView {...args} />;
 
 DefaultStory.storyName = 'Default';
