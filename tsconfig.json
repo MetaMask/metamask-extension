@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "inlineSources": true,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": ["dom", "es2020"],
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "outDir": "tsout",
+    "rootDir": ".",
+    "sourceMap": true,
+    "strict": true
+  },
+  "exclude": [
+    "**/*.test.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    ".storybook/**/*",
+    "builds/**/*",
+    "dist/**/*",
+    "node_modules/**"
+  ],
+  "extends": "@tsconfig/node14/tsconfig.json"
+}

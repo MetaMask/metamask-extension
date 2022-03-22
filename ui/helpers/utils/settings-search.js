@@ -23,6 +23,7 @@ function showHideSettings(t, settings) {
         description: t('enableOpenSeaAPIDescription'),
         route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
         icon: 'fa fa-flask',
+        id: settings.length + 1,
       },
       {
         tab: t('experimental'),
@@ -30,6 +31,7 @@ function showHideSettings(t, settings) {
         description: t('useCollectibleDetectionDescription'),
         route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
         icon: 'fa fa-flask',
+        id: settings.length + 2,
       },
     ];
   }
@@ -37,7 +39,7 @@ function showHideSettings(t, settings) {
 }
 
 export function getSettingsRoutes(t) {
-  const settingsRoutesList = [
+  let settingsRoutesList = [
     {
       tab: t('general'),
       section: t('currencyConversion'),
@@ -265,13 +267,6 @@ export function getSettingsRoutes(t) {
       icon: 'fa fa-plug',
     },
     {
-      tab: t('experimental'),
-      section: t('useTokenDetection'),
-      description: t('useTokenDetectionDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#token-description`,
-      icon: 'fa fa-flask',
-    },
-    {
       tab: t('about'),
       section: t('metamaskVersion'),
       description: t('builtAroundTheWorld'),
@@ -332,6 +327,31 @@ export function getSettingsRoutes(t) {
       icon: 'fa fa-info-circle',
     },
   ];
+  if (process.env.TOKEN_DETECTION_V2) {
+    settingsRoutesList = [
+      ...settingsRoutesList,
+      {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        tab: t('advanced'),
+        section: t('tokenDetection'),
+        description: t('tokenDetectionToggleDescription'),
+        route: `${ADVANCED_ROUTE}#token-description`,
+        icon: 'fas fa-sliders-h',
+      },
+    ];
+  } else {
+    settingsRoutesList = [
+      ...settingsRoutesList,
+      {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        tab: t('experimental'),
+        section: t('useTokenDetection'),
+        description: t('useTokenDetectionDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#token-description`,
+        icon: 'fa fa-flask',
+      },
+    ];
+  }
   for (let i = 0; i < settingsRoutesList.length; i++) {
     settingsRoutesList[i].id = i + 1;
   }

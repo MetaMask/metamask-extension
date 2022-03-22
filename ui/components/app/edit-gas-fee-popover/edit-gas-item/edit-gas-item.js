@@ -87,7 +87,7 @@ const EditGasItem = ({ priorityLevel }) => {
         },
       });
 
-      closeModal('editGasFee');
+      closeModal(['editGasFee']);
 
       if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
         updateTransactionToTenPercentIncreasedGasFee();

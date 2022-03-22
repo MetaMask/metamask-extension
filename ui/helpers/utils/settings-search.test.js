@@ -111,10 +111,15 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
+    /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
     case 'useTokenDetection':
       return 'Use Token Detection';
     case 'useTokenDetectionDescription':
       return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.';
+    case 'tokenDetection':
+      return 'Token detection';
+    case 'tokenDetectionToggleDescription':
+      return 'ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import.';
     case 'enableOpenSeaAPI':
       return 'Enable OpenSea API';
     case 'enableOpenSeaAPIDescription':
@@ -384,24 +389,16 @@ describe('Settings Search Utils', () => {
         {
           description: 'Kovan Test Network',
           icon: 'fa fa-plug',
-          route: '/settings/networks#networtks-kovan',
+          route: '/settings/networks#networks-kovan',
           section: 'Kovan Test Network',
           tab: 'Networks',
         },
         {
           description: 'Localhost 8545',
           icon: 'fa fa-plug',
-          route: '/settings/networks#network-localhost',
+          route: '/settings/networks#networks-localhost',
           section: 'Localhost 8545',
           tab: 'Networks',
-        },
-        {
-          description:
-            'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
-          icon: 'fa fa-flask',
-          route: '/settings/experimental#token-description',
-          section: 'Use Token Detection',
-          tab: 'Experimental',
         },
         {
           description: 'MetaMask is designed and built around the world.',
@@ -458,6 +455,15 @@ describe('Settings Search Utils', () => {
           route: '/settings/about-us#contactus',
           section: 'Contact us',
           tab: 'About',
+        },
+        {
+          /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+          description:
+            'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
+          icon: 'fa fa-flask',
+          route: '/settings/experimental#token-description',
+          section: 'Use Token Detection',
+          tab: 'Experimental',
         },
       ];
       for (let i = 0; i < expectedSettingsList.length; i++) {

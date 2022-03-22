@@ -22,7 +22,7 @@ const SECTIONS = {
       key: 'A Test String',
       children: 'A Test String',
       props: {
-        color: COLORS.UI3,
+        color: COLORS.TEXT_MUTED,
         variant: TYPOGRAPHY.H2,
       },
     },
@@ -31,7 +31,7 @@ const SECTIONS = {
       key: 'Some more text',
       children: 'Some more text as a paragraph',
       props: {
-        color: COLORS.UI4,
+        color: COLORS.TEXT_ALTERNATIVE,
         variant: TYPOGRAPHY.Paragraph,
       },
     },
