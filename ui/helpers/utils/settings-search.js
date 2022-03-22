@@ -14,12 +14,24 @@ import {
 } from '../constants/routes';
 
 function showHideSettings(t, settings) {
-  if (!process.env.COLLECTIBLES_V1) {
-    return settings.filter(
-      (e) =>
-        e.section !== t('enableOpenSeaAPI') &&
-        e.section !== t('useCollectibleDetection'),
-    );
+  if (process.env.COLLECTIBLES_V1) {
+    return [
+      ...settings,
+      {
+        tab: t('experimental'),
+        section: t('enableOpenSeaAPI'),
+        description: t('enableOpenSeaAPIDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
+        icon: 'fa fa-flask',
+      },
+      {
+        tab: t('experimental'),
+        section: t('useCollectibleDetection'),
+        description: t('useCollectibleDetectionDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+        icon: 'fa fa-flask',
+      },
+    ];
   }
   return settings;
 }
@@ -257,20 +269,6 @@ export function getSettingsRoutes(t) {
       section: t('useTokenDetection'),
       description: t('useTokenDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#token-description`,
-      icon: 'fa fa-flask',
-    },
-    {
-      tab: t('experimental'),
-      section: t('enableOpenSeaAPI'),
-      description: t('enableOpenSeaAPIDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
-      icon: 'fa fa-flask',
-    },
-    {
-      tab: t('experimental'),
-      section: t('useCollectibleDetection'),
-      description: t('useCollectibleDetectionDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       icon: 'fa fa-flask',
     },
     {
