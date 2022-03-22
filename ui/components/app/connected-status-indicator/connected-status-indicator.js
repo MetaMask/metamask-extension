@@ -37,7 +37,7 @@ export default function ConnectedStatusIndicator({ onClick }) {
   }
 
   let indicatorType = ColorIndicator.TYPES.OUTLINE;
-  let indicatorColor = COLORS.UI4;
+  let indicatorColor = COLORS.ICON_DEFAULT;
 
   if (status === STATUS_CONNECTED) {
     indicatorColor = COLORS.SUCCESS1;

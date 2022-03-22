@@ -40,7 +40,7 @@ export default function NetworkDisplay({
 
   return (
     <Chip
-      borderColor={outline ? COLORS.UI3 : COLORS.TRANSPARENT}
+      borderColor={outline ? COLORS.BORDER_MUTED : COLORS.TRANSPARENT}
       onClick={onClick}
       leftIcon={
         <LoadingIndicator
@@ -49,7 +49,11 @@ export default function NetworkDisplay({
           isLoading={networkIsLoading}
         >
           <ColorIndicator
-            color={networkType === NETWORK_TYPE_RPC ? COLORS.UI4 : networkType}
+            color={
+              networkType === NETWORK_TYPE_RPC
+                ? COLORS.ICON_DEFAULT
+                : networkType
+            }
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={
