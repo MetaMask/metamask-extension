@@ -55,12 +55,11 @@ export default function CustomContentSearch({
             position="end"
             onClick={() => handleSearch('')}
           >
-            <img
-              className="imageclose"
-              src="images/close-gray.svg"
+            <i
+              className="fa fa-close imageclose"
               width="17"
               height="17"
-              alt="Close Image"
+              title="Close"
             />
           </InputAdornment>
         )}
