@@ -84,7 +84,7 @@ export default function FeeCard({
               key="gas-item"
               detailTitle={
                 supportsEIP1559V2 &&
-                (!smartTransactionsEnabled || !smartTransactionsOptInStatus) ? (
+                  (!smartTransactionsEnabled || !smartTransactionsOptInStatus) ? (
                   <GasDetailsItemTitle />
                 ) : (
                   <>
@@ -101,7 +101,7 @@ export default function FeeCard({
                           <p className="fee-card__info-tooltip-paragraph">
                             {t('swapGasFeesDetails')}
                           </p>
-                          <p className="fee-card__info-tooltip-paragraph">
+                          {/* <p className="fee-card__info-tooltip-paragraph">
                             <a
                               className="fee-card__link"
                               onClick={() => {
@@ -115,7 +115,7 @@ export default function FeeCard({
                             >
                               {t('swapGasFeesLearnMore')}
                             </a>
-                          </p>
+                          </p> */}
                         </>
                       }
                       containerClassName="fee-card__info-tooltip-content-container"

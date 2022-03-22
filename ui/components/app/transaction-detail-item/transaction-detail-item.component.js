@@ -43,11 +43,11 @@ export default function TransactionDetailItem({
             'transaction-detail-item__detail-values--flex-width': flexWidthValues,
           })}
         >
-          {detailText && (
+          {/* {detailText && (
             <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
               {detailText}
             </Typography>
-          )}
+          )} */}
           <Typography
             color={COLORS.BLACK}
             fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
@@ -60,22 +60,24 @@ export default function TransactionDetailItem({
         </div>
       </div>
       <div className="transaction-detail-item__row">
-        {React.isValidElement(subTitle) ? (
+        {/* {React.isValidElement(subTitle) ? (
           <div>{subTitle}</div>
         ) : (
           <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
             {subTitle}
           </Typography>
-        )}
-
-        <Typography
+        )} */}
+        {/* <Typography
           variant={TYPOGRAPHY.H7}
           color={COLORS.UI4}
           align="end"
           className="transaction-detail-item__row-subText"
         >
           {subText}
-        </Typography>
+        </Typography> */}
+        <div className='d-flex justify-content-space-between align-items-center w-100'>
+          {subText}
+        </div>
       </div>
     </div>
   );

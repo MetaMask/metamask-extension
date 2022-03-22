@@ -9,7 +9,7 @@
   flex-direction: column;
 
   &--with-top-border {
-    border-top: 1px solid var(--geyser);
+    // border-top: 1px solid var(--geyser);
   }
 
   &__error-container {
@@ -99,5 +99,9 @@
   &__total-amount,
   &__total-value {
     position: relative;
+  }
+  &__currency-container-balance{
+    @include H7;
+    color: var(--black);
   }
 }

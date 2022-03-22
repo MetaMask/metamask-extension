@@ -35,6 +35,7 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import TuneIcon from '../../ui/icon/tune-icon.component';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -233,7 +234,7 @@ export default function EditGasPopover({
   const footerButtonText = confirmButtonText || t('save');
   return (
     <Popover
-      title={title}
+      // title={title}
       onClose={closePopover}
       className="edit-gas-popover__wrapper"
       onBack={
@@ -243,7 +244,8 @@ export default function EditGasPopover({
         showEducationContent ? null : (
           <>
             <Button
-              type="primary"
+              className='edit-gas-popover__save'
+              type="primaryGradient"
               onClick={onSubmit}
               disabled={
                 hasGasErrors ||
@@ -258,6 +260,10 @@ export default function EditGasPopover({
         )
       }
     >
+      <div className='edit-gas-popover__title'>
+        <TuneIcon />
+        <p>{title}</p>
+      </div>
       <div style={{ padding: '0 20px 20px 20px', position: 'relative' }}>
         {showEducationContent ? (
           <EditGasDisplayEducation />

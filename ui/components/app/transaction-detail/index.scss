@@ -1,22 +1,24 @@
 .transaction-detail {
   position: relative;
-
+  background-color: var(--white);
+  border-radius: 10px;
+  padding: 16px 16px 1px 16px;
   .transaction-detail-edit {
     text-align: end;
-    padding-top: 20px;
+    // padding-top: 20px;
 
     button {
       @include H7;
 
-      color: var(--primary-1);
+      color: var(--secondary-3);
       background: transparent;
       border: 0;
       padding-inline-end: 0;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
   }
 
   &-rows {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 }

@@ -1,11 +1,12 @@
 .confirm-page-container-summary {
   padding: 16px 24px;
-  background-color: #f9fafa;
+  background-color: var(--background);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-
+  margin-bottom: 80px;
+  
   &__origin,
   &__action-row {
     padding-bottom: 8px;
@@ -51,6 +52,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    background: linear-gradient(111.99deg, var(--secondary-2-start) 9.4%, var(--secondary-2-end) 92.26%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   &__subtitle {
@@ -63,6 +67,6 @@
   }
 
   &--border {
-    border-bottom: 1px solid var(--geyser);
+    // border-bottom: 1px solid var(--geyser);
   }
 }

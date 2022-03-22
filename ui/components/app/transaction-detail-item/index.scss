@@ -15,7 +15,13 @@
       .currency-display-component {
         margin-left: 4px;
       }
+      &-title{
+        color:var(--gray-2);
+        @include H7;
+        @include roundeBold;
+      }
     }
+   
   }
 
   &__detail-values {
@@ -34,12 +40,14 @@
     margin-inline-start: 4px;
 
     path {
-      fill: var(--ui-3);
+      fill: var(--gray-1);
     }
   }
 
   .currency-display-component {
     display: inline;
+    // @include H7;
+    // color:var(--gray-2);
   }
 
   &:first-of-type {

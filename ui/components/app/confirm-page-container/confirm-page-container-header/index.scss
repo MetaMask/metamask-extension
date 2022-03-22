@@ -5,11 +5,12 @@
 
   &__row {
     display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--geyser);
-    padding: 4px 13px 4px 13px;
+    justify-content: center;
+    // border-bottom: 1px solid var(--geyser);
+    padding: 10px 13px;
     flex: 0 0 auto;
     align-items: center;
+    position: relative;
 
     & .network-display {
       margin-right: 0;
@@ -27,12 +28,16 @@
     }
   }
 
+  &__back-icon{
+    position: absolute;
+    left: 24px;
+    cursor: pointer;
+  }
+
   &__back-button {
     @include Paragraph;
-
-    color: #2f9ae0;
-    cursor: pointer;
-    padding-left: 5px;
+    @include H4;
+    color: var(--black);
   }
 
   &__address-container {

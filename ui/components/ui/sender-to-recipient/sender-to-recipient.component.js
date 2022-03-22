@@ -14,6 +14,7 @@ import {
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
+import EastIcon from '../icon/east-icon.component';
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
@@ -123,12 +124,12 @@ export function RecipientWithAddress({
         <div className="sender-to-recipient__name">
           {addressOnly
             ? recipientNickname ||
-              recipientEns ||
-              shortenAddress(checksummedRecipientAddress)
+            recipientEns ||
+            shortenAddress(checksummedRecipientAddress)
             : recipientNickname ||
-              recipientEns ||
-              recipientName ||
-              t('newContract')}
+            recipientEns ||
+            recipientName ||
+            t('newContract')}
         </div>
       </div>
       {showNicknamePopovers ? (
@@ -153,9 +154,10 @@ RecipientWithAddress.propTypes = {
 function Arrow({ variant }) {
   return variant === DEFAULT_VARIANT ? (
     <div className="sender-to-recipient__arrow-container">
-      <div className="sender-to-recipient__arrow-circle">
+      {/* <div className="sender-to-recipient__arrow-circle">
         <img height="15" width="15" src="./images/arrow-right.svg" alt="" />
-      </div>
+      </div> */}
+      <EastIcon />
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">

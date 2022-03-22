@@ -1,10 +1,15 @@
 .transaction-total-banner {
   text-align: center;
-
+  margin: 40px 0px 50px 0px;
   &__detail {
     padding-bottom: 4px;
   }
-
+  p{
+    @include H1;
+    background: linear-gradient(111.99deg, var(--secondary-2-start) 9.4%, var(--secondary-2-end) 92.26%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
   span {
     margin-inline-start: 2px;
   }

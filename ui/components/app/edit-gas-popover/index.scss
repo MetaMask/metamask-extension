@@ -3,5 +3,28 @@
     @media screen and (min-width: $break-large) {
       max-height: 84vh;
     }
+    & .popover-header{
+      padding: 6px !important;
+      & .popover-header__title{
+        padding-bottom: 0 !important;
+      }
+    }
+    & .popover-footer{
+      border-top: unset;
+    }
+  }
+  &__title{
+    text-align: center;
+    &>p{
+      background: linear-gradient(147.15deg, var(--primary-start) 29.03%, var(--primary-end) 84.89%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      @include H3;
+      @include roundeBold;
+      
+    }
+  }
+  &__save{
+    height: 32px;
   }
 }

@@ -11,9 +11,10 @@ export default function TransactionTotalBanner({
 }) {
   return (
     <div className="transaction-total-banner">
-      <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H1}>
+      {/* <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H1}>
         {total}
-      </Typography>
+      </Typography> */}
+      <p>{total}</p>
       {detail && (
         <Typography
           color={COLORS.BLACK}

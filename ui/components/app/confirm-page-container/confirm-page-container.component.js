@@ -184,7 +184,7 @@ export default class ConfirmPageContainer extends Component {
               />
             )}
           </ConfirmPageContainerHeader>
-          <div>
+          {/* <div>
             {showAddToAddressDialog && (
               <>
                 <Dialog
@@ -204,8 +204,8 @@ export default class ConfirmPageContainer extends Component {
                 ) : null}
               </>
             )}
-          </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
+          </div> */}
+          {/* <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} /> */}
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}

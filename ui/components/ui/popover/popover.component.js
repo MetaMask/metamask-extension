@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import CloseIcon from '../icon/close-icon.component';
 
 const Popover = ({
   title,
@@ -44,20 +45,26 @@ const Popover = ({
               <h2 title="popover">
                 {onBack ? (
                   <button
-                    className="fas fa-chevron-left popover-header__button"
+                    // className="fas fa-chevron-left popover-header__button"
+                    className="popover-header__button"
                     title={t('back')}
                     onClick={onBack}
-                  />
+                  >
+                    <CloseIcon />
+                  </button>
                 ) : null}
                 {title}
               </h2>
               {onClose ? (
                 <button
-                  className="fas fa-times popover-header__button"
+                  // className="fas fa-times popover-header__button"
+                  className="popover-header__button"
                   title={t('close')}
                   data-testid="popover-close"
                   onClick={onClose}
-                />
+                >
+                  <CloseIcon />
+                </button>
               ) : null}
             </div>
             {subtitle ? (
