@@ -33,8 +33,7 @@ const AdvancedGasFeeSaveButton = () => {
         gas_edit_type: 'advanced',
       },
     });
-    closeModal('editGasFee');
-    closeModal('advancedGasFee');
+    closeModal(['advancedGasFee', 'editGasFee']);
   };
 
   return (
