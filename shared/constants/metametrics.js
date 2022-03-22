@@ -170,8 +170,8 @@
 export const TRAITS = {
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   THREE_BOX_ENABLED: 'three_box_enabled',
-  NUMBER_OF_ACCOUNTS: 'number_of_accounts',  
-  NETWORKS_ADDED: 'networks_added',  
+  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
+  NETWORKS_ADDED: 'networks_added',
 };
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
