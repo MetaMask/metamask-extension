@@ -56,9 +56,6 @@ export const COLORS = {
   /**
    * !!! DEPRECATED DO NOT USE!!!
    */
-  GREY: 'grey',
-  NEUTRAL_GREY: 'neutral-grey',
-  WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY3: 'primary-3',
   SECONDARY1: 'secondary-1',

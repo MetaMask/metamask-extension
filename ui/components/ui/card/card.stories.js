@@ -164,6 +164,6 @@ DefaultStory.args = {
   borderWidth: 1,
   borderColor: COLORS.BORDER_DEFAULT,
   borderStyle: BORDER_STYLE.SOLID,
-  backgroundColor: COLORS.WHITE,
+  backgroundColor: COLORS.BACKGROUND_DEFAULT,
   display: DISPLAY.BLOCK,
 };
