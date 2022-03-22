@@ -14,8 +14,7 @@ import {
   getStorageItem,
   setStorageItem,
 } from '../../../../helpers/utils/storage-helpers';
-// import { getPrivateKey } from '../../../../store/actions';
-// store.dispatch(actions.signMsg(msgParams));
+
 const ethUtil = require('ethereumjs-util');
 const kycApiHost = require('../../../../../kyc.config.json').host;
 const ipfsUri = require('../../../../../kyc.config.json').ipfs;
@@ -62,61 +61,10 @@ export default class CheckKycStatus extends Component {
     }
   };
 
-  // onPaste = (event) => {
-  //   if (event.clipboardData.items?.length) {
-  //     const clipboardItem = event.clipboardData.items[0];
-  //     clipboardItem?.getAsString((text) => {
-  //       const input = text.trim();
-  //       if (
-  //         !isBurnAddress(input) &&
-  //         isValidHexAddress(input, { mixedCaseUseChecksum: true })
-  //       ) {
-  //         this.props.onPaste(input);
-  //       }
-  //     });
-  //   }
-  // };
-
-  // onChange = ({ target: { value } }) => {
-  //   const {
-  //     onValidAddressTyped,
-  //     internalSearch,
-  //     onChange,
-  //     lookupEnsName,
-  //     resetEnsResolution,
-  //   } = this.props;
-  //   const input = value.trim();
-
-  //   onChange(input);
-  //   if (internalSearch) {
-  //     return null;
-  //   }
-  //   // Empty ENS state if input is empty
-  //   // maybe scan ENS
-  //   if (isValidDomainName(input)) {
-  //     lookupEnsName(input);
-  //   } else {
-  //     resetEnsResolution();
-  //     if (
-  //       onValidAddressTyped &&
-  //       !isBurnAddress(input) &&
-  //       isValidHexAddress(input, { mixedCaseUseChecksum: true })
-  //     ) {
-  //       onValidAddressTyped(input);
-  //     }
-  //   }
-
-  //   return null;
-  // };
   handleVerifyButtonClick = async () => {
     const { history } = this.props;
     history.push(KYC_FLOW);
   };
-
-  // clearStorage = async (storageKey) => {
-  //   await setStorageItem(storageKey, false);
-  //   await this.handleCheckKycStatus();
-  // };
 
   checkKycStatusIpfs = async (cid) => {
     const apiUri = `${ipfsUri}/${cid}`;
@@ -187,9 +135,6 @@ export default class CheckKycStatus extends Component {
       return;
     }
 
-    // const { status, filestatus } = kycInfo
-
-    // if (status === true && filestatus === 'verified') {
     const isSubmitted = await getStorageItem(storageKeySubmitted);
     // console.log('handleCheckKycStatus', isSubmitted);
     if (isSubmitted === true) {
@@ -234,10 +179,6 @@ export default class CheckKycStatus extends Component {
   };
 
   render() {
-    // const { t } = this.context;
-    // const { className, selectedAddress, selectedName, userInput } = this.props;
-
-    // const hasSelectedAddress = Boolean(selectedAddress);
     const { isLoading } = this.state;
     const { kycStatus } = this.state;
     let statusBlock;
@@ -249,15 +190,9 @@ export default class CheckKycStatus extends Component {
             onClick={this.handleVerifyButtonClick}
             type="secondary"
             rounded={false}
-            // className="invalid-custom-network-alert__footer-row-button"
           >
             Verify
           </Button>
-          {/* <button
-              type="button"
-              className=""
-              onClick={this.handleVerifyButtonClick}
-            >Verify</button> */}
         </div>
       );
     } else {
@@ -270,19 +205,6 @@ export default class CheckKycStatus extends Component {
               style={{ color: 'green', marginLeft: '4px' }}
             ></i>
           )}
-          {/* test */}
-          {/* {kycStatus === 'Submitted' && (
-            <Button
-              onClick={this.clearStorage.bind(
-                this,
-                this.state.storageKeySubmitted,
-              )}
-              type="link"
-              rounded={false}
-            >
-              Clear submitted
-            </Button>
-          )} */}
         </div>
       );
     }

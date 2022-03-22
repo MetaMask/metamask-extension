@@ -21,30 +21,6 @@ const KycStatus = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  // const sendTokenEvent = useMetricEvent({
-  //   eventOpts: {
-  //     category: 'Navigation',
-  //     action: 'Home',
-  //     name: 'Clicked Send: Token',
-  //   },
-  // });
-  // const titleIcon = warning ? (
-  //   <Tooltip
-  //     wrapperClassName="asset-list-item__warning-tooltip"
-  //     interactive
-  //     position="bottom"
-  //     html={warning}
-  //   >
-  //     <InfoIcon severity={SEVERITIES.WARNING} />
-  //   </Tooltip>
-  // ) : null;
-
-  // const midContent = warning ? (
-  //   <>
-  //     <InfoIcon severity={SEVERITIES.WARNING} />
-  //     <div className="asset-list-item__warning">{warning}</div>
-  //   </>
-  // ) : null;
 
   return (
     <div className="kyc-verify">
@@ -53,29 +29,8 @@ const KycStatus = () => {
   );
 };
 
-KycStatus.propTypes = {
-  // className: PropTypes.string,
-  // 'data-id': PropTypes.string,
-  // iconClassName: PropTypes.string,
-  // onClick: PropTypes.func.isRequired,
-  // tokenAddress: PropTypes.string,
-  // tokenSymbol: PropTypes.string,
-  // tokenDecimals: PropTypes.number,
-  // tokenImage: PropTypes.string,
-  // warning: PropTypes.node,
-  // primary: PropTypes.string,
-  // secondary: PropTypes.string,
-  // identiconBorder: PropTypes.bool,
-  // isERC721: PropTypes.bool,
-};
+KycStatus.propTypes = {};
 
-KycStatus.defaultProps = {
-  // className: undefined,
-  // 'data-id': undefined,
-  // iconClassName: undefined,
-  // tokenAddress: undefined,
-  // tokenImage: undefined,
-  // warning: undefined,
-};
+KycStatus.defaultProps = {};
 
 export default KycStatus;

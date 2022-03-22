@@ -31,22 +31,8 @@ export default class FormFooter extends Component {
   };
 
   onCancel() {
-    const {
-      // cancelTx,
-      // draftTransactionID,
-      history,
-      // mostRecentOverviewPage,
-      // resetSendState,
-      // sendStage,
-    } = this.props;
+    const { history } = this.props;
 
-    // if (draftTransactionID) {
-    //   cancelTx({ id: draftTransactionID });
-    // }
-    // resetSendState();
-
-    // const nextRoute =
-    //   sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
     history.push(DEFAULT_ROUTE);
   }
 
@@ -55,35 +41,9 @@ export default class FormFooter extends Component {
     console.log('on submit');
     // console.log(this.props);
 
-    const {
-      // addToAddressBookIfNew,
-      // sign,
-      to,
-      toAccounts,
-      // history,
-      // gasEstimateType,
-    } = this.props;
-    // const { metricsEvent } = this.context;
+    const { to, toAccounts } = this.props;
     const { address } = toAccounts[0];
     console.log('address:', address);
-
-    // // TODO: add nickname functionality
-    // await addToAddressBookIfNew(to, toAccounts);
-    // const promise = sign();
-
-    // Promise.resolve(promise).then(() => {
-    //   metricsEvent({
-    //     eventOpts: {
-    //       category: 'Transactions',
-    //       action: 'Edit Screen',
-    //       name: 'Complete',
-    //     },
-    //     customVariables: {
-    //       gasChanged: gasEstimateType,
-    //     },
-    //   });
-    //   history.push(CONFIRM_TRANSACTION_ROUTE);
-    // });
   }
 
   componentDidUpdate(prevProps) {

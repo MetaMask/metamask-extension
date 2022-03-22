@@ -21,17 +21,10 @@ export default function FormHeader() {
   const t = useI18nContext();
 
   const onClose = () => {
-    // dispatch(resetSendState());
     history.push(mostRecentOverviewPage);
   };
 
   const title = 'Account verify';
-
-  // if (stage === SEND_STAGES.ADD_RECIPIENT || stage === SEND_STAGES.INACTIVE) {
-  //   title = t('sendTo');
-  // } else if (stage === SEND_STAGES.EDIT) {
-  //   title = t('edit');
-  // }
 
   return (
     <PageContainerHeader
