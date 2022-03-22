@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
-import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 
 import {
   ALERTS_ROUTE,
