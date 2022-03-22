@@ -271,7 +271,10 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderTokenDetectionToggle()}
+        {/* TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */}
+        {process.env.TOKEN_DETECTION_V2
+          ? null
+          : this.renderTokenDetectionToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
