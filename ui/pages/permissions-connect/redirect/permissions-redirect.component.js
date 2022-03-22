@@ -17,7 +17,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             size={64}
           />
           <div className="permissions-redirect__center-icon">
-            <i className="fa fa-check fa-lg permissions-redirect__check"></i>
+            <i className="fa fa-check fa-lg permissions-redirect__check" />
             {renderBrokenLine()}
           </div>
           <SiteIcon icon="/images/logo/metamask-fox.svg" size={64} />
