@@ -153,7 +153,7 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should get all settings', () => {
-      const acceptedSettingsList = [
+      const expectedSettingsList = [
         {
           description: '',
           icon: 'fa fa-cog',
@@ -460,14 +460,14 @@ describe('Settings Search Utils', () => {
           tab: 'About',
         },
       ];
-      for (let i = 0; i < acceptedSettingsList.length; i++) {
-        acceptedSettingsList[i].id = i + 1;
+      for (let i = 0; i < expectedSettingsList.length; i++) {
+        expectedSettingsList[i].id = i + 1;
       }
-      expect(getSettingsRoutes(t)).toStrictEqual(acceptedSettingsList);
+      expect(getSettingsRoutes(t)).toStrictEqual(expectedSettingsList);
     });
 
     it('should not get all settings', () => {
-      const acceptedSettingsList = [
+      const expectedSettingsList = [
         {
           description: '',
           image: 'general-icon.svg',
@@ -483,7 +483,7 @@ describe('Settings Search Utils', () => {
           tab: 'About',
         },
       ];
-      expect(getSettingsRoutes(t)).not.toStrictEqual(acceptedSettingsList);
+      expect(getSettingsRoutes(t)).not.toStrictEqual(expectedSettingsList);
     });
   });
 
