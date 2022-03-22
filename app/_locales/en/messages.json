@@ -3082,6 +3082,9 @@
   "stxTryRegular": {
     "message": "Try a regular swap."
   },
+  "stxTryingToCancel": {
+    "message": "Trying to cancel your transaction..."
+  },
   "stxUnavailable": {
     "message": "Smart transactions temporarily unavailable"
   },

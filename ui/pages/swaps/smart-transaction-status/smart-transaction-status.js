@@ -184,6 +184,8 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingFinalizing');
     } else if (timeLeftForPendingStxInSec < 150) {
       headerText = t('stxPendingPrivatelySubmitting');
+    } else if (cancelSwapLinkClicked) {
+      headerText = t('stxTryingToCancel');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
