@@ -175,20 +175,7 @@
     }
 
     &__status-icon {
-      @extend %bg-contain;
-
-      background-image: url('/images/search-black.svg');
-      width: 1.125rem;
-      height: 1.125rem;
-      margin: 0.25rem 0.5rem 0.25rem 0.25rem;
-
-      [data-theme='dark'] & {
-        background-image: url('/images/search.svg');
-      }
-
-      &--valid {
-        background-image: url('/images/check-green-solid.svg');
-      }
+      margin: 4px 8px 4px 4px;
     }
 
     &__input {
@@ -206,36 +193,21 @@
       }
     }
 
-    &__action-icon {
-      @extend %bg-contain;
-
-      cursor: pointer;
-
-      &--erase {
-        background-image: url('/images/close-gray.svg');
-        background-color: unset;
-        width: 0.75rem;
-        height: 0.75rem;
-        margin: 0 0.25rem;
-      }
-
-      &--qrcode {
-        background-image: url('/images/qr-blue.svg');
-        background-color: unset;
-        width: 1.5rem;
-        height: 1.5rem;
-        margin: 0 0.25rem;
-      }
+    &__action-icon-button {
+      background: none;
+      border: none;
+      padding: 0 8px;
+      height: 24px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     &--valid {
       border-color: var(--color-primary-default);
 
       .ens-input__wrapper {
-        &__status-icon {
-          background-image: url('/images/check-green-solid.svg');
-        }
-
         &__input {
           @extend %col-nowrap;
 
