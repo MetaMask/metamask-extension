@@ -13,7 +13,7 @@ export default function CustomContentSearch({
   searchQueryInput,
 }) {
   const t = useContext(I18nContext);
-  const [searchIconColor, setSearchIconColor] = useState('#9b9b9b');
+  const [searchIconColor, setSearchIconColor] = useState('var(--color-icon-muted)');
 
   const networksListArray = Object.values(networksList);
   const networksSearchFuse = new Fuse(networksListArray, {
