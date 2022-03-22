@@ -17,11 +17,9 @@ const MESSAGE_TEXT = 'isRunning';
 /**
  * Handles the ping message sent from other extension.
  */
-export const onMessageReceived = (message, sender, sendResponse) => {
+export const onMessageReceived = (message) => {
   if (message === MESSAGE_TEXT) {
-    sendResponse({
-      isRunning: true,
-    });
+    console.warn('Warning! You have multiple instances of MetaMask running!');
   }
 };
 
@@ -29,16 +27,11 @@ export const onMessageReceived = (message, sender, sendResponse) => {
  * Sends the ping message sent to other extension to detect whether it's active or not.
  * Displays console warning if it's active.
  */
-export const onExtensionConnect = () => {
+export const checkForMultipleVersionsRunning = () => {
   const idToPing =
     extension.runtime.id === METAMASK_FLASK_BUILD_ID
       ? METAMASK_PROD_BUILD_ID
       : METAMASK_FLASK_BUILD_ID;
 
-  extension.runtime.sendMessage(idToPing, MESSAGE_TEXT, (response) => {
-    if (extension.runtime.lastError || !response) {
-      return;
-    }
-    console.warn('Warning! You have multiple instances of MetaMask running!');
-  });
+  extension.runtime.sendMessage(idToPing, MESSAGE_TEXT);
 };
