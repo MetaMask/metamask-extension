@@ -64,6 +64,7 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
+    backgroundColor: 'var(--color-background-default)',
     border: '1px solid var(--color-border-default)',
     color: 'var(--color-text-default)',
     height: '48px',

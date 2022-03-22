@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lisa soovitatud lube"
   },
-  "addToAddressBook": {
-    "message": "Lisage aadressiraamatusse"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "nt John D."
-  },
   "addToken": {
     "message": "Lisage luba"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Tõrge ENS-i nime registreerimisel"
-  },
-  "enterAnAlias": {
-    "message": "Sisestage alias"
   },
   "enterPassword": {
     "message": "Sisestage parool"
@@ -805,9 +796,6 @@
   },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Eraldage iga sõna ühe tühikuga"
   },
   "seedPhraseReq": {
     "message": "Seemnefraasid on 12 sõna pikad"

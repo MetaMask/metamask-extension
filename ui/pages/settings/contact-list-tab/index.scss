@@ -67,6 +67,11 @@
     text-align: center;
   }
 
+  &__icon {
+    margin-bottom: 16px;
+    display: block;
+  }
+
   &__title {
     @include H4;
 

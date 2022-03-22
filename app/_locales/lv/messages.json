@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Pievienot ieteiktos marķierus"
   },
-  "addToAddressBook": {
-    "message": "Pievienot adrešu grāmatai"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "piemēram, Džons D."
-  },
   "addToken": {
     "message": "Pievienot žetonu"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Kļūda ENS vārda reģistrācijā"
-  },
-  "enterAnAlias": {
-    "message": "Ievadiet segvārdu"
   },
   "enterPassword": {
     "message": "Ievadiet paroli"
@@ -811,9 +802,6 @@
   },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Atdaliet katru vārdu ar vienu atstarpi"
   },
   "seedPhraseReq": {
     "message": "Atkopšanas frāzes ir 12 vārdus garas"

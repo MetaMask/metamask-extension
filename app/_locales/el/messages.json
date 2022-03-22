@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
-  "addToAddressBook": {
-    "message": "Προσθήκη στο βιβλίο διευθύνσεων"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "π.χ. John D."
-  },
   "addToken": {
     "message": "Προσθήκη Token"
   },
@@ -951,9 +945,6 @@
   },
   "ensUnknownError": {
     "message": "Η αναζήτηση ENS απέτυχε."
-  },
-  "enterAnAlias": {
-    "message": "Δώστε ένα ψευδώνυμο"
   },
   "enterMaxSpendLimit": {
     "message": "Εισάγετε Το Μέγιστο Όριο Δαπάνης"
@@ -2343,12 +2334,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Πριν ξεκινήσετε, παρακολουθήστε αυτό το σύντομο βίντεο για να μάθετε για τη Μυστική Φράση Ανάκτησης σας και πώς να κρατήσετε το πορτοφόλι σας ασφαλές."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Διαχωρίστε κάθε λέξη μ' ένα κενό"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Επικόλληση Μυστικής Φράσης Ανάκτησης από το πρόχειρο"
-  },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης έχουν μήκος 12 λέξεων"
   },
@@ -2458,9 +2443,6 @@
   },
   "showRecommendations": {
     "message": "Εμφάνιση Προτάσεων"
-  },
-  "showSeedPhrase": {
-    "message": "Εμφάνιση Μυστικής Φράσης Ανάκτησης"
   },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
