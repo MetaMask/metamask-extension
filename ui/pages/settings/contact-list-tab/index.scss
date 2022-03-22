@@ -227,12 +227,12 @@
 .address-book-add-button {
   &__button {
     position: absolute;
-    top: 85px;
+    top: 80px;
     right: 16px;
     width: auto;
 
     @media screen and (max-width: $break-small) {
-      top: 16px;
+      top: 8px;
       right: 60px;
 
       &--hidden {
