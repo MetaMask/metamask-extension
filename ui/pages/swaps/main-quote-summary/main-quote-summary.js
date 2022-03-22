@@ -75,10 +75,7 @@ export default function MainQuoteSummary({
               {sourceSymbol}
             </span>
           </div>
-          <img
-            className="main-quote-summary__down-arrow"
-            src="images/down-arrow-grey.svg"
-          />
+          <i className="fa fa-arrow-down main-quote-summary__down-arrow" />
           <div className="main-quote-summary__destination-row">
             <UrlIcon
               url={destinationIconUrl}
