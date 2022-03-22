@@ -242,6 +242,16 @@ export default class Routes extends Component {
     );
   }
 
+  onEditTransactionPage() {
+    const { location } = this.props;
+    return Boolean(
+      matchPath(location.pathname, {
+        path: SEND_ROUTE,
+        exact: false,
+      }),
+    );
+  }
+
   onSwapsPage() {
     const { location } = this.props;
     return Boolean(
@@ -359,6 +369,7 @@ export default class Routes extends Component {
             onClick={this.onAppHeaderClick}
             disabled={
               this.onConfirmPage() ||
+              this.onEditTransactionPage() ||
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
             }
           />
