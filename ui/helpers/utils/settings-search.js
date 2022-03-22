@@ -254,14 +254,14 @@ export function getSettingsRoutes(t) {
       tab: t('networks'),
       section: t('kovan'),
       description: t('kovan'),
-      route: `${NETWORKS_ROUTE}#networtks-kovan`,
+      route: `${NETWORKS_ROUTE}#networks-kovan`,
       icon: 'fa fa-plug',
     },
     {
       tab: t('networks'),
       section: t('localhost'),
       description: t('localhost'),
-      route: `${NETWORKS_ROUTE}#network-localhost`,
+      route: `${NETWORKS_ROUTE}#networks-localhost`,
       icon: 'fa fa-plug',
     },
     {
