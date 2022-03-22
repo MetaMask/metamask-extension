@@ -2,7 +2,7 @@
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  background: rgba(36, 41, 46, 0.9);
+  background: var(--color-background-alternative);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   min-height: 116px;
@@ -25,18 +25,18 @@
   &__text {
     @include H7;
 
-    color: var(--white);
+    color: var(--color-text-default);
   }
 
   &__text-link {
     @include H7;
 
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
   .fa-info-circle {
-    color: #6a737d;
+    color: var(--color-icon-default);
   }
 
   & &__checkbox-wrapper {
@@ -59,7 +59,7 @@
   & &__checkbox-label {
     @include H7;
 
-    color: var(--white);
+    color: var(--color-text-default);
     margin-left: 10px;
     margin-top: 1px;
     user-select: none;
@@ -69,9 +69,9 @@
   }
 
   & &__ignore-button {
-    border-color: #6a737d;
+    border-color: var(--color-border-default);
     box-sizing: border-box;
-    color: var(--white);
+    color: var(--color-text-default);
     background-color: inherit;
     height: 34px;
     width: 155px;
@@ -82,19 +82,19 @@
     }
 
     &:hover {
-      border-color: #6a737d;
-      background-color: #6a737d;
+      border-color: var(--color-border-alternative);
+      background-color: var(--color-background-alternative);
     }
 
     &:active {
-      background-color: #141618;
+      background-color: var(--color-background-alternative);
     }
   }
 
   & &__accept-button {
-    border-color: #6a737d;
+    border-color: var(--color-border-default);
     box-sizing: border-box;
-    color: var(--white);
+    color: var(--color-text-default);
     background-color: inherit;
     height: 34px;
     width: 155px;
@@ -106,12 +106,12 @@
     }
 
     &:hover {
-      border-color: #6a737d;
-      background-color: #6a737d;
+      border-color: var(--color-border-alternative);
+      background-color: var(--color-background-alternative);
     }
 
     &:active {
-      background-color: #141618;
+      background-color: var(--color-background-alternative);
     }
   }
 
