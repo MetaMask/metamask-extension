@@ -22,7 +22,7 @@ function showHideSettings(t, settings) {
 }
 
 export function getSettingsRoutes(t) {
-  const settingsRoutesList = [
+  let settingsRoutesList = [
     {
       tab: t('general'),
       section: t('currencyConversion'),
@@ -273,14 +273,6 @@ export function getSettingsRoutes(t) {
     },
     {
       tab: t('experimental'),
-      section: t('useTokenDetection'),
-      description: t('useTokenDetectionDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#token-description`,
-      image: 'experimental-icon.svg',
-      id: 32,
-    },
-    {
-      tab: t('experimental'),
       section: t('enableOpenSeaAPI'),
       description: t('enableOpenSeaAPIDescription'),
       route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
@@ -365,6 +357,34 @@ export function getSettingsRoutes(t) {
       id: 42,
     },
   ];
+
+  if (process.env.TOKEN_DETECTION_V2) {
+    settingsRoutesList = [
+      ...settingsRoutesList,
+      {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        tab: t('advanced'),
+        section: t('tokenDetection'),
+        description: t('tokenDetectionToggleDescription'),
+        route: `${ADVANCED_ROUTE}#token-description`,
+        image: 'advanced-icon.svg',
+        id: 32,
+      },
+    ];
+  } else {
+    settingsRoutesList = [
+      ...settingsRoutesList,
+      {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        tab: t('experimental'),
+        section: t('useTokenDetection'),
+        description: t('useTokenDetectionDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#token-description`,
+        image: 'experimental-icon.svg',
+        id: 32,
+      },
+    ];
+  }
 
   // TODO: write to json file?
   return showHideSettings(t, settingsRoutesList);
