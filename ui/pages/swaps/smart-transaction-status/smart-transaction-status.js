@@ -194,7 +194,11 @@ export default function SmartTransactionStatus() {
       description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
     }
     icon = <SuccessIcon />;
-  } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
+  } else if (
+    smartTransactionStatus === 'cancelled_user_cancelled' ||
+    latestSmartTransaction?.statusMetadata?.minedTx ===
+      SMART_TRANSACTION_STATUSES.CANCELLED
+  ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
     icon = <CanceledIcon />;
