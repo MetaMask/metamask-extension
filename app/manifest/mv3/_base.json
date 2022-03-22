@@ -75,7 +75,7 @@
   "web_accessible_resources": [
     {
       "resources": ["inpage.js", "phishing.html"],
-      "matches": []
+      "matches": ["http://*/*", "https://*/*"]
     }
   ]
 }
