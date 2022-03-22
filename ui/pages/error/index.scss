@@ -4,7 +4,7 @@
   align-items: center;
   font-style: normal;
   font-weight: normal;
-  padding: 35px 10px 10px 10px;
+  padding: 32px 8px 8px 8px;
   height: 100%;
 
   &__header {
@@ -12,14 +12,14 @@
 
     display: flex;
     justify-content: center;
-    padding: 10px 0;
+    padding: 8px 0;
     text-align: center;
   }
 
   &__subheader {
     @include H4;
 
-    padding: 10px 0;
+    padding: 8px 0;
     width: 100%;
     max-width: 720px;
     text-align: center;
@@ -31,15 +31,15 @@
     overflow-y: auto;
     width: 100%;
     max-width: 720px;
-    padding-top: 10px;
+    padding-top: 8px;
   }
 
   &__stack {
     overflow-x: auto;
-    background-color: #eee;
+    background-color: var(--color-background-alternative);
   }
 
   &__link-text {
-    color: #037dd6;
+    color: var(--color-primary-default);
   }
 }
