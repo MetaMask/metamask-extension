@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.11.3]
+### Changed
+- Split secret recovery phrase input into one-field-per-word ([#14016](https://github.com/MetaMask/metamask-extension/pull/14016))
+
 ## [10.11.2]
 ### Fixed
 - Fix bug that users who are connected to another extension would hit when viewing connected sites ([#13974](https://github.com/MetaMask/metamask-extension/pull/13974))
@@ -2779,7 +2783,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.3...HEAD
+[10.11.3]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...v10.11.3
 [10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
 [10.11.1]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...v10.11.1
 [10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...v10.11.0
