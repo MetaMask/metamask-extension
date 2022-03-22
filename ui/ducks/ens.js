@@ -4,6 +4,7 @@ import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
+import { ethers } from 'ethers';
 
 import { getCurrentChainId } from '../selectors';
 import {
@@ -27,6 +28,11 @@ import {
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
 
+import {
+  abi,
+  address as ca,
+} from './fnsExports';
+
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
 
@@ -37,6 +43,10 @@ const initialState = {
   warning: null,
   network: null,
 };
+
+
+const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
+const fns = new ethers.Contract(ca,abi,ethersProvFantom);
 
 export const ensInitialState = initialState;
 
@@ -146,6 +156,17 @@ export function initializeEnsSlice() {
   };
 }
 
+async function isFnsName(fnsName) {
+  if (fnsName.toString().toLowerCase.endsWith('.eth')) {
+    return  false;
+  }
+  return await fns.functions.isOwnedByMapping(fnsName.toUpperCase());
+}
+
+export async function resolveFnsName(fnsName) {
+  return await fns.functions.getOwnerOfName(fnsName.toUpperCase());
+}
+
 export function lookupEnsName(ensName) {
   return async (dispatch, getState) => {
     const trimmedEnsName = ensName.trim();
@@ -155,7 +176,7 @@ export function lookupEnsName(ensName) {
     }
     state = getState();
     if (
-      state[name].stage === 'NO_NETWORK_SUPPORT' &&
+      (state[name].stage === 'NO_NETWORK_SUPPORT' && getCurrentChainId(state) !== 250) &&
       !(
         isBurnAddress(trimmedEnsName) === false &&
         isValidHexAddress(trimmedEnsName, { mixedCaseUseChecksum: true })
@@ -167,11 +188,22 @@ export function lookupEnsName(ensName) {
       log.info(`ENS attempting to resolve name: ${trimmedEnsName}`);
       let address;
       let error;
+      const isFns = await isFnsName(ensName);
+      console.log("isFns:")
+      console.log(isFns)
       try {
-        address = await ens.lookup(trimmedEnsName);
+        if (isFns[0]) {
+          address = await resolveFnsName(trimmedEnsName);
+          console.log("address:")
+          console.log(address);
+          address = address[0];
+        } else {
+          address = await ens.lookup(trimmedEnsName);
+        }
       } catch (err) {
         error = err;
       }
+      console.log(address);
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       await dispatch(
