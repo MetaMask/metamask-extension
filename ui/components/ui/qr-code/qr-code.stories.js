@@ -21,6 +21,8 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <QrCodeView {...args} />;
+export const DefaultStory = (args) => (
+  <QrCodeView {...args} warning="this is a warning" />
+);
 
 DefaultStory.storyName = 'Default';

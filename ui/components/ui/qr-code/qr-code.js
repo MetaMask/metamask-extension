@@ -22,6 +22,7 @@ function mapStateToProps(state) {
 
 function QrCodeView(props) {
   const { Qr, warning } = props;
+  console.log(warning);
   const { message, data } = Qr;
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
@@ -49,7 +50,7 @@ function QrCodeView(props) {
       ) : (
         header
       )}
-      {warning ? <span className="qr_code__error">{warning}</span> : null}
+      {warning ? <span className="qr-code__error">{warning}</span> : null}
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
