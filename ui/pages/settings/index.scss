@@ -193,13 +193,7 @@
 
     @media screen and (max-width: $break-small) {
       display: block;
-      background-image: url('/images/caret-left-black.svg');
-      width: 18px;
-      height: 18px;
-      opacity: 0.5;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
+      color: var(--color-icon-default);
       margin-right: 16px;
       cursor: pointer;
 

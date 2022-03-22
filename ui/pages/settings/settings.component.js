@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
+import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 
 import {
   ALERTS_ROUTE,
@@ -114,8 +115,9 @@ class SettingsPage extends PureComponent {
       >
         <div className="settings-page__header">
           {currentPath !== SETTINGS_ROUTE && (
-            <div
-              className="settings-page__back-button"
+            <i
+              title={t('back')}
+              className="fa fa-angle-left fa-lg settings-page__back-button"
               onClick={() => history.push(backRoute)}
             />
           )}
