@@ -22,7 +22,6 @@ function mapStateToProps(state) {
 
 function QrCodeView(props) {
   const { Qr, warning } = props;
-  console.log(props);
   const { message, data } = Qr;
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
