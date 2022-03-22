@@ -82,9 +82,10 @@
   color: var(--white);
   background: var(--secondary-gradient);
   border-radius: 20px;
+  transition: ease-in-out .4s;
   &:hover {
-    // border-color: var(--Blue-500);
-
+    // border-color: var(--Blue-500); 
+    box-shadow: 0px 0px 10px rgba(0, 26, 255, 0.5) !important;
   }
 
   &:active {
@@ -208,9 +209,10 @@
 .btn-primary-gradient{
   color: var(--white);
   background: var(--primary-gradient);
-
+  transition: ease-in-out .4s;
   &:hover {
     // border-color: var(--hover-confirm);
+    box-shadow: 0px 0px 10px rgba(0, 26, 255, 0.5) !important;
   }
 
   &:active {

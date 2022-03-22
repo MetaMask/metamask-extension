@@ -33,6 +33,7 @@ export default class ContactList extends PureComponent {
       <div className="send__select-recipient-wrapper__recent-group-wrapper">
         <RecipientGroup
           label={t('recents')}
+          isRecent
           items={showLoadMore ? nonContacts.slice(0, 2) : nonContacts}
           onSelect={this.props.selectRecipient}
           selectedAddress={this.props.selectedAddress}
@@ -79,13 +80,13 @@ export default class ContactList extends PureComponent {
         items={groupItems}
         onSelect={this.props.selectRecipient}
         selectedAddress={this.props.selectedAddress}
+        isAddressBook
       />
     ));
   }
 
   renderMyAccounts() {
     const myAccounts = this.props.searchForMyAccounts();
-
     return (
       <RecipientGroup
         items={myAccounts}

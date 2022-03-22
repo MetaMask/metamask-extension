@@ -7,8 +7,10 @@
   flex: 0 0 auto;
 
   &--default {
-    height: 42px;
-
+    // height: 42px;
+    padding:16px 0px;
+    border-top: 1px solid var(--gray-3);
+    border-bottom: 1px solid var(--gray-3);
     .sender-to-recipient {
       &__tooltip-wrapper {
         min-width: 0;
@@ -22,12 +24,13 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: center;
         flex: 1;
         padding: 0 16px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        border: 1px solid #d8d8d8;
+        // border: 1px solid #d8d8d8;
 
         &--sender {
           padding-right: 30px;
@@ -36,7 +39,7 @@
 
         &--recipient {
           padding-left: 30px;
-          border-left: 1px solid var(--geyser);
+          // border-left: 1px solid var(--geyser);
 
           &-with-address {
             cursor: pointer;
@@ -48,6 +51,7 @@
         position: absolute;
         height: 100%;
         display: flex;
+        top: 0px;
         align-items: center;
         justify-content: center;
 

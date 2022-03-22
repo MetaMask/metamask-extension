@@ -17,6 +17,7 @@ export default class PageContainerFooter extends Component {
     buttonSizeLarge: PropTypes.bool,
     footerClassName: PropTypes.string,
     footerButtonClassName: PropTypes.string,
+    footerButtonLeftClassName: PropTypes.string,
   };
 
   static contextTypes = {
@@ -37,6 +38,7 @@ export default class PageContainerFooter extends Component {
       buttonSizeLarge = false,
       footerClassName,
       footerButtonClassName,
+      footerButtonLeftClassName,
     } = this.props;
 
     return (
@@ -44,11 +46,12 @@ export default class PageContainerFooter extends Component {
         <footer>
           {!hideCancel && (
             <Button
-              type={cancelButtonType || 'secondary'}
+              type={cancelButtonType || 'cancel'}
               large={buttonSizeLarge}
               className={classnames(
                 'page-container__footer-button',
                 footerButtonClassName,
+                footerButtonLeftClassName,
               )}
               onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
@@ -58,7 +61,7 @@ export default class PageContainerFooter extends Component {
           )}
 
           <Button
-            type={submitButtonType || 'primary'}
+            type={submitButtonType || 'primaryGradient'}
             large={buttonSizeLarge}
             className={classnames(
               'page-container__footer-button',

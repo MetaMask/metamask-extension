@@ -90,20 +90,23 @@ export default class EnsInput extends Component {
     return (
       <div className={classnames('ens-input', className)}>
         <div
-          className={classnames('ens-input__wrapper', {
-            'ens-input__wrapper__status-icon--error': false,
-            'ens-input__wrapper__status-icon--valid': false,
-            'ens-input__wrapper--valid': hasSelectedAddress,
-          })}
+          className={classnames(
+            // 'ens-input__wrapper', 
+            {
+              'ens-input__wrapper': !hasSelectedAddress,
+              'ens-input__wrapper__status-icon--error': false,
+              'ens-input__wrapper__status-icon--valid': false,
+              'ens-input__wrapper--valid': !hasSelectedAddress,
+            })}
         >
-          <div
+          {/* <div
             className={classnames('ens-input__wrapper__status-icon', {
               'ens-input__wrapper__status-icon--valid': hasSelectedAddress,
             })}
-          />
+          /> */}
           {hasSelectedAddress ? (
             <>
-              <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
+              {/* <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
                 <div className="ens-input__selected-input__title">
                   {selectedName || selectedAddress}
                 </div>
@@ -116,7 +119,7 @@ export default class EnsInput extends Component {
               <div
                 className="ens-input__wrapper__action-icon ens-input__wrapper__action-icon--erase"
                 onClick={this.props.onReset}
-              />
+              /> */}
             </>
           ) : (
             <>
@@ -132,7 +135,7 @@ export default class EnsInput extends Component {
                 autoFocus
                 data-testid="ens-input"
               />
-              <button
+              {/* <button
                 className={classnames('ens-input__wrapper__action-icon', {
                   'ens-input__wrapper__action-icon--erase': userInput,
                   'ens-input__wrapper__action-icon--qrcode': !userInput,
@@ -144,7 +147,7 @@ export default class EnsInput extends Component {
                     this.props.scanQrCode();
                   }
                 }}
-              />
+              /> */}
             </>
           )}
         </div>

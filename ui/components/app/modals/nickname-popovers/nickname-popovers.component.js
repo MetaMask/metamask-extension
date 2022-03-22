@@ -18,7 +18,8 @@ const NicknamePopovers = ({ address, onClose }) => {
   const dispatch = useDispatch();
 
   const [popoverToDisplay, setPopoverToDisplay] = useState(
-    SHOW_NICKNAME_POPOVER,
+    // SHOW_NICKNAME_POPOVER,
+    ADD_NICKNAME_POPOVER
   );
 
   const addressBook = useSelector(getAddressBook);
@@ -44,24 +45,28 @@ const NicknamePopovers = ({ address, onClose }) => {
         address={address}
         nickname={recipientNickname || null}
         memo={addressBookEntryObject?.memo}
-        onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
+        // onClose={() => setPopoverToDisplay(SHOW_NICKNAME_POPOVER)}
+        onClose={onClose}
         onAdd={(recipient, nickname, memo) =>
           dispatch(addToAddressBook(recipient, nickname, memo))
         }
       />
     );
   }
+  else {
+    // SHOW_NICKNAME_POPOVER case
+    return (
+      <NicknamePopover
+        address={address}
+        nickname={recipientNickname || null}
+        onClose={onClose}
+        onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}
+        explorerLink={explorerLink}
+      />
+    );
+  }
 
-  // SHOW_NICKNAME_POPOVER case
-  return (
-    <NicknamePopover
-      address={address}
-      nickname={recipientNickname || null}
-      onClose={onClose}
-      onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}
-      explorerLink={explorerLink}
-    />
-  );
+
 };
 
 NicknamePopovers.propTypes = {

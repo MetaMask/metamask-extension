@@ -111,7 +111,7 @@ export default class UnitInput extends PureComponent {
               }}
               autoFocus
             />
-            {suffix ? <div className="unit-input__suffix">{suffix}</div> : null}
+            {/* {suffix ? <div className="unit-input__suffix">{suffix}</div> : null} */}
           </div>
           {children}
         </div>

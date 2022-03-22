@@ -7,7 +7,8 @@ import TextField from '../text-field';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import Identicon from '../identicon/identicon.component';
+// import Identicon from '../identicon/identicon.component';
+import BookmarkGradient from '../icon/bookmark-gradient-icon.component';
 
 export default function UpdateNicknamePopover({
   nickname,
@@ -44,21 +45,21 @@ export default function UpdateNicknamePopover({
 
   return (
     <Popover
-      title={nickname ? t('editAddressNickname') : t('addANickname')}
+      // title={nickname ? t('editAddressNickname') : t('addANickname')}
       onClose={closePopover}
-      className="update-nickname__wrapper"
+      className="update-nickname__wrapper update-nickname__add"
       footer={
         <>
           <Button
             className="update-nickname__cancel"
-            type="secondary"
+            type="cancel"
             onClick={onCancel}
           >
             {t('cancel')}
           </Button>
           <Button
             className="update-nickname__save"
-            type="primary"
+            type="primaryGradient"
             onClick={onSubmit}
             disabled={!nicknameInput}
           >
@@ -67,12 +68,18 @@ export default function UpdateNicknamePopover({
         </>
       }
     >
+      <div className="update-nickname__icon">
+        <BookmarkGradient />
+      </div>
       <div className="update-nickname__content">
-        <Identicon
+        {/* <Identicon
           className="update-nickname__content__indenticon"
           address={address}
           diameter={36}
-        />
+        /> */}
+        <div className="update-nickname__content__title">
+          {t('addToAddressBook')}
+        </div>
         <label className="update-nickname__content__label--capitalized">
           {t('address')}
         </label>

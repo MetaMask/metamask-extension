@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component';
 import Dialog from '../../../components/ui/dialog';
@@ -14,6 +15,8 @@ import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
 import SendGasRow from './send-gas-row';
+import SendFrom from './send-from';
+import SendTo from './send-to';
 
 export default class SendContent extends Component {
   state = {
@@ -38,6 +41,7 @@ export default class SendContent extends Component {
     asset: PropTypes.object,
     to: PropTypes.string,
     assetError: PropTypes.string,
+    addToAddressBook: PropTypes.func,
   };
 
   render() {
@@ -76,10 +80,13 @@ export default class SendContent extends Component {
             : null}
           {error ? this.renderError(error) : null}
           {warning ? this.renderWarning() : null}
+
+          {/* <SendAssetRow /> */}
+          <SendFrom />
+          <SendTo />
           {this.maybeRenderAddContact()}
-          <SendAssetRow />
           <SendAmountRow />
-          {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
+          {/* {networkOrAccountNotSupports1559 ? <SendGasRow /> : null} */}
           {showHexData ? <SendHexDataRow /> : null}
         </div>
       </PageContainerContent>
@@ -97,13 +104,16 @@ export default class SendContent extends Component {
 
     return (
       <>
-        <Dialog
+        {/* <Dialog
           type="message"
           className="send__dialog"
           onClick={() => this.setState({ showNicknamePopovers: true })}
         >
           {t('newAccountDetectedDialogMessage')}
-        </Dialog>
+        </Dialog> */}
+        <button className="send__dialog" onClick={() => this.setState({ showNicknamePopovers: true })}>
+          {t('newAccountDetectedDialogMessage')}
+        </button>
         {showNicknamePopovers ? (
           <NicknamePopovers
             onClose={() => this.setState({ showNicknamePopovers: false })}

@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: var(--Grey-000);
+    background-color: var(--background);
     border-bottom: none;
     padding: 14px 0 3px 0;
 
@@ -19,7 +19,7 @@
       @include H5;
 
       position: absolute;
-      right: 1rem;
+      left: 1rem;
       width: min-content;
       font-size: 0.75rem;
       white-space: nowrap;
@@ -28,40 +28,80 @@
 
   &__dialog {
     margin: 1rem;
+    @include H6;
+    font-size: 12px;
     cursor: pointer;
+    padding: 5px 12px;
+    background: linear-gradient(91.07deg, #227BFF 4.72%, #451DFF 73%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index:0;
+    text-decoration: none;
+    &::before{
+      content:"";
+      position:absolute;
+      z-index:-1;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      border-radius: 40px;
+      border: 1px solid transparent;
+      background: inherit;
+      background-origin:border-box;
+      background-clip:border-box;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite:destination-out;
+      mask-composite: exclude;
+      -webkit-mask-repeat:no-repeat;
+
+    }
   }
 
   &__error-dialog {
     margin: 1rem;
+    
   }
 
   &__to-row {
     margin: 0;
     padding: 0.5rem;
     flex: 0 0 auto;
-    background-color: var(--Grey-000);
-    border-bottom: 1px solid var(--alto);
+    background-color: var(--background);
+    // border-bottom: 1px solid var(--alto);
   }
 
   &__select-recipient-wrapper {
     @extend %col-nowrap;
-
+    background-color: var(--background);
     flex: 1 1 auto;
     height: 0;
 
     &__list {
       overflow-y: auto;
-
+      overflow-x: hidden;
       &__link {
         @include Paragraph;
 
         @extend %row-nowrap;
 
         padding: 1rem;
-        border-bottom: 1px solid var(--alto);
+        // border-bottom: 1px solid var(--alto);
         border-radius: 0;
         align-items: center;
         justify-content: flex-start;
+        background: linear-gradient(111.99deg, #451DFF 9.4%, #FF1D7C 92.26%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
 
       &__back-caret {
@@ -97,18 +137,50 @@
     }
 
     &__group-label {
-      @include H8;
+      @include H6;
 
-      background-color: var(--Grey-000);
-      color: var(--Grey-600);
-      padding: 0.5rem 1rem;
-      border-bottom: 1px solid var(--alto);
+      background: linear-gradient(111.99deg, var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
+      color: var(--white);
+      padding: 4px 15px;
+      // border-bottom: 1px solid var(--alto);
+      border-radius: 30px;
+      text-align: center;
 
       &:first-of-type {
-        border-top: 1px solid var(--alto);
+        // border-top: 1px solid var(--alto);
+      }
+
+      &.my-account{
+        background: linear-gradient(111.99deg, var(--secondary-2-start) 9.4%, var(--secondary-2-end) 92.26%);
+        color: var(--white);
+        margin-top: 25px;
+      }
+
+      &.recent{
+        background: linear-gradient(111.99deg, var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
+        color: var(--white);
+      }
+
+      &.is-address{
+        position: relative;
+        color:var(--gray-1);
+        background: transparent;
+        text-align: left;
+        &::after{
+          content: "";
+          position: absolute;
+          width: calc(100% - 10px);
+          height: 1px;
+          background: var(--black);
+          top: 50%;
+          transform: translateY(-50%);
+          margin-left: 10px;
+        }
       }
     }
-
+    &__group-item:nth-last-child(1){
+      border-bottom: none;
+    }
     &__group-item,
     &__group-item--selected {
       @extend %row-nowrap;
@@ -141,7 +213,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        color: var(--black);
+        color: var(--gray-1);
       }
 
       &__subtitle {
@@ -168,9 +240,9 @@
     width: 0;
     align-items: center;
     background: var(--white);
-    border-radius: 0.5rem;
-    padding: 0.75rem 0.5rem;
-    border: 1px solid var(--Grey-100);
+    border-radius: 4px;
+    padding: 5px 10px;
+    border: 1px solid var(--gray-1);
     transition: border-color 150ms ease-in-out;
 
     &:focus-within {

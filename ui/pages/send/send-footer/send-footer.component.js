@@ -113,6 +113,7 @@ export default class SendFooter extends Component {
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
         disabled={this.props.disabled}
+        footerButtonLeftClassName='send-v2__reject-btn'
         cancelText={sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
       />
     );

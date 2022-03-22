@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../button';
+import BackIcon from '../../icon/back-icon.component';
 
 export default class PageContainerHeader extends Component {
   static propTypes = {
@@ -39,7 +40,8 @@ export default class PageContainerHeader extends Component {
             className="page-container__header-close-text"
             onClick={() => onClose()}
           >
-            {headerCloseText}
+            {/* {headerCloseText} */}
+            <BackIcon width='17' height='11' />
           </Button>
         )
       );

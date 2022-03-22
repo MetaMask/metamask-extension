@@ -1,7 +1,7 @@
 .page-container {
   width: 408px;
-  background-color: var(--white);
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  background-color: var(--background);
+  // box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   z-index: 25;
   display: flex;
   flex-flow: column;
@@ -54,8 +54,9 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    border-top: 1px solid var(--geyser);
+    // border-top: 1px solid var(--geyser);
     flex: 0 0 auto;
+    background: var(--background);
 
     footer {
       display: flex;
@@ -149,6 +150,7 @@
   &__content {
     overflow-y: auto;
     flex: 1;
+    background: var(--background);
   }
 
   &__warning-container {

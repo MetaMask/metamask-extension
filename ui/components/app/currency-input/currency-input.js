@@ -56,16 +56,16 @@ export default function CurrencyInput({
   const getDecimalValue = () => {
     const decimalValueString = shouldUseFiat()
       ? getValueFromWeiHex({
-          value: hexValue,
-          toCurrency: secondaryCurrency,
-          conversionRate,
-          numberOfDecimals: 2,
-        })
+        value: hexValue,
+        toCurrency: secondaryCurrency,
+        conversionRate,
+        numberOfDecimals: 2,
+      })
       : getValueFromWeiHex({
-          value: hexValue,
-          toCurrency: ETH,
-          numberOfDecimals: 8,
-        });
+        value: hexValue,
+        toCurrency: ETH,
+        numberOfDecimals: 8,
+      });
 
     return Number(decimalValueString) || 0;
   };
@@ -88,17 +88,17 @@ export default function CurrencyInput({
   const handleChange = (newDecimalValue) => {
     const hexValueNew = shouldUseFiat()
       ? getWeiHexFromDecimalValue({
-          value: newDecimalValue,
-          fromCurrency: secondaryCurrency,
-          conversionRate,
-          invertConversionRate: true,
-        })
+        value: newDecimalValue,
+        fromCurrency: secondaryCurrency,
+        conversionRate,
+        invertConversionRate: true,
+      })
       : getWeiHexFromDecimalValue({
-          value: newDecimalValue,
-          fromCurrency: ETH,
-          fromDenomination: ETH,
-          conversionRate,
-        });
+        value: newDecimalValue,
+        fromCurrency: ETH,
+        fromDenomination: ETH,
+        conversionRate,
+      });
 
     setNewHexValue(hexValueNew);
     setDecimalValue(newDecimalValue);
@@ -159,11 +159,11 @@ export default function CurrencyInput({
       suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
       onChange={handleChange}
       value={decimalValue}
-      actionComponent={
-        <div className="currency-input__swap-component" onClick={swap} />
-      }
+    // actionComponent={
+    //   <div className="currency-input__swap-component" onClick={swap} />
+    // }
     >
-      {renderConversionComponent()}
+      {/* {renderConversionComponent()} */}
     </UnitInput>
   );
 }

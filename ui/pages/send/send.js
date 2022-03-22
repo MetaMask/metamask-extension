@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import classnames from 'classnames';
 import {
   getIsUsingMyAccountForRecipientSearch,
   getRecipient,
@@ -37,6 +38,7 @@ export default function SendTransactionScreen() {
   const recipient = useSelector(getRecipient);
   const showHexData = useSelector(getSendHexDataFeatureFlagState);
   const userInput = useSelector(getRecipientUserInput);
+
   const location = useLocation();
   const trackUsedQRScanner = useMetricEvent({
     eventOpts: {
@@ -98,7 +100,10 @@ export default function SendTransactionScreen() {
       <SendHeader history={history} />
       <EnsInput
         userInput={userInput}
-        className="send__to-row"
+        // className="send__to-row"
+        className={classnames({
+          'send__to-row': !recipient.address,
+        })}
         onChange={(address) => dispatch(updateRecipientUserInput(address))}
         onValidAddressTyped={(address) =>
           dispatch(updateRecipient({ address, nickname: '' }))

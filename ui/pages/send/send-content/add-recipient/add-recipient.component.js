@@ -56,8 +56,10 @@ export default class AddRecipient extends Component {
         { name: 'address', weight: 0.5 },
       ],
     });
+    this.state = {
+      isMyAccountShow: true
+    }
   }
-
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -98,10 +100,12 @@ export default class AddRecipient extends Component {
       ensResolution,
       recipient,
       userInput,
+      useMyAccountsForRecipientSearch,
       addressBookEntryName,
       isUsingMyAccountsForRecipientSearch,
     } = this.props;
-
+    const { isMyAccountShow } = this.state;
+    const { t } = this.context;
     let content;
 
     if (recipient.address) {
@@ -120,8 +124,22 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper">
+        {isMyAccountShow ? <Button
+          type="link"
+          className="send__select-recipient-wrapper__list__link"
+          onClick={() => {
+            useMyAccountsForRecipientSearch();
+            this.setState({ isMyAccountShow: !isMyAccountShow })
+          }}
+        >
+          {t('transferBetweenAccounts')}
+        </Button> : null}
+
         {this.renderDialogs()}
-        {content || this.renderMain()}
+
+        {isUsingMyAccountsForRecipientSearch ? this.renderTransfer() : null}
+        {/* {content || this.renderMain()} */}
+        {this.renderMain()}
       </div>
     );
   }
@@ -167,18 +185,19 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper__list">
-        <Button
+        {/* <Button
           type="link"
           className="send__select-recipient-wrapper__list__link"
           onClick={useContactListForRecipientSearch}
         >
           <div className="send__select-recipient-wrapper__list__back-caret" />
           {t('backToAll')}
-        </Button>
+        </Button> */}
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
           onSelect={this.selectRecipient}
+          isMyAccount
         />
       </div>
     );
@@ -201,7 +220,7 @@ export default class AddRecipient extends Component {
           searchForRecents={this.searchForRecents.bind(this)}
           selectRecipient={this.selectRecipient.bind(this)}
         >
-          {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
+          {/* {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button
               type="link"
               className="send__select-recipient-wrapper__list__link"
@@ -209,7 +228,7 @@ export default class AddRecipient extends Component {
             >
               {t('transferBetweenAccounts')}
             </Button>
-          )}
+          )} */}
         </ContactList>
       </div>
     );

@@ -10,6 +10,7 @@ import {
   getSendStage,
   resetSendState,
   SEND_STAGES,
+  resetRecipientInput,
 } from '../../../ducks/send';
 
 export default function SendHeader() {
@@ -21,11 +22,15 @@ export default function SendHeader() {
   const t = useI18nContext();
 
   const onClose = () => {
-    dispatch(resetSendState());
-    history.push(mostRecentOverviewPage);
+    if (stage === SEND_STAGES.DRAFT) {
+      dispatch(resetRecipientInput());
+    } else {
+      dispatch(resetSendState())
+      history.push(mostRecentOverviewPage)
+    }
   };
 
-  let title = asset.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');
+  let title = asset.type === ASSET_TYPES.NATIVE ? t('sendTo') : t('sendTokens');
 
   if (stage === SEND_STAGES.ADD_RECIPIENT || stage === SEND_STAGES.INACTIVE) {
     title = t('sendTo');
@@ -41,7 +46,7 @@ export default function SendHeader() {
       headerCloseText={
         stage === SEND_STAGES.EDIT ? t('cancelEdit') : t('cancel')
       }
-      hideClose={stage === SEND_STAGES.DRAFT}
+    // hideClose={stage === SEND_STAGES.DRAFT}
     />
   );
 }
