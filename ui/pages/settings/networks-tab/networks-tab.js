@@ -69,7 +69,7 @@ const NetworksTab = ({ addNewNetwork }) => {
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl);
 
   let networkDefaultedToProvider = false;
-  if (networkIsSelected === false) {
+  if (!networkIsSelected) {
     selectedNetwork =
       networksToRender.find((network) => {
         return (
