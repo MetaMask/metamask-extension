@@ -173,7 +173,7 @@ export function lookupEnsName(ensName) {
     }
     state = getState();
     if (
-      state[name].stage === 'NO_NETWORK_SUPPORT' && 
+      state[name].stage === 'NO_NETWORK_SUPPORT' &&
       getCurrentChainId(state) !== 250 &&
       !(
         isBurnAddress(trimmedEnsName) === false &&
