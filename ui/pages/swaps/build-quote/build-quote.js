@@ -430,9 +430,7 @@ export default function BuildQuote({
     fromTokenBalance,
   ]);
 
-  useEffect(() => {
-    dispatch(resetSwapsPostFetchState());
-    dispatch(setReviewSwapClickedTimestamp());
+  const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Build Quote Page Loaded',
       category: 'swaps',
@@ -445,14 +443,19 @@ export default function BuildQuote({
       },
     });
   }, [
-    dispatch,
     trackEvent,
-    currentSmartTransactionsEnabled,
-    hardwareWalletType,
     hardwareWalletUsed,
+    hardwareWalletType,
     smartTransactionsEnabled,
+    currentSmartTransactionsEnabled,
     smartTransactionsOptInStatus,
   ]);
+
+  useEffect(() => {
+    dispatch(resetSwapsPostFetchState());
+    dispatch(setReviewSwapClickedTimestamp());
+    trackBuildQuotePageLoadedEvent();
+  }, [dispatch, trackBuildQuotePageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
