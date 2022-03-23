@@ -10,7 +10,7 @@
     width: 100%;
     height: 1px;
     margin: 19px 0 8px 0;
-    background-color: var(--alto);
+    background-color: var(--color-border-default);
   }
 
   &__account-name {
@@ -28,7 +28,7 @@
   &__password--error {
     @include H6;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
     margin-bottom: 10px;
   }
 
@@ -43,17 +43,20 @@
     padding: 10px 0 13px 17px;
     width: 291px;
     height: 44px;
+    background: var(--color-background-default);
+    color: var(--color-text-default);
+    border: 1px solid var(--color-border-default);
   }
 
   &__password::-webkit-input-placeholder {
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &__password--warning {
     @include H7;
 
     border-radius: 8px;
-    background-color: #fff6f6;
+    background-color: var(--color-error-inverse);
     font-weight: 500;
     color: var(--color-error-default);
     width: 292px;
@@ -64,7 +67,7 @@
   &__password-display-wrapper {
     height: 80px;
     width: 291px;
-    border: 1px solid var(--silver);
+    border: 1px solid var(--color-border-default);
     border-radius: 2px;
   }
 
@@ -98,13 +101,19 @@
     margin-right: 15px;
   }
 
-  & .ellip-address-wrapper {
+  .ellip-address-wrapper {
     display: flex;
     justify-content: center;
-    border: 1px solid var(--alto);
+    border: 1px solid var(--color-border-default);
     padding: 5px 10px;
     margin-top: 7px;
     width: 286px;
+
+    input {
+      background: var(--color-background-default);
+      color: var(--color-text-default);
+      border: 0;
+    }
   }
 }
 
