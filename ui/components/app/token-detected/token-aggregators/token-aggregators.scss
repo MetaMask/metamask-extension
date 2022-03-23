@@ -1,0 +1,9 @@
+.token-aggregators {
+  & &__link {
+    @include H7;
+
+    padding: 0;
+    display: inline;
+    margin-left: 4px;
+  }
+}
