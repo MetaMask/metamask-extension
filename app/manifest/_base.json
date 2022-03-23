@@ -3,7 +3,7 @@
   "background": {
     "service_worker": "app-init.js"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
