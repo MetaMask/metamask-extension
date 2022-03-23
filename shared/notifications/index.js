@@ -55,7 +55,7 @@ export const UI_NOTIFICATIONS = {
     },
   },
   11: {
-    id: 10,
+    id: 11,
     date: '2022-04-18',
   },
 };
