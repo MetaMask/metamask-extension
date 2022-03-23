@@ -31,6 +31,7 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
   setSwapsFromToken,
@@ -113,6 +114,9 @@ export default function AwaitingSwap({
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const sensitiveProperties = {
     token_from: sourceTokenInfo?.symbol,
     token_from_amount: fetchParams?.value,
@@ -124,6 +128,7 @@ export default function AwaitingSwap({
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
     stx_enabled: smartTransactionsEnabled,
+    current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
   const quotesExpiredEvent = useNewMetricEvent({
