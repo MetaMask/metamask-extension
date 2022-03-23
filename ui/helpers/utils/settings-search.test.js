@@ -111,10 +111,15 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
+    /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
     case 'useTokenDetection':
       return 'Use Token Detection';
     case 'useTokenDetectionDescription':
       return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.';
+    case 'tokenDetection':
+      return 'Token detection';
+    case 'tokenDetectionToggleDescription':
+      return 'ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import.';
     case 'enableOpenSeaAPI':
       return 'Enable OpenSea API';
     case 'enableOpenSeaAPIDescription':
@@ -417,15 +422,6 @@ describe('Settings Search Utils', () => {
           tab: 'Networks',
         },
         {
-          description:
-            'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
-          id: 32,
-          image: 'experimental-icon.svg',
-          route: '/settings/experimental#token-description',
-          section: 'Use Token Detection',
-          tab: 'Experimental',
-        },
-        {
           description: 'MetaMask is designed and built around the world.',
           id: 35,
           image: 'info-icon.svg',
@@ -488,6 +484,16 @@ describe('Settings Search Utils', () => {
           route: '/settings/about-us#contactus',
           section: 'Contact us',
           tab: 'About',
+        },
+        {
+          /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+          description:
+            'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
+          id: 32,
+          image: 'experimental-icon.svg',
+          route: '/settings/experimental#token-description',
+          section: 'Use Token Detection',
+          tab: 'Experimental',
         },
       ];
       expect(getSettingsRoutes(t)).toStrictEqual(settingsListExcepted);
