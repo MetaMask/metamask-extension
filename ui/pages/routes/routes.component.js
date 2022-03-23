@@ -265,9 +265,9 @@ export default class Routes extends Component {
       return true;
     }
 
-    if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
-      return true;
-    }
+    // if (windowType === ENVIRONMENT_TYPE_POPUP && this.onConfirmPage()) {
+    //   return true;
+    // }
 
     const isHandlingPermissionsRequest = Boolean(
       matchPath(location.pathname, {
@@ -276,14 +276,15 @@ export default class Routes extends Component {
       }),
     );
 
-    const isHandlingAddEthereumChainRequest = Boolean(
-      matchPath(location.pathname, {
-        path: CONFIRMATION_V_NEXT_ROUTE,
-        exact: false,
-      }),
-    );
+    // const isHandlingAddEthereumChainRequest = Boolean(
+    //   matchPath(location.pathname, {
+    //     path: CONFIRMATION_V_NEXT_ROUTE,
+    //     exact: false,
+    //   }),
+    // );
 
-    return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+    // return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+    return isHandlingPermissionsRequest;
   }
 
   showOnboardingHeader() {

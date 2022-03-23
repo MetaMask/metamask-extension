@@ -11,6 +11,7 @@
     padding:16px 0px;
     border-top: 1px solid var(--gray-3);
     border-bottom: 1px solid var(--gray-3);
+    background-color: var(--background);
     .sender-to-recipient {
       &__tooltip-wrapper {
         min-width: 0;

@@ -87,8 +87,9 @@
     height: 0;
 
     &__list {
-      overflow-y: auto;
-      overflow-x: hidden;
+      // overflow-y: auto;
+      // overflow-x: hidden;
+      background-color: var(--background);
       &__link {
         @include Paragraph;
 
@@ -141,10 +142,11 @@
 
       background: linear-gradient(111.99deg, var(--secondary-1-start) 9.4%, var(--secondary-1-end) 92.26%);
       color: var(--white);
-      padding: 4px 15px;
+      padding: 4px 0px;
       // border-bottom: 1px solid var(--alto);
       border-radius: 30px;
       text-align: center;
+      margin: 0px 15px;
 
       &:first-of-type {
         // border-top: 1px solid var(--alto);
@@ -169,7 +171,7 @@
         &::after{
           content: "";
           position: absolute;
-          width: calc(100% - 10px);
+          width: calc(100% - 20px);
           height: 1px;
           background: var(--black);
           top: 50%;

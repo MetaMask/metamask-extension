@@ -6,7 +6,9 @@
   flex-direction: column;
   justify-content: space-evenly;
   margin-bottom: 80px;
-  
+  @media screen and (max-width: $break-small) {
+    margin-bottom: 40px;
+  }
   &__origin,
   &__action-row {
     padding-bottom: 8px;

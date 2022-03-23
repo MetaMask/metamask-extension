@@ -5,7 +5,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
 } from '../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
-import NetworkDisplay from '../../network-display';
+// import NetworkDisplay from '../../network-display';
 import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import AccountMismatchWarning from '../../../ui/account-mismatch-warning/account-mismatch-warning.component';
@@ -60,7 +60,7 @@ export default function ConfirmPageContainerHeader({
             </span>
           </div>
         )}
-        {isFullScreen ? null : <NetworkDisplay />}
+        {/* {isFullScreen ? null : <NetworkDisplay />} */}
       </div>
       {children}
     </div>

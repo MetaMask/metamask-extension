@@ -48,14 +48,12 @@ export default class SendAmountRow extends Component {
       accounts,
       selectedAddress,
       inError,
-      metamask,
       nativeCurrency,
     } = this.props;
     const { t } = this.context;
     const balanceValue = accounts[selectedAddress]
       ? accounts[selectedAddress].balance
       : '';
-    console.log(metamask, 'metamask');
     return (
       <div className='send-v2__amount__wrapper'>
         <button className='send-v2__amount__switch'>

@@ -7,6 +7,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: var(--background);
 
   &--with-top-border {
     // border-top: 1px solid var(--geyser);
@@ -19,6 +20,7 @@
   &__details {
     box-sizing: border-box;
     padding: 0 24px;
+    background-color: var(--background);
   }
 
   &__data {

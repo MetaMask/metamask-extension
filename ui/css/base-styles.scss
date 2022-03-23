@@ -52,7 +52,7 @@ html {
   background: var(--background);
 
   @media screen and (max-width: $break-small) {
-    background-color: var(--white);
+    background-color: var(--background);
   }
 }
 /* stylelint-enable */
