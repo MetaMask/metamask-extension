@@ -25,7 +25,7 @@ export default {
         type: 'select',
       },
       options: COLORS,
-      defaultValue: COLORS.PRIMARY1,
+      defaultValue: COLORS.PRIMARY_DEFAULT,
     },
     borderColor: {
       control: {
