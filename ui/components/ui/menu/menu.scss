@@ -45,16 +45,4 @@
     grid-row: 1 / span 2;
     color: var(--color-icon-default);
   }
-
-  .disconnect-icon {
-    &::before {
-      content: "";
-      background-image: url(/images/icons/disconnect.svg);
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      padding: 8px;
-      display: flex;
-    }
-  }
 }
