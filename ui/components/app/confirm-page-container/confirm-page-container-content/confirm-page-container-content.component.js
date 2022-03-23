@@ -10,7 +10,6 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import { BUYABLE_CHAINS_MAP } from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -57,6 +56,7 @@ export default class ConfirmPageContainerContent extends Component {
     showBuyModal: PropTypes.func,
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
+    isBuyableChain: PropTypes.bool,
   };
 
   renderContent() {
@@ -132,6 +132,7 @@ export default class ConfirmPageContainerContent extends Component {
       showBuyModal,
       toAddress,
       transactionType,
+      isBuyableChain,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -199,29 +200,30 @@ export default class ConfirmPageContainerContent extends Component {
             <ActionableMessage
               className="actionable-message--warning"
               message={
-                <Typography variant={TYPOGRAPHY.H7} align="left">
-                  {t('insufficientCurrencyBuyOrDeposit', [
-                    nativeCurrency,
-                    networkName,
-                    Object.keys(BUYABLE_CHAINS_MAP).includes(
-                      currentTransaction.chainId,
-                    ) ? (
-                      <>
-                        <Button
-                          type="inline"
-                          className="confirm-page-container-content__link"
-                          onClick={showBuyModal}
-                        >
-                          {t('buy')}
-                          {` ${nativeCurrency} `}
-                        </Button>
-                        {t('or')}
-                      </>
-                    ) : (
-                      ''
-                    ),
-                  ])}
-                </Typography>
+                isBuyableChain ? (
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyBuyOrDeposit', [
+                      nativeCurrency,
+                      networkName,
+
+                      <Button
+                        type="inline"
+                        className="confirm-page-container-content__link"
+                        onClick={showBuyModal}
+                        key={`${nativeCurrency}-buy-button`}
+                      >
+                        {t('buyAsset', [nativeCurrency])}
+                      </Button>,
+                    ])}
+                  </Typography>
+                ) : (
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyDeposit', [
+                      nativeCurrency,
+                      networkName,
+                    ])}
+                  </Typography>
+                )
               }
               useIcon
               iconFillColor="#d73a49"

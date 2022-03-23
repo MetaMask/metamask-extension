@@ -95,6 +95,7 @@ export default class ConfirmPageContainer extends Component {
     supportsEIP1559V2: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     showBuyModal: PropTypes.func,
+    isBuyableChain: PropTypes.bool,
   };
 
   render() {
@@ -149,6 +150,7 @@ export default class ConfirmPageContainer extends Component {
       supportsEIP1559V2,
       nativeCurrency,
       showBuyModal,
+      isBuyableChain,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -255,28 +257,36 @@ export default class ConfirmPageContainer extends Component {
               showBuyModal={showBuyModal}
               toAddress={toAddress}
               transactionType={currentTransaction.type}
+              isBuyableChain={isBuyableChain}
             />
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
               <ActionableMessage
                 message={
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrencyBuyOrDeposit', [
-                      nativeCurrency,
-                      networkName,
-                      <Button
-                        key="buy-button"
-                        type="inline"
-                        className="page-container__link"
-                        onClick={showBuyModal}
-                      >
-                        {t('buy')}
-                        {`${nativeCurrency} `}
-                        {t('or')}
-                      </Button>,
-                    ])}
-                  </Typography>
+                  isBuyableChain ? (
+                    <Typography variant={TYPOGRAPHY.H7} align="left">
+                      {t('insufficientCurrencyBuyOrDeposit', [
+                        nativeCurrency,
+                        networkName,
+                        <Button
+                          type="inline"
+                          className="confirm-page-container-content__link"
+                          onClick={showBuyModal}
+                          key={`${nativeCurrency}-buy-button`}
+                        >
+                          {t('buyAsset', [nativeCurrency])}
+                        </Button>,
+                      ])}
+                    </Typography>
+                  ) : (
+                    <Typography variant={TYPOGRAPHY.H7} align="left">
+                      {t('insufficientCurrencyDeposit', [
+                        nativeCurrency,
+                        networkName,
+                      ])}
+                    </Typography>
+                  )
                 }
                 useIcon
                 iconFillColor="#d73a49"

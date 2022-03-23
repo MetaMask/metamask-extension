@@ -12,12 +12,11 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { BUYABLE_CHAINS_MAP } from '../../../../shared/constants/network';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
-  chainId,
+  isBuyableChain,
   nativeCurrency,
   networkName,
   showBuyModal,
@@ -100,27 +99,29 @@ const TransactionAlerts = ({
         <ActionableMessage
           className="actionable-message--warning"
           message={
-            <Typography variant={TYPOGRAPHY.H7} align="left">
-              {t('insufficientCurrencyBuyOrDeposit', [
-                nativeCurrency,
-                networkName,
-                Object.keys(BUYABLE_CHAINS_MAP).includes(chainId) ? (
-                  <>
-                    <Button
-                      type="inline"
-                      className="transaction-alerts__link"
-                      onClick={showBuyModal}
-                    >
-                      {t('buy')}
-                      {` ${nativeCurrency} `}
-                    </Button>
-                    {t('or')}
-                  </>
-                ) : (
-                  ''
-                ),
-              ])}
-            </Typography>
+            isBuyableChain ? (
+              <Typography variant={TYPOGRAPHY.H7} align="left">
+                {t('insufficientCurrencyBuyOrDeposit', [
+                  nativeCurrency,
+                  networkName,
+                  <Button
+                    type="inline"
+                    className="confirm-page-container-content__link"
+                    onClick={showBuyModal}
+                    key={`${nativeCurrency}-buy-button`}
+                  >
+                    {t('buyAsset', [nativeCurrency])}
+                  </Button>,
+                ])}
+              </Typography>
+            ) : (
+              <Typography variant={TYPOGRAPHY.H7} align="left">
+                {t('insufficientCurrencyDeposit', [
+                  nativeCurrency,
+                  networkName,
+                ])}
+              </Typography>
+            )
           }
           useIcon
           iconFillColor="#d73a49"
@@ -169,11 +170,11 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
-  chainId: PropTypes.string,
   nativeCurrency: PropTypes.string,
   networkName: PropTypes.string,
   showBuyModal: PropTypes.func,
   type: PropTypes.string,
+  isBuyableChain: PropTypes.bool,
 };
 
 export default TransactionAlerts;

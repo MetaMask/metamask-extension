@@ -405,6 +405,10 @@
   "buy": {
     "message": "Buy"
   },
+  "buyAsset": {
+    "message": "Buy $1",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "buyCryptoWithMoonPay": {
     "message": "Buy $1 with MoonPay",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -1519,8 +1523,12 @@
     "message": "Insufficient balance."
   },
   "insufficientCurrencyBuyOrDeposit": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 Deposit from another account.",
-    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain + the key 'or' all wrapped in a button"
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyDeposit": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -2271,9 +2279,6 @@
   },
   "or": {
     "message": "or"
-  },
-  "orDeposit": {
-    "message": "or deposit from another account."
   },
   "origin": {
     "message": "Origin"
