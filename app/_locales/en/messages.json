@@ -3064,7 +3064,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxFallbackPendingTx": {
-    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction. Smart Transactions will be automatically enabled after your pending transaction is finalized."
+    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction."
   },
   "stxFallbackUnavailable": {
     "message": "You can still swap your tokens even while Smart Transactions are unavailable."
