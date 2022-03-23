@@ -15,6 +15,7 @@ jest.mock('../../store/actions.js', () => ({
   setSwapsLiveness: jest.fn(),
   setSwapsFeatureFlags: jest.fn(),
   fetchSmartTransactionsLiveness: jest.fn(),
+  getTransactions: jest.fn(),
 }));
 
 const providerState = {

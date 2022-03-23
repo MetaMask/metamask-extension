@@ -569,7 +569,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
             from: state.metamask?.selectedAddress,
           },
         });
-        if (pendingTransactions.length > 0) {
+        if (pendingTransactions?.length > 0) {
           dispatch(
             setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_PENDING),
           );
