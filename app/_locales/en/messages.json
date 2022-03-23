@@ -2857,7 +2857,7 @@
     "message": "Slow"
   },
   "smartTransaction": {
-    "message": "Smart transaction"
+    "message": "Smart Transaction"
   },
   "snapAccess": {
     "message": "$1 snap has access to:",
@@ -3051,7 +3051,7 @@
     "message": "Not enough funds for a smart transaction."
   },
   "stxErrorRegularTxPending": {
-    "message": "Regular transaction is pending, Smart Transactions are disabled."
+    "message": "You have a pending transaction, Smart Transactions will be automatically enabled again after your pending transaction is finalized."
   },
   "stxErrorUnavailable": {
     "message": "Smart Transactions are temporarily unavailable."
@@ -3064,7 +3064,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxFallbackToNormal": {
-    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+    "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
   "stxPendingFinalizing": {
     "message": "Finalizing..."
@@ -3095,7 +3095,7 @@
     "message": "Trying to cancel your transaction..."
   },
   "stxUnavailable": {
-    "message": "Smart transactions temporarily unavailable"
+    "message": "Smart Transactions temporarily unavailable"
   },
   "stxUnknown": {
     "message": "Status unknown"
