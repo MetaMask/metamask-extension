@@ -3050,9 +3050,6 @@
   "stxErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart transaction."
   },
-  "stxErrorRegularTxPending": {
-    "message": "You have a pending transaction, Smart Transactions will be automatically enabled again after your pending transaction is finalized."
-  },
   "stxErrorUnavailable": {
     "message": "Smart Transactions are temporarily unavailable."
   },
