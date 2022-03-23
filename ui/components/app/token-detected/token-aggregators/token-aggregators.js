@@ -17,31 +17,32 @@ const TokenAggregators = ({ aggregatorsList }) => {
   const [displayMore, setDisplayMore] = useState(false);
 
   return (
-    <Box display={DISPLAY.INLINE_FLEX} className="token-aggregators" flexWrap>
+    <Box display={DISPLAY.INLINE_FLEX} className="token-aggregators">
       <Typography
         variant={TYPOGRAPHY.H7}
         fontWeight={FONT_WEIGHT.NORMAL}
-        boxProps={{ marginRight: 1 }}
+        className="token-aggregators__list"
       >
-        {`${t('fromTokenLists')}: `}
+        {t('fromTokenLists', [
+          numOfHiddenAggregators > 0 && !displayMore ? (
+            <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
+              {`${aggregatorsList.slice(0, 2).join(', ')}`}
+              <Button
+                type="link"
+                className="token-aggregators__link"
+                onClick={() => setDisplayMore(true)}
+                key="token-aggrgators-link"
+              >
+                {t('plusXMore', [numOfHiddenAggregators])}
+              </Button>
+            </Typography>
+          ) : (
+            <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
+              {`${aggregatorsList.join(', ')}.`}
+            </Typography>
+          ),
+        ])}
       </Typography>
-      {numOfHiddenAggregators > 0 && !displayMore ? (
-        <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
-          {`${aggregatorsList.slice(0, 2).join(', ')}`}
-          <Button
-            type="link"
-            className="token-aggregators__link"
-            onClick={() => setDisplayMore(true)}
-            key="token-aggrgators-link"
-          >
-            {t('plusXMore', [numOfHiddenAggregators])}
-          </Button>
-        </Typography>
-      ) : (
-        <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
-          {`${aggregatorsList.join(', ')}`}
-        </Typography>
-      )}
     </Box>
   );
 };
