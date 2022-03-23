@@ -6,6 +6,7 @@ const IconCaretLeft = ({
   color = 'currentColor',
   ariaLabel,
   className,
+  onClick,
 }) => (
   <svg
     width={size}
@@ -13,6 +14,7 @@ const IconCaretLeft = ({
     fill={color}
     className={className}
     aria-label={ariaLabel}
+    onClick={onClick}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
   >
@@ -33,6 +35,10 @@ IconCaretLeft.propTypes = {
    * An additional className to assign the Icon
    */
   className: PropTypes.string,
+  /**
+   * The onClick handler
+   */
+  onClick: PropTypes.func,
   /**
    * The aria-label of the icon for accessibility purposes
    */
