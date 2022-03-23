@@ -735,6 +735,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {

@@ -630,7 +630,6 @@
     "@metamask/iframe-execution-environment-service": {
       "globals": {
         "clearTimeout": true,
-        "console.log": true,
         "document.body.appendChild": true,
         "document.createElement": true,
         "document.getElementById": true,
@@ -754,6 +753,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
