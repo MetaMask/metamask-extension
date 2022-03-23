@@ -13,7 +13,7 @@ const SECTIONS = {
   props: {
     margin: 4,
     padding: 8,
-    borderColor: COLORS.PRIMARY1,
+    borderColor: COLORS.PRIMARY_DEFAULT,
     borderWidth: 2,
   },
   children: [
