@@ -17,7 +17,7 @@ export default class SignatureRequestHeader extends PureComponent {
           {fromAccount ? <AccountListItem account={fromAccount} /> : null}
         </div>
         <div className="signature-request-header--network">
-          <NetworkDisplay />
+          <NetworkDisplay colored={false} />
         </div>
       </div>
     );

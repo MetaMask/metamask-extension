@@ -20,6 +20,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
 
 export default function NetworkDisplay({
+  colored,
+  outline,
   indicatorSize,
   disabled,
   labelProps,
@@ -38,7 +40,7 @@ export default function NetworkDisplay({
 
   return (
     <Chip
-      borderColor={onClick ? COLORS.BORDER_DEFAULT : COLORS.BORDER_MUTED}
+      borderColor={outline ? COLORS.BORDER_MUTED : COLORS.TRANSPARENT}
       onClick={onClick}
       leftIcon={
         <LoadingIndicator
@@ -62,18 +64,16 @@ export default function NetworkDisplay({
           />
         </LoadingIndicator>
       }
-      rightIcon={
-        onClick ? (
-          <IconCaretDown size={16} className="network-display__icon" />
-        ) : null
-      }
+      rightIcon={<IconCaretDown size={16} className="network-display__icon" />}
       label={
         networkType === NETWORK_TYPE_RPC
           ? networkNickname ?? t('privateNetwork')
           : t(networkType)
       }
       className={classnames('network-display', {
+        'network-display--colored': colored,
         'network-display--disabled': disabled,
+        [`network-display--${networkType}`]: colored && networkType,
         'network-display--clickable': typeof onClick === 'function',
       })}
       labelProps={{
@@ -84,37 +84,22 @@ export default function NetworkDisplay({
   );
 }
 NetworkDisplay.propTypes = {
-  /**
-   * The size of the indicator
-   */
+  colored: PropTypes.bool,
   indicatorSize: PropTypes.oneOf(Object.values(SIZES)),
-  /**
-   * The label props of the label can use most of the Typography props
-   */
   labelProps: Chip.propTypes.labelProps,
-  /**
-   * The target network
-   */
   targetNetwork: PropTypes.shape({
     type: PropTypes.oneOf([
-      ...Object.keys(NETWORK_TYPE_TO_ID_MAP),
+      ...Object.values(NETWORK_TYPE_TO_ID_MAP),
       NETWORK_TYPE_RPC,
     ]),
     nickname: PropTypes.string,
   }),
-  /**
-   * Whether the NetworkDisplay is disabled
-   */
+  outline: PropTypes.bool,
   disabled: PropTypes.bool,
-  /**
-   * The onClick event handler of the NetworkDisplay
-   * if it is not passed it is assumed that the NetworkDisplay
-   * should not be interactive and removes the caret and changes the border color
-   * of the NetworkDisplay
-   */
   onClick: PropTypes.func,
 };
 
 NetworkDisplay.defaultProps = {
+  colored: true,
   indicatorSize: SIZES.LG,
 };
