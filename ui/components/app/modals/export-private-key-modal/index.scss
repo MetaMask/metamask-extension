@@ -58,7 +58,8 @@
     border-radius: 8px;
     background-color: var(--color-error-muted);
     font-weight: 500;
-    color: var(--color-error-default);
+    color: var(--color-text-default);
+    border: 1px solid var(--color-error-default);
     width: 292px;
     padding: 9px 15px;
     margin-top: 18px;
