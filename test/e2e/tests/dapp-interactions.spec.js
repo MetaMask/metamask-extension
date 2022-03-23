@@ -18,6 +18,48 @@ describe('Dapp interactions', function () {
       },
     ],
   };
+  it('a notification is triggered despite Metamask is locked', async function () {
+    await withFixtures(
+      {
+        dapp: 1,
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // Connect to Dapp0
+        await connectDappWithExtensionPopup(driver, 0);
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+
+        // Lock Account
+        await driver.switchToWindow(extension);
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Lock', tag: 'button' });
+
+        // Trigger Notification
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.clickElement('#addEthereumChain');
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        const notification = await driver.findElement({
+          text: 'Allow this site to add a network?',
+          tag: 'h3',
+        });
+
+        assert.ok(notification, 'Action on the Dapp does not appear in Metamask');
+      },
+    );
+  });
+
   it('a second dapp should connect to Metamask after being locked', async function () {
     await withFixtures(
       {
