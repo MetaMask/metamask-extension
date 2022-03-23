@@ -37,6 +37,7 @@ import {
   getPendingSmartTransactions,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   dismissCurrentSmartTransactionsErrorMessage,
   getCurrentSmartTransactionsErrorMessageDismissed,
@@ -135,6 +136,9 @@ export default function Swap() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
@@ -245,6 +249,7 @@ export default function Swap() {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     },
   });
@@ -303,6 +308,7 @@ export default function Swap() {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
       stx_error: currentSmartTransactionsError,
     },

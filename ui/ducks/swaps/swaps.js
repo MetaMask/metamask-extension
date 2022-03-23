@@ -1099,6 +1099,9 @@ export const signAndSendTransactions = (
     });
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+    const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
+      state,
+    );
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -1125,6 +1128,7 @@ export const signAndSendTransactions = (
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: getHardwareWalletType(state),
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
       ...additionalTrackingParams,
     };

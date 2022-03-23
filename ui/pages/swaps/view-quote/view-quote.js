@@ -508,7 +508,7 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
-    stx_enabled: currentSmartTransactionsEnabled,
+    stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
