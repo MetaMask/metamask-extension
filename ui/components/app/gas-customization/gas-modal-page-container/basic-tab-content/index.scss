@@ -4,8 +4,8 @@
   align-items: flex-start;
   padding-left: 21px;
   height: 324px;
-  background: #f5f7f8;
-  border-bottom: 1px solid #d2d8dd;
+  background: var(--color-background-alternative);
+  border-bottom: 1px solid var(--color-border-default);
 
   &__title {
     @include Paragraph;
