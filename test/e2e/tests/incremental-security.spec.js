@@ -20,7 +20,7 @@ describe('Incremental Security', function () {
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'onboarding',
         ganacheOptions,
         title: this.test.title,

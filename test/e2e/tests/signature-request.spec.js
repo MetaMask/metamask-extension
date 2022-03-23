@@ -19,7 +19,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
     const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
@@ -101,7 +101,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
     const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
@@ -179,7 +179,7 @@ describe('Sign Typed Data Signature Request', function () {
     const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,

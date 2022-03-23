@@ -13,15 +13,13 @@ const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
-const dappPort = 8080;
-const dappPort2 = 8081;
+const dappBasePort = 808;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 async function withFixtures(options, testSuite) {
   const {
     dapp,
-    dapp2,
     fixtures,
     ganacheOptions,
     driverOptions,
@@ -37,7 +35,7 @@ async function withFixtures(options, testSuite) {
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
-  let dappServer;
+  const dappServer = [];
 
   let webDriver;
   let failed = false;
@@ -56,49 +54,30 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
-      let dappDirectory;
-      if (dappPath) {
-        dappDirectory = path.resolve(__dirname, dappPath);
-      } else {
-        dappDirectory = path.resolve(
-          __dirname,
-          '..',
-          '..',
-          'node_modules',
-          '@metamask',
-          'test-dapp',
-          'dist',
-        );
+      for (let i = 0; i < dapp; i++) {
+        let dappDirectory;
+        if (dappPath) {
+          dappDirectory = path.resolve(__dirname, dappPath);
+        } else {
+          dappDirectory = path.resolve(
+            __dirname,
+            '..',
+            '..',
+            'node_modules',
+            '@metamask',
+            'test-dapp',
+            'dist',
+          );
+        }
+        dappServer.push(createStaticServer(dappDirectory));
+        dappServer[i].listen(`${dappBasePort}${i}`);
+        await new Promise((resolve, reject) => {
+          dappServer[i].on('listening', resolve);
+          dappServer[i].on('error', reject);
+        });
       }
-      dappServer = createStaticServer(dappDirectory);
-      dappServer.listen(dappPort);
-      await new Promise((resolve, reject) => {
-        dappServer.on('listening', resolve);
-        dappServer.on('error', reject);
-      });
     }
-    if (dapp2) {
-      let dappDirectory;
-      if (dappPath) {
-        dappDirectory = path.resolve(__dirname, dappPath);
-      } else {
-        dappDirectory = path.resolve(
-          __dirname,
-          '..',
-          '..',
-          'node_modules',
-          '@metamask',
-          'test-dapp',
-          'dist',
-        );
-      }
-      dappServer = createStaticServer(dappDirectory);
-      dappServer.listen(dappPort2);
-      await new Promise((resolve, reject) => {
-        dappServer.on('listening', resolve);
-        dappServer.on('error', reject);
-      });
-    }
+
     await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
@@ -149,15 +128,19 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         await webDriver.quit();
       }
-      if (dappServer && dappServer.listening) {
-        await new Promise((resolve, reject) => {
-          dappServer.close((error) => {
-            if (error) {
-              return reject(error);
-            }
-            return resolve();
-          });
-        });
+      if (dapp) {
+        for (let i = 0; i < dapp; i++) {
+          if (dappServer[i] && dappServer[i].listening) {
+            await new Promise((resolve, reject) => {
+              dappServer[i].close((error) => {
+                if (error) {
+                  return reject(error);
+                }
+                return resolve();
+              });
+            });
+          }
+        }
       }
       await mockServer.stop();
     }
@@ -187,8 +170,8 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const connectDappWithExtensionPopup = async (driver) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappPort}/`);
+const connectDappWithExtensionPopup = async (driver, dapp) => {
+  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}${dapp}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);

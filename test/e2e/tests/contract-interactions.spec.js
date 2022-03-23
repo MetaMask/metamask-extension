@@ -22,7 +22,7 @@ describe('Deploy contract and call contract methods', function () {
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,

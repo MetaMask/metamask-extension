@@ -14,7 +14,7 @@ describe('Navigate transactions', function () {
   it('should navigate the unapproved transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -102,7 +102,7 @@ describe('Navigate transactions', function () {
   it('should add a transaction while the confirm page is in focus', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -164,7 +164,7 @@ describe('Navigate transactions', function () {
   it('should reject and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -196,7 +196,7 @@ describe('Navigate transactions', function () {
   it('should confirm and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -228,7 +228,7 @@ describe('Navigate transactions', function () {
   it('should reject and remove all unapproved transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,

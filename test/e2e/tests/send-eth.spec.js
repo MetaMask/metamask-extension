@@ -175,7 +175,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
   it('should display the correct gas price on the transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,

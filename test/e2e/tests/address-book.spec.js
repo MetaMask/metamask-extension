@@ -14,7 +14,7 @@ describe('Address Book', function () {
   it('Adds an entry to the address book and sends eth to that address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dapp: 1,
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
