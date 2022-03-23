@@ -939,11 +939,10 @@ export const stxErrorTypes = {
 export const getTranslatedStxErrorMessage = (errorType, t) => {
   switch (errorType) {
     case stxErrorTypes.UNAVAILABLE:
+    case stxErrorTypes.REGULAR_TX_PENDING:
       return t('stxErrorUnavailable');
     case stxErrorTypes.NOT_ENOUGH_FUNDS:
       return t('stxErrorNotEnoughFunds');
-    case stxErrorTypes.REGULAR_TX_PENDING:
-      return t('stxErrorRegularTxPending');
     default:
       return t('stxErrorUnavailable');
   }

@@ -3063,7 +3063,10 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackToNormal": {
+  "stxFallbackPendingTx": {
+    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction. Smart Transactions will be automatically enabled after your pending transaction is finalized."
+  },
+  "stxFallbackUnavailable": {
     "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
   "stxPendingFinalizing": {
@@ -3095,7 +3098,7 @@
     "message": "Trying to cancel your transaction..."
   },
   "stxUnavailable": {
-    "message": "Smart Transactions temporarily unavailable"
+    "message": "Smart Transactions are disabled"
   },
   "stxUnknown": {
     "message": "Status unknown"

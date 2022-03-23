@@ -85,6 +85,7 @@ import {
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
+  stxErrorTypes,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
@@ -325,7 +326,9 @@ export default function Swap() {
   }
 
   const isStxNotEnoughFundsError =
-    currentSmartTransactionsError === 'not_enough_funds';
+    currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
+  const isStxRegularTxPendingError =
+    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_PENDING;
 
   return (
     <div className="swaps">
@@ -388,7 +391,11 @@ export default function Swap() {
                     <div className="swaps__notification-title">
                       {t('stxUnavailable')}
                     </div>
-                    <div>{t('stxFallbackToNormal')}</div>
+                    <div>
+                      {isStxRegularTxPendingError
+                        ? t('stxFallbackPendingTx')
+                        : t('stxFallbackUnavailable')}
+                    </div>
                   </div>
                 )
               }
