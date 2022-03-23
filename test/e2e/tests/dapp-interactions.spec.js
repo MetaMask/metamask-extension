@@ -18,7 +18,7 @@ describe('Dapp interactions', function () {
       },
     ],
   };
-  it('a notification is triggered despite Metamask is locked', async function () {
+  it('a notification is triggered despite Metamask being locked', async function () {
     await withFixtures(
       {
         dapp: 1,
@@ -60,7 +60,7 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('a second dapp should connect to Metamask after being locked', async function () {
+  it('a second dapp can connect to Metamask after being locked', async function () {
     await withFixtures(
       {
         dapp: 2,
