@@ -42,8 +42,8 @@
   }
 
   &__btn {
-    background: #fbfbfb;
-    border: 1px solid #e5e5e5;
+    background: var(--color-background-alternative);
+    border: 1px solid var(--color-border-muted);
     height: 100px;
     width: 150px;
     flex: 1;
