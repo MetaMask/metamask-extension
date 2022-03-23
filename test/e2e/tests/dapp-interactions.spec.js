@@ -18,7 +18,7 @@ describe('Dapp interactions', function () {
       },
     ],
   };
-  it('a notification is triggered despite Metamask being locked', async function () {
+  it('should a notification be triggered despite Metamask being locked', async function () {
     await withFixtures(
       {
         dapp: 1,
@@ -55,12 +55,12 @@ describe('Dapp interactions', function () {
           tag: 'h3',
         });
 
-        assert.ok(notification, 'Action on the Dapp does not appear in Metamask');
+        assert.ok(notification, 'Dapp action does not appear in Metamask');
       },
     );
   });
 
-  it('a second dapp can connect to Metamask after being locked', async function () {
+  it('should a second dapp be able to connect to Metamask after being locked', async function () {
     await withFixtures(
       {
         dapp: 2,
