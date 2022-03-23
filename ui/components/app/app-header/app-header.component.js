@@ -122,8 +122,6 @@ export default class AppHeader extends PureComponent {
             {!hideNetworkIndicator && (
               <div className="app-header__network-component-wrapper">
                 <NetworkDisplay
-                  colored={false}
-                  outline
                   onClick={(event) => this.handleNetworkIndicatorClick(event)}
                   disabled={disabled || disableNetworkIndicator}
                 />
