@@ -177,15 +177,13 @@ export default class ConfirmDecryptMessage extends Component {
             {hasError ? errorMessage : ''}
           </div>
           <div
-            className={classnames({
-              'request-decrypt-message__message-cover': true,
+            className={classnames('request-decrypt-message__message-cover', {
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
           />
           <div
-            className={classnames({
-              'request-decrypt-message__message-lock': true,
+            className={classnames('request-decrypt-message__message-lock', {
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
@@ -207,9 +205,11 @@ export default class ConfirmDecryptMessage extends Component {
               });
             }}
           >
-            <img src="images/lock.svg" alt="" />
-            <div className="request-decrypt-message__message-lock-text">
-              {t('decryptMetamask')}
+            <div className="request-decrypt-message__message-lock__container">
+              <i className="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon" />
+              <div className="request-decrypt-message__message-lock__container__text">
+                {t('decryptMetamask')}
+              </div>
             </div>
           </div>
         </div>
