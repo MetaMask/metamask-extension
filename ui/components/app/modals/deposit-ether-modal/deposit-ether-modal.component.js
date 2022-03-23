@@ -6,6 +6,9 @@ import {
 } from '../../../../../shared/constants/network';
 import Button from '../../../ui/button';
 import LogoMoonPay from '../../../ui/logo/logo-moonpay';
+import LogoWyre from '../../../ui/logo/logo-wyre';
+import LogoTransak from '../../../ui/logo/logo-transak';
+import LogoDepositEth from '../../../ui/logo/logo-deposit-eth';
 
 export default class DepositEtherModal extends Component {
   static contextTypes = {
@@ -128,15 +131,7 @@ export default class DepositEtherModal extends Component {
         <div className="page-container__content">
           <div className="deposit-ether-modal__buy-rows">
             {this.renderRow({
-              logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/transak.svg')",
-                    height: '60px',
-                  }}
-                />
-              ),
+              logo: <LogoTransak className="deposit-ether-modal__logo" />,
               title: t('buyCryptoWithTransak', [symbol]),
               text: t('buyCryptoWithTransakDescription', [symbol]),
               buttonLabel: t('continueToTransak'),
@@ -153,9 +148,7 @@ export default class DepositEtherModal extends Component {
               hide: !isBuyableTransakChain,
             })}
             {this.renderRow({
-              logo: (
-                <LogoMoonPay className="deposit-ether-modal__logo--moonpay" />
-              ),
+              logo: <LogoMoonPay className="deposit-ether-modal__logo" />,
               title: t('buyCryptoWithMoonPay', [symbol]),
               text: t('buyCryptoWithMoonPayDescription', [symbol]),
               buttonLabel: t('continueToMoonPay'),
@@ -172,15 +165,7 @@ export default class DepositEtherModal extends Component {
               hide: !isBuyableMoonPayChain,
             })}
             {this.renderRow({
-              logo: (
-                <div
-                  className="deposit-ether-modal__logo"
-                  style={{
-                    backgroundImage: "url('./images/wyre.svg')",
-                    height: '40px',
-                  }}
-                />
-              ),
+              logo: <LogoWyre className="deposit-ether-modal__logo" />,
               title: t('buyWithWyre'),
               text: t('buyWithWyreDescription'),
               buttonLabel: t('continueToWyre'),
@@ -198,15 +183,7 @@ export default class DepositEtherModal extends Component {
             })}
             {this.renderRow({
               logo: (
-                <img
-                  alt=""
-                  className="deposit-ether-modal__logo"
-                  src="./images/deposit-eth.svg"
-                  style={{
-                    height: '75px',
-                    width: '75px',
-                  }}
-                />
+                <LogoDepositEth className="deposit-ether-modal__logo--lg" />
               ),
               title: t('directDepositCrypto', [symbol]),
               text: t('directDepositCryptoExplainer', [symbol]),
