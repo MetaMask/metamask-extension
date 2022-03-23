@@ -63,7 +63,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-background-alternative);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-background-alternative);
+    color: var(--color-icon-default);
     position: absolute;
     right: 24px;
     bottom: 12px;
