@@ -15,6 +15,7 @@ import {
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
+import { getSendStage } from '../../ducks/send';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -38,6 +39,7 @@ function mapStateToProps(state) {
     providerId: getNetworkIdentifier(state),
     providerType: state.metamask.provider?.type,
     theme: getTheme(state),
+    sendStage: getSendStage(state),
   };
 }
 
