@@ -1187,12 +1187,15 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin }, suppressUnauthorized = true) => {
+      getAccounts: async ({ origin }, suppressUnauthorizedError = true) => {
         if (origin === 'metamask') {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(origin, suppressUnauthorized);
+          return await this.getPermittedAccounts(
+            origin,
+            suppressUnauthorizedError,
+          );
         }
         return []; // changing this is a breaking change
       },
@@ -2456,18 +2459,18 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @param {boolean} suppressUnauthorized - suppresses the unauthorized error. defaults to `true`.
+   * @param {boolean} [suppressUnauthorizedError] - Suppresses the unauthorized error.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  async getPermittedAccounts(origin, suppressUnauthorized = true) {
+  async getPermittedAccounts(origin, suppressUnauthorizedError = true) {
     try {
       return await this.permissionController.executeRestrictedMethod(
         origin,
         RestrictedMethods.eth_accounts,
       );
     } catch (error) {
-      if (suppressUnauthorized) {
+      if (suppressUnauthorizedError) {
         if (error.code === rpcErrorCodes.provider.unauthorized) {
           return [];
         }
