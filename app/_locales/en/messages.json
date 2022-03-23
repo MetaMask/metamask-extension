@@ -2112,10 +2112,6 @@
   "notifications10Title": {
     "message": "Improved token detection is here"
   },
-  "notifications11ActionText": {
-    "message": "Let’s start!",
-    "description": "The 'call to action' on the button, or link, of the 'Let’s start!' notification. Upon clicking, the notification pop up will close."
-  },
   "notifications11Description": {
     "message": "Tokens can be created by anyone and can have duplicate names. If you see a token appear that you don’t trust or haven’t interacted with - it’s safer to not trust it."
   },

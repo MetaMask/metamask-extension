@@ -744,13 +744,11 @@ function getAllowedNotificationIds(state) {
 
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications);
-  console.log(notifications);
   const allowedNotificationIds = getAllowedNotificationIds(state);
   const notificationsToShow = notifications.filter(
     (notification) =>
       !notification.isShown && allowedNotificationIds[notification.id],
   );
-  console.log(notificationsToShow);
   const notificationsSortedByDate = notificationsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),
   );

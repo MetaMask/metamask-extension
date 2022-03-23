@@ -50,9 +50,6 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 10: true });
       history.push(EXPERIMENTAL_ROUTE);
     },
-    11: () => {
-      updateViewedNotifications({ 11: true });
-    },
   };
 
   return actionFunctions[id];
