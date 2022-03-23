@@ -1,30 +1,5 @@
 :root {
-  // These are the colors of the MetaMask design system
-  // Only design system colors should be added, no superfluous variables
-  --Blue-300: #43aefc;
-  --Blue-400: #1098fc;
-  --Blue-500: #037dd6;
-  // Greys
-  --Grey-000: #f2f3f4;
-  --Grey-100: #d6d9dc;
-  --Grey-200: #bbc0c5;
-  --Grey-400: #848c96;
-  --Grey-500: #6a737d;
-  // Reds
-  --Red-000: #fcf2f3;
-  --Red-300: #e88f97;
-  --Red-500: #d73a49;
-  // Orange
-  --Orange-500: #f66a0a;
-  // Yellow
-  --Yellow-100: #fefcde;
-  --Yellow-500: #ffd33d;
-  // Black
-  --Black-100: #24292e;
-  // Primary colors
-  --primary-blue: var(--Blue-500);
   // Accents
-  --accent-red: var(--Red-500);
   // Everything below this line is part of the new color system
   --primary-1: #037dd6;
   --secondary-1: #f66a0a;
