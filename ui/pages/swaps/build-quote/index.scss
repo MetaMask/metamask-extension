@@ -57,11 +57,12 @@
   }
 
   &__swap-arrows {
+    display: flex;
     flex: 0 0 auto;
-    height: 16px;
-    width: 12px;
+    height: 24px;
     cursor: pointer;
     background: unset;
+    color: var(--color-icon-muted);
   }
 
   &__max-button {
