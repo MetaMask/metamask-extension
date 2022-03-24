@@ -35,7 +35,6 @@ export default class CheckKycStatus extends Component {
     storageKeySubmitted: '',
     // cid
     storageKeyHash: '',
-    hash: '',
   };
 
   componentDidMount() {
@@ -79,11 +78,10 @@ export default class CheckKycStatus extends Component {
   };
 
   handleCheckKycStatus = async () => {
-    // console.log('handleCheckKycStatus');
     let isLoading = true;
     this.setState({ isLoading });
     const { storageKeySubmitted, storageKeyHash } = this.state;
-    let { kycStatus } = this.state;
+    let kycStatus = false;
     const { currentAddress, selectedAccount, getPrivateKey } = this.props;
 
     const hash = await getStorageItem(storageKeyHash);

@@ -45,6 +45,14 @@ export default class KycFlowScreen extends Component {
     this.updateStorageKey();
   }
 
+  componentDidUpdate() {
+    const { currentAddress } = this.props;
+    const { address } = this.state;
+    if (currentAddress !== address) {
+      this.onBack();
+    }
+  }
+
   updateStorageKey = () => {
     const { currentAddress: address } = this.props;
     if (this.state.address !== address) {
