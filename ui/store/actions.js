@@ -1579,6 +1579,7 @@ export function rejectWatchAsset(suggestedAssetID) {
     dispatch(showLoadingIndication());
     try {
       await promisifiedBackground.rejectWatchAsset(suggestedAssetID);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1595,6 +1596,7 @@ export function acceptWatchAsset(suggestedAssetID) {
     dispatch(showLoadingIndication());
     try {
       await promisifiedBackground.acceptWatchAsset(suggestedAssetID);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
