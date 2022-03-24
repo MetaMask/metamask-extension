@@ -44,7 +44,7 @@ const DetectedTokenAggregators = ({ aggregatorsList }) => {
 };
 
 DetectedTokenAggregators.propTypes = {
-  aggregatorsList: PropTypes.array,
+  aggregatorsList: PropTypes.array.isRequired,
 };
 
 export default DetectedTokenAggregators;
