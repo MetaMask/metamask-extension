@@ -3230,7 +3230,10 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 }
 
 // Smart Transactions Controller
-export async function setSmartTransactionsOptInStatus(optInState) {
+export async function setSmartTransactionsOptInStatus(
+  optInState,
+  prevOptInState,
+) {
   trackMetaMetricsEvent({
     event: 'STX OptIn',
     category: 'swaps',
@@ -3238,6 +3241,7 @@ export async function setSmartTransactionsOptInStatus(optInState) {
       stx_enabled: true,
       current_stx_enabled: true,
       stx_user_opt_in: optInState,
+      stx_prev_user_opt_in: prevOptInState,
     },
   });
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);

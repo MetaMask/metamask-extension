@@ -184,6 +184,8 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingFinalizing');
     } else if (timeLeftForPendingStxInSec < 150) {
       headerText = t('stxPendingPrivatelySubmitting');
+    } else if (cancelSwapLinkClicked) {
+      headerText = t('stxTryingToCancel');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
@@ -192,7 +194,11 @@ export default function SmartTransactionStatus() {
       description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
     }
     icon = <SuccessIcon />;
-  } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
+  } else if (
+    smartTransactionStatus === 'cancelled_user_cancelled' ||
+    latestSmartTransaction?.statusMetadata?.minedTx ===
+      SMART_TRANSACTION_STATUSES.CANCELLED
+  ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
     icon = <CanceledIcon />;

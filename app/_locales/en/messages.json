@@ -410,15 +410,15 @@
     "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 146+ countries. Tokens deposit into your MetaMask account."
+    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 145+ countries. Tokens deposit into your MetaMask account."
   },
   "buyCryptoWithTransak": {
     "message": "Buy $1 with Transak",
     "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyCryptoWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyEth": {
     "message": "Buy ETH"
@@ -2857,7 +2857,7 @@
     "message": "Slow"
   },
   "smartTransaction": {
-    "message": "Smart transaction"
+    "message": "Smart Transaction"
   },
   "snapAccess": {
     "message": "$1 snap has access to:",
@@ -3047,6 +3047,12 @@
   "stxDescription": {
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
   },
+  "stxErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart transaction."
+  },
+  "stxErrorUnavailable": {
+    "message": "Smart Transactions are temporarily unavailable."
+  },
   "stxFailure": {
     "message": "Swap failed"
   },
@@ -3054,8 +3060,11 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackToNormal": {
-    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  "stxFallbackPendingTx": {
+    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction."
+  },
+  "stxFallbackUnavailable": {
+    "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
   "stxPendingFinalizing": {
     "message": "Finalizing..."
@@ -3082,8 +3091,11 @@
   "stxTryRegular": {
     "message": "Try a regular swap."
   },
+  "stxTryingToCancel": {
+    "message": "Trying to cancel your transaction..."
+  },
   "stxUnavailable": {
-    "message": "Smart transactions temporarily unavailable"
+    "message": "Smart Transactions are disabled"
   },
   "stxUnknown": {
     "message": "Status unknown"

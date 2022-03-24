@@ -125,7 +125,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           history.push(CONNECTED_ROUTE);
           onClose();
         }}
-        iconClassName="account-options-menu__connected-sites"
+        iconClassName="fa fa-bullseye"
       >
         {t('connectedSites')}
       </MenuItem>
