@@ -46,16 +46,16 @@ const styles = {
   },
   materialWhitePaddedUnderline: {
     '&:after': {
-      borderBottom: '2px solid #fff',
+      borderBottom: '2px solid var(--color-background-default)', // @TODO: Replace with border-muted ?
     },
   },
   // Non-material styles
   formLabel: {
     '&$formLabelFocused': {
-      color: '#5b5b5b',
+      color: 'var(--color-text-alternative)',
     },
     '&$materialError': {
-      color: '#5b5b5b',
+      color: 'var(--color-text-alternative)',
     },
   },
   formLabelFocused: {},

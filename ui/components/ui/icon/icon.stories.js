@@ -279,7 +279,7 @@ export const BuyIconStory = (args) => <BuyIcon {...args} />;
 BuyIconStory.args = {
   width: '17',
   height: '21',
-  fill: '#2F80ED',
+  fill: 'var(--color-primary-default)',
 };
 BuyIconStory.storyName = 'BuyIcon';
 
@@ -287,7 +287,7 @@ export const SwapIconStory = (args) => <SwapIcon {...args} />;
 SwapIconStory.args = {
   width: '17',
   height: '21',
-  fill: '#2F80ED',
+  fill: 'var(--color-primary-default)',
 };
 SwapIconStory.storyName = 'SwapIcon';
 
