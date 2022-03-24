@@ -12,7 +12,7 @@
   @media screen and (max-width: $break-small) {
     &--border {
       .swaps-footer__custom-page-container-footer-class {
-        border-top: 1px solid #d2d8dd;
+        border-top: 1px solid var(--color-border-muted);
       }
     }
   }
