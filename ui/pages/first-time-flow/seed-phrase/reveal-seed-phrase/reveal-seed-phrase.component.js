@@ -112,7 +112,11 @@ export default class RevealSeedPhrase extends PureComponent {
               this.setState({ isShowingSeedPhrase: true });
             }}
           >
-            <LockIcon width="28px" height="35px" fill="#FFFFFF" />
+            <LockIcon
+              width="28px"
+              height="35px"
+              fill="var(--color-background-default)"
+            />
             <div className="reveal-seed-phrase__reveal-button">
               {t('clickToRevealSeed')}
             </div>
