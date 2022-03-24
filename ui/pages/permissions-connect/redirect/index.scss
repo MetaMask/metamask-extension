@@ -29,9 +29,14 @@
   }
 
   &__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     width: 40px;
     height: 40px;
-    background: white url("/images/permissions-check.svg") no-repeat;
+    color: var(--color-success-inverse);
+    background-color: var(--color-success-default);
     position: absolute;
   }
 }
