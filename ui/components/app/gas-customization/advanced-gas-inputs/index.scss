@@ -13,7 +13,7 @@
     &__label {
       @include H7;
 
-      color: var(--color-text-muted);
+      color: var(--color-text-alternative);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -82,11 +82,11 @@
       right: 0;
       width: 17px;
       height: 24px;
-      border: 1px solid var(--color-border-default);
+      border: 1px solid var(--color-border-muted);
       border-top-right-radius: 4px;
       display: flex;
       flex-direction: column;
-      color: var(--color-icon-default);
+      color: var(--color-icon-muted);
       border-bottom-right-radius: 4px;
       cursor: pointer;
 

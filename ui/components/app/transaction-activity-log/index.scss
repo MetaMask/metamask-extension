@@ -1,6 +1,6 @@
 .transaction-activity-log {
   &__title {
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid var(--color-border-muted);
     padding-bottom: 4px;
     text-transform: capitalize;
   }
@@ -23,7 +23,7 @@
       top: 0;
       height: 100%;
       width: 7px;
-      border-right: 1px solid #909090;
+      border-right: 1px solid var(--color-border-muted);
     }
 
     &:first-child::after {
@@ -45,7 +45,7 @@
     height: 15px;
     margin-right: 6px;
     border-radius: 50%;
-    background: #909090;
+    background: var(--color-icon-default);
     flex: 0 0 auto;
     display: flex;
     justify-content: center;
