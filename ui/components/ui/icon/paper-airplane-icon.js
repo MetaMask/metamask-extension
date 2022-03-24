@@ -22,7 +22,7 @@ export default function PaperAirplane({ size, className, color }) {
 }
 
 PaperAirplane.defaultProps = {
-  color: 'var(--color-background-default)', // @TODO: Keep white or change to icon muted ?
+  color: 'var(--color-icon-default)',
 };
 
 PaperAirplane.propTypes = {
