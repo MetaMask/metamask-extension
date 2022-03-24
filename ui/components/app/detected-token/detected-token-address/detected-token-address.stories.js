@@ -1,9 +1,9 @@
 import React from 'react';
 
-import TokenAddress from './token-address';
+import DetectedTokenAddress from './detected-token-address';
 
 export default {
-  title: 'Components/App/TokenDetected/TokenAddress',
+  title: 'Components/App/DetectedToken/DetectedTokenAddress',
   id: __filename,
   argTypes: {
     address: { control: 'text' },
@@ -14,7 +14,7 @@ export default {
 };
 
 const Template = (args) => {
-  return <TokenAddress address={args.address} />;
+  return <DetectedTokenAddress address={args.address} />;
 };
 
 export const DefaultStory = Template.bind({});

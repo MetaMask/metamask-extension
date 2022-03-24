@@ -16,12 +16,12 @@ import {
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-const TokenAddress = ({ address }) => {
+const DetectedTokenAddress = ({ address }) => {
   const t = useContext(I18nContext);
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
-    <Box display={DISPLAY.INLINE_FLEX} className="token-address">
+    <Box display={DISPLAY.INLINE_FLEX} className="detected-token-address">
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
         {`${t('tokenAddress')}:`}
       </Typography>
@@ -38,7 +38,7 @@ const TokenAddress = ({ address }) => {
       >
         <Button
           type="link"
-          className="token-address__copy-link"
+          className="detected-token-address__copy-link"
           onClick={() => {
             handleCopy(address);
           }}
@@ -50,8 +50,8 @@ const TokenAddress = ({ address }) => {
   );
 };
 
-TokenAddress.propTypes = {
+DetectedTokenAddress.propTypes = {
   address: PropTypes.string,
 };
 
-export default TokenAddress;
+export default DetectedTokenAddress;
