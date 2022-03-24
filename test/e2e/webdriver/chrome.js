@@ -3,11 +3,11 @@ const chrome = require('selenium-webdriver/chrome');
 const proxy = require('selenium-webdriver/proxy');
 
 /**
- * Proxy host to use for HTTPS requests
+ * Proxy host to use for HTTP and HTTPS requests
  *
  * @type {string}
  */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const PROXY_HOST = '127.0.0.1:8000';
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
@@ -19,8 +19,10 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
     args.push('--log-level=3');
+    // Proxy localhost on Chrome
+    args.push('--proxy-bypass-list=<-loopback>');
     const options = new chrome.Options().addArguments(args);
-    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setProxy(proxy.manual({ http: PROXY_HOST, https: PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('chrome')

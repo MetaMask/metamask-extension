@@ -16,11 +16,11 @@ const { BuildType } = require('../../../development/lib/build-type');
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 
 /**
- * Proxy host to use for HTTPS requests
+ * Proxy host to use for HTTP and HTTPS requests
  *
  * @type {string}
  */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const PROXY_HOST = '127.0.0.1:8000';
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
@@ -38,8 +38,10 @@ class FirefoxDriver {
   static async build({ responsive, port, type }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
-    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setProxy(proxy.manual({ http: PROXY_HOST, https: PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
+    // Proxy localhost on Firefox
+    options.setPreference('network.proxy.allow_hijacking_localhost', true);
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
