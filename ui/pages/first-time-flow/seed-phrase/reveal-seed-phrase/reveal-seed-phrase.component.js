@@ -115,7 +115,7 @@ export default class RevealSeedPhrase extends PureComponent {
             <LockIcon
               width="28px"
               height="35px"
-              fill="var(--color-background-default)"
+              fill="var(--color-overlay-inverse)"
             />
             <div className="reveal-seed-phrase__reveal-button">
               {t('clickToRevealSeed')}
