@@ -5,12 +5,14 @@ const LogoDepositEth = ({
   width = '100%',
   color = 'var(--color-text-default)',
   className,
+  ariaLabel,
 }) => {
   return (
     <svg
       width={width}
       fill={color}
       className={className}
+      aria-label={ariaLabel}
       viewBox="0 0 80 78"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -43,6 +45,10 @@ LogoDepositEth.propTypes = {
    * Additional className to add to the root svg
    */
   className: PropTypes.string,
+  /**
+   * Aria label to add to the logo component
+   */
+  ariaLabel: PropTypes.string,
 };
 
 export default LogoDepositEth;

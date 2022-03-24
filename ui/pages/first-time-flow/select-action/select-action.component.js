@@ -50,7 +50,7 @@ export default class SelectAction extends PureComponent {
               <div className="select-action__select-button">
                 <div className="select-action__button-content">
                   <div className="select-action__button-symbol">
-                    <img src="./images/download-alt.svg" alt="" />
+                    <i className="fa fa-download fa-2x" />
                   </div>
                   <div className="select-action__button-text-big">
                     {t('noAlreadyHaveSeed')}
@@ -70,7 +70,7 @@ export default class SelectAction extends PureComponent {
               <div className="select-action__select-button">
                 <div className="select-action__button-content">
                   <div className="select-action__button-symbol">
-                    <img src="./images/thin-plus.svg" alt="" />
+                    <i className="fa fa-plus fa-2x" />
                   </div>
                   <div className="select-action__button-text-big">
                     {t('letsGoSetUp')}

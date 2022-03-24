@@ -5,11 +5,16 @@ import { COLORS } from '../../../helpers/constants/design-system';
 
 import Card from '../card';
 import Box from '../box';
+import Typography from '../typography';
 
 import LogoMoonPay from './logo-moonpay';
 import LogoWyre from './logo-wyre';
 import LogoTransak from './logo-transak';
 import LogoDepositEth from './logo-deposit-eth';
+import LogoLeger from './logo-ledger';
+import LogoQRBased from './logo-qr-based';
+import LogoTrezor from './logo-trezor';
+import LogoLattice from './logo-lattice';
 
 import README from './README.mdx';
 
@@ -31,6 +36,9 @@ export default {
     className: {
       control: 'text',
     },
+    ariaLabel: {
+      control: 'text',
+    },
   },
 };
 
@@ -43,7 +51,7 @@ const LogoItem = ({ Component }) => {
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
     >
       <Box marginBottom={2}>{Component}</Box>
-      <code>{`${Component.type.__docgenInfo.displayName}`}</code>
+      <Typography>{`${Component.type.__docgenInfo.displayName}`}</Typography>
     </Card>
   );
 };
@@ -64,6 +72,10 @@ export const DefaultStory = (args) => (
     <LogoItem Component={<LogoTransak {...args} />} />
     <LogoItem Component={<LogoDepositEth {...args} />} />
     <LogoItem Component={<LogoMoonPay {...args} />} />
+    <LogoItem Component={<LogoLeger {...args} />} />
+    <LogoItem Component={<LogoQRBased {...args} />} />
+    <LogoItem Component={<LogoTrezor {...args} />} />
+    <LogoItem Component={<LogoLattice {...args} />} />
   </div>
 );
 

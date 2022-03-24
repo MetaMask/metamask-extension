@@ -3,7 +3,9 @@
 exports[`LogoMoonPay renders the LogoMoonPay component 1`] = `
 <div>
   <svg
+    fill="var(--color-text-default)"
     viewBox="0 0 1920 350"
+    width="100%"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
