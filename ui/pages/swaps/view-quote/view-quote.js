@@ -625,6 +625,7 @@ export default function ViewQuote() {
   }, [
     trackEvent,
     numberOfQuotes,
+    smartTransactionsEnabled,
     currentSmartTransactionsEnabled,
     destinationTokenSymbol,
     destinationTokenValue,
@@ -1082,7 +1083,13 @@ export default function ViewQuote() {
                     }),
                   );
                 } else {
-                  dispatch(signAndSendTransactions(history, trackEvent, additionalTrackingParams));
+                  dispatch(
+                    signAndSendTransactions(
+                      history,
+                      trackEvent,
+                      additionalTrackingParams,
+                    ),
+                  );
                 }
               } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
                 history.push(DEFAULT_ROUTE);

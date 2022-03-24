@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useContext, useState, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useContext,
+  useState,
+  useCallback,
+} from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
@@ -320,7 +326,6 @@ export default function Swap() {
     });
   }, [
     currentSmartTransactionsError,
-    currentStxErrorTracked,
     currentSmartTransactionsEnabled,
     trackEvent,
     fetchParams?.balanceError,
@@ -340,7 +345,11 @@ export default function Swap() {
       setCurrentStxErrorTracked(true);
       trackErrorStxEvent();
     }
-  }, [currentSmartTransactionsError, trackErrorStxEvent, currentStxErrorTracked]);
+  }, [
+    currentSmartTransactionsError,
+    trackErrorStxEvent,
+    currentStxErrorTracked,
+  ]);
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
