@@ -2170,7 +2170,7 @@ describe('Transaction Controller', function () {
       assert.equal(result.userFeeLevel, 'high');
     });
 
-    it('does not update if status is not unapproved', function () {
+    it('throws error if status is not unapproved', function () {
       txStateManager.addTransaction({
         id: '4',
         status: TRANSACTION_STATUSES.APPROVED,
@@ -2184,14 +2184,14 @@ describe('Transaction Controller', function () {
         estimateUsed: '0x009',
       });
 
-      txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
-      let result = txStateManager.getTransaction('4');
-      assert.equal(result.txParams.maxFeePerGas, '0x008');
-
-      // test update estimate used
-      txController.updateTransactionGasFees('4', { estimateUsed: '0x0099' });
-      result = txStateManager.getTransaction('4');
-      assert.equal(result.estimateUsed, '0x009');
+      try {
+        txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
+      } catch (e) {
+        assert.equal(
+          e.message,
+          'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
+        );
+      }
     });
 
     it('does not update unknown parameters in update method', function () {
