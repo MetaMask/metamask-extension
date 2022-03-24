@@ -2331,12 +2331,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Başlamadan önce Gizli Kurtarma İfadeniz ve cüzdanınızı nasıl güvende tutacağınız hakkında bilgi edinmek için bu kısa videoyu izleyin."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Her kelimeyi tek bir boşluk ile ayırın"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Hafıza panosundan Gizli Kurtarma İfadesini yapıştır"
-  },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
   },
@@ -2446,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Önerileri Göster"
-  },
-  "showSeedPhrase": {
-    "message": "Gizli Kurtarma İfadesini Göster"
   },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"

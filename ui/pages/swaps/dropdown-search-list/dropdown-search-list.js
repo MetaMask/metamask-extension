@@ -27,6 +27,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 
 export default function DropdownSearchList({
@@ -63,6 +64,9 @@ export default function DropdownSearchList({
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
 
   const tokenImportedEvent = useNewMetricEvent({
     event: 'Token Imported',
@@ -73,6 +77,7 @@ export default function DropdownSearchList({
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     },
     category: 'swaps',

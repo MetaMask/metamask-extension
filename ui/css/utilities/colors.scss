@@ -1,69 +1,10 @@
 :root {
-  // These are the colors of the MetaMask design system
-  // Only design system colors should be added, no superfluous variables
-  --Blue-000: #eaf6ff;
-  --Blue-200: #75c4fd;
-  --Blue-300: #43aefc;
-  --Blue-400: #1098fc;
-  --Blue-500: #037dd6;
-  --Blue-600: #0260a4;
-  // Greys
-  --Grey-000: #f2f3f4;
-  --Grey-100: #d6d9dc;
-  --Grey-200: #bbc0c5;
-  --Grey-300: #9fa6ae;
-  --Grey-400: #848c96;
-  --Grey-500: #6a737d;
-  --Grey-600: #535a61;
-  --Grey-700: #3b4046;
-  --Grey-800: #24272a;
-  // Greens
-  --Green-500: #28a745;
-  // Reds
-  --Red-000: #fcf2f3;
-  --Red-300: #e88f97;
-  --Red-400: #e06470;
-  --Red-500: #d73a49;
-  --Red-600: #b92534;
-  // Orange
-  --Orange-000: #fef5ef;
-  --Orange-300: #faa66c;
-  --Orange-400: #f8883b;
-  --Orange-500: #f66a0a;
-  --Orange-600: #c65507;
-  // Yellow
-  --Yellow-000: #fefae8; // Temporary placeholder
-  --Yellow-100: #fefcde;
-  --Yellow-500: #ffd33d;
-  // Black
-  --Black-100: #24292e;
-  // Primary colors
-  --primary-blue: var(--Blue-500);
   // Accents
-  --accent-yellow: var(--Yellow-500);
-  --accent-red: var(--Red-500);
-  // Neutrals
-  --neutral-black: var(--Black-100);
-  --neutral-grey: var(--Grey-500);
   // Everything below this line is part of the new color system
-  --primary-1: #037dd6;
-  --primary-2: #eaf6ff;
-  --primary-3: #0260a4;
-  --secondary-1: #f66a0a;
-  --secondary-2: #fef5ef;
-  --secondary-3: #c65507;
-  --error-1: #d73a49;
-  --error-2: #fcf2f3;
-  --error-3: #b92534;
   --alert-1: #ffd33d;
-  --alert-2: #fefcde;
-  --alert-3: #f8c000;
   --success-1: #4cd964;
-  --success-2: #caf4d1;
   --success-3: #219e37;
-  --ui-black: #24292e;
   --ui-grey: #d6d9dc;
-  --ui-white: #fff;
   --ui-1: #f2f3f4;
   --ui-2: #d6d9dc;
   --ui-3: #bbc0c5;
@@ -82,8 +23,6 @@
 :root {
   --white: #fff;
   --black: #000;
-  --orange: #ffa500;
-  --red: #f00;
   --gray: #808080;
 
   /*
@@ -94,15 +33,8 @@
   --dusty-gray: #9b9b9b;
   --alto: #dedede;
   --alabaster: #fafafa;
-  --silver-chalice: #aeaeae;
   --tundora: #4d4d4d;
-  --nile-blue: #1b344d;
-  --scorpion: #5d5d5d;
   --silver: #cdcdcd;
-  --monzo: #d0021b;
   --malibu-blue: #b8cbd8;
   --athens-grey: #e9edf0;
-  --geyser: #d2d8dd;
-  --mid-gray: #5b5d67;
-  --dodger-blue: #3099f2;
 }

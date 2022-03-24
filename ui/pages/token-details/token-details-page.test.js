@@ -6,7 +6,7 @@ import Identicon from '../../components/ui/identicon/identicon.component';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import TokenDetailsPage from './token-details-page';
 
-const testTokenAddress = '0xaD6D458402F60fD3Bd25163575031ACDce07538A';
+const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const state = {
   metamask: {
     selectedAddress: '0xAddress',
@@ -15,68 +15,198 @@ const state = {
     },
     useTokenDetection: true,
     tokenList: {
-      '0x6b175474e89094c44da98b954eedeac495271d0f': {
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        symbol: 'META',
+      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
+        address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Synthetix',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
         decimals: 18,
-        image: 'metamark.svg',
-        unlisted: false,
-      },
-      '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
-        address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-        symbol: '0X',
-        decimals: 18,
-        image: '0x.svg',
-        unlisted: false,
+        iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
+        name: 'Synthetix Network Token',
+        occurrences: 12,
+        symbol: 'SNX',
       },
       '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'AST',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
         decimals: 18,
-        image: 'ast.png',
-        unlisted: false,
+        iconUrl:
+          'https://images.prismic.io/token-price-prod/d0352dd9-5de8-4633-839d-bc3422c44d9c_UNI%404x.png',
+        name: 'Uniswap',
+        occurrences: 11,
+        symbol: 'UNI',
+      },
+      '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': {
+        address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        decimals: 18,
+        iconUrl:
+          'https://images.prismic.io/token-price-prod/917bc4fa-59d4-40f5-a3ef-33035698ffe0_YFIxxxhdpi.png',
+        name: 'yearn.finance',
+        occurrences: 11,
+        symbol: 'YFI',
+      },
+      '0x408e41876cccdc0f92210600ef50372656052a38': {
+        address: '0x408e41876cccdc0f92210600ef50372656052a38',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        decimals: 18,
+        iconUrl: 'https://crypto.com/price/coin-data/icon/REN/color_icon.png',
+        name: 'Republic Token',
+        occurrences: 11,
+        symbol: 'REN',
+      },
+      '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
+        address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        decimals: 8,
+        iconUrl:
+          'https://images.prismic.io/token-price-prod/c27778b1-f402-45f0-9225-f24f24b0518a_WBTC-xxxhdpi.png',
+        name: 'Wrapped BTC',
+        occurrences: 11,
+        symbol: 'WBTC',
       },
       '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
         address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
-        symbol: 'BAT',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
         decimals: 18,
-        image: 'BAT_icon.svg',
-        unlisted: false,
+        iconUrl: 'https://crypto.com/price/coin-data/icon/MKR/color_icon.png',
+        name: 'MakerDAO',
+        occurrences: 11,
+        symbol: 'MKR',
       },
-      '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1': {
-        address: '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1',
-        symbol: 'CVL',
+      '0x514910771af9ca656af840dff83e8264ecf986ca': {
+        address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
         decimals: 18,
-        image: 'CVL_token.svg',
-        unlisted: false,
+        iconUrl: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+        name: 'ChainLink Token',
+        occurrences: 11,
+        symbol: 'LINK',
       },
-      '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
-        address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
-        symbol: 'GLA',
+      '0x6b175474e89094c44da98b954eedeac495271d0f': {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
         decimals: 18,
-        image: 'gladius.svg',
-        unlisted: false,
+        iconUrl: 'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
+        name: 'Dai Stablecoin',
+        occurrences: 11,
+        symbol: 'DAI',
       },
-      '0x467Bccd9d29f223BcE8043b84E8C8B282827790F': {
-        address: '0x467Bccd9d29f223BcE8043b84E8C8B282827790F',
-        symbol: 'GNO',
+      '0x04fa0d235c4abf4bcf4787af4cf447de572ef828': {
+        address: '0x04fa0d235c4abf4bcf4787af4cf447de572ef828',
+        aggregators: [
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
         decimals: 18,
-        image: 'gnosis.svg',
-        unlisted: false,
-      },
-      '0xff20817765cb7f73d4bde2e66e067e58d11095c2': {
-        address: '0xff20817765cb7f73d4bde2e66e067e58d11095c2',
-        symbol: 'OMG',
-        decimals: 18,
-        image: 'omg.jpg',
-        unlisted: false,
-      },
-      '0x8e870d67f660d95d5be530380d0ec0bd388289e1': {
-        address: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
-        symbol: 'WED',
-        decimals: 18,
-        image: 'wed.png',
-        unlisted: false,
+        iconUrl:
+          'https://images.prismic.io/token-price-prod/e2850554-ccf6-4514-9c3c-a17e19dea82f_UMAxxxhdpi.png',
+        name: 'UMA',
+        occurrences: 10,
+        symbol: 'UMA',
       },
     },
     provider: {
@@ -89,7 +219,7 @@ const state = {
     tokens: [
       {
         address: testTokenAddress,
-        symbol: 'DAA',
+        symbol: 'SNX',
         decimals: 18,
         image: 'testImage',
         isERC721: false,
@@ -185,6 +315,26 @@ describe('TokenDetailsPage', () => {
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
     expect(getByText('Ethereum Mainnet')).toBeInTheDocument();
+  });
+
+  it('should render token list title in token details page', () => {
+    process.env.TOKEN_DETECTION_V2 = true;
+    const store = configureMockStore()(state);
+    const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
+    expect(getByText('Token lists:')).toBeInTheDocument();
+    process.env.TOKEN_DETECTION_V2 = false;
+  });
+
+  it('should render token list for the token in token details page', () => {
+    process.env.TOKEN_DETECTION_V2 = true;
+    const store = configureMockStore()(state);
+    const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
+    expect(
+      getByText(
+        'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Synthetix, Zapper, Zerion, 0x.',
+      ),
+    ).toBeInTheDocument();
+    process.env.TOKEN_DETECTION_V2 = false;
   });
 
   it('should call hide token button when button is clicked in token details page', () => {

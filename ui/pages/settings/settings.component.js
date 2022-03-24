@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
+import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 
 import {
   ALERTS_ROUTE,
@@ -113,13 +114,16 @@ class SettingsPage extends PureComponent {
         })}
       >
         <div className="settings-page__header">
-          {currentPath !== SETTINGS_ROUTE && (
-            <div
-              className="settings-page__back-button"
-              onClick={() => history.push(backRoute)}
-            />
-          )}
           <div className="settings-page__header__title-container">
+            {currentPath !== SETTINGS_ROUTE && (
+              <IconCaretLeft
+                className="settings-page__back-button"
+                color="var(--color-icon-default)"
+                size={32}
+                onClick={() => history.push(backRoute)}
+              />
+            )}
+
             {this.renderTitle()}
 
             <div

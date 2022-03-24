@@ -2331,12 +2331,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Trước khi bắt đầu, hãy xem video ngắn này để tìm hiểu thêm về cụm mật khẩu khôi phục bí mật của bạn và cách bảo vệ ví của bạn."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Phân tách mỗi từ bằng một dấu cách"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Dán Cụm mật khẩu khôi phục bí mật từ khay nhớ tạm"
-  },
   "seedPhraseReq": {
     "message": "Cụm mật khẩu khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
   },
@@ -2446,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Hiển Thị Đề Xuất"
-  },
-  "showSeedPhrase": {
-    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
   },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"

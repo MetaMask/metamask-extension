@@ -2331,12 +2331,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Bago magsimula, panoorin ang maikling video na ito upang malaman ang tungkol sa iyong Secret Recovery Phrase at paano mapapanatiling ligtas ang wallet mo."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang espasyo"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "I-paste ang Secret Recovery Phrase mula sa clipboard"
-  },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
@@ -2446,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Ipakita ang mga Rekomendasyon"
-  },
-  "showSeedPhrase": {
-    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Ipakita ang mga test network"

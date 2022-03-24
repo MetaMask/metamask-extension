@@ -2,8 +2,9 @@
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  background: rgba(36, 41, 46, 0.9);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  background: var(--color-background-default);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border-muted);
   border-radius: 8px;
   min-height: 116px;
   padding: 16px;
@@ -25,21 +26,21 @@
   &__text {
     @include H7;
 
-    color: var(--white);
+    color: var(--color-text-default);
   }
 
   &__text-link {
     @include H7;
 
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
   .fa-info-circle {
-    color: #6a737d;
+    color: var(--color-icon-default);
   }
 
-  & &__checkbox-wrapper {
+  &__checkbox-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -49,18 +50,18 @@
     }
   }
 
-  & &__checkbox {
+  &__checkbox {
     height: 13px;
     width: 13px;
     font-size: 16px;
     cursor: pointer;
   }
 
-  & &__checkbox-label {
+  &__checkbox-label {
     @include H7;
 
-    color: var(--white);
-    margin-left: 10px;
+    color: var(--color-text-default);
+    margin-left: 8px;
     margin-top: 1px;
     user-select: none;
     -moz-user-select: none;
@@ -68,57 +69,20 @@
     cursor: pointer;
   }
 
-  & &__ignore-button {
-    border-color: #6a737d;
-    box-sizing: border-box;
-    color: var(--white);
-    background-color: inherit;
-    height: 34px;
-    width: 155px;
-    padding: 0;
-
-    @media screen and (max-width: $break-small) {
-      width: 135px;
-    }
-
-    &:hover {
-      border-color: #6a737d;
-      background-color: #6a737d;
-    }
-
-    &:active {
-      background-color: #141618;
-    }
+  &__ignore-button.button {
+    width: auto;
+    padding: 8px 16px;
   }
 
-  & &__accept-button {
-    border-color: #6a737d;
-    box-sizing: border-box;
-    color: var(--white);
-    background-color: inherit;
-    height: 34px;
-    width: 155px;
-    padding: 0;
-    margin-left: 4px;
-
-    @media screen and (max-width: $break-small) {
-      width: 135px;
-    }
-
-    &:hover {
-      border-color: #6a737d;
-      background-color: #6a737d;
-    }
-
-    &:active {
-      background-color: #141618;
-    }
+  &__accept-button.button {
+    width: auto;
+    padding: 8px 16px;
   }
 
   &__buttons {
     display: flex;
     width: 100%;
-    padding-top: 10px;
+    padding-top: 8px;
     align-items: center;
     justify-content: space-between;
     flex-direction: row-reverse;
@@ -126,6 +90,6 @@
 
   &__tooltip-wrapper {
     display: flex;
-    margin-left: 10px;
+    margin-left: 8px;
   }
 }

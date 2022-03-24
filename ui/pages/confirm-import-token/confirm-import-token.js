@@ -113,7 +113,10 @@ const ConfirmImportToken = () => {
             type="secondary"
             large
             className="page-container__footer-button"
-            onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
+            onClick={() => {
+              dispatch(clearPendingTokens());
+              history.push(IMPORT_TOKEN_ROUTE);
+            }}
           >
             {t('back')}
           </Button>

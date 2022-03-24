@@ -13,15 +13,15 @@ import {
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
 
-const imageHash = {
-  [TRANSACTION_CREATED_EVENT]: '/images/icons/new.svg',
-  [TRANSACTION_SUBMITTED_EVENT]: '/images/icons/submitted.svg',
-  [TRANSACTION_RESUBMITTED_EVENT]: '/images/icons/retry.svg',
-  [TRANSACTION_CONFIRMED_EVENT]: '/images/icons/confirm.svg',
-  [TRANSACTION_DROPPED_EVENT]: '/images/icons/cancelled.svg',
-  [TRANSACTION_ERRORED_EVENT]: '/images/icons/error.svg',
-  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: '/images/icons/cancelled.svg',
-  [TRANSACTION_CANCEL_SUCCESS_EVENT]: '/images/icons/cancelled.svg',
+export const imageHash = {
+  [TRANSACTION_CREATED_EVENT]: 'fa-plus',
+  [TRANSACTION_SUBMITTED_EVENT]: 'fa-arrow-up',
+  [TRANSACTION_RESUBMITTED_EVENT]: 'fa-retweet',
+  [TRANSACTION_CONFIRMED_EVENT]: 'fa-check',
+  [TRANSACTION_DROPPED_EVENT]: 'fa-times',
+  [TRANSACTION_ERRORED_EVENT]: 'fa-exclamation',
+  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: 'fa-times',
+  [TRANSACTION_CANCEL_SUCCESS_EVENT]: 'fa-times',
 };
 
 export default class TransactionActivityLogIcon extends PureComponent {
@@ -36,11 +36,19 @@ export default class TransactionActivityLogIcon extends PureComponent {
 
   render() {
     const { className, eventKey } = this.props;
-    const imagePath = imageHash[eventKey];
+    const iconClassName = imageHash[eventKey];
 
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
-        {imagePath ? <img src={imagePath} height="9" width="9" alt="" /> : null}
+        {iconClassName ? (
+          <i
+            className={classnames(
+              'fa',
+              'transaction-activity-log-icon__icon',
+              iconClassName,
+            )}
+          />
+        ) : null}
       </div>
     );
   }
