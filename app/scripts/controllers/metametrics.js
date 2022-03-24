@@ -25,6 +25,7 @@ const exceptionsToFilter = {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../../shared/constants/metametrics').SegmentIdentifyPayload} SegmentIdentifyPayload
  * @typedef {import('../../../shared/constants/metametrics').SegmentEventPayload} SegmentEventPayload
  * @typedef {import('../../../shared/constants/metametrics').SegmentInterface} SegmentInterface
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
@@ -301,6 +302,122 @@ export default class MetaMetricsController {
 
   get state() {
     return this.store.getState();
+  }
+
+  /**
+   * Calls this._identify with validated metaMetricsId and traits if user is participating
+   * in the MetaMetrics analytics program
+   *
+   * @param {Object} traits
+   */
+  identify(traits) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+
+    if (!participateInMetaMetrics || !metaMetricsId || !traits) {
+      return;
+    }
+    if (typeof traits !== 'object') {
+      console.warn(
+        `MetaMetricsController#identify: traits parameter must be an object. Received type: ${typeof traits}`,
+      );
+      return;
+    }
+
+    const allValidTraits = this._getAllValidTraits(traits);
+
+    this._identify(allValidTraits);
+  }
+
+  /**
+   * Calls segment.identify with given traits
+   *
+   * @see {@link https://segment.com/docs/connections/spec/identify/#identities}
+   * @private
+   * @param {Object} traits
+   */
+  _identify(traits) {
+    const { metaMetricsId } = this.state;
+
+    try {
+      if (Object.keys(traits).length === 0) {
+        throw new Error('MetaMetricsController#_identify: No traits found');
+      }
+
+      this.segment.identify(metaMetricsId, {
+        traits,
+      });
+    } catch (err) {
+      this._captureException(err);
+    }
+  }
+
+  /**
+   * Validates the trait value. Segment accepts any data type. We are adding validation here to
+   * support data types for our Segment destimation(s) e.g. MixPanel
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTrait(value) {
+    const type = typeof value;
+
+    return (
+      type === 'string' ||
+      type === 'boolean' ||
+      type === 'number' ||
+      this._isValidTraitDate(value) ||
+      this._isValidTraitArray(value)
+    );
+  }
+
+  /**
+   * Segment accepts any data type value. We have special logic to validate arrays.
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTraitArray = (value) => {
+    return (
+      Array.isArray(value) &&
+      (value.every((element) => {
+        return typeof element === 'string';
+      }) ||
+        value.every((element) => {
+          return typeof element === 'boolean';
+        }) ||
+        value.every((element) => {
+          return typeof element === 'number';
+        }))
+    );
+  };
+
+  /**
+   * Returns true if the value is an accepted date type
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTraitDate = (value) => {
+    return Object.prototype.toString.call(value) === '[object Date]';
+  };
+
+  /**
+   * Returns a new object of all valid traits
+   *
+   * @param {Object} traits
+   * @returns {Object}
+   */
+  _getAllValidTraits(traits) {
+    return Object.entries(traits).reduce((validTraits, [key, value]) => {
+      if (this._isValidTrait(value)) {
+        validTraits[key] = value;
+      } else {
+        console.warn(
+          `MetaMetricsController: "${key}" value is not a valid trait type`,
+        );
+      }
+      return validTraits;
+    }, {});
   }
 
   /**
