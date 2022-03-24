@@ -25,7 +25,6 @@ const exceptionsToFilter = {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
- * @typedef {import('../../../shared/constants/metametrics').SegmentIdentifyPayload} SegmentIdentifyPayload
  * @typedef {import('../../../shared/constants/metametrics').SegmentEventPayload} SegmentEventPayload
  * @typedef {import('../../../shared/constants/metametrics').SegmentInterface} SegmentInterface
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
