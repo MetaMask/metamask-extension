@@ -27,7 +27,7 @@ const styles = {
       borderBottom: '1px solid var(--color-text-default) !important', // Visible bottom border
     },
     '&:after': {
-      borderBottom: `2px solid rgb(3, 125, 214)`, // Animated bottom border
+      borderBottom: `2px solid var(--color-primary-default)`, // Animated bottom border
     },
   },
   materialError: {},
