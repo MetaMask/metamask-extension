@@ -1,5 +1,7 @@
 .token-address {
-  &__copy-link {
-    padding: 4px 0 !important;
+  & &__copy-link {
+    @include H7;
+
+    padding: 4px 0;
   }
 }

@@ -8,7 +8,11 @@ import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import Tooltip from '../../../ui/tooltip';
 
-import { COLORS, DISPLAY } from '../../../../helpers/constants/design-system';
+import {
+  COLORS,
+  DISPLAY,
+  TYPOGRAPHY,
+} from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 
@@ -18,10 +22,14 @@ const TokenAddress = ({ address }) => {
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="token-address">
-      <Typography color={COLORS.TEXT_DEFAULT}>
+      <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
         {`${t('tokenAddress')}:`}
       </Typography>
-      <Typography color={COLORS.PRIMARY_DEFAULT} margin={[1, 2]}>
+      <Typography
+        variant={TYPOGRAPHY.H7}
+        color={COLORS.PRIMARY_DEFAULT}
+        margin={[1, 2]}
+      >
         {shortenAddress(address)}
       </Typography>
       <Tooltip
