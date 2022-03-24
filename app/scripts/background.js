@@ -475,7 +475,7 @@ function setupController(initState, initLangCode) {
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
-    if (!process.env.mv3) {
+    if (!process.env.ENABLE_MV3) {
       let label = '';
       const count = getUnapprovedTransactionCount();
       if (count) {
