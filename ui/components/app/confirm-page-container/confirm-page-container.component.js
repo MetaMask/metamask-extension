@@ -289,7 +289,7 @@ export default class ConfirmPageContainer extends Component {
                   )
                 }
                 useIcon
-                iconFillColor="#d73a49"
+                iconFillColor="var(--color-error-default)"
                 type="danger"
               />
             </div>
