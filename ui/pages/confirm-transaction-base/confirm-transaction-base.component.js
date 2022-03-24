@@ -502,7 +502,7 @@ export default class ConfirmTransactionBase extends Component {
               <UserPreferencedCurrencyDisplay
                 type={PRIMARY}
                 value={hexMinimumTransactionFee}
-                hideLabel={false && !useNativeCurrencyAsPrimaryCurrency}
+                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                 numberOfDecimals={6}
               />
             </div>
