@@ -673,8 +673,9 @@ const updateMetamaskStateFromBackground = () => {
 
 export function updatePreviousGasParams(txId, previousGasParams) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updatePreviousGasParams(
+      updatedTransaction = await promisifiedBackground.updatePreviousGasParams(
         txId,
         previousGasParams,
       );
@@ -684,7 +685,7 @@ export function updatePreviousGasParams(txId, previousGasParams) {
       throw error;
     }
 
-    return previousGasParams;
+    return updatedTransaction;
   };
 }
 

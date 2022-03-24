@@ -382,6 +382,7 @@ export default class TransactionController extends EventEmitter {
    * @param {string} previousGasParams.maxFeePerGas
    * @param {string} previousGasParams.maxPriorityFeePerGas
    * @param {string} previousGasParams.gasLimit
+   * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updatePreviousGasParams(
     txId,
@@ -399,6 +400,7 @@ export default class TransactionController extends EventEmitter {
     previousGasParams.previousGas = pickBy(previousGasParams.previousGas);
     const note = `Update Previous Gas for ${txId}`;
     this._updateTransaction(txId, previousGasParams, note);
+    return this._getTransaction(txId);
   }
 
   /**
