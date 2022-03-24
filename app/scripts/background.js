@@ -470,6 +470,7 @@ function setupController(initState, initLangCode) {
     updateBadge,
   );
 
+  // todo: task plan to fix this for MV3, https://github.com/MetaMask/metamask-extension/issues/13926
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
