@@ -22,11 +22,11 @@
     margin-bottom: 20px;
 
     a {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
 
       &:hover {
         cursor: pointer;
-        color: var(--Blue-300);
+        color: var(--color-primary-default);
       }
     }
   }

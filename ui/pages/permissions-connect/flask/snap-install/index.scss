@@ -16,7 +16,7 @@
     color: var(--ui-4);
 
     .link {
-      color: var(--primary-blue);
+      color: var(--color-primary-default);
       margin-inline-start: 4px;
       cursor: pointer;
     }
@@ -28,5 +28,6 @@
 
   .page-container__footer {
     width: 100%;
+    margin-top: 12px;
   }
 }

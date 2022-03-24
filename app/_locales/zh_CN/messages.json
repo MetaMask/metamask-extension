@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "添加推荐代币"
   },
-  "addToAddressBook": {
-    "message": "添加地址簿"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如：John D."
-  },
   "addToken": {
     "message": "添加代币"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS 查找失败。"
   },
-  "enterAnAlias": {
-    "message": "输入别名"
-  },
   "enterMaxSpendLimit": {
     "message": "输入最高消费额度"
   },
@@ -1273,18 +1264,11 @@
   "importAccountError": {
     "message": "导入帐户时出错。"
   },
-  "importAccountLinkText": {
-    "message": "使用账户助记词导入"
-  },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户助记词相关联。了解更多有关导入账户的信息 。"
   },
   "importAccountSeedPhrase": {
     "message": "使用账户助记词导入账户"
-  },
-  "importAccountText": {
-    "message": "或 $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "输入您创建$1钱包时提供的保密恢复短语（或Seed Phrase）。",
@@ -1744,9 +1728,6 @@
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "未添加收藏，因为：$1"
   },
   "newCollectibleAddedMessage": {
     "message": "收藏已成功添加！"
@@ -2229,9 +2210,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreAccountWithSeed": {
-    "message": "使用账户助记词恢复您的账户"
-  },
   "restoreWalletPreferences": {
     "message": "已找到于 $1 的数据备份。您想恢复您的钱包设置吗？",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2276,6 @@
   },
   "secretPhrase": {
     "message": "只有这个钱包上的第一个帐户将自动加载。 完成此流程后，点击下拉菜单，然后选择创建账户。"
-  },
-  "secretPhraseWarning": {
-    "message": "如果您使用另一个账户助记词来还原，您当前的钱包、帐户和资产将永久从这个应用中移除。 此操作不能撤消。"
   },
   "secretRecoveryPhrase": {
     "message": "账户助记词"

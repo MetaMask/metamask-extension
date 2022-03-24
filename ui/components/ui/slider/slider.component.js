@@ -80,14 +80,20 @@ const Slider = ({
           <InfoTooltip position="top" contentText={tooltipText} />
         )}
         {valueText && (
-          <Typography tag={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {valueText}
           </Typography>
         )}
       </div>
       {titleDetail && (
         <div className="slider__heading-detail">
-          <Typography tag={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {titleDetail}
           </Typography>
         </div>
@@ -97,7 +103,10 @@ const Slider = ({
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
-          <Typography tag={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+          <Typography
+            tag={TYPOGRAPHY.Paragraph}
+            color={COLORS.TEXT_ALTERNATIVE}
+          >
             {infoText}
           </Typography>
         )}

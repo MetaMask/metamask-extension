@@ -77,10 +77,7 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import {
-  getURLHostName,
-  isEqualCaseInsensitive,
-} from '../../../helpers/utils/util';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -110,6 +107,7 @@ import {
   shouldEnableDirectWrapping,
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -179,11 +177,11 @@ export default function BuildQuote({
 
   const onCloseSmartTransactionsOptInPopover = (e) => {
     e?.preventDefault();
-    setSmartTransactionsOptInStatus(false);
+    setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
   };
 
   const onEnableSmartTransactionsClick = () =>
-    setSmartTransactionsOptInStatus(true);
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -340,9 +338,7 @@ export default function BuildQuote({
     null, // no holderAddress
     {
       blockExplorerUrl:
-        rpcPrefs.blockExplorerUrl ??
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
-        null,
+        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
     },
   );
 
@@ -595,27 +591,36 @@ export default function BuildQuote({
                 flexDirection={FLEX_DIRECTION.COLUMN}
               >
                 <img
-                  src="./images/logo/metamask-smart-transactions@4x.png"
+                  src="./images/logo/smart-transactions-header.png"
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H6} marginTop={0}>
+              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
                 {t('stxDescription')}
               </Typography>
               <Typography
                 tag="ul"
-                variant={TYPOGRAPHY.H6}
+                variant={TYPOGRAPHY.H7}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
               >
                 <li>{t('stxBenefit1')}</li>
                 <li>{t('stxBenefit2')}</li>
                 <li>{t('stxBenefit3')}</li>
-                <li>{t('stxBenefit4')}</li>
+                <li>
+                  {t('stxBenefit4')}
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    {' *'}
+                  </Typography>
+                </li>
               </Typography>
               <Typography
                 variant={TYPOGRAPHY.H8}
-                color={COLORS.UI4}
+                color={COLORS.TEXT_ALTERNATIVE}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
@@ -623,7 +628,7 @@ export default function BuildQuote({
                   tag="span"
                   fontWeight={FONT_WEIGHT.BOLD}
                   variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
+                  color={COLORS.TEXT_ALTERNATIVE}
                 >
                   {t('stxYouCanOptOut')}&nbsp;
                 </Typography>
@@ -708,12 +713,8 @@ export default function BuildQuote({
               onFromSelect(selectedToToken);
             }}
           >
-            <img
-              src="./images/icons/swap2.svg"
-              alt={t('swapSwapSwitch')}
-              width="12"
-              height="16"
-            />
+            <i className="fa fa-arrow-up" title={t('swapSwapSwitch')} />
+            <i className="fa fa-arrow-down" title={t('swapSwapSwitch')} />
           </button>
         </div>
         <div className="build-quote__dropdown-swap-to-header">

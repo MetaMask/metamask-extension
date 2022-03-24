@@ -15,13 +15,11 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import Chip from '../../ui/chip/chip';
+import IconCaretDown from '../../ui/icon/icon-caret-down';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
 
 export default function NetworkDisplay({
-  colored,
-  outline,
-  iconClassName,
   indicatorSize,
   disabled,
   labelProps,
@@ -40,7 +38,7 @@ export default function NetworkDisplay({
 
   return (
     <Chip
-      borderColor={outline ? COLORS.UI3 : COLORS.TRANSPARENT}
+      borderColor={onClick ? COLORS.BORDER_DEFAULT : COLORS.BORDER_MUTED}
       onClick={onClick}
       leftIcon={
         <LoadingIndicator
@@ -49,7 +47,11 @@ export default function NetworkDisplay({
           isLoading={networkIsLoading}
         >
           <ColorIndicator
-            color={networkType === NETWORK_TYPE_RPC ? COLORS.UI4 : networkType}
+            color={
+              networkType === NETWORK_TYPE_RPC
+                ? COLORS.ICON_DEFAULT
+                : networkType
+            }
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={
@@ -61,9 +63,9 @@ export default function NetworkDisplay({
         </LoadingIndicator>
       }
       rightIcon={
-        iconClassName && (
-          <i className={classnames('network-display__icon', iconClassName)} />
-        )
+        onClick ? (
+          <IconCaretDown size={16} className="network-display__icon" />
+        ) : null
       }
       label={
         networkType === NETWORK_TYPE_RPC
@@ -71,9 +73,7 @@ export default function NetworkDisplay({
           : t(networkType)
       }
       className={classnames('network-display', {
-        'network-display--colored': colored,
         'network-display--disabled': disabled,
-        [`network-display--${networkType}`]: colored && networkType,
         'network-display--clickable': typeof onClick === 'function',
       })}
       labelProps={{
@@ -84,23 +84,37 @@ export default function NetworkDisplay({
   );
 }
 NetworkDisplay.propTypes = {
-  colored: PropTypes.bool,
+  /**
+   * The size of the indicator
+   */
   indicatorSize: PropTypes.oneOf(Object.values(SIZES)),
+  /**
+   * The label props of the label can use most of the Typography props
+   */
   labelProps: Chip.propTypes.labelProps,
+  /**
+   * The target network
+   */
   targetNetwork: PropTypes.shape({
     type: PropTypes.oneOf([
-      ...Object.values(NETWORK_TYPE_TO_ID_MAP),
+      ...Object.keys(NETWORK_TYPE_TO_ID_MAP),
       NETWORK_TYPE_RPC,
     ]),
     nickname: PropTypes.string,
   }),
-  outline: PropTypes.bool,
+  /**
+   * Whether the NetworkDisplay is disabled
+   */
   disabled: PropTypes.bool,
-  iconClassName: PropTypes.string,
+  /**
+   * The onClick event handler of the NetworkDisplay
+   * if it is not passed it is assumed that the NetworkDisplay
+   * should not be interactive and removes the caret and changes the border color
+   * of the NetworkDisplay
+   */
   onClick: PropTypes.func,
 };
 
 NetworkDisplay.defaultProps = {
-  colored: true,
   indicatorSize: SIZES.LG,
 };

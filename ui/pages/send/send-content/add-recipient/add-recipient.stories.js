@@ -17,11 +17,55 @@ export default {
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {
-    recipient: { type: 'text', defaultValue: recipient },
-    contacts: { type: 'object', defaultValue: [addressBook] },
-    nonContacts: { type: 'object', defaultValue: [addressBook] },
-    ownedAccounts: { type: 'object', defaultValue: [addressBook] },
-    addressBook: { type: 'object', defaultValue: [addressBook] },
+    userInput: {
+      control: 'text',
+    },
+    ownedAccounts: {
+      control: 'array',
+    },
+    addressBook: {
+      control: 'array',
+    },
+    updateRecipient: {
+      action: 'updateRecipient',
+    },
+    ensResolution: {
+      control: 'text',
+    },
+    ensError: {
+      control: 'text',
+    },
+    ensWarning: {
+      control: 'text',
+    },
+    addressBookEntryName: {
+      control: 'text',
+    },
+    contacts: {
+      control: 'array',
+    },
+    nonContacts: {
+      control: 'array',
+    },
+    useMyAccountsForRecipientSearch: {
+      action: 'useMyAccountsForRecipientSearch',
+    },
+    useContactListForRecipientSearch: {
+      action: 'useContactListForRecipientSearch',
+    },
+    isUsingMyAccountsForRecipientSearch: {
+      control: 'bool',
+    },
+    recipient: {
+      control: 'object',
+    },
+  },
+  args: {
+    recipient,
+    contacts: [addressBook],
+    nonContacts: [addressBook],
+    ownedAccounts: [addressBook],
+    addressBook: [addressBook],
   },
 };
 

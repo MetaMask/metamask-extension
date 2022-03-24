@@ -1,12 +1,12 @@
 .searchable-item-list {
-  background: var(--white);
+  background: var(--color-background-default);
   width: 100%;
   position: relative;
 
   &__search {
     > div {
       border: none;
-      border-bottom: 1px solid var(--Grey-100);
+      border-bottom: 1px solid var(--color-border-muted);
       border-radius: 0;
       height: 55px;
       font-size: 12px;
@@ -14,26 +14,26 @@
       input {
         @include H6;
 
-        color: var(--Grey-500);
+        color: var(--color-text-default);
         line-height: 100%;
 
         &::-webkit-input-placeholder {
-          color: var(--Grey-500);
+          color: var(--color-text-muted);
           opacity: 1;
         }
 
         &:-moz-placeholder {
-          color: var(--Grey-500);
+          color: var(--color-text-muted);
           opacity: 1;
         }
 
         &::-moz-placeholder {
-          color: var(--Grey-500);
+          color: var(--color-text-muted);
           opacity: 1;
         }
 
         &::placeholder {
-          color: var(--Grey-500);
+          color: var(--color-text-muted);
           opacity: 1;
         }
       }
@@ -54,7 +54,7 @@
     padding: 8px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border-top: 1px solid var(--Grey-100);
+    border-top: 1px solid var(--color-border-muted);
     position: relative;
     min-height: 50px;
 
@@ -68,11 +68,11 @@
 
     &:hover,
     &:focus {
-      background: var(--Grey-000);
+      background: var(--color-background-alternative);
     }
 
     &--selected {
-      border: 1px solid var(--malibu-blue) !important;
+      border: 1px solid var(--color-primary-default) !important;
     }
 
     &--disabled {
@@ -94,12 +94,12 @@
 
         &__message {
           text-align: left;
-          color: var(--Black-100);
+          color: var(--color-text-default);
         }
 
         a {
           pointer-events: auto;
-          color: #037dd6;
+          color: var(--color-primary-default);
           cursor: pointer;
         }
       }
@@ -170,7 +170,7 @@
     @include H7;
 
     line-height: 100%;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -185,7 +185,7 @@
     @include H7;
 
     line-height: 100%;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     opacity: 0.5;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -194,7 +194,7 @@
 
   &__list-container {
     z-index: 1002;
-    background: white;
+    background: var(--color-background-default);
   }
 
   &__search {
@@ -202,7 +202,7 @@
   }
 
   &__item--highlighted {
-    background: var(--Grey-000);
+    background: var(--color-background-alternative);
   }
 
   &__identicon {

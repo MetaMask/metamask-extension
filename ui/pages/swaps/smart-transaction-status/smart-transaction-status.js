@@ -184,6 +184,8 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingFinalizing');
     } else if (timeLeftForPendingStxInSec < 150) {
       headerText = t('stxPendingPrivatelySubmitting');
+    } else if (cancelSwapLinkClicked) {
+      headerText = t('stxTryingToCancel');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
@@ -192,7 +194,11 @@ export default function SmartTransactionStatus() {
       description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
     }
     icon = <SuccessIcon />;
-  } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
+  } else if (
+    smartTransactionStatus === 'cancelled_user_cancelled' ||
+    latestSmartTransaction?.statusMetadata?.minedTx ===
+      SMART_TRANSACTION_STATUSES.CANCELLED
+  ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
     icon = <CanceledIcon />;
@@ -263,11 +269,11 @@ export default function SmartTransactionStatus() {
           justifyContent={JUSTIFY_CONTENT.CENTER}
           alignItems={ALIGN_ITEMS.CENTER}
         >
-          <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
+          <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
             {`${fetchParams?.value && Number(fetchParams.value).toFixed(5)} `}
           </Typography>
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1, marginRight: 2 }}
@@ -290,14 +296,14 @@ export default function SmartTransactionStatus() {
             fallbackClassName="main-quote-summary__icon-fallback"
           />
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             boxProps={{ marginLeft: 2 }}
           >
             {`~${destinationValue && Number(destinationValue).toFixed(5)} `}
           </Typography>
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1 }}
@@ -324,14 +330,14 @@ export default function SmartTransactionStatus() {
           >
             <TimerIcon />
             <Typography
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginLeft: 1 }}
             >
               {`${t('swapCompleteIn')} `}
             </Typography>
             <Typography
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{ marginLeft: 1 }}
@@ -342,7 +348,7 @@ export default function SmartTransactionStatus() {
           </Box>
         )}
         <Typography
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           variant={TYPOGRAPHY.H4}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -366,7 +372,7 @@ export default function SmartTransactionStatus() {
           <Typography
             variant={TYPOGRAPHY.H6}
             boxProps={{ marginTop: 0 }}
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
           >
             {description}
           </Typography>
@@ -379,7 +385,7 @@ export default function SmartTransactionStatus() {
           <Typography
             variant={TYPOGRAPHY.H7}
             boxProps={{ marginTop: 8 }}
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
           >
             {subDescription}
           </Typography>

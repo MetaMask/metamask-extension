@@ -65,7 +65,7 @@ class ThreeBoxControllerMock {
   }
 }
 
-const ExtensionizerMock = {
+const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
@@ -148,7 +148,7 @@ describe('MetaMaskController', function () {
         showTransactionNotification: () => undefined,
         getVersion: () => 'foo',
       },
-      extension: ExtensionizerMock,
+      browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
 

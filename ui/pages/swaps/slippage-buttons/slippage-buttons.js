@@ -14,7 +14,7 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { smartTransactionsErrorMessages } from '../swaps.util';
+import { getTranslatedStxErrorMessage } from '../swaps.util';
 
 export default function SlippageButtons({
   onSelect,
@@ -166,11 +166,15 @@ export default function SlippageButtons({
                     >
                       <input
                         onChange={(event) => {
-                          setCustomValue(event.target.value);
-                          onSelect(Number(event.target.value));
+                          const { value } = event.target;
+                          const isValueNumeric = !isNaN(Number(value));
+                          if (isValueNumeric) {
+                            setCustomValue(value);
+                            onSelect(Number(value));
+                          }
                         }}
-                        type="number"
-                        step="0.1"
+                        type="text"
+                        maxLength="4"
                         ref={setInputRef}
                         onBlur={() => {
                           setEnteringCustomValue(false);
@@ -204,8 +208,9 @@ export default function SlippageButtons({
                   {currentSmartTransactionsError ? (
                     <InfoTooltip
                       position="top"
-                      contentText={smartTransactionsErrorMessages(
+                      contentText={getTranslatedStxErrorMessage(
                         currentSmartTransactionsError,
+                        t,
                       )}
                     />
                   ) : (
@@ -215,7 +220,7 @@ export default function SlippageButtons({
                 <ToggleButton
                   value={smartTransactionsOptInStatus}
                   onToggle={(value) => {
-                    setSmartTransactionsOptInStatus(!value);
+                    setSmartTransactionsOptInStatus(!value, value);
                   }}
                   offLabel={t('off')}
                   onLabel={t('on')}

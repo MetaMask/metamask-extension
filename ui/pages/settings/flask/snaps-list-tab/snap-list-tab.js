@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
@@ -15,12 +15,14 @@ import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import { disableSnap, enableSnap } from '../../../../store/actions';
 import { getSnaps } from '../../../../selectors';
+import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 
 const SnapListTab = () => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
   const snaps = useSelector(getSnaps);
+  const settingsRef = useMemo(() => [React.createRef()], []);
   const onClick = (snap) => {
     const route = `${SNAPS_VIEW_ROUTE}/${window.btoa(
       unescape(encodeURIComponent(snap.id)),
@@ -35,8 +37,12 @@ const SnapListTab = () => {
     }
   };
 
+  useEffect(() => {
+    handleSettingsRefs(t, t('snaps'), settingsRef);
+  }, [t, settingsRef]);
+
   return (
-    <div className="snap-list-tab">
+    <div className="snap-list-tab" ref={settingsRef}>
       {Object.entries(snaps).length ? (
         <div className="snap-list-tab__body">
           <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
@@ -45,7 +51,7 @@ const SnapListTab = () => {
             </Typography>
             <Typography
               variant={TYPOGRAPHY.H6}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               marginBottom={2}
             >
               {t('manageSnaps')}
@@ -82,7 +88,7 @@ const SnapListTab = () => {
           justifyContent={JUSTIFY_CONTENT.CENTER}
           alignItems={ALIGN_ITEMS.CENTER}
         >
-          <Typography variant={TYPOGRAPHY.H4} color={COLORS.UI4}>
+          <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_ALTERNATIVE}>
             <span>{t('noSnaps')}</span>
           </Typography>
         </Box>

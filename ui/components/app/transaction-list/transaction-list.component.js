@@ -13,7 +13,7 @@ import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 const PAGE_INCREMENT = 10;
 

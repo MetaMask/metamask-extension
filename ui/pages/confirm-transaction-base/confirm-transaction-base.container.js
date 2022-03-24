@@ -14,11 +14,7 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import {
-  isEqualCaseInsensitive,
-  shortenAddress,
-  valuesFor,
-} from '../../helpers/utils/util';
+import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
   getCustomNonceValue,
@@ -47,6 +43,7 @@ import {
 } from '../../ducks/metamask/metamask';
 
 import {
+  parseStandardTokenTransactionData,
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
@@ -55,6 +52,8 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -107,9 +106,12 @@ const mapStateToProps = (state, ownProps) => {
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
 
+  const transactionData = parseStandardTokenTransactionData(data);
+  const tokenToAddress = getTokenAddressParam(transactionData);
+
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  const toAddress = propsToAddress || txParamsToAddress;
+  const toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
@@ -177,7 +179,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId].find((contract) => {
+    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
   );
@@ -285,6 +287,7 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
     },
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
   };
 };
 

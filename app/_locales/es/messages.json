@@ -79,12 +79,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -612,9 +606,6 @@
   "ensRegistrationError": {
     "message": "Error en el registro del nombre de ENS"
   },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
@@ -826,18 +817,11 @@
   "importAccount": {
     "message": "Importar cuenta"
   },
-  "importAccountLinkText": {
-    "message": "importar con la frase secreta de recuperación"
-  },
   "importAccountMsg": {
     "message": " Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Más información sobre las cuentas importadas "
   },
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con la frase secreta de recuperación"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importTokenQuestion": {
     "message": "¿Desea importar el token?"
@@ -1420,9 +1404,6 @@
   },
   "restore": {
     "message": "Restaurar"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restaurar la cuenta con la frase secreta de recuperación"
   },
   "restoreWalletPreferences": {
     "message": "Se encontró una copia de seguridad de los datos de $1. ¿Desea restaurar las preferencias de cartera?",

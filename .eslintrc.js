@@ -1,132 +1,203 @@
+const path = require('path');
 const { version: reactVersion } = require('react/package.json');
 
 module.exports = {
   root: true,
-  parser: '@babel/eslint-parser',
-  parserOptions: {
-    sourceType: 'module',
-    ecmaVersion: 2017,
-    ecmaFeatures: {
-      experimentalObjectRestSpread: true,
-      impliedStrict: true,
-      modules: true,
-      blockBindings: true,
-      arrowFunctions: true,
-      objectLiteralShorthandMethods: true,
-      objectLiteralShorthandProperties: true,
-      templateStrings: true,
-      classes: true,
-      jsx: true,
-    },
-  },
-
+  // Ignore files which are also in .prettierignore
   ignorePatterns: [
-    '!.eslintrc.js',
-    '!.mocharc.js',
-    'node_modules/**',
-    'dist/**',
-    'builds/**',
-    'test-*/**',
-    'docs/**',
-    'coverage/',
-    'jest-coverage/',
-    'development/chromereload.js',
     'app/vendor/**',
-    'test/e2e/send-eth-with-private-key-test/**',
-    'nyc_output/**',
-    '.vscode/**',
-    'lavamoat/*/policy.json',
-    'storybook-build/**',
+    'builds/**/*',
+    'development/chromereload.js',
+    'dist/**/*',
+    'node_modules/**/*',
   ],
-
-  extends: ['@metamask/eslint-config', '@metamask/eslint-config-nodejs'],
-
-  plugins: ['@babel', 'import', 'jsdoc'],
-
-  globals: {
-    document: 'readonly',
-    window: 'readonly',
-  },
-
-  rules: {
-    'default-param-last': 'off',
-    'prefer-object-spread': 'error',
-    'require-atomic-updates': 'off',
-
-    // This is the same as our default config, but for the noted exceptions
-    'spaced-comment': [
-      'error',
-      'always',
-      {
-        markers: [
-          'global',
-          'globals',
-          'eslint',
-          'eslint-disable',
-          '*package',
-          '!',
-          ',',
-          // Local additions
-          '/:', // This is for our code fences
-        ],
-        exceptions: ['=', '-'],
-      },
-    ],
-
-    'import/no-unassigned-import': 'off',
-
-    'no-invalid-this': 'off',
-    '@babel/no-invalid-this': 'error',
-
-    // Prettier handles this
-    '@babel/semi': 'off',
-
-    'node/no-process-env': 'off',
-
-    // Allow tag `jest-environment` to work around Jest bug
-    // See: https://github.com/facebook/jest/issues/7780
-    'jsdoc/check-tag-names': ['error', { definedTags: ['jest-environment'] }],
-
-    // TODO: remove this override
-    'padding-line-between-statements': [
-      'error',
-      {
-        blankLine: 'always',
-        prev: 'directive',
-        next: '*',
-      },
-      {
-        blankLine: 'any',
-        prev: 'directive',
-        next: 'directive',
-      },
-      // Disabled temporarily to reduce conflicts while PR queue is large
-      // {
-      //   blankLine: 'always',
-      //   prev: ['multiline-block-like', 'multiline-expression'],
-      //   next: ['multiline-block-like', 'multiline-expression'],
-      // },
-    ],
-
-    // TODO: re-enable these rules
-    'node/no-sync': 'off',
-    'node/no-unpublished-import': 'off',
-    'node/no-unpublished-require': 'off',
-    'jsdoc/match-description': 'off',
-    'jsdoc/require-description': 'off',
-    'jsdoc/require-jsdoc': 'off',
-    'jsdoc/require-param-description': 'off',
-    'jsdoc/require-param-type': 'off',
-    'jsdoc/require-returns-description': 'off',
-    'jsdoc/require-returns-type': 'off',
-    'jsdoc/require-returns': 'off',
-    'jsdoc/valid-types': 'off',
-  },
   overrides: [
+    /**
+     * == Modules ==
+     *
+     * The first two sections here, which cover module syntax, are mutually
+     * exclusive: the set of files covered between them may NOT overlap. This is
+     * because we do not allow a file to use two different styles for specifying
+     * imports and exports (however theoretically possible it may be).
+     */
+
     {
-      files: ['ui/**/*.js', 'test/lib/render-helpers.js', 'test/jest/*.js'],
-      plugins: ['react'],
+      /**
+       * Modules (CommonJS module syntax)
+       *
+       * This is code that uses `require()` and `module.exports` to import and
+       * export other modules.
+       */
+      files: [
+        '.eslintrc.js',
+        '.eslintrc.*.js',
+        '.mocharc.js',
+        '*.config.js',
+        'development/**/*.js',
+        'test/e2e/**/*.js',
+        'test/helpers/*.js',
+        'test/lib/wait-until-called.js',
+      ],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        path.resolve(__dirname, '.eslintrc.node.js'),
+        path.resolve(__dirname, '.eslintrc.babel.js'),
+        path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
+      ],
+      parserOptions: {
+        sourceType: 'module',
+      },
+      rules: {
+        // This rule does not work with CommonJS modules. We will just have to
+        // trust that all of the files specified above are indeed modules.
+        'import/unambiguous': 'off',
+      },
+      settings: {
+        'import/resolver': {
+          // When determining the location of a `require()` call, use Node's
+          // resolution algorithm, then fall back to TypeScript's. This allows
+          // TypeScript files (which Node's algorithm doesn't recognize) to be
+          // imported from JavaScript files, while also preventing issues when
+          // using packages like `prop-types` (where we would otherwise get "No
+          // default export found in imported module 'prop-types'" from
+          // TypeScript because imports work differently there).
+          node: {},
+          typescript: {
+            // Always try to resolve types under `<root>/@types` directory even
+            // it doesn't contain any source code, like `@types/unist`
+            alwaysTryTypes: true,
+          },
+        },
+      },
+    },
+    /**
+     * Modules (ES module syntax)
+     *
+     * This is code that explicitly uses `import`/`export` instead of
+     * `require`/`module.exports`.
+     */
+    {
+      files: [
+        'app/**/*.js',
+        'shared/**/*.js',
+        'ui/**/*.js',
+        '**/*.test.js',
+        'test/lib/**/*.js',
+        'test/mocks/**/*.js',
+        'test/jest/**/*.js',
+        'test/stub/**/*.js',
+        'test/unit-global/**/*.js',
+      ],
+      // TODO: Convert these files to modern JS
+      excludedFiles: ['test/lib/wait-until-called.js'],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        path.resolve(__dirname, '.eslintrc.node.js'),
+        path.resolve(__dirname, '.eslintrc.babel.js'),
+        path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
+      ],
+      parserOptions: {
+        sourceType: 'module',
+      },
+      settings: {
+        'import/resolver': {
+          // When determining the location of an `import`, use Node's resolution
+          // algorithm, then fall back to TypeScript's. This allows TypeScript
+          // files (which Node's algorithm doesn't recognize) to be imported
+          // from JavaScript files, while also preventing issues when using
+          // packages like `prop-types` (where we would otherwise get "No
+          // default export found in imported module 'prop-types'" from
+          // TypeScript because imports work differently there).
+          node: {},
+          typescript: {
+            // Always try to resolve types under `<root>/@types` directory even
+            // it doesn't contain any source code, like `@types/unist`
+            alwaysTryTypes: true,
+          },
+        },
+      },
+    },
+    /**
+     * TypeScript files
+     */
+    {
+      files: ['*.{ts,tsx}'],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        '@metamask/eslint-config-typescript',
+        path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
+      ],
+      rules: {
+        // Turn these off, as it's recommended by typescript-eslint.
+        // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
+        'import/named': 'off',
+        'import/namespace': 'off',
+        'import/default': 'off',
+        'import/no-named-as-default-member': 'off',
+
+        // Disabled due to incompatibility with Record<string, unknown>.
+        // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
+        '@typescript-eslint/consistent-type-definitions': 'off',
+
+        // Modified to include the 'ignoreRestSiblings' option.
+        // TODO: Migrate this rule change back into `@metamask/eslint-config`
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            vars: 'all',
+            args: 'all',
+            argsIgnorePattern: '[_]+',
+            ignoreRestSiblings: true,
+          },
+        ],
+      },
+      settings: {
+        'import/resolver': {
+          // When determining the location of an `import`, prefer TypeScript's
+          // resolution algorithm. Note that due to how we've configured
+          // TypeScript in `tsconfig.json`, we are able to import JavaScript
+          // files from TypeScript files.
+          typescript: {
+            // Always try to resolve types under `<root>/@types` directory even
+            // it doesn't contain any source code, like `@types/unist`
+            alwaysTryTypes: true,
+          },
+        },
+      },
+    },
+    {
+      files: ['*.d.ts'],
+      parserOptions: {
+        sourceType: 'script',
+      },
+    },
+
+    /**
+     * == Everything else ==
+     *
+     * The sections from here on out may overlap with each other in various
+     * ways depending on their function.
+     */
+
+    /**
+     * React-specific code
+     *
+     * Code in this category contains JSX and hence needs to be run through the
+     * React plugin.
+     */
+    {
+      files: [
+        'test/lib/render-helpers.js',
+        'test/jest/rendering.js',
+        'ui/**/*.js',
+      ],
       extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      plugins: ['react'],
       rules: {
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
@@ -139,74 +210,100 @@ module.exports = {
         'react/default-props-match-prop-types': 'error',
         'react/jsx-no-duplicate-props': 'error',
       },
-    },
-    {
-      files: ['test/e2e/**/*.spec.js'],
-      extends: ['@metamask/eslint-config-mocha'],
-      rules: {
-        'mocha/no-hooks-for-single-case': 'off',
-        'mocha/no-setup-in-describe': 'off',
+      settings: {
+        react: {
+          // If this is set to 'detect', ESLint will import React in order to
+          // find its version. Because we run ESLint in the build system under
+          // LavaMoat, this means that detecting the React version requires a
+          // LavaMoat policy for all of React, in the build system. That's a
+          // no-go, so we grab it from React's package.json.
+          version: reactVersion,
+        },
       },
     },
+    /**
+     * Mocha tests
+     *
+     * These are files that make use of globals and syntax introduced by the
+     * Mocha library.
+     */
     {
-      files: ['app/scripts/migrations/*.js', '*.stories.js'],
-      rules: {
-        'import/no-anonymous-default-export': ['error', { allowObject: true }],
-      },
-    },
-    {
-      files: ['app/scripts/migrations/*.js'],
-      rules: {
-        'node/global-require': 'off',
-      },
-    },
-    {
-      files: ['**/*.test.js'],
+      files: [
+        '**/*.test.js',
+        'test/lib/wait-until-called.js',
+        'test/e2e/**/*.spec.js',
+      ],
       excludedFiles: [
-        'ui/**/*.test.js',
-        'ui/__mocks__/*.js',
-        'shared/**/*.test.js',
-        'development/**/*.test.js',
+        'app/scripts/controllers/network/**/*.test.js',
+        'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
-        'app/scripts/controllers/network/**/*.test.js',
-        'app/scripts/controllers/permissions/**/*.test.js',
+        'development/**/*.test.js',
+        'shared/**/*.test.js',
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
+        // In Mocha tests, it is common to use `this` to store values or do
+        // things like force the test to fail.
+        '@babel/no-invalid-this': 'off',
         'mocha/no-setup-in-describe': 'off',
       },
     },
+    /**
+     * Jest tests
+     *
+     * These are files that make use of globals and syntax introduced by the
+     * Jest library.
+     */
     {
-      files: ['**/__snapshots__/*.snap'],
-      plugins: ['jest'],
+      files: [
+        '**/__snapshots__/*.snap',
+        'app/scripts/controllers/network/**/*.test.js',
+        'app/scripts/controllers/permissions/**/*.test.js',
+        'app/scripts/lib/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
+        'development/**/*.test.js',
+        'shared/**/*.test.js',
+        'test/jest/*.js',
+        'test/helpers/*.js',
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
+      ],
+      extends: ['@metamask/eslint-config-jest'],
+      parserOptions: {
+        sourceType: 'module',
+      },
       rules: {
+        'import/unambiguous': 'off',
+        'import/named': 'off',
         'jest/no-large-snapshots': [
           'error',
           { maxSize: 50, inlineMaxSize: 50 },
         ],
-      },
-    },
-    {
-      files: [
-        'ui/**/*.test.js',
-        'ui/__mocks__/*.js',
-        'shared/**/*.test.js',
-        'development/**/*.test.js',
-        'app/scripts/lib/**/*.test.js',
-        'app/scripts/migrations/*.test.js',
-        'app/scripts/platforms/*.test.js',
-        'app/scripts/controllers/network/**/*.test.js',
-        'app/scripts/controllers/permissions/**/*.test.js',
-      ],
-      extends: ['@metamask/eslint-config-jest'],
-      rules: {
         'jest/no-restricted-matchers': 'off',
-        'import/unambiguous': 'off',
-        'import/named': 'off',
       },
     },
+    /**
+     * Migrations
+     */
+    {
+      files: ['app/scripts/migrations/*.js', '**/*.stories.js'],
+      rules: {
+        'import/no-anonymous-default-export': ['error', { allowObject: true }],
+      },
+    },
+    /**
+     * Executables and related files
+     *
+     * These are files that run in a Node context. They are either designed to
+     * run as executables (in which case they will have a shebang at the top) or
+     * are dependencies of executables (in which case they may use
+     * `process.exit` to exit).
+     */
     {
       files: [
         'development/**/*.js',
@@ -218,27 +315,9 @@ module.exports = {
         'node/shebang': 'off',
       },
     },
-    {
-      files: [
-        '.eslintrc.js',
-        '.mocharc.js',
-        'babel.config.js',
-        'jest.config.js',
-        'nyc.config.js',
-        'stylelint.config.js',
-        'app/scripts/lockdown-run.js',
-        'app/scripts/lockdown-more.js',
-        'development/**/*.js',
-        'test/e2e/**/*.js',
-        'test/env.js',
-        'test/setup.js',
-        'test/helpers/protect-intrinsics-helpers.js',
-        'test/lib/wait-until-called.js',
-      ],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
+    /**
+     * Lockdown files
+     */
     {
       files: [
         'app/scripts/lockdown-run.js',
@@ -251,19 +330,11 @@ module.exports = {
         Compartment: 'readonly',
       },
     },
+    {
+      files: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
+      parserOptions: {
+        sourceType: 'script',
+      },
+    },
   ],
-
-  settings: {
-    jsdoc: {
-      mode: 'typescript',
-    },
-    react: {
-      // If this is set to 'detect', ESLint will import React in order to find
-      // its version. Because we run ESLint in the build system under LavaMoat,
-      // this means that detecting the React version requires a LavaMoat policy
-      // for all of React, in the build system. That's a no-go, so we grab it
-      // from React's package.json.
-      version: reactVersion,
-    },
-  },
 };

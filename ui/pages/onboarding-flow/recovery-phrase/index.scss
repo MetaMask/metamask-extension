@@ -32,14 +32,14 @@
     bottom: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--color-overlay-alternative);
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
     padding: 8px 0 18px;
     border-radius: 4px;
-    color: var(--ui-white);
+    color: var(--color-overlay-inverse);
 
     &--text {
       margin-top: 32px;
@@ -66,33 +66,46 @@
     &--button {
       width: 50%;
       padding: 20px;
+      align-self: center;
     }
 
-    &--copy {
+    &__copy-and-hide {
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
 
-      &--button {
+      &__area {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      &__button {
         @include H6;
 
         background-color: transparent;
         border: none;
-        display: flex;
-        justify-content: space-evenly;
         width: 32%;
-        color: var(--primary-blue);
+        color: var(--color-primary-default);
         cursor: pointer;
         margin-bottom: 24px;
+        padding-left: 0;
+        padding-right: 0;
+
+        &__hide-seed {
+          justify-content: flex-start;
+        }
+
+        &__copy-to-clipboard {
+          justify-content: flex-end;
+        }
 
         svg {
           width: 15px;
         }
 
         &:active {
-          color: var(--ui-black);
+          color: var(--color-text-default);
           background-color: transparent;
           border: none;
           transform: scale(0.97);
@@ -109,7 +122,7 @@
 
     &--with-input {
       width: 120px;
-      box-shadow: 0 3px 4px -3px var(--Grey-800);
+      box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.15);
       border-width: 2px;
       border-radius: 13px;
       height: 32px;

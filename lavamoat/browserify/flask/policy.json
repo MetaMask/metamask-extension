@@ -630,6 +630,7 @@
     "@metamask/iframe-execution-environment-service": {
       "globals": {
         "clearTimeout": true,
+        "console.log": true,
         "document.body.appendChild": true,
         "document.createElement": true,
         "document.getElementById": true,
@@ -753,7 +754,6 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
-        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
@@ -1196,9 +1196,6 @@
       }
     },
     "bip39": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "buffer": true,
         "create-hash": true,
@@ -1913,7 +1910,6 @@
     "eth-hd-keyring": {
       "packages": {
         "bip39": true,
-        "buffer": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
         "ethereumjs-wallet": true
@@ -1972,7 +1968,6 @@
       "packages": {
         "bip39": true,
         "browser-passworder": true,
-        "buffer": true,
         "eth-hd-keyring": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
@@ -2262,12 +2257,6 @@
       "packages": {
         "buffer": true,
         "stream-browserify": true
-      }
-    },
-    "extensionizer": {
-      "globals": {
-        "browser": true,
-        "chrome": true
       }
     },
     "faker": {
@@ -5211,6 +5200,15 @@
         "number-to-bn": true,
         "randombytes": true,
         "utf8": true
+      }
+    },
+    "webextension-polyfill": {
+      "globals": {
+        "browser": true,
+        "chrome": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
       }
     },
     "webrtcsupport": {

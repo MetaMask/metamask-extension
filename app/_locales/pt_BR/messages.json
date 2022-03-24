@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Adicionar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Adicionar à agenda de endereços"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "por ex., João S."
-  },
   "addToken": {
     "message": "Adicionar token"
   },
@@ -966,9 +960,6 @@
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
   },
-  "enterAnAlias": {
-    "message": "Digite um pseudônimo"
-  },
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
   },
@@ -1306,18 +1297,11 @@
   "importAccountError": {
     "message": "Erro de importação de conta."
   },
-  "importAccountLinkText": {
-    "message": "importe usando a Frase de Recuperação Secreta"
-  },
   "importAccountMsg": {
     "message": "As contas importadas não estarão associadas à Frase de Recuperação Secreta da conta da MetaMask criada originalmente. Saiba mais sobre as contas importadas"
   },
   "importAccountSeedPhrase": {
     "message": "Importe uma carteira com a Frase de Recuperação Secreta"
-  },
-  "importAccountText": {
-    "message": "ou $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Digite sua Frase de Recuperação Secreta (ou seja, a frase seed) que lhe foi dada quando você criou a sua carteira. $1",
@@ -1777,9 +1761,6 @@
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "O colecionável não foi adicionado pelo seguinte motivo: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "O colecionável foi adicionado com sucesso!"
@@ -2262,9 +2243,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaure sua conta com a Frase de Recuperação Secreta"
-  },
   "restoreWalletPreferences": {
     "message": "Encontramos um backup dos seus dados de $1. Gostaria de restaurar as preferências da sua carteira?",
     "description": "$1 is the date at which the data was backed up"
@@ -2331,9 +2309,6 @@
   },
   "secretPhrase": {
     "message": "Somente a primeira conta nessa carteira será carregada automaticamente. Após concluir esse processo, para adicionar mais contas, clique no menu suspenso e selecione Criar Conta."
-  },
-  "secretPhraseWarning": {
-    "message": "Se você restaurar usando outra Frase de Recuperação Secreta, sua carteira, conta e ativos atuais serão removidos permanentemente deste aplicativo. Essa ação será irreversível."
   },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"

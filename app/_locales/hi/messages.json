@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },
-  "addToAddressBook": {
-    "message": "पता पुस्तिका में जोड़ें"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "जैसे जॉन डी."
-  },
   "addToken": {
     "message": "टोकन जोड़ें"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS लुकअप विफल हुआ।"
   },
-  "enterAnAlias": {
-    "message": "एक उपनाम दर्ज करें"
-  },
   "enterMaxSpendLimit": {
     "message": "अधिकतम खर्च सीमा दर्ज करें"
   },
@@ -1273,18 +1264,11 @@
   "importAccountError": {
     "message": "खाता आयात करने में त्रुटि।"
   },
-  "importAccountLinkText": {
-    "message": "गुप्त रिकवरी फ्रेज का उपयोग करके आयात करें"
-  },
   "importAccountMsg": {
     "message": "आयातित खाते आपके मूल रूप से बनाए गए MetaMask खाते के गुप्त रिकवरी फ्रेज से संबद्ध नहीं होंगे। आयातित खातों के बारे में अधिक जानें"
   },
   "importAccountSeedPhrase": {
     "message": "गुप्त रिकवरी फ्रेज के साथ एक खाता आयात करें"
-  },
-  "importAccountText": {
-    "message": "या $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज (उर्फ सीड फ्रेज) दर्ज करें जो आपको अपना वॉलेट बनाने पर दिया गया था। $1",
@@ -1744,9 +1728,6 @@
   "newAccountNumberName": {
     "message": "खाता $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "संग्रहणीय नहीं जोड़ा गया था क्योंकि: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "संग्रहणीय सफलतापूर्वक जोड़ा गया!"
@@ -2229,9 +2210,6 @@
   "restore": {
     "message": "पुनर्स्थापित करें"
   },
-  "restoreAccountWithSeed": {
-    "message": "गुप्त रिकवरी फ्रेज के साथ अपने खाते को पुनर्स्थापित करें"
-  },
   "restoreWalletPreferences": {
     "message": "$1 से आपके डेटा का बैकअप मिला है। क्या आप अपनी वॉलेट वरीयताओं को पुनर्स्थापित करना चाहते हैं?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2276,6 @@
   },
   "secretPhrase": {
     "message": "इस वॉलेट पर केवल पहला खाता स्वतः लोड होगा। इस प्रक्रिया को पूरा करने के बाद, अतिरिक्त खाते जोड़ने के लिए, ड्रॉप डाउन मेन्यू पर क्लिक करें, फिर खाता बनाएं चुनें।"
-  },
-  "secretPhraseWarning": {
-    "message": "यदि आप किसी दूसरे सीक्रेट रिकवरी फ्रेज का उपयोग कर पुनर्स्थापित करते हैं, तो इस ऐप से आपके वर्तमान वॉलेट, अकाउंट, और संपति स्थायी रूप से हटा दिये जाएंगे। यह क्रिया पूर्ववत नहीं की जा सकती।"
   },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज"

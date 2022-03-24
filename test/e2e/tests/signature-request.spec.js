@@ -86,6 +86,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
   });
 });
 
+/* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Sign Typed Data V3 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
     const ganacheOptions = {

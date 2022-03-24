@@ -98,6 +98,8 @@ export default class Home extends PureComponent {
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     defaultHomeActiveTabName: PropTypes.string,
+    firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -277,14 +279,14 @@ export default class Home extends PureComponent {
                     descriptionText={
                       <>
                         <Typography
-                          color={COLORS.UI1}
+                          color={COLORS.TEXT_MUTED}
                           variant={TYPOGRAPHY.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Typography>
                         <Typography
-                          color={COLORS.UI1}
+                          color={COLORS.TEXT_MUTED}
                           variant={TYPOGRAPHY.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
@@ -303,27 +305,18 @@ export default class Home extends PureComponent {
             : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {newCollectibleAddedMessage ? (
+        {newCollectibleAddedMessage === 'success' ? (
           <ActionableMessage
-            type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
-                {newCollectibleAddedMessage === 'success' ? (
-                  <img
-                    src="./images/check_circle.svg"
-                    className="home__new-network-notification-message--image"
-                  />
-                ) : null}
+                <i className="fa fa-check-circle home__new-network-notification-message--icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {newCollectibleAddedMessage === 'success'
-                    ? t('newCollectibleAddedMessage')
-                    : t('newCollectibleAddFailed', [
-                        newCollectibleAddedMessage,
-                      ])}
+                  {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__close"
@@ -336,14 +329,11 @@ export default class Home extends PureComponent {
         ) : null}
         {newNetworkAdded ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
+                <i className="fa fa-check-circle home__new-network-notification-message--icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -502,6 +492,8 @@ export default class Home extends PureComponent {
       hideWhatsNewPopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
+      firstTimeFlowType,
+      completedOnboarding,
     } = this.props;
 
     if (forgottenPassword) {
@@ -510,7 +502,11 @@ export default class Home extends PureComponent {
       return null;
     }
 
-    const showWhatsNew = notificationsToShow && showWhatsNewPopup;
+    const showWhatsNew =
+      ((completedOnboarding && firstTimeFlowType === 'import') ||
+        !completedOnboarding) &&
+      notificationsToShow &&
+      showWhatsNewPopup;
 
     return (
       <div className="main-container">

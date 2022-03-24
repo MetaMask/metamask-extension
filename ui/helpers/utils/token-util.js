@@ -4,6 +4,10 @@ import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
+import { getTokenStandardAndDetails } from '../../store/actions';
+import { ERC1155, ERC721 } from '../constants/common';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -11,7 +15,6 @@ const DEFAULT_SYMBOL = '';
 
 async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
-
   try {
     const result = await token.symbol();
     return result[0];
@@ -132,7 +135,8 @@ export function calcTokenValue(value, decimals) {
  * @returns {string | undefined} A lowercase address string.
  */
 export function getTokenAddressParam(tokenData = {}) {
-  const value = tokenData?.args?._to || tokenData?.args?.[0];
+  const value =
+    tokenData?.args?._to || tokenData?.args?.to || tokenData?.args?.[0];
   return value?.toString().toLowerCase();
 }
 
@@ -211,4 +215,49 @@ export function getTokenFiatAmount(
     result = currentTokenInFiat;
   }
   return result;
+}
+
+export async function getAssetDetails(
+  tokenAddress,
+  currentUserAddress,
+  transactionData,
+  existingCollectibles,
+) {
+  const tokenData = parseStandardTokenTransactionData(transactionData);
+  if (!tokenData) {
+    throw new Error('Unable to detect valid token data');
+  }
+
+  const tokenId = getTokenValueParam(tokenData);
+  let tokenDetails;
+  try {
+    tokenDetails = await getTokenStandardAndDetails(
+      tokenAddress,
+      currentUserAddress,
+      tokenId,
+    );
+  } catch (error) {
+    log.warn(error);
+    return {};
+  }
+
+  if (tokenDetails?.standard) {
+    const { standard } = tokenDetails;
+    if (standard === ERC721 || standard === ERC1155) {
+      const existingCollectible = existingCollectibles.find(({ address }) =>
+        isEqualCaseInsensitive(tokenAddress, address),
+      );
+
+      if (existingCollectible) {
+        return {
+          ...existingCollectible,
+          standard,
+        };
+      }
+    }
+    // else if not a collectible already in state or standard === ERC20 just return tokenDetails as it contains all required data
+    return tokenDetails;
+  }
+
+  return {};
 }

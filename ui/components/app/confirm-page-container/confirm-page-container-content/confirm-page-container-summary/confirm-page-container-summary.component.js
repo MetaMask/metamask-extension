@@ -1,8 +1,18 @@
 /* eslint-disable no-negated-condition */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+
+import { TRANSACTION_TYPES } from '../../../../../../shared/constants/transaction';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import useAddressDetails from '../../../../../hooks/useAddressDetails';
+
 import Identicon from '../../../../ui/identicon';
+import InfoTooltip from '../../../../ui/info-tooltip';
+import NicknamePopovers from '../../../modals/nickname-popovers';
+import Typography from '../../../../ui/typography';
+import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -12,12 +22,42 @@ const ConfirmPageContainerSummary = (props) => {
     subtitleComponent,
     hideSubtitle,
     className,
-    identiconAddress,
+    tokenAddress,
+    toAddress,
     nonce,
     origin,
     hideTitle,
     image,
+    transactionType,
   } = props;
+
+  const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
+  const t = useI18nContext();
+
+  const contractInitiatedTransactionType = [
+    TRANSACTION_TYPES.CONTRACT_INTERACTION,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
+  ];
+  const isContractTypeTransaction = contractInitiatedTransactionType.includes(
+    transactionType,
+  );
+  let contractAddress;
+  if (isContractTypeTransaction) {
+    // If the transaction is TOKEN_METHOD_TRANSFER or TOKEN_METHOD_TRANSFER_FROM
+    // the contract address is passed down as tokenAddress, if it is anyother
+    // type of contract interaction it is passed as toAddress
+    contractAddress =
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
+        ? tokenAddress
+        : toAddress;
+  }
+
+  const { toName, isTrusted } = useAddressDetails(contractAddress);
+  const checksummedAddress = toChecksumHexAddress(contractAddress);
 
   const renderImage = () => {
     if (image) {
@@ -28,12 +68,12 @@ const ConfirmPageContainerSummary = (props) => {
           src={image}
         />
       );
-    } else if (identiconAddress) {
+    } else if (contractAddress) {
       return (
         <Identicon
           className="confirm-page-container-summary__icon"
           diameter={36}
-          address={identiconAddress}
+          address={contractAddress}
           image={image}
         />
       );
@@ -47,7 +87,29 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__origin">{origin}</div>
       )}
       <div className="confirm-page-container-summary__action-row">
-        <div className="confirm-page-container-summary__action">{action}</div>
+        <div className="confirm-page-container-summary__action">
+          {isContractTypeTransaction && toName && (
+            <span className="confirm-page-container-summary__action__contract-address">
+              <button
+                className="confirm-page-container-summary__action__contract-address-btn"
+                onClick={() => setShowNicknamePopovers(true)}
+                role="button"
+              >
+                {toName}
+              </button>
+              :
+            </span>
+          )}
+          <span className="confirm-page-container-summary__action__name">
+            {action}
+          </span>
+          {isContractTypeTransaction && isTrusted === false && (
+            <InfoTooltip
+              position="top"
+              contentText={t('unverifiedContractAddressMessage')}
+            />
+          )}
+        </div>
         {nonce && (
           <div className="confirm-page-container-summary__nonce">
             {`#${nonce}`}
@@ -58,9 +120,15 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__title">
           {renderImage()}
           {!hideTitle ? (
-            <div className="confirm-page-container-summary__title-text">
+            <Typography
+              className="confirm-page-container-summary__title-text"
+              variant={
+                title && title.length < 10 ? TYPOGRAPHY.H1 : TYPOGRAPHY.H3
+              }
+              title={title}
+            >
               {titleComponent || title}
-            </div>
+            </Typography>
           ) : null}
         </div>
         {hideSubtitle ? null : (
@@ -69,6 +137,12 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         )}
       </>
+      {showNicknamePopovers && (
+        <NicknamePopovers
+          onClose={() => setShowNicknamePopovers(false)}
+          address={checksummedAddress}
+        />
+      )}
     </div>
   );
 };
@@ -81,10 +155,12 @@ ConfirmPageContainerSummary.propTypes = {
   subtitleComponent: PropTypes.node,
   hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
-  identiconAddress: PropTypes.string,
+  tokenAddress: PropTypes.string,
+  toAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
   hideTitle: PropTypes.bool,
+  transactionType: PropTypes.string,
 };
 
 export default ConfirmPageContainerSummary;

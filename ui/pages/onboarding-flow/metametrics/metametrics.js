@@ -123,7 +123,7 @@ export default function OnboardingMetametrics() {
         </li>
       </ul>
       <Typography
-        color={COLORS.UI4}
+        color={COLORS.TEXT_ALTERNATIVE}
         align={TEXT_ALIGN.CENTER}
         variant={TYPOGRAPHY.H6}
         className="onboarding-metametrics__terms"

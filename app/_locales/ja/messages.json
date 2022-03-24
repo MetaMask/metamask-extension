@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "推奨されたトークンを追加"
   },
-  "addToAddressBook": {
-    "message": "アドレス帳に追加"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "例: John D."
-  },
   "addToken": {
     "message": "トークンを追加"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
   },
-  "enterAnAlias": {
-    "message": "別名を入力してください"
-  },
   "enterMaxSpendLimit": {
     "message": "使用限度額の最大値を入力してください"
   },
@@ -1273,18 +1264,11 @@
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
   },
-  "importAccountLinkText": {
-    "message": "シークレットリカバリーフレーズを使用してインポート"
-  },
   "importAccountMsg": {
     "message": " インポートされたアカウントは、最初に作成したMetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
   },
   "importAccountSeedPhrase": {
     "message": "シークレットリカバリーフレーズを使用してウォレットをインポート"
-  },
-  "importAccountText": {
-    "message": "または$1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "ウォレットの作成時に提供されたシークレットリカバリーフレーズ (シードフレーズ) を入力してください。$1",
@@ -1744,9 +1728,6 @@
   "newAccountNumberName": {
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "次の理由により、コレクティブルは追加されませんでした: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "コレクティブルが追加されました!"
@@ -2229,9 +2210,6 @@
   "restore": {
     "message": "復元"
   },
-  "restoreAccountWithSeed": {
-    "message": "シークレットリカバリーフレーズでアカウントを復元"
-  },
   "restoreWalletPreferences": {
     "message": "$1のデータのバックアップが見つかりました。ウォレットの基本設定を復元しますか?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2276,6 @@
   },
   "secretPhrase": {
     "message": "このウォレットの最初のアカウントのみが自動的に読み込まれます。 このプロセスの完了後、他のアカウントを追加するには、ドロップダウンメニューをクリックし、[アカウントを作成] を選択します。"
-  },
-  "secretPhraseWarning": {
-    "message": "別のシークレットリカバリーフレーズを使用して復元すると、現在のウォレット、アカウント、アセットは永久にこのアプリから削除されます。この操作は元に戻せません。"
   },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"

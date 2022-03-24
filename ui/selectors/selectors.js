@@ -33,11 +33,7 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  shortenAddress,
-  getAccountByAddress,
-  isEqualCaseInsensitive,
-} from '../helpers/utils/util';
+import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -60,6 +56,7 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -484,6 +481,10 @@ function getSuggestedAssetCount(state) {
   return suggestedAssets.length;
 }
 
+export function getSuggestedAssets(state) {
+  return state.metamask.suggestedAssets;
+}
+
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
   return chainId === MAINNET_CHAIN_ID;
@@ -671,6 +672,11 @@ export function getIsBuyableTransakChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
 }
 
+export function getIsBuyableMoonPayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -787,6 +793,16 @@ export function getUseCollectibleDetection(state) {
  */
 export function getOpenSeaEnabled(state) {
   return Boolean(state.metamask.openSeaEnabled);
+}
+
+/**
+ * To get the `theme` value which determines which theme is selected
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getTheme(state) {
+  return state.metamask.theme;
 }
 
 /**

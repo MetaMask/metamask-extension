@@ -3,19 +3,25 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
-import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import ErrorMessage from '../../../components/ui/error-message';
 import I18nValue from '../../../components/ui/i18n-value';
+import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
+  chainId,
+  nativeCurrency,
+  networkName,
+  showBuyModal,
+  type,
 }) => {
   const {
     balanceError,
@@ -90,7 +96,45 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {balanceError && <ErrorMessage errorKey={INSUFFICIENT_FUNDS_ERROR_KEY} />}
+      {balanceError &&
+      chainId === MAINNET_CHAIN_ID &&
+      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
+        <ActionableMessage
+          className="actionable-message--warning"
+          message={
+            <Typography variant={TYPOGRAPHY.H7} align="left">
+              {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
+              <Button
+                type="link"
+                className="transaction-alerts__link"
+                onClick={showBuyModal}
+              >
+                {t('buyEth')}
+              </Button>{' '}
+              {t('orDeposit')}
+            </Typography>
+          }
+          useIcon
+          iconFillColor="#d73a49"
+          type="danger"
+        />
+      ) : null}
+      {balanceError &&
+      chainId !== MAINNET_CHAIN_ID &&
+      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
+        <ActionableMessage
+          className="actionable-message--warning"
+          message={
+            <Typography variant={TYPOGRAPHY.H7} align="left">
+              {t('insufficientCurrency', [nativeCurrency, networkName])}
+              {t('buyOther', [nativeCurrency])}
+            </Typography>
+          }
+          useIcon
+          iconFillColor="#d73a49"
+          type="danger"
+        />
+      ) : null}
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
           dataTestId="low-gas-fee-alert"
@@ -133,6 +177,11 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
+  chainId: PropTypes.string,
+  nativeCurrency: PropTypes.string,
+  networkName: PropTypes.string,
+  showBuyModal: PropTypes.func,
+  type: PropTypes.string,
 };
 
 export default TransactionAlerts;
