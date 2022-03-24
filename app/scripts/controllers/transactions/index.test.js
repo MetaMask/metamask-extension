@@ -2186,7 +2186,7 @@ describe('Transaction Controller', function () {
       assert.equal(result.userFeeLevel, 'high');
     });
 
-    it('throws error if status is not unapproved', function () {
+    it('should not update and throw error if status is not unapproved', function () {
       txStateManager.addTransaction({
         id: '4',
         status: TRANSACTION_STATUSES.APPROVED,
@@ -2202,11 +2202,17 @@ describe('Transaction Controller', function () {
 
       try {
         txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
+
+        // Fail test if above expression doesn't throw anything.
+        assert(true).toBe(false);
       } catch (e) {
         assert.equal(
           e.message,
           'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
         );
+      } finally {
+        const transaction = txStateManager.getTransaction('4');
+        assert.equal(transaction.txParams.maxFeePerGas, '0x008');
       }
     });
 
