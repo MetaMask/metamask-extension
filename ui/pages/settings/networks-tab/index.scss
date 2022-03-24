@@ -147,7 +147,7 @@ p#search-networks-helper-text {
   &__networks-list {
     flex: 0.5 0 auto;
     max-width: 350px;
-    border-right: 1px solid #d8d8d8;
+    border-right: 1px solid var(--color-border-default);
 
     &__custom-search-network {
       margin-top: 24px;
@@ -190,7 +190,7 @@ p#search-networks-helper-text {
     justify-content: center;
     padding-top: 23px;
     padding-bottom: 23px;
-    border-top: 1px solid #d8d8d8;
+    border-top: 1px solid var(--color-border-default);
 
     .button {
       width: 178px;
