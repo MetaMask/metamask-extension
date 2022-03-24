@@ -1,33 +1,9 @@
 .collectibles-detection-notice {
   margin: 16px 16px 0 16px;
 
-  // @media screen and (max-width: $break-small) {
-  //   margin: 16px 16px 0 16px;
-  // }
-
-  // @media screen and (min-width: $break-large) {
-  //   margin: 32px 48px 0 48px;
-  // }
-
   &__message {
     position: relative;
     padding: 0.75rem 0.75rem 1rem 0.75rem !important;
-
-    // &__close-button {
-    //   background-color: transparent;
-
-    //   &::after {
-    //     position: absolute;
-    //     content: '\00D7';
-    //     font-size: 29px;
-    //     font-weight: 200;
-    //     color: var(--color-icon-default);
-    //     background-color: transparent;
-    //     top: 0;
-    //     right: 12px;
-    //     cursor: pointer;
-    //   }
-    // }
 
     & &__close-button {
       color: var(--color-icon-default);
@@ -35,10 +11,6 @@
       position: absolute;
       cursor: pointer;
       right: 8px;
-
-      @media screen and (min-width: 1439px) {
-        display: none;
-      }
     }
 
     a.collectibles-detection-notice__message__link {
