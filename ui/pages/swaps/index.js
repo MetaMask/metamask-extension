@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
@@ -37,6 +37,7 @@ import {
   getPendingSmartTransactions,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   dismissCurrentSmartTransactionsErrorMessage,
   getCurrentSmartTransactionsErrorMessageDismissed,
@@ -84,6 +85,7 @@ import {
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
+  stxErrorTypes,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
@@ -106,6 +108,7 @@ export default function Swap() {
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
 
+  const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
@@ -134,6 +137,9 @@ export default function Swap() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
@@ -244,6 +250,7 @@ export default function Swap() {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     },
   });
@@ -302,22 +309,26 @@ export default function Swap() {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
       stx_error: currentSmartTransactionsError,
     },
   });
   useEffect(() => {
-    if (currentSmartTransactionsError) {
+    if (currentSmartTransactionsError && !currentStxErrorTracked) {
+      setCurrentStxErrorTracked(true);
       errorStxEvent();
     }
-  }, [errorStxEvent, currentSmartTransactionsError]);
+  }, [errorStxEvent, currentSmartTransactionsError, currentStxErrorTracked]);
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   const isStxNotEnoughFundsError =
-    currentSmartTransactionsError === 'not_enough_funds';
+    currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
+  const isStxRegularTxPendingError =
+    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_PENDING;
 
   return (
     <div className="swaps">
@@ -371,10 +382,20 @@ export default function Swap() {
                   </div>
                 ) : (
                   <div className="build-quote__token-verification-warning-message">
-                    <div className="build-quote__bold">
+                    <button
+                      onClick={() => {
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage());
+                      }}
+                      className="swaps__notification-close-button"
+                    />
+                    <div className="swaps__notification-title">
                       {t('stxUnavailable')}
                     </div>
-                    <div>{t('stxFallbackToNormal')}</div>
+                    <div>
+                      {isStxRegularTxPendingError
+                        ? t('stxFallbackPendingTx')
+                        : t('stxFallbackUnavailable')}
+                    </div>
                   </div>
                 )
               }
@@ -383,16 +404,6 @@ export default function Swap() {
                   ? 'swaps__error-message'
                   : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
               }
-              primaryAction={
-                isStxNotEnoughFundsError
-                  ? null
-                  : {
-                      label: t('dismiss'),
-                      onClick: () =>
-                        dispatch(dismissCurrentSmartTransactionsErrorMessage()),
-                    }
-              }
-              withRightButton
             />
           )}
           <Switch>

@@ -278,12 +278,7 @@ export default class AccountMenu extends Component {
         className="account-menu__scroll-button"
         onClick={this.handleScrollDown}
       >
-        <img
-          src="./images/icons/down-arrow.svg"
-          width="28"
-          height="28"
-          alt={this.context.t('scrollDown')}
-        />
+        <i className="fa fa-arrow-down" title={this.context.t('scrollDown')} />
       </div>
     );
   }
