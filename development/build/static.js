@@ -4,9 +4,9 @@ const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
 const locales = require('../../app/_locales/index.json');
+const { BuildType } = require('../lib/build-type');
 
 const { createTask, composeSeries } = require('./task');
-const { BuildType } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 

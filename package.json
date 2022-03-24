@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.11.3",
+  "version": "10.11.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -18,6 +18,7 @@
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "yarn build test",
+    "build:test:flask": "yarn build test --build-type flask",
     "build:test:metrics": "SEGMENT_HOST='http://localhost:9090' SEGMENT_WRITE_KEY='FAKE' yarn build test",
     "test": "yarn lint && yarn test:unit && yarn test:unit:jest",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
@@ -30,8 +31,10 @@
     "test:unit:mocha": "mocha './app/**/*.test.js'",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:metrics": "SELENIUM_BROWSER=chrome node test/e2e/run-e2e-test.js test/e2e/metrics.spec.js",
+    "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
     "test:e2e:firefox:metrics": "SELENIUM_BROWSER=firefox node test/e2e/run-e2e-test.js test/e2e/metrics.spec.js",
+    "test:e2e:firefox:snaps": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --snaps",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
     "test:coverage:mocha": "nyc --reporter=text --reporter=html yarn test:unit:mocha",
     "test:coverage:jest": "yarn test:unit:jest --coverage --maxWorkers=2",
@@ -113,16 +116,16 @@
     "@metamask/eth-ledger-bridge-keyring": "^0.10.0",
     "@metamask/eth-token-tracker": "^4.0.0",
     "@metamask/etherscan-link": "^2.1.0",
-    "@metamask/iframe-execution-environment-service": "^0.9.0",
+    "@metamask/iframe-execution-environment-service": "^0.10.6",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^3.1.1",
     "@metamask/obs-store": "^5.0.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
-    "@metamask/rpc-methods": "^0.9.0",
+    "@metamask/rpc-methods": "^0.10.6",
     "@metamask/slip44": "^2.0.0",
     "@metamask/smart-transactions-controller": "^1.9.1",
-    "@metamask/snap-controllers": "^0.9.0",
+    "@metamask/snap-controllers": "^0.10.6",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
@@ -417,7 +420,11 @@
       "ganache>leveldown": false,
       "geckodriver": true,
       "react-devtools>electron": true,
-      "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false
+      "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false,
+      "@metamask/iframe-execution-environment-service>@metamask/execution-environments": false,
+      "@metamask/snap-controllers>@metamask/execution-environments": false,
+      "@metamask/iframe-execution-environment-service>@metamask/snap-controllers>@metamask/execution-environments": false,
+      "@metamask/rpc-methods>@metamask/snap-controllers>@metamask/execution-environments": false
     }
   }
 }
