@@ -17,7 +17,6 @@ import CopyIcon from './copy-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
 import Interaction from './interaction-icon.component';
-import PaperAirplane from './paper-airplane-icon';
 import Preloader from './preloader';
 import ReceiveIcon from './receive-icon.component';
 import SendIcon from './send-icon.component';
@@ -152,7 +151,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<BuyIcon {...args} />} />
         <IconItem Component={<SwapIcon {...args} />} />
         <IconItem Component={<SwapIconComponent {...args} />} />
-        <IconItem Component={<PaperAirplane {...args} />} />
         <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
@@ -298,13 +296,6 @@ SendSwapIconStory.args = {
   color: 'var(--color-icon-default)',
 };
 SendSwapIconStory.storyName = 'Send/SwapIcon';
-
-export const PaperAirplaneStory = (args) => <PaperAirplane {...args} />;
-PaperAirplaneStory.args = {
-  size: 40,
-  color: 'var(--color-icon-default)',
-};
-PaperAirplaneStory.storyName = 'PaperAirplane';
 
 export const CopyIconStory = (args) => <CopyIcon {...args} />;
 CopyIconStory.args = {
