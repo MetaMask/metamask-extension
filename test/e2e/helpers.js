@@ -77,7 +77,6 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-
     await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
