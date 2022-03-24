@@ -67,7 +67,7 @@ const NetworksList = ({
       {searchQuery === '' && (
         <Typography
           variant={TYPOGRAPHY.H6}
-          margin={[6, 0, 0, 7]}
+          margin={[6, 0, 0, 9]}
           color={COLORS.TEXT_MUTED}
           className="networks-tab__networks-list__label"
         >

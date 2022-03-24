@@ -9,6 +9,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../../shared/constants/network';
 import LockIcon from '../../../../components/ui/lock-icon';
+import IconCheck from '../../../../components/ui/icon/icon-check';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -73,7 +74,7 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <i className="fa fa-check networks-tab__content__check-icon" />
+        <IconCheck color="var(--color-success-default)" />
       ) : (
         <div className="networks-tab__content__check-icon__transparent">✓</div>
       )}

@@ -13,7 +13,9 @@ export default function CustomContentSearch({
   searchQueryInput,
 }) {
   const t = useContext(I18nContext);
-  const [searchIconColor, setSearchIconColor] = useState('var(--color-icon-muted)');
+  const [searchIconColor, setSearchIconColor] = useState(
+    'var(--color-icon-muted)',
+  );
 
   const networksListArray = Object.values(networksList);
   const networksSearchFuse = new Fuse(networksListArray, {
@@ -56,9 +58,9 @@ export default function CustomContentSearch({
             onClick={() => handleSearch('')}
           >
             <i
-              className="fa fa-close imageclose"
+              className="fa fa-times imageclose"
               width="17"
-              height="17"
+              heigth="17"
               title="Close"
             />
           </InputAdornment>

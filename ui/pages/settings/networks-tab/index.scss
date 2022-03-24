@@ -4,8 +4,9 @@ p#search-networks-helper-text {
   color: var(--color-text-alternative);
 }
 
-.imageclosectn {
+.imageclose {
   cursor: pointer;
+  color: var(--color-icon-default);
 }
 
 .networks-tab {
@@ -16,12 +17,13 @@ p#search-networks-helper-text {
     justify-content: space-between;
 
     &__custom-image {
-      background: var(--color-background-alternative);
-      border: none;
+      border: 1px solid var(--color-border-default);
+      margin-inline-start: 8px;
     }
 
     &__check-icon {
       margin-inline-end: 10px;
+      color: var(--color-success-default);
 
       &__transparent {
         color: transparent;
@@ -33,6 +35,7 @@ p#search-networks-helper-text {
     &__icon-with-fallback {
       padding: 0 1px 2px 2px;
       color: var(--white);
+      margin-inline-start: 8px;
 
       @each $variant, $color in design-system.$color-map {
         &--color-#{$variant} {
@@ -168,8 +171,7 @@ p#search-networks-helper-text {
 
     &__label {
       @media screen and (max-width: $break-small) {
-        margin-inline-start: 50px;
-        padding-bottom: 12px;
+        margin-inline-start: 58px;
       }
     }
 
