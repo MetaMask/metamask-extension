@@ -8,12 +8,12 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import MetaMetricsController from './metametrics';
-import { NETWORK_EVENTS } from './network';
 import {
   MAINNET_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import MetaMetricsController from './metametrics';
+import { NETWORK_EVENTS } from './network';
 
 const segment = createSegmentMock(2, 10000);
 
@@ -524,7 +524,7 @@ describe('MetaMetricsController', function () {
   });
 
   describe('_buildUserTraitsObject', function () {
-    it('should return full user traits object on first call', () => {
+    it('should return full user traits object on first call', function () {
       const metaMetricsController = getMetaMetricsController();
       const traits = metaMetricsController._buildUserTraitsObject({
         frequentRpcListDetail: [
@@ -544,7 +544,7 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should return only changed traits object on subsequent calls', () => {
+    it('should return only changed traits object on subsequent calls', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController._buildUserTraitsObject({
         frequentRpcListDetail: [
@@ -571,7 +571,7 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should return null if no traits changed', () => {
+    it('should return null if no traits changed', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController._buildUserTraitsObject({
         frequentRpcListDetail: [
