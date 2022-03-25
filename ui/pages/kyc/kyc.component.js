@@ -121,7 +121,10 @@ export default class KycFlowScreen extends Component {
     const { history, clearPendingTokens, mostRecentOverviewPage } = this.props;
 
     return (
-      <div className="page-container" style={{ position: 'relative' }}>
+      <div
+        className="page-container"
+        style={{ position: 'relative', padding: '8px' }}
+      >
         {this.state.isLoading && (
           <div
             className="kyc-form app-loading-spinner"
@@ -168,10 +171,16 @@ export default class KycFlowScreen extends Component {
               </option>
             ))}
           </select>
+          <br />
 
           {this.state.ajaxSuccess ? (
-            <div>
-              <span>Account verify submit success!</span>
+            <div className="form-footer">
+              <span>Verification request submitted!</span>
+              <br />
+              <span style={{ color: 'rgb(248 113 113)' }}>
+                Please check your email and follow the instructions to complete
+                the verification.
+              </span>
               <br />
               <button type="button" onClick={() => this.onBack()}>
                 Finish
