@@ -7,116 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.12.0]
-### Uncategorized
-- Show snap version on install ([#13931](https://github.com/MetaMask/metamask-extension/pull/13931))
-- Update pull request template ([#13908](https://github.com/MetaMask/metamask-extension/pull/13908))
-- Improve slippage input validation in Swaps ([#13914](https://github.com/MetaMask/metamask-extension/pull/13914))
-- Sync `master` with `develop` ([#13922](https://github.com/MetaMask/metamask-extension/pull/13922))
-- Revert "Update SRP representation"
-- Merge remote-tracking branch 'origin/develop' into master-sync
+### Added
+- Add a search feature to the settings page ([#13214](https://github.com/MetaMask/metamask-extension/pull/13214))
+- Add AirGap Vault detail links to the hardware wallet connection flow ([#13650](https://github.com/MetaMask/metamask-extension/pull/13650))
+
+### Changed
+- Prevent users from entering too long a number for slippage in swaps ([#13914](https://github.com/MetaMask/metamask-extension/pull/13914))
+- Hide non-essential information in our EIP-1559 v2 gas modal when the gas api is down ([#13865](https://github.com/MetaMask/metamask-extension/pull/13865))
+- Updating colors of the account list ([#13864](https://github.com/MetaMask/metamask-extension/pull/13864))
+- Show a more useful warning is users don't have enough of their networks base currency to pay for gas ([#13182](https://github.com/MetaMask/metamask-extension/pull/13182))
+- Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
+- Show the address of the contract that is being interacted with next to the method name in transaction confirmation headers ([#13683](https://github.com/MetaMask/metamask-extension/pull/13683))
+- Show the address of the contract that is being interacted next to 'Transfer' and 'Transfer From' method names in transaction confirmation headers ([#13776](https://github.com/MetaMask/metamask-extension/pull/13776))
+
+### Fixed
+- Ensure long signature request text is visible ([#13828](https://github.com/MetaMask/metamask-extension/pull/13828))
 - Fix spelling of 'Ethereum' in German translation ([#13915](https://github.com/MetaMask/metamask-extension/pull/13915))
-- Bump @metamask/design-tokens from 1.4.0 to 1.4.2 ([#13920](https://github.com/MetaMask/metamask-extension/pull/13920))
-- Degrade gracefully when gas API is down ([#13865](https://github.com/MetaMask/metamask-extension/pull/13865))
-- Fixing dropdown caret for dark and light mode ([#13911](https://github.com/MetaMask/metamask-extension/pull/13911))
-- Dark Mode: Import account text field ([#13909](https://github.com/MetaMask/metamask-extension/pull/13909))
-- Dark Mode: Create Theme-friendly top left logo component ([#13897](https://github.com/MetaMask/metamask-extension/pull/13897))
-- ConfirmAddSuggestToken: replace mapDispatchToProps & mapStateToProps; Add Tests ([#13526](https://github.com/MetaMask/metamask-extension/pull/13526))
-- Fix snap e2e tests ([#13912](https://github.com/MetaMask/metamask-extension/pull/13912))
-- Fixed firefox Snaps + add initial end-to-end tests ([#13671](https://github.com/MetaMask/metamask-extension/pull/13671))
-- Use pre-wrap instead of pre for signature content ([#13828](https://github.com/MetaMask/metamask-extension/pull/13828))
-- Dark Mode: Dropdown color updates ([#13875](https://github.com/MetaMask/metamask-extension/pull/13875))
-- Updating ActionableMessage to use theme colors ([#13899](https://github.com/MetaMask/metamask-extension/pull/13899))
-- Fixed serialization of error parameter for `rejectPendingApproval` across JSON-RPC ([#13847](https://github.com/MetaMask/metamask-extension/pull/13847))
-- ConfirmImportToken: rm unused .token-balance style ([#13900](https://github.com/MetaMask/metamask-extension/pull/13900))
-- Renaming test file ([#13905](https://github.com/MetaMask/metamask-extension/pull/13905))
-- Fix permission site origin overflow ([#13868](https://github.com/MetaMask/metamask-extension/pull/13868))
-- Fixed issues in onboarding flow ([#13826](https://github.com/MetaMask/metamask-extension/pull/13826))
-- Fix build - context deadline exceeded ([#13878](https://github.com/MetaMask/metamask-extension/pull/13878))
-- Implement Dark Mode Form Fields ([#13821](https://github.com/MetaMask/metamask-extension/pull/13821))
-- Derive version suffix from build type and version ([#13895](https://github.com/MetaMask/metamask-extension/pull/13895))
-- Dev olu update swap approval transaction ([#13641](https://github.com/MetaMask/metamask-extension/pull/13641))
-- @metamask/controllers@26.0.0 ([#13867](https://github.com/MetaMask/metamask-extension/pull/13867))
-- fix small bug where max transaction fee isn't properly passed through confirmation screen flow ([#13893](https://github.com/MetaMask/metamask-extension/pull/13893))
-- Snap removal confirmation ([#13619](https://github.com/MetaMask/metamask-extension/pull/13619))
-- Find and replace of all typography colors to design tokens ([#13885](https://github.com/MetaMask/metamask-extension/pull/13885))
-- Improvements in connectRemote function in background.js ([#13762](https://github.com/MetaMask/metamask-extension/pull/13762))
-- Refactor token send/method confirmation flow (trimmed down) ([#13788](https://github.com/MetaMask/metamask-extension/pull/13788))
-- Add e2e testcase for token details functionality ([#13818](https://github.com/MetaMask/metamask-extension/pull/13818))
-- fix bug in NFT dropdown state management ([#13880](https://github.com/MetaMask/metamask-extension/pull/13880))
-- Ensure only accounts list scrolls in Permissions popup ([#13859](https://github.com/MetaMask/metamask-extension/pull/13859))
-- Updating all caret icons for dark mode 🥕 ([#13861](https://github.com/MetaMask/metamask-extension/pull/13861))
-- Updating AccountList to use darkmode colors ([#13864](https://github.com/MetaMask/metamask-extension/pull/13864))
-- Typography design token color and docs update ([#13758](https://github.com/MetaMask/metamask-extension/pull/13758))
-- Write down your SRP page fixes ([#13729](https://github.com/MetaMask/metamask-extension/pull/13729))
-- Fix wrong isEqualCaseInsensitive path ([#13860](https://github.com/MetaMask/metamask-extension/pull/13860))
-- E2e improve mocking ([#13841](https://github.com/MetaMask/metamask-extension/pull/13841))
-- Update EIP1559 params. ([#13652](https://github.com/MetaMask/metamask-extension/pull/13652))
-- update chromedriver ([#13854](https://github.com/MetaMask/metamask-extension/pull/13854))
-- extract determineTransactionType from tx controller ([#13737](https://github.com/MetaMask/metamask-extension/pull/13737))
-- Adding new settings dropdown for Dark mode in Experimental tab ([#13097](https://github.com/MetaMask/metamask-extension/pull/13097))
-- Fix gas values display in users primary currency inside inputs ([#13830](https://github.com/MetaMask/metamask-extension/pull/13830))
-- Update privacy page text ([#13795](https://github.com/MetaMask/metamask-extension/pull/13795))
-- Showing new message while converting token to NFT ([#13838](https://github.com/MetaMask/metamask-extension/pull/13838))
-- Create password page ([#13792](https://github.com/MetaMask/metamask-extension/pull/13792))
-- Update snap install warning per designs and fix for popover component ([#13844](https://github.com/MetaMask/metamask-extension/pull/13844))
-- Sync `master` with `develop` ([#13848](https://github.com/MetaMask/metamask-extension/pull/13848))
-- Revert "Running yarn lavamoat:auto"
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Set up STX controller state ([#13843](https://github.com/MetaMask/metamask-extension/pull/13843))
-- Add custom CSS to Popover ([#13740](https://github.com/MetaMask/metamask-extension/pull/13740))
-- Fix v10.11: Unable to find value of key "eth_accounts" for locale "en" in Permissions Modal ([#13833](https://github.com/MetaMask/metamask-extension/pull/13833))
-- Updating colors in various components js and css ([#13831](https://github.com/MetaMask/metamask-extension/pull/13831))
-- Bump @metamask/design-tokens from 1.3.0 to 1.4.0 ([#13832](https://github.com/MetaMask/metamask-extension/pull/13832))
-- Improve unit tests for `SrpInput` component ([#13803](https://github.com/MetaMask/metamask-extension/pull/13803))
-- create branching logic for different types of contract interactions for identifying the contract address ([#13776](https://github.com/MetaMask/metamask-extension/pull/13776))
-- Restoring create password form layout ([#13824](https://github.com/MetaMask/metamask-extension/pull/13824))
-- Document Flask build flag ([#13597](https://github.com/MetaMask/metamask-extension/pull/13597))
-- Revert "Allow sending up to 15 decimals on the send screen (#12707)" ([#12707](https://github.com/MetaMask/metamask-extension/pull/12707))
-- gas fee details displayed on UI should be used gas estimates if available ([#13809](https://github.com/MetaMask/metamask-extension/pull/13809))
-- Fix currency toggle ([#13813](https://github.com/MetaMask/metamask-extension/pull/13813))
-- Persisting token address via URL (Token Details page) ([#13807](https://github.com/MetaMask/metamask-extension/pull/13807))
-- Fixed these issues in v10.11.0 ([#13806](https://github.com/MetaMask/metamask-extension/pull/13806))
-- Confirm transaction page: show contract address details in title ([#13683](https://github.com/MetaMask/metamask-extension/pull/13683))
-- ConfirmImportToken: update metrics logic ([#13775](https://github.com/MetaMask/metamask-extension/pull/13775))
-- Sync `master` with `develop` ([#13805](https://github.com/MetaMask/metamask-extension/pull/13805))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Feat/13662 box design token updates ([#13725](https://github.com/MetaMask/metamask-extension/pull/13725))
-- Content and UI updates for the STX modal ([#13798](https://github.com/MetaMask/metamask-extension/pull/13798))
-- Refactor ESLint config ([#13482](https://github.com/MetaMask/metamask-extension/pull/13482))
-- UI/UX update - Error message in Import NFT ([#13772](https://github.com/MetaMask/metamask-extension/pull/13772))
-- Handling undefined case for token balance (Token Details) ([#13759](https://github.com/MetaMask/metamask-extension/pull/13759))
-- Dark Theme setup and button theming ([#13651](https://github.com/MetaMask/metamask-extension/pull/13651))
-- Create 'Add network' page ([#13180](https://github.com/MetaMask/metamask-extension/pull/13180))
-- Import SRP page ([#13568](https://github.com/MetaMask/metamask-extension/pull/13568))
-- Bump @metamask/design-tokens from 1.2.0 to 1.3.0 ([#13749](https://github.com/MetaMask/metamask-extension/pull/13749))
-- Sync `master` with `develop` ([#13754](https://github.com/MetaMask/metamask-extension/pull/13754))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- [FIX #12760] Highlighting on search ([#13730](https://github.com/MetaMask/metamask-extension/pull/13730))
-- Replace uses of updateTransaction (from the tx controller) with less powerful methods for each specific state transition ([#13496](https://github.com/MetaMask/metamask-extension/pull/13496))
-- add e2e test: It should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding ([#13741](https://github.com/MetaMask/metamask-extension/pull/13741))
-- add test: Import Account using private key of an already active account should result in an error ([#13673](https://github.com/MetaMask/metamask-extension/pull/13673))
-- Fix token details icon when 'Use Token Detection' is enabled ([#13726](https://github.com/MetaMask/metamask-extension/pull/13726))
-- Refactor: Extract SRP input from create vault component ([#13720](https://github.com/MetaMask/metamask-extension/pull/13720))
-- minor fixes per snaps pr comments ([#13721](https://github.com/MetaMask/metamask-extension/pull/13721))
-- fix broken e2e test from out of sync test merged ([#13734](https://github.com/MetaMask/metamask-extension/pull/13734))
-- Fixing blockies on token detail page ([#13728](https://github.com/MetaMask/metamask-extension/pull/13728))
-- add e2e test for deterministic account address generation ([#13668](https://github.com/MetaMask/metamask-extension/pull/13668))
-- Success page ([#13570](https://github.com/MetaMask/metamask-extension/pull/13570))
-- Secure your wallet page ([#13571](https://github.com/MetaMask/metamask-extension/pull/13571))
-- fix issue where token details page unnecessarily relies on send asset state ([#13717](https://github.com/MetaMask/metamask-extension/pull/13717))
-- add account_type and device_model to tx metrics ([#13682](https://github.com/MetaMask/metamask-extension/pull/13682))
-- Implement Network specific insufficient currency warning #12965 ([#13182](https://github.com/MetaMask/metamask-extension/pull/13182))
-- Installing design tokens and writing docs in storybook ([#13657](https://github.com/MetaMask/metamask-extension/pull/13657))
-- fix registerOnboarding method to correctly access completedOnboarding state value ([#13723](https://github.com/MetaMask/metamask-extension/pull/13723))
-- Feat/settings search ([#13214](https://github.com/MetaMask/metamask-extension/pull/13214))
-- Fix permission screen overflow ([#13592](https://github.com/MetaMask/metamask-extension/pull/13592))
-- Update manual build instructions in documentation ([#13508](https://github.com/MetaMask/metamask-extension/pull/13508))
-- Add AirGap Vault detail links ([#13650](https://github.com/MetaMask/metamask-extension/pull/13650))
-- E2e phishing detection ([#13704](https://github.com/MetaMask/metamask-extension/pull/13704))
+- Fix cases where the action buttons in a switch network confirmation window wouldn't work  ([#13847](https://github.com/MetaMask/metamask-extension/pull/13847))
+- Ensure the origin of a site requesting permissions is fully visible in the permission request UI ([#13868](https://github.com/MetaMask/metamask-extension/pull/13868))
+- Fix visual overflow problems with the account list in the connect flow
+    - ([#13859](https://github.com/MetaMask/metamask-extension/pull/13859))
+    - ([#13592](https://github.com/MetaMask/metamask-extension/pull/13592))
+- Show the users primary currency in the "Max Base Fee" and "Priority Fee" fields of the gas customization window ([#13830](https://github.com/MetaMask/metamask-extension/pull/13830))
+- Ensure latest gas estimates are shown on the transaction screen for users of the EIP-1559 v2 gas UI ([#13809](https://github.com/MetaMask/metamask-extension/pull/13809))
+- Fix to allow toggling of the currency in the send flow when the user has "fiat" selected as the primary currency ([#13813](https://github.com/MetaMask/metamask-extension/pull/13813))
 - Shows the sign and cancel button fully in signature page ([#13686](https://github.com/MetaMask/metamask-extension/pull/13686))
 - Harden keyring type check in EthOverview ([#13711](https://github.com/MetaMask/metamask-extension/pull/13711))
 - Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
 - Confirm transaction page: use method name only for contract transactions ([#13643](https://github.com/MetaMask/metamask-extension/pull/13643))
+
 ## [10.11.4]
 ### Added
 - **[FLASK]** Snap removal confirmation ([#13619](https://github.com/MetaMask/metamask-extension/pull/13619))
@@ -148,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.11.2]
 ### Fixed
 - Fix bug that users who are connected to another extension would hit when viewing connected sites ([#13974](https://github.com/MetaMask/metamask-extension/pull/13974))
+
 
 ## [10.11.1]
 ### Changed
@@ -2919,8 +2839,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...HEAD
-[10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.12.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...HEAD
+[10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...v10.12.0
 [10.11.4]: https://github.com/MetaMask/metamask-extension/compare/v10.11.3...v10.11.4
 [10.11.3]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...v10.11.3
 [10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
