@@ -291,11 +291,12 @@ describe('preferences controller', function () {
         '0x1',
       );
       assert.equal(
-        preferencesController.store.getState().advancedGasFee[0x1].maxBaseFee,
+        preferencesController.store.getState().advancedGasFee['0x1'].maxBaseFee,
         '1.5',
       );
       assert.equal(
-        preferencesController.store.getState().advancedGasFee[0x1].priorityFee,
+        preferencesController.store.getState().advancedGasFee['0x1']
+          .priorityFee,
         '2',
       );
     });
