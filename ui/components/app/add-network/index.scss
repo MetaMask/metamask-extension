@@ -15,11 +15,10 @@
   }
 
   &__add-icon {
-    height: 16px;
-    width: 12px;
     color: var(--color-text-alternative);
     margin-left: auto;
     margin-right: 0;
+    cursor: pointer;
   }
 
   &__footer {
