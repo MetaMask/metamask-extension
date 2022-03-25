@@ -146,6 +146,7 @@ export default class ConfirmTransactionBase extends Component {
     isMultiLayerFeeNetwork: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
+    isBuyableChain: PropTypes.bool,
   };
 
   state = {
@@ -326,6 +327,7 @@ export default class ConfirmTransactionBase extends Component {
       isMultiLayerFeeNetwork,
       nativeCurrency,
       showBuyModal,
+      isBuyableChain,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -585,11 +587,11 @@ export default class ConfirmTransactionBase extends Component {
             this.setUserAcknowledgedGasMissing()
           }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          chainId={txData.chainId}
           nativeCurrency={nativeCurrency}
           networkName={networkName}
           showBuyModal={showBuyModal}
           type={txData.type}
+          isBuyableChain={isBuyableChain}
         />
         <TransactionDetail
           disabled={isDisabled()}
