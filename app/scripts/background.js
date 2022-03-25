@@ -323,9 +323,9 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // connect to other contexts
   //
-  if (process.env.ENABLE_MV3) {
-    browser.runtime.onConnect.removeListener(initApp);
-  }
+  // if (process.env.ENABLE_MV3) {
+  //   browser.runtime.onConnect.removeListener(initApp);
+  // }
   browser.runtime.onConnect.addListener(connectRemote);
   browser.runtime.onConnectExternal.addListener(connectExternal);
 
