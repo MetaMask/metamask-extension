@@ -3,6 +3,8 @@ import log from 'loglevel';
 import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
+import browser from 'webextension-polyfill';
+
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
@@ -205,15 +207,16 @@ function setupDebuggingHelpers(store) {
 
 window.logStateString = async function (cb) {
   const state = await window.getCleanAppState();
-  global.platform.getPlatformInfo((err, platform) => {
-    if (err) {
+  browser.runtime
+    .getPlatformInfo()
+    .then((platform) => {
+      state.platform = platform;
+      const stateString = JSON.stringify(state, null, 2);
+      cb(null, stateString);
+    })
+    .catch((err) => {
       cb(err);
-      return;
-    }
-    state.platform = platform;
-    const stateString = JSON.stringify(state, null, 2);
-    cb(null, stateString);
-  });
+    });
 };
 
 window.logState = function (toClipboard) {

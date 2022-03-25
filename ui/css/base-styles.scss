@@ -38,7 +38,7 @@ html {
   /ui/pages/keychains/restore-vault.js
 */
 .error {
-  color: #f7861c;
+  color: var(--color-error-default);
   margin-top: 3px;
   margin-bottom: 9px;
 }

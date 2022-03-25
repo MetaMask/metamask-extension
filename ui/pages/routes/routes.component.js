@@ -69,6 +69,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { SEND_STAGES } from '../../ducks/send';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -95,6 +96,7 @@ export default class Routes extends Component {
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
+    sendStage: PropTypes.string,
   };
 
   static contextTypes = {
@@ -242,6 +244,10 @@ export default class Routes extends Component {
     );
   }
 
+  onEditTransactionPage() {
+    return this.props.sendStage === SEND_STAGES.EDIT;
+  }
+
   onSwapsPage() {
     const { location } = this.props;
     return Boolean(
@@ -359,6 +365,7 @@ export default class Routes extends Component {
             onClick={this.onAppHeaderClick}
             disabled={
               this.onConfirmPage() ||
+              this.onEditTransactionPage() ||
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
             }
           />
