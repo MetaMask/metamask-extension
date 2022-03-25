@@ -284,10 +284,8 @@ describe('preferences controller', function () {
       const state = preferencesController.store.getState();
       assert.deepStrictEqual(state.advancedGasFee, {});
       preferencesController.setAdvancedGasFee({
-        0x1: {
-          maxBaseFee: '1.5',
-          priorityFee: '2',
-        },
+        maxBaseFee: '1.5',
+        priorityFee: '2',
       });
       assert.equal(
         preferencesController.store.getState().advancedGasFee.maxBaseFee,
