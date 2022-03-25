@@ -9,9 +9,6 @@ import Dropdown from '../../../components/ui/dropdown';
 
 import { THEME_TYPE } from './experimental-tab.constant';
 
-/*eslint-disable prefer-destructuring*/
-const DARK_MODE_V1 = process.env.DARK_MODE_V1;
-
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -229,9 +226,6 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderTheme() {
-    if (!DARK_MODE_V1) {
-      return null;
-    }
     const { t } = this.context;
     const { theme, setTheme } = this.props;
 
