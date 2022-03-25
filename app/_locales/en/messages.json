@@ -282,7 +282,8 @@
     "message": "Save these $1 as my default for \"Advanced\""
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "Always use these values and advanced setting as default."
+    "message": "Always use these values and advanced setting as default on $1.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"

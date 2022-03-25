@@ -34,7 +34,7 @@ const render = (txProps, contextProps) => {
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { priorityFee: 100 },
+      advancedGasFee: { priorityFee: 10 },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
@@ -63,7 +63,7 @@ describe('PriorityfeeInput', () => {
     render({
       userFeeLevel: 'high',
     });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(10);
   });
 
   it('should not use advancedGasFee.priorityfee value for swaps', () => {

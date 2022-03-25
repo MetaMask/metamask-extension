@@ -59,7 +59,9 @@ const renderComponent = ({
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
-      provider: {},
+      provider: {
+        chainId: '0x4',
+      },
       cachedBalances: {},
       accounts: {
         '0xAddress': {
@@ -72,8 +74,10 @@ const renderComponent = ({
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       advancedGasFee: {
-        maxBaseFee: '100',
-        priorityFee: '2',
+        '0x4': {
+          maxBaseFee: '100',
+          priorityFee: '2',
+        },
       },
     },
   });

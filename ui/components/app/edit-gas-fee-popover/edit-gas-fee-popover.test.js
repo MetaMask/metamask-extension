@@ -64,6 +64,12 @@ const render = ({ txProps, contextProps } = {}) => {
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      advancedGasFee: {
+        0x4: {
+          maxBaseFee: '75',
+          priorityFee: '2',
+        },
+      },
     },
   });
 
