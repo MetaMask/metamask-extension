@@ -120,4 +120,28 @@
     padding-left: 24px;
     flex: 1;
   }
+
+  &__notification-close-button {
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 2px;
+
+    &::after {
+      position: absolute;
+      content: '\00D7';
+      font-size: 29px;
+      font-weight: 200;
+      color: var(--color-text-default);
+      background-color: transparent;
+      top: 0;
+      right: 12px;
+      cursor: pointer;
+    }
+  }
+
+  &__notification-title {
+    font-weight: bold;
+    margin-right: 14px;
+  }
 }

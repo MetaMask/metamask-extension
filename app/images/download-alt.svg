@@ -1,7 +1,0 @@
-<svg fill="none" height="40" width="40" xmlns="http://www.w3.org/2000/svg">
-    <g fill="#979797">
-        <rect height="4.571" rx="2.286" transform="rotate(180 40 40)" width="40" x="40" y="40"/>
-        <rect height="21.714" rx="2.051" transform="rotate(180 22.564 21.714)" width="4.103" x="22.564" y="21.714"/>
-        <path d="M20.5 30L7.077 12h26.846z"/>
-    </g>
-</svg>

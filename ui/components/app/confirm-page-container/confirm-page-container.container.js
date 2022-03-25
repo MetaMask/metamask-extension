@@ -1,13 +1,18 @@
 import { connect } from 'react-redux';
-import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
+import {
+  getAccountsWithLabels,
+  getAddressBookEntry,
+  getIsBuyableChain,
+} from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
   const to = ownProps.toAddress;
-
+  const isBuyableChain = getIsBuyableChain(state);
   const contact = getAddressBookEntry(state, to);
   return {
+    isBuyableChain,
     contact,
     toName: contact?.name || ownProps.toName,
     isOwnedAccount: getAccountsWithLabels(state)

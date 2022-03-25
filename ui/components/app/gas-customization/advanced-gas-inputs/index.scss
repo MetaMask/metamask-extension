@@ -13,7 +13,7 @@
     &__label {
       @include H7;
 
-      color: #313b5e;
+      color: var(--color-text-alternative);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -35,13 +35,13 @@
     &__error-text {
       @include H7;
 
-      color: red;
+      color: var(--color-error-default);
     }
 
     &__warning-text {
       @include H7;
 
-      color: orange;
+      color: var(--color-secondary-default);
     }
 
     &__input-wrapper {
@@ -55,6 +55,7 @@
       direction: ltr;
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
+      background: var(--color-background-default);
       color: var(--color-text-alternative);
       height: 24px;
       width: 100%;
@@ -81,11 +82,11 @@
       right: 0;
       width: 17px;
       height: 24px;
-      border: 1px solid #dadada;
+      border: 1px solid var(--color-border-muted);
       border-top-right-radius: 4px;
       display: flex;
       flex-direction: column;
-      color: #9b9b9b;
+      color: var(--color-icon-muted);
       border-bottom-right-radius: 4px;
       cursor: pointer;
 

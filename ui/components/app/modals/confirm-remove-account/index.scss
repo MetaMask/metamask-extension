@@ -6,7 +6,7 @@
   }
 
   &__account {
-    border: 1px solid #b7b7b7;
+    border: 1px solid var(--color-border-default);
     border-radius: 4px;
     padding: 10px;
     display: flex;
@@ -36,7 +36,7 @@
       @include H8;
 
       display: block;
-      color: #9b9b9b;
+      color: var(--color-text-muted);
     }
 
     &__link {
@@ -56,6 +56,6 @@
   }
 
   &__link {
-    color: #2f9ae0;
+    color: var(--color-primary-default);
   }
 }
