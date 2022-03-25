@@ -283,16 +283,19 @@ describe('preferences controller', function () {
     it('should set the setAdvancedGasFee property in state', function () {
       const state = preferencesController.store.getState();
       assert.deepStrictEqual(state.advancedGasFee, {});
-      preferencesController.setAdvancedGasFee({
-        maxBaseFee: '1.5',
-        priorityFee: '2',
-      });
+      preferencesController.setAdvancedGasFee(
+        {
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
+        '0x1',
+      );
       assert.equal(
-        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        preferencesController.store.getState().advancedGasFee[0x1].maxBaseFee,
         '1.5',
       );
       assert.equal(
-        preferencesController.store.getState().advancedGasFee.priorityFee,
+        preferencesController.store.getState().advancedGasFee[0x1].priorityFee,
         '2',
       );
     });
