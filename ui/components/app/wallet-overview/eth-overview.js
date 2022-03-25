@@ -10,7 +10,6 @@ import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -48,12 +47,6 @@ const EthOverview = ({ className }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-
-  const enteredSwapsEvent = useNewMetricEvent({
-    event: 'Swaps Opened',
-    properties: { source: 'Main View', active_currency: 'ETH' },
-    category: 'swaps',
-  });
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
@@ -138,7 +131,14 @@ const EthOverview = ({ className }) => {
             Icon={SwapIcon}
             onClick={() => {
               if (isSwapsChain) {
-                enteredSwapsEvent();
+                trackEvent({
+                  event: 'Swaps Opened',
+                  category: 'swaps',
+                  properties: {
+                    source: 'Main View',
+                    active_currency: 'ETH',
+                  },
+                });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
                 if (usingHardwareWallet) {
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);

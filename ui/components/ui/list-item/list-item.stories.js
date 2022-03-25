@@ -28,13 +28,13 @@ Currencies.propTypes = {
   secondary: PropTypes.string,
 };
 
-const okColor = '#2F80ED';
-const failColor = '#D73A49';
+const okColor = 'var(--color-primary-default)';
+const failColor = 'var(--color-error-default';
 
 export const SendComponent = () => (
   <ListItem
     icon={<Send color={okColor} size={28} />}
-    titleIcon={<Preloader size={16} color="#D73A49" />}
+    titleIcon={<Preloader size={16} color={failColor} />}
     title={text('title', 'Send DAI')}
     className="list-item"
     subtitle={text('subtitle', 'Sept 20 · To: 00X4...3058')}
@@ -61,7 +61,10 @@ export const PendingComponent = () => (
     className="list-item"
     subtitleStatus={
       <span>
-        <span style={{ color: '#F56821' }}>Unapproved</span> ·{' '}
+        <span style={{ color: 'var(--color-warning-default)' }}>
+          Unapproved
+        </span>{' '}
+        ·{' '}
       </span>
     }
     subtitle={text('subtitle', 'Turtlefarm.com')}

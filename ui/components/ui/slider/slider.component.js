@@ -19,12 +19,12 @@ const styles = {
   },
   rail: {
     borderRadius: 50,
-    background: '#D6D9DC',
+    background: 'var(--color-background-alternative)',
     height: 6,
   },
   track: {
     borderRadius: 50,
-    background: '#037DD6',
+    background: 'var(--color-primary-default)',
     height: 6,
   },
   thumb: {
@@ -32,8 +32,8 @@ const styles = {
     width: 20,
     marginTop: -7,
     marginLeft: -7,
-    backgroundColor: '#037DD6',
-    border: '1px solid #EAF6FF',
+    backgroundColor: 'var(--color-primary-default)',
+    border: '1px solid var(--color-border-muted)',
     boxSizing: 'border-box',
     boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
     '&:focus, &$active': {
