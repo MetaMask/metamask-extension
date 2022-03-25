@@ -1751,6 +1751,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // MetaMetrics
+      identifyMetaMetricsUser: metaMetricsController.identify.bind(
+        metaMetricsController,
+      ),
       trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
         metaMetricsController,
       ),
