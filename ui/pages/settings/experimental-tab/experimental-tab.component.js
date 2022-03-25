@@ -189,7 +189,7 @@ export default class ExperimentalTab extends PureComponent {
     const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('enableEIP1559V2')}</span>
           <div className="settings-page__content-description">
