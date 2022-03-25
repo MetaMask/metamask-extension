@@ -45,7 +45,7 @@
 
     &--danger {
       span {
-        color: var(--Red-500);
+        color: var(--color-error-default);
       }
     }
   }
@@ -74,30 +74,30 @@
         .actionable-message {
           button {
             background: var(--color-primary-default);
-            color: #fff;
+            color: var(--color-primary-inverse);
           }
         }
       }
 
       &.medium {
         .actionable-message {
-          border-color: var(--Yellow-500);
-          background: var(--Yellow-100);
+          border-color: var(--color-warning-default);
+          background: var(--color-warning-muted);
 
           button {
-            background: var(--Yellow-500);
+            background: var(--color-warning-default);
           }
         }
       }
 
       &.high {
         .actionable-message {
-          border-color: var(--Red-300);
-          background: var(--Red-000);
+          border-color: var(--color-warning-default);
+          background: var(--color-warning-muted);
 
           button {
-            background: var(--Red-500);
-            color: #fff;
+            background: var(--color-warning-default);
+            color: var(--color-warning-inverse);
           }
         }
       }

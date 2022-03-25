@@ -49,7 +49,7 @@ $sizes: (
         background-color: var($color);
       }
       & #{$self}__icon {
-        color: var(--black);
+        color: var(--color-icon-default);
       }
     }
   }

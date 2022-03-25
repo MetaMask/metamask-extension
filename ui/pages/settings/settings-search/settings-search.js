@@ -69,12 +69,9 @@ export default function SettingsSearch({
             onClick={() => handleSearch('')}
             style={{ cursor: 'pointer' }}
           >
-            <img
-              className="imageclose"
-              src="images/close-gray.svg"
-              width="17"
-              height="17"
-              alt=""
+            <i
+              className="fa fa-times"
+              style={{ color: 'var(--color-icon-default)' }}
             />
           </InputAdornment>
         )}

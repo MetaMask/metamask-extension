@@ -95,7 +95,7 @@
   &__back-button {
     @include Paragraph;
 
-    color: #2f9ae0;
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 

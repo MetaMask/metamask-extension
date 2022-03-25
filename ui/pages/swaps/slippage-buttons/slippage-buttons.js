@@ -14,7 +14,7 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { smartTransactionsErrorMessages } from '../swaps.util';
+import { getTranslatedStxErrorMessage } from '../swaps.util';
 
 export default function SlippageButtons({
   onSelect,
@@ -208,8 +208,9 @@ export default function SlippageButtons({
                   {currentSmartTransactionsError ? (
                     <InfoTooltip
                       position="top"
-                      contentText={smartTransactionsErrorMessages(
+                      contentText={getTranslatedStxErrorMessage(
                         currentSmartTransactionsError,
+                        t,
                       )}
                     />
                   ) : (
@@ -219,7 +220,7 @@ export default function SlippageButtons({
                 <ToggleButton
                   value={smartTransactionsOptInStatus}
                   onToggle={(value) => {
-                    setSmartTransactionsOptInStatus(!value);
+                    setSmartTransactionsOptInStatus(!value, value);
                   }}
                   offLabel={t('off')}
                   onLabel={t('on')}

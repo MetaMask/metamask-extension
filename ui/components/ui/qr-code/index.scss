@@ -8,20 +8,20 @@
     @include Paragraph;
 
     margin-top: 18px;
-    color: #4d4d4d;
+    color: var(--color-text-muted);
   }
 
   &__message {
     @include H7;
 
-    color: #f7861c;
+    color: var(--color-warning-default);
   }
 
   &__error {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #f7861c;
+    color: var(--color-error-default);
     margin-bottom: 9px;
   }
 
@@ -37,7 +37,7 @@
       cursor: pointer;
 
       .qr-code__copy-icon__svg {
-        fill: var(--primary-1);
+        fill: var(--color-primary-default);
       }
     }
   }
@@ -45,7 +45,7 @@
   &__address {
     @include H7;
 
-    background-color: var(--Grey-000);
+    background-color: var(--color-background-alternative);
     width: 76%;
     padding: 8px 12px;
     word-break: break-all;
@@ -59,7 +59,7 @@
     right: 24px;
 
     &__svg {
-      fill: var(--ui-5);
+      fill: var(--color-icon-default);
     }
   }
 }

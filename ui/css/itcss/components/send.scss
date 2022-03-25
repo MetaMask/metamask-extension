@@ -184,7 +184,7 @@
   height: 307px;
   background-color: var(--color-background-default);
   opacity: 1;
-  box-shadow: var(--alto) 0 0 5px;
+  box-shadow: var(--color-border-muted) 0 0 5px;
   z-index: 1050;
   padding: 13px 19px;
   border-radius: 4px;
@@ -200,7 +200,7 @@
   transform: rotate(45deg);
   left: 107px;
   top: 294px;
-  box-shadow: 2px 2px 2px var(--alto);
+  box-shadow: 2px 2px 2px var(--color-border-muted);
 }
 
 .customize-gas-tooltip-container input[type='number']::-webkit-inner-spin-button {
@@ -823,17 +823,6 @@
     opacity: 0;
     width: 0;
     height: 0;
-  }
-
-  &__gas-fee-display {
-    width: 100%;
-    position: relative;
-
-    .currency-display--message {
-      padding: 8px 38px 8px 10px;
-      display: flex;
-      align-items: center;
-    }
   }
 
   &__sliders-icon-container {

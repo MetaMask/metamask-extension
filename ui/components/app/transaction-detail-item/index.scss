@@ -1,7 +1,7 @@
 .transaction-detail-item {
-  color: var(--ui-4);
+  color: var(--color-text-alternative);
   padding: 20px 0;
-  border-bottom: 1px solid var(--ui-3);
+  border-bottom: 1px solid var(--color-border-default);
 
   &__row {
     display: flex;
@@ -34,7 +34,7 @@
     margin-inline-start: 4px;
 
     path {
-      fill: var(--ui-3);
+      fill: var(--color-icon-default);
     }
   }
 

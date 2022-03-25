@@ -405,27 +405,24 @@
   "buy": {
     "message": "Buy"
   },
+  "buyAsset": {
+    "message": "Buy $1",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
   "buyCryptoWithMoonPay": {
     "message": "Buy $1 with MoonPay",
     "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 146+ countries. Tokens deposit into your MetaMask account."
+    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 145+ countries. Tokens deposit into your MetaMask account."
   },
   "buyCryptoWithTransak": {
     "message": "Buy $1 with Transak",
     "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyCryptoWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyEth": {
-    "message": "Buy ETH"
-  },
-  "buyOther": {
-    "message": "Buy $1 or deposit from another account.",
-    "description": "$1 is a token symbol"
+    "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -1525,9 +1522,13 @@
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
-  "insufficientCurrency": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network.",
-    "description": "$1 is currency, $2 is network"
+  "insufficientCurrencyBuyOrDeposit": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyDeposit": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -2279,9 +2280,6 @@
   "or": {
     "message": "or"
   },
-  "orDeposit": {
-    "message": "or deposit from another account."
-  },
   "origin": {
     "message": "Origin"
   },
@@ -2857,7 +2855,7 @@
     "message": "Slow"
   },
   "smartTransaction": {
-    "message": "Smart transaction"
+    "message": "Smart Transaction"
   },
   "snapAccess": {
     "message": "$1 snap has access to:",
@@ -3047,6 +3045,12 @@
   "stxDescription": {
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
   },
+  "stxErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart transaction."
+  },
+  "stxErrorUnavailable": {
+    "message": "Smart Transactions are temporarily unavailable."
+  },
   "stxFailure": {
     "message": "Swap failed"
   },
@@ -3054,8 +3058,11 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackToNormal": {
-    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  "stxFallbackPendingTx": {
+    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction."
+  },
+  "stxFallbackUnavailable": {
+    "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
   "stxPendingFinalizing": {
     "message": "Finalizing..."
@@ -3082,8 +3089,11 @@
   "stxTryRegular": {
     "message": "Try a regular swap."
   },
+  "stxTryingToCancel": {
+    "message": "Trying to cancel your transaction..."
+  },
   "stxUnavailable": {
-    "message": "Smart transactions temporarily unavailable"
+    "message": "Smart Transactions are disabled"
   },
   "stxUnknown": {
     "message": "Status unknown"
@@ -3527,6 +3537,9 @@
   "token": {
     "message": "Token"
   },
+  "tokenAddress": {
+    "message": "Token address"
+  },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
@@ -3542,11 +3555,20 @@
   "tokenDetails": {
     "message": "Token details"
   },
+  "tokenDetection": {
+    "message": "Token detection"
+  },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
   },
+  "tokenDetectionToggleDescription": {
+    "message": "ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import."
+  },
   "tokenId": {
     "message": "Token ID"
+  },
+  "tokenList": {
+    "message": "Token lists:"
   },
   "tokenSymbol": {
     "message": "Token Symbol"

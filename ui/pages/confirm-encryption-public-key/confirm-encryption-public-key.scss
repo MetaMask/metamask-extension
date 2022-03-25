@@ -63,7 +63,7 @@
   &__header__text {
     @include H3;
 
-    color: #5b5d67;
+    color: var(--color-text-alternative);
     z-index: 3;
     text-align: center;
   }

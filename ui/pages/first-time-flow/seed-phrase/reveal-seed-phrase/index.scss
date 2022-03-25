@@ -48,7 +48,7 @@
   &__reveal-button {
     @include H7;
 
-    color: var(--white);
+    color: var(--color-overlay-inverse);
     font-weight: 500;
     text-transform: uppercase;
     margin-top: 8px;
@@ -56,7 +56,7 @@
   }
 
   &__export-text {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     cursor: pointer;
     font-weight: 500;
   }
