@@ -68,7 +68,9 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
-      theme: 'default',
+      theme: window?.matchMedia('(prefers-color-scheme: dark)')?.matches
+        ? 'dark'
+        : 'default',
       ...opts.initState,
     };
 
