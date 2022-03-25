@@ -279,7 +279,8 @@
     "message": "Enregistrer ces $1 comme valeur par défaut pour « Avancé »"
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "Toujours utiliser par défaut ces valeurs et les paramètres avancés."
+    "message": "Toujours utiliser par défaut ces valeurs et les paramètres avancés.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "Frais de carburant avancés"

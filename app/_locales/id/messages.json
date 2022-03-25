@@ -279,7 +279,8 @@
     "message": "Simpan $1 ini sebagai default saya untuk \"Lanjutan\""
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "Selalu gunakan nilai ini dan pengaturan lanjutan sebagai default."
+    "message": "Selalu gunakan nilai ini dan pengaturan lanjutan sebagai default.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "Biaya gas lanjutan"

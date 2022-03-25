@@ -279,7 +279,8 @@
     "message": "Speichern Sie diese $1 als Standard für \"Erweitert\""
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "Immer diese Werte und erweiterte Einstellung als Standard verwenden."
+    "message": "Immer diese Werte und erweiterte Einstellung als Standard verwenden.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "Erweiterte Gasgebühr"

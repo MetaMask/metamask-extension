@@ -279,7 +279,8 @@
     "message": "\"Gelişmiş\" için şunları varsayılanım olarak kaydet: $1"
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "Varsayılan olarak her zaman bu değerleri ve gelişmiş ayarı kullan."
+    "message": "Varsayılan olarak her zaman bu değerleri ve gelişmiş ayarı kullan.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "Gelişmiş gaz ücreti"

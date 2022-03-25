@@ -279,7 +279,8 @@
     "message": "Lưu $1 này làm mặc định của tôi cho \"Nâng cao\""
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "Luôn sử dụng các giá trị và thiết lập nâng cao này làm mặc định."
+    "message": "Luôn sử dụng các giá trị và thiết lập nâng cao này làm mặc định.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "Phí gas nâng cao"

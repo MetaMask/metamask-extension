@@ -279,7 +279,8 @@
     "message": "이 $1 옵션을 \"고급\"의 기본값으로 저장합니다"
   },
   "advancedGasFeeDefaultOptOut": {
-    "message": "항상 이 값과 고급 설정을 기본값으로 사용합니다."
+    "message": "항상 이 값과 고급 설정을 기본값으로 사용합니다.",
+    "description": "$1 is the current network"
   },
   "advancedGasFeeModalTitle": {
     "message": "고급 가스 요금"

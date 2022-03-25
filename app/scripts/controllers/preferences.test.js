@@ -277,15 +277,17 @@ describe('preferences controller', function () {
   describe('setAdvancedGasFee', function () {
     it('should default to null', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.advancedGasFee, {});
+      assert.deepStrictEqual(state.advancedGasFee, {});
     });
 
     it('should set the setAdvancedGasFee property in state', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.advancedGasFee, {});
+      assert.deepStrictEqual(state.advancedGasFee, {});
       preferencesController.setAdvancedGasFee({
-        maxBaseFee: '1.5',
-        priorityFee: '2',
+        0x1: {
+          maxBaseFee: '1.5',
+          priorityFee: '2',
+        },
       });
       assert.equal(
         preferencesController.store.getState().advancedGasFee.maxBaseFee,
