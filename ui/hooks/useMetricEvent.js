@@ -1,36 +1,7 @@
-import { useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
-import { MetaMetricsContext as NewMetaMetricsContext } from '../contexts/metametrics.new';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
-import { useEqualityCheck } from './useEqualityCheck';
-
-// Type imports
-/**
- * @typedef {import('../contexts/metametrics.new').UIMetricsEventPayload} UIMetricsEventPayload
- * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
- */
-
-/**
- * track a metametrics event using segment
- * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation' })
- *
- * @param {UIMetricsEventPayload} payload - payload of the event to track
- * @param {MetaMetricsEventOptions} options - options for handling/routing event
- * @returns {() => Promise<void>} function to execute the tracking event
- */
-export function useNewMetricEvent(payload, options) {
-  const memoizedPayload = useEqualityCheck(payload);
-  const memoizedOptions = useEqualityCheck(options);
-  const metricsEvent = useContext(NewMetaMetricsContext);
-
-  return useCallback(() => metricsEvent(memoizedPayload, memoizedOptions), [
-    metricsEvent,
-    memoizedPayload,
-    memoizedOptions,
-  ]);
-}
 
 const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
 
