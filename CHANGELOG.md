@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.12.0]
-
 ### Added
 - Add a search feature to the settings page ([#13214](https://github.com/MetaMask/metamask-extension/pull/13214))
 - Add AirGap Vault detail links to the hardware wallet connection flow ([#13650](https://github.com/MetaMask/metamask-extension/pull/13650))
@@ -36,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Harden keyring type check in EthOverview ([#13711](https://github.com/MetaMask/metamask-extension/pull/13711))
 - Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
 - Confirm transaction page: use method name only for contract transactions ([#13643](https://github.com/MetaMask/metamask-extension/pull/13643))
+
 ## [10.11.4]
 ### Added
 - **[FLASK]** Snap removal confirmation ([#13619](https://github.com/MetaMask/metamask-extension/pull/13619))
@@ -2839,8 +2839,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...HEAD
-[10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.12.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...HEAD
+[10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...v10.12.0
 [10.11.4]: https://github.com/MetaMask/metamask-extension/compare/v10.11.3...v10.11.4
 [10.11.3]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...v10.11.3
 [10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
