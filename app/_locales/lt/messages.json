@@ -816,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
-  },
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"
   },

@@ -796,9 +796,6 @@
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Pisahkan setiap perkataan dengan satu ruang"
-  },
   "seedPhraseReq": {
     "message": "Frasa benih panjangnya 12 patah perkataan"
   },

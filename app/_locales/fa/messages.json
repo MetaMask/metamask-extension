@@ -816,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
-  "seedPhrasePlaceholder": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
-  },
   "seedPhraseReq": {
     "message": "عبارات بازیاب 12 کلمه اند"
   },

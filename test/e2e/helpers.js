@@ -248,8 +248,8 @@ const completeImportSRPOnboardingFlow = async (
     await driver.clickElement('.btn-secondary');
 
     // Import Secret Recovery Phrase
-    await driver.fill(
-      'input[placeholder="Enter your Secret Recovery Phrase"]',
+    await driver.pasteIntoField(
+      '[data-testid="import-srp__srp-word-0"]',
       seedPhrase,
     );
 

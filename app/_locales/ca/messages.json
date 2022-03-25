@@ -794,9 +794,6 @@
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separa cada paraula amb un únic espai"
-  },
   "seedPhraseReq": {
     "message": "Les frases de recuperació tenen 12 paraules"
   },

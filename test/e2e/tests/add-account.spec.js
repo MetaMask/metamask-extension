@@ -129,8 +129,8 @@ describe('Add account', function () {
         await restoreSeedLink.click();
         await driver.delay(regularDelayMs);
 
-        await driver.fill(
-          'input[placeholder="Enter your Secret Recovery Phrase"]',
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
           testSeedPhrase,
         );
         await driver.delay(regularDelayMs);

@@ -26,6 +26,8 @@ import IconCaretLeft from './icon-caret-left';
 import IconCaretRight from './icon-caret-right';
 import IconCaretDown from './icon-caret-down';
 import IconCaretUp from './icon-caret-up';
+import IconEye from './icon-eye';
+import IconEyeSlash from './icon-eye-slash';
 
 export default {
   title: 'Components/UI/Icon',
@@ -117,6 +119,8 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCaretRight {...args} />} />
         <IconItem Component={<IconCaretDown {...args} />} />
         <IconItem Component={<IconCaretUp {...args} />} />
+        <IconItem Component={<IconEye {...args} />} />
+        <IconItem Component={<IconEyeSlash {...args} />} />
       </div>
     </Box>
   </div>

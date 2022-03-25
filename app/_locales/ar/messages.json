@@ -817,9 +817,6 @@
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
-  "seedPhrasePlaceholder": {
-    "message": "يرجى فصل كل كلمة بمسافة واحدة"
-  },
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"
   },

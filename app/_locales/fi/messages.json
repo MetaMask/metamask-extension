@@ -813,9 +813,6 @@
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Erota kukin sana yhdellä välilyönnillä"
-  },
   "seedPhraseReq": {
     "message": "Juurilauseet ovat 12 sanan pituisia"
   },

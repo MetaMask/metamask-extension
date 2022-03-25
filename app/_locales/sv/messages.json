@@ -800,9 +800,6 @@
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separera varje ord med ett enda mellanslag."
-  },
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."
   },

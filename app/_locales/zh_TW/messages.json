@@ -798,9 +798,6 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhrasePlaceholder": {
-    "message": "單詞之間請用空白分隔"
-  },
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"
   },

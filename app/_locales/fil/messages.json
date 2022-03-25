@@ -734,9 +734,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
   "seedPhraseReq": {
     "message": "Ang mga seed phrase ay may habang 12 salita"
   },
