@@ -1419,6 +1419,65 @@ export function addToken(
     }
   };
 }
+/**
+ * To add detected tokens to state
+ *
+ * @param newDetectedTokens
+ */
+export function addDetectedTokens(newDetectedTokens) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.addDetectedTokens(newDetectedTokens);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To add the tokens user selected to state
+ *
+ * @param tokensToImport
+ */
+export function importTokens(tokensToImport) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.importTokens(tokensToImport);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To add ignored tokens to state
+ *
+ * @param tokensToIgnore
+ */
+export function ignoreTokens(tokensToIgnore) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.ignoreTokens(tokensToIgnore);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To fetch the ERC20 tokens with non-zero balance in a single call
+ *
+ * @param tokens
+ */
+export async function getBalancesInSingleCall(tokens) {
+  return await promisifiedBackground.getBalancesInSingleCall(tokens);
+}
 
 export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
