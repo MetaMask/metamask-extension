@@ -3,10 +3,9 @@ import React from 'react';
 import log from 'loglevel';
 import * as Sentry from '@sentry/browser';
 
-import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 const warned = {};
 const missingMessageErrors = {};
