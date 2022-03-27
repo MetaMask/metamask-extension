@@ -103,9 +103,10 @@ export default class DetectTokensController {
     }
     if (
       process.env.TOKEN_DETECTION_V2 &&
-      !isTokenDetectionEnabledForNetwork(
-        this._network.store.getState().provider.chainId,
-      )
+      (!this.useTokenDetection ||
+        !isTokenDetectionEnabledForNetwork(
+          this._network.store.getState().provider.chainId,
+        ))
     ) {
       return;
     }
