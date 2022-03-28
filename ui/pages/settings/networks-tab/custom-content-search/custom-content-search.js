@@ -58,7 +58,7 @@ export default function CustomContentSearch({
             onClick={() => handleSearch('')}
           >
             <i
-              className="fa fa-times imageclose"
+              className="fa fa-times networks-tab__imageclose"
               width="17"
               heigth="17"
               title="Close"
@@ -72,6 +72,7 @@ export default function CustomContentSearch({
   return (
     <TextField
       id="search-networks"
+      data-testid="search-networks"
       placeholder={t('customContentSearch')}
       type="text"
       value={searchQueryInput}

@@ -1,90 +1,110 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
-import TextField from '../../../../components/ui/text-field';
+import { fireEvent, render, screen } from '@testing-library/react';
+import Fuse from 'fuse.js';
+import configureStore from '../../../../store/store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import testData from '../../../../../.storybook/test-data';
 import CustomContentSearch from './custom-content-search';
 
+function renderComponent({ componentProps = {} } = {}) {
+  const store = configureStore({});
+  return renderWithProvider(<CustomContentSearch {...componentProps} />, store);
+}
+
 describe('CustomContentSearch', () => {
-  let wrapper;
-
   it('should render custom content search correctly', () => {
-    wrapper = shallow(
-      <CustomContentSearch onSearch={() => undefined} networksList={[]} />,
-      {
-        context: {
-          t: (s) => `${s}`,
-        },
-      },
-    );
+    const onSearch = jest.fn();
+    const wrapper = renderComponent({
+      componentProps: { onSearch, networksList: testData.networkList },
+    });
+    expect(wrapper.getByTestId('search-networks')).toBeDefined();
+  });
 
-    expect(wrapper.find(TextField).props().id).toStrictEqual('search-networks');
-    expect(wrapper.find(TextField).props().value).toBeUndefined();
+  it('should check placeholder text in TextField input', () => {
+    const onSearch = jest.fn();
+    const wrapper = renderComponent({
+      componentProps: { onSearch, networksList: testData.networkList },
+    });
+    const { getByPlaceholderText } = wrapper;
+    expect(
+      getByPlaceholderText('Search for a previously added network'),
+    ).toBeInTheDocument();
+  });
+
+  it('re-render the same component with different props', () => {
+    const onSearch = jest.fn();
+    const { rerender } = render(
+      <CustomContentSearch
+        onSearch={onSearch}
+        networksList={[]}
+        searchQueryInput=""
+      />,
+    );
+    const input = screen.getByTestId('search-networks');
+    expect(input.value).toBe('');
+    rerender(
+      <CustomContentSearch
+        onSearch={onSearch}
+        networksList={[]}
+        searchQueryInput="Polygon"
+      />,
+    );
+    expect(input.value).toBe('Polygon');
   });
 
   it('should call onSearch prop with input value', () => {
     const onSearch = jest.fn();
-    wrapper = mount(
-      <CustomContentSearch
-        onSearch={onSearch}
-        networksList={[]}
-        searchQueryInput="Avalanche"
-      />,
-    );
-    wrapper.find('input').simulate('change');
-    expect(onSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ searchQuery: 'Avalanche' }),
-    );
-    expect(wrapper.find(TextField).at(0).prop('value')).toStrictEqual(
-      'Avalanche',
-    );
+    const wrapper = renderComponent({
+      componentProps: {
+        onSearch,
+        networksList: [],
+        searchQueryInput: 'Avalanche',
+      },
+    });
+    const input = wrapper.getByTestId('search-networks');
+    fireEvent.change(input, { target: { value: 'Polygon' } });
+    expect(input.value).toBe('Avalanche');
   });
 
   it('should check if error is shown if search does not return any network from the list', () => {
     const onSearch = jest.fn();
-    const networksList = [
-      { label: 'Ethereum Mainnet' },
-      { label: 'Binance Smart Chain' },
-      { label: 'Polygon' },
-      { label: 'Ropsten Test Network' },
-      { label: 'Rinkeby Test Network' },
-    ];
-    wrapper = mount(
-      <CustomContentSearch
-        onSearch={onSearch}
-        networksList={networksList}
-        searchQueryInput="Avalanche"
-        error="No matching results found."
-      />,
-    );
-    wrapper.find('input').simulate('change');
-    expect(onSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ results: [] }),
-    );
-    expect(wrapper.find(TextField).at(0).prop('error')).toStrictEqual(
-      'No matching results found.',
-    );
+    const networksSearchFuse = new Fuse(testData.networkList, {
+      keys: ['label', 'labelKey'],
+    });
+    const fuseSearchResult = networksSearchFuse.search('Optimism');
+    const wrapper = renderComponent({
+      componentProps: {
+        onSearch,
+        networksList: testData.networkList,
+        searchQueryInput: 'Optimism',
+        error: 'No matching results found.',
+      },
+    });
+    const input = wrapper.getByTestId('search-networks');
+    expect(fuseSearchResult).toHaveLength(0);
+    fireEvent.change(input, {
+      target: { error: 'No matching results found.' },
+    });
+    expect(input.error).toBe('No matching results found.');
   });
 
   it('should check if error is not shown if search return some network from the list', () => {
     const onSearch = jest.fn();
-    const networksList = [
-      { label: 'Ethereum Mainnet' },
-      { label: 'Binance Smart Chain' },
-      { label: 'Polygon' },
-      { label: 'Ropsten Test Network' },
-      { label: 'Rinkeby Test Network' },
-    ];
-    wrapper = mount(
-      <CustomContentSearch
-        onSearch={onSearch}
-        networksList={networksList}
-        searchQueryInput="Polygon"
-        error=""
-      />,
-    );
-    wrapper.find('input').simulate('change');
-    expect(onSearch).toHaveBeenCalledWith(
-      expect.objectContaining({ results: [{ label: 'Polygon' }] }),
-    );
-    expect(wrapper.find(TextField).at(0).prop('error')).toStrictEqual('');
+    const networksSearchFuse = new Fuse(testData.networkList, {
+      keys: ['label', 'labelKey'],
+    });
+    const fuseSearchResult = networksSearchFuse.search('ropsten');
+    const wrapper = renderComponent({
+      componentProps: {
+        onSearch,
+        networksList: testData.networkList,
+        searchQueryInput: 'Avalanche',
+        error: '',
+      },
+    });
+    const input = wrapper.getByTestId('search-networks');
+    expect(fuseSearchResult).toHaveLength(1);
+    fireEvent.change(input, { target: { error: '' } });
+    expect(input.error).toBe('');
   });
 });

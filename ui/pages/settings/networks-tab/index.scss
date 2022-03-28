@@ -1,15 +1,11 @@
 @use "design-system";
 
-p#search-networks-helper-text {
-  color: var(--color-text-alternative);
-}
-
-.imageclose {
-  cursor: pointer;
-  color: var(--color-icon-default);
-}
-
 .networks-tab {
+  &__imageclose {
+    cursor: pointer;
+    color: var(--color-icon-default);
+  }
+
   &__content {
     display: flex;
     height: 100%;
@@ -34,7 +30,7 @@ p#search-networks-helper-text {
 
     &__icon-with-fallback {
       padding: 0 1px 2px 2px;
-      color: var(--white);
+      color: var(--color-primary-inverse); // TODO: design-tokens needs network colors
       margin-inline-start: 8px;
 
       @each $variant, $color in design-system.$color-map {
@@ -163,6 +159,10 @@ p#search-networks-helper-text {
 
     .MuiTextField-root {
       padding-inline-end: 16px;
+
+      #search-networks-helper-text {
+        color: var(--color-text-alternative);
+      }
 
       @media screen and (max-width: $break-small) {
         padding: 0 24px 0 24px;

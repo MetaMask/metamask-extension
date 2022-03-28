@@ -86,7 +86,7 @@ const NetworksListItem = ({
           imageBorder
         />
       ) : (
-        network.isATestNetwork === false && (
+        !network.isATestNetwork && (
           <UrlIcon
             className="networks-tab__content__icon-with-fallback"
             fallbackClassName="networks-tab__content__icon-with-fallback"
