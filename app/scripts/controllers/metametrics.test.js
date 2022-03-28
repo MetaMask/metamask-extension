@@ -18,6 +18,21 @@ const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 
+const MOCK_TRAITS = {
+  test_date: new Date(),
+  test_boolean: true,
+  test_string: 'abc',
+  test_number: 123,
+  test_bool_array: [true, true, false],
+  test_string_array: ['test', 'test', 'test'],
+  test_boolean_array: [1, 2, 3],
+};
+
+const MOCK_INVALID_TRAITS = {
+  test_null: null,
+  test_array_multi_types: [true, 'a', 1],
+};
+
 const DEFAULT_TEST_CONTEXT = {
   app: { name: 'MetaMask Extension', version: VERSION },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -219,7 +234,6 @@ describe('MetaMetricsController', function () {
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
       metaMetricsController.setParticipateInMetaMetrics(true);
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
       metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
     });
@@ -236,6 +250,47 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.metaMetricsId, null);
+    });
+  });
+
+  describe('identify', function () {
+    it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
+      const mock = sinon.mock(segment);
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+      });
+
+      metaMetricsController.identify({
+        ...MOCK_TRAITS,
+        ...MOCK_INVALID_TRAITS,
+      });
+
+      mock
+        .expects('identify')
+        .once()
+        .withArgs(metaMetricsController.state.metaMetricsId, MOCK_TRAITS);
+    });
+
+    it('should not call segment.identify if user is not participating in metametrics', function () {
+      const mock = sinon.mock(segment);
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: false,
+      });
+
+      metaMetricsController.identify(MOCK_TRAITS);
+      mock.expects('identify').never();
+    });
+
+    it('should not call segment.identify if there are no valid traits to identify', async function () {
+      const mock = sinon.mock(segment);
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+      });
+
+      metaMetricsController.identify(MOCK_INVALID_TRAITS);
+      mock.expects('identify').never();
     });
   });
 
