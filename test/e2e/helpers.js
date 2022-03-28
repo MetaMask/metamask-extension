@@ -70,7 +70,7 @@ async function withFixtures(options, testSuite) {
           );
         }
         dappServer.push(createStaticServer(dappDirectory));
-        dappServer[i].listen(`${dappBasePort+i}`);
+        dappServer[i].listen(`${dappBasePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
           dappServer[i].on('error', reject);
@@ -170,7 +170,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const connectDappWithExtensionPopup = async (driver, dapp) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappBasePort+dapp}/`);
+  await driver.openNewPage(`http://127.0.0.1:${dappBasePort + dapp}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);
