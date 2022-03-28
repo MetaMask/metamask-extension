@@ -29,7 +29,7 @@ describe('Experimental Tab', () => {
     wrapper = mount(<ExperimentalTab.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
-        metricsEvent: () => undefined,
+        trackEvent: () => undefined,
       },
     });
     const useTokenDetectionText = wrapper.find({ text: 'Use Token Detection' });
