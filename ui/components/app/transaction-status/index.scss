@@ -5,26 +5,14 @@
     color: var(--color-success-default);
   }
 
-  &--unapproved {
-    color: var(--color-secondary-default);
-  }
-
-  &--failed {
-    color: var(--color-error-default);
-  }
-
-  &--cancelled {
-    color: var(--color-error-default);
-  }
-
-  &--dropped {
-    color: var(--color-error-default);
-  }
-
+  &--failed,
+  &--cancelled,
+  &--dropped,
   &--rejected {
     color: var(--color-error-default);
   }
 
+  &--unapproved,
   &--pending {
     color: var(--color-secondary-default);
   }

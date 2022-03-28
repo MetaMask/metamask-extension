@@ -9,9 +9,6 @@ import Dropdown from '../../../components/ui/dropdown';
 
 import { THEME_TYPE } from './experimental-tab.constant';
 
-/*eslint-disable prefer-destructuring*/
-const DARK_MODE_V1 = process.env.DARK_MODE_V1;
-
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -189,7 +186,7 @@ export default class ExperimentalTab extends PureComponent {
     const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('enableEIP1559V2')}</span>
           <div className="settings-page__content-description">
@@ -229,9 +226,6 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderTheme() {
-    if (!DARK_MODE_V1) {
-      return null;
-    }
     const { t } = this.context;
     const { theme, setTheme } = this.props;
 

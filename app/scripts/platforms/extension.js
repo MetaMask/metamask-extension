@@ -256,7 +256,7 @@ export default class ExtensionPlatform {
     browser.notifications.create(url, {
       type: 'basic',
       title,
-      iconUrl: browser.extension.getURL('../../images/icon-64.png'),
+      iconUrl: browser.runtime.getURL('../../images/icon-64.png'),
       message,
     });
   }

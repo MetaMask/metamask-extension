@@ -120,6 +120,10 @@ const t = (key) => {
       return 'Token detection';
     case 'tokenDetectionToggleDescription':
       return 'ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import.';
+    case 'enableEIP1559V2':
+      return 'Enable Enhanced Gas Fee UI';
+    case 'enableEIP1559V2Description':
+      return "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. Learn more";
     case 'enableOpenSeaAPI':
       return 'Enable OpenSea API';
     case 'enableOpenSeaAPIDescription':
@@ -457,6 +461,14 @@ describe('Settings Search Utils', () => {
           tab: 'About',
         },
         {
+          tab: 'Experimental',
+          section: 'Enable Enhanced Gas Fee UI',
+          description:
+            "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. Learn more",
+          route: `/settings/experimental#enable-advanced-gas`,
+          icon: 'fa fa-flask',
+        },
+        {
           /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
           description:
             'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
@@ -521,7 +533,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good experimental section number', () => {
-      expect(getSettingsSectionNumber(t, t('experimental'))).toStrictEqual(1);
+      expect(getSettingsSectionNumber(t, t('experimental'))).toStrictEqual(2);
     });
 
     it('should get good about section number', () => {

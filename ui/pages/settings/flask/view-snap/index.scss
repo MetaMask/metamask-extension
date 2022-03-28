@@ -7,7 +7,7 @@
 
   &__subheader {
     padding: 16px 4px;
-    border-bottom: 1px solid var(--alto);
+    border-bottom: 1px solid var(--color-border-muted);
     margin-right: 24px;
     height: 72px;
     align-items: center;
@@ -83,7 +83,7 @@
 
     .connected-sites-list__content-row {
       border-top: none;
-      border-bottom: 1px solid var(--ui-2);
+      border-bottom: 1px solid var(--color-border-muted);
 
       &:last-child {
         border-bottom: none;

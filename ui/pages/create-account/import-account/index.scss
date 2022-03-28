@@ -26,7 +26,7 @@
   &__select-label {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
   }
 
   &__select {
@@ -45,7 +45,7 @@
   &__instruction {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
     align-self: flex-start;
   }
 

@@ -128,8 +128,8 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton() {
     const style = {
-      backgroundColor: '#037dd6',
-      color: 'white',
+      backgroundColor: 'var(--color-primary-default)',
+      color: 'var(--color-primary-inverse)',
       marginTop: '20px',
       height: '60px',
       fontWeight: '400',

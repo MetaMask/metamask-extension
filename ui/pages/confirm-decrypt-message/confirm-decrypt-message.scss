@@ -92,7 +92,7 @@
   }
 
   &__account {
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
     margin-left: 17px;
   }
 
@@ -124,7 +124,7 @@
   }
 
   &__balance {
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
     margin-right: 17px;
     width: 124px;
   }
@@ -193,30 +193,34 @@
       top: 0;
       cursor: pointer;
 
-      img {
-        padding: 5px;
+      &__container {
+        padding: 16px;
         background-color: var(--color-background-default);
-        left: calc(50% - 24px);
         position: absolute;
-        top: calc(50% - 34px);
+        left: 50%;
+        top: 50%;
         border-radius: 3px;
+        transform: translate(-50%, calc(-50%));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+
+        &__icon {
+          color: var(--color-icon-default);
+          display: flex;
+          margin-bottom: 16px;
+        }
+
+        &__text {
+          @include H7;
+        }
       }
 
       &--pressed {
         display: none;
       }
-    }
-
-    &-lock-text {
-      @include H7;
-
-      width: 200px;
-      position: absolute;
-      top: calc(50% + 5px);
-      text-align: center;
-      left: calc(50% - 100px);
-      background-color: var(--color-background-default);
-      border-radius: 3px;
     }
 
     &-copy {

@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const LogoTransak = ({ width = '100%', className }) => {
+const LogoTransak = ({ width = '100%', className, ariaLabel }) => {
   return (
     <svg
       width={width}
       viewBox="0 0 1813 480"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      aria-label={ariaLabel}
     >
       <path
         d="M431.4 479.4H40.3C18.3 479.4 0.5 461.6 0.5 439.6V40.5C0.5 18.5 18.3 0.699997 40.3 0.699997H431.5C453.5 0.699997 471.3 18.5 471.3 40.5V439.6C471.3 461.5 453.5 479.4 431.4 479.4Z"
@@ -97,6 +98,10 @@ LogoTransak.propTypes = {
    * Additional className to add to the root svg
    */
   className: PropTypes.string,
+  /**
+   * Aria label to add to the logo component
+   */
+  ariaLabel: PropTypes.string,
 };
 
 export default LogoTransak;

@@ -226,7 +226,7 @@ export default class ConfirmApproveContent extends Component {
                   : t('copyToClipboard')
               }
             >
-              <CopyIcon size={14} color="#6a737d" />
+              <CopyIcon size={14} color="var(--color-icon-default)" />
             </Button>
           </div>
         </div>
@@ -286,7 +286,7 @@ export default class ConfirmApproveContent extends Component {
                   : t('copyToClipboard')
               }
             >
-              <CopyIcon size={14} color="#6a737d" />
+              <CopyIcon size={14} color="var(--color-icon-default)" />
             </Button>
           </div>
         </div>
@@ -327,7 +327,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__full-tx-content">
           <div className="confirm-approve-content__permission">
             {this.renderApproveContentCard({
-              symbol: <img src="./images/user-check.svg" alt="" />,
+              symbol: <i className="fa fa-user-check" />,
               title: t('permissionRequest'),
               content: this.renderERC20PermissionContent(),
               showEdit: true,
@@ -358,7 +358,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__full-tx-content">
           <div className="confirm-approve-content__permission">
             {this.renderApproveContentCard({
-              symbol: <img src="./images/user-check.svg" alt="" />,
+              symbol: <i className="fas fa-user-check" />,
               title: t('permissionRequest'),
               content: this.renderERC721OrERC1155PermissionContent(),
               showEdit: false,
@@ -541,7 +541,7 @@ export default class ConfirmApproveContent extends Component {
                   : t('copyToClipboard')
               }
             >
-              <CopyIcon size={9} color="#6a737d" />
+              <CopyIcon size={9} color="var(--color-icon-default)" />
             </Button>
             <Button
               type="link"
@@ -565,7 +565,11 @@ export default class ConfirmApproveContent extends Component {
               rel="noopener noreferrer"
               title={t('etherscanView')}
             >
-              <img src="images/popout.svg" alt={t('etherscanView')} />
+              <i
+                className="fa fa-share-square fa-sm"
+                style={{ color: 'var(--color-icon-default)', fontSize: 11 }}
+                title={t('etherscanView')}
+              />
             </Button>
           </Box>
         </Box>

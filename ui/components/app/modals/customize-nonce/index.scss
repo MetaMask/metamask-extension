@@ -17,7 +17,7 @@
   &__close {
     @include H4;
 
-    color: var(--ui-black);
+    color: var(--color-icon-default);
     background: none;
     flex: 0;
     align-self: flex-start;

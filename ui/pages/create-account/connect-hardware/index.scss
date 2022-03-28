@@ -42,8 +42,8 @@
   }
 
   &__btn {
-    background: #fbfbfb;
-    border: 1px solid #e5e5e5;
+    background: var(--color-background-alternative);
+    border: 1px solid var(--color-border-muted);
     height: 100px;
     width: 150px;
     flex: 1;
@@ -118,7 +118,7 @@
       @include H6;
 
       text-align: center;
-      color: var(--primary-1);
+      color: var(--color-primary-default);
       background: unset;
     }
   }
@@ -175,18 +175,12 @@
     display: flex;
     padding-left: 10px;
     padding-right: 10px;
-  }
-
-  &__item:nth-of-type(even) {
+    border-bottom: 1px solid var(--color-border-muted);
     background-color: var(--color-background-default);
   }
 
-  &__item:nth-of-type(odd) {
-    background: var(--color-background-alternative);
-  }
-
   &__item:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: var(--color-background-alternative);
   }
 
   &__item__index {

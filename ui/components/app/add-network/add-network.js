@@ -80,11 +80,10 @@ const AddNetwork = ({
             <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
               {item.ticker}
             </Typography>
-            <img
-              className="add-network__add-icon"
-              src="./images/times.svg"
-              alt={`${t('add')} ${item.ticker}`}
+            <i
+              className="fa fa-plus add-network__add-icon"
               onClick={onAddNetworkClick}
+              title={`${t('add')} ${item.ticker}`}
             />
           </Box>
         ))}
@@ -114,7 +113,7 @@ const AddNetwork = ({
               </a>
             </>
           }
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
         />
