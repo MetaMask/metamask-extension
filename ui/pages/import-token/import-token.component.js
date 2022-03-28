@@ -381,7 +381,11 @@ class ImportToken extends Component {
             )}
             withRightButton
             useIcon
-            iconFillColor={isTokenDetectionSupported ? '#f8c000' : '#037DD6'}
+            iconFillColor={
+              isTokenDetectionSupported
+                ? 'var(--color-warning-default)'
+                : 'var(--color-info-default)'
+            }
           />
         ) : (
           <ActionableMessage
