@@ -43,7 +43,7 @@ export default class PermissionConnect extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
       name: PropTypes.string,
-      origin: PropTypes.string.isRequired,
+      origin: PropTypes.string,
       subjectType: PropTypes.string,
     }),
     isRequestingAccounts: PropTypes.bool.isRequired,

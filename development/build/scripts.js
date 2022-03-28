@@ -45,7 +45,7 @@ const metamaskrc = require('rc')('metamask', {
 });
 
 const { streamFlatMap } = require('../stream-flat-map.js');
-const { version } = require('../../package.json');
+const { BuildType } = require('../lib/build-type');
 
 const {
   createTask,
@@ -56,7 +56,6 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
-const { BuildType } = require('./utils');
 
 /**
  * The build environment. This describes the environment this build was produced in.
@@ -147,6 +146,7 @@ function createScriptTasks({
   livereload,
   shouldLintFenceFiles,
   policyOnly,
+  version,
 }) {
   // internal tasks
   const core = {
@@ -192,6 +192,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         testing,
+        version,
       }),
     );
 
@@ -344,6 +345,7 @@ function createFactoredBuild({
   policyOnly,
   shouldLintFenceFiles,
   testing,
+  version,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -355,7 +357,12 @@ function createFactoredBuild({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
+    const envVars = getEnvironmentVariables({
+      buildType,
+      devMode,
+      testing,
+      version,
+    });
     setupBundlerDefaults(buildConfiguration, {
       buildType,
       devMode,
@@ -780,7 +787,7 @@ async function bundleIt(buildConfiguration, { reloadOnChange }) {
   }
 }
 
-function getEnvironmentVariables({ buildType, devMode, testing }) {
+function getEnvironmentVariables({ buildType, devMode, testing, version }) {
   const environment = getEnvironment({ devMode, testing });
   if (environment === ENVIRONMENT.PRODUCTION && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');

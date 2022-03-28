@@ -172,8 +172,8 @@ describe('Metamask Responsive UI', function () {
         );
         await restoreSeedLink.click();
 
-        await driver.fill(
-          'input[placeholder="Enter your Secret Recovery Phrase"]',
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
           testSeedPhrase,
         );
 

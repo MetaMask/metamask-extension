@@ -2299,6 +2299,9 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "pleaseConfirm": {
+    "message": "Please confirm"
+  },
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -2433,6 +2436,10 @@
   },
   "removeSnap": {
     "message": "Remove Snap"
+  },
+  "removeSnapConfirmation": {
+    "message": "Are you sure you want to remove $1?",
+    "description": "$1 represents the name of the snap"
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
@@ -2588,12 +2595,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separate each word with a single space"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Enter your Secret Recovery Phrase"
-  },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
@@ -2668,6 +2669,10 @@
   "settings": {
     "message": "Settings"
   },
+  "shorthandVersion": {
+    "message": "v$1",
+    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
+  },
   "show": {
     "message": "Show"
   },
@@ -2706,9 +2711,6 @@
   },
   "showRecommendations": {
     "message": "Show Recommendations"
-  },
-  "showSeedPhrase": {
-    "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -2830,6 +2832,30 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "srpInputNumberOfWords": {
+    "message": "I have a $1-word phrase",
+    "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
+  },
+  "srpPasteFailedTooManyWords": {
+    "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
+    "description": "Description of SRP paste erorr when the pasted content has too many words"
+  },
+  "srpPasteTip": {
+    "message": "You can paste your entire secret recovery phrase into any field",
+    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpToggleShow": {
+    "message": "Show/Hide this word of the secret recovery phrase",
+    "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
+  },
+  "srpWordHidden": {
+    "message": "This word is hidden",
+    "description": "Explains that a word in the secret recovery phrase is hidden"
+  },
+  "srpWordShown": {
+    "message": "This word is being shown",
+    "description": "Explains that a word in the secret recovery phrase is being shown"
   },
   "stable": {
     "message": "Stable"

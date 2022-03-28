@@ -180,7 +180,7 @@ const SnapSettingsCard = ({
                 tag="span"
                 className="snap-settings-card__version"
               >
-                v {version}
+                {t('shorthandVersion', [version])}
               </Typography>
             </>
           )}
