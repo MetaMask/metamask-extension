@@ -42,19 +42,6 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
-// These require calls need to use require to be statically recognized by browserify
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-
-const inpageContent = fs.readFileSync(
-  path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
-  'utf8',
-);
-const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
-const inpageBundle = inpageContent + inpageSuffix;
-const cspIdentifier = `'sha256-${crypto.createHash('sha256').update(inpageBundle).digest('base64')}'`;
-
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
@@ -637,6 +624,18 @@ async function openPopup() {
     }, SECOND);
   });
 }
+
+
+/**
+ * Fetch csp identifier
+ */
+let cspIdentifier;
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+  if (msg.cspIdentifier && !cspIdentifier) {
+    cspIdentifier = msg.cspIdentifier;
+    sendResponse();
+  }
+});
 
 /**
  * Modified from https://github.com/Rufflewind/chrome_cspmod

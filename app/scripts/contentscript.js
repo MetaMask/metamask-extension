@@ -9,6 +9,7 @@ import { obj as createThoughStream } from 'through2';
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const inpageContent = fs.readFileSync(
   path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
@@ -16,6 +17,8 @@ const inpageContent = fs.readFileSync(
 );
 const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
 const inpageBundle = inpageContent + inpageSuffix;
+
+chrome.runtime.sendMessage({ cspIdentifier: `'sha256-${crypto.createHash('sha256').update(inpageBundle).digest('base64')}'` }, () => {}); // Send hash to background.js
 
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
