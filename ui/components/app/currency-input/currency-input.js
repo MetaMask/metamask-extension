@@ -44,9 +44,7 @@ export default function CurrencyInput({
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
-  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(
-    featureSecondary,
-  );
+  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
 
   const shouldUseFiat = () => {
     if (hideSecondary) {
