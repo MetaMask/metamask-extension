@@ -232,7 +232,7 @@ export default class ConfirmDecryptMessage extends Component {
               <div className="request-decrypt-message__message-copy-text">
                 {t('decryptCopy')}
               </div>
-              <Copy size={17} color="#3098DC" />
+              <Copy size={17} color="var(--color-primary-default)" />
             </Tooltip>
           </div>
         ) : (

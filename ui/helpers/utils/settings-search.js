@@ -326,6 +326,13 @@ export function getSettingsRoutes(t) {
       route: `${ABOUT_US_ROUTE}#contactus`,
       icon: 'fa fa-info-circle',
     },
+    {
+      tab: t('experimental'),
+      section: t('enableEIP1559V2'),
+      description: t('enableEIP1559V2Description'),
+      route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
+      icon: 'fa fa-flask',
+    },
   ];
   if (process.env.TOKEN_DETECTION_V2) {
     settingsRoutesList = [
