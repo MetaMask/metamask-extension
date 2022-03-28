@@ -2,10 +2,6 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Failing contract interaction ', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   const ganacheOptions = {
     hardfork: 'london',
     accounts: [
@@ -33,13 +29,13 @@ describe('Failing contract interaction ', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        let windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
+        const popup = windowHandles.find(
           (handle) => handle !== extension && handle !== dapp,
         );
         await driver.switchToWindow(popup);
