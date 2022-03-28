@@ -225,33 +225,6 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', function () {
-      const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: null,
-        metaMetricsId: null,
-      });
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
-      metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
-    });
-    it('should generate and update the metaMetricsId when set to true', function () {
-      const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: null,
-        metaMetricsId: null,
-      });
-      assert.equal(metaMetricsController.state.metaMetricsId, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
-      assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
-    });
-    it('should nullify the metaMetricsId when set to false', function () {
-      const metaMetricsController = getMetaMetricsController();
-      metaMetricsController.setParticipateInMetaMetrics(false);
-      assert.equal(metaMetricsController.state.metaMetricsId, null);
-    });
-  });
-
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const metaMetricsController = getMetaMetricsController({
@@ -316,6 +289,33 @@ describe('MetaMetricsController', function () {
 
       metaMetricsController.identify(MOCK_INVALID_TRAITS);
       mock.verify();
+    });
+  });
+
+  describe('setParticipateInMetaMetrics', function () {
+    it('should update the value of participateInMetaMetrics', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
+      });
+      assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
+      metaMetricsController.setParticipateInMetaMetrics(true);
+      metaMetricsController.setParticipateInMetaMetrics(false);
+      assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
+    });
+    it('should generate and update the metaMetricsId when set to true', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
+      });
+      assert.equal(metaMetricsController.state.metaMetricsId, null);
+      metaMetricsController.setParticipateInMetaMetrics(true);
+      assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
+    });
+    it('should nullify the metaMetricsId when set to false', function () {
+      const metaMetricsController = getMetaMetricsController();
+      metaMetricsController.setParticipateInMetaMetrics(false);
+      assert.equal(metaMetricsController.state.metaMetricsId, null);
     });
   });
 
