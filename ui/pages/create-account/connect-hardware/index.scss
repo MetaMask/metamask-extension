@@ -175,14 +175,8 @@
     display: flex;
     padding-left: 10px;
     padding-right: 10px;
-  }
-
-  &__item:nth-of-type(even) {
-    background-color: var(--color-background-default);
-  }
-
-  &__item:nth-of-type(odd) {
-    background: var(--color-background-alternative);
+    border-bottom: 1px solid var(--color-border-muted);
+    background-color: var(--color-background-alternative);
   }
 
   &__item:hover {
