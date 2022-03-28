@@ -42,6 +42,19 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
+// These require calls need to use require to be statically recognized by browserify
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+const inpageContent = fs.readFileSync(
+  path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
+  'utf8',
+);
+const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
+const inpageBundle = inpageContent + inpageSuffix;
+const cspIdentifier = `'sha256-${crypto.createHash('sha256').update(inpageBundle).digest('base64')}'`;
+
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
@@ -625,6 +638,30 @@ async function openPopup() {
   });
 }
 
+/**
+ * Modified from https://github.com/Rufflewind/chrome_cspmod
+ */
+function cspModificationProcessor(details) {
+  var headers = details.responseHeaders;
+  for (var j = 0; j < headers.length; j++) {
+    var header = headers[j];
+    var name = header.name.toLowerCase();
+    if ([
+      "content-security-policy",
+      "content-security-policy-report-only",
+      "x-webkit-csp"
+    ].indexOf(name) > -1) {
+      header.value = header.value.split(";").map(policy => {
+        if (policy.split(" ")[0].toLowerCase() != "script-src") return policy;
+        return [...policy.split(" "), cspIdentifier]; // Add sha hash to CSP
+      }).join(";")
+    }
+  }
+  return {
+    responseHeaders: headers
+  };
+}
+
 // On first install, open a new tab with MetaMask
 browser.runtime.onInstalled.addListener(({ reason }) => {
   if (
@@ -634,3 +671,12 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
     platform.openExtensionInBrowser();
   }
 });
+
+/**
+ * Modified from https://github.com/Rufflewind/chrome_cspmod
+ */
+chrome.webRequest.onHeadersReceived.addListener(cspModificationProcessor, {
+  urls: ["*://*/*"],
+  types: ["main_frame", "sub_frame"]
+}, ["blocking", "responseHeaders"]);
+
