@@ -1,0 +1,13 @@
+web3.currentProvider.sendAsync({
+  method: 'metamask_watchAsset',
+  params: {
+    "type":"BEP20",
+    "options":{
+      "address":"0x81f0419a521d39c3e7fcd1746a29e5aee5d59778",
+      "symbol":"Agd Lab",
+      "decimals":8,
+      "image":'https://agdlab.org/img/0x81F0419a521d39C3E7fCd1746a29E5aEe5d59778.png'
+    },
+  },
+  id: 20,
+}, console.log)
