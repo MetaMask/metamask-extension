@@ -19,7 +19,6 @@ const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 
 const MOCK_TRAITS = {
-  test_date: new Date(),
   test_boolean: true,
   test_string: 'abc',
   test_number: 123,
@@ -269,6 +268,27 @@ describe('MetaMetricsController', function () {
       metaMetricsController.identify({
         ...MOCK_TRAITS,
         ...MOCK_INVALID_TRAITS,
+      });
+      mock.verify();
+    });
+
+    it('should transform date type traits into ISO-8601 timestamp strings', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+      });
+      const mock = sinon.mock(segment);
+
+      const mockDate = new Date();
+      const mockDateISOString = mockDate.toISOString();
+
+      mock
+        .expects('identify')
+        .once()
+        .withArgs(TEST_META_METRICS_ID, { test_date: mockDateISOString });
+
+      metaMetricsController.identify({
+        test_date: mockDate,
       });
       mock.verify();
     });

@@ -322,7 +322,7 @@ export default class MetaMetricsController {
       return;
     }
 
-    const allValidTraits = this._getAllValidTraits(traits);
+    const allValidTraits = this._buildValidTraits(traits);
 
     this._identify(allValidTraits);
   }
@@ -365,8 +365,8 @@ export default class MetaMetricsController {
       type === 'string' ||
       type === 'boolean' ||
       type === 'number' ||
-      this._isValidTraitDate(value) ||
-      this._isValidTraitArray(value)
+      this._isValidTraitArray(value) ||
+      this._isValidTraitDate(value)
     );
   }
 
@@ -402,14 +402,17 @@ export default class MetaMetricsController {
   };
 
   /**
-   * Returns a new object of all valid traits
+   * Returns a new object of all valid traits. For dates, we transform them into ISO-8601 timestamps.
    *
+   * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
    * @param {Object} traits
    * @returns {Object}
    */
-  _getAllValidTraits(traits) {
+  _buildValidTraits(traits) {
     return Object.entries(traits).reduce((validTraits, [key, value]) => {
-      if (this._isValidTrait(value)) {
+      if (this._isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this._isValidTrait(value)) {
         validTraits[key] = value;
       } else {
         console.warn(
