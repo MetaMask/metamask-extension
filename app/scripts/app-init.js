@@ -11,7 +11,14 @@ function tryImport(...fileNames) {
 }
 
 // eslint-disable-next-line
-self.oninstall = () => {
+chrome.runtime.onConnect.addListener(() => {
+    importAllScripts() 
+});
+
+self.oninstall = () => importAllScripts();
+
+// eslint-disable-next-line
+function importAllScripts() {
   tryImport('./globalthis.js');
   tryImport('./sentry-install.js');
   tryImport('./runtime-lavamoat.js');
@@ -23,4 +30,4 @@ self.oninstall = () => {
   ];
 
   fileList.forEach((fileName) => tryImport(fileName));
-};
+}
