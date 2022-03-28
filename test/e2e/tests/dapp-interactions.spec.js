@@ -50,7 +50,7 @@ describe('Dapp interactions', function () {
         );
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        const notification = await driver.findElement({
+        const notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
           tag: 'h3',
         });
@@ -108,11 +108,11 @@ describe('Dapp interactions', function () {
           '[data-testid ="account-options-menu-button"]',
         );
         await driver.clickElement({ text: 'Connected sites', tag: 'span' });
-        const connectedDapp1 = await driver.findElement({
+        const connectedDapp1 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8080',
           tag: 'span',
         });
-        const connectedDapp2 = await driver.findElement({
+        const connectedDapp2 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8081',
           tag: 'span',
         });

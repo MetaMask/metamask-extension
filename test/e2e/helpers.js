@@ -13,7 +13,7 @@ const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
-const dappBasePort = 808;
+const dappBasePort = 8080;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
@@ -70,7 +70,7 @@ async function withFixtures(options, testSuite) {
           );
         }
         dappServer.push(createStaticServer(dappDirectory));
-        dappServer[i].listen(`${dappBasePort}${i}`);
+        dappServer[i].listen(`${dappBasePort+i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
           dappServer[i].on('error', reject);
@@ -170,7 +170,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const connectDappWithExtensionPopup = async (driver, dapp) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}${dapp}/`);
+  await driver.openNewPage(`http://127.0.0.1:${dappBasePort+dapp}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);
