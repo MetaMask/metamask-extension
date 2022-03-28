@@ -2200,20 +2200,17 @@ describe('Transaction Controller', function () {
         estimateUsed: '0x009',
       });
 
-      try {
-        txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
+      assert.throws(
+        () =>
+          txController.updateTransactionGasFees('4', {
+            maxFeePerGas: '0x0088',
+          }),
+        Error,
+        'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
+      );
 
-        // Fail test if above expression doesn't throw anything.
-        assert(true).toBe(false);
-      } catch (e) {
-        assert.equal(
-          e.message,
-          'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
-        );
-      } finally {
-        const transaction = txStateManager.getTransaction('4');
-        assert.equal(transaction.txParams.maxFeePerGas, '0x008');
-      }
+      const transaction = txStateManager.getTransaction('4');
+      assert.equal(transaction.txParams.maxFeePerGas, '0x008');
     });
 
     it('does not update unknown parameters in update method', function () {
