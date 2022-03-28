@@ -300,6 +300,7 @@ describe('MetaMetricsController', function () {
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
       metaMetricsController.setParticipateInMetaMetrics(true);
+      assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
       metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
     });
