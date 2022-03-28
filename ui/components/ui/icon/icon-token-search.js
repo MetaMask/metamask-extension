@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const IconTokenSearch = ({
-  size = 24,
+  size = '24',
   color = 'currentColor',
   ariaLabel,
   className,
@@ -24,7 +24,7 @@ IconTokenSearch.propTypes = {
   /**
    * The size of the Icon follows an 8px grid 2 = 16px, 3 = 24px etc
    */
-  size: PropTypes.number,
+  size: PropTypes.string,
   /**
    * The color of the icon accepts design token css variables
    */
