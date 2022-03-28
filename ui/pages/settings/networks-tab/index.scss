@@ -36,7 +36,7 @@
       @each $variant, $color in design-system.$color-map {
         &--color-#{$variant} {
           background: var($color);
-          color: var(--white);
+          color: var(--color-primary-inverse); // TODO: design-tokens needs network colors
         }
       }
     }
