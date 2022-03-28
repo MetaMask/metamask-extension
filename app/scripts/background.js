@@ -211,7 +211,6 @@ function setupController(initState, initLangCode) {
   //
   // MetaMask Controller
   //
-
   const controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -367,7 +366,6 @@ function setupController(initState, initLangCode) {
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
@@ -476,18 +474,17 @@ function setupController(initState, initLangCode) {
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
-      let label = '';
-      const count = getUnapprovedTransactionCount();
-      if (count) {
-        label = String(count);
-      }
-      if (process.env.ENABLE_MV3 !== true) {
-        browser.browserAction.setBadgeText({ text: label });
-        browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
-      } else {
-        browser.action.setBadgeText({ text: label });
-        browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
-      }
+    let label = '';
+    const count = getUnapprovedTransactionCount();
+    if (count) {
+      label = String(count);
+    }
+    if (process.env.ENABLE_MV3 === true) {
+      browser.action.setBadgeText({ text: label });
+      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    } else {
+      browser.browserAction.setBadgeText({ text: label });
+      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
     }
   }
 

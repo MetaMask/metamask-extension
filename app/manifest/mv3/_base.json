@@ -1,9 +1,5 @@
 {
-  "author": "https://metamask.io",
-  "background": {
-    "service_worker": "app-init.js"
-  },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
@@ -15,6 +11,10 @@
     },
     "default_title": "MetaMask",
     "default_popup": "popup.html"
+  },
+  "author": "https://metamask.io",
+  "background": {
+    "service_worker": "app-init.js"
   },
   "commands": {
     "_execute_browser_action": {
@@ -68,8 +68,7 @@
     "https://lattice.gridplus.io/*",
     "activeTab",
     "webRequest",
-    "*://*.eth/",
-    "notifications"
+    "*://*.eth/"
   ],
   "short_name": "__MSG_appName__",
   "web_accessible_resources": [
