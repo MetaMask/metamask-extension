@@ -3191,14 +3191,6 @@ export async function closeNotificationPopup() {
  */
 
 /**
- * @param {Object} traits
- * @returns {Promise<void>}
- */
-export function identifyMetaMetricsUser(traits) {
-  return promisifiedBackground.identifyMetaMetricsUser(traits);
-}
-
-/**
  * @param {MetaMetricsEventPayload} payload - details of the event to track
  * @param {MetaMetricsEventOptions} options - options for routing/handling of event
  * @returns {Promise<void>}

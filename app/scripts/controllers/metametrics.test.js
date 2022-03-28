@@ -239,25 +239,6 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  // WIP
-  describe.skip('identify [WIP]', function () {
-    it('should call segment.identify for valid traits if user is participating in metametrics', function () {
-      const metaMetricsController = getMetaMetricsController({
-        participateInMetaMetrics: true,
-        metaMetricsId: TEST_META_METRICS_ID,
-      });
-      const identifyStub = sinon.stub(segment, 'identify');
-
-      metaMetricsController.identify({
-        test_boolean: true,
-        test_string: 'abc',
-        test_number: 123,
-      });
-
-      assert(identifyStub.calledOnce());
-    });
-  });
-
   describe('submitEvent', function () {
     it('should not track an event if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment);

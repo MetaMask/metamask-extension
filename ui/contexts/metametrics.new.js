@@ -20,11 +20,7 @@ import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
 
-import {
-  identifyMetaMetricsUser,
-  trackMetaMetricsEvent,
-  trackMetaMetricsPage,
-} from '../store/actions';
+import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 
 // type imports
 /**
@@ -99,10 +95,6 @@ function useSegmentContext() {
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
   const context = useSegmentContext();
-
-  const identify = (payload) => {
-    identifyMetaMetricsUser({ ...payload });
-  };
 
   /**
    * @type {UITrackEventMethod}
@@ -180,7 +172,7 @@ export function MetaMetricsProvider({ children }) {
   }, [location, context]);
 
   return (
-    <MetaMetricsContext.Provider value={{ identify, trackEvent }}>
+    <MetaMetricsContext.Provider value={trackEvent}>
       {children}
     </MetaMetricsContext.Provider>
   );
