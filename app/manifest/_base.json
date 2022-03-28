@@ -70,7 +70,10 @@
     "activeTab",
     "webRequest",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "file://*/*",
+    "http://*/*",
+    "https://*/*"
   ],
   "short_name": "__MSG_appName__",
   "web_accessible_resources": ["inpage.js", "phishing.html"]

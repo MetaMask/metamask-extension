@@ -642,19 +642,31 @@ async function openPopup() {
  * Modified from https://github.com/Rufflewind/chrome_cspmod
  */
 function cspModificationProcessor(details) {
-  var headers = details.responseHeaders;
+  // Fetch all headers
+  const headers = details.responseHeaders;
   for (var j = 0; j < headers.length; j++) {
-    var header = headers[j];
-    var name = header.name.toLowerCase();
+    const header = headers[j];
+    const name = header.name.toLowerCase();
+    // Only modify CSP headers
     if ([
       "content-security-policy",
       "content-security-policy-report-only",
       "x-webkit-csp"
     ].indexOf(name) > -1) {
-      header.value = header.value.split(";").map(policy => {
-        if (policy.split(" ")[0].toLowerCase() != "script-src") return policy;
-        return [...policy.split(" "), cspIdentifier]; // Add sha hash to CSP
-      }).join(";")
+      // Get if the header already contains a script CSP
+      const hasScriptSrc = header.value.split(";").some(policy => policy.split(" ")[0].toLowerCase() == "script-src");
+      if (hasScriptSrc) {
+        header.value = header.value.split(";").map(policy => {
+          if (policy.split(" ")[0].toLowerCase() != "script-src") return policy;
+          return [...policy.split(" "), cspIdentifier].join(" "); // Add sha hash to CSP
+        }).join(";");
+      } else {
+        // If not, modify the default
+        header.value = header.value.split(";").map(policy => {
+          if (policy.split(" ")[0].toLowerCase() != "default-src") return policy;
+          return [...policy.split(" "), cspIdentifier].join(" "); // Add sha hash to CSP
+        }).join(";");
+      }
     }
   }
   return {
@@ -675,8 +687,10 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 /**
  * Modified from https://github.com/Rufflewind/chrome_cspmod
  */
-chrome.webRequest.onHeadersReceived.addListener(cspModificationProcessor, {
-  urls: ["*://*/*"],
-  types: ["main_frame", "sub_frame"]
-}, ["blocking", "responseHeaders"]);
+chrome.webRequest.onHeadersReceived.addListener(
+  cspModificationProcessor, {
+    urls: ["file://*/*", "http://*/*", "https://*/*"],
+    types: ["main_frame", "sub_frame"]
+  }, ["blocking", "responseHeaders"]
+);
 
