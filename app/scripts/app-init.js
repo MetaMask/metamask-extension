@@ -12,9 +12,10 @@ function tryImport(...fileNames) {
 
 // eslint-disable-next-line
 chrome.runtime.onConnect.addListener(() => {
-    importAllScripts() 
+  importAllScripts();
 });
 
+// eslint-disable-next-line
 self.oninstall = () => importAllScripts();
 
 // eslint-disable-next-line
