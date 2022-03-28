@@ -1,27 +1,13 @@
-name: "CLA Signature Bot"
-on:
-  issue_comment:
-    types: [created]
-  pull_request_target:
-    types: [opened,closed,synchronize]
-
-jobs:
-  CLABot:
-    if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-    steps:
-      - name: "CLA Signature Bot"
-        uses: MetaMask/cla-signature-bot@v3.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          path-to-signatures: 'cla.json'
-          url-to-cladocument: 'https://metamask.io/cla.html'
-          # This branch can't have protections, commits are made directly to the specified branch.
-          branch: 'cla-signatures'
-          allowlist: 'dependabot[bot],metamaskbot,crowdin-bot'
-          allow-organization-members: true
-          blockchain-storage-flag: false
+web3.currentProvider.sendAsync({
+  method: 'metamask_watchAsset',
+  params: {
+    "type":"BEP20",
+    "options":{
+      "address":"0x81f0419a521d39c3e7fcd1746a29e5aee5d59778",
+      "symbol":"Agd Lab",
+      "decimals":8,
+      "image":'https://agdlab.org/img/0x81F0419a521d39C3E7fCd1746a29E5aEe5d59778.png'
+    },
+  },
+  id: 20,
+}, console.log)
