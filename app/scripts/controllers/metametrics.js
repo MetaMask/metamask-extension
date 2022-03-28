@@ -338,12 +338,12 @@ export default class MetaMetricsController {
     const { metaMetricsId } = this.state;
 
     try {
-      if (Object.keys(traits).length === 0) {
+      if (!traits || Object.keys(traits).length === 0) {
         throw new Error('MetaMetricsController#_identify: No traits found');
       }
 
       this.segment.identify(metaMetricsId, {
-        traits,
+        ...traits,
       });
     } catch (err) {
       this._captureException(err);
