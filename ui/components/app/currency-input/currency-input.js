@@ -44,7 +44,7 @@ export default function CurrencyInput({
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
-  const [newFeatureSecondary, setNewFeatureSecondary] = useState(
+  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(
     featureSecondary,
   );
 
@@ -53,7 +53,7 @@ export default function CurrencyInput({
       return false;
     }
 
-    return Boolean(newFeatureSecondary);
+    return Boolean(shouldDisplayFiat);
   };
 
   const getDecimalValue = () => {
@@ -78,7 +78,7 @@ export default function CurrencyInput({
   const swap = async () => {
     await onPreferenceToggle();
     setSwapped(!isSwapped);
-    setNewFeatureSecondary(!newFeatureSecondary);
+    setShouldDisplayFiat(!shouldDisplayFiat);
   };
 
   const handleChange = async (newDecimalValue) => {
