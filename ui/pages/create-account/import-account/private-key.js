@@ -88,7 +88,7 @@ class PrivateKeyImportView extends Component {
 
     return (
       <div className="new-account-import-form__private-key">
-        <span className="new-account-create-form__instruction">
+        <span className="new-account-import-form__instruction">
           {this.context.t('pastePrivateKey')}
         </span>
         <div className="new-account-import-form__private-key-password-container">

@@ -17,7 +17,6 @@ import CopyIcon from './copy-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
 import Interaction from './interaction-icon.component';
-import PaperAirplane from './paper-airplane-icon';
 import Preloader from './preloader';
 import ReceiveIcon from './receive-icon.component';
 import SendIcon from './send-icon.component';
@@ -38,6 +37,7 @@ import IconSpeechBubbles from './icon-speech-bubbles';
 import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
+import IconTokenSearch from './icon-token-search';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -101,8 +101,11 @@ export const DefaultStory = (args) => (
       Icons
     </Typography>
     <Typography variant={TYPOGRAPHY.Paragraph} boxProps={{ marginBottom: 4 }}>
-      If you are creating a new icon please use the ./icon-caret-left.js as the
-      template
+      To ensure correct licensing we suggest you use an icon from the
+      @fortawesome/fontawesome-free: ^5.13.0 package. If there is no icon to
+      suit your needs and you need to create a new one. Ensure that it has the
+      correct licensing or has been created in house from scratch. Please use
+      the ./icon-caret-left.js as the template.
     </Typography>
     <Box marginBottom={4}>
       <div
@@ -122,6 +125,7 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconConnect {...args} />} />
         <IconItem Component={<IconSpeechBubbles {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
+        <IconItem Component={<IconTokenSearch {...args} />} />
       </div>
     </Box>
     <Typography
@@ -152,7 +156,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<BuyIcon {...args} />} />
         <IconItem Component={<SwapIcon {...args} />} />
         <IconItem Component={<SwapIconComponent {...args} />} />
-        <IconItem Component={<PaperAirplane {...args} />} />
         <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
@@ -279,7 +282,7 @@ export const BuyIconStory = (args) => <BuyIcon {...args} />;
 BuyIconStory.args = {
   width: '17',
   height: '21',
-  fill: '#2F80ED',
+  fill: 'var(--color-primary-default)',
 };
 BuyIconStory.storyName = 'BuyIcon';
 
@@ -287,7 +290,7 @@ export const SwapIconStory = (args) => <SwapIcon {...args} />;
 SwapIconStory.args = {
   width: '17',
   height: '21',
-  fill: '#2F80ED',
+  fill: 'var(--color-primary-default)',
 };
 SwapIconStory.storyName = 'SwapIcon';
 
@@ -298,13 +301,6 @@ SendSwapIconStory.args = {
   color: 'var(--color-icon-default)',
 };
 SendSwapIconStory.storyName = 'Send/SwapIcon';
-
-export const PaperAirplaneStory = (args) => <PaperAirplane {...args} />;
-PaperAirplaneStory.args = {
-  size: 40,
-  color: 'var(--color-icon-default)',
-};
-PaperAirplaneStory.storyName = 'PaperAirplane';
 
 export const CopyIconStory = (args) => <CopyIcon {...args} />;
 CopyIconStory.args = {

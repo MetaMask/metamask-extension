@@ -68,7 +68,7 @@ function ViewContact({
                   handleCopy(checkSummedAddress);
                 }}
               >
-                <Copy size={20} color="#3098DC" />
+                <Copy size={20} color="var(--color-primary-default)" />
               </button>
             </Tooltip>
           </div>

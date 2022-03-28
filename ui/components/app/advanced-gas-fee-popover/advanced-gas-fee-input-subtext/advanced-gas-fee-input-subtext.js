@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
@@ -11,21 +12,21 @@ function determineTrendInfo(trend, t) {
   switch (trend) {
     case 'up':
       return {
-        className: 'advanced-gas-fee-input-subtext__up',
-        imageSrc: '/images/up-arrow.svg',
-        imageAlt: t('upArrow'),
+        className: 'fa-arrow-up advanced-gas-fee-input-subtext__up',
+        color: 'var(--color-success-default)',
+        title: t('upArrow'),
       };
     case 'down':
       return {
-        className: 'advanced-gas-fee-input-subtext__down',
-        imageSrc: '/images/down-arrow.svg',
-        imageAlt: t('downArrow'),
+        className: 'fa-arrow-down advanced-gas-fee-input-subtext__down',
+        color: 'var(--color-error-default)',
+        title: t('downArrow'),
       };
     case 'level':
       return {
-        className: 'advanced-gas-fee-input-subtext__level',
-        imageSrc: '/images/level-arrow.svg',
-        imageAlt: t('levelArrow'),
+        className: 'fa-arrow-right advanced-gas-fee-input-subtext__level',
+        color: 'var(--color-icon-default)',
+        title: t('levelArrow'),
       };
     default:
       return null;
@@ -52,10 +53,11 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
             {formatGasFeeOrFeeRange(latest)}
           </span>
           {trendInfo === null ? null : (
-            <span className={trendInfo.className}>
-              <img
-                src={trendInfo.imageSrc}
-                alt={trendInfo.imageAlt}
+            <span className="advanced-gas-fee-input-subtext__icon">
+              <i
+                className={classnames('fa', trendInfo.className)}
+                style={{ color: trendInfo.color }}
+                title={trendInfo.title}
                 data-testid="fee-arrow"
               />
             </span>

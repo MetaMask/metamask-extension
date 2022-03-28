@@ -130,7 +130,7 @@
       }
 
       .solidity-value {
-        color: #6a737d;
+        color: var(--color-text-alternative);
         overflow-x: hidden;
         padding-bottom: 5px;
 
@@ -152,18 +152,18 @@
       }
 
       .eth-tx-params details > summary {
-        color: black;
+        color: var(--color-text-default);
         font-family: sans-serif;
       }
 
       .eth-tx-params footer {
         text-align: center;
-        color: #8d959e;
+        color: var(--color-text-muted);
       }
 
       .eth-tx-params footer a {
         text-align: center;
-        color: #8d959e;
+        color: var(--color-text-muted);
       }
     }
   }

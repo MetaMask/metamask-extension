@@ -158,6 +158,7 @@ describe('Editing Confirm Transaction', function () {
 
         // Submit gas fee changes
         await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.delay(largeDelayMs);
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(

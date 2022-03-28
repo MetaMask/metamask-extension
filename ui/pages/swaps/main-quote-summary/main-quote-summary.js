@@ -118,7 +118,7 @@ export default function MainQuoteSummary({
             secondaryTokenValue={destinationValue}
             secondaryTokenDecimals={destinationDecimals}
             secondaryTokenSymbol={destinationSymbol}
-            arrowColor="#037DD6"
+            arrowColor="var(--color-primary-default)"
             boldSymbols={false}
             className="main-quote-summary__exchange-rate-display"
           />
