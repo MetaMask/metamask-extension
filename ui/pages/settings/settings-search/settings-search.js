@@ -29,24 +29,26 @@ export default function SettingsSearch({
   });
 
   // eslint-disable-next-line no-shadow
-  const handleSearch = (searchQuery) => {
-    setSearchQuery(searchQuery);
+  const handleSearch = (_searchQuery) => {
+    const sanitizedSearchQuery = _searchQuery.replace(/[^A-z0-9\s]|[\\]/gu, '');
+    setSearchQuery(sanitizedSearchQuery);
     if (searchQuery === '') {
       setSearchIconColor('#9b9b9b');
     } else {
       setSearchIconColor('#24292E');
     }
-    const fuseSearchResult = settingsSearchFuse.search(searchQuery);
+
+    const fuseSearchResult = settingsSearchFuse.search(sanitizedSearchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
       return (
         routes.tab &&
-        searchQuery &&
-        isEqualCaseInsensitive(routes.tab, searchQuery)
+        sanitizedSearchQuery &&
+        isEqualCaseInsensitive(routes.tab, sanitizedSearchQuery)
       );
     });
 
     const results = [...addressSearchResult, ...fuseSearchResult];
-    onSearch({ searchQuery, results });
+    onSearch({ searchQuery: sanitizedSearchQuery, results });
   };
 
   const renderStartAdornment = () => {
