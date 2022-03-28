@@ -165,10 +165,8 @@ export async function determineTransactionType(txParams, query) {
   let contractCode;
 
   if (!result) {
-    const {
-      contractCode: resultCode,
-      isContractAddress,
-    } = await readAddressAsContract(query, to);
+    const { contractCode: resultCode, isContractAddress } =
+      await readAddressAsContract(query, to);
 
     contractCode = resultCode;
     result = isContractAddress

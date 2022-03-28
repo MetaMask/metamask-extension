@@ -162,10 +162,8 @@ export default function Swap() {
     useGasFeeEstimates();
   }
 
-  const {
-    balance: ethBalance,
-    address: selectedAccountAddress,
-  } = selectedAccount;
+  const { balance: ethBalance, address: selectedAccountAddress } =
+    selectedAccount;
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
 

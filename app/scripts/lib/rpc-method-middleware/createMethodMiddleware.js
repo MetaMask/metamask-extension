@@ -31,7 +31,7 @@ const expectedHookNames = Array.from(
  *
  * @param {Record<string, unknown>} hooks - Required "hooks" into our
  * controllers.
- * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
+ * @returns {(req: object, res: object, next: Function, end: Function) => void}
  */
 export function createMethodMiddleware(hooks) {
   // Fail immediately if we forgot to provide any expected hooks.

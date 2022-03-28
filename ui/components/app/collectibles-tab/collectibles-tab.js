@@ -36,11 +36,8 @@ export default function CollectiblesTab({ onAddNFT }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const {
-    collectiblesLoading,
-    collections,
-    previouslyOwnedCollection,
-  } = useCollectiblesCollections();
+  const { collectiblesLoading, collections, previouslyOwnedCollection } =
+    useCollectiblesCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);

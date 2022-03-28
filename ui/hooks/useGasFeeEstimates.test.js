@@ -42,24 +42,26 @@ const DEFAULT_OPTS = {
   isGasEstimatesLoading: true,
 };
 
-const generateUseSelectorRouter = (opts = DEFAULT_OPTS) => (selector) => {
-  if (selector === checkNetworkAndAccountSupports1559) {
-    return (
-      opts.checkNetworkAndAccountSupports1559 ??
-      DEFAULT_OPTS.checkNetworkAndAccountSupports1559
-    );
-  }
-  if (selector === getGasEstimateType) {
-    return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
-  }
-  if (selector === getGasFeeEstimates) {
-    return opts.gasFeeEstimates ?? DEFAULT_OPTS.gasFeeEstimates;
-  }
-  if (selector === getIsGasEstimatesLoading) {
-    return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
-  }
-  return undefined;
-};
+const generateUseSelectorRouter =
+  (opts = DEFAULT_OPTS) =>
+  (selector) => {
+    if (selector === checkNetworkAndAccountSupports1559) {
+      return (
+        opts.checkNetworkAndAccountSupports1559 ??
+        DEFAULT_OPTS.checkNetworkAndAccountSupports1559
+      );
+    }
+    if (selector === getGasEstimateType) {
+      return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
+    }
+    if (selector === getGasFeeEstimates) {
+      return opts.gasFeeEstimates ?? DEFAULT_OPTS.gasFeeEstimates;
+    }
+    if (selector === getIsGasEstimatesLoading) {
+      return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
+    }
+    return undefined;
+  };
 
 describe('useGasFeeEstimates', () => {
   let tokens = [];

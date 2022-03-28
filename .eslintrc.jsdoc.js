@@ -14,6 +14,23 @@ module.exports = {
     'jsdoc/require-returns-type': 'off',
     'jsdoc/require-returns': 'off',
     'jsdoc/valid-types': 'off',
+    // jsdoc/check-types now checks for mismatched casing of 'Object' types
+    // which has a larger impact on typescript projects than javascript ones
+    // due to the typescript Object type. To prevent large amounts of churn
+    // these temporary overrides are added which will be removed and casing
+    // normalized in a future PR.
+    'jsdoc/check-types': [
+      'error',
+      {
+        exemptTagContexts: [
+          { tag: 'property', types: ['Object', 'Object[]', 'Array<Object>'] },
+          { tag: 'param', types: ['Object', 'Object[]', 'Array<Object>'] },
+          { tag: 'typedef', types: ['Object', 'Object[]', 'Array<Object>'] },
+          { tag: 'returns', types: ['Object', 'Object[]', 'Array<Object>'] },
+          { tag: 'type', types: ['Object', 'Object[]', 'Array<Object>'] },
+        ],
+      },
+    ],
   },
   settings: {
     jsdoc: {

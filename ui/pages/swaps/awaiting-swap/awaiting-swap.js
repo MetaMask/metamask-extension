@@ -86,9 +86,8 @@ export default function AwaitingSwap({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
-  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
-    false,
-  );
+  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
+    useState(false);
 
   let feeinUnformattedFiat;
 

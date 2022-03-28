@@ -80,10 +80,8 @@ export default class ExtensionPlatform {
   }
 
   getVersion() {
-    const {
-      version,
-      version_name: versionName,
-    } = browser.runtime.getManifest();
+    const { version, version_name: versionName } =
+      browser.runtime.getManifest();
 
     const versionParts = version.split('.');
     if (versionName) {

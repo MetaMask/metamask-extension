@@ -1,16 +1,16 @@
 diff --git a/node_modules/@eslint/eslintrc/lib/config-array-factory.js b/node_modules/@eslint/eslintrc/lib/config-array-factory.js
-index c7ff6a0..6a88c6d 100644
+index 9553d1f..3ea3e55 100644
 --- a/node_modules/@eslint/eslintrc/lib/config-array-factory.js
 +++ b/node_modules/@eslint/eslintrc/lib/config-array-factory.js
-@@ -41,7 +41,6 @@
+@@ -40,7 +40,6 @@
  
- const fs = require("fs");
- const path = require("path");
--const importFresh = require("import-fresh");
- const stripComments = require("strip-json-comments");
- const ConfigValidator = require("./shared/config-validator");
- const naming = require("./shared/naming");
-@@ -222,7 +221,7 @@ function loadLegacyConfigFile(filePath) {
+ import debugOrig from "debug";
+ import fs from "fs";
+-import importFresh from "import-fresh";
+ import { createRequire } from "module";
+ import path from "path";
+ import stripComments from "strip-json-comments";
+@@ -231,7 +230,7 @@ function loadLegacyConfigFile(filePath) {
  function loadJSConfigFile(filePath) {
      debug(`Loading JS config file: ${filePath}`);
      try {

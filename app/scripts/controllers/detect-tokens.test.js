@@ -285,9 +285,8 @@ describe('DetectTokensController', function () {
     const contractAddressesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
-    const indexOfTokenToAdd = contractAddressesToDetect.indexOf(
-      tokenAddressToAdd,
-    );
+    const indexOfTokenToAdd =
+      contractAddressesToDetect.indexOf(tokenAddressToAdd);
     const balances = new Array(contractAddressesToDetect.length);
 
     balances[indexOfTokenToAdd] = new BigNumber(10);
@@ -345,9 +344,8 @@ describe('DetectTokensController', function () {
     const contractAddressesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
-    const indexOfTokenToAdd = contractAddressesToDetect.indexOf(
-      tokenAddressToAdd,
-    );
+    const indexOfTokenToAdd =
+      contractAddressesToDetect.indexOf(tokenAddressToAdd);
 
     const balances = new Array(contractAddressesToDetect.length);
     balances[indexOfTokenToAdd] = new BigNumber(10);

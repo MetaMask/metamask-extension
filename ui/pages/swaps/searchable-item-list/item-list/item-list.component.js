@@ -159,9 +159,8 @@ export default function ItemList({
                         properties: {
                           link_type: 'Token Tracker',
                           action: 'Verify Contract Address',
-                          block_explorer_domain: getURLHostName(
-                            blockExplorerLink,
-                          ),
+                          block_explorer_domain:
+                            getURLHostName(blockExplorerLink),
                         },
                       });
                       global.platform.openTab({

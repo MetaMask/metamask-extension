@@ -98,9 +98,8 @@ export default function EditGasDisplay({
     }
   }, [showAdvancedForm]);
 
-  const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
-    transaction,
-  );
+  const dappSuggestedAndTxParamGasFeesAreTheSame =
+    areDappSuggestedAndTxParamGasFeesTheSame(transaction);
 
   const requireDappAcknowledgement = Boolean(
     transaction?.dappSuggestedGasFees &&

@@ -24,10 +24,8 @@ function mapStateToProps(state, ownProps) {
     msgParams: { from },
   } = ownProps.txData;
 
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    from,
-  );
+  const hardwareWalletRequiresConnection =
+    doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
 
   return {

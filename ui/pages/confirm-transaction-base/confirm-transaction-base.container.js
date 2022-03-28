@@ -195,10 +195,8 @@ const mapStateToProps = (state, ownProps) => {
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
 
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    fromAddress,
-  );
+  const hardwareWalletRequiresConnection =
+    doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const eip1559V2Enabled = getEIP1559V2Enabled(state);

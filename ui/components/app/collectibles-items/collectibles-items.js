@@ -115,9 +115,8 @@ export default function CollectiblesItems({
       [key]: !isExpanded,
     };
 
-    collectiblesDropdownState[selectedAddress][
-      chainId
-    ] = newCurrentAccountState;
+    collectiblesDropdownState[selectedAddress][chainId] =
+      newCurrentAccountState;
 
     dispatch(updateCollectibleDropDownState(collectiblesDropdownState));
   };
@@ -214,11 +213,8 @@ export default function CollectiblesItems({
       <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
           {collectionsKeys.map((key) => {
-            const {
-              collectibles,
-              collectionName,
-              collectionImage,
-            } = collections[key];
+            const { collectibles, collectionName, collectionImage } =
+              collections[key];
 
             return renderCollection({
               collectibles,

@@ -37,9 +37,9 @@ export function useTokenFiatAmount(
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
   const showFiat = overrides.showFiat ?? userPrefersShownFiat;
-  const contractExchangeTokenKey = Object.keys(
-    contractExchangeRates,
-  ).find((key) => isEqualCaseInsensitive(key, tokenAddress));
+  const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
+    (key) => isEqualCaseInsensitive(key, tokenAddress),
+  );
   const tokenExchangeRate =
     overrides.exchangeRate ??
     (contractExchangeTokenKey &&

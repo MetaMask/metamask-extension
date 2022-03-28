@@ -179,12 +179,8 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const {
-      accounts,
-      selectedAddress,
-      nativeCurrency,
-      nativeCurrencyImage,
-    } = this.props;
+    const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
+      this.props;
 
     const { sendableTokens, sendableCollectibles } = this.state;
 

@@ -83,16 +83,13 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
-    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
-      draftInitialState,
-    );
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(draftInitialState);
     const selectedAddress = getSelectedAddress(draftInitialState);
-    const unconnectedAccountAlertShownOrigins = getUnconnectedAccountAlertShown(
-      draftInitialState,
-    );
-    const unconnectedAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
-      draftInitialState,
-    );
+    const unconnectedAccountAlertShownOrigins =
+      getUnconnectedAccountAlertShown(draftInitialState);
+    const unconnectedAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(draftInitialState);
 
     if (
       origin &&
@@ -171,7 +168,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
  * masked according to that sub-mask.
  *
  * @param {Object} object - The object to mask
- * @param {Object<Object|boolean>} mask - The mask to apply to the object
+ * @param {Object<object | boolean>} mask - The mask to apply to the object
  */
 function maskObject(object, mask) {
   return Object.keys(object).reduce((state, key) => {

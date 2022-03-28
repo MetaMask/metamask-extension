@@ -16,9 +16,8 @@ function buildOVMGasPriceOracleContract(eth) {
 
 export default async function fetchEstimatedL1Fee(eth, txMeta) {
   const contract = buildOVMGasPriceOracleContract(eth);
-  const serializedTransaction = buildUnserializedTransaction(
-    txMeta,
-  ).serialize();
+  const serializedTransaction =
+    buildUnserializedTransaction(txMeta).serialize();
   const result = await contract.getL1Fee(serializedTransaction);
   return result?.[0]?.toString(16);
 }

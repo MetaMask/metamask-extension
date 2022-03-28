@@ -28,9 +28,8 @@ function mapStateToProps(state) {
     isEthGasPrice: getIsEthGasPriceFetched(state),
     noGasPrice: getNoGasPriceFetched(state),
     to,
-    networkOrAccountNotSupports1559: checkNetworkOrAccountNotSupports1559(
-      state,
-    ),
+    networkOrAccountNotSupports1559:
+      checkNetworkOrAccountNotSupports1559(state),
     getIsBalanceInsufficient: getIsBalanceInsufficient(state),
     asset: getSendAsset(state),
     assetError: getAssetError(state),

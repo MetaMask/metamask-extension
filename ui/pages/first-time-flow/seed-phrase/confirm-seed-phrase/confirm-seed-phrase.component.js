@@ -125,11 +125,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
   render() {
     const { t } = this.context;
     const { history } = this.props;
-    const {
-      selectedSeedIndices,
-      sortedSeedWords,
-      draggingSeedIndex,
-    } = this.state;
+    const { selectedSeedIndices, sortedSeedWords, draggingSeedIndex } =
+      this.state;
 
     return (
       <div className="confirm-seed-phrase">
@@ -200,11 +197,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   renderSelectedSeeds() {
-    const {
-      sortedSeedWords,
-      selectedSeedIndices,
-      draggingSeedIndex,
-    } = this.state;
+    const { sortedSeedWords, selectedSeedIndices, draggingSeedIndex } =
+      this.state;
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = selectedSeedIndices[index];
       const word = sortedSeedWords[seedIndex];

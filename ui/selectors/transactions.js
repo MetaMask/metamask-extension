@@ -188,9 +188,8 @@ const insertTransactionByTime = (transactions, transaction) => {
  * array of transactionGroups.
  */
 const insertTransactionGroupByTime = (transactionGroups, transactionGroup) => {
-  const {
-    primaryTransaction: { time: groupToInsertTime } = {},
-  } = transactionGroup;
+  const { primaryTransaction: { time: groupToInsertTime } = {} } =
+    transactionGroup;
 
   let insertIndex = transactionGroups.length;
 
@@ -268,9 +267,8 @@ export const nonceSortedTransactionsSelector = createSelector(
         const nonceProps = nonceToTransactionsMap[nonce];
         insertTransactionByTime(nonceProps.transactions, transaction);
 
-        const {
-          primaryTransaction: { time: primaryTxTime = 0 } = {},
-        } = nonceProps;
+        const { primaryTransaction: { time: primaryTxTime = 0 } = {} } =
+          nonceProps;
 
         const previousPrimaryIsNetworkFailure =
           nonceProps.primaryTransaction.status ===
@@ -288,9 +286,8 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.primaryTransaction = transaction;
         }
 
-        const {
-          initialTransaction: { time: initialTxTime = 0 } = {},
-        } = nonceProps;
+        const { initialTransaction: { time: initialTxTime = 0 } = {} } =
+          nonceProps;
 
         // Used to display the transaction action, since we don't want to overwrite the action if
         // it was replaced with a cancel attempt transaction.

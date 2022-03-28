@@ -22,12 +22,8 @@ export default function SmartTransactionListItem({
   const dispatch = useDispatch();
   const t = useI18nContext();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
-  const {
-    sourceTokenSymbol,
-    destinationTokenSymbol,
-    time,
-    status,
-  } = smartTransaction;
+  const { sourceTokenSymbol, destinationTokenSymbol, time, status } =
+    smartTransaction;
   const category = TRANSACTION_GROUP_CATEGORIES.SWAP;
   const title = t('swapTokenToToken', [
     sourceTokenSymbol,

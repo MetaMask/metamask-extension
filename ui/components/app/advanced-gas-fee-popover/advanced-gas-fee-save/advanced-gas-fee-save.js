@@ -14,12 +14,8 @@ const AdvancedGasFeeSaveButton = () => {
   const { closeModal } = useTransactionModalContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { updateTransaction } = useGasFeeContext();
-  const {
-    gasLimit,
-    hasErrors,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  } = useAdvancedGasFeePopoverContext();
+  const { gasLimit, hasErrors, maxFeePerGas, maxPriorityFeePerGas } =
+    useAdvancedGasFeePopoverContext();
 
   const onSave = () => {
     updateTransaction({

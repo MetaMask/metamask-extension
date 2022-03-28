@@ -405,8 +405,7 @@ describe('MetaMask', function () {
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector(
         {
-          css:
-            '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+          css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
           text: '-1 TST',
         },
         { timeout: 10000 },
@@ -488,8 +487,7 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
 
@@ -545,8 +543,7 @@ describe('MetaMask', function () {
 
       await driver.waitForSelector({
         // Selects only the very first transaction list item immediately following the 'Pending' header
-        css:
-          '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+        css: '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
         text: 'Approve TST spend limit',
       });
 
@@ -643,8 +640,7 @@ describe('MetaMask', function () {
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
         // Select only the heading of the first entry in the transaction list.
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Approve TST spend limit',
       });
     });
@@ -696,14 +692,12 @@ describe('MetaMask', function () {
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Send TST',
       });
 
       await driver.waitForSelector({
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
     });
@@ -740,8 +734,7 @@ describe('MetaMask', function () {
 
       await driver.waitForSelector({
         // Selects only the very first transaction list item immediately following the 'Pending' header
-        css:
-          '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+        css: '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
         text: 'Approve TST spend limit',
       });
 
@@ -770,8 +763,7 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css:
-          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Approve TST spend limit',
       });
     });

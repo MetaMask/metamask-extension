@@ -139,10 +139,8 @@ export default function ViewQuote() {
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
 
-  const [
-    acknowledgedPriceDifference,
-    setAcknowledgedPriceDifference,
-  ] = useState(false);
+  const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
+    useState(false);
   const priceDifferenceRiskyBuckets = [
     GAS_RECOMMENDATIONS.HIGH,
     GAS_RECOMMENDATIONS.MEDIUM,
@@ -346,25 +344,21 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  let {
-    feeInFiat,
-    feeInEth,
-    rawEthFee,
-    feeInUsd,
-  } = getRenderableNetworkFeesForQuote({
-    tradeGas: usedGasLimit,
-    approveGas,
-    gasPrice: networkAndAccountSupports1559
-      ? baseAndPriorityFeePerGas
-      : gasPrice,
-    currentCurrency,
-    conversionRate,
-    tradeValue,
-    sourceSymbol: sourceTokenSymbol,
-    sourceAmount: usedQuote.sourceAmount,
-    chainId,
-    nativeCurrencySymbol,
-  });
+  let { feeInFiat, feeInEth, rawEthFee, feeInUsd } =
+    getRenderableNetworkFeesForQuote({
+      tradeGas: usedGasLimit,
+      approveGas,
+      gasPrice: networkAndAccountSupports1559
+        ? baseAndPriorityFeePerGas
+        : gasPrice,
+      currentCurrency,
+      conversionRate,
+      tradeValue,
+      sourceSymbol: sourceTokenSymbol,
+      sourceAmount: usedQuote.sourceAmount,
+      chainId,
+      nativeCurrencySymbol,
+    });
   additionalTrackingParams.reg_tx_fee_in_usd = Number(feeInUsd);
   additionalTrackingParams.reg_tx_fee_in_eth = Number(rawEthFee);
 

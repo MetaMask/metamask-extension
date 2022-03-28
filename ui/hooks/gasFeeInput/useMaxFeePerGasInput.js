@@ -59,10 +59,8 @@ export function useMaxFeePerGasInput({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency: fiatCurrency, numberOfDecimals: fiatNumberOfDecimals } =
+    useUserPreferencedCurrency(SECONDARY);
 
   const showFiat = useSelector(getShouldShowFiat);
 

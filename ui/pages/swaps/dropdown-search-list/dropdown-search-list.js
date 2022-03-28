@@ -198,7 +198,8 @@ export default function DropdownSearchList({
                   className={classnames(
                     'dropdown-search-list__closed-primary-label',
                     {
-                      'dropdown-search-list__select-default': !selectedItem?.symbol,
+                      'dropdown-search-list__select-default':
+                        !selectedItem?.symbol,
                     },
                   )}
                 >
@@ -245,9 +246,8 @@ export default function DropdownSearchList({
                                 properties: {
                                   link_type: 'Token Tracker',
                                   action: 'Verify Contract Address',
-                                  block_explorer_domain: getURLHostName(
-                                    blockExplorerLink,
-                                  ),
+                                  block_explorer_domain:
+                                    getURLHostName(blockExplorerLink),
                                 },
                               });
                               global.platform.openTab({

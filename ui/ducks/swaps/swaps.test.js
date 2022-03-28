@@ -198,7 +198,8 @@ describe('Ducks - Swaps', () => {
     it('returns "customMaxPriorityFeePerGas"', () => {
       const state = createSwapsMockStore();
       const customMaxPriorityFeePerGas = '3';
-      state.metamask.swapsState.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas;
+      state.metamask.swapsState.customMaxPriorityFeePerGas =
+        customMaxPriorityFeePerGas;
       expect(swaps.getCustomMaxPriorityFeePerGas(state)).toBe(
         customMaxPriorityFeePerGas,
       );

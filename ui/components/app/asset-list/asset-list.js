@@ -54,13 +54,11 @@ const AssetList = ({ onClickAsset }) => {
     },
   );
 
-  const [
-    secondaryCurrencyDisplay,
-    secondaryCurrencyProperties,
-  ] = useCurrencyDisplay(selectedAccountBalance, {
-    numberOfDecimals: secondaryNumberOfDecimals,
-    currency: secondaryCurrency,
-  });
+  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
+      numberOfDecimals: secondaryNumberOfDecimals,
+      currency: secondaryCurrency,
+    });
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const isMainnet = useSelector(getIsMainnet) || process.env.IN_TEST;

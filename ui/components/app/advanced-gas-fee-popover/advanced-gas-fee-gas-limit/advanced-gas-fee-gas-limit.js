@@ -21,14 +21,10 @@ const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
 
 const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
-  const {
-    setGasLimit: setGasLimitInContext,
-    setErrorValue,
-  } = useAdvancedGasFeePopoverContext();
-  const {
-    gasLimit: gasLimitInTransaction,
-    minimumGasLimitDec,
-  } = useGasFeeContext();
+  const { setGasLimit: setGasLimitInContext, setErrorValue } =
+    useAdvancedGasFeePopoverContext();
+  const { gasLimit: gasLimitInTransaction, minimumGasLimitDec } =
+    useGasFeeContext();
   const [isEditing, setEditing] = useState(false);
   const [gasLimit, setGasLimit] = useState(gasLimitInTransaction);
   const [gasLimitError, setGasLimitError] = useState();

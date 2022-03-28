@@ -1138,7 +1138,7 @@ describe('Send Slice', () => {
             },
             useTokenDetection: true,
             tokenList: {
-              0x514910771af9ca656af840dff83e8264ecf986ca: {
+              '0x514910771af9ca656af840dff83e8264ecf986ca': {
                 address: '0x514910771af9ca656af840dff83e8264ecf986ca',
                 symbol: 'LINK',
                 decimals: 18,
@@ -1833,7 +1833,7 @@ describe('Send Slice', () => {
             tokens: [],
             useTokenDetection: true,
             tokenList: {
-              0x514910771af9ca656af840dff83e8264ecf986ca: {
+              '0x514910771af9ca656af840dff83e8264ecf986ca': {
                 address: '0x514910771af9ca656af840dff83e8264ecf986ca',
                 symbol: 'LINK',
                 decimals: 18,

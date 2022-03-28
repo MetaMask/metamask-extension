@@ -35,11 +35,8 @@ export const mapStateToProps = (state) => {
     dismissSeedBackUpReminder,
     useTokenDetection,
   } = metamask;
-  const {
-    showFiatInTestnets,
-    showTestNetworks,
-    autoLockTimeLimit,
-  } = getPreferences(state);
+  const { showFiatInTestnets, showTestNetworks, autoLockTimeLimit } =
+    getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
