@@ -9,15 +9,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import {
-  CHAIN_ID_TO_NETWORK_ID_MAP,
-  CHAIN_ID_TO_TYPE_MAP,
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { ETHERSCAN_SUPPORTED_NETWORKS } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
@@ -50,17 +42,9 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  * This controller is responsible for retrieving incoming transactions. Etherscan is polled once every block to check
  * for new incoming transactions for the current selected account on the current network
  *
- * Note that only the built-in Infura networks are supported (i.e. anything in `INFURA_PROVIDER_TYPES`). We will not
- * attempt to retrieve incoming transactions on any custom RPC endpoints.
+ * Note that only Etherscan-compatible networks are supported. We will not attempt to retrieve incoming transactions
+ * on non-compatible custom RPC endpoints.
  */
-const etherscanSupportedNetworks = [
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-];
-
 export default class IncomingTransactionsController {
   constructor(opts = {}) {
     const {
@@ -79,15 +63,16 @@ export default class IncomingTransactionsController {
       await this._update(selectedAddress, newBlockNumberDec);
     };
 
+    const incomingTxLastFetchedBlockByChainId = Object.keys(
+      ETHERSCAN_SUPPORTED_NETWORKS,
+    ).reduce((network, chainId) => {
+      network[chainId] = null;
+      return network;
+    }, {});
+
     const initState = {
       incomingTransactions: {},
-      incomingTxLastFetchedBlockByChainId: {
-        [GOERLI_CHAIN_ID]: null,
-        [KOVAN_CHAIN_ID]: null,
-        [MAINNET_CHAIN_ID]: null,
-        [RINKEBY_CHAIN_ID]: null,
-        [ROPSTEN_CHAIN_ID]: null,
-      },
+      incomingTxLastFetchedBlockByChainId,
       ...opts.initState,
     };
     this.store = new ObservableStore(initState);
@@ -164,7 +149,10 @@ export default class IncomingTransactionsController {
    */
   async _update(address, newBlockNumberDec) {
     const chainId = this.getCurrentChainId();
-    if (!etherscanSupportedNetworks.includes(chainId) || !address) {
+    if (
+      !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, chainId) ||
+      !address
+    ) {
       return;
     }
     try {
@@ -225,12 +213,10 @@ export default class IncomingTransactionsController {
    * @returns {TransactionMeta[]}
    */
   async _getNewIncomingTransactions(address, fromBlock, chainId) {
-    const etherscanSubdomain =
-      chainId === MAINNET_CHAIN_ID
-        ? 'api'
-        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`;
+    const etherscanDomain = ETHERSCAN_SUPPORTED_NETWORKS[chainId].domain;
+    const etherscanSubdomain = ETHERSCAN_SUPPORTED_NETWORKS[chainId].subdomain;
 
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`;
+    const apiUrl = `https://${etherscanSubdomain}.${etherscanDomain}`;
     let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`;
 
     if (fromBlock) {
@@ -293,7 +279,7 @@ export default class IncomingTransactionsController {
       blockNumber: etherscanTransaction.blockNumber,
       id: createId(),
       chainId,
-      metamaskNetworkId: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
+      metamaskNetworkId: ETHERSCAN_SUPPORTED_NETWORKS[chainId].networkId,
       status,
       time,
       txParams,

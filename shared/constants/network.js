@@ -20,12 +20,19 @@ export const GOERLI_CHAIN_ID = '0x5';
 export const KOVAN_CHAIN_ID = '0x2a';
 export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
+export const BSC_TESTNET_CHAIN_ID = '0x61';
 export const OPTIMISM_CHAIN_ID = '0xa';
 export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
 export const POLYGON_CHAIN_ID = '0x89';
+export const POLYGON_TESTNET_CHAIN_ID = '0x13881';
 export const AVALANCHE_CHAIN_ID = '0xa86a';
+export const AVALANCHE_TESTNET_CHAIN_ID = '0xa869';
 export const FANTOM_CHAIN_ID = '0xfa';
+export const FANTOM_TESTNET_CHAIN_ID = '0xfa2';
 export const CELO_CHAIN_ID = '0xa4ec';
+export const MOONBEAM_CHAIN_ID = '0x504';
+export const MOONBEAM_TESTNET_CHAIN_ID = '0x507';
+export const MOONRIVER_CHAIN_ID = '0x505';
 
 /**
  * The largest possible chain ID we can handle.
@@ -252,5 +259,103 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'celo',
       showOnlyCurrencies: 'celo',
     },
+  },
+};
+
+const defaultEtherscanDomain = 'etherscan.io';
+const defaultEtherscanSubdomainPrefix = 'api';
+/**
+ * Map of all Etherscan supported networks.
+ */
+export const ETHERSCAN_SUPPORTED_NETWORKS = {
+  [GOERLI_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[GOERLI_CHAIN_ID]}`,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[GOERLI_CHAIN_ID],
+  },
+  [KOVAN_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[KOVAN_CHAIN_ID]}`,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[KOVAN_CHAIN_ID],
+  },
+  [MAINNET_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[MAINNET_CHAIN_ID],
+  },
+  [RINKEBY_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[RINKEBY_CHAIN_ID]}`,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[RINKEBY_CHAIN_ID],
+  },
+  [ROPSTEN_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[ROPSTEN_CHAIN_ID]}`,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[ROPSTEN_CHAIN_ID],
+  },
+  [BSC_CHAIN_ID]: {
+    domain: 'bscscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(BSC_CHAIN_ID, 16).toString(),
+  },
+  [BSC_TESTNET_CHAIN_ID]: {
+    domain: 'bscscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
+    networkId: parseInt(BSC_TESTNET_CHAIN_ID, 16).toString(),
+  },
+  [OPTIMISM_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-optimistic`,
+    networkId: parseInt(OPTIMISM_CHAIN_ID, 16).toString(),
+  },
+  [OPTIMISM_TESTNET_CHAIN_ID]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-kovan-optimistic`,
+    networkId: parseInt(OPTIMISM_TESTNET_CHAIN_ID, 16).toString(),
+  },
+  [POLYGON_CHAIN_ID]: {
+    domain: 'polygonscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(POLYGON_CHAIN_ID, 16).toString(),
+  },
+  [POLYGON_TESTNET_CHAIN_ID]: {
+    domain: 'polygonscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-mumbai`,
+    networkId: parseInt(POLYGON_TESTNET_CHAIN_ID, 16).toString(),
+  },
+  [AVALANCHE_CHAIN_ID]: {
+    domain: 'snowtrace.io',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(AVALANCHE_CHAIN_ID, 16).toString(),
+  },
+  [AVALANCHE_TESTNET_CHAIN_ID]: {
+    domain: 'snowtrace.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
+    networkId: parseInt(AVALANCHE_TESTNET_CHAIN_ID, 16).toString(),
+  },
+  [FANTOM_CHAIN_ID]: {
+    domain: 'ftmscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(FANTOM_CHAIN_ID, 16).toString(),
+  },
+  [FANTOM_TESTNET_CHAIN_ID]: {
+    domain: 'ftmscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
+    networkId: parseInt(FANTOM_TESTNET_CHAIN_ID, 16).toString(),
+  },
+  [MOONBEAM_CHAIN_ID]: {
+    domain: 'moonscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-moonbeam`,
+    networkId: parseInt(MOONBEAM_CHAIN_ID, 16).toString(),
+  },
+  [MOONBEAM_TESTNET_CHAIN_ID]: {
+    domain: 'moonscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-moonbase`,
+    networkId: parseInt(MOONBEAM_TESTNET_CHAIN_ID, 16).toString(),
+  },
+  [MOONRIVER_CHAIN_ID]: {
+    domain: 'moonscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
+    networkId: parseInt(MOONRIVER_CHAIN_ID, 16).toString(),
   },
 };

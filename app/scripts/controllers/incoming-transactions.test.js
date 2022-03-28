@@ -6,7 +6,7 @@ import { cloneDeep } from 'lodash';
 
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import {
-  CHAIN_ID_TO_TYPE_MAP,
+  ETHERSCAN_SUPPORTED_NETWORKS,
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
@@ -40,13 +40,12 @@ const PREPOPULATED_BLOCKS_BY_NETWORK = {
   [RINKEBY_CHAIN_ID]: 5,
   [ROPSTEN_CHAIN_ID]: 4,
 };
-const EMPTY_BLOCKS_BY_NETWORK = {
-  [GOERLI_CHAIN_ID]: null,
-  [KOVAN_CHAIN_ID]: null,
-  [MAINNET_CHAIN_ID]: null,
-  [RINKEBY_CHAIN_ID]: null,
-  [ROPSTEN_CHAIN_ID]: null,
-};
+const EMPTY_BLOCKS_BY_NETWORK = Object.keys(
+  ETHERSCAN_SUPPORTED_NETWORKS,
+).reduce((network, chainId) => {
+  network[chainId] = null;
+  return network;
+}, {});
 
 function getEmptyInitState() {
   return {
@@ -147,22 +146,13 @@ const getFakeEtherscanTransaction = ({
 };
 
 function nockEtherscanApiForAllChains(mockResponse) {
-  for (const chainId of [
-    GOERLI_CHAIN_ID,
-    KOVAN_CHAIN_ID,
-    MAINNET_CHAIN_ID,
-    RINKEBY_CHAIN_ID,
-    ROPSTEN_CHAIN_ID,
-    'undefined',
-  ]) {
-    nock(
-      `https://api${
-        chainId === MAINNET_CHAIN_ID ? '' : `-${CHAIN_ID_TO_TYPE_MAP[chainId]}`
-      }.etherscan.io`,
-    )
-      .get(/api.+/u)
-      .reply(200, JSON.stringify(mockResponse));
-  }
+  Object.values(ETHERSCAN_SUPPORTED_NETWORKS).forEach(
+    ({ domain, subdomain }) => {
+      nock(`https://${domain}.${subdomain}`)
+        .get(/api.+/u)
+        .reply(200, JSON.stringify(mockResponse));
+    },
+  );
 }
 
 describe('IncomingTransactionsController', function () {
