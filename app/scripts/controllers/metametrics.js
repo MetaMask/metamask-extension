@@ -337,11 +337,12 @@ export default class MetaMetricsController {
   _identify(traits) {
     const { metaMetricsId } = this.state;
 
-    try {
-      if (!traits || Object.keys(traits).length === 0) {
-        throw new Error('MetaMetricsController#_identify: No traits found');
-      }
+    if (!traits || Object.keys(traits).length === 0) {
+      console.warn('MetaMetricsController#_identify: No traits found');
+      return;
+    }
 
+    try {
       this.segment.identify(metaMetricsId, {
         ...traits,
       });
