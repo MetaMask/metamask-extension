@@ -255,42 +255,47 @@ describe('MetaMetricsController', function () {
 
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
       });
+      const mock = sinon.mock(segment);
+
+      mock
+        .expects('identify')
+        .once()
+        .withArgs(TEST_META_METRICS_ID, MOCK_TRAITS);
 
       metaMetricsController.identify({
         ...MOCK_TRAITS,
         ...MOCK_INVALID_TRAITS,
       });
-
-      mock
-        .expects('identify')
-        .once()
-        .withArgs(metaMetricsController.state.metaMetricsId, MOCK_TRAITS);
+      mock.verify();
     });
 
     it('should not call segment.identify if user is not participating in metametrics', function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
+      const mock = sinon.mock(segment);
+
+      mock.expects('identify').never();
 
       metaMetricsController.identify(MOCK_TRAITS);
-      mock.expects('identify').never();
+      mock.verify();
     });
 
     it('should not call segment.identify if there are no valid traits to identify', async function () {
-      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: true,
         metaMetricsId: TEST_META_METRICS_ID,
       });
+      const mock = sinon.mock(segment);
+
+      mock.expects('identify').never();
 
       metaMetricsController.identify(MOCK_INVALID_TRAITS);
-      mock.expects('identify').never();
+      mock.verify();
     });
   });
 
