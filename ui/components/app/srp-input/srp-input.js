@@ -127,7 +127,7 @@ export default function SrpInput({ onChange }) {
       </label>
       <ActionableMessage
         className="import-srp__paste-tip"
-        iconFillColor="#037dd6" // This is `--color-info-default`
+        iconFillColor="var(--color-info-default)"
         message={t('srpPasteTip')}
         useIcon
       />
@@ -197,7 +197,7 @@ export default function SrpInput({ onChange }) {
       {srpError ? (
         <ActionableMessage
           className="import-srp__srp-error"
-          iconFillColor="#d73a49" // This is `--color-error-default`
+          iconFillColor="var(--color-error-default)"
           message={srpError}
           type="danger"
           useIcon
@@ -206,7 +206,7 @@ export default function SrpInput({ onChange }) {
       {pasteFailed ? (
         <ActionableMessage
           className="import-srp__srp-too-many-words-error"
-          iconFillColor="#d73a49" // This is `--color-error-default`
+          iconFillColor="var(--color-error-default)"
           message={t('srpPasteFailedTooManyWords')}
           primaryAction={{
             label: t('dismiss'),

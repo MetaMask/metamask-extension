@@ -368,7 +368,7 @@ class ImportToken extends Component {
           type="warning"
           withRightButton
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
         />
         <TextField
           id="custom-address"
@@ -478,7 +478,7 @@ class ImportToken extends Component {
             ])}
             withRightButton
             useIcon
-            iconFillColor="#037DD6"
+            iconFillColor="var(--color-primary-default)"
             className="import-token__token-detection-announcement"
           />
         )}
