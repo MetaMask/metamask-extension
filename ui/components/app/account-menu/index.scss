@@ -4,10 +4,10 @@
   top: 58px;
   width: 320px;
   border-radius: 4px;
-  background: rgba($black, 0.8);
+  background: var(--color-background-default);
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
-  color: var(--white);
+  color: var(--color-text-default);
 
   @media screen and (max-width: $break-small) {
     right: 16px;
@@ -42,18 +42,17 @@
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($white, 0.05);
+        background-color: var(--color-background-alternative);
       }
 
       &:active {
-        background-color: rgba($white, 0.1);
+        background-color: var(--color-background-alternative);
       }
     }
 
     &__icon {
-      height: 16px;
-      width: 16px;
-      margin-right: 14px;
+      margin-right: 8px;
+      display: flex;
     }
 
     &__text {
@@ -68,7 +67,7 @@
   }
 
   &__divider {
-    background-color: var(--scorpion);
+    background-color: var(--color-border-muted);
     width: 100%;
     height: 1px;
   }
@@ -101,24 +100,8 @@
   & &__lock-button {
     @include H7;
 
-    border: 1px solid var(--ui-white);
-    background-color: transparent;
     padding: 3.5px 5px;
-    color: var(--white);
     width: 59px;
-
-    &:hover {
-      background-color: rgba(#9b9b9b, 0.05);
-    }
-
-    &:active {
-      background-color: rgba(#9b9b9b, 0.1);
-    }
-  }
-
-  &__item-icon {
-    width: 16px;
-    height: 16px;
   }
 
   &__accounts-container {
@@ -152,8 +135,8 @@
       height: 15px;
       margin-top: 5px;
       margin-right: 10px;
-      background-color: var(--dusty-gray);
-      color: var(--black);
+      background-color: var(--color-background-alternative);
+      color: var(--color-text-default);
       font-weight: normal;
       letter-spacing: 0.5px;
       display: flex;
@@ -187,7 +170,7 @@
       .remove-account-icon::after {
         content: '\00D7';
         font-size: 25px;
-        color: var(--white);
+        color: var(--color-text-default);
         cursor: pointer;
         position: absolute;
         margin-top: -5px;
@@ -202,19 +185,9 @@
   }
 
   &__check-mark {
-    width: 14px;
-    margin-right: 12px;
+    margin-right: 8px;
     flex: 0 0 auto;
-  }
-
-  &__check-mark-icon {
-    background-image: url("/images/check-white.svg");
-    height: 18px;
-    width: 18px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    margin: 3px 0;
+    min-width: 24px;
   }
 
   .identicon {
@@ -225,7 +198,7 @@
   &__name {
     @include H4;
 
-    color: var(--white);
+    color: var(--color-text-default);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -235,7 +208,7 @@
   &__balance {
     @include H6;
 
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
   }
 
   &__action {
@@ -251,7 +224,9 @@
     height: 28px;
     width: 28px;
     border-radius: 14px;
-    background: #3f3f3f;
+    border: 1px solid var(--color-border-default);
+    background: var(--color-background-alternative);
+    color: var(--color-icon-default);
     z-index: 201;
     cursor: pointer;
     opacity: 0.8;

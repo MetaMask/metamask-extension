@@ -28,7 +28,7 @@
     @include H4;
 
     padding: 16px 4px;
-    border-bottom: 1px solid var(--alto);
+    border-bottom: 1px solid var(--color-border-default);
     height: 72px;
     align-items: center;
     display: flex;
@@ -42,7 +42,7 @@
   &__sub-header-text {
     @include H4;
 
-    color: var(--ui-4);
+    color: var(--color-text-muted);
     margin-right: 10px;
   }
 
@@ -96,34 +96,9 @@
   &__add-network-form-body {
     display: grid;
     grid-template-columns: 48% 48%;
-    // row-gap: 10%;
     column-gap: 5%;
     margin-top: 24px;
     width: 100%;
-  }
-
-  &__network-form-row {
-    @media screen and (max-width: $break-small) {
-      width: 99%;
-    }
-  }
-
-  &__network-form-label {
-    display: flex;
-    align-items: center;
-  }
-
-  &__network-form-label-text {
-    @include H6;
-
-    color: #000;
-    font-weight: bold;
-  }
-
-  &__network-form-label-tooltip {
-    @include H7;
-
-    margin-left: 5px;
   }
 
   &__networks-list {
@@ -146,7 +121,7 @@
     justify-content: center;
     padding-top: 23px;
     padding-bottom: 23px;
-    border-top: 1px solid #d8d8d8;
+    border-top: 1px solid var(--color-border-default);
 
     .button {
       width: 178px;
@@ -190,7 +165,7 @@
 
     @media screen and (max-width: $break-small) {
       padding: 20px 23px 21px 17px;
-      border-bottom: 1px solid #d8d8d8;
+      border-bottom: 1px solid var(--color-border-default);
       max-width: 351px;
     }
   }
@@ -205,7 +180,7 @@
     @include Paragraph;
 
     margin-left: 11px;
-    color: #6a737d;
+    color: var(--color-text-alternative);
     width: 70%;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -239,12 +214,12 @@
 
   &__networks-list-name--selected {
     font-weight: bold;
-    color: #000;
+    color: var(--color-text-default);
   }
 
   &__networks-list-name--disabled {
     font-weight: 300;
-    color: #cdcdcd;
+    color: var(--color-text-muted);
   }
 
   &__network-form-footer {

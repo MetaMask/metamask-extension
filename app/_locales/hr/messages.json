@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
   },
-  "addToAddressBook": {
-    "message": "Dodaj u imenik"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. Ivan M."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Greška u registraciji naziva ENS"
-  },
-  "enterAnAlias": {
-    "message": "Upiši pseudonim"
   },
   "enterPassword": {
     "message": "Upiši lozinku"

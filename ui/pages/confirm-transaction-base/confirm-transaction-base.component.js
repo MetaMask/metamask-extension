@@ -146,6 +146,7 @@ export default class ConfirmTransactionBase extends Component {
     isMultiLayerFeeNetwork: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
+    isBuyableChain: PropTypes.bool,
   };
 
   state = {
@@ -326,6 +327,7 @@ export default class ConfirmTransactionBase extends Component {
       isMultiLayerFeeNetwork,
       nativeCurrency,
       showBuyModal,
+      isBuyableChain,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -490,7 +492,6 @@ export default class ConfirmTransactionBase extends Component {
               </>
             )
           }
-          detailTitleColor={COLORS.BLACK}
           detailText={
             !isMultiLayerFeeNetwork && (
               <div className="confirm-page-container-content__currency-container">
@@ -586,11 +587,11 @@ export default class ConfirmTransactionBase extends Component {
             this.setUserAcknowledgedGasMissing()
           }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          chainId={txData.chainId}
           nativeCurrency={nativeCurrency}
           networkName={networkName}
           showBuyModal={showBuyModal}
           type={txData.type}
+          isBuyableChain={isBuyableChain}
         />
         <TransactionDetail
           disabled={isDisabled()}
@@ -872,7 +873,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="28"
+        ethLogoHeight={24}
         hideLabel
       />
     );

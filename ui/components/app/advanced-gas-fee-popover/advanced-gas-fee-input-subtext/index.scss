@@ -1,6 +1,6 @@
 .advanced-gas-fee-input-subtext {
   margin-top: 2px;
-  color: var(--ui-4);
+  color: var(--color-text-alternative);
   font-size: $font-size-h8;
 
   &__label {
@@ -21,7 +21,7 @@
     padding-top: 2px;
   }
 
-  img {
+  &__icon {
     margin-right: 8px;
   }
 }

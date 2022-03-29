@@ -47,7 +47,11 @@ export default function NetworkDisplay({
           isLoading={networkIsLoading}
         >
           <ColorIndicator
-            color={networkType === NETWORK_TYPE_RPC ? COLORS.UI4 : networkType}
+            color={
+              networkType === NETWORK_TYPE_RPC
+                ? COLORS.ICON_DEFAULT
+                : networkType
+            }
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={

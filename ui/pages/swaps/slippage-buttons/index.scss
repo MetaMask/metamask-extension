@@ -7,7 +7,7 @@
   &__header {
     display: flex;
     align-items: center;
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     margin-bottom: 0;
     margin-left: auto;
     margin-right: auto;
@@ -22,7 +22,7 @@
     @include H6;
 
     margin-right: 6px;
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     font-weight: 900;
   }
 
@@ -45,14 +45,14 @@
     @include H6;
 
     margin-right: 4px;
-    color: black;
+    color: var(--color-text-default);
     font-weight: 900;
   }
 
   &__error-text {
     @include H7;
 
-    color: var(--Red-500);
+    color: var(--color-error-default);
     margin-top: 8px;
   }
 
@@ -76,34 +76,34 @@
       border: none;
       width: 64px;
       text-align: center;
-      background: var(--Blue-500);
-      color: white;
+      background: var(--color-primary-default);
+      color: var(--color-primary-inverse);
       font-weight: inherit;
 
       &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color: white;
+        color: var(--color-primary-inverse);
       }
 
       &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-        color: white;
+        color: var(--color-primary-inverse);
         opacity: 1;
       }
 
       &::-moz-placeholder { /* Mozilla Firefox 19+ */
-        color: white;
+        color: var(--color-primary-inverse);
         opacity: 1;
       }
 
       &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color: white;
+        color: var(--color-primary-inverse);
       }
 
       &::-ms-input-placeholder { /* Microsoft Edge */
-        color: white;
+        color: var(--color-primary-inverse);
       }
 
       &::placeholder { /* Most modern browsers support this now. */
-        color: white;
+        color: var(--color-primary-inverse);
       }
     }
 
@@ -120,7 +120,7 @@
 
     &--danger {
       input {
-        background: var(--Red-500);
+        background: var(--color-error-default);
       }
     }
   }

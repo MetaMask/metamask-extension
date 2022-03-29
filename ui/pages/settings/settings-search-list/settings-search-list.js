@@ -13,17 +13,19 @@ export default function SettingsSearchList({ results, onClickSetting }) {
   return (
     <div className="settings-page__header__search__list">
       {results.slice(0, 5).map((result) => {
-        const { image, tab, section, id } = result;
+        const { icon, tab, section, id } = result;
         return (
-          Boolean(image || tab || section) && (
+          Boolean(icon || tab || section) && (
             <div key={`settings_${id}`}>
               <div
                 className="settings-page__header__search__list__item"
                 onClick={() => onClickSetting(result)}
               >
-                <img
-                  className="settings-page__header__search__list__item__icon"
-                  src={`./images/${image}`}
+                <i
+                  className={classnames(
+                    'settings-page__header__search__list__item__icon',
+                    icon,
+                  )}
                 />
 
                 <span

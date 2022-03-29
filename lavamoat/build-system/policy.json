@@ -97,6 +97,7 @@
       "packages": {
         "@babel/core": true,
         "@babel/helper-annotate-as-pure": true,
+        "@babel/helper-environment-visitor": true,
         "@babel/helper-function-name": true,
         "@babel/helper-member-expression-to-functions": true,
         "@babel/helper-optimise-call-expression": true,
@@ -127,6 +128,11 @@
         "@babel/helper-plugin-utils": true,
         "lodash.debounce": true,
         "resolve": true
+      }
+    },
+    "@babel/helper-environment-visitor": {
+      "packages": {
+        "@babel/types": true
       }
     },
     "@babel/helper-explode-assignable-expression": {
@@ -195,6 +201,7 @@
     },
     "@babel/helper-replace-supers": {
       "packages": {
+        "@babel/helper-environment-visitor": true,
         "@babel/helper-member-expression-to-functions": true,
         "@babel/helper-optimise-call-expression": true,
         "@babel/traverse": true,
@@ -420,6 +427,11 @@
       }
     },
     "@babel/plugin-syntax-top-level-await": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-typescript": {
       "packages": {
         "@babel/helper-plugin-utils": true
       }
@@ -672,6 +684,20 @@
         "@babel/helper-plugin-utils": true
       }
     },
+    "@babel/plugin-transform-typescript": {
+      "builtin": {
+        "assert": true
+      },
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-create-class-features-plugin": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-typescript": true
+      }
+    },
     "@babel/plugin-transform-unicode-escapes": {
       "packages": {
         "@babel/core": true,
@@ -777,6 +803,13 @@
         "@babel/plugin-transform-react-pure-annotations": true
       }
     },
+    "@babel/preset-typescript": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-validator-option": true,
+        "@babel/plugin-transform-typescript": true
+      }
+    },
     "@babel/template": {
       "packages": {
         "@babel/code-frame": true,
@@ -792,6 +825,7 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/generator": true,
+        "@babel/helper-environment-visitor": true,
         "@babel/helper-function-name": true,
         "@babel/helper-hoist-variables": true,
         "@babel/helper-split-export-declaration": true,
@@ -962,6 +996,48 @@
         "postcss-syntax": true,
         "remark": true,
         "unist-util-find-all-after": true
+      }
+    },
+    "@typescript-eslint/parser": {
+      "packages": {
+        "@typescript-eslint/scope-manager": true,
+        "@typescript-eslint/typescript-estree": true,
+        "debug": true,
+        "typescript": true
+      }
+    },
+    "@typescript-eslint/scope-manager": {
+      "packages": {
+        "@typescript-eslint/types": true,
+        "@typescript-eslint/visitor-keys": true
+      }
+    },
+    "@typescript-eslint/typescript-estree": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "new": true,
+        "process": true,
+        "target": true
+      },
+      "packages": {
+        "@typescript-eslint/types": true,
+        "@typescript-eslint/visitor-keys": true,
+        "debug": true,
+        "globby": true,
+        "is-glob": true,
+        "semver": true,
+        "tsutils": true,
+        "typescript": true
+      }
+    },
+    "@typescript-eslint/visitor-keys": {
+      "packages": {
+        "eslint-visitor-keys": true
       }
     },
     "JSONStream": {
@@ -1961,6 +2037,22 @@
         "resolve": true
       }
     },
+    "eslint-import-resolver-typescript": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "debug": true,
+        "glob": true,
+        "is-glob": true,
+        "resolve": true,
+        "tsconfig-paths": true
+      }
+    },
     "eslint-module-utils": {
       "builtin": {
         "crypto.createHash": true,
@@ -2458,12 +2550,7 @@
       "builtin": {
         "assert": true,
         "events.EventEmitter": true,
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.readdir": true,
-        "fs.readdirSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
+        "fs": true,
         "path.join": true,
         "path.resolve": true,
         "util": true
@@ -4860,15 +4947,39 @@
       "builtin": {
         "fs.existsSync": true,
         "fs.lstatSync": true,
+        "fs.readFile": true,
         "fs.readFileSync": true,
+        "fs.stat": true,
         "fs.statSync": true,
+        "module._resolveFilename": true,
+        "module.builtinModules": true,
         "path.dirname": true,
+        "path.isAbsolute": true,
         "path.join": true,
-        "path.resolve": true
+        "path.resolve": true,
+        "path.sep": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.argv.slice": true,
+        "process.cwd": true,
+        "process.env": true
       },
       "packages": {
         "json5": true,
+        "minimist": true,
         "strip-bom": true
+      }
+    },
+    "tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "tsutils": {
+      "packages": {
+        "tslib": true,
+        "typescript": true
       }
     },
     "type-check": {
@@ -4888,29 +4999,19 @@
       "builtin": {
         "buffer.Buffer": true,
         "crypto": true,
-        "fs.closeSync": true,
-        "fs.mkdirSync": true,
-        "fs.openSync": true,
-        "fs.readFileSync": true,
-        "fs.readdirSync": true,
-        "fs.realpathSync": true,
-        "fs.statSync": true,
-        "fs.unlinkSync": true,
-        "fs.unwatchFile": true,
-        "fs.utimesSync": true,
-        "fs.watch": true,
-        "fs.watchFile": true,
-        "fs.writeFileSync": true,
-        "fs.writeSync": true,
+        "fs": true,
         "inspector": true,
         "os.EOL": true,
         "os.platform": true,
         "path.dirname": true,
         "path.join": true,
-        "path.resolve": true
+        "path.resolve": true,
+        "perf_hooks.PerformanceObserver": true,
+        "perf_hooks.performance": true
       },
       "globals": {
         "Intl": true,
+        "PerformanceObserver": true,
         "TypeScript": "write",
         "__dirname": true,
         "__filename": true,
@@ -4919,7 +5020,6 @@
         "console.log": true,
         "gc": true,
         "globalThis": "write",
-        "onProfilerEvent": true,
         "performance": true,
         "process": true,
         "setTimeout": true,

@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
   },
-  "addToAddressBook": {
-    "message": "주소록에 추가"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "예: John D."
-  },
   "addToken": {
     "message": "토큰 추가"
   },
@@ -951,9 +945,6 @@
   },
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
-  },
-  "enterAnAlias": {
-    "message": "별칭 입력"
   },
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"

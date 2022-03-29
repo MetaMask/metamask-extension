@@ -7,7 +7,6 @@ import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   useTokensToSearch,
   getRenderableTokenData,
@@ -127,7 +126,7 @@ export default function BuildQuote({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
     undefined,
@@ -346,16 +345,6 @@ export default function BuildQuote({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
-  const blockExplorerLinkClickedEvent = useNewMetricEvent({
-    category: 'Swaps',
-    event: 'Clicked Block Explorer Link',
-    properties: {
-      link_type: 'Token Tracker',
-      action: 'Swaps Confirmation',
-      block_explorer_domain: getURLHostName(blockExplorerTokenLink),
-    },
-  });
-
   const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
@@ -441,23 +430,32 @@ export default function BuildQuote({
     fromTokenBalance,
   ]);
 
-  const buildQuotePageLoadedEvent = useNewMetricEvent({
-    event: 'Build Quote Page Loaded',
-    category: 'swaps',
-    sensitiveProperties: {
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-      stx_enabled: smartTransactionsEnabled,
-      current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
-    },
-  });
+  const trackBuildQuotePageLoadedEvent = useCallback(() => {
+    trackEvent({
+      event: 'Build Quote Page Loaded',
+      category: 'swaps',
+      sensitiveProperties: {
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+    });
+  }, [
+    trackEvent,
+    hardwareWalletUsed,
+    hardwareWalletType,
+    smartTransactionsEnabled,
+    currentSmartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+  ]);
 
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
-    buildQuotePageLoadedEvent();
-  }, [dispatch, buildQuotePageLoadedEvent]);
+    trackBuildQuotePageLoadedEvent();
+  }, [dispatch, trackBuildQuotePageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
@@ -465,7 +463,15 @@ export default function BuildQuote({
         className="build-quote__token-etherscan-link build-quote__underline"
         key="build-quote-etherscan-link"
         onClick={() => {
-          blockExplorerLinkClickedEvent();
+          trackEvent({
+            event: 'Clicked Block Explorer Link',
+            category: 'Swaps',
+            properties: {
+              link_type: 'Token Tracker',
+              action: 'Swaps Confirmation',
+              block_explorer_domain: getURLHostName(blockExplorerTokenLink),
+            },
+          });
           global.platform.openTab({
             url: blockExplorerTokenLink,
           });
@@ -522,7 +528,7 @@ export default function BuildQuote({
           history,
           fromTokenInputValue,
           maxSlippage,
-          metaMetricsEvent,
+          trackEvent,
           pageRedirectionDisabled,
         ),
       );
@@ -541,7 +547,7 @@ export default function BuildQuote({
     dispatch,
     history,
     maxSlippage,
-    metaMetricsEvent,
+    trackEvent,
     isReviewSwapButtonDisabled,
     fromTokenInputValue,
     fromTokenAddress,
@@ -713,12 +719,8 @@ export default function BuildQuote({
               onFromSelect(selectedToToken);
             }}
           >
-            <img
-              src="./images/icons/swap2.svg"
-              alt={t('swapSwapSwitch')}
-              width="12"
-              height="16"
-            />
+            <i className="fa fa-arrow-up" title={t('swapSwapSwitch')} />
+            <i className="fa fa-arrow-down" title={t('swapSwapSwitch')} />
           </button>
         </div>
         <div className="build-quote__dropdown-swap-to-header">
@@ -790,7 +792,17 @@ export default function BuildQuote({
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
                       onClick={() => {
-                        blockExplorerLinkClickedEvent();
+                        trackEvent({
+                          event: 'Clicked Block Explorer Link',
+                          category: 'Swaps',
+                          properties: {
+                            link_type: 'Token Tracker',
+                            action: 'Swaps Confirmation',
+                            block_explorer_domain: getURLHostName(
+                              blockExplorerTokenLink,
+                            ),
+                          },
+                        });
                         global.platform.openTab({
                           url: blockExplorerTokenLink,
                         });
@@ -842,7 +854,7 @@ export default function BuildQuote({
                 history,
                 fromTokenInputValue,
                 maxSlippage,
-                metaMetricsEvent,
+                trackEvent,
               ),
             );
           } else if (areQuotesPresent) {

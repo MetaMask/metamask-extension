@@ -25,6 +25,13 @@ import {
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
+import IconCheck from '../../ui/icon/icon-check';
+import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
+import IconConnect from '../../ui/icon/icon-connect';
+import IconCog from '../../ui/icon/icon-cog';
+import IconPlus from '../../ui/icon/icon-plus';
+import IconImport from '../../ui/icon/icon-import';
+
 import Button from '../../ui/button';
 import KeyRingLabel from './keyring-label';
 
@@ -202,7 +209,7 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <div className="account-menu__check-mark-icon" />
+              <IconCheck color="var(--color-success-default)" />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
@@ -271,12 +278,7 @@ export default class AccountMenu extends Component {
         className="account-menu__scroll-button"
         onClick={this.handleScrollDown}
       >
-        <img
-          src="./images/icons/down-arrow.svg"
-          width="28"
-          height="28"
-          alt={this.context.t('scrollDown')}
-        />
+        <i className="fa fa-arrow-down" title={this.context.t('scrollDown')} />
       </div>
     );
   }
@@ -309,6 +311,7 @@ export default class AccountMenu extends Component {
           {t('myAccounts')}
           <Button
             className="account-menu__lock-button"
+            type="secondary"
             onClick={() => {
               lockMetamask();
               history.push(DEFAULT_ROUTE);
@@ -344,13 +347,7 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/plus-btn-white.svg"
-              alt={t('createAccount')}
-            />
-          }
+          icon={<IconPlus color="var(--color-icon-default)" />}
           text={t('createAccount')}
         />
         <AccountMenuItem
@@ -366,10 +363,9 @@ export default class AccountMenu extends Component {
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/import-account.svg"
-              alt={t('importAccount')}
+            <IconImport
+              color="var(--color-icon-default)"
+              ariaLabel={t('importAccount')}
             />
           }
           text={t('importAccount')}
@@ -391,10 +387,9 @@ export default class AccountMenu extends Component {
             }
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/connect-icon.svg"
-              alt={t('connectHardwareWallet')}
+            <IconConnect
+              color="var(--color-icon-default)"
+              ariaLabel={t('connectHardwareWallet')}
             />
           }
           text={t('connectHardwareWallet')}
@@ -404,7 +399,12 @@ export default class AccountMenu extends Component {
           onClick={() => {
             global.platform.openTab({ url: supportLink });
           }}
-          icon={<img src="images/support.svg" alt={supportText} />}
+          icon={
+            <IconSpeechBubbles
+              color="var(--color-icon-default)"
+              ariaLabel={supportText}
+            />
+          }
           text={supportText}
         />
 
@@ -421,9 +421,9 @@ export default class AccountMenu extends Component {
             });
           }}
           icon={
-            <img
-              className="account-menu__item-icon"
-              src="images/settings.svg"
+            <IconCog
+              color="var(--color-icon-default)"
+              ariaLabel={t('settings')}
             />
           }
           text={t('settings')}

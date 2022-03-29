@@ -671,6 +671,24 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updatePreviousGasParams(txId, previousGasParams) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await promisifiedBackground.updatePreviousGasParams(
+        txId,
+        previousGasParams,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateSwapApprovalTransaction(txId, txSwapApproval) {
   return async (dispatch) => {
     let updatedTransaction;
@@ -681,7 +699,6 @@ export function updateSwapApprovalTransaction(txId, txSwapApproval) {
       );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
@@ -700,7 +717,6 @@ export function updateEditableParams(txId, editableParams) {
       );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
@@ -719,7 +735,6 @@ export function updateTransactionGasFees(txId, txGasFees) {
       );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
@@ -738,7 +753,6 @@ export function updateSwapTransaction(txId, txSwap) {
       );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
@@ -2117,10 +2131,12 @@ export function showSendTokenPage() {
 export function buyEth(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
-    global.platform.openTab({ url });
-    dispatch({
-      type: actionConstants.BUY_ETH,
-    });
+    if (url) {
+      global.platform.openTab({ url });
+      dispatch({
+        type: actionConstants.BUY_ETH,
+      });
+    }
   };
 }
 

@@ -45,7 +45,7 @@ describe('AdvancedGasFeeInputSubtext', () => {
         },
       });
 
-      expect(screen.getByAltText('up arrow')).toBeInTheDocument();
+      expect(screen.getByTitle('up arrow')).toBeInTheDocument();
     });
 
     it('should render a fee trend arrow image if given "down" as the trend', () => {
@@ -56,7 +56,7 @@ describe('AdvancedGasFeeInputSubtext', () => {
         },
       });
 
-      expect(screen.getByAltText('down arrow')).toBeInTheDocument();
+      expect(screen.getByTitle('down arrow')).toBeInTheDocument();
     });
 
     it('should render a fee trend arrow image if given "level" as the trend', () => {
@@ -67,7 +67,7 @@ describe('AdvancedGasFeeInputSubtext', () => {
         },
       });
 
-      expect(screen.getByAltText('level arrow')).toBeInTheDocument();
+      expect(screen.getByTitle('level arrow')).toBeInTheDocument();
     });
 
     it('should not render a fee trend arrow image if given an invalid trend', () => {

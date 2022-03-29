@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
-  "addToAddressBook": {
-    "message": "Προσθήκη στο βιβλίο διευθύνσεων"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "π.χ. John D."
-  },
   "addToken": {
     "message": "Προσθήκη Token"
   },
@@ -951,9 +945,6 @@
   },
   "ensUnknownError": {
     "message": "Η αναζήτηση ENS απέτυχε."
-  },
-  "enterAnAlias": {
-    "message": "Δώστε ένα ψευδώνυμο"
   },
   "enterMaxSpendLimit": {
     "message": "Εισάγετε Το Μέγιστο Όριο Δαπάνης"

@@ -187,7 +187,7 @@ export default function ConfirmationPage() {
           <Box justifyContent="center">
             <NetworkDisplay
               indicatorSize={SIZES.XS}
-              labelProps={{ color: COLORS.BLACK }}
+              labelProps={{ color: COLORS.TEXT_DEFAULT }}
             />
           </Box>
         ) : null}

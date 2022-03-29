@@ -26,7 +26,7 @@
   }
 
   &__highlighted {
-    background-color: var(--primary-2);
+    background-color: var(--color-primary-muted);
     padding: 12px;
     border-radius: 10px;
   }
@@ -35,8 +35,19 @@
 .skip-srp-backup-popover {
   width: 365px;
 
+  &__icon {
+    color: var(--color-error-default);
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
   &__checkbox {
     margin: 8px 12px 0 0;
+  }
+
+  &__label {
+    display: flex;
   }
 
   &__footer {
