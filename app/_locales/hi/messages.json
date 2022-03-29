@@ -278,10 +278,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "इन $1 को \"एडवांस\" के लिए मेरे डिफॉल्ट के रूप में सहेजें"
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "हमेशा इन मूल्यों और एडवांस सेटिंग को डिफॉल्ट के रूप में उपयोग करें।",
-    "description": "$1 is the current network"
-  },
   "advancedGasFeeModalTitle": {
     "message": "एडवांस गैस शुल्क"
   },

@@ -278,10 +278,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "I-save itong mga $1bilang aking default para sa \"Advanced\""
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Laging gamitin ang mga value na ito at advanced setting bilang default.",
-    "description": "$1 is the current network"
-  },
   "advancedGasFeeModalTitle": {
     "message": "Advanced na gas fee"
   },

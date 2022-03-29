@@ -151,10 +151,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "Guarda estos 1$ como mi valor predeterminado para \"Avanzado\""
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Usar siempre estos valores y la configuración avanzada como valores predeterminados.",
-    "description": "$1 is the current network"
-  },
   "advancedGasFeeModalTitle": {
     "message": "Tarifa de gas avanzada"
   },

@@ -278,10 +278,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "Сохранить этот $1 в качестве моего значения по умолчанию для «Дополнительной» настройки"
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Всегда использовать эти значения и дополнительную настройку по умолчанию.",
-    "description": "$1 is the current network"
-  },
   "advancedGasFeeModalTitle": {
     "message": "Дополнительная плата за газ"
   },

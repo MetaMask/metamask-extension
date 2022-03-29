@@ -278,10 +278,6 @@
   "advancedGasFeeDefaultOptIn": {
     "message": "これらの$1を「高度な設定」のデフォルトとして保存"
   },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "常にこれらの値と高度な設定をデフォルトとして使用します。",
-    "description": "$1 is the current network"
-  },
   "advancedGasFeeModalTitle": {
     "message": "高度なガス代"
   },
