@@ -625,13 +625,12 @@ async function openPopup() {
   });
 }
 
-
 /**
  * Fetch csp identifier
  */
-let cspIdentifier;
-chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-  if (msg.cspIdentifier && !cspIdentifier) {
+let cspIdentifier = 'undefined';
+browser.runtime.onMessage.addListener(function (msg, _, sendResponse) {
+  if (msg.cspIdentifier && cspIdentifier === 'undefined') {
     cspIdentifier = msg.cspIdentifier;
     sendResponse();
   }
@@ -639,37 +638,54 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
 
 /**
  * Modified from https://github.com/Rufflewind/chrome_cspmod
+ *
+ * @param details
  */
 function cspModificationProcessor(details) {
   // Fetch all headers
   const headers = details.responseHeaders;
-  for (var j = 0; j < headers.length; j++) {
+  const thisCspIdentifier = cspIdentifier;
+  for (let j = 0; j < headers.length; j++) {
     const header = headers[j];
     const name = header.name.toLowerCase();
     // Only modify CSP headers
-    if ([
-      "content-security-policy",
-      "content-security-policy-report-only",
-      "x-webkit-csp"
-    ].indexOf(name) > -1) {
+    if (
+      [
+        'content-security-policy',
+        'content-security-policy-report-only',
+        'x-webkit-csp',
+      ].indexOf(name) > -1
+    ) {
       // Get if the header already contains a script CSP
-      const hasScriptSrc = header.value.split(";").some(policy => policy.split(" ")[0].toLowerCase() == "script-src");
+      const hasScriptSrc = header.value
+        .split(';')
+        .some((policy) => policy.split(' ')[0].toLowerCase() === 'script-src');
       if (hasScriptSrc) {
-        header.value = header.value.split(";").map(policy => {
-          if (policy.split(" ")[0].toLowerCase() != "script-src") return policy;
-          return [...policy.split(" "), cspIdentifier].join(" "); // Add sha hash to CSP
-        }).join(";");
+        header.value = header.value
+          .split(';')
+          .map((policy) => {
+            if (policy.split(' ')[0].toLowerCase() !== 'script-src') {
+              return policy;
+            }
+            return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
+          })
+          .join(';');
       } else {
         // If not, modify the default
-        header.value = header.value.split(";").map(policy => {
-          if (policy.split(" ")[0].toLowerCase() != "default-src") return policy;
-          return [...policy.split(" "), cspIdentifier].join(" "); // Add sha hash to CSP
-        }).join(";");
+        header.value = header.value
+          .split(';')
+          .map((policy) => {
+            if (policy.split(' ')[0].toLowerCase() !== 'default-src') {
+              return policy;
+            }
+            return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
+          })
+          .join(';');
       }
     }
   }
   return {
-    responseHeaders: headers
+    responseHeaders: headers,
   };
 }
 
@@ -686,10 +702,11 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 /**
  * Modified from https://github.com/Rufflewind/chrome_cspmod
  */
-chrome.webRequest.onHeadersReceived.addListener(
-  cspModificationProcessor, {
-    urls: ["file://*/*", "http://*/*", "https://*/*"],
-    types: ["main_frame", "sub_frame"]
-  }, ["blocking", "responseHeaders"]
+browser.webRequest.onHeadersReceived.addListener(
+  cspModificationProcessor,
+  {
+    urls: ['file://*/*', 'http://*/*', 'https://*/*'],
+    types: ['main_frame', 'sub_frame'],
+  },
+  ['blocking', 'responseHeaders'],
 );
-

@@ -18,7 +18,17 @@ const inpageContent = fs.readFileSync(
 const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
 const inpageBundle = inpageContent + inpageSuffix;
 
-chrome.runtime.sendMessage({ cspIdentifier: `'sha256-${crypto.createHash('sha256').update(inpageBundle).digest('base64')}'` }, () => {}); // Send hash to background.js
+browser.runtime.sendMessage(
+  {
+    cspIdentifier: `'sha256-${crypto
+      .createHash('sha256')
+      .update(inpageBundle)
+      .digest('base64')}'`,
+  },
+  () => {
+    // do nothing
+  },
+); // Send hash to background.js
 
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
