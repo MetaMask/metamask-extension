@@ -361,7 +361,7 @@ export default class TransactionController extends EventEmitter {
     return transactions[txId];
   }
 
-  _checkIfTxStatusIsUnapproved(txId) {
+  _isUnapprovedTransaction(txId) {
     return (
       this.txStateManager.getTransaction(txId).status ===
       TRANSACTION_STATUSES.UNAPPROVED
@@ -386,7 +386,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateEditableParams(txId, { data, from, to, value }) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+    if (!this._isUnapprovedTransaction(txId)) {
       throw new Error(
         'Cannot call updateEditableParams on a transaction that is not in an unapproved state',
       );
@@ -438,7 +438,7 @@ export default class TransactionController extends EventEmitter {
       originalGasEstimate,
     },
   ) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+    if (!this._isUnapprovedTransaction(txId)) {
       throw new Error(
         'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
       );
@@ -479,7 +479,7 @@ export default class TransactionController extends EventEmitter {
     txId,
     { estimatedBaseFee, decEstimatedBaseFee },
   ) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+    if (!this._isUnapprovedTransaction(txId)) {
       throw new Error(
         'Cannot call updateTransactionEstimatedBaseFee on a transaction that is not in an unapproved state',
       );
@@ -505,7 +505,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+    if (!this._isUnapprovedTransaction(txId)) {
       throw new Error(
         'Cannot call updateSwapApprovalTransaction on a transaction that is not in an unapproved state',
       );
@@ -551,7 +551,7 @@ export default class TransactionController extends EventEmitter {
       approvalTxId,
     },
   ) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+    if (!this._isUnapprovedTransaction(txId)) {
       throw new Error(
         'Cannot call updateSwapTransaction on a transaction that is not in an unapproved state',
       );
@@ -586,7 +586,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+    if (!this._isUnapprovedTransaction(txId)) {
       throw new Error(
         'Cannot call updateTransactionUserSettings on a transaction that is not in an unapproved state',
       );
