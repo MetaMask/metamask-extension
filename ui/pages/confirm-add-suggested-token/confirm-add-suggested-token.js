@@ -13,6 +13,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
+import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -120,6 +121,7 @@ const ConfirmAddSuggestedToken = () => {
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
             source: 'dapp',
+            token_standard: TOKEN_STANDARDS.ERC20,
           },
         });
       }),
