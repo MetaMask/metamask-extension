@@ -372,6 +372,19 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
+  /**
+   * @param {number} txId
+   * @param {string} fnName
+   */
+  _throwErrorIfNotUnapprovedTx(txId, fnName) {
+    if (!this._isUnapprovedTransaction(txId)) {
+      throw new Error(
+        `TransactionsController: Can only call ${fnName} on an unapproved transaction.
+         Current tx status: ${this.txStateManager.getTransaction(txId).status}`,
+      );
+    }
+  }
+
   _updateTransaction(txId, proposedUpdate, note) {
     const txMeta = this.txStateManager.getTransaction(txId);
     const updated = merge(txMeta, proposedUpdate);
@@ -390,11 +403,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateEditableParams(txId, { data, from, to, value }) {
-    if (!this._isUnapprovedTransaction(txId)) {
-      throw new Error(
-        'Cannot call updateEditableParams on a transaction that is not in an unapproved state',
-      );
-    }
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateEditableParams');
 
     const editableParams = {
       txParams: {
@@ -442,11 +451,7 @@ export default class TransactionController extends EventEmitter {
       originalGasEstimate,
     },
   ) {
-    if (!this._isUnapprovedTransaction(txId)) {
-      throw new Error(
-        'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
-      );
-    }
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionGasFees');
 
     let txGasFees = {
       txParams: {
@@ -483,11 +488,10 @@ export default class TransactionController extends EventEmitter {
     txId,
     { estimatedBaseFee, decEstimatedBaseFee },
   ) {
-    if (!this._isUnapprovedTransaction(txId)) {
-      throw new Error(
-        'Cannot call updateTransactionEstimatedBaseFee on a transaction that is not in an unapproved state',
-      );
-    }
+    this._throwErrorIfNotUnapprovedTx(
+      txId,
+      'updateTransactionEstimatedBaseFee',
+    );
 
     let txEstimateBaseFees = { estimatedBaseFee, decEstimatedBaseFee };
     // only update what is defined
@@ -509,11 +513,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
-    if (!this._isUnapprovedTransaction(txId)) {
-      throw new Error(
-        'Cannot call updateSwapApprovalTransaction on a transaction that is not in an unapproved state',
-      );
-    }
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapApprovalTransaction');
 
     let swapApprovalTransaction = { type, sourceTokenSymbol };
     // only update what is defined
@@ -555,11 +555,8 @@ export default class TransactionController extends EventEmitter {
       approvalTxId,
     },
   ) {
-    if (!this._isUnapprovedTransaction(txId)) {
-      throw new Error(
-        'Cannot call updateSwapTransaction on a transaction that is not in an unapproved state',
-      );
-    }
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapTransaction');
+
     let swapTransaction = {
       sourceTokenSymbol,
       destinationTokenSymbol,
@@ -590,11 +587,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
-    if (!this._isUnapprovedTransaction(txId)) {
-      throw new Error(
-        'Cannot call updateTransactionUserSettings on a transaction that is not in an unapproved state',
-      );
-    }
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionUserSettings');
 
     let userSettings = { userEditedGasLimit, userFeeLevel };
     // only update what is defined
