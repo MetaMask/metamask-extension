@@ -70,7 +70,7 @@ const renderHeartBeatIfNotInTest = () =>
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -146,6 +146,7 @@ export default class ConfirmTransactionBase extends Component {
     isMultiLayerFeeNetwork: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
+    isBuyableChain: PropTypes.bool,
   };
 
   state = {
@@ -276,13 +277,12 @@ export default class ConfirmTransactionBase extends Component {
       methodData = {},
     } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
+    this.context.trackEvent({
+      category: 'Transactions',
+      event: 'User clicks "Edit" on gas',
+      properties: {
         action: 'Confirm Screen',
-        name: 'User clicks "Edit" on gas',
-      },
-      customVariables: {
+        legacy_event: true,
         recipientKnown: null,
         functionType:
           actionKey ||
@@ -326,6 +326,7 @@ export default class ConfirmTransactionBase extends Component {
       isMultiLayerFeeNetwork,
       nativeCurrency,
       showBuyModal,
+      isBuyableChain,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -490,7 +491,6 @@ export default class ConfirmTransactionBase extends Component {
               </>
             )
           }
-          detailTitleColor={COLORS.BLACK}
           detailText={
             !isMultiLayerFeeNetwork && (
               <div className="confirm-page-container-content__currency-container">
@@ -586,11 +586,11 @@ export default class ConfirmTransactionBase extends Component {
             this.setUserAcknowledgedGasMissing()
           }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          chainId={txData.chainId}
           nativeCurrency={nativeCurrency}
           networkName={networkName}
           showBuyModal={showBuyModal}
           type={txData.type}
+          isBuyableChain={isBuyableChain}
         />
         <TransactionDetail
           disabled={isDisabled()}
@@ -733,13 +733,12 @@ export default class ConfirmTransactionBase extends Component {
       methodData = {},
     } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
+    this.context.trackEvent({
+      category: 'Transactions',
+      event: 'Edit Transaction',
+      properties: {
         action: 'Confirm Screen',
-        name: 'Edit Transaction',
-      },
-      customVariables: {
+        legacy_event: true,
         recipientKnown: null,
         functionType:
           actionKey ||
@@ -872,7 +871,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="28"
+        ethLogoHeight={24}
         hideLabel
       />
     );
@@ -940,14 +939,13 @@ export default class ConfirmTransactionBase extends Component {
       getNextNonce,
       tryReverseResolveAddress,
     } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
+    const { trackEvent } = this.context;
+    trackEvent({
+      category: 'Transactions',
+      event: 'Confirm: Started',
+      properties: {
         action: 'Confirm Screen',
-        name: 'Confirm: Started',
-      },
-      customVariables: {
+        legacy_event: true,
         origin,
       },
     });

@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
-  "addToAddressBook": {
-    "message": "অ্যাড্রেস বুকে যোগ করুন"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "যেমন জন.ডি."
-  },
   "addToken": {
     "message": "টোকেন যোগ করুন"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
-  },
-  "enterAnAlias": {
-    "message": "একটি উপনাম লিখুন"
   },
   "enterPassword": {
     "message": "পাসওয়ার্ড লিখুন"
@@ -815,9 +806,6 @@
   },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
   },
   "seedPhraseReq": {
     "message": "সীড ফ্রেজগুলি 12 শব্দের"

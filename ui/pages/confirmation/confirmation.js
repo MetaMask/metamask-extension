@@ -166,7 +166,7 @@ export default function ConfirmationPage() {
                 setCurrentPendingConfirmation(currentPendingConfirmation - 1)
               }
             >
-              <i className="fas fa-chevron-left"></i>
+              <i className="fas fa-chevron-left" />
             </button>
           )}
           <button
@@ -178,7 +178,7 @@ export default function ConfirmationPage() {
               setCurrentPendingConfirmation(currentPendingConfirmation + 1)
             }
           >
-            <i className="fas fa-chevron-right"></i>
+            <i className="fas fa-chevron-right" />
           </button>
         </div>
       )}
@@ -186,9 +186,8 @@ export default function ConfirmationPage() {
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center">
             <NetworkDisplay
-              colored={false}
               indicatorSize={SIZES.XS}
-              labelProps={{ color: COLORS.BLACK }}
+              labelProps={{ color: COLORS.TEXT_DEFAULT }}
             />
           </Box>
         ) : null}

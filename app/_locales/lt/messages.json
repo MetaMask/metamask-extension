@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
   },
-  "addToAddressBook": {
-    "message": "Pridėti į adresų knygelę"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pvz., John D."
-  },
   "addToken": {
     "message": "Pridėti žetoną"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
-  },
-  "enterAnAlias": {
-    "message": "Įveskite alternatyvųjį vardą"
   },
   "enterPassword": {
     "message": "Įveskite slaptažodį"
@@ -815,9 +806,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"

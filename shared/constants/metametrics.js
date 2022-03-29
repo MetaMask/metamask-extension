@@ -154,6 +154,30 @@
  *  the page view
  */
 
+/**
+ * @typedef {Object} Traits
+ * @property {string} [LEDGER_CONNECTION_TYPE] - when ledger live connnection
+ * type is changed we identify the ledger_connection_type trait
+ * @property {string} [NETWORKS_ADDED] - when user modifies networks we
+ * identify the networks_added trait
+ * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we
+ * identify the new number_of_accounts trait
+ * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
+ * identify the 3box_enabled trait
+ */
+
+/**
+ *
+ * @type {Traits}
+ */
+
+export const TRAITS = {
+  LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
+  THREE_BOX_ENABLED: 'three_box_enabled',
+  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
+  NETWORKS_ADDED: 'networks_added',
+};
+
 // Mixpanel converts the zero address value to a truly anonymous event, which
 // speeds up reporting
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000';

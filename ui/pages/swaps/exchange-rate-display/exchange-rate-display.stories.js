@@ -59,7 +59,8 @@ export const WhiteOnBlue = (args) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'linear-gradient(90deg, #037DD6 0%, #1098FC 101.32%)',
+        background:
+          'linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-muted) 101.32%)',
       }}
     >
       <ExchangeRateDisplay {...args} />

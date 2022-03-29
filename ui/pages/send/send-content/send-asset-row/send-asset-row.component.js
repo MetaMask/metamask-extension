@@ -46,7 +46,7 @@ export default class SendAssetRow extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   state = {
@@ -87,13 +87,12 @@ export default class SendAssetRow extends Component {
         isShowingDropdown: false,
       },
       () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
+        this.context.trackEvent({
+          category: 'Transactions',
+          event: 'User clicks "Assets" dropdown',
+          properties: {
             action: 'Send Screen',
-            name: 'User clicks "Assets" dropdown',
-          },
-          customVariables: {
+            legacy_event: true,
             assetSelected: this.getAssetSelected(type, token),
           },
         });

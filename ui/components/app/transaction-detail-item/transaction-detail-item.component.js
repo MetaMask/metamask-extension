@@ -16,7 +16,7 @@ import {
 export default function TransactionDetailItem({
   detailTitle = '',
   detailText = '',
-  detailTitleColor = COLORS.BLACK,
+  detailTitleColor = COLORS.TEXT_DEFAULT,
   detailTotal = '',
   subTitle = '',
   subText = '',

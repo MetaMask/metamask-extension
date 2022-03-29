@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
-  "addToAddressBook": {
-    "message": "Adăugați în agendă"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "de ex. John D."
-  },
   "addToken": {
     "message": "Adăugare simbol"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
-  },
-  "enterAnAlias": {
-    "message": "Introduceți un alias"
   },
   "enterPassword": {
     "message": "Introduceți parola"
@@ -802,9 +793,6 @@
   },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "seedPhraseReq": {
     "message": "Expresiile seed sunt lungi de 12 cuvinte"

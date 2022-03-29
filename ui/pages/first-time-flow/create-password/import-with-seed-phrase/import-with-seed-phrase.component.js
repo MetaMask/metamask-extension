@@ -9,7 +9,7 @@ import CreateNewVault from '../../../../components/app/create-new-vault';
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -21,13 +21,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
   UNSAFE_componentWillMount() {
     this._onBeforeUnload = () =>
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Onboarding',
+      this.context.trackEvent({
+        category: 'Onboarding',
+        event: 'Close window on import screen',
+        properties: {
           action: 'Import Seed Phrase',
-          name: 'Close window on import screen',
-        },
-        customVariables: {
+          legacy_event: true,
           errorLabel: 'Seed Phrase Error',
           errorMessage: this.state.seedPhraseError,
         },
@@ -48,11 +47,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
     } = this.props;
 
     await onSubmit(password, seedPhrase);
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    this.context.trackEvent({
+      category: 'Onboarding',
+      event: 'Import Complete',
+      properties: {
         action: 'Import Seed Phrase',
-        name: 'Import Complete',
+        legacy_event: true,
       },
     });
 
@@ -70,11 +70,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
           <a
             onClick={(e) => {
               e.preventDefault();
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Onboarding',
+              this.context.trackEvent({
+                category: 'Onboarding',
+                event: 'Go Back from Onboarding Import',
+                properties: {
                   action: 'Import Seed Phrase',
-                  name: 'Go Back from Onboarding Import',
+                  legacy_event: true,
                 },
               });
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);

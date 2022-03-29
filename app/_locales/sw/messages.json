@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Ongeza Vianzio Vilivyopendekezwa"
   },
-  "addToAddressBook": {
-    "message": "Ongeza kwenye kitabu cha anwani"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "k.m John D."
-  },
   "addToken": {
     "message": "Ongeza Kianzio"
   },
@@ -333,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
-  },
-  "enterAnAlias": {
-    "message": "Ingiza majina mengine"
   },
   "enterPassword": {
     "message": "Ingiza nenosiri"
@@ -793,9 +784,6 @@
   },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Tenganisha kila neno kwa nafasi moja"
   },
   "seedPhraseReq": {
     "message": "Virai vianzio vina urefu wa maneno 12"

@@ -10,7 +10,6 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -57,6 +56,7 @@ export default class ConfirmPageContainerContent extends Component {
     showBuyModal: PropTypes.func,
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
+    isBuyableChain: PropTypes.bool,
   };
 
   renderContent() {
@@ -132,6 +132,7 @@ export default class ConfirmPageContainerContent extends Component {
       showBuyModal,
       toAddress,
       transactionType,
+      isBuyableChain,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -146,8 +147,7 @@ export default class ConfirmPageContainerContent extends Component {
       supportsEIP1559V2 &&
       !hasSimulationError &&
       (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
-      currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND;
+      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -197,42 +197,38 @@ export default class ConfirmPageContainerContent extends Component {
           )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
-            {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
-              <ActionableMessage
-                className="actionable-message--warning"
-                message={
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={
+                isBuyableChain ? (
                   <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    <Button
-                      key="link"
-                      type="secondary"
-                      className="confirm-page-container-content__link"
-                      onClick={showBuyModal}
-                    >
-                      {t('buyEth')}
-                    </Button>
+                    {t('insufficientCurrencyBuyOrDeposit', [
+                      nativeCurrency,
+                      networkName,
 
-                    {t('orDeposit')}
+                      <Button
+                        type="inline"
+                        className="confirm-page-container-content__link"
+                        onClick={showBuyModal}
+                        key={`${nativeCurrency}-buy-button`}
+                      >
+                        {t('buyAsset', [nativeCurrency])}
+                      </Button>,
+                    ])}
                   </Typography>
-                }
-                useIcon
-                iconFillColor="#d73a49"
-                type="danger"
-              />
-            ) : (
-              <ActionableMessage
-                className="actionable-message--warning"
-                message={
+                ) : (
                   <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    {t('buyOther', [nativeCurrency])}
+                    {t('insufficientCurrencyDeposit', [
+                      nativeCurrency,
+                      networkName,
+                    ])}
                   </Typography>
-                }
-                useIcon
-                iconFillColor="#d73a49"
-                type="danger"
-              />
-            )}
+                )
+              }
+              useIcon
+              iconFillColor="var(--color-error-default)"
+              type="danger"
+            />
           </div>
         )}
 

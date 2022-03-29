@@ -671,66 +671,93 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updatePreviousGasParams(txId, previousGasParams) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await promisifiedBackground.updatePreviousGasParams(
+        txId,
+        previousGasParams,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateSwapApprovalTransaction(txId, txSwapApproval) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateSwapApprovalTransaction(
+      updatedTransaction = await promisifiedBackground.updateSwapApprovalTransaction(
         txId,
         txSwapApproval,
       );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return txSwapApproval;
+    return updatedTransaction;
   };
 }
 
 export function updateEditableParams(txId, editableParams) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateEditableParams(txId, editableParams);
+      updatedTransaction = await promisifiedBackground.updateEditableParams(
+        txId,
+        editableParams,
+      );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return editableParams;
+    return updatedTransaction;
   };
 }
 
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateTransactionGasFees(txId, txGasFees);
+      updatedTransaction = await promisifiedBackground.updateTransactionGasFees(
+        txId,
+        txGasFees,
+      );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return txGasFees;
+    return updatedTransaction;
   };
 }
 
 export function updateSwapTransaction(txId, txSwap) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateSwapTransaction(txId, txSwap);
+      updatedTransaction = await promisifiedBackground.updateSwapTransaction(
+        txId,
+        txSwap,
+      );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return txSwap;
+    return updatedTransaction;
   };
 }
 
@@ -1566,6 +1593,7 @@ export function rejectWatchAsset(suggestedAssetID) {
     dispatch(showLoadingIndication());
     try {
       await promisifiedBackground.rejectWatchAsset(suggestedAssetID);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1582,6 +1610,7 @@ export function acceptWatchAsset(suggestedAssetID) {
     dispatch(showLoadingIndication());
     try {
       await promisifiedBackground.acceptWatchAsset(suggestedAssetID);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -2102,10 +2131,12 @@ export function showSendTokenPage() {
 export function buyEth(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
-    global.platform.openTab({ url });
-    dispatch({
-      type: actionConstants.BUY_ETH,
-    });
+    if (url) {
+      global.platform.openTab({ url });
+      dispatch({
+        type: actionConstants.BUY_ETH,
+      });
+    }
   };
 }
 
@@ -3228,7 +3259,10 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 }
 
 // Smart Transactions Controller
-export async function setSmartTransactionsOptInStatus(optInState) {
+export async function setSmartTransactionsOptInStatus(
+  optInState,
+  prevOptInState,
+) {
   trackMetaMetricsEvent({
     event: 'STX OptIn',
     category: 'swaps',
@@ -3236,6 +3270,7 @@ export async function setSmartTransactionsOptInStatus(optInState) {
       stx_enabled: true,
       current_stx_enabled: true,
       stx_user_opt_in: optInState,
+      stx_prev_user_opt_in: prevOptInState,
     },
   });
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);

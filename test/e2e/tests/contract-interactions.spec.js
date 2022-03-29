@@ -6,10 +6,6 @@ const {
 } = require('../helpers');
 
 describe('Deploy contract and call contract methods', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   const ganacheOptions = {
     accounts: [
       {
@@ -37,13 +33,13 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         await driver.delay(5000);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        let windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
+        const popup = windowHandles.find(
           (handle) => handle !== extension && handle !== dapp,
         );
         await driver.switchToWindow(popup);

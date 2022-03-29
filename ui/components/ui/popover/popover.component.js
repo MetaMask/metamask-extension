@@ -6,6 +6,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
 import {
   ALIGN_ITEMS,
+  COLORS,
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
@@ -14,7 +15,7 @@ const defaultHeaderProps = {
   padding: [6, 4, 4],
   display: 'flex',
   flexDirection: FLEX_DIRECTION.COLUMN,
-  backgroundColor: 'white',
+  backgroundColor: COLORS.BACKGROUND_DEFAULT,
   borderRadius: 'xl',
 };
 

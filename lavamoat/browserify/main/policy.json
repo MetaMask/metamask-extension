@@ -735,6 +735,7 @@
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
@@ -1964,17 +1965,19 @@
         "browser": true,
         "clearInterval": true,
         "open": true,
+        "rlp.encode": true,
         "setInterval": true
       },
       "packages": {
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
-        "bignumber.js": true,
+        "bn.js": true,
         "buffer": true,
         "crypto-browserify": true,
         "ethereumjs-util": true,
         "events": true,
-        "gridplus-sdk": true
+        "gridplus-sdk": true,
+        "secp256k1": true
       }
     },
     "eth-method-registry": {
@@ -2240,12 +2243,6 @@
         "stream-browserify": true
       }
     },
-    "extensionizer": {
-      "globals": {
-        "browser": true,
-        "chrome": true
-      }
-    },
     "faker": {
       "globals": {
         "console.error": true,
@@ -2343,6 +2340,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
         "aes-js": true,
         "bech32": true,
         "bignumber.js": true,
@@ -2355,6 +2354,7 @@
         "eth-eip712-util-browser": true,
         "hash.js": true,
         "js-sha3": true,
+        "rlp": true,
         "rlp-browser": true,
         "secp256k1": true,
         "superagent": true
@@ -4622,6 +4622,9 @@
       }
     },
     "rlp": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "bn.js": true,
         "buffer": true
@@ -5187,6 +5190,15 @@
         "number-to-bn": true,
         "randombytes": true,
         "utf8": true
+      }
+    },
+    "webextension-polyfill": {
+      "globals": {
+        "browser": true,
+        "chrome": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
       }
     },
     "webrtcsupport": {

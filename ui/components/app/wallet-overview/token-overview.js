@@ -12,7 +12,6 @@ import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { updateSendAsset } from '../../../ducks/send';
@@ -48,11 +47,6 @@ const TokenOverview = ({ className, token }) => {
     token.symbol,
   );
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const enteredSwapsEvent = useNewMetricEvent({
-    event: 'Swaps Opened',
-    properties: { source: 'Token View', active_currency: token.symbol },
-    category: 'swaps',
-  });
 
   useEffect(() => {
     if (token.isERC721 && process.env.COLLECTIBLES_V1) {
@@ -121,10 +115,18 @@ const TokenOverview = ({ className, token }) => {
             Icon={SwapIcon}
             onClick={() => {
               if (isSwapsChain) {
-                enteredSwapsEvent();
+                trackEvent({
+                  event: 'Swaps Opened',
+                  category: 'swaps',
+                  properties: {
+                    source: 'Token View',
+                    active_currency: token.symbol,
+                  },
+                });
                 dispatch(
                   setSwapsFromToken({
                     ...token,
+                    address: token.address.toLowerCase(),
                     iconUrl: token.image,
                     balance,
                     string: balanceToRender,
