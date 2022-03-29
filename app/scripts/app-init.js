@@ -1,3 +1,5 @@
+// eslint-disable-next-line
+let initialized = false;
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -12,7 +14,9 @@ function tryImport(...fileNames) {
 
 // eslint-disable-next-line
 chrome.runtime.onConnect.addListener(() => {
-  importAllScripts();
+  if (!initialized) {
+    importAllScripts();
+  }
 });
 
 // eslint-disable-next-line
@@ -31,4 +35,6 @@ function importAllScripts() {
   ];
 
   fileList.forEach((fileName) => tryImport(fileName));
+
+  initialized = true;
 }
