@@ -66,7 +66,7 @@ describe('Dapp interactions', function () {
         dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
-        dappOptions: {numberOfDapps: 2},
+        dappOptions: { numberOfDapps: 2 },
         title: this.test.title,
       },
       async ({ driver }) => {

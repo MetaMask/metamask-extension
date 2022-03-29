@@ -36,6 +36,7 @@ async function withFixtures(options, testSuite) {
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
+  let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
 
   let webDriver;
@@ -55,9 +56,8 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
-      var numberOfDapps = 1;
-      if (dappOptions?.numberOfDapps){
-        numberOfDapps= dappOptions.numberOfDapps;
+      if (dappOptions?.numberOfDapps) {
+        numberOfDapps = dappOptions.numberOfDapps;
       }
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
