@@ -1,10 +1,21 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React from 'react';
+import { useSelector } from 'react-redux';
+>>>>>>> 937eb077f (adding token value component)
 import PropTypes from 'prop-types';
 
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
+<<<<<<< HEAD
 import CheckBox from '../../../ui/check-box';
 
+=======
+import Identicon from '../../../ui/identicon';
+
+import { getTokenList } from '../../../../selectors';
+>>>>>>> 937eb077f (adding token value component)
 import {
   COLORS,
   DISPLAY,
