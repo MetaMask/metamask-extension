@@ -1405,9 +1405,6 @@
   "lastConnected": {
     "message": "अंतिम बार कनेक्ट किया गया"
   },
-  "layer1Fees": {
-    "message": "लेयर 1 शुल्क"
-  },
   "learmMoreAboutGas": {
     "message": "गैस के बारे में $1 चाहते हैं?"
   },

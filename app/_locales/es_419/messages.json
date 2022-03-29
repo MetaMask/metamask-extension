@@ -1454,9 +1454,6 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
-  },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"
   },
