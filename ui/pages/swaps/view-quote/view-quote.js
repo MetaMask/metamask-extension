@@ -59,10 +59,7 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import {
-  toPrecisionWithoutTrailingZeros,
-  isEqualCaseInsensitive,
-} from '../../../helpers/utils/util';
+import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 
 import {
   safeRefetchQuotes,
@@ -115,6 +112,7 @@ import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -207,40 +205,6 @@ export default function ViewQuote() {
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
-  useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
-      const unsignedTx = {
-        from: unsignedTransaction.from,
-        to: unsignedTransaction.to,
-        value: unsignedTransaction.value,
-        data: unsignedTransaction.data,
-        gas: unsignedTransaction.gas,
-        chainId,
-      };
-      intervalId = setInterval(() => {
-        dispatch(
-          estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
-        );
-      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
-      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
-    } else if (intervalId) {
-      clearInterval(intervalId);
-    }
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line
-  }, [
-    dispatch,
-    currentSmartTransactionsEnabled,
-    smartTransactionsOptInStatus,
-    unsignedTransaction.data,
-    unsignedTransaction.from,
-    unsignedTransaction.value,
-    unsignedTransaction.gas,
-    unsignedTransaction.to,
-    chainId,
-    swapsRefreshRates.stxGetTransactionsRefreshTime,
-  ]);
-
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
@@ -253,6 +217,17 @@ export default function ViewQuote() {
   const { isBestQuote } = usedQuote;
 
   const fetchParamsSourceToken = fetchParams?.sourceToken;
+
+  const additionalTrackingParams = {
+    reg_tx_fee_in_usd: undefined,
+    reg_tx_fee_in_eth: undefined,
+    reg_tx_max_fee_in_usd: undefined,
+    reg_tx_max_fee_in_eth: undefined,
+    stx_fee_in_usd: undefined,
+    stx_fee_in_eth: undefined,
+    stx_max_fee_in_usd: undefined,
+    stx_max_fee_in_eth: undefined,
+  };
 
   const usedGasLimit =
     usedQuote?.gasEstimateWithRefund ||
@@ -268,7 +243,7 @@ export default function ViewQuote() {
   const nonCustomMaxGasLimit = usedQuote?.gasEstimate
     ? usedGasLimitWithMultiplier
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
-  let maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
+  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
@@ -289,17 +264,6 @@ export default function ViewQuote() {
       decGWEIToHexWEI(estimatedBaseFee),
       maxPriorityFeePerGas,
     );
-  }
-
-  // Smart Transactions gas fees.
-  if (
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    smartTransactionEstimatedGas?.txData
-  ) {
-    maxGasLimit = `0x${decimalToHex(
-      smartTransactionEstimatedGas?.txData.gasLimit || 0,
-    )}`;
   }
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
@@ -376,7 +340,12 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  let { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
+  let {
+    feeInFiat,
+    feeInEth,
+    rawEthFee,
+    feeInUsd,
+  } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
     gasPrice: networkAndAccountSupports1559
@@ -390,6 +359,8 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
+  additionalTrackingParams.reg_tx_fee_in_usd = Number(feeInUsd);
+  additionalTrackingParams.reg_tx_fee_in_eth = Number(rawEthFee);
 
   const renderableMaxFees = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
@@ -403,8 +374,15 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
-  let { feeInFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = renderableMaxFees;
+  let {
+    feeInFiat: maxFeeInFiat,
+    feeInEth: maxFeeInEth,
+    rawEthFee: maxRawEthFee,
+    feeInUsd: maxFeeInUsd,
+  } = renderableMaxFees;
   const { nonGasFee } = renderableMaxFees;
+  additionalTrackingParams.reg_tx_max_fee_in_usd = Number(maxFeeInUsd);
+  additionalTrackingParams.reg_tx_max_fee_in_eth = Number(maxRawEthFee);
 
   if (
     currentSmartTransactionsEnabled &&
@@ -415,16 +393,22 @@ export default function ViewQuote() {
       smartTransactionEstimatedGas.txData.feeEstimate +
       (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
     const stxMaxFeeInWeiDec = stxEstimatedFeeInWeiDec * 2;
-    ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
+    ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
       feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
+    additionalTrackingParams.stx_fee_in_usd = Number(feeInUsd);
+    additionalTrackingParams.stx_fee_in_eth = Number(rawEthFee);
+    additionalTrackingParams.estimated_gas =
+      smartTransactionEstimatedGas.txData.gasLimit;
     ({
       feeInFiat: maxFeeInFiat,
       feeInEth: maxFeeInEth,
+      rawEthFee: maxRawEthFee,
+      feeInUsd: maxFeeInUsd,
     } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
@@ -432,6 +416,8 @@ export default function ViewQuote() {
       nativeCurrencySymbol,
       feeInWeiDec: stxMaxFeeInWeiDec,
     }));
+    additionalTrackingParams.stx_max_fee_in_usd = Number(maxFeeInUsd);
+    additionalTrackingParams.stx_max_fee_in_eth = Number(maxRawEthFee);
   }
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
@@ -522,7 +508,7 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
-    stx_enabled: currentSmartTransactionsEnabled,
+    stx_enabled: smartTransactionsEnabled,
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
@@ -784,6 +770,55 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
+  const isSwapButtonDisabled =
+    submitClicked ||
+    balanceError ||
+    tokenBalanceUnavailable ||
+    disableSubmissionDueToPriceWarning ||
+    (networkAndAccountSupports1559 && baseAndPriorityFeePerGas === undefined) ||
+    (!networkAndAccountSupports1559 &&
+      (gasPrice === null || gasPrice === undefined)) ||
+    (currentSmartTransactionsEnabled && currentSmartTransactionsError);
+
+  useEffect(() => {
+    if (
+      currentSmartTransactionsEnabled &&
+      smartTransactionsOptInStatus &&
+      !isSwapButtonDisabled
+    ) {
+      const unsignedTx = {
+        from: unsignedTransaction.from,
+        to: unsignedTransaction.to,
+        value: unsignedTransaction.value,
+        data: unsignedTransaction.data,
+        gas: unsignedTransaction.gas,
+        chainId,
+      };
+      intervalId = setInterval(() => {
+        dispatch(
+          estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
+        );
+      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
+      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
+    } else if (intervalId) {
+      clearInterval(intervalId);
+    }
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line
+  }, [
+    dispatch,
+    currentSmartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+    unsignedTransaction.data,
+    unsignedTransaction.from,
+    unsignedTransaction.value,
+    unsignedTransaction.gas,
+    unsignedTransaction.to,
+    chainId,
+    swapsRefreshRates.stxGetTransactionsRefreshTime,
+    isSwapButtonDisabled,
+  ]);
+
   const onCloseEditGasPopover = () => {
     setShowEditGasPopover(false);
   };
@@ -969,10 +1004,17 @@ export default function ViewQuote() {
                       unsignedTransaction,
                       metaMetricsEvent,
                       history,
+                      additionalTrackingParams,
                     }),
                   );
                 } else {
-                  dispatch(signAndSendTransactions(history, metaMetricsEvent));
+                  dispatch(
+                    signAndSendTransactions(
+                      history,
+                      metaMetricsEvent,
+                      additionalTrackingParams,
+                    ),
+                  );
                 }
               } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
                 history.push(DEFAULT_ROUTE);
@@ -988,17 +1030,7 @@ export default function ViewQuote() {
                 : t('swap')
             }
             hideCancel
-            disabled={
-              submitClicked ||
-              balanceError ||
-              tokenBalanceUnavailable ||
-              disableSubmissionDueToPriceWarning ||
-              (networkAndAccountSupports1559 &&
-                baseAndPriorityFeePerGas === undefined) ||
-              (!networkAndAccountSupports1559 &&
-                (gasPrice === null || gasPrice === undefined)) ||
-              (currentSmartTransactionsEnabled && currentSmartTransactionsError)
-            }
+            disabled={isSwapButtonDisabled}
             className={isShowingWarning && 'view-quote__thin-swaps-footer'}
             showTopBorder
           />

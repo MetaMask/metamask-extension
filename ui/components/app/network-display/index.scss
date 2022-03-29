@@ -11,34 +11,6 @@
     cursor: not-allowed;
   }
 
-  &--colored {
-    background-color: lighten(rgb(125, 128, 130), 45%);
-  }
-
-  &--mainnet {
-    background-color: lighten($blue-lagoon, 68%);
-  }
-
-  &--ropsten {
-    background-color: lighten($crimson, 45%);
-  }
-
-  &--kovan {
-    background-color: lighten($purple, 65%);
-  }
-
-  &--rinkeby {
-    background-color: lighten($tulip-tree, 35%);
-  }
-
-  &--goerli {
-    background-color: lighten($dodger-blue, 35%);
-  }
-
-  &--localhost {
-    background-color: lighten($blue-lagoon, 68%);
-  }
-
   &.chip {
     margin: 0;
     max-width: 100%;
@@ -59,8 +31,6 @@
   }
 
   &__icon {
-    height: 8px;
-    width: 12px;
     display: block;
   }
 

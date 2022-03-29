@@ -68,10 +68,7 @@
         @extend %bg-contain;
 
         display: block;
-        background-image: url('/images/caret-left.svg');
-        width: 18px;
-        height: 18px;
-        margin-right: 0.5rem;
+        margin-right: 8px;
 
         [dir='rtl'] & {
           transform: rotate(180deg);

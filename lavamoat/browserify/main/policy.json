@@ -1178,9 +1178,6 @@
       }
     },
     "bip39": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "buffer": true,
         "create-hash": true,
@@ -1895,7 +1892,6 @@
     "eth-hd-keyring": {
       "packages": {
         "bip39": true,
-        "buffer": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
         "ethereumjs-wallet": true
@@ -1954,7 +1950,6 @@
       "packages": {
         "bip39": true,
         "browser-passworder": true,
-        "buffer": true,
         "eth-hd-keyring": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
@@ -1970,17 +1965,19 @@
         "browser": true,
         "clearInterval": true,
         "open": true,
+        "rlp.encode": true,
         "setInterval": true
       },
       "packages": {
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
-        "bignumber.js": true,
+        "bn.js": true,
         "buffer": true,
         "crypto-browserify": true,
         "ethereumjs-util": true,
         "events": true,
-        "gridplus-sdk": true
+        "gridplus-sdk": true,
+        "secp256k1": true
       }
     },
     "eth-method-registry": {
@@ -2349,6 +2346,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
         "aes-js": true,
         "bech32": true,
         "bignumber.js": true,
@@ -2361,6 +2360,7 @@
         "eth-eip712-util-browser": true,
         "hash.js": true,
         "js-sha3": true,
+        "rlp": true,
         "rlp-browser": true,
         "secp256k1": true,
         "superagent": true
@@ -4628,6 +4628,9 @@
       }
     },
     "rlp": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "bn.js": true,
         "buffer": true

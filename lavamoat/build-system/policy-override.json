@@ -14,6 +14,7 @@
     },
     "@eslint/eslintrc": {
       "packages": {
+        "<root>": true,
         "@babel/eslint-parser": true,
         "@babel/eslint-plugin": true,
         "@metamask/eslint-config": true,

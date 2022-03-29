@@ -6,7 +6,7 @@
 
 html,
 body {
-  color: #4d4d4d;
+  color: var(--color-text-default);
   width: 100%;
   height: 100%;
   margin: 0;
@@ -49,10 +49,10 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f7f7f7;
+  background: var(--color-background-alternative);
 
   @media screen and (max-width: $break-small) {
-    background-color: var(--white);
+    background-color: var(--color-background-default);
   }
 }
 /* stylelint-enable */
@@ -89,32 +89,32 @@ input.form-control {
   padding-left: 10px;
   font-size: 14px;
   height: 40px;
-  border: 1px solid var(--alto);
+  border: 1px solid var(--color-border-muted);
   border-radius: 3px;
   width: 100%;
 
   &::-webkit-input-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
   }
 
   &::-moz-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
   }
 
   &:-ms-input-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
   }
 
   &:-moz-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
   }
 
   &--error {
-    border: 1px solid var(--monzo);
+    border: 1px solid var(--color-error-default);
   }
 }
 

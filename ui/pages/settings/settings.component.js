@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
+import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
+
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -22,6 +24,8 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
+import { getSettingsRoutes } from '../../helpers/utils/settings-search';
+
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -34,6 +38,8 @@ import ExperimentalTab from './experimental-tab';
 import SnapListTab from './flask/snaps-list-tab';
 import ViewSnap from './flask/view-snap';
 ///: END:ONLY_INCLUDE_IN
+import SettingsSearch from './settings-search';
+import SettingsSearchList from './settings-search-list';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -59,6 +65,9 @@ class SettingsPage extends PureComponent {
 
   state = {
     lastFetchedConversionDate: null,
+    searchResults: [],
+    isSearchList: false,
+    searchText: '',
   };
 
   componentDidMount() {
@@ -76,6 +85,15 @@ class SettingsPage extends PureComponent {
     }
   }
 
+  handleClickSetting(setting) {
+    const { history } = this.props;
+    history.push(setting.route);
+    this.setState({
+      searchResults: '',
+      isSearchList: '',
+    });
+  }
+
   render() {
     const {
       history,
@@ -85,6 +103,10 @@ class SettingsPage extends PureComponent {
       addNewNetwork,
       isSnapViewPage,
     } = this.props;
+
+    const { searchResults, isSearchList, searchText } = this.state;
+    const { t } = this.context;
+
     return (
       <div
         className={classnames('main-container settings-page', {
@@ -92,24 +114,51 @@ class SettingsPage extends PureComponent {
         })}
       >
         <div className="settings-page__header">
-          {currentPath !== SETTINGS_ROUTE && (
+          <div className="settings-page__header__title-container">
+            {currentPath !== SETTINGS_ROUTE && (
+              <IconCaretLeft
+                className="settings-page__back-button"
+                color="var(--color-icon-default)"
+                size={32}
+                onClick={() => history.push(backRoute)}
+              />
+            )}
+
+            {this.renderTitle()}
+
             <div
-              className="settings-page__back-button"
-              onClick={() => history.push(backRoute)}
+              className="settings-page__header__title-container__close-button"
+              onClick={() => {
+                if (addNewNetwork) {
+                  history.push(NETWORKS_ROUTE);
+                } else {
+                  history.push(mostRecentOverviewPage);
+                }
+              }}
             />
-          )}
-          {this.renderTitle()}
-          <div
-            className="settings-page__close-button"
-            onClick={() => {
-              if (addNewNetwork) {
-                history.push(NETWORKS_ROUTE);
-              } else {
-                history.push(mostRecentOverviewPage);
-              }
-            }}
-          />
+          </div>
+
+          <div className="settings-page__header__search">
+            <SettingsSearch
+              onSearch={({ searchQuery = '', results = [] }) => {
+                this.setState({
+                  searchResults: results,
+                  isSearchList: searchQuery !== '',
+                  searchText: searchQuery,
+                });
+              }}
+              settingsRoutesList={getSettingsRoutes(t)}
+            />
+            {isSearchList && searchText.length >= 3 && (
+              <SettingsSearchList
+                key=""
+                results={searchResults}
+                onClickSetting={(setting) => this.handleClickSetting(setting)}
+              />
+            )}
+          </div>
         </div>
+
         <div className="settings-page__content">
           <div className="settings-page__content__tabs">
             {this.renderTabs()}
@@ -142,7 +191,11 @@ class SettingsPage extends PureComponent {
       titleText = t('settings');
     }
 
-    return <div className="settings-page__header__title">{titleText}</div>;
+    return (
+      <div className="settings-page__header__title-container__title">
+        {titleText}
+      </div>
+    );
   }
 
   renderSubHeader() {

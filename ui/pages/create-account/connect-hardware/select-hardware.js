@@ -351,6 +351,30 @@ export default class SelectHardware extends Component {
         ),
       },
       {
+        message: (
+          <>
+            <a
+              className="hw-connect__msg-link"
+              href="https://airgap.it/metamask"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="airgap-vault-support-link"
+            >
+              {this.context.t('airgapVault')}
+            </a>
+            <a
+              className="hw-connect__msg-link"
+              href="https://support.airgap.it/guides/metamask"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="airgap-vault-tutorial-link"
+            >
+              {this.context.t('airgapVaultTutorial')}
+            </a>
+          </>
+        ),
+      },
+      {
         message: this.context.t('QRHardwareWalletSteps2Description'),
       },
       {

@@ -1273,18 +1273,11 @@
   "importAccountError": {
     "message": "Galat saat mengimpor akun."
   },
-  "importAccountLinkText": {
-    "message": "impor menggunakan Frasa Pemulihan Rahasia"
-  },
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan dikaitkan dengan Frasa Pemulihan Rahasia akun MetaMask yang asli dibuat. Pelajari selengkapnya tentang akun yang diimpor"
   },
   "importAccountSeedPhrase": {
     "message": "Impor dompet dengan Frasa Pemulihan Rahasia"
-  },
-  "importAccountText": {
-    "message": "atau $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Masukkan Frasa Pemulihan Rahasia Anda (alias Frasa Benih) yang diberikan saat Anda membuat dompet. $1",
@@ -1744,9 +1737,6 @@
   "newAccountNumberName": {
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Koleksi tidak ditambahkan karena: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Koleksi berhasil ditambahkan!"
@@ -2229,9 +2219,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akun dengan Frasa Pemulihan Rahasia"
-  },
   "restoreWalletPreferences": {
     "message": "Cadangan data Anda dari $1 telah ditemukan. Pulihkan preferensi dompet Anda?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2285,6 @@
   },
   "secretPhrase": {
     "message": "Hanya akun pertama di dompet ini yang akan dimuat secara otomatis. Setelah proses ini selesai, untuk menambahkan akun tambahan, klik menu drop down, lalu pilih Buat Akun."
-  },
-  "secretPhraseWarning": {
-    "message": "Jika Anda memulihkan menggunakan Frasa Pemulihan Rahasia lainnya, dompet, akun, dan aset Anda saat ini akan dihapus dari aplikasi ini secara permanen. Tindakan ini tidak dapat dibatalkan."
   },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"

@@ -20,7 +20,7 @@ import {
 
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;

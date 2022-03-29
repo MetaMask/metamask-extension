@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { COLORS, SEVERITIES } from '../../../helpers/constants/design-system';
 import Card from '../card';
 import Typography from '../typography';
 import Box from '../box';
@@ -22,6 +22,10 @@ import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
 import SwapIcon from './overview-send-icon.component';
 import SwapIconComponent from './swap-icon.component';
+import IconCaretLeft from './icon-caret-left';
+import IconCaretRight from './icon-caret-right';
+import IconCaretDown from './icon-caret-down';
+import IconCaretUp from './icon-caret-up';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 
@@ -37,7 +41,12 @@ export default {
 
 const IconItem = ({ Component }) => {
   return (
-    <Card display="flex" flexDirection="column" textAlign="center">
+    <Card
+      display="flex"
+      flexDirection="column"
+      textAlign="center"
+      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+    >
       <Box marginBottom={2}>{Component}</Box>
       <code>{`${Component.type.__docgenInfo.displayName}`}</code>
     </Card>
@@ -106,6 +115,10 @@ export const DefaultStory = (args) => (
         <IconItem Component={<PaperAirplane {...args} />} />
         <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
+        <IconItem Component={<IconCaretLeft {...args} />} />
+        <IconItem Component={<IconCaretRight {...args} />} />
+        <IconItem Component={<IconCaretDown {...args} />} />
+        <IconItem Component={<IconCaretUp {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
         <IconItem Component={<IconEyeSlash {...args} />} />
       </div>
@@ -116,9 +129,9 @@ export const DefaultStory = (args) => (
 DefaultStory.args = {
   width: '17',
   height: '21',
-  fill: '#2F80ED',
+  fill: 'var(--color-icon-default)',
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
   severity: 'info',
   reverseColors: false,
 };
@@ -126,42 +139,42 @@ DefaultStory.args = {
 export const ApproveStory = (args) => <Approve {...args} />;
 ApproveStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 ApproveStory.storyName = 'Approve';
 
 export const SignStory = (args) => <Sign {...args} />;
 SignStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 SignStory.storyName = 'Sign';
 
 export const SwapStory = (args) => <Swap {...args} />;
 SwapStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 SwapStory.storyName = 'Swap';
 
 export const SendIconStory = (args) => <SendIcon {...args} />;
 SendIconStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 SendIconStory.storyName = 'SendIcon';
 
 export const ReceiveIconStory = (args) => <ReceiveIcon {...args} />;
 ReceiveIconStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 ReceiveIconStory.storyName = 'ReceiveIcon';
 
 export const InteractionStory = (args) => <Interaction {...args} />;
 InteractionStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 InteractionStory.storyName = 'Interaction';
 
@@ -220,21 +233,21 @@ export const SendSwapIconStory = (args) => <SwapIconComponent {...args} />;
 SendSwapIconStory.args = {
   width: '17',
   height: '17',
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 SendSwapIconStory.storyName = 'Send/SwapIcon';
 
 export const PaperAirplaneStory = (args) => <PaperAirplane {...args} />;
 PaperAirplaneStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 PaperAirplaneStory.storyName = 'PaperAirplane';
 
 export const CopyIconStory = (args) => <CopyIcon {...args} />;
 CopyIconStory.args = {
   size: 40,
-  color: '#2F80ED',
+  color: 'var(--color-icon-default)',
 };
 CopyIconStory.storyName = 'CopyIcon';
 

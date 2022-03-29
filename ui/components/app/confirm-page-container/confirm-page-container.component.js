@@ -4,10 +4,15 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import {
+  NETWORK_TO_NAME_MAP,
+  MAINNET_CHAIN_ID,
+} from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
-import ErrorMessage from '../../ui/error-message';
+import Button from '../../ui/button';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
 import NicknamePopovers from '../modals/nickname-popovers';
@@ -15,6 +20,10 @@ import NicknamePopovers from '../modals/nickname-popovers';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
+import ErrorMessage from '../../ui/error-message';
+import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
+import Typography from '../../ui/typography';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
@@ -58,7 +67,7 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    identiconAddress: PropTypes.string,
+    tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
@@ -87,6 +96,8 @@ export default class ConfirmPageContainer extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
+    nativeCurrency: PropTypes.string,
+    showBuyModal: PropTypes.func,
   };
 
   render() {
@@ -115,7 +126,7 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
-      identiconAddress,
+      tokenAddress,
       nonce,
       unapprovedTxCount,
       warning,
@@ -139,6 +150,8 @@ export default class ConfirmPageContainer extends Component {
       contact = {},
       isOwnedAccount,
       supportsEIP1559V2,
+      nativeCurrency,
+      showBuyModal,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -151,6 +164,10 @@ export default class ConfirmPageContainer extends Component {
       (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
         currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
       currentTransaction.txParams?.value === '0x0';
+
+    const networkName = NETWORK_TO_NAME_MAP[currentTransaction.chainId];
+
+    const { t } = this.context;
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
@@ -192,7 +209,7 @@ export default class ConfirmPageContainer extends Component {
                   className="send__dialog"
                   onClick={() => this.setState({ showNicknamePopovers: true })}
                 >
-                  {this.context.t('newAccountDetectedDialogMessage')}
+                  {t('newAccountDetectedDialogMessage')}
                 </Dialog>
                 {this.state.showNicknamePopovers ? (
                   <NicknamePopovers
@@ -219,25 +236,72 @@ export default class ConfirmPageContainer extends Component {
               dataHexComponent={dataHexComponent}
               errorMessage={errorMessage}
               errorKey={errorKey}
-              identiconAddress={identiconAddress}
+              tokenAddress={tokenAddress}
               nonce={nonce}
               warning={warning}
               onCancelAll={onCancelAll}
               onCancel={onCancel}
-              cancelText={this.context.t('reject')}
+              cancelText={t('reject')}
               onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
+              submitText={t('confirm')}
               disabled={disabled}
               unapprovedTxCount={unapprovedTxCount}
-              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+              rejectNText={t('rejectTxsN', [unapprovedTxCount])}
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
               hasTopBorder={showAddToAddressDialog}
+              currentTransaction={currentTransaction}
+              nativeCurrency={nativeCurrency}
+              networkName={networkName}
+              showBuyModal={showBuyModal}
+              toAddress={toAddress}
+              transactionType={currentTransaction.type}
             />
           )}
-          {shouldDisplayWarning && (
+          {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
+            <div className="confirm-approve-content__warning">
+              {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
+                <ActionableMessage
+                  message={
+                    <Typography variant={TYPOGRAPHY.H7} align="left">
+                      {t('insufficientCurrency', [nativeCurrency, networkName])}
+                      <Button
+                        type="link"
+                        className="page-container__link"
+                        onClick={showBuyModal}
+                      >
+                        {t('buyEth')}
+                      </Button>
+
+                      {t('orDeposit')}
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              ) : (
+                <ActionableMessage
+                  message={
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      align="left"
+                      margin={[0, 0]}
+                    >
+                      {t('insufficientCurrency', [nativeCurrency, networkName])}
+                      {t('buyOther', [nativeCurrency])}
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              )}
+            </div>
+          )}
+          {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
               <ErrorMessage errorKey={errorKey} />
             </div>
@@ -245,14 +309,14 @@ export default class ConfirmPageContainer extends Component {
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
-              cancelText={this.context.t('reject')}
+              cancelText={t('reject')}
               onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
+              submitText={t('confirm')}
               disabled={disabled}
             >
               {unapprovedTxCount > 1 && (
                 <a onClick={onCancelAll}>
-                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
+                  {t('rejectTxsN', [unapprovedTxCount])}
                 </a>
               )}
             </PageContainerFooter>

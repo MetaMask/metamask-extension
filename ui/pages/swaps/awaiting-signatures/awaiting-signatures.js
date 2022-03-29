@@ -11,6 +11,7 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -47,6 +48,9 @@ export default function AwaitingSignatures() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const needsTwoConfirmations = Boolean(approveTxParams);
 
   const awaitingSignaturesEvent = useNewMetricEvent({
@@ -62,6 +66,7 @@ export default function AwaitingSignatures() {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     },
     category: 'swaps',
@@ -89,7 +94,7 @@ export default function AwaitingSignatures() {
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
         </Box>
-        <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
+        <Typography color={COLORS.TEXT_DEFAULT} variant={TYPOGRAPHY.H3}>
           {headerText}
         </Typography>
         {needsTwoConfirmations && (

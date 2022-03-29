@@ -217,57 +217,17 @@
       color: var(--red);
     }
   }
-
-  &__my-accounts-button {
-    display: flex;
-    flex-flow: column;
-    cursor: pointer;
-    padding: 15px;
-
-    &:hover {
-      background-color: rgba(222, 222, 222, 0.2);
-    }
-
-    &__header {
-      @include H4;
-
-      color: #000;
-    }
-
-    &__content {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    &__text {
-      @include Paragraph;
-
-      color: #6a737d;
-    }
-
-    &__caret {
-      display: block;
-      background-image: url(/images/caret-right.svg);
-      width: 30px;
-      opacity: 0.5;
-      background-repeat: no-repeat;
-
-      [dir='rtl'] & {
-        transform: rotate(180deg);
-      }
-    }
-  }
 }
 
 .address-book-add-button {
   &__button {
     position: absolute;
-    top: 85px;
+    top: 80px;
     right: 16px;
     width: auto;
 
     @media screen and (max-width: $break-small) {
-      top: 16px;
+      top: 8px;
       right: 60px;
 
       &--hidden {

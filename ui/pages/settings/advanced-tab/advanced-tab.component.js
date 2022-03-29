@@ -12,6 +12,10 @@ import Dialog from '../../../components/ui/dialog';
 import { getPlatform } from '../../../../app/scripts/lib/util';
 
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import {
+  getSettingsSectionNumber,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 
 import {
   LEDGER_TRANSPORT_TYPES,
@@ -61,13 +65,22 @@ export default class AdvancedTab extends PureComponent {
     showLedgerTransportWarning: false,
   };
 
-  showTestNetworksRef = React.createRef();
+  settingsRefs = Array(
+    getSettingsSectionNumber(this.context.t, this.context.t('advanced')),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('advanced'), this.settingsRefs);
+  }
 
   componentDidMount() {
-    if (window.location.hash.match(/show-testnets/u)) {
-      this.showTestNetworksRef.current.scrollIntoView({ behavior: 'smooth' });
-      this.showTestNetworksRef.current.focus();
-    }
+    const { t } = this.context;
+    handleSettingsRefs(t, t('advanced'), this.settingsRefs);
   }
 
   renderMobileSync() {
@@ -76,6 +89,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[1]}
         className="settings-page__content-row"
         data-testid="advanced-setting-mobile-sync"
       >
@@ -106,6 +120,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[0]}
         className="settings-page__content-row"
         data-testid="advanced-setting-state-logs"
       >
@@ -144,6 +159,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[2]}
         className="settings-page__content-row"
         data-testid="advanced-setting-reset-account"
       >
@@ -156,7 +172,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <Button
-              type="warning"
+              type="danger"
               large
               className="settings-tab__button--red"
               onClick={(event) => {
@@ -185,6 +201,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-hex-data"
       >
@@ -214,6 +231,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-advanced-gas-inline"
       >
@@ -243,7 +261,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.showTestNetworksRef}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -276,6 +294,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -307,6 +326,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
       >
@@ -355,6 +375,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
       >
@@ -411,6 +432,7 @@ export default class AdvancedTab extends PureComponent {
     }
     return (
       <div
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-3box"
       >
@@ -479,7 +501,7 @@ export default class AdvancedTab extends PureComponent {
       : LEDGER_TRANSPORT_NAMES.U2F;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[11]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('preferredLedgerConnectionType')}</span>
           <div className="settings-page__content-description">
@@ -578,6 +600,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-ipfs-gateway"
       >
@@ -622,6 +645,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.settingsRefs[12]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
       >

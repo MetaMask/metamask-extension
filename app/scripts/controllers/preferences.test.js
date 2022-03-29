@@ -351,4 +351,18 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setTheme', function () {
+    it('should default to value "default"', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'default');
+    });
+
+    it('should set the setTheme property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.theme, 'default');
+      preferencesController.setTheme('dark');
+      assert.equal(preferencesController.store.getState().theme, 'dark');
+    });
+  });
 });

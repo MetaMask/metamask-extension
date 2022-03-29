@@ -53,7 +53,8 @@ import {
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
-  updateTransaction,
+  updateEditableParams,
+  updateTransactionGasFees,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   isCollectibleOwner,
@@ -78,7 +79,6 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
-  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -102,6 +102,7 @@ import {
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -1700,7 +1701,8 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
-      dispatch(updateTransaction(editingTx));
+      dispatch(updateEditableParams(id, editingTx.txParams));
+      dispatch(updateTransactionGasFees(id, editingTx.txParams));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
       // When sending a token transaction we have to the token.transfer method
       // on the token contract to construct the transaction. This results in

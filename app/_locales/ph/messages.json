@@ -842,18 +842,11 @@
   "importAccount": {
     "message": "Mag-import ng Account"
   },
-  "importAccountLinkText": {
-    "message": "i-import gamit ang Secret Recovery Phrase"
-  },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
   },
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang Secret Recovery Phrase"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importTokenQuestion": {
     "message": "Mag-import ng token?"
@@ -1445,9 +1438,6 @@
   },
   "restore": {
     "message": "I-restore"
-  },
-  "restoreAccountWithSeed": {
-    "message": "I-restore ang iyong Account gamit ang Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",

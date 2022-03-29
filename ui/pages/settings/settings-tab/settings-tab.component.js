@@ -10,6 +10,11 @@ import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
 import Typography from '../../../components/ui/typography';
 
+import {
+  getSettingsSectionNumber,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
+
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
 });
@@ -53,6 +58,24 @@ export default class SettingsTab extends PureComponent {
     tokenList: PropTypes.object,
   };
 
+  settingsRefs = Array(
+    getSettingsSectionNumber(this.context.t, this.context.t('general')),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('general'), this.settingsRefs);
+  }
+
+  componentDidMount() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('general'), this.settingsRefs);
+  }
+
   renderCurrentConversion() {
     const { t } = this.context;
     const {
@@ -62,7 +85,7 @@ export default class SettingsTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('currencyConversion')}</span>
           <span className="settings-page__content-description">
@@ -96,7 +119,7 @@ export default class SettingsTab extends PureComponent {
     const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : '';
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span className="settings-page__content-label">
             {t('currentLanguage')}
@@ -124,7 +147,11 @@ export default class SettingsTab extends PureComponent {
     const { hideZeroBalanceTokens, setHideZeroBalanceTokens } = this.props;
 
     return (
-      <div className="settings-page__content-row" id="toggle-zero-balance">
+      <div
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        id="toggle-zero-balance"
+      >
         <div className="settings-page__content-item">
           <span>{t('hideZeroBalanceTokens')}</span>
         </div>
@@ -160,9 +187,13 @@ export default class SettingsTab extends PureComponent {
     });
 
     return (
-      <div className="settings-page__content-row" id="blockie-optin">
+      <div
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        id="blockie-optin"
+      >
         <div className="settings-page__content-item">
-          <Typography variant={TYPOGRAPHY.H5} color={COLORS.BLACK}>
+          <Typography variant={TYPOGRAPHY.H5} color={COLORS.TEXT_DEFAULT}>
             {t('accountIdenticon')}
           </Typography>
           <span className="settings-page__content-item__description">
@@ -190,7 +221,7 @@ export default class SettingsTab extends PureComponent {
                 />
               </div>
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
                 margin={[0, 12, 0, 3]}
               >
@@ -216,7 +247,7 @@ export default class SettingsTab extends PureComponent {
                 />
               </div>
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
                 margin={[0, 0, 0, 3]}
               >
@@ -238,7 +269,7 @@ export default class SettingsTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('primaryCurrencySetting')}</span>
           <div className="settings-page__content-description">

@@ -88,7 +88,11 @@ const AdvancedGasFeeDefaults = () => {
           onClick={handleUpdateDefaultSettings}
           disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          margin={0}
+        >
           {isDefaultSettingsSelected
             ? t('advancedGasFeeDefaultOptOut')
             : t('advancedGasFeeDefaultOptIn', [

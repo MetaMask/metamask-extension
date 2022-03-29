@@ -42,7 +42,7 @@
     "message": "QR-based HW Wallet"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault & Ngrave (Coming Soon)"
+    "message": "Ngrave (Coming Soon)"
   },
   "about": {
     "message": "About"
@@ -56,6 +56,10 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 may access and spend up to this max amount",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
@@ -98,6 +102,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANetworkManually": {
+    "message": "Add a network manually"
+  },
   "addANickname": {
     "message": "Add a nickname"
   },
@@ -136,6 +143,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addFromAListOfPopularNetworks": {
+    "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
   },
   "addMemo": {
     "message": "Add memo"
@@ -190,6 +200,12 @@
   },
   "aggregatorFeeCost": {
     "message": "Aggregator network fee"
+  },
+  "airgapVault": {
+    "message": "AirGap Vault"
+  },
+  "airgapVaultTutorial": {
+    "message": " (Tutorials)"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -266,6 +282,9 @@
   },
   "approvedAmountWithColon": {
     "message": "Approved amount:"
+  },
+  "approvedAsset": {
+    "message": "Approved asset"
   },
   "areYouDeveloper": {
     "message": "Are you a developer?"
@@ -397,8 +416,15 @@
     "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyCryptoWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyEth": {
+    "message": "Buy ETH"
+  },
+  "buyOther": {
+    "message": "Buy $1 or deposit from another account.",
+    "description": "$1 is a token symbol"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -466,6 +492,9 @@
   },
   "close": {
     "message": "Close"
+  },
+  "collectibleAddFailedMessage": {
+    "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
   "collectibleAddressError": {
     "message": "This token is an NFT. Add on the $1",
@@ -612,6 +641,9 @@
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. Metamask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
+  "convertTokenToNFTExistDescription": {
+    "message": "We’ve detected that this asset has been added as an NFT. Would you like to remove it from your token list?"
+  },
   "copiedExclamation": {
     "message": "Copied!"
   },
@@ -691,6 +723,9 @@
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
+  "customNetworks": {
+    "message": "Custom networks"
+  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },
@@ -713,6 +748,9 @@
   "dappSuggestedTooltip": {
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
+  },
+  "darkTheme": {
+    "message": "Dark"
   },
   "data": {
     "message": "Data"
@@ -748,6 +786,9 @@
   },
   "decryptRequest": {
     "message": "Decrypt request"
+  },
+  "defaultTheme": {
+    "message": "Default"
   },
   "delete": {
     "message": "Delete"
@@ -813,6 +854,9 @@
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
+  },
+  "downArrow": {
+    "message": "down arrow"
   },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
@@ -989,7 +1033,7 @@
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartTransactions": {
-    "message": "Enable smart transactions"
+    "message": "Enable Smart Transactions"
   },
   "enableToken": {
     "message": "enable $1",
@@ -1206,6 +1250,9 @@
   "forgetDevice": {
     "message": "Forget this device"
   },
+  "forgotPassword": {
+    "message": "Forgot password?"
+  },
   "from": {
     "message": "From"
   },
@@ -1334,6 +1381,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "gotIt": {
+    "message": "Got it!"
+  },
   "grantedToWithColon": {
     "message": "Granted to:"
   },
@@ -1372,6 +1422,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideSeedPhrase": {
+    "message": "Hide seed phrase"
+  },
   "hideToken": {
     "message": "Hide token"
   },
@@ -1408,18 +1461,11 @@
   "importAccountError": {
     "message": "Error importing account."
   },
-  "importAccountLinkText": {
-    "message": "import using Secret Recovery Phrase"
-  },
   "importAccountMsg": {
     "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
-  },
-  "importAccountText": {
-    "message": "or $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Enter your Secret Recovery Phrase (aka Seed Phrase) that you were given when you created your wallet. $1",
@@ -1477,6 +1523,10 @@
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
+  },
+  "insufficientCurrency": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network.",
+    "description": "$1 is currency, $2 is network"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -1647,6 +1697,9 @@
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
+  "levelArrow": {
+    "message": "level arrow"
+  },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
@@ -1676,6 +1729,10 @@
   },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
+  },
+  "logo": {
+    "message": "$1 logo",
+    "description": "$1 is the name of the ticker"
   },
   "low": {
     "message": "Low"
@@ -1815,6 +1872,12 @@
   "missingNFT": {
     "message": "Don't see your NFT?"
   },
+  "missingSetting": {
+    "message": "Can't find a setting?"
+  },
+  "missingSettingRequest": {
+    "message": "Request here"
+  },
   "missingToken": {
     "message": "Don't see your token?"
   },
@@ -1926,9 +1989,6 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "Collectible was not added because: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "Collectible was successfully added!"
   },
@@ -1948,7 +2008,7 @@
     "message": "“$1” was successfully added!"
   },
   "newPassword": {
-    "message": "New password (min 8 chars)"
+    "message": "New password (8 characters min)"
   },
   "newToMetaMask": {
     "message": "New to MetaMask?"
@@ -2199,6 +2259,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "onlyInteractWith": {
+    "message": "Only interact with entities you trust."
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2214,6 +2277,9 @@
   },
   "or": {
     "message": "or"
+  },
+  "orDeposit": {
+    "message": "or deposit from another account."
   },
   "origin": {
     "message": "Origin"
@@ -2236,11 +2302,18 @@
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
   },
+  "passwordStrength": {
+    "message": "Password strength: $1",
+    "description": "Return password strength to the user when user wants to create password."
+  },
+  "passwordStrengthDescription": {
+    "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
+  },
   "passwordTermsWarning": {
     "message": "I understand that MetaMask cannot recover this password for me. $1"
   },
   "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
+    "message": "Passwords don't match"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -2359,6 +2432,12 @@
   "queued": {
     "message": "Queued"
   },
+  "reAddAccounts": {
+    "message": "re-add any other accounts"
+  },
+  "reAdded": {
+    "message": "re-added"
+  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
   },
@@ -2462,11 +2541,20 @@
   "resetAccountDescription": {
     "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
   },
+  "resetWallet": {
+    "message": "Reset Wallet"
+  },
+  "resetWalletSubHeader": {
+    "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "resetWalletUsingSRP": {
+    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
+  },
+  "resetWalletWarning": {
+    "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
+  },
   "restore": {
     "message": "Restore"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restore your Account with Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
@@ -2489,6 +2577,9 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DO NOT share this phrase with anyone!"
+  },
+  "revealTheSeedPhrase": {
+    "message": "Reveal seed phrase"
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
@@ -2523,6 +2614,9 @@
   "searchResults": {
     "message": "Search Results"
   },
+  "searchSettings": {
+    "message": "Search in settings"
+  },
   "searchTokens": {
     "message": "Search Tokens"
   },
@@ -2534,9 +2628,6 @@
   },
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
-  },
-  "secretPhraseWarning": {
-    "message": "If you restore using another Secret Recovery Phrase, your current wallet, accounts and assets will be removed from this app permanently. This action cannot be undone."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -2560,22 +2651,22 @@
     "message": "Secure my wallet (recommended)"
   },
   "seedPhraseIntroSidebarBulletFour": {
-    "message": "Write down and store in multiple secret places."
+    "message": "Write down and store in multiple secret places"
   },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Save in a password manager"
   },
   "seedPhraseIntroSidebarBulletThree": {
-    "message": "Store in a safe-deposit box."
+    "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Store in a bank vault."
+    "message": "Store in a bank vault"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds"
+    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds."
   },
   "seedPhraseIntroSidebarCopyTwo": {
     "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"
@@ -2669,6 +2760,9 @@
   "settings": {
     "message": "Settings"
   },
+  "settingsSearchMatchingNotFound": {
+    "message": "No matching results found"
+  },
   "shorthandVersion": {
     "message": "v$1",
     "description": "$1 is replaced by a version string (e.g. 1.2.3)"
@@ -2755,7 +2849,7 @@
     "message": "Slow"
   },
   "smartTransaction": {
-    "message": "Smart transaction"
+    "message": "Smart Transaction"
   },
   "snapAccess": {
     "message": "$1 snap has access to:",
@@ -2915,20 +3009,23 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "strong": {
+    "message": "Strong"
+  },
   "stxAreHere": {
-    "message": "Smart transactions are here!"
+    "message": "Smart Transactions are here!"
   },
   "stxBenefit1": {
-    "message": "Decrease transaction costs"
+    "message": "Minimize transaction costs"
   },
   "stxBenefit2": {
-    "message": "Reduce failures & minimize costs"
+    "message": "Reduce transaction failures"
   },
   "stxBenefit3": {
-    "message": "Protect from front-running"
+    "message": "Eliminate stuck transactions"
   },
   "stxBenefit4": {
-    "message": "Eliminate stuck transactions"
+    "message": "Prevent front-running"
   },
   "stxCancelled": {
     "message": "Swap would have failed"
@@ -2940,7 +3037,13 @@
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
   "stxDescription": {
-    "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
+    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
+  },
+  "stxErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart transaction."
+  },
+  "stxErrorUnavailable": {
+    "message": "Smart Transactions are temporarily unavailable."
   },
   "stxFailure": {
     "message": "Swap failed"
@@ -2949,8 +3052,11 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackToNormal": {
-    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  "stxFallbackPendingTx": {
+    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction."
+  },
+  "stxFallbackUnavailable": {
+    "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
   "stxPendingFinalizing": {
     "message": "Finalizing..."
@@ -2962,7 +3068,7 @@
     "message": "Privately submitting the Swap..."
   },
   "stxSubDescription": {
-    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
+    "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "stxSuccess": {
     "message": "Swap complete!"
@@ -2977,8 +3083,11 @@
   "stxTryRegular": {
     "message": "Try a regular swap."
   },
+  "stxTryingToCancel": {
+    "message": "Trying to cancel your transaction..."
+  },
   "stxUnavailable": {
-    "message": "Smart transactions temporarily unavailable"
+    "message": "Smart Transactions are disabled"
   },
   "stxUnknown": {
     "message": "Status unknown"
@@ -3393,6 +3502,12 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "theme": {
+    "message": "Theme"
+  },
+  "themeDescription": {
+    "message": "Choose your preferred MetaMask theme."
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -3632,6 +3747,12 @@
     "message": "Sending collectible (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
   },
+  "unverifiedContractAddressMessage": {
+    "message": "We cannot verify this contract. Make sure you trust this address."
+  },
+  "upArrow": {
+    "message": "up arrow"
+  },
   "updatedWithDate": {
     "message": "Updated $1"
   },
@@ -3658,6 +3779,9 @@
   },
   "useTokenDetectionDescription": {
     "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
+  },
+  "useTokenDetectionPrivacyDesc": {
+    "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
@@ -3735,6 +3859,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
+  },
+  "weak": {
+    "message": "Weak"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",

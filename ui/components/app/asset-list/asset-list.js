@@ -100,7 +100,7 @@ const AssetList = ({ onClickAsset }) => {
       <Box marginTop={4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.NORMAL}
           >

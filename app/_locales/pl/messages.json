@@ -759,9 +759,6 @@
   "restore": {
     "message": "Przywróć"
   },
-  "restoreAccountWithSeed": {
-    "message": "Przywróć konto frazą seed"
-  },
   "revealSeedWords": {
     "message": "Pokaż słowa seed"
   },
