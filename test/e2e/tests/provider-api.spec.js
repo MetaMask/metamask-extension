@@ -16,7 +16,7 @@ describe('MetaMask', function () {
   it('provider should inform dapp when switching networks', async function () {
     await withFixtures(
       {
-        dapp: 1,
+        dapp: true,
         fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
@@ -68,7 +68,7 @@ describe('MetaMask', function () {
   it('should reject unsupported methods', async function () {
     await withFixtures(
       {
-        dapp: 1,
+        dapp: true,
         failOnConsoleError: false,
         fixtures: 'connected-state',
         ganacheOptions,

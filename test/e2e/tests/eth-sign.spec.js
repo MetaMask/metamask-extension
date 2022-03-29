@@ -18,7 +18,7 @@ describe('Eth sign', function () {
       '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"';
     await withFixtures(
       {
-        dapp: 1,
+        dapp: true,
         fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,

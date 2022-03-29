@@ -207,7 +207,7 @@ describe('Editing Confirm Transaction', function () {
         fixtures: 'eip-1559-v2-dapp',
         ganacheOptions,
         title: this.test.title,
-        dapp: 1,
+        dapp: true,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -217,7 +217,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open dapp and connect
-        await connectDappWithExtensionPopup(driver, 0);
+        await connectDappWithExtensionPopup(driver);
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',

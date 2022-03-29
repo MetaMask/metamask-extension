@@ -18,10 +18,10 @@ describe('Dapp interactions', function () {
       },
     ],
   };
-  it('should a notification be triggered despite Metamask being locked', async function () {
+  it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: 1,
+        dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
@@ -60,12 +60,13 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('should a second dapp be able to connect to Metamask after being locked', async function () {
+  it('should connect a second Dapp despite Metamask being locked', async function () {
     await withFixtures(
       {
-        dapp: 2,
+        dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
+        dappOptions: {numberOfDapps: 2},
         title: this.test.title,
       },
       async ({ driver }) => {

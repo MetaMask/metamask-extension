@@ -23,6 +23,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     driverOptions,
+    dappOptions,
     title,
     failOnConsoleError = true,
     dappPath = undefined,
@@ -54,7 +55,11 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
-      for (let i = 0; i < dapp; i++) {
+      var numberOfDapps = 1;
+      if (dappOptions?.numberOfDapps){
+        numberOfDapps= dappOptions.numberOfDapps;
+      }
+      for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
         if (dappPath) {
           dappDirectory = path.resolve(__dirname, dappPath);
@@ -128,7 +133,7 @@ async function withFixtures(options, testSuite) {
         await webDriver.quit();
       }
       if (dapp) {
-        for (let i = 0; i < dapp; i++) {
+        for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
             await new Promise((resolve, reject) => {
               dappServer[i].close((error) => {
@@ -169,8 +174,8 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const connectDappWithExtensionPopup = async (driver, dapp) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappBasePort + dapp}/`);
+const connectDappWithExtensionPopup = async (driver) => {
+  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);
