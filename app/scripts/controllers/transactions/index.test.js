@@ -2186,7 +2186,7 @@ describe('Transaction Controller', function () {
       assert.equal(result.userFeeLevel, 'high');
     });
 
-    it('should not update and should throw error if status is not unapproved', function () {
+    it('should not update and should throw error if status is not type "unapproved"', function () {
       txStateManager.addTransaction({
         id: '4',
         status: TRANSACTION_STATUSES.DROPPED,
