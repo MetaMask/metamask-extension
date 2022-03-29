@@ -36,19 +36,77 @@ class ImportToken extends Component {
   };
 
   static propTypes = {
+    /**
+     * History object of the router.
+     */
     history: PropTypes.object,
+
+    /**
+     * Set the state of `pendingTokens`, called when adding a token.
+     */
     setPendingTokens: PropTypes.func,
+
+    /**
+     * The current list of pending tokens to be added.
+     */
     pendingTokens: PropTypes.object,
+
+    /**
+     * Clear the list of pending tokens. Called when closing the modal.
+     */
     clearPendingTokens: PropTypes.func,
+
+    /**
+     * The list of already added tokens.
+     */
     tokens: PropTypes.array,
+
+    /**
+     * The identities/accounts that are currently added to the wallet.
+     */
     identities: PropTypes.object,
+
+    /**
+     * Boolean flag that shows/hides the search tab.
+     */
     showSearchTab: PropTypes.bool.isRequired,
+
+    /**
+     * The most recent overview page route, which is 'navigated' to when closing the modal.
+     */
     mostRecentOverviewPage: PropTypes.string.isRequired,
+
+    /**
+     * The active chainId in use.
+     */
     chainId: PropTypes.string,
+
+    /**
+     * The rpc preferences to use for the current provider.
+     */
     rpcPrefs: PropTypes.object,
+
+    /**
+     * The list of tokens available for search.
+     */
     tokenList: PropTypes.object,
+
+    /**
+     * Boolean flag indicating whether token detection is enabled or not.
+     * When disabled, shows an information alert in the search tab informing the
+     * user of the availability of this feature.
+     */
     useTokenDetection: PropTypes.bool,
+
+    /**
+     * Function called to fetch information about the token standard and
+     * details, see `actions.js`.
+     */
     getTokenStandardAndDetails: PropTypes.func,
+
+    /**
+     * The currently selected active address.
+     */
     selectedAddress: PropTypes.string,
   };
 
