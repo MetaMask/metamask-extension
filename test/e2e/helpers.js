@@ -13,7 +13,7 @@ const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
-const dappPort = 8080;
+const dappBasePort = 8080;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
@@ -23,6 +23,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     driverOptions,
+    dappOptions,
     title,
     failOnConsoleError = true,
     dappPath = undefined,
@@ -35,7 +36,8 @@ async function withFixtures(options, testSuite) {
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
-  let dappServer;
+  let numberOfDapps = dapp ? 1 : 0;
+  const dappServer = [];
 
   let webDriver;
   let failed = false;
@@ -54,26 +56,31 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
-      let dappDirectory;
-      if (dappPath) {
-        dappDirectory = path.resolve(__dirname, dappPath);
-      } else {
-        dappDirectory = path.resolve(
-          __dirname,
-          '..',
-          '..',
-          'node_modules',
-          '@metamask',
-          'test-dapp',
-          'dist',
-        );
+      if (dappOptions?.numberOfDapps) {
+        numberOfDapps = dappOptions.numberOfDapps;
       }
-      dappServer = createStaticServer(dappDirectory);
-      dappServer.listen(dappPort);
-      await new Promise((resolve, reject) => {
-        dappServer.on('listening', resolve);
-        dappServer.on('error', reject);
-      });
+      for (let i = 0; i < numberOfDapps; i++) {
+        let dappDirectory;
+        if (dappPath) {
+          dappDirectory = path.resolve(__dirname, dappPath);
+        } else {
+          dappDirectory = path.resolve(
+            __dirname,
+            '..',
+            '..',
+            'node_modules',
+            '@metamask',
+            'test-dapp',
+            'dist',
+          );
+        }
+        dappServer.push(createStaticServer(dappDirectory));
+        dappServer[i].listen(`${dappBasePort + i}`);
+        await new Promise((resolve, reject) => {
+          dappServer[i].on('listening', resolve);
+          dappServer[i].on('error', reject);
+        });
+      }
     }
     await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
@@ -125,15 +132,19 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         await webDriver.quit();
       }
-      if (dappServer && dappServer.listening) {
-        await new Promise((resolve, reject) => {
-          dappServer.close((error) => {
-            if (error) {
-              return reject(error);
-            }
-            return resolve();
-          });
-        });
+      if (dapp) {
+        for (let i = 0; i < numberOfDapps; i++) {
+          if (dappServer[i] && dappServer[i].listening) {
+            await new Promise((resolve, reject) => {
+              dappServer[i].close((error) => {
+                if (error) {
+                  return reject(error);
+                }
+                return resolve();
+              });
+            });
+          }
+        }
       }
       await mockServer.stop();
     }
@@ -164,7 +175,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const connectDappWithExtensionPopup = async (driver) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappPort}/`);
+  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);
