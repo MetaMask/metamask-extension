@@ -1277,6 +1277,9 @@
   "gasEstimatesUnavailableWarning": {
     "message": "Our low, medium and high estimates are not available."
   },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
   "gasLimit": {
     "message": "Gas Limit"
   },
@@ -1628,9 +1631,6 @@
   },
   "lastConnected": {
     "message": "Last Connected"
-  },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
   },
   "learmMoreAboutGas": {
     "message": "Want to $1 about gas?"
