@@ -19,7 +19,6 @@ import TransactionDecoding from '../transaction-decoding';
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
     trackEvent: PropTypes.func,
   };
 
@@ -69,6 +68,7 @@ export default class TransactionListItemDetails extends PureComponent {
         link_type: 'Transaction Block Explorer',
         action: 'Transaction Details',
         block_explorer_domain: getURLHostName(blockExplorerLink),
+        legacy_event: true,
       },
     });
 
@@ -94,11 +94,12 @@ export default class TransactionListItemDetails extends PureComponent {
     const { primaryTransaction: transaction } = transactionGroup;
     const { hash } = transaction;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Navigation',
+    this.context.trackEvent({
+      category: 'Navigation',
+      event: 'Copied Transaction ID',
+      properties: {
         action: 'Activity Log',
-        name: 'Copied Transaction ID',
+        legacy_event: true,
       },
     });
 
@@ -225,20 +226,22 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
+                  this.context.trackEvent({
+                    category: 'Navigation',
+                    event: 'Copied "To" Address',
+                    properties: {
                       action: 'Activity Log',
-                      name: 'Copied "To" Address',
+                      legacy_event: true,
                     },
                   });
                 }}
                 onSenderClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
+                  this.context.trackEvent({
+                    category: 'Navigation',
+                    event: 'Copied "From" Address',
+                    properties: {
                       action: 'Activity Log',
-                      name: 'Copied "From" Address',
+                      legacy_event: true,
                     },
                   });
                 }}
