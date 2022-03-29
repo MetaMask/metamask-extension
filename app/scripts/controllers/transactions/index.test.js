@@ -2189,7 +2189,7 @@ describe('Transaction Controller', function () {
     it('should not update and should throw error if status is not unapproved', function () {
       txStateManager.addTransaction({
         id: '4',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TRANSACTION_STATUSES.DROPPED,
         metamaskNetworkId: currentNetworkId,
         txParams: {
           maxPriorityFeePerGas: '0x007',
@@ -2206,7 +2206,8 @@ describe('Transaction Controller', function () {
             maxFeePerGas: '0x0088',
           }),
         Error,
-        'Cannot call updateTransactionGasFees on a transaction that is not in an unapproved state',
+        `TransactionsController: Can only call updateTransactionGasFees on an unapproved transaction.
+         Current tx status: ${TRANSACTION_STATUSES.DROPPED}`,
       );
 
       const transaction = txStateManager.getTransaction('4');
