@@ -19,6 +19,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
 
 import {
@@ -51,6 +52,7 @@ export default class AccountTracker {
    * @param {Object} opts.provider - An EIP-1193 provider instance that uses the current global network
    * @param {Object} opts.blockTracker - A block tracker, which emits events for each new block
    * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
+   * @param {Function} opts.getNetworkIdentifier - A function that returns the current network
    */
   constructor(opts = {}) {
     const initState = {
@@ -70,6 +72,7 @@ export default class AccountTracker {
     // bind function for easier listener syntax
     this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
+    this.getNetworkIdentifier = opts.getNetworkIdentifier;
 
     this.web3 = new Web3(this._provider);
   }
@@ -200,38 +203,44 @@ export default class AccountTracker {
     const { accounts } = this.store.getState();
     const addresses = Object.keys(accounts);
     const chainId = this.getCurrentChainId();
+    const networkId = this.getNetworkIdentifier();
+    const rpcUrl = 'http://127.0.0.1:8545';
 
-    switch (chainId) {
-      case MAINNET_CHAIN_ID:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS,
-        );
-        break;
+    if (networkId === LOCALHOST_RPC_URL || networkId === rpcUrl) {
+      await Promise.all(addresses.map(this._updateAccount.bind(this)));
+    } else {
+      switch (chainId) {
+        case MAINNET_CHAIN_ID:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS,
+          );
+          break;
 
-      case RINKEBY_CHAIN_ID:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
-        );
-        break;
+        case RINKEBY_CHAIN_ID:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
+          );
+          break;
 
-      case ROPSTEN_CHAIN_ID:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
-        );
-        break;
+        case ROPSTEN_CHAIN_ID:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
+          );
+          break;
 
-      case KOVAN_CHAIN_ID:
-        await this._updateAccountsViaBalanceChecker(
-          addresses,
-          SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
-        );
-        break;
+        case KOVAN_CHAIN_ID:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+          );
+          break;
 
-      default:
-        await Promise.all(addresses.map(this._updateAccount.bind(this)));
+        default:
+          await Promise.all(addresses.map(this._updateAccount.bind(this)));
+      }
     }
   }
 
