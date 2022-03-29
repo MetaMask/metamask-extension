@@ -595,7 +595,7 @@ export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
   maxSlippage,
-  metaMetricsEvent,
+  trackEvent,
   pageRedirectionDisabled,
 ) => {
   return async (dispatch, getState) => {
@@ -711,7 +711,7 @@ export const fetchQuotesAndSetQuoteState = (
     const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
       state,
     );
-    metaMetricsEvent({
+    trackEvent({
       event: 'Quotes Requested',
       category: 'swaps',
       sensitiveProperties: {
@@ -765,7 +765,7 @@ export const fetchQuotesAndSetQuoteState = (
       ]);
 
       if (Object.values(fetchedQuotes)?.length === 0) {
-        metaMetricsEvent({
+        trackEvent({
           event: 'No Quotes Available',
           category: 'swaps',
           sensitiveProperties: {
@@ -786,7 +786,7 @@ export const fetchQuotesAndSetQuoteState = (
       } else {
         const newSelectedQuote = fetchedQuotes[selectedAggId];
 
-        metaMetricsEvent({
+        trackEvent({
           event: 'Quotes Received',
           category: 'swaps',
           sensitiveProperties: {
@@ -832,7 +832,7 @@ export const fetchQuotesAndSetQuoteState = (
 
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
-  metaMetricsEvent,
+  trackEvent,
   history,
   additionalTrackingParams,
 }) => {
@@ -888,7 +888,7 @@ export const signAndSendSwapsSmartTransaction = ({
       stx_user_opt_in: smartTransactionsOptInStatus,
       ...additionalTrackingParams,
     };
-    metaMetricsEvent({
+    trackEvent({
       event: 'STX Swap Started',
       category: 'swaps',
       sensitiveProperties: swapMetaData,
@@ -984,7 +984,7 @@ export const signAndSendSwapsSmartTransaction = ({
 
 export const signAndSendTransactions = (
   history,
-  metaMetricsEvent,
+  trackEvent,
   additionalTrackingParams,
 ) => {
   return async (dispatch, getState) => {
@@ -1138,7 +1138,7 @@ export const signAndSendTransactions = (
       swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
     }
 
-    metaMetricsEvent({
+    trackEvent({
       event: 'Swap Started',
       category: 'swaps',
       sensitiveProperties: swapMetaData,
