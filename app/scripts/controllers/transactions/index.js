@@ -361,6 +361,10 @@ export default class TransactionController extends EventEmitter {
     return transactions[txId];
   }
 
+  /**
+   * @param {number} txId
+   * @returns {boolean}
+   */
   _isUnapprovedTransaction(txId) {
     return (
       this.txStateManager.getTransaction(txId).status ===
