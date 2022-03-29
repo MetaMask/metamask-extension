@@ -34,7 +34,6 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
-  DARK_MODE_V1: process.env.DARK_MODE_V1,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
@@ -615,6 +614,7 @@ function setupBundlerDefaults(
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
+  const extensions = ['.js', '.ts', '.tsx'];
 
   Object.assign(bundlerOpts, {
     // Source transforms
@@ -622,10 +622,16 @@ function setupBundlerDefaults(
       // Remove code that should be excluded from builds of the current type
       createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
       // Transpile top-level code
-      babelify,
+      [
+        babelify,
+        // Run TypeScript files through Babel
+        { extensions },
+      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
+    // Look for TypeScript files when walking the dependency tree
+    extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
     // For sourcemaps
@@ -812,7 +818,6 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
-    DARK_MODE_V1: metamaskrc.DARK_MODE_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
   };
 }

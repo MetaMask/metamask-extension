@@ -76,7 +76,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             <button onClick={() => setRevealSRP(!revealSRP)}>
               <i
                 className={`far fa-eye${revealSRP ? '-slash' : ''}`}
-                color="grey"
+                style={{ color: 'var(--color-icon-default' }}
               />
             </button>
             <textarea

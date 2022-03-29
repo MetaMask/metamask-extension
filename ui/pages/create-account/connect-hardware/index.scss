@@ -175,18 +175,12 @@
     display: flex;
     padding-left: 10px;
     padding-right: 10px;
-  }
-
-  &__item:nth-of-type(even) {
+    border-bottom: 1px solid var(--color-border-muted);
     background-color: var(--color-background-default);
   }
 
-  &__item:nth-of-type(odd) {
-    background: var(--color-background-alternative);
-  }
-
   &__item:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: var(--color-background-alternative);
   }
 
   &__item__index {

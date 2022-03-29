@@ -50,7 +50,7 @@ export default function SkipSRPBackup({ handleClose }) {
         justifyContent={JUSTIFY_CONTENT.CENTER}
         margin={4}
       >
-        <img src="./images/warning-icon.png" />
+        <i className="fa fa-exclamation-triangle fa-2x skip-srp-backup-popover__icon" />
         <Typography variant={TYPOGRAPHY.h3} fontWeight={FONT_WEIGHT.BOLD}>
           {t('skipAccountSecurity')}
         </Typography>

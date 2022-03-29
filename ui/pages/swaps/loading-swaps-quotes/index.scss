@@ -89,37 +89,6 @@
     width: 316px;
   }
 
-  &__logo {
-    position: fixed;
-
-    &--transition {
-      -webkit-transition: opacity 0.4s linear;
-      -moz-transition: opacity 0.4s linear;
-      -ms-transition: opacity 0.4s linear;
-      -o-transition: opacity 0.4s linear;
-      transition: opacity 0.4s linear;
-    }
-
-    div {
-      height: 40px;
-      width: 94px;
-      border-radius: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: var(--ui-black);
-    }
-
-    img {
-      width: 74px;
-      height: 30px;
-    }
-
-    span {
-      color: var(--ui-white);
-    }
-  }
-
   &__loading-bar-container {
     width: 248px;
     height: 3px;

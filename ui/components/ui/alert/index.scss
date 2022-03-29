@@ -1,14 +1,14 @@
 .global-alert {
   position: relative;
   width: 100%;
-  background-color: #33a4e7;
+  background-color: var(--color-primary-default);
 
   .msg {
     @include H7;
 
     width: 100%;
     display: block;
-    color: white;
+    color: var(--color-primary-inverse);
     text-align: center;
   }
 }
