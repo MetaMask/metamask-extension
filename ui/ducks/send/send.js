@@ -44,6 +44,7 @@ import {
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -91,6 +92,9 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
+import { sumHexes } from '../../helpers/utils/transactions.util';
+import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
+
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
   ERC20,
@@ -192,6 +196,7 @@ async function estimateGasLimitForSend({
   data,
   isNonStandardEthChain,
   chainId,
+  gasLimit,
   ...options
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
@@ -313,12 +318,14 @@ async function estimateGasLimitForSend({
       error.message.includes('Transaction execution error.') ||
       error.message.includes(
         'gas required exceeds allowance or always failing transaction',
-      );
+      ) ||
+      (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
+        error.message.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
-        paramsForGasEstimate.gas,
+        paramsForGasEstimate?.gas ?? gasLimit,
         blockGasLimit,
-        1.5,
+        bufferMultiplier,
       );
       return addHexPrefix(estimateWithBuffer);
     }
@@ -362,9 +369,29 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const state = thunkApi.getState();
     const { send, metamask } = state;
     const unapprovedTxs = getUnapprovedTxs(state);
+    const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[send.draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+
+    let layer1GasTotal;
+    if (isMultiLayerFeeNetwork) {
+      layer1GasTotal = await fetchEstimatedL1Fee(global.eth, {
+        txParams: {
+          gasPrice: send.gas.gasPrice,
+          gas: send.gas.gasLimit,
+          to: send.recipient.address?.toLowerCase(),
+          value:
+            send.amount.mode === 'MAX'
+              ? send.account.balance
+              : send.amount.value,
+          from: send.account.address,
+          data: send.draftTransaction.userInputHexData,
+          type: '0x0',
+        },
+      });
+    }
+
     if (
       send.stage !== SEND_STAGES.EDIT ||
       !transaction.dappSuggestedGasFees?.gas ||
@@ -380,10 +407,12 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         data: send.draftTransaction.userInputHexData,
         isNonStandardEthChain,
         chainId,
+        gasLimit: send.gas.gasLimit,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
         gasLimit,
+        layer1GasTotal,
       };
     }
     return null;
@@ -651,6 +680,10 @@ export const initialState = {
     // Warning to display on the address field
     warning: null,
   },
+  multiLayerFees: {
+    // Layer 1 gas fee total on multi-layer fee networks
+    layer1GasTotal: '0x0',
+  },
 };
 
 const slice = createSlice({
@@ -697,9 +730,13 @@ const slice = createSlice({
           multiplierBase: 10,
         });
       } else {
+        const _gasTotal = sumHexes(
+          state.gas.gasTotal || '0x0',
+          state.multiLayerFees?.layer1GasTotal || '0x0',
+        );
         amount = subtractCurrencies(
           addHexPrefix(state.asset.balance),
-          addHexPrefix(state.gas.gasTotal),
+          addHexPrefix(_gasTotal),
           {
             toNumericBase: 'hex',
             aBase: 16,
@@ -880,6 +917,21 @@ const slice = createSlice({
       }
       // Record the latest gasPriceEstimate for future comparisons
       state.gas.gasPriceEstimate = addHexPrefix(gasPriceEstimate);
+    },
+    /**
+     * sets the layer 1 fees total (for a multi-layer fee network)
+     *
+     * @param state
+     * @param action
+     */
+    updateLayer1Fees: (state, action) => {
+      state.multiLayerFees.layer1GasTotal = action.payload;
+      if (
+        state.amount.mode === AMOUNT_MODES.MAX &&
+        state.asset.type === ASSET_TYPES.NATIVE
+      ) {
+        slice.caseReducers.updateAmountToMax(state);
+      }
     },
     /**
      * sets the amount mode to the provided value as long as it is one of the
@@ -1317,6 +1369,11 @@ const slice = createSlice({
         if (action.payload?.gasLimit) {
           slice.caseReducers.updateGasLimit(state, {
             payload: action.payload.gasLimit,
+          });
+        }
+        if (action.payload?.layer1GasTotal) {
+          slice.caseReducers.updateLayer1Fees(state, {
+            payload: action.payload.layer1GasTotal,
           });
         }
       })
