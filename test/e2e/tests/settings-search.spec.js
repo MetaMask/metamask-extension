@@ -22,7 +22,6 @@ describe('Settings Search', function () {
     about: 'Terms of Use',
   };
   let found;
-  let notFound;
 
   it('should find element inside the General tab', async function () {
     await withFixtures(
@@ -232,11 +231,11 @@ describe('Settings Search', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', 'Lorem ipsum');
 
-        notFound = await driver.isElementPresent({
+        found = await driver.isElementPresent({
           text: 'Lorem ipsum',
           tag: 'span',
         });
-        assert.equal(notFound, false, 'Non existent element was found');
+        assert.equal(found, false, 'Non existent element was found');
       },
     );
   });
