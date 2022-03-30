@@ -58,6 +58,10 @@
       &.medium,
       &.high {
         .actionable-message {
+          &::before {
+            background: none;
+          }
+
           .actionable-message__message {
             color: inherit;
           }
