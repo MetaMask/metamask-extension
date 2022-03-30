@@ -1258,6 +1258,9 @@
     "message": "From: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
+  "fromTokenLists": {
+    "message": "From token lists: $1"
+  },
   "functionApprove": {
     "message": "Function: Approve"
   },
