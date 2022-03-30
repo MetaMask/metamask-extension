@@ -30,20 +30,8 @@ function mapStateToProps(state, ownProps) {
     from,
   );
   const isLedgerWallet = isAddressLedger(state, from);
-  const {
-    unapprovedTypedMessagesCount,
-    unapprovedPersonalMsgCount,
-    unapprovedDecryptMsgCount,
-    unapprovedEncryptionPublicKeyMsgCount,
-    unapprovedMsgCount,
-  } = state.metamask;
   const messagesList = unconfirmedMessagesHashSelector(state);
-  const messagesCount =
-    unapprovedTypedMessagesCount +
-    unapprovedPersonalMsgCount +
-    unapprovedDecryptMsgCount +
-    unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedMsgCount;
+  const messagesCount = getTotalUnapprovedMessagesCount(state);
 
   return {
     requester: null,
