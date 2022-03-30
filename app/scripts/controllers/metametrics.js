@@ -584,7 +584,7 @@ export default class MetaMetricsController {
   /**
    * Calls segment.identify with given user traits
    *
-   * @see {@link https://segment.com/docs/connections/spec/identify/#identities}
+   * @see {@link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify}
    * @private
    * @param {Object} userTraits
    */

@@ -241,7 +241,7 @@ describe('MetaMetricsController', function () {
       mock
         .expects('identify')
         .once()
-        .withArgs(TEST_META_METRICS_ID, MOCK_TRAITS);
+        .withArgs({ userId: TEST_META_METRICS_ID, traits: MOCK_TRAITS });
 
       metaMetricsController.identify({
         ...MOCK_TRAITS,
@@ -263,7 +263,12 @@ describe('MetaMetricsController', function () {
       mock
         .expects('identify')
         .once()
-        .withArgs(TEST_META_METRICS_ID, { test_date: mockDateISOString });
+        .withArgs({
+          userId: TEST_META_METRICS_ID,
+          traits: {
+            test_date: mockDateISOString,
+          },
+        });
 
       metaMetricsController.identify({
         test_date: mockDate,
