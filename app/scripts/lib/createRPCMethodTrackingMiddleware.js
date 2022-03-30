@@ -33,9 +33,11 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
+    const startTime = Date.now();
     const { origin } = req;
 
     next((callback) => {
+      const endTime = Date.now();
       if (!getMetricsState().participateInMetaMetrics) {
         return callback();
       }
@@ -53,6 +55,7 @@ export default function createRPCMethodTrackingMiddleware({
             error_code: res.error?.code,
             error_message: res.error?.message,
             has_result: typeof res.result !== 'undefined',
+            duration: endTime - startTime,
           },
         });
       } else if (typeof samplingTimeouts[req.method] === 'undefined') {
@@ -67,6 +70,7 @@ export default function createRPCMethodTrackingMiddleware({
             error_code: res.error?.code,
             error_message: res.error?.message,
             has_result: typeof res.result !== 'undefined',
+            duration: endTime - startTime,
           },
         });
         // Only record one call to this method every ten seconds to avoid
