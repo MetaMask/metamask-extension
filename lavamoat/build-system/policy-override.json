@@ -13,7 +13,30 @@
         "@babel/preset-typescript": true
       }
     },
+    "@babel/eslint-parser": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "process.versions": true
+      },
+      "packages": {
+        "@babel/parser": true
+      }
+    },
     "@eslint/eslintrc": {
+      "builtin": {
+        "fs": true,
+        "module": true,
+        "path": true,
+        "assert": true,
+        "util": true,
+        "os": true,
+        "url": true
+      },
+      "globals": {
+        "process.platform": true
+      },
       "packages": {
         "<root>": true,
         "@babel/eslint-parser": true,
@@ -66,6 +89,11 @@
     "@typescript-eslint/visitor-keys": {
       "packages": {
         "eslint-visitor-keys": true
+      }
+    },
+    "eslint-import-resolver-typescript": {
+      "builtin": {
+        "path": true
       }
     },
     "eslint-module-utils": {
