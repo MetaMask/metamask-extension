@@ -90,8 +90,10 @@ async function addEthereumChainHandler(
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            isLocalhost(blockExplorerUrl) ||
+            validUrl.isHttpsUri(blockExplorerUrl),
         )
       : null;
 
