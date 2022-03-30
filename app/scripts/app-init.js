@@ -13,10 +13,21 @@ function tryImport(...fileNames) {
 }
 
 // eslint-disable-next-line
-chrome.runtime.onConnect.addListener(() => {
+chrome.runtime.onConnect.addListener((remotePort) => {
   if (!initialized) {
     console.log("not initalized. Importing scripts now!")
     importAllScripts();
+    if (remotePort?.name === 'popup') {
+      console.log(
+        'NOW ATTEMPTING TO SEND MESSAGE with remoteport:',
+        remotePort,
+      );
+      chrome.runtime.sendMessage(remotePort?.sender?.id, {
+        type: 'REMOTE_PORT',
+        remotePort,
+      });
+    }
+    console.log("AFTER SCRIPTS IMPORT COMPLETE ONCONNECT")
   }
 });
 
@@ -38,4 +49,5 @@ function importAllScripts() {
   fileList.forEach((fileName) => tryImport(fileName));
 
   initialized = true;
+  console.log("SCRIPTS IMPORT COMPLETE")
 }

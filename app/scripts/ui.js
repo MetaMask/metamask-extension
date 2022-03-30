@@ -36,15 +36,15 @@ async function start() {
 
   const activeTab = await queryCurrentActiveTab(windowType);
   console.log("IN THE UI SCRIPT")
-  if (process.env.ENABLE_MV3) {
-    extensionPort.onMessage.addListener((message) => {
-      if (message?.name === 'CONNECTION_READY') {
-        initializeUiWithTab(activeTab);
-      }
-    });
-  } else {
+  // if (process.env.ENABLE_MV3) {
+  //   extensionPort.onMessage.addListener((message) => {
+  //     if (message?.name === 'CONNECTION_READY') {
+  //       initializeUiWithTab(activeTab);
+  //     }
+  //   });
+  // } else {
     initializeUiWithTab(activeTab);
-  }
+  // }
 
   function displayCriticalError(container, err) {
     container.innerHTML =

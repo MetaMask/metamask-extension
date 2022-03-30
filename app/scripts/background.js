@@ -77,21 +77,21 @@ if (inTest || process.env.METAMASK_DEBUG) {
 
 let initialState;
 let initialLangCode;
-const initApp = (remotePort) => initialize(remotePort).catch(log.error);
+// const initApp = (remotePort) => initialize(remotePort).catch(log.error);
 
 // TODO this listener as opposed to initialize on initial load is messing this up
-if (process.env.ENABLE_MV3) {
-  browser.runtime.onConnect.addListener(initApp);
-  (async () => {
-    initialState = await loadStateFromPersistence();
-    initialLangCode = await getFirstPreferredLangCode();
-  })();
+// if (process.env.ENABLE_MV3) {
+//   browser.runtime.onConnect.addListener(initApp);
+//   (async () => {
+//     initialState = await loadStateFromPersistence();
+//     initialLangCode = await getFirstPreferredLangCode();
+//   })();
 
-  // THIS IS ADDED as a test
-  initialize().catch(log.error)
-} else {
+//   // THIS IS ADDED as a test
+//   initialize().catch(log.error)
+// } else {
   initialize().catch(log.error);
-}
+// }
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -161,6 +161,7 @@ async function initialize(remotePort) {
   if (!initialLangCode) {
     initialLangCode = await getFirstPreferredLangCode();
   }
+  console.log('IN INITIALIZE: initialState:', initialState,  'remotePort:', remotePort)
   await setupController(initialState, initialLangCode, remotePort);
   log.info('MetaMask initialization complete.');
 }
