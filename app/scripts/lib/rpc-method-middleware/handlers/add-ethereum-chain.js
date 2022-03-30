@@ -77,6 +77,11 @@ async function addEthereumChainHandler(
     );
   }
 
+  const isLocalhost = (strUrl) => {
+    const url = new URL(strUrl);
+    return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+  };
+
   const firstValidRPCUrl = Array.isArray(rpcUrls)
     ? rpcUrls.find((rpcUrl) => validUrl.isHttpsUri(rpcUrl))
     : null;
