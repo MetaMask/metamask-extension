@@ -91,8 +91,24 @@ export default function CustomContentSearch({
 }
 
 CustomContentSearch.propTypes = {
+  /**
+   * The function searches the list of networks depending on
+   * the entered parameter and returns the entire list of
+   * networks when the user clicks on 'X' on the search tab
+   */
   onSearch: PropTypes.func,
+  /**
+   * An error message is displayed when a user searches for a specific
+   * network on the search tab and that network does not exist
+   * in the networks list
+   */
   error: PropTypes.string,
+  /**
+   * The list of networks available for search.
+   */
   networksList: PropTypes.array,
+  /**
+   * Search for a specific network(s) by label or labelKey
+   */
   searchQueryInput: PropTypes.string,
 };

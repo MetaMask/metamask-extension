@@ -17,7 +17,7 @@ const state = {
     {
       blockExplorerUrl: "https://etherscan.io",
       chainId: "0x1",
-      iconColor: "#29B6AF",
+      iconColor: 'var(--mainnet)',
       isATestNetwork: false,
       labelKey: "mainnet",
       providerType: "mainnet",
@@ -28,7 +28,7 @@ const state = {
     {
       blockExplorerUrl: "https://ropsten.etherscan.io",
       chainId: "0x3",
-      iconColor: "#FF4A8D",
+      iconColor: 'var(--ropsten)',
       isATestNetwork: true,
       labelKey: "ropsten",
       providerType: "ropsten",
@@ -39,7 +39,7 @@ const state = {
     {
       blockExplorerUrl: "https://rinkeby.etherscan.io",
       chainId: "0x4",
-      iconColor: "#F6C343",
+      iconColor: 'var(--rinkeby)',
       isATestNetwork: true,
       labelKey: "rinkeby",
       providerType: "rinkeby",
@@ -50,7 +50,7 @@ const state = {
     {
       blockExplorerUrl: "https://goerli.etherscan.io",
       chainId: "0x5",
-      iconColor: "#3099f2",
+      iconColor: 'var(--goerli)',
       isATestNetwork: true,
       labelKey: "goerli",
       providerType: "goerli",
@@ -61,7 +61,7 @@ const state = {
     {
       blockExplorerUrl: "https://kovan.etherscan.io",
       chainId: "0x2a",
-      iconColor: "#9064FF",
+      iconColor: 'var(--kovan)',
       isATestNetwork: true,
       labelKey: "kovan",
       providerType: "kovan",
@@ -72,7 +72,7 @@ const state = {
     {
       blockExplorerUrl: "",
       chainId: "0x539",
-      iconColor: "#6A737D",
+      iconColor: 'var(--localhost)',
       isATestNetwork: true,
       label: "Localhost 8545",
       providerType: "rpc",
@@ -82,7 +82,7 @@ const state = {
     {
       blockExplorerUrl: "https://bscscan.com",
       chainId: "0x38",
-      iconColor: "#6A737D",
+      iconColor: 'var(--localhost)',
       isATestNetwork: false,
       label: "Binance Smart Chain",
       providerType: "rpc",
@@ -92,7 +92,7 @@ const state = {
     {
       blockExplorerUrl: "https://cchain.explorer.avax.network/",
       chainId: "0xa86a",
-      iconColor: "#6A737D",
+      iconColor: 'var(--localhost)',
       isATestNetwork: false,
       label: "Avalanche",
       providerType: "rpc",
@@ -102,7 +102,7 @@ const state = {
     {
       blockExplorerUrl: "https://polygonscan.com",
       chainId: "0x89",
-      iconColor: "#6A737D",
+      iconColor: 'var(--localhost)',
       isATestNetwork: false,
       label: "Polygon",
       providerType: "rpc",
