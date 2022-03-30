@@ -47,7 +47,7 @@ function getValues(pendingApproval, t, actions) {
         children: t('switchEthereumChainConfirmationDescription'),
         props: {
           variant: TYPOGRAPHY.H7,
-          color: COLORS.UI4,
+          color: COLORS.TEXT_ALTERNATIVE,
           align: 'center',
           boxProps: {
             padding: [0, 4, 0, 4],

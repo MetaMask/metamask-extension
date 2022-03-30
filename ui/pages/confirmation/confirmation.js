@@ -210,7 +210,7 @@ export default function ConfirmationPage() {
           />
           <Chip
             label={stripHttpsScheme(originMetadata.origin)}
-            borderColor={COLORS.WHITE}
+            borderColor={COLORS.BORDER_DEFAULT}
           />
         </Box>
         <MetaMaskTemplateRenderer sections={templatedValues.content} />

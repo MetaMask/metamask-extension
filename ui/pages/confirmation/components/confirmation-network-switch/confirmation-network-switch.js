@@ -55,7 +55,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             size={64}
           />
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.NORMAL}
             align={TEXT_ALIGN.CENTER}
@@ -74,8 +74,8 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
           alignItems={ALIGN_ITEMS.CENTER}
           justifyContent={JUSTIFY_CONTENT.CENTER}
         >
-          <span className="confirmation-network-switch__check" />
-          <img src="./images/broken-line.svg" alt="broken-line" />
+          <i className="fa fa-angle-right fa-lg confirmation-network-switch__check" />
+          <div className="confirmation-network-switch__dashed-line" />
         </Box>
         <Box
           className="confirmation-network-switch__icon"
@@ -93,7 +93,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             size={64}
           />
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.NORMAL}
             align={TEXT_ALIGN.CENTER}
