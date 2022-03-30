@@ -17,13 +17,13 @@ const inpageContent = fs.readFileSync(
 );
 const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
 const inpageBundle = inpageContent + inpageSuffix;
-
+const cspIdentifier = `'sha256-${crypto
+  .createHash('sha256')
+  .update(inpageBundle)
+  .digest('base64')}'`;
 browser.runtime.sendMessage(
   {
-    cspIdentifier: `'sha256-${crypto
-      .createHash('sha256')
-      .update(inpageBundle)
-      .digest('base64')}'`,
+    cspIdentifier,
   },
   () => {
     // do nothing
@@ -46,6 +46,44 @@ if (shouldInjectProvider()) {
 }
 
 /**
+ * Modifies the CSP to include the hash of the injected script
+ * Modified from https://github.com/Rufflewind/chrome_cspmod
+ */
+function modifyCSP() {
+  const cspMetas = document.querySelectorAll(
+    'meta[http-equiv="Content-Security-Policy"][content]',
+  );
+  cspMetas.forEach((meta) => {
+    // Get if the meta already contains a script CSP
+    const hasScriptSrc = meta.content
+      .split(';')
+      .some((policy) => policy.split(' ')[0].toLowerCase() === 'script-src');
+    if (hasScriptSrc) {
+      meta.content = meta.content
+        .split(';')
+        .map((policy) => {
+          if (policy.split(' ')[0].toLowerCase() !== 'script-src') {
+            return policy;
+          }
+          return [...policy.split(' '), cspIdentifier].join(' '); // Add sha hash to CSP
+        })
+        .join(';');
+    } else {
+      // If not, modify the default
+      meta.content = meta.content
+        .split(';')
+        .map((policy) => {
+          if (policy.split(' ')[0].toLowerCase() !== 'default-src') {
+            return policy;
+          }
+          return [...policy.split(' '), cspIdentifier].join(' '); // Add sha hash to CSP
+        })
+        .join(';');
+    }
+  });
+}
+
+/**
  * Injects a script tag into the current document
  *
  * @param {string} content - Code to be executed in the current document
@@ -56,6 +94,7 @@ function injectScript(content) {
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
     scriptTag.textContent = content;
+    modifyCSP();
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
   } catch (error) {
