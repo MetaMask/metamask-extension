@@ -11,17 +11,42 @@ describe('Settings Search', function () {
       },
     ],
   };
-  const searchableItems = {
-    general: 'Primary Currency',
-    advanced: 'State Logs',
-    contacts: 'Contacts',
-    security: 'Reveal Secret',
-    alerts: 'Browsing a website',
-    networks: 'Ethereum Mainnet',
-    experimental: 'Token Detection',
-    about: 'Terms of Use',
+  const settings = {
+    general: {
+      urlSubstring: 'general',
+      target: 'Primary Currency',
+    },
+    advanced: {
+      urlSubstring: 'advanced',
+      target: 'State Logs',
+    },
+    contacts: {
+      urlSubstring: 'contact-list',
+      target: 'Contacts',
+    },
+    security: {
+      urlSubstring: 'security',
+      target: 'Reveal Secret',
+    },
+    alerts: {
+      urlSubstring: 'alerts',
+      target: 'Browsing a website',
+    },
+    networks: {
+      urlSubstring: 'networks',
+      target: 'Ethereum Mainnet',
+    },
+    experimental: {
+      urlSubstring: 'experimental',
+      target: 'Token Detection',
+    },
+    about: {
+      urlSubstring: 'about-us',
+      target: 'Terms of Use',
+    },
   };
   let found;
+  let url;
 
   it('should find element inside the General tab', async function () {
     await withFixtures(
@@ -38,10 +63,20 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.general);
+        await driver.fill('#search-settings', settings.general.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({ text: 'General', tag: 'span' });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'General', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.general.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -60,13 +95,23 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.advanced);
+        await driver.fill('#search-settings', settings.advanced.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({
           text: 'Advanced',
           tag: 'span',
         });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'Advanced', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.advanced.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -85,13 +130,23 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.contacts);
+        await driver.fill('#search-settings', settings.contacts.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({
           text: 'Contacts',
           tag: 'span',
         });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'Contacts', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.contacts.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -110,13 +165,23 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.security);
+        await driver.fill('#search-settings', settings.security.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({
           text: 'Security',
           tag: 'span',
         });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'Security', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.security.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -135,10 +200,20 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.alerts);
+        await driver.fill('#search-settings', settings.alerts.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({ text: 'Alerts', tag: 'span' });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'Alerts', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.alerts.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -157,13 +232,23 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.networks);
+        await driver.fill('#search-settings', settings.networks.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({
           text: 'Networks',
           tag: 'span',
         });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'Networks', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.networks.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -182,13 +267,23 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.experimental);
+        await driver.fill('#search-settings', settings.experimental.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({
           text: 'Experimental',
           tag: 'span',
         });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'Experimental', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.experimental.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -207,10 +302,20 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', searchableItems.about);
+        await driver.fill('#search-settings', settings.about.target);
 
+        // Check if element was found
         found = await driver.isElementPresent({ text: 'About', tag: 'span' });
         assert.equal(found, true, 'Element was not found');
+
+        // Check if element redirects to the correct page
+        await driver.clickElement({ text: 'About', tag: 'span' });
+        url = await driver.getUrl();
+        assert.equal(
+          url.includes(settings.about.urlSubstring),
+          true,
+          'Item does not redirect to correct page',
+        );
       },
     );
   });
@@ -232,10 +337,10 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', 'Lorem ipsum');
 
         found = await driver.isElementPresent({
-          text: 'Lorem ipsum',
+          text: 'No matching results found',
           tag: 'span',
         });
-        assert.equal(found, false, 'Non existent element was found');
+        assert.equal(found, true, 'Non existent element was found');
       },
     );
   });
