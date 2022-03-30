@@ -22,18 +22,13 @@ const cspIdentifier = `'sha256-${crypto
   .update(inpageBundle)
   .digest('base64')}'`;
 
-try {
-  browser.runtime.sendMessage(
-    {
-      cspIdentifier,
-    },
-    () => {
-      // do nothing
-    },
-  ); // Send hash to background.js
-} catch {
-  console.warn('Unable to send Content-Security-Policy hash to service worker');
-}
+browser.runtime.sendMessage(
+  {
+    cspIdentifier,
+  }
+).then(() => {
+  // Do nothing
+}); // Send hash to background.js
 
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
