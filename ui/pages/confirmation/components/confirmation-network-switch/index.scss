@@ -16,14 +16,36 @@
     height: 64px;
   }
 
-  &__check {
-    width: 40px;
-    height: 40px;
-    background: white url("/images/arrow-right-blue.svg") no-repeat;
-    position: absolute;
+   &__line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  [dir='rtl'] &__check {
+  &__broken-line {
+    &::before {
+      content: '';
+      position: absolute;
+      width: 90%;
+      left: 5%;
+      top: 50%;
+      border: 1px solid var(--color-border-muted);
+      border-style: dashed;
+      z-index: -1;
+    }
+
+  }
+
+  &__arrow {
+    color: var(--color-primary-default);
+    border-radius: 50%;
+    background-color: var(--color-background-default);
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+
+  [dir='rtl'] &__arrow {
     transform: rotate(180deg);
   }
 }
