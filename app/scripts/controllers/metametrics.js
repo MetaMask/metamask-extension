@@ -597,8 +597,9 @@ export default class MetaMetricsController {
     }
 
     try {
-      this.segment.identify(metaMetricsId, {
-        ...userTraits,
+      this.segment.identify({
+        userId: metaMetricsId,
+        traits: userTraits,
       });
     } catch (err) {
       this._captureException(err);
