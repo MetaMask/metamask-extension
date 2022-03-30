@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { util } from '@metamask/controllers';
@@ -24,6 +24,7 @@ import FormField from '../../components/ui/form-field';
 import { getIsMainnet, getUseCollectibleDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 
 export default function AddCollectible() {
   const t = useI18nContext();
@@ -47,6 +48,7 @@ export default function AddCollectible() {
   const [tokenId, setTokenId] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [collectibleAddFailed, setCollectibleAddFailed] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const handleAddCollectible = async () => {
     try {
@@ -65,6 +67,17 @@ export default function AddCollectible() {
       );
     }
     dispatch(setNewCollectibleAddedMessage('success'));
+
+    trackEvent({
+      event: 'Collectible Added',
+      category: 'Wallet',
+      sensitiveProperties: {
+        token_contract_address: address,
+        tokenId: tokenId.toString(),
+        source: 'manual',
+      },
+    });
+
     history.push(DEFAULT_ROUTE);
   };
 
