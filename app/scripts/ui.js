@@ -35,7 +35,7 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
-
+  console.log("IN THE UI SCRIPT")
   if (process.env.ENABLE_MV3) {
     extensionPort.onMessage.addListener((message) => {
       if (message?.name === 'CONNECTION_READY') {

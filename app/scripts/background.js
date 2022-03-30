@@ -79,12 +79,16 @@ let initialState;
 let initialLangCode;
 const initApp = (remotePort) => initialize(remotePort).catch(log.error);
 
+// TODO this listener as opposed to initialize on initial load is messing this up
 if (process.env.ENABLE_MV3) {
   browser.runtime.onConnect.addListener(initApp);
   (async () => {
     initialState = await loadStateFromPersistence();
     initialLangCode = await getFirstPreferredLangCode();
   })();
+
+  // THIS IS ADDED as a test
+  initialize().catch(log.error)
 } else {
   initialize().catch(log.error);
 }
@@ -237,6 +241,8 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
   // MetaMask Controller
   //
 
+  console.log("SETUP CONtROLLER:", remoteSourcePort)
+
   const controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -316,6 +322,7 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
     }
   }
 
+  console.log("process.env.ENABLE_MV3 && remoteSourcePort", process.env.ENABLE_MV3, remoteSourcePort)
   if (process.env.ENABLE_MV3 && remoteSourcePort) {
     connectRemote(remoteSourcePort);
   }
@@ -391,6 +398,7 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+      console.log("CONNECTREMOTE HAPPENING", process.env.ENABLE_MV3)
       if (process.env.ENABLE_MV3) {
         remotePort.postMessage({ name: 'CONNECTION_READY' });
       }
