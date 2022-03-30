@@ -893,7 +893,9 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (eip1559Compatibility) {
-      const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
+      const chainId = this._getCurrentChainId;
+
+      const advancedGasFeeDefaultValues = this.getAdvancedGasFee()[chainId];
       if (
         Boolean(advancedGasFeeDefaultValues) &&
         !SWAP_TRANSACTION_TYPES.includes(txMeta.type)
