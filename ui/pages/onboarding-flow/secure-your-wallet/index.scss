@@ -21,6 +21,7 @@
 
   &__video {
     max-width: 496px;
+    border-radius: 10px;
 
     @media screen and (min-width: 461px) and (max-width: $break-small) {
       max-width: 396px;
