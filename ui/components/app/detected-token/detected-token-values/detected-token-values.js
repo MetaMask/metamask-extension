@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
 
-import { getTokenList } from '../../../../selectors';
 import {
   COLORS,
   DISPLAY,
@@ -15,10 +13,7 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 
-const DetectedTokenValues = ({ tokenAddress }) => {
-  const tokenList = useSelector(getTokenList);
-  const token = tokenList[tokenAddress];
-
+const DetectedTokenValues = ({ token }) => {
   const [selectedTokens, setSelectedTokens] = useState(false);
   const { tokensWithBalances } = useTokenTracker([token]);
   const balanceToRender = tokensWithBalances[0]?.string;
@@ -50,7 +45,13 @@ const DetectedTokenValues = ({ tokenAddress }) => {
 };
 
 DetectedTokenValues.propTypes = {
-  tokenAddress: PropTypes.string,
+  token: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    decimals: PropTypes.number,
+    symbol: PropTypes.string,
+    iconUrl: PropTypes.string,
+    aggregators: PropTypes.array,
+  }),
 };
 
 export default DetectedTokenValues;

@@ -10,11 +10,28 @@ export default {
   },
   args: {
     address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    symbol: 'SNX',
+    decimals: 18,
+    iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
+    aggregators: [
+      'aave',
+      'bancor',
+      'cmc',
+      'cryptocom',
+      'coinGecko',
+      'oneInch',
+      'paraswap',
+      'pmm',
+      'synthetix',
+      'zapper',
+      'zerion',
+      'zeroEx',
+    ],
   },
 };
 
 const Template = (args) => {
-  return <DetectedTokenValues tokenAddress={args.address} />;
+  return <DetectedTokenValues token={args} />;
 };
 
 export const DefaultStory = Template.bind({});
