@@ -11,8 +11,9 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   updateCustomSwapsEIP1559GasParams,
+  updatePreviousGasParams,
   updateSwapsUserFeeLevel,
-  updateTransaction as updateTransactionFn,
+  updateTransactionGasFees,
 } from '../../store/actions';
 
 export const useTransactionFunctions = ({
@@ -49,7 +50,7 @@ export const useTransactionFunctions = ({
   }, [editGasMode, transaction?.previousGas, transaction?.txParams]);
 
   const updateTransaction = useCallback(
-    ({
+    async ({
       estimateUsed,
       gasLimit,
       maxFeePerGas,
@@ -87,7 +88,18 @@ export const useTransactionFunctions = ({
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
       } else {
-        dispatch(updateTransactionFn(updatedTxMeta));
+        newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
+        newGasSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
+
+        if (txMeta && txMeta.previousGas) {
+          await dispatch(
+            updatePreviousGasParams(updatedTxMeta.id, txMeta.previousGas),
+          );
+        }
+
+        await dispatch(
+          updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
+        );
       }
     },
     [

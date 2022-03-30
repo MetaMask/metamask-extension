@@ -146,7 +146,7 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message={warningMessage}
-              iconFillColor="#f8c000"
+              iconFillColor="var(--color-warning-default)"
               useIcon
             />
           </div>
@@ -156,7 +156,7 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message={t('gasDisplayDappWarning', [transaction.origin])}
-              iconFillColor="#f8c000"
+              iconFillColor="var(--color-warning-default)"
               useIcon
             />
           </div>
@@ -166,7 +166,7 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message={t('networkIsBusy')}
-              iconFillColor="#f8c000"
+              iconFillColor="var(--color-warning-default)"
               useIcon
             />
           </div>

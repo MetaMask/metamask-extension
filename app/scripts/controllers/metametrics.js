@@ -1,4 +1,4 @@
-import { merge, omit, omitBy } from 'lodash';
+import { isEqual, merge, omit, omitBy, pickBy } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { generateUUID } from 'pubnub';
@@ -6,6 +6,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
@@ -281,6 +282,30 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Calls this._identify with validated metaMetricsId and traits if user is participating
+   * in the MetaMetrics analytics program
+   *
+   * @param {Object} traits
+   */
+  identify(traits) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+
+    if (!participateInMetaMetrics || !metaMetricsId || !traits) {
+      return;
+    }
+    if (typeof traits !== 'object') {
+      console.warn(
+        `MetaMetricsController#identify: traits parameter must be an object. Received type: ${typeof traits}`,
+      );
+      return;
+    }
+
+    const allValidTraits = this._buildValidTraits(traits);
+
+    this._identify(allValidTraits);
+  }
+
+  /**
    * Setter for the `participateInMetaMetrics` property
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
@@ -304,27 +329,256 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Calls this._identify with validated metaMetricsId and traits if user is participating
-   * in the MetaMetrics analytics program
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
    *
-   * @param {Object} traits
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    */
-  identify(traits) {
-    const { metaMetricsId, participateInMetaMetrics } = this.state;
+  trackEvent(payload, options) {
+    // validation is not caught and handled
+    this.validatePayload(payload);
+    this.submitEvent(payload, options).catch((err) =>
+      this._captureException(err),
+    );
+  }
 
-    if (!participateInMetaMetrics || !metaMetricsId || !traits) {
+  /**
+   * track a page view with Segment
+   *
+   * @param {MetaMetricsPagePayload} payload - details of the page viewed
+   * @param {MetaMetricsPageOptions} [options] - options for handling the page
+   *  view
+   */
+  trackPage({ name, params, environmentType, page, referrer }, options) {
+    try {
+      if (this.state.participateInMetaMetrics === false) {
+        return;
+      }
+
+      if (
+        this.state.participateInMetaMetrics === null &&
+        !options?.isOptInPath
+      ) {
+        return;
+      }
+      const { metaMetricsId } = this.state;
+      const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
+      const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
+      this.segment.page({
+        [idTrait]: idValue,
+        name,
+        properties: {
+          params,
+          locale: this.locale,
+          network: this.network,
+          chain_id: this.chainId,
+          environment_type: environmentType,
+        },
+        context: this._buildContext(referrer, page),
+      });
+    } catch (err) {
+      this._captureException(err);
+    }
+  }
+
+  /**
+   * submits (or queues for submission) a metametrics event, performing necessary payload manipulation and
+   * routing the event to the appropriate segment source. Will split events
+   * with sensitiveProperties into two events, tracking the sensitiveProperties
+   * with the anonymousId only.
+   *
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
+   * @returns {Promise<void>}
+   */
+  async submitEvent(payload, options) {
+    this.validatePayload(payload);
+
+    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
     }
-    if (typeof traits !== 'object') {
-      console.warn(
-        `MetaMetricsController#identify: traits parameter must be an object. Received type: ${typeof traits}`,
+
+    // We might track multiple events if sensitiveProperties is included, this array will hold
+    // the promises returned from this._track.
+    const events = [];
+
+    if (payload.sensitiveProperties) {
+      // sensitiveProperties will only be tracked using the anonymousId property and generic id
+      // If the event options already specify to exclude the metaMetricsId we throw an error as
+      // a signal to the developer that the event was implemented incorrectly
+      if (options?.excludeMetaMetricsId === true) {
+        throw new Error(
+          'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
+        );
+      }
+
+      const combinedProperties = merge(
+        payload.sensitiveProperties,
+        payload.properties,
       );
-      return;
+
+      events.push(
+        this._track(
+          this._buildEventPayload({
+            ...payload,
+            properties: combinedProperties,
+          }),
+          { ...options, excludeMetaMetricsId: true },
+        ),
+      );
     }
 
-    const allValidTraits = this._buildValidTraits(traits);
+    events.push(this._track(this._buildEventPayload(payload), options));
 
-    this._identify(allValidTraits);
+    await Promise.all(events);
+  }
+
+  /**
+   * validates a metametrics event
+   *
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   */
+  validatePayload(payload) {
+    // event and category are required fields for all payloads
+    if (!payload.event || !payload.category) {
+      throw new Error(
+        `Must specify event and category. Event was: ${
+          payload.event
+        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
+          payload,
+        )}. ${
+          typeof payload.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            : ''
+        }`,
+      );
+    }
+  }
+
+  handleMetaMaskStateUpdate(newState) {
+    const userTraits = this._buildUserTraitsObject(newState);
+    if (userTraits) {
+      this.identify(userTraits);
+    }
+  }
+
+  /** PRIVATE METHODS */
+
+  /**
+   * Build the context object to attach to page and track events.
+   *
+   * @private
+   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
+   *  the notification window.
+   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
+   *  view of the extension. Defaults to the background-process object.
+   * @returns {MetaMetricsContext}
+   */
+  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    return {
+      app: {
+        name: 'MetaMask Extension',
+        version: this.version,
+      },
+      userAgent: window.navigator.userAgent,
+      page,
+      referrer,
+    };
+  }
+
+  /**
+   * Build's the event payload, processing all fields into a format that can be
+   * fed to Segment's track method
+   *
+   * @private
+   * @param {
+   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
+   * } rawPayload - raw payload provided to trackEvent
+   * @returns {SegmentEventPayload} formatted event payload for segment
+   */
+  _buildEventPayload(rawPayload) {
+    const {
+      event,
+      properties,
+      revenue,
+      value,
+      currency,
+      category,
+      page,
+      referrer,
+      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+    } = rawPayload;
+    return {
+      event,
+      properties: {
+        // These values are omitted from properties because they have special meaning
+        // in segment. https://segment.com/docs/connections/spec/track/#properties.
+        // to avoid accidentally using these inappropriately, you must add them as top
+        // level properties on the event payload. We also exclude locale to prevent consumers
+        // from overwriting this context level property. We track it as a property
+        // because not all destinations map locale from context.
+        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
+        revenue,
+        value,
+        currency,
+        category,
+        network: properties?.network ?? this.network,
+        locale: this.locale,
+        chain_id: properties?.chain_id ?? this.chainId,
+        environment_type: environmentType,
+      },
+      context: this._buildContext(referrer, page),
+    };
+  }
+
+  _buildUserTraitsObject(metamaskState) {
+    const currentTraits = {
+      [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
+      [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
+        (rpc) => rpc.chainId,
+      ),
+      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+    };
+
+    if (!this.previousTraits) {
+      this.previousTraits = currentTraits;
+      return currentTraits;
+    }
+
+    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+      const updates = pickBy(
+        currentTraits,
+        (v, k) => !isEqual(this.previousTraits[k], v),
+      );
+      this.previousTraits = currentTraits;
+      return updates;
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns a new object of all valid traits. For dates, we transform them into ISO-8601 timestamps.
+   *
+   * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
+   * @param {Object} traits
+   * @returns {Object}
+   */
+  _buildValidTraits(traits) {
+    return Object.entries(traits).reduce((validTraits, [key, value]) => {
+      if (this._isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this._isValidTrait(value)) {
+        validTraits[key] = value;
+      } else {
+        console.warn(
+          `MetaMetricsController: "${key}" value is not a valid trait type`,
+        );
+      }
+      return validTraits;
+    }, {});
   }
 
   /**
@@ -402,95 +656,6 @@ export default class MetaMetricsController {
   };
 
   /**
-   * Returns a new object of all valid traits. For dates, we transform them into ISO-8601 timestamps.
-   *
-   * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
-   * @param {Object} traits
-   * @returns {Object}
-   */
-  _buildValidTraits(traits) {
-    return Object.entries(traits).reduce((validTraits, [key, value]) => {
-      if (this._isValidTraitDate(value)) {
-        validTraits[key] = value.toISOString();
-      } else if (this._isValidTrait(value)) {
-        validTraits[key] = value;
-      } else {
-        console.warn(
-          `MetaMetricsController: "${key}" value is not a valid trait type`,
-        );
-      }
-      return validTraits;
-    }, {});
-  }
-
-  /**
-   * Build the context object to attach to page and track events.
-   *
-   * @private
-   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
-   *  the notification window.
-   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
-   *  view of the extension. Defaults to the background-process object.
-   * @returns {MetaMetricsContext}
-   */
-  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
-    return {
-      app: {
-        name: 'MetaMask Extension',
-        version: this.version,
-      },
-      userAgent: window.navigator.userAgent,
-      page,
-      referrer,
-    };
-  }
-
-  /**
-   * Build's the event payload, processing all fields into a format that can be
-   * fed to Segment's track method
-   *
-   * @private
-   * @param {
-   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
-   * } rawPayload - raw payload provided to trackEvent
-   * @returns {SegmentEventPayload} formatted event payload for segment
-   */
-  _buildEventPayload(rawPayload) {
-    const {
-      event,
-      properties,
-      revenue,
-      value,
-      currency,
-      category,
-      page,
-      referrer,
-      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-    } = rawPayload;
-    return {
-      event,
-      properties: {
-        // These values are omitted from properties because they have special meaning
-        // in segment. https://segment.com/docs/connections/spec/track/#properties.
-        // to avoid accidentally using these inappropriately, you must add them as top
-        // level properties on the event payload. We also exclude locale to prevent consumers
-        // from overwriting this context level property. We track it as a property
-        // because not all destinations map locale from context.
-        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
-        revenue,
-        value,
-        currency,
-        category,
-        network: properties?.network ?? this.network,
-        locale: this.locale,
-        chain_id: properties?.chain_id ?? this.chainId,
-        environment_type: environmentType,
-      },
-      context: this._buildContext(referrer, page),
-    };
-  }
-
-  /**
    * Perform validation on the payload and update the id type to use before
    * sending to Segment. Also examines the options to route and handle the
    * event appropriately.
@@ -565,132 +730,5 @@ export default class MetaMetricsController {
         this.segment.flush();
       }
     });
-  }
-
-  /**
-   * track a page view with Segment
-   *
-   * @param {MetaMetricsPagePayload} payload - details of the page viewed
-   * @param {MetaMetricsPageOptions} [options] - options for handling the page
-   *  view
-   */
-  trackPage({ name, params, environmentType, page, referrer }, options) {
-    try {
-      if (this.state.participateInMetaMetrics === false) {
-        return;
-      }
-
-      if (
-        this.state.participateInMetaMetrics === null &&
-        !options?.isOptInPath
-      ) {
-        return;
-      }
-      const { metaMetricsId } = this.state;
-      const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
-      const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this.segment.page({
-        [idTrait]: idValue,
-        name,
-        properties: {
-          params,
-          locale: this.locale,
-          network: this.network,
-          chain_id: this.chainId,
-          environment_type: environmentType,
-        },
-        context: this._buildContext(referrer, page),
-      });
-    } catch (err) {
-      this._captureException(err);
-    }
-  }
-
-  /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
-   */
-  trackEvent(payload, options) {
-    // validation is not caught and handled
-    this.validatePayload(payload);
-    this.submitEvent(payload, options).catch((err) =>
-      this._captureException(err),
-    );
-  }
-
-  /**
-   * submits (or queues for submission) a metametrics event, performing necessary payload manipulation and
-   * routing the event to the appropriate segment source. Will split events
-   * with sensitiveProperties into two events, tracking the sensitiveProperties
-   * with the anonymousId only.
-   *
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
-   * @returns {Promise<void>}
-   */
-  async submitEvent(payload, options) {
-    this.validatePayload(payload);
-
-    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
-      return;
-    }
-
-    // We might track multiple events if sensitiveProperties is included, this array will hold
-    // the promises returned from this._track.
-    const events = [];
-
-    if (payload.sensitiveProperties) {
-      // sensitiveProperties will only be tracked using the anonymousId property and generic id
-      // If the event options already specify to exclude the metaMetricsId we throw an error as
-      // a signal to the developer that the event was implemented incorrectly
-      if (options?.excludeMetaMetricsId === true) {
-        throw new Error(
-          'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
-        );
-      }
-
-      const combinedProperties = merge(
-        payload.sensitiveProperties,
-        payload.properties,
-      );
-
-      events.push(
-        this._track(
-          this._buildEventPayload({
-            ...payload,
-            properties: combinedProperties,
-          }),
-          { ...options, excludeMetaMetricsId: true },
-        ),
-      );
-    }
-
-    events.push(this._track(this._buildEventPayload(payload), options));
-
-    await Promise.all(events);
-  }
-
-  /**
-   * validates a metametrics event
-   *
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   */
-  validatePayload(payload) {
-    // event and category are required fields for all payloads
-    if (!payload.event || !payload.category) {
-      throw new Error(
-        `Must specify event and category. Event was: ${
-          payload.event
-        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
-          typeof payload.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
-            : ''
-        }`,
-      );
-    }
   }
 }

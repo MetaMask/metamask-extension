@@ -389,7 +389,7 @@ const MODALS = {
 };
 
 const BACKDROPSTYLE = {
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: 'var(--color-overlay-default)',
 };
 
 function mapStateToProps(state) {
