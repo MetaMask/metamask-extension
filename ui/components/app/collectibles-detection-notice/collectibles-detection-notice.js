@@ -30,7 +30,10 @@ export default function CollectiblesDetectionNotice() {
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={1}>
             <i
-              style={{ fontSize: '1rem', color: '#037DD6' }}
+              style={{
+                fontSize: '1rem',
+                color: 'var(--color-primary-default)',
+              }}
               className="fa fa-info-circle"
             />
           </Box>
