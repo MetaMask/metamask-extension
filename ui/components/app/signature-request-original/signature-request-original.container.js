@@ -10,6 +10,7 @@ import {
   getSubjectMetadata,
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
+  getTotalUnapprovedMessagesCount,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';

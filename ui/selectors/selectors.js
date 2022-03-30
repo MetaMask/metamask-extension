@@ -473,7 +473,7 @@ export function getTotalUnapprovedMessagesCount(state) {
     unapprovedPersonalMsgCount +
     unapprovedDecryptMsgCount +
     unapprovedEncryptionPublicKeyMsgCount +
-    unapprovedTypedMessagesCount 
+    unapprovedTypedMessagesCount
   );
 }
 
