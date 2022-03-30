@@ -12,7 +12,7 @@ export default {
   args: {
     newNetwork: {
       chainId: 'chainId',
-      name: 'name',
+      name: 'Binance Smart Chain Mainnet',
     },
   },
 };
