@@ -329,20 +329,6 @@ export default class MetaMetricsController {
   }
 
   /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
-   */
-  trackEvent(payload, options) {
-    // validation is not caught and handled
-    this.validatePayload(payload);
-    this.submitEvent(payload, options).catch((err) =>
-      this._captureException(err),
-    );
-  }
-
-  /**
    * track a page view with Segment
    *
    * @param {MetaMetricsPagePayload} payload - details of the page viewed
@@ -379,6 +365,20 @@ export default class MetaMetricsController {
     } catch (err) {
       this._captureException(err);
     }
+  }
+
+  /**
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   *
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
+   */
+  trackEvent(payload, options) {
+    // validation is not caught and handled
+    this.validatePayload(payload);
+    this.submitEvent(payload, options).catch((err) =>
+      this._captureException(err),
+    );
   }
 
   /**
