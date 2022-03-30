@@ -119,22 +119,21 @@ const AddNetwork = ({
                       </Box>
                     }
                     trigger="mouseenter"
-                    theme="light"
                   >
-                    <img
-                      className="add-network__warning-image"
-                      src="images/warning-triangle-grey.svg"
-                      alt={t('warning')}
+                    <i
+                      className="fa fa-exclamation-triangle add-network__warning-icon"
+                      title={t('warning')}
                     />
                   </Tooltip>
                 )
               }
-              <div
+              <Button
+                type="inline"
                 className="add-network__add-button"
                 onClick={onAddNetworkClick}
               >
                 {t('add')}
-              </div>
+              </Button>
             </Box>
           </Box>
         ))}
