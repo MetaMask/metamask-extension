@@ -825,7 +825,8 @@ export default function BuildQuote({
               )}
             </div>
           ))}
-        {!isDirectWrappingEnabled && (
+        {(smartTransactionsEnabled ||
+          (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
           <div className="build-quote__slippage-buttons-container">
             <SlippageButtons
               onSelect={(newSlippage) => {
@@ -837,6 +838,7 @@ export default function BuildQuote({
               smartTransactionsOptInStatus={smartTransactionsOptInStatus}
               setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
               currentSmartTransactionsError={currentSmartTransactionsError}
+              isDirectWrappingEnabled={isDirectWrappingEnabled}
             />
           </div>
         )}
