@@ -322,6 +322,10 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
+    this.on('update', (update) => {
+      this.metaMetricsController.handleMetaMaskStateUpdate(update);
+    });
+
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
       name: 'GasFeeController',
     });

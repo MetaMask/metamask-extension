@@ -42,7 +42,7 @@ const TransactionAlerts = ({
         <ActionableMessage
           message={<I18nValue messageKey="simulationErrorMessageV2" />}
           useIcon
-          iconFillColor="#d73a49"
+          iconFillColor="var(--color-error-default)"
           type="danger"
           primaryActionV2={
             userAcknowledgedGasMissing === true
@@ -91,7 +91,7 @@ const TransactionAlerts = ({
             </Typography>
           }
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           type="warning"
         />
       )}
@@ -142,7 +142,7 @@ const TransactionAlerts = ({
             </Typography>
           }
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           type="warning"
         />
       )}
@@ -158,7 +158,7 @@ const TransactionAlerts = ({
               <I18nValue messageKey="networkIsBusy" />
             </Typography>
           }
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           type="warning"
           useIcon
         />

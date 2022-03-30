@@ -1405,9 +1405,6 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "layer1Fees": {
-    "message": "Phí Lớp 1"
-  },
   "learmMoreAboutGas": {
     "message": "Muốn $1 về gas?"
   },
