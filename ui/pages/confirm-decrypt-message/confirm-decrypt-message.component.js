@@ -15,7 +15,7 @@ import { conversionUtil } from '../../../shared/modules/conversion.utils';
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -44,11 +44,12 @@ export default class ConfirmDecryptMessage extends Component {
 
   copyMessage = () => {
     copyToClipboard(this.state.rawMessage);
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Messages',
+    this.context.trackEvent({
+      category: 'Messages',
+      event: 'Copy',
+      properties: {
         action: 'Decrypt Message Copy',
-        name: 'Copy',
+        legacy_event: true,
       },
     });
     this.setState({ hasCopied: true });
@@ -251,7 +252,7 @@ export default class ConfirmDecryptMessage extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    const { metricsEvent, t } = this.context;
+    const { trackEvent, t } = this.context;
 
     return (
       <div className="request-decrypt-message__footer">
@@ -261,11 +262,12 @@ export default class ConfirmDecryptMessage extends Component {
           className="request-decrypt-message__footer__cancel-button"
           onClick={async (event) => {
             await cancelDecryptMessage(txData, event);
-            metricsEvent({
-              eventOpts: {
-                category: 'Messages',
+            trackEvent({
+              category: 'Messages',
+              event: 'Cancel',
+              properties: {
                 action: 'Decrypt Message Request',
-                name: 'Cancel',
+                legacy_event: true,
               },
             });
             clearConfirmTransaction();
@@ -280,11 +282,12 @@ export default class ConfirmDecryptMessage extends Component {
           className="request-decrypt-message__footer__sign-button"
           onClick={async (event) => {
             await decryptMessage(txData, event);
-            metricsEvent({
-              eventOpts: {
-                category: 'Messages',
+            trackEvent({
+              category: 'Messages',
+              event: 'Confirm',
+              properties: {
                 action: 'Decrypt Message Request',
-                name: 'Confirm',
+                legacy_event: true,
               },
             });
             clearConfirmTransaction();
