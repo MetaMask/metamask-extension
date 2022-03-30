@@ -10,7 +10,6 @@ describe('preferences controller', function () {
   let currentChainId;
   let provider;
   const migrateAddressBookState = sinon.stub();
-  const OLD_ENV = process.env;
 
   beforeEach(function () {
     const sandbox = sinon.createSandbox();
@@ -37,12 +36,10 @@ describe('preferences controller', function () {
       network,
       provider,
     });
-    process.env = { ...OLD_ENV };
   });
 
   afterEach(function () {
     sinon.restore();
-    process.env = OLD_ENV;
   });
 
   describe('useBlockie', function () {
@@ -277,7 +274,7 @@ describe('preferences controller', function () {
     });
   });
   describe('setUseTokenDetection', function () {
-    it('should default to true', function () {
+    it('should default to false', function () {
       const state = preferencesController.store.getState();
       assert.equal(state.useTokenDetection, false);
     });
