@@ -26,9 +26,7 @@ browser.runtime.sendMessage(
   {
     cspIdentifier,
   }
-).then(() => {
-  // Do nothing
-}); // Send hash to background.js
+);
 
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
