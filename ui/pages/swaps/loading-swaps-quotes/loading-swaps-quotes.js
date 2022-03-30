@@ -149,7 +149,6 @@ export default function LoadingSwapsQuotes({
               animationEventEmitter={animationEventEmitter.current}
               width="90"
               height="90"
-              followMouse={false}
               lookAtTarget={midPointTarget}
             />
           </div>
