@@ -83,7 +83,9 @@ async function addEthereumChainHandler(
   };
 
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => validUrl.isHttpsUri(rpcUrl))
+    ? rpcUrls.find(
+        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
+      )
     : null;
 
   const firstValidBlockExplorerUrl =
