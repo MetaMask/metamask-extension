@@ -282,25 +282,25 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Calls this._identify with validated metaMetricsId and traits if user is participating
+   * Calls this._identify with validated metaMetricsId and user traits if user is participating
    * in the MetaMetrics analytics program
    *
-   * @param {Object} traits
+   * @param {Object} userTraits
    */
-  identify(traits) {
+  identify(userTraits) {
     const { metaMetricsId, participateInMetaMetrics } = this.state;
 
-    if (!participateInMetaMetrics || !metaMetricsId || !traits) {
+    if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
       return;
     }
-    if (typeof traits !== 'object') {
+    if (typeof userTraits !== 'object') {
       console.warn(
-        `MetaMetricsController#identify: traits parameter must be an object. Received type: ${typeof traits}`,
+        `MetaMetricsController#identify: userTraits parameter must be an object. Received type: ${typeof userTraits}`,
       );
       return;
     }
 
-    const allValidTraits = this._buildValidTraits(traits);
+    const allValidTraits = this._buildValidTraits(userTraits);
 
     this._identify(allValidTraits);
   }
@@ -560,14 +560,14 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Returns a new object of all valid traits. For dates, we transform them into ISO-8601 timestamps.
+   * Returns a new object of all valid user traits. For dates, we transform them into ISO-8601 timestamp strings.
    *
    * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
-   * @param {Object} traits
+   * @param {Object} userTraits
    * @returns {Object}
    */
-  _buildValidTraits(traits) {
-    return Object.entries(traits).reduce((validTraits, [key, value]) => {
+  _buildValidTraits(userTraits) {
+    return Object.entries(userTraits).reduce((validTraits, [key, value]) => {
       if (this._isValidTraitDate(value)) {
         validTraits[key] = value.toISOString();
       } else if (this._isValidTrait(value)) {
@@ -582,23 +582,23 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Calls segment.identify with given traits
+   * Calls segment.identify with given user traits
    *
    * @see {@link https://segment.com/docs/connections/spec/identify/#identities}
    * @private
-   * @param {Object} traits
+   * @param {Object} userTraits
    */
-  _identify(traits) {
+  _identify(userTraits) {
     const { metaMetricsId } = this.state;
 
-    if (!traits || Object.keys(traits).length === 0) {
-      console.warn('MetaMetricsController#_identify: No traits found');
+    if (!userTraits || Object.keys(userTraits).length === 0) {
+      console.warn('MetaMetricsController#_identify: No userTraits found');
       return;
     }
 
     try {
       this.segment.identify(metaMetricsId, {
-        ...traits,
+        ...userTraits,
       });
     } catch (err) {
       this._captureException(err);
