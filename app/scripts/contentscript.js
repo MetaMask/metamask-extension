@@ -22,11 +22,7 @@ const cspIdentifier = `'sha256-${crypto
   .update(inpageBundle)
   .digest('base64')}'`;
 
-browser.runtime.sendMessage(
-  {
-    cspIdentifier,
-  }
-);
+browser.runtime.sendMessage({ cspIdentifier });
 
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
