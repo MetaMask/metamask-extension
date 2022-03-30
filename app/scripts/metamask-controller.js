@@ -583,6 +583,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'ExecutionService',
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
+      unresponsiveTimeout: 120000,
     });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
@@ -617,6 +618,8 @@ export default class MetamaskController extends EventEmitter {
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
+      maxIdleTime: 120000,
+      maxRequestTime: 120000,
     });
     ///: END:ONLY_INCLUDE_IN
 
