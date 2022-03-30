@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.12.2]
+### Fixed
+- Fix error where unlock failed after update to v10.12.0
+
+## [10.12.1]
+### Changed
+- This version was used to rollback from v10.12.0 to v10.11.4.
 
 ## [10.12.0]
 ### Added
@@ -2844,7 +2850,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.12.2...HEAD
-[10.12.2]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...v10.12.2
+[10.12.2]: https://github.com/MetaMask/metamask-extension/compare/v10.12.1...v10.12.2
+[10.12.1]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...v10.12.1
 [10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...v10.12.0
 [10.11.4]: https://github.com/MetaMask/metamask-extension/compare/v10.11.3...v10.11.4
 [10.11.3]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...v10.11.3
