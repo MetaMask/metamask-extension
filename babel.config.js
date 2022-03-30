@@ -1,7 +1,11 @@
 module.exports = function (api) {
   api.cache(false);
   return {
+    parserOpts: {
+      strictMode: true,
+    },
     presets: [
+      '@babel/preset-typescript',
       [
         '@babel/preset-env',
         {

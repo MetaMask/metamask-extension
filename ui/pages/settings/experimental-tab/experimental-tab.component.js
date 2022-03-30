@@ -12,7 +12,7 @@ import { THEME_TYPE } from './experimental-tab.constant';
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -63,11 +63,12 @@ export default class ExperimentalTab extends PureComponent {
             <ToggleButton
               value={useTokenDetection}
               onToggle={(value) => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Token Detection',
+                  properties: {
                     action: 'Token Detection',
-                    name: 'Token Detection',
+                    legacy_event: true,
                   },
                 });
                 setUseTokenDetection(!value);
@@ -110,11 +111,12 @@ export default class ExperimentalTab extends PureComponent {
             <ToggleButton
               value={useCollectibleDetection}
               onToggle={(value) => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Collectible Detection',
+                  properties: {
                     action: 'Collectible Detection',
-                    name: 'Collectible Detection',
+                    legacy_event: true,
                   },
                 });
                 if (!value && !openSeaEnabled) {
@@ -159,11 +161,12 @@ export default class ExperimentalTab extends PureComponent {
             <ToggleButton
               value={openSeaEnabled}
               onToggle={(value) => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Enabled/Disable OpenSea',
+                  properties: {
                     action: 'Enabled/Disable OpenSea',
-                    name: 'Enabled/Disable OpenSea',
+                    legacy_event: true,
                   },
                 });
                 // value is positive when being toggled off
@@ -186,7 +189,7 @@ export default class ExperimentalTab extends PureComponent {
     const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('enableEIP1559V2')}</span>
           <div className="settings-page__content-description">
@@ -207,11 +210,12 @@ export default class ExperimentalTab extends PureComponent {
             <ToggleButton
               value={eip1559V2Enabled}
               onToggle={(value) => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Enabled/Disable OpenSea',
+                  properties: {
                     action: 'Enabled/Disable OpenSea',
-                    name: 'Enabled/Disable OpenSea',
+                    legacy_event: true,
                   },
                 });
                 setEIP1559V2Enabled(!value);

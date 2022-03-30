@@ -106,7 +106,7 @@ describe('AdvancedTab Component', () => {
       />,
       {
         context: {
-          metricsEvent: () => undefined,
+          trackEvent: () => undefined,
           t: (s) => `_${s}`,
         },
       },
@@ -142,7 +142,7 @@ describe('AdvancedTab Component', () => {
       />,
       {
         context: {
-          metricsEvent: () => undefined,
+          trackEvent: () => undefined,
           t: (s) => `_${s}`,
         },
       },

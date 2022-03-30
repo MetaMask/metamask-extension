@@ -726,6 +726,8 @@ function getAllowedNotificationIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: getIsMainnet(state),
+    10: Boolean(process.env.TOKEN_DETECTION_V2),
+    11: Boolean(process.env.TOKEN_DETECTION_V2),
   };
 }
 
@@ -873,7 +875,7 @@ export function getIsOptimism(state) {
   );
 }
 
-export function getNetworkSupportsSettingGasPrice(state) {
+export function getNetworkSupportsSettingGasFees(state) {
   return !getIsOptimism(state);
 }
 

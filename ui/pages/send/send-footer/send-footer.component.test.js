@@ -43,7 +43,7 @@ describe('SendFooter Component', () => {
         mostRecentOverviewPage="mostRecentOverviewPage"
         {...props}
       />,
-      { context: { t: (str) => str, metricsEvent: () => ({}) } },
+      { context: { t: (str) => str, trackEvent: () => ({}) } },
     );
   };
 
@@ -157,7 +157,7 @@ describe('SendFooter Component', () => {
           update={propsMethodSpies.update}
           mostRecentOverviewPage="mostRecentOverviewPage"
         />,
-        { context: { t: (str) => str, metricsEvent: () => ({}) } },
+        { context: { t: (str) => str, trackEvent: () => ({}) } },
       );
     });
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { number } from '@storybook/addon-knobs';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { formatETHFee } from '../../../helpers/utils/formatters';
@@ -14,13 +13,112 @@ import { ETH } from '../../../helpers/constants/common';
 import { calcGasTotal, isBalanceSufficient } from '../../send/send.utils';
 import { conversionLessThan } from '../../../../shared/modules/conversion.utils';
 import GasModalPageContainer from './swaps-gas-customization-modal.component';
-
 // Using Test Data For Redux
 const store = configureStore(testData);
 
 export default {
   title: 'Pages/Swaps/GasModalPageContainer',
   id: __filename,
+  component: GasModalPageContainer,
+  argTypes: {
+    sendAmountArg: {
+      name: 'Send Amount (this should be static)',
+      control: { type: 'number', min: 0, step: 0.01 },
+    },
+    walletBalance: {
+      name: 'Wallet Balance (this should be static)',
+      control: { type: 'number', min: 0, step: 0.01 },
+    },
+    averageGasPrice: {
+      name: 'Average Gas Price',
+      control: { type: 'number', min: 0, step: 0.01 },
+    },
+    insufficientBalance: {
+      table: {
+        disable: true,
+      },
+    },
+    gasPriceButtonGroupProps: {
+      table: {
+        disable: true,
+      },
+    },
+    infoRowProps: {
+      table: {
+        disable: true,
+      },
+    },
+    onSubmit: {
+      table: {
+        disable: true,
+      },
+    },
+    cancelAndClose: {
+      table: {
+        disable: true,
+      },
+    },
+    showCustomPriceTooLowWarning: {
+      table: {
+        disable: true,
+      },
+    },
+    disableSave: {
+      table: {
+        disable: true,
+      },
+    },
+    customGasLimitMessage: {
+      table: {
+        disable: true,
+      },
+    },
+    usdConversionRate: {
+      table: {
+        disable: true,
+      },
+    },
+    customGasPrice: {
+      table: {
+        disable: true,
+      },
+    },
+    customGasLimit: {
+      table: {
+        disable: true,
+      },
+    },
+    setSwapsCustomizationModalLimit: {
+      table: {
+        disable: true,
+      },
+    },
+    setSwapsCustomizationModalPrice: {
+      table: {
+        disable: true,
+      },
+    },
+    customTotalSupplement: {
+      table: {
+        disable: true,
+      },
+    },
+    gasEstimateLoadingHasFailed: {
+      table: {
+        disable: true,
+      },
+    },
+    minimumGasLimit: {
+      table: {
+        disable: true,
+      },
+    },
+  },
+  args: {
+    sendAmountArg: 0.01,
+    walletBalance: 10,
+    averageGasPrice: 2,
+  },
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
@@ -38,17 +136,18 @@ const sumHexWEIsToRenderableEth = (hexWEIs, currencySymbol = 'ETH') => {
   );
 };
 
-export const DefaultStory = () => {
-  // Send Amount Data
+export const DefaultStory = (args) => {
+  const { sendAmountArg, walletBalance, averageGasPrice } = args;
+
   const hexWei = getWeiHexFromDecimalValue({
-    value: String(number('Send Amount (this should be static)', 0.01)),
+    value: sendAmountArg,
     fromCurrency: ETH,
     fromDenomination: ETH,
   });
 
   // ETH Balance
   const balanceHexWei = getWeiHexFromDecimalValue({
-    value: String(number('Wallet Balance (this should be static)', 1.582717)),
+    value: walletBalance,
     fromCurrency: ETH,
     fromDenomination: ETH,
   });
@@ -103,11 +202,9 @@ export const DefaultStory = () => {
 
   // Check If Gas Price Is Too Low
   const shouldShowCustomPriceTooLowWarning = () => {
-    const average = number('Average Gas Price', 2);
-
     const customGasPrice = gasPrice;
 
-    if (!customGasPrice || average === undefined) {
+    if (!customGasPrice || averageGasPrice === undefined) {
       return false;
     }
 
@@ -118,7 +215,7 @@ export const DefaultStory = () => {
         fromDenomination: 'WEI',
         toDenomination: 'GWEI',
       },
-      { value: average, fromNumericBase: 'dec' },
+      { value: averageGasPrice, fromNumericBase: 'dec' },
     );
 
     return customPriceRisksSwapFailure;

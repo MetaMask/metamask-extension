@@ -31,7 +31,7 @@ export default class PermissionPageContainer extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   state = {
@@ -63,11 +63,12 @@ export default class PermissionPageContainer extends Component {
   }
 
   componentDidMount() {
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Auth',
+    this.context.trackEvent({
+      category: 'Auth',
+      event: 'Tab Opened',
+      properties: {
         action: 'Connect',
-        name: 'Tab Opened',
+        legacy_event: true,
       },
     });
   }
