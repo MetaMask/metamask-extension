@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
   },
-  "addToAddressBook": {
-    "message": "Dodaj u imenik"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. Ivan M."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Prikaži račun u $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Upotrijebi identifikaciju blokovima"
   },
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Greška u registraciji naziva ENS"
-  },
-  "enterAnAlias": {
-    "message": "Upiši pseudonim"
   },
   "enterPassword": {
     "message": "Upiši lozinku"
@@ -761,9 +749,6 @@
   "restore": {
     "message": "Vrati"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovite svoj račun početnom rečenicom"
-  },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
@@ -814,9 +799,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
   },
   "seedPhraseReq": {
     "message": "Početne rečenice imaju 12 riječi"

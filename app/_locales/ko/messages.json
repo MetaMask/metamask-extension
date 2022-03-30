@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
   },
-  "addToAddressBook": {
-    "message": "주소록에 추가"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "예: John D."
-  },
   "addToken": {
     "message": "토큰 추가"
   },
@@ -361,9 +355,6 @@
   "blockExplorerView": {
     "message": "$1의 계정 보기",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Blockies 아이덴티콘 사용"
   },
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
@@ -955,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
   },
-  "enterAnAlias": {
-    "message": "별칭 입력"
-  },
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"
   },
@@ -1004,10 +992,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "현재 주요 가스 견적 서비스를 사용할 수 없으므로 백업 가스 가격을 제공합니다."
-  },
-  "eth_accounts": {
-    "message": "허용되는 계정의 주소 보기(필수)",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "이더리움 공개 주소"
@@ -1280,18 +1264,11 @@
   "importAccountError": {
     "message": "계정 가져오기 오류"
   },
-  "importAccountLinkText": {
-    "message": "비밀 복구 구문을 사용해 가져오기"
-  },
   "importAccountMsg": {
     "message": "가져온 계정은 본래 생성한 MetaMask 계정 비밀 복구 구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
   },
   "importAccountSeedPhrase": {
     "message": "비밀 복구 구문으로 계정 가져오기"
-  },
-  "importAccountText": {
-    "message": "또는 $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "지갑을 만들 때 받은 비밀 복구 구문(시드 구문)을 입력하세요. $1",
@@ -1427,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "마지막 연결"
-  },
-  "layer1Fees": {
-    "message": "레이어 1 요금"
   },
   "learmMoreAboutGas": {
     "message": "가스에 대해 $1하시겠습니까?"
@@ -1751,9 +1725,6 @@
   "newAccountNumberName": {
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "다음 이유 때문에 수집 금액이 추가되지 않았습니다: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "수집이 성공적으로 추가되었습니다!"
@@ -2079,6 +2050,10 @@
   "permissionRequest": {
     "message": "승인 요청"
   },
+  "permission_ethereumAccounts": {
+    "message": "허용되는 계정의 주소 보기(필수)",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "권한"
   },
@@ -2232,9 +2207,6 @@
   "restore": {
     "message": "복구"
   },
-  "restoreAccountWithSeed": {
-    "message": "비밀 복구 구문으로 계정 복구"
-  },
   "restoreWalletPreferences": {
     "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복원할까요?",
     "description": "$1 is the date at which the data was backed up"
@@ -2302,9 +2274,6 @@
   "secretPhrase": {
     "message": "금고를 복구하려면 비밀 구문을 여기에 입력하세요."
   },
-  "secretPhraseWarning": {
-    "message": "다른 비밀 복구 구문을 사용하여 복구하면 현재 지갑, 계정 및 자산이 이 앱에서 영구적으로 제거됩니다. 이 작업은 취소할 수 없습니다."
-  },
   "secretRecoveryPhrase": {
     "message": "비밀 복구 구문"
   },
@@ -2361,12 +2330,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "시작하기 전에 이 짧은 동영상을 보고 비밀 복구 구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "공백 한 칸으로 각 단어를 구분하세요."
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "클립보드에서 비밀 복구 구문 붙여넣기"
   },
   "seedPhraseReq": {
     "message": "비밀 복구 구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
@@ -2477,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "추천 보기"
-  },
-  "showSeedPhrase": {
-    "message": "비밀 복구 구문 표시"
   },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 보기"
@@ -2796,10 +2756,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
-  },
-  "swapQuoteNofN": {
-    "message": "$2의 $1 견적",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "견적 소스"

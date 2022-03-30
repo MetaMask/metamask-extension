@@ -4,34 +4,47 @@
   justify-content: center;
 
   &__result {
-    @include H3;
-
     position: absolute;
     top: 30%;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
     text-align: center;
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__icons {
     display: flex;
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 90%;
+      left: 5%;
+      top: 50%;
+      border: 1px solid var(--color-border-muted);
+      border-style: dashed;
+      z-index: -1;
+    }
   }
 
-  &__center-icon {
-    @include H7;
+  .icon-border {
+    max-width: 64px;
+    flex: 0 0 64px;
+  }
 
-    display: flex;
+  &__line {
     position: relative;
-    justify-content: center;
+    display: flex;
     align-items: center;
+    justify-content: center;
   }
 
   &__check {
-    width: 40px;
-    height: 40px;
-    background: white url("/images/permissions-check.svg") no-repeat;
-    position: absolute;
+    color: var(--color-success-default);
+    border-radius: 50%;
+    background-color: var(--color-background-default);
+    margin-left: 40px;
+    margin-right: 40px;
   }
 }

@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminungkahing Token"
   },
-  "addToAddressBook": {
-    "message": "Idagdag sa address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "hal. Juan D."
-  },
   "addToken": {
     "message": "Magdagdag ng Token"
   },
@@ -123,9 +117,6 @@
   "blockExplorerView": {
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Gumamit ng Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
@@ -318,9 +309,6 @@
   },
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
-  },
-  "enterAnAlias": {
-    "message": "Maglagay ng alias"
   },
   "enterPassword": {
     "message": "Ilagay ang password"
@@ -692,9 +680,6 @@
   "restore": {
     "message": "Ipanumbalik"
   },
-  "restoreAccountWithSeed": {
-    "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
@@ -739,9 +724,6 @@
   },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
   },
   "seedPhraseReq": {
     "message": "Ang mga seed phrase ay may habang 12 salita"

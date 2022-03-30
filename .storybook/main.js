@@ -14,6 +14,7 @@ module.exports = {
     '@storybook/addon-a11y',
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
+    'storybook-dark-mode',
   ],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
@@ -22,6 +23,7 @@ module.exports = {
     config.node = {
       __filename: true,
     };
+    config.resolve.alias['webextension-polyfill'] = require.resolve('./__mocks__/webextension-polyfill.js')
     config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,

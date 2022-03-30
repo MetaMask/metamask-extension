@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lägg till föreslagna tokens"
   },
-  "addToAddressBook": {
-    "message": "Lägg till i adressbok"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "exempelvis John D."
-  },
   "addToken": {
     "message": "Lägg till token"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Visa konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Använd Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Din webbläsare stöds inte..."
@@ -336,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
-  },
-  "enterAnAlias": {
-    "message": "Ange ett alias"
   },
   "enterPassword": {
     "message": "Ange lösenord"
@@ -752,9 +740,6 @@
   "restore": {
     "message": "Återställ"
   },
-  "restoreAccountWithSeed": {
-    "message": "Återställ ditt konto med seedphrase"
-  },
   "revealSeedWords": {
     "message": "Visa seed-ord"
   },
@@ -805,9 +790,6 @@
   },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separera varje ord med ett enda mellanslag."
   },
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."

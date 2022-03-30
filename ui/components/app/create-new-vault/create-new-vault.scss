@@ -2,35 +2,12 @@
   &__form {
     display: flex;
     flex-direction: column;
-    width: 360px;
   }
 
-  &__srp-shown {
-    @include Paragraph;
-
-    padding: 8px 16px;
-  }
-
-  &__srp-section {
+  &__create-password {
     display: flex;
     flex-direction: column;
-  }
-
-  &__srp-label {
-    margin-bottom: 8px;
-  }
-
-  &__srp-error {
-    margin-top: 4px;
-  }
-
-  &__show-srp {
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-
-  &__show-srp-label {
-    margin-left: 8px;
+    width: 360px;
   }
 
   &__terms {
@@ -43,7 +20,7 @@
   }
 
   &__terms-link {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 
   &__submit-button#{&}__submit-button {

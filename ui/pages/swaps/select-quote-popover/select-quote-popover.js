@@ -14,6 +14,7 @@ const SelectQuotePopover = ({
   swapToSymbol,
   initialAggId,
   onQuoteDetailsIsOpened,
+  hideEstimatedGasFee,
 }) => {
   const t = useContext(I18nContext);
 
@@ -105,10 +106,14 @@ const SelectQuotePopover = ({
             setSortDirection={setSortDirection}
             sortColumn={sortColumn}
             setSortColumn={setSortColumn}
+            hideEstimatedGasFee={hideEstimatedGasFee}
           />
         )}
         {contentView === 'quoteDetails' && viewingAgg && (
-          <QuoteDetails {...viewingAgg} />
+          <QuoteDetails
+            {...viewingAgg}
+            hideEstimatedGasFee={hideEstimatedGasFee}
+          />
         )}
       </Popover>
     </div>
@@ -123,6 +128,7 @@ SelectQuotePopover.propTypes = {
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE),
   initialAggId: PropTypes.string,
   onQuoteDetailsIsOpened: PropTypes.func,
+  hideEstimatedGasFee: PropTypes.bool.isRequired,
 };
 
 export default SelectQuotePopover;

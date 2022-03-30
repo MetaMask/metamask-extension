@@ -26,7 +26,6 @@ import FadeModal from './fade-modal';
 import MetaMetricsOptInModal from './metametrics-opt-in-modal';
 import RejectTransactions from './reject-transactions';
 import ConfirmDeleteNetwork from './confirm-delete-network';
-import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
@@ -34,9 +33,9 @@ import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-t
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
-  border: '1px solid #CCCFD1',
+  border: '1px solid var(--color-border-default)',
   borderRadius: '8px',
-  backgroundColor: '#FFFFFF',
+  backgroundColor: 'var(--color-background-default)',
   boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
 };
 
@@ -111,33 +110,6 @@ const MODALS = {
     contentStyle: {
       borderRadius: '7px',
       height: '100%',
-    },
-  },
-
-  ADD_TO_ADDRESSBOOK: {
-    contents: <AddToAddressBookModal />,
-    mobileModalStyle: {
-      width: '95%',
-      top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    laptopModalStyle: {
-      width: '375px',
-      top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-      borderRadius: '10px',
-    },
-    contentStyle: {
-      borderRadius: '10px',
     },
   },
 
@@ -417,7 +389,7 @@ const MODALS = {
 };
 
 const BACKDROPSTYLE = {
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: 'var(--color-overlay-default)',
 };
 
 function mapStateToProps(state) {

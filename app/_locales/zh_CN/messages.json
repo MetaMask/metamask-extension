@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "添加推荐代币"
   },
-  "addToAddressBook": {
-    "message": "添加地址簿"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如：John D."
-  },
   "addToken": {
     "message": "添加代币"
   },
@@ -361,9 +355,6 @@
   "blockExplorerView": {
     "message": "通过 $1 查看账户",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "使用 Blockies Identicon 图标头像"
   },
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能……"
@@ -955,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS 查找失败。"
   },
-  "enterAnAlias": {
-    "message": "输入别名"
-  },
   "enterMaxSpendLimit": {
     "message": "输入最高消费额度"
   },
@@ -1004,10 +992,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
-  },
-  "eth_accounts": {
-    "message": "查看您允许的账户的地址（必填）",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "以太坊 Ethereum 公开地址"
@@ -1280,18 +1264,11 @@
   "importAccountError": {
     "message": "导入帐户时出错。"
   },
-  "importAccountLinkText": {
-    "message": "使用账户助记词导入"
-  },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户助记词相关联。了解更多有关导入账户的信息 。"
   },
   "importAccountSeedPhrase": {
     "message": "使用账户助记词导入账户"
-  },
-  "importAccountText": {
-    "message": "或 $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "输入您创建$1钱包时提供的保密恢复短语（或Seed Phrase）。",
@@ -1427,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "最后连接"
-  },
-  "layer1Fees": {
-    "message": "1层费用"
   },
   "learmMoreAboutGas": {
     "message": "想要有关燃料$1？"
@@ -1751,9 +1725,6 @@
   "newAccountNumberName": {
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "未添加收藏，因为：$1"
   },
   "newCollectibleAddedMessage": {
     "message": "收藏已成功添加！"
@@ -2079,6 +2050,10 @@
   "permissionRequest": {
     "message": "权限请求"
   },
+  "permission_ethereumAccounts": {
+    "message": "查看您允许的账户的地址（必填）",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "权限"
   },
@@ -2232,9 +2207,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreAccountWithSeed": {
-    "message": "使用账户助记词恢复您的账户"
-  },
   "restoreWalletPreferences": {
     "message": "已找到于 $1 的数据备份。您想恢复您的钱包设置吗？",
     "description": "$1 is the date at which the data was backed up"
@@ -2302,9 +2274,6 @@
   "secretPhrase": {
     "message": "只有这个钱包上的第一个帐户将自动加载。 完成此流程后，点击下拉菜单，然后选择创建账户。"
   },
-  "secretPhraseWarning": {
-    "message": "如果您使用另一个账户助记词来还原，您当前的钱包、帐户和资产将永久从这个应用中移除。 此操作不能撤消。"
-  },
   "secretRecoveryPhrase": {
     "message": "账户助记词"
   },
@@ -2361,12 +2330,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "在开始之前，观看这个简短的视频来了解您的账户助记词以及如何保护您的钱包安全。"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "用空格分隔每个单词"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "从剪贴板粘贴账户助记词"
   },
   "seedPhraseReq": {
     "message": "账户助记词由 12、15、18、21 或 24 个单词组成"
@@ -2477,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "显示建议"
-  },
-  "showSeedPhrase": {
-    "message": "显示账户助记词"
   },
   "showTestnetNetworks": {
     "message": "显示测试网络"
@@ -2796,10 +2756,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "如果在您下订单和确认订单之间的价格发生了变化，这就叫做\"滑点\"。如果滑点超过您的\"最大滑点\"设置，您的兑换将自动取消。"
-  },
-  "swapQuoteNofN": {
-    "message": "报价 $1 / $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "报价来源"

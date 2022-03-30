@@ -15,7 +15,6 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   isHardwareWallet,
   getHardwareWalletType,
@@ -24,6 +23,12 @@ import {
 } from '../../../selectors/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../helpers/utils/util';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
+} from '../../../ducks/swaps/swaps';
+import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -55,18 +60,15 @@ export default function DropdownSearchList({
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
 
-  const tokenImportedEvent = useNewMetricEvent({
-    event: 'Token Imported',
-    sensitiveProperties: {
-      symbol: tokenForImport?.symbol,
-      address: tokenForImport?.address,
-      chain_id: chainId,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-    },
-    category: 'swaps',
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -88,7 +90,20 @@ export default function DropdownSearchList({
   };
 
   const onImportTokenClick = () => {
-    tokenImportedEvent();
+    trackEvent({
+      event: 'Token Imported',
+      category: 'swaps',
+      sensitiveProperties: {
+        symbol: tokenForImport?.symbol,
+        address: tokenForImport?.address,
+        chain_id: chainId,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+    });
     // Only when a user confirms import of a token, we add it and show it in a dropdown.
     onSelect?.(tokenForImport);
     setSelectedItem(tokenForImport);
@@ -141,16 +156,6 @@ export default function DropdownSearchList({
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
     ? getURLHostName(blockExplorerLink)
     : t('etherscan');
-
-  const blockExplorerLinkClickedEvent = useNewMetricEvent({
-    category: 'Swaps',
-    event: 'Clicked Block Explorer Link',
-    properties: {
-      link_type: 'Token Tracker',
-      action: 'Verify Contract Address',
-      block_explorer_domain: getURLHostName(blockExplorerLink),
-    },
-  });
 
   const importTokenProps = {
     onImportTokenCloseClick,
@@ -234,7 +239,17 @@ export default function DropdownSearchList({
                           <a
                             key="dropdown-search-list__etherscan-link"
                             onClick={() => {
-                              blockExplorerLinkClickedEvent();
+                              trackEvent({
+                                event: 'Clicked Block Explorer Link',
+                                category: 'Swaps',
+                                properties: {
+                                  link_type: 'Token Tracker',
+                                  action: 'Verify Contract Address',
+                                  block_explorer_domain: getURLHostName(
+                                    blockExplorerLink,
+                                  ),
+                                },
+                              });
                               global.platform.openTab({
                                 url: blockExplorerLink,
                               });

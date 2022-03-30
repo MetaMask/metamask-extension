@@ -27,7 +27,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        border: 1px solid #d8d8d8;
+        border: 1px solid var(--color-border-default);
 
         &--sender {
           padding-right: 30px;
@@ -36,7 +36,7 @@
 
         &--recipient {
           padding-left: 30px;
-          border-left: 1px solid var(--geyser);
+          border-left: 1px solid var(--color-border-muted);
 
           &-with-address {
             cursor: pointer;
@@ -51,21 +51,25 @@
         align-items: center;
         justify-content: center;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           transform: rotate(180deg);
         }
       }
 
       &__arrow-circle {
-        background: var(--white);
+        background: var(--color-background-default);
         padding: 5px;
-        border: 1px solid var(--geyser);
+        border: 1px solid var(--color-border-muted);
         border-radius: 20px;
         height: 32px;
         width: 32px;
         display: flex;
         justify-content: center;
         align-items: center;
+
+        &__icon {
+          color: var(--color-icon-muted);
+        }
       }
 
       &__name {
@@ -76,7 +80,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -105,11 +109,11 @@
         border-radius: 4px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         padding: 6px;
-        background: var(--white);
+        background: var(--color-background-default);
         cursor: pointer;
         min-width: 0;
-        color: var(--dusty-gray);
-        border: 1px solid #d8d8d8;
+        color: var(--color-text-default);
+        border: 1px solid var(--color-border-default);
       }
 
       &__tooltip-wrapper {
@@ -125,7 +129,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -146,7 +150,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           transform: rotate(180deg);
         }
       }
@@ -164,8 +168,8 @@
         padding: 6px;
         cursor: pointer;
         min-width: 0;
-        color: var(--dusty-gray);
-        border: 1px solid #d8d8d8;
+        color: var(--color-text-default);
+        border: 1px solid var(--color-border-default);
       }
 
       &__tooltip-wrapper {
@@ -182,7 +186,7 @@
         white-space: nowrap;
         margin-inline-start: 8px;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -203,7 +207,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           transform: rotate(180deg);
         }
       }

@@ -8,6 +8,7 @@ import txHelper from '../helpers/utils/tx-helper';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  SMART_TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
@@ -45,13 +46,27 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
+export const smartTransactionsListSelector = (state) =>
+  state.metamask.smartTransactionsState?.smartTransactions?.[
+    getCurrentChainId(state)
+  ]
+    ?.filter((stx) => !stx.confirmed)
+    .map((stx) => ({
+      ...stx,
+      transactionType: TRANSACTION_TYPES.SMART,
+      status: stx.status?.startsWith('cancelled')
+        ? SMART_TRANSACTION_STATUSES.CANCELLED
+        : stx.status,
+    }));
+
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
   currentNetworkTxListSelector,
-  (selectedAddress, transactions = []) => {
-    return transactions.filter(
-      ({ txParams }) => txParams.from === selectedAddress,
-    );
+  smartTransactionsListSelector,
+  (selectedAddress, transactions = [], smTransactions = []) => {
+    return transactions
+      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .concat(smTransactions);
   },
 );
 

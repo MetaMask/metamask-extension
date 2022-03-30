@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Thêm token được đề xuất"
   },
-  "addToAddressBook": {
-    "message": "Thêm vào sổ địa chỉ"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ví dụ: John D."
-  },
   "addToken": {
     "message": "Thêm token"
   },
@@ -361,9 +355,6 @@
   "blockExplorerView": {
     "message": "Xem tài khoản tại $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Dùng biểu tượng nhận dạng kiểu Blockies"
   },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
@@ -955,9 +946,6 @@
   "ensUnknownError": {
     "message": "Tra Cứu ENS thất bại."
   },
-  "enterAnAlias": {
-    "message": "Nhập một biệt danh"
-  },
   "enterMaxSpendLimit": {
     "message": "Nhập giới hạn chi tiêu tối đa"
   },
@@ -1004,10 +992,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Giá gas dự phòng được cung cấp vì dịch vụ ước tính giá gas chính hiện không hoạt động."
-  },
-  "eth_accounts": {
-    "message": "Xem địa chỉ, số dư tài khoản, hoạt động và bắt đầu giao dịch",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Địa chỉ công khai trên Ethereum"
@@ -1280,18 +1264,11 @@
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },
-  "importAccountLinkText": {
-    "message": "nhập bằng Cụm mật khẩu khôi phục bí mật"
-  },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm mật khẩu khôi phục bí mật cho tài khoản MetaMask đã tạo ban đầu của bạn. Tìm hiểu thêm về các tài khoản đã nhập"
   },
   "importAccountSeedPhrase": {
     "message": "Nhập một ví bằng Cụm mật khẩu khôi phục bí mật"
-  },
-  "importAccountText": {
-    "message": "hoặc $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Nhập Cụm Mật Khẩu Khôi Phục Bí Mật (còn được gọi là Cụm Mật Khẩu Gốc) mà bạn được cấp khi tạo ví. $1",
@@ -1427,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
-  },
-  "layer1Fees": {
-    "message": "Phí Lớp 1"
   },
   "learmMoreAboutGas": {
     "message": "Muốn $1 về gas?"
@@ -1751,9 +1725,6 @@
   "newAccountNumberName": {
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Bộ sưu tập đã không được thêm vì: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Bộ sưu tập đã được thêm thành công!"
@@ -2079,6 +2050,10 @@
   "permissionRequest": {
     "message": "Yêu cầu quyền"
   },
+  "permission_ethereumAccounts": {
+    "message": "Xem địa chỉ, số dư tài khoản, hoạt động và bắt đầu giao dịch",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Quyền"
   },
@@ -2232,9 +2207,6 @@
   "restore": {
     "message": "Khôi phục"
   },
-  "restoreAccountWithSeed": {
-    "message": "Khôi phục tài khoản của bạn bằng cụm mật khẩu khôi phục bí mật"
-  },
   "restoreWalletPreferences": {
     "message": "Đã tìm thấy bản sao lưu dữ liệu của bạn từ $1. Bạn có muốn khôi phục các tùy chọn ưu tiên trong ví của mình không?",
     "description": "$1 is the date at which the data was backed up"
@@ -2302,9 +2274,6 @@
   "secretPhrase": {
     "message": "Chỉ tự động tải tài khoản đầu tên trên ví. Sau khi hoàn tất quá trình này, để thêm tài khoản bổ sung, hãy nhấn vào trình đơn thả xuống và chọn Tạo tài khoản."
   },
-  "secretPhraseWarning": {
-    "message": "Nếu bạn khôi phục bằng cách sử dụng một Cụm Mật Khẩu Khôi Phục Bí Mật khác, thì ví, tài khoản và tài sản hiện tại của bạn sẽ bị xóa khỏi ứng dụng này vĩnh viễn. Không thể hoàn tác hành động này."
-  },
   "secretRecoveryPhrase": {
     "message": "Cụm Mật Khẩu Khôi Phục Bí Mật"
   },
@@ -2361,12 +2330,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Trước khi bắt đầu, hãy xem video ngắn này để tìm hiểu thêm về cụm mật khẩu khôi phục bí mật của bạn và cách bảo vệ ví của bạn."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Phân tách mỗi từ bằng một dấu cách"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Dán Cụm mật khẩu khôi phục bí mật từ khay nhớ tạm"
   },
   "seedPhraseReq": {
     "message": "Cụm mật khẩu khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
@@ -2477,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Hiển Thị Đề Xuất"
-  },
-  "showSeedPhrase": {
-    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
   },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
@@ -2796,10 +2756,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là \"trượt giá\". Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá \"mức trượt giá cho phép\" đã đặt."
-  },
-  "swapQuoteNofN": {
-    "message": "Báo giá $1/$2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Nguồn báo giá"

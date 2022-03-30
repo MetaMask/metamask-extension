@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
-  "addToAddressBook": {
-    "message": "Dodaj do książki adresowej"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "np. John D."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Wyświetl konto w $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Użyj Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
-  },
-  "enterAnAlias": {
-    "message": "Wpisz alias"
   },
   "enterPassword": {
     "message": "Wpisz hasło"
@@ -762,9 +750,6 @@
   "restore": {
     "message": "Przywróć"
   },
-  "restoreAccountWithSeed": {
-    "message": "Przywróć konto frazą seed"
-  },
   "revealSeedWords": {
     "message": "Pokaż słowa seed"
   },
@@ -815,9 +800,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Oddziel słowa pojedynczą spacją"
   },
   "seedPhraseReq": {
     "message": "Frazy seed mają 12 słów"

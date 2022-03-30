@@ -33,9 +33,9 @@ export default class TypedMessageManager extends EventEmitter {
    *
    * @param options
    * @param options.getCurrentChainId
-   * @param options.metricEvents
+   * @param options.metricsEvent
    */
-  constructor({ getCurrentChainId, metricEvents }) {
+  constructor({ getCurrentChainId, metricsEvent }) {
     super();
     this._getCurrentChainId = getCurrentChainId;
     this.memStore = new ObservableStore({
@@ -43,7 +43,7 @@ export default class TypedMessageManager extends EventEmitter {
       unapprovedTypedMessagesCount: 0,
     });
     this.messages = [];
-    this.metricEvents = metricEvents;
+    this.metricsEvent = metricsEvent;
   }
 
   /**
@@ -192,11 +192,13 @@ export default class TypedMessageManager extends EventEmitter {
           data.primaryType in data.types,
           `Primary type of "${data.primaryType}" has no type definition.`,
         );
-        assert.equal(
-          validation.errors.length,
-          0,
-          'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
-        );
+        if (validation.errors.length !== 0) {
+          throw ethErrors.rpc.invalidParams({
+            message:
+              'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
+            data: validation.errors.map((v) => v.message.toString()),
+          });
+        }
         let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);

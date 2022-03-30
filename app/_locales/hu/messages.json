@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },
-  "addToAddressBook": {
-    "message": "Hozzáadás a címjegyzékhez"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pl. John D."
-  },
   "addToken": {
     "message": "Token hozzáadása"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Tekintse meg a fiókot a(z) $1-en",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Blockies identikon használata"
   },
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
-  },
-  "enterAnAlias": {
-    "message": "Adjon meg álnevet"
   },
   "enterPassword": {
     "message": "Adja meg a jelszót"
@@ -761,9 +749,6 @@
   "restore": {
     "message": "Visszaállítás"
   },
-  "restoreAccountWithSeed": {
-    "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
@@ -814,9 +799,6 @@
   },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "A szavakat egy-egy szóközzel válassza el"
   },
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"

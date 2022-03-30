@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
 
 describe('Sign Typed Data V4 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
@@ -61,8 +65,11 @@ describe('Sign Typed Data V4 Signature Request', function () {
           )}`,
         );
         assert.equal(await message.getText(), 'Hello, Bob!');
-
         // Approve signing typed data
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Sign', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
@@ -79,6 +86,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
   });
 });
 
+/* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Sign Typed Data V3 Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
     const ganacheOptions = {

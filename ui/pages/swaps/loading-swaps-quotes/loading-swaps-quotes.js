@@ -9,6 +9,9 @@ import {
   navigateBackToBuildQuote,
   getFetchParams,
   getQuotesFetchStartTime,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -26,7 +29,7 @@ export default function LoadingSwapsQuotes({
   onDone,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
@@ -35,6 +38,13 @@ export default function LoadingSwapsQuotes({
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
     category: 'swaps',
@@ -48,6 +58,9 @@ export default function LoadingSwapsQuotes({
       response_time: Date.now() - quotesFetchStartTime,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
   };
 
@@ -108,7 +121,7 @@ export default function LoadingSwapsQuotes({
         <>
           <div className="loading-swaps-quotes__quote-counter">
             <span>
-              {t('swapQuoteNofN', [
+              {t('swapFetchingQuoteNofN', [
                 Math.min(quoteCount + 1, numberOfQuotes),
                 numberOfQuotes,
               ])}
@@ -145,7 +158,7 @@ export default function LoadingSwapsQuotes({
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          metaMetricsEvent(quotesRequestCancelledEventConfig);
+          trackEvent(quotesRequestCancelledEventConfig);
           await dispatch(navigateBackToBuildQuote(history));
         }}
         hideCancel

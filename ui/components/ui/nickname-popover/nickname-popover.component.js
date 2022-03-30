@@ -51,7 +51,7 @@ const NicknamePopover = ({
               }}
               title=""
             >
-              <CopyIcon size={11} color="#989a9b" />
+              <CopyIcon size={11} color="var(--color-icon-default)" />
             </button>
           </Tooltip>
         </div>

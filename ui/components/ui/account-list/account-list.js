@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -20,6 +20,10 @@ const AccountList = ({
   handleAccountClick,
 }) => {
   const t = useI18nContext();
+  const selectedAccountScrollRef = useRef(null);
+  useLayoutEffect(() => {
+    selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   const Header = () => {
     let checked;
@@ -76,16 +80,18 @@ const AccountList = ({
         <div className="choose-account-list__list">
           {accounts.map((account, index) => {
             const { address, addressLabel, balance } = account;
+            const isSelectedAccount = selectedAccounts.has(address);
             return (
               <div
                 key={`choose-account-list-${index}`}
                 onClick={() => handleAccountClick(address)}
                 className="choose-account-list__account"
+                ref={isSelectedAccount ? selectedAccountScrollRef : null}
               >
                 <div className="choose-account-list__account-info-wrapper">
                   <CheckBox
                     className="choose-account-list__list-check-box"
-                    checked={selectedAccounts.has(address)}
+                    checked={isSelectedAccount}
                   />
                   <Identicon diameter={34} address={address} />
                   <div className="choose-account-list__account__info">
@@ -96,7 +102,7 @@ const AccountList = ({
                       className="choose-account-list__account__balance"
                       type={PRIMARY}
                       value={balance}
-                      style={{ color: '#6A737D' }}
+                      style={{ color: 'var(--color-text-alternative)' }}
                       suffix={nativeCurrency}
                     />
                   </div>

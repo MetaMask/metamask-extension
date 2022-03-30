@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lisää ehdotetut käyttötunnukset"
   },
-  "addToAddressBook": {
-    "message": "Lisää osoitekirjaan"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "esim. Jukka E."
-  },
   "addToken": {
     "message": "Lisää tietue"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Näytä tili kohteessa $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Käytä Blockies Identiconia"
   },
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Virhe ENS-nimen rekisteröinnissä"
-  },
-  "enterAnAlias": {
-    "message": "Anna peitenimi"
   },
   "enterPassword": {
     "message": "Kirjoita salasana"
@@ -765,9 +753,6 @@
   "restore": {
     "message": "Palauta"
   },
-  "restoreAccountWithSeed": {
-    "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
-  },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
@@ -818,9 +803,6 @@
   },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Erota kukin sana yhdellä välilyönnillä"
   },
   "seedPhraseReq": {
     "message": "Juurilauseet ovat 12 sanan pituisia"

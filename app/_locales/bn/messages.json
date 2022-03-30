@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
-  "addToAddressBook": {
-    "message": "অ্যাড্রেস বুকে যোগ করুন"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "যেমন জন.ডি."
-  },
   "addToken": {
     "message": "টোকেন যোগ করুন"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "$1 এ অ্যাকাউন্ট দেখুন",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "ব্লকিজ আইডেন্টিকন ব্যবহার করুন"
   },
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
-  },
-  "enterAnAlias": {
-    "message": "একটি উপনাম লিখুন"
   },
   "enterPassword": {
     "message": "পাসওয়ার্ড লিখুন"
@@ -768,9 +756,6 @@
   "restore": {
     "message": "পুনরুদ্ধার করুন"
   },
-  "restoreAccountWithSeed": {
-    "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
-  },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
@@ -821,9 +806,6 @@
   },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
   },
   "seedPhraseReq": {
     "message": "সীড ফ্রেজগুলি 12 শব্দের"

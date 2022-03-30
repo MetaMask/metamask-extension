@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
-  "addToAddressBook": {
-    "message": "Προσθήκη στο βιβλίο διευθύνσεων"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "π.χ. John D."
-  },
   "addToken": {
     "message": "Προσθήκη Token"
   },
@@ -361,9 +355,6 @@
   "blockExplorerView": {
     "message": "Προβολή λογαριασμού με $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Χρήση Αναπαράστασης Μπλοκ"
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
@@ -955,9 +946,6 @@
   "ensUnknownError": {
     "message": "Η αναζήτηση ENS απέτυχε."
   },
-  "enterAnAlias": {
-    "message": "Δώστε ένα ψευδώνυμο"
-  },
   "enterMaxSpendLimit": {
     "message": "Εισάγετε Το Μέγιστο Όριο Δαπάνης"
   },
@@ -1004,10 +992,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Το εφεδρικό τέλος συναλλαγής που παρέχεται ως η κύρια υπηρεσία εκτίμησης τελών συναλλαγής, δεν είναι διαθέσιμο αυτή τη στιγμή."
-  },
-  "eth_accounts": {
-    "message": "Βλέπε διεύθυνση, υπόλοιπο λογαριασμού, δραστηριότητα και έναρξη συναλλαγών",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Δημόσια Διεύθυνση Ethereum"
@@ -1280,18 +1264,11 @@
   "importAccountError": {
     "message": "Σφάλμα εισαγωγής λογαριασμού."
   },
-  "importAccountLinkText": {
-    "message": "εισαγωγή χρησιμοποιώντας τη Μυστική Φράση Ανάκτησης"
-  },
   "importAccountMsg": {
     "message": "Οι λογαριασμοί που εισάγονται δεν θα συσχετιστούν με τη Μυστική Φράση Ανάκτησης του λογαριασμού σας MetaTask που δημιουργήθηκε αρχικά. Μάθετε περισσότερα για τους εισηγμένους λογαριασμούς"
   },
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Μυστική Φράση Ανάκτησης"
-  },
-  "importAccountText": {
-    "message": "ή $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Εισάγετε τη Μυστική Φράση Ανάκτησης (δλδ Seed Phrase) που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
@@ -1427,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
-  },
-  "layer1Fees": {
-    "message": "Τέλη επιπέδου 1"
   },
   "learmMoreAboutGas": {
     "message": "Θέλετε να $1 για το τέλος συναλλαγής;"
@@ -1751,9 +1725,6 @@
   "newAccountNumberName": {
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Το Collectible δεν προστέθηκε επειδή: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Το Collectible προστέθηκε με επιτυχία!"
@@ -2079,6 +2050,10 @@
   "permissionRequest": {
     "message": "Αίτημα άδειας"
   },
+  "permission_ethereumAccounts": {
+    "message": "Βλέπε διεύθυνση, υπόλοιπο λογαριασμού, δραστηριότητα και έναρξη συναλλαγών",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Άδειες"
   },
@@ -2232,9 +2207,6 @@
   "restore": {
     "message": "Επαναφορά"
   },
-  "restoreAccountWithSeed": {
-    "message": "Επαναφέρετε τον Λογαριασμό σας με Φράση Επαναφοράς"
-  },
   "restoreWalletPreferences": {
     "message": "Βρέθηκε ένα αντίγραφο ασφαλείας των δεδομένων σας από το $1. Θα θέλατε να επαναφέρετε τις προτιμήσεις του πορτοφολιού σας;",
     "description": "$1 is the date at which the data was backed up"
@@ -2302,9 +2274,6 @@
   "secretPhrase": {
     "message": "Μόνο ο πρώτος λογαριασμός σε αυτό το πορτοφόλι θα φορτώσει αυτόματα. Μετά την ολοκλήρωση αυτής της διαδικασίας, για να προσθέσετε επιπλέον λογαριασμούς, κάντε κλικ στο αναπτυσσόμενο μενού και, στη συνέχεια, επιλέξτε Δημιουργία Λογαριασμού."
   },
-  "secretPhraseWarning": {
-    "message": "Αν κάνετε επαναφορά χρησιμοποιώντας μια άλλη Μυστική Φράση Ανάκτησης, το τρέχον πορτοφόλι, οι λογαριασμοί και τα περιουσιακά στοιχεία σας θα αφαιρεθούν από αυτή την εφαρμογή μόνιμα. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί."
-  },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
   },
@@ -2361,12 +2330,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Πριν ξεκινήσετε, παρακολουθήστε αυτό το σύντομο βίντεο για να μάθετε για τη Μυστική Φράση Ανάκτησης σας και πώς να κρατήσετε το πορτοφόλι σας ασφαλές."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Διαχωρίστε κάθε λέξη μ' ένα κενό"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Επικόλληση Μυστικής Φράσης Ανάκτησης από το πρόχειρο"
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης έχουν μήκος 12 λέξεων"
@@ -2477,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Εμφάνιση Προτάσεων"
-  },
-  "showSeedPhrase": {
-    "message": "Εμφάνιση Μυστικής Φράσης Ανάκτησης"
   },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
@@ -2796,10 +2756,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Εάν η τιμή αλλάζει μεταξύ της ώρας που τοποθετείται η παραγγελία σας και επιβεβαιώνεται ονομάζεται \"ολίσθηση\". Η ανταλλαγή σας θα ακυρωθεί αυτόματα αν η ολίσθηση υπερβαίνει τη ρύθμιση \"ανοχή ολίσθησης\"."
-  },
-  "swapQuoteNofN": {
-    "message": "Προσφορά $1 από $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Πηγή προσφοράς"

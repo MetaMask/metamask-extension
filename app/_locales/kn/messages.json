@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
-  "addToAddressBook": {
-    "message": "ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಿ"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ಉದಾ. ಜಾನ್ ಡಿ."
-  },
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": " $1 ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "ಬ್ಲಾಕೀಸ್ ಐಡೆಂಟಿಕಾನ್ ಬಳಸಿ"
   },
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
-  "enterAnAlias": {
-    "message": "ಆಲಿಯಾಸ್ ಅನ್ನು ನಮೂದಿಸಿ"
   },
   "enterPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್‌ ಅನ್ನು ನಮೂದಿಸಿ"
@@ -768,9 +756,6 @@
   "restore": {
     "message": "ಮರುಸ್ಥಾಪನೆ"
   },
-  "restoreAccountWithSeed": {
-    "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
   "revealSeedWords": {
     "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
   },
@@ -821,9 +806,6 @@
   },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },
   "seedPhraseReq": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳು 12 ಪದಗಳಷ್ಟು ದೀರ್ಘವಾಗಿವೆ"

@@ -84,7 +84,7 @@ const CancelSpeedupPopover = () => {
     } else {
       speedUpTransaction();
     }
-    closeModal('cancelSpeedUpTransaction');
+    closeModal(['cancelSpeedUpTransaction']);
   };
 
   return (

@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
-  "addToAddressBook": {
-    "message": "Ajouter au carnet d’adresses"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Ajouter un jeton"
   },
@@ -361,9 +355,6 @@
   "blockExplorerView": {
     "message": "Afficher le compte à $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Utiliser les Identicon Blockies"
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas supporté..."
@@ -955,9 +946,6 @@
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
   },
-  "enterAnAlias": {
-    "message": "Saisissez un pseudonyme"
-  },
   "enterMaxSpendLimit": {
     "message": "Saisissez la limite de dépenses maximale"
   },
@@ -1004,10 +992,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Le prix de carburant de sauvegarde est fourni, car le service principal d’estimation du carburant est momentanément indisponible."
-  },
-  "eth_accounts": {
-    "message": "Consultez l’adresse, le solde du compte et l’activité, et lancez des transactions",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Adresse publique d’Ethereum"
@@ -1280,18 +1264,11 @@
   "importAccountError": {
     "message": "Erreur d’importation de compte."
   },
-  "importAccountLinkText": {
-    "message": "importer en utilisant la phrase secrète de récupération"
-  },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
   },
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
-  },
-  "importAccountText": {
-    "message": "ou $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Saisissez la phrase secrète de récupération (aussi appelée « phrase mnémonique » ou « seed ») qui vous a été attribuée lors de la création de votre portefeuille. $1",
@@ -1427,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Dernière connexion"
-  },
-  "layer1Fees": {
-    "message": "Frais de couche 1 (L1)"
   },
   "learmMoreAboutGas": {
     "message": "Souhaitez-vous $1 sur le carburant ?"
@@ -1751,9 +1725,6 @@
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Le collectible n’a pas été ajouté, car : $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Le collectible a été ajouté avec succès !"
@@ -2079,6 +2050,10 @@
   "permissionRequest": {
     "message": "Demande d’autorisation"
   },
+  "permission_ethereumAccounts": {
+    "message": "Consultez l’adresse, le solde du compte et l’activité, et lancez des transactions",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Autorisations"
   },
@@ -2232,9 +2207,6 @@
   "restore": {
     "message": "Restaurer"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurer votre compte avec une phrase Seed."
-  },
   "restoreWalletPreferences": {
     "message": "Une sauvegarde de vos données de $1 a été trouvée. Voulez-vous restaurer vos préférences de portefeuille ?",
     "description": "$1 is the date at which the data was backed up"
@@ -2302,9 +2274,6 @@
   "secretPhrase": {
     "message": "Seul le premier compte de ce portefeuille sera chargé automatiquement. Après avoir terminé ce processus, pour ajouter des comptes supplémentaires, cliquez sur le menu déroulant, puis sélectionnez Créer un compte."
   },
-  "secretPhraseWarning": {
-    "message": "Si vous effectuez une restauration à l’aide d’une autre phrase secrète de récupération, votre portefeuille, vos comptes et vos actifs actuels seront définitivement supprimés de cette application. Cette action est irréversible."
-  },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
   },
@@ -2361,12 +2330,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Avant de commencer, regardez cette courte vidéo pour vous informer sur votre phrase secrète de récupération et sur la manière de sécuriser votre portefeuille."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Séparez chaque mot par un espace simple"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Collez la Phrase secrète de récupération depuis le presse-papiers"
   },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
@@ -2477,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Afficher les recommandations"
-  },
-  "showSeedPhrase": {
-    "message": "Afficher la phrase secrète de récupération"
   },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
@@ -2796,10 +2756,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si le prix fluctue entre le passage de votre ordre et sa confirmation, on parle alors d’un « effet de glissement » (slippage). Votre swap sera automatiquement annulé si ce phénomène dépasse votre paramètre de « tolérance de glissement »."
-  },
-  "swapQuoteNofN": {
-    "message": "Cotation $1 sur $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Origine de la cotation"

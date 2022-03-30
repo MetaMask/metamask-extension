@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },
-  "addToAddressBook": {
-    "message": "Добавяне към адресната книга"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр. Джон Д."
-  },
   "addToken": {
     "message": "Добавяне на жетон"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Преглед на акаунт на $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Използване на Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
-  },
-  "enterAnAlias": {
-    "message": "Въведете псевдоним"
   },
   "enterPassword": {
     "message": "Въведете парола"
@@ -764,9 +752,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "restoreAccountWithSeed": {
-    "message": "Възстановете акаунта си с фраза зародиш"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
@@ -817,9 +802,6 @@
   },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Отделете всяка дума с един интервал"
   },
   "seedPhraseReq": {
     "message": "Фразите зародиш се състоят от 12 думи"

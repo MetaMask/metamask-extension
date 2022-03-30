@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
-  "addToAddressBook": {
-    "message": "Adăugați în agendă"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "de ex. John D."
-  },
   "addToken": {
     "message": "Adăugare simbol"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
-  },
-  "enterAnAlias": {
-    "message": "Introduceți un alias"
   },
   "enterPassword": {
     "message": "Introduceți parola"
@@ -755,9 +743,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
@@ -808,9 +793,6 @@
   },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "seedPhraseReq": {
     "message": "Expresiile seed sunt lungi de 12 cuvinte"

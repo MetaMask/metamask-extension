@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Ongeza Vianzio Vilivyopendekezwa"
   },
-  "addToAddressBook": {
-    "message": "Ongeza kwenye kitabu cha anwani"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "k.m John D."
-  },
   "addToken": {
     "message": "Ongeza Kianzio"
   },
@@ -135,9 +129,6 @@
   "blockExplorerView": {
     "message": "Tazama akaunti kwenye $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Tumia Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
@@ -336,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
-  },
-  "enterAnAlias": {
-    "message": "Ingiza majina mengine"
   },
   "enterPassword": {
     "message": "Ingiza nenosiri"
@@ -746,9 +734,6 @@
   "restore": {
     "message": "Rejesha"
   },
-  "restoreAccountWithSeed": {
-    "message": "Rejesha Akaunti yako kwa kutumia Kirai Kianzio."
-  },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"
   },
@@ -799,9 +784,6 @@
   },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Tenganisha kila neno kwa nafasi moja"
   },
   "seedPhraseReq": {
     "message": "Virai vianzio vina urefu wa maneno 12"

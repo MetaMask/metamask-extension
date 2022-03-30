@@ -131,8 +131,11 @@ const EMPTY_INIT_STATE = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
+    swapsFeatureFlags: {},
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
+    swapsStxBatchStatusRefreshTime: 10000,
+    swapsStxGetTransactionsRefreshTime: 10000,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
   },
@@ -840,6 +843,9 @@ describe('SwapsController', function () {
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime:
             old.swapsQuotePrefetchingRefreshTime,
+          swapsStxGetTransactionsRefreshTime:
+            old.swapsStxGetTransactionsRefreshTime,
+          swapsStxBatchStatusRefreshTime: old.swapsStxBatchStatusRefreshTime,
         });
       });
 
@@ -885,15 +891,21 @@ describe('SwapsController', function () {
         const tokens = 'test';
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
+        const swapsFeatureFlags = {};
         const swapsQuoteRefreshTime = 0;
         const swapsQuotePrefetchingRefreshTime = 0;
+        const swapsStxBatchStatusRefreshTime = 0;
+        const swapsStxGetTransactionsRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
+            swapsFeatureFlags,
             swapsQuoteRefreshTime,
             swapsQuotePrefetchingRefreshTime,
+            swapsStxBatchStatusRefreshTime,
+            swapsStxGetTransactionsRefreshTime,
           },
         });
 

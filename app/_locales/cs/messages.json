@@ -51,9 +51,6 @@
   "balance": {
     "message": "Zůstatek:"
   },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
-  },
   "cancel": {
     "message": "Zrušit"
   },

@@ -53,7 +53,7 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
-      - prep-build-test-metrics:
+      - prep-build-test-flask:
           requires:
             - prep-deps
       - test-storybook:
@@ -78,12 +78,12 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-build-test
-      - test-e2e-chrome-metrics:
+      - test-e2e-chrome-snaps:
           requires:
-            - prep-build-test-metrics
-      - test-e2e-firefox-metrics:
+            - prep-build-test-flask
+      - test-e2e-firefox-snaps:
           requires:
-            - prep-build-test-metrics
+            - prep-build-test-flask
       - test-unit:
           requires:
             - prep-deps
@@ -128,8 +128,8 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-chrome-metrics
-            - test-e2e-firefox-metrics
+            - test-e2e-chrome-snaps
+            - test-e2e-firefox-snaps
       - benchmark:
           requires:
             - prep-build-test
@@ -149,6 +149,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
           filters:
@@ -283,6 +284,28 @@ jobs:
             - dist-flask
             - builds-flask
 
+  prep-build-test-flask:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:flask
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-flask
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-flask
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-flask
+            - builds-test-flask
+
+
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
@@ -304,27 +327,6 @@ jobs:
             - dist-test
             - builds-test
 
-  prep-build-test-metrics:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension for testing metrics
-          command: yarn build:test:metrics
-      - run:
-          name: Move test build to 'dist-test-metrics' to avoid conflict with production build
-          command: mv ./dist ./dist-test-metrics
-      - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
-          command: mv ./builds ./builds-test-metrics
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-metrics
-            - builds-test-metrics
-
   prep-build-storybook:
     executor: node-browsers
     steps:
@@ -338,7 +340,7 @@ jobs:
           root: .
           paths:
             - storybook-build
-  
+
   test-storybook:
     executor: node-browsers
     steps:
@@ -465,7 +467,34 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
-  test-e2e-chrome-metrics:
+  test-e2e-firefox-snaps:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - run:
+          name: test:e2e:firefox:snaps
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:snaps --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-chrome-snaps:
     executor: node-browsers
     steps:
       - checkout
@@ -476,16 +505,16 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-metrics ./dist
+          command: mv ./dist-test-flask ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-metrics ./builds
+          command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:chrome:metrics
+          name: test:e2e:chrome:snaps
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:metrics --retries 2
+              yarn test:e2e:chrome:snaps --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -513,33 +542,6 @@ jobs:
             if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:firefox --retries 2
-            fi
-          no_output_timeout: 20m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
-  test-e2e-firefox-metrics:
-    executor: node-browsers
-    steps:
-      - checkout
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-metrics ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-metrics ./builds
-      - run:
-          name: test:e2e:firefox:metrics
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:firefox:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -631,8 +633,11 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: sentry sourcemaps upload
-          command: SENTRY_ORG=metamask SENTRY_PROJECT=metamask yarn sentry:publish
+          name: Publish main release to Sentry
+          command: yarn sentry:publish
+      - run:
+          name: Publish Flask release to Sentry
+          command: yarn sentry:publish --build-type flask
       - run:
           name: Create GitHub release
           command: |

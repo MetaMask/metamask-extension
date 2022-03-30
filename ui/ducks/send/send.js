@@ -44,6 +44,7 @@ import {
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -53,7 +54,8 @@ import {
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
-  updateTransaction,
+  updateEditableParams,
+  updateTransactionGasFees,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   isCollectibleOwner,
@@ -78,7 +80,6 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
-  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -91,6 +92,9 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
+import { sumHexes } from '../../helpers/utils/transactions.util';
+import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
+
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
   ERC20,
@@ -99,9 +103,13 @@ import {
   ETH,
   GWEI,
 } from '../../helpers/constants/common';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
+} from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -164,18 +172,6 @@ export const GAS_INPUT_MODES = {
 };
 
 /**
- * The types of assets that a user can send
- * 1. NATIVE - The native asset for the current network, such as ETH
- * 2. TOKEN - An ERC20 token.
- * 2. COLLECTIBLE - An ERC721 or ERC1155 token.
- */
-export const ASSET_TYPES = {
-  NATIVE: 'NATIVE',
-  TOKEN: 'TOKEN',
-  COLLECTIBLE: 'COLLECTIBLE',
-};
-
-/**
  * The modes that the amount field can be set by
  * 1. INPUT - the user provides the amount by typing in the field
  * 2. MAX - The user selects the MAX button and amount is calculated based on
@@ -200,6 +196,7 @@ async function estimateGasLimitForSend({
   data,
   isNonStandardEthChain,
   chainId,
+  gasLimit,
   ...options
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
@@ -321,12 +318,14 @@ async function estimateGasLimitForSend({
       error.message.includes('Transaction execution error.') ||
       error.message.includes(
         'gas required exceeds allowance or always failing transaction',
-      );
+      ) ||
+      (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
+        error.message.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
-        paramsForGasEstimate.gas,
+        paramsForGasEstimate?.gas ?? gasLimit,
         blockGasLimit,
-        1.5,
+        bufferMultiplier,
       );
       return addHexPrefix(estimateWithBuffer);
     }
@@ -370,9 +369,29 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const state = thunkApi.getState();
     const { send, metamask } = state;
     const unapprovedTxs = getUnapprovedTxs(state);
+    const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[send.draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+
+    let layer1GasTotal;
+    if (isMultiLayerFeeNetwork) {
+      layer1GasTotal = await fetchEstimatedL1Fee(global.eth, {
+        txParams: {
+          gasPrice: send.gas.gasPrice,
+          gas: send.gas.gasLimit,
+          to: send.recipient.address?.toLowerCase(),
+          value:
+            send.amount.mode === 'MAX'
+              ? send.account.balance
+              : send.amount.value,
+          from: send.account.address,
+          data: send.draftTransaction.userInputHexData,
+          type: '0x0',
+        },
+      });
+    }
+
     if (
       send.stage !== SEND_STAGES.EDIT ||
       !transaction.dappSuggestedGasFees?.gas ||
@@ -388,10 +407,12 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         data: send.draftTransaction.userInputHexData,
         isNonStandardEthChain,
         chainId,
+        gasLimit: send.gas.gasLimit,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
         gasLimit,
+        layer1GasTotal,
       };
     }
     return null;
@@ -659,6 +680,10 @@ export const initialState = {
     // Warning to display on the address field
     warning: null,
   },
+  multiLayerFees: {
+    // Layer 1 gas fee total on multi-layer fee networks
+    layer1GasTotal: '0x0',
+  },
 };
 
 const slice = createSlice({
@@ -705,9 +730,13 @@ const slice = createSlice({
           multiplierBase: 10,
         });
       } else {
+        const _gasTotal = sumHexes(
+          state.gas.gasTotal || '0x0',
+          state.multiLayerFees?.layer1GasTotal || '0x0',
+        );
         amount = subtractCurrencies(
           addHexPrefix(state.asset.balance),
-          addHexPrefix(state.gas.gasTotal),
+          addHexPrefix(_gasTotal),
           {
             toNumericBase: 'hex',
             aBase: 16,
@@ -888,6 +917,21 @@ const slice = createSlice({
       }
       // Record the latest gasPriceEstimate for future comparisons
       state.gas.gasPriceEstimate = addHexPrefix(gasPriceEstimate);
+    },
+    /**
+     * sets the layer 1 fees total (for a multi-layer fee network)
+     *
+     * @param state
+     * @param action
+     */
+    updateLayer1Fees: (state, action) => {
+      state.multiLayerFees.layer1GasTotal = action.payload;
+      if (
+        state.amount.mode === AMOUNT_MODES.MAX &&
+        state.asset.type === ASSET_TYPES.NATIVE
+      ) {
+        slice.caseReducers.updateAmountToMax(state);
+      }
     },
     /**
      * sets the amount mode to the provided value as long as it is one of the
@@ -1327,6 +1371,11 @@ const slice = createSlice({
             payload: action.payload.gasLimit,
           });
         }
+        if (action.payload?.layer1GasTotal) {
+          slice.caseReducers.updateLayer1Fees(state, {
+            payload: action.payload.layer1GasTotal,
+          });
+        }
       })
       .addCase(computeEstimatedGasLimit.rejected, (state) => {
         // If gas estimation fails, we should set the loading state to false,
@@ -1700,7 +1749,8 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
-      dispatch(updateTransaction(editingTx));
+      dispatch(updateEditableParams(id, editingTx.txParams));
+      dispatch(updateTransactionGasFees(id, editingTx.txParams));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
       // When sending a token transaction we have to the token.transfer method
       // on the token contract to construct the transaction. This results in

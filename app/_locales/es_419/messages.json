@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -361,9 +355,6 @@
   "blockExplorerView": {
     "message": "Ver cuenta en $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Usar Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "El explorador no es compatible..."
@@ -985,9 +976,6 @@
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
@@ -1034,10 +1022,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
-  },
-  "eth_accounts": {
-    "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Dirección pública de Ethereum"
@@ -1329,18 +1313,11 @@
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
-  "importAccountLinkText": {
-    "message": "importar con la frase secreta de recuperación"
-  },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
   },
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",
@@ -1476,9 +1453,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
   },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"
@@ -1801,9 +1775,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "No se añadió el coleccionable porque: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "¡El coleccionable fue añadido con éxito!"
   },
@@ -2125,6 +2096,10 @@
   "permissionRequest": {
     "message": "Solicitud de permiso"
   },
+  "permission_ethereumAccounts": {
+    "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Permisos"
   },
@@ -2281,9 +2256,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurar la cuenta con la frase secreta de recuperación"
-  },
   "restoreWalletPreferences": {
     "message": "Se encontró una copia de seguridad de los datos de $1. ¿Desea restaurar las preferencias de cartera?",
     "description": "$1 is the date at which the data was backed up"
@@ -2349,10 +2321,7 @@
     "message": "ADVERTENCIA: No revele su frase de respaldo. Cualquier persona que tenga esta frase puede robarle los ethers."
   },
   "secretPhrase": {
-    "message": "Solo la primera cuenta de esta cartera se cargará automáticamente. Después de llevar a cabo este proceso, para agregar cuentas adicionales haga clic en el menú desplegable y luego seleccione Crear cuenta."
-  },
-  "secretPhraseWarning": {
-    "message": "Si restablece utilizando otra frase secreta de recuperación, su cartera actual, sus cuentas y sus activos se eliminarán de esta aplicación de forma permanente. Esta acción es irreversible."
+    "message": "Ingrese su frase secreta aquí para restaurar su bóveda."
   },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
@@ -2410,12 +2379,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo proteger su cartera."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separar cada palabra con un solo espacio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Pegar la frase secreta de recuperación desde el Portapapeles"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
@@ -2529,9 +2492,6 @@
   },
   "showRecommendations": {
     "message": "Mostrar recomendaciones"
-  },
-  "showSeedPhrase": {
-    "message": "Mostrar frase secreta de recuperación"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
@@ -2848,10 +2808,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración de la \"tolerancia de desfase\"."
-  },
-  "swapQuoteNofN": {
-    "message": "Cotización $1 de $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"

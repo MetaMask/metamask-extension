@@ -164,16 +164,13 @@ describe('Metamask Responsive UI', function () {
 
         // Import Secret Recovery Phrase
         const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link--import',
+          '.unlock-page__link',
         );
-        assert.equal(
-          await restoreSeedLink.getText(),
-          'import using Secret Recovery Phrase',
-        );
+        assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
         await restoreSeedLink.click();
 
-        await driver.fill(
-          'input[placeholder="Enter your Secret Recovery Phrase"]',
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
           testSeedPhrase,
         );
 

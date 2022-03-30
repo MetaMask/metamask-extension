@@ -1,6 +1,6 @@
 .signature-request-footer {
   display: flex;
-  border-top: 1px solid #d2d8dd;
+  border-top: 1px solid var(--color-border-muted);
 
   button {
     text-transform: uppercase;
@@ -9,10 +9,16 @@
   }
 
   button:first-child {
-    margin-left: 1rem;
+    flex: 1 1 100%;
+    padding: 0;
   }
 
   button:last-child {
+    flex: 1 1 100%;
     margin-right: 1rem;
+  }
+
+  &__tooltip {
+    display: flex;
   }
 }

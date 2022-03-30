@@ -38,12 +38,6 @@
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
-  "addToAddressBook": {
-    "message": "በአድራሻ መዝገብ ላይ አክል"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ለምሳሌ፡ ጆን ዲ."
-  },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
@@ -132,9 +126,6 @@
   "blockExplorerView": {
     "message": "መለያን በ$1እይ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon ተጠቀም"
   },
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
@@ -333,9 +324,6 @@
   },
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
-  "enterAnAlias": {
-    "message": "ተለዋጭ ስም ያስገቡ"
   },
   "enterPassword": {
     "message": "የይለፍ ቃል ያስገቡ"
@@ -753,9 +741,6 @@
   "restore": {
     "message": "እነበረበት መልስ"
   },
-  "restoreAccountWithSeed": {
-    "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
-  },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
@@ -806,9 +791,6 @@
   },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"

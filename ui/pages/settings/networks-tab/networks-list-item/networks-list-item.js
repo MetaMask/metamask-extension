@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,13 +8,21 @@ import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
 import { SIZES } from '../../../../helpers/constants/design-system';
 import ColorIndicator from '../../../../components/ui/color-indicator';
 import LockIcon from '../../../../components/ui/lock-icon';
+import IconCaretRight from '../../../../components/ui/icon/icon-caret-right';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
 
-const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
+import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
+
+const NetworksListItem = ({
+  network,
+  networkIsSelected,
+  selectedRpcUrl,
+  networkIndex,
+}) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -37,9 +45,15 @@ const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
   const displayNetworkListItemAsSelected =
     listItemNetworkIsSelected || listItemNetworkIsCurrentProvider;
+  const settingsRefs = useRef();
+
+  useEffect(() => {
+    handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
+  }, [networkIndex, settingsRefs, t]);
 
   return (
     <div
+      ref={settingsRefs}
       key={`settings-network-list-item:${rpcUrl}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
@@ -64,10 +78,10 @@ const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
       >
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPE_RPC && (
-          <LockIcon width="14px" height="17px" fill="#cdcdcd" />
+          <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
         )}
       </div>
-      <div className="networks-tab__networks-list-arrow" />
+      <IconCaretRight className="networks-tab__networks-list-arrow" />
     </div>
   );
 };
@@ -76,6 +90,7 @@ NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
+  networkIndex: PropTypes.number,
 };
 
 export default NetworksListItem;

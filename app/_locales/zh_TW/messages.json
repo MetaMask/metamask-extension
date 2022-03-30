@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
   },
-  "addToAddressBook": {
-    "message": "新增至位址簿中"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如 John D。"
-  },
   "addToken": {
     "message": "加入代幣"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "在 $1 觀看帳號 ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "使用像素風格代表圖案"
   },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS 名稱註冊錯誤"
-  },
-  "enterAnAlias": {
-    "message": "輸入化名"
   },
   "enterPassword": {
     "message": "請輸入密碼"
@@ -750,9 +738,6 @@
   "resetAccountDescription": {
     "message": "重置帳戶將清除您的交易紀錄"
   },
-  "restoreAccountWithSeed": {
-    "message": "透過助憶詞還原您的帳戶"
-  },
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
@@ -803,9 +788,6 @@
   },
   "securityAndPrivacy": {
     "message": "安全＆隱私"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "單詞之間請用空白分隔"
   },
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"

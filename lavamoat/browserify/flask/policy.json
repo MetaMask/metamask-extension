@@ -551,6 +551,7 @@
         "abort-controller": true,
         "async-mutex": true,
         "buffer": true,
+        "deep-freeze-strict": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
         "eth-keyring-controller": true,
@@ -563,12 +564,11 @@
         "ethereumjs-wallet": true,
         "ethers": true,
         "ethjs-unit": true,
-        "ethjs-util": true,
         "events": true,
-        "human-standard-collectible-abi": true,
-        "human-standard-token-abi": true,
+        "fast-deep-equal": true,
         "immer": true,
         "isomorphic-fetch": true,
+        "json-rpc-engine": true,
         "jsonschema": true,
         "multiformats": true,
         "nanoid": true,
@@ -597,6 +597,16 @@
         "hdkey": true
       }
     },
+    "@metamask/eth-sig-util": {
+      "packages": {
+        "buffer": true,
+        "ethereumjs-abi": true,
+        "ethereumjs-util": true,
+        "ethjs-util": true,
+        "tweetnacl": true,
+        "tweetnacl-util": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -615,6 +625,24 @@
     "@metamask/etherscan-link": {
       "globals": {
         "URL": true
+      }
+    },
+    "@metamask/iframe-execution-environment-service": {
+      "globals": {
+        "clearTimeout": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/execution-environments": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/snap-controllers": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
       }
     },
     "@metamask/jazzicon": {
@@ -685,6 +713,7 @@
     },
     "@metamask/rpc-methods": {
       "packages": {
+        "@metamask/controllers": true,
         "@metamask/key-tree": true,
         "@metamask/snap-controllers": true,
         "eth-rpc-errors": true
@@ -698,31 +727,57 @@
         "events": true
       }
     },
+    "@metamask/smart-transactions-controller": {
+      "globals": {
+        "URLSearchParams": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "bignumber.js": true,
+        "ethers": true,
+        "fast-json-patch": true,
+        "isomorphic-fetch": true,
+        "lodash": true
+      }
+    },
     "@metamask/snap-controllers": {
       "globals": {
+        "URL": true,
         "Worker": true,
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/controllers": true,
+        "@metamask/execution-environments": true,
         "@metamask/object-multiplex": true,
         "@metamask/obs-store": true,
         "@metamask/post-message-stream": true,
         "@metamask/safe-event-emitter": true,
-        "@metamask/snap-workers": true,
-        "deep-freeze-strict": true,
+        "ajv": true,
+        "buffer": true,
+        "concat-stream": true,
+        "cross-fetch": true,
+        "crypto-browserify": true,
         "eth-rpc-errors": true,
         "fast-deep-equal": true,
-        "immer": true,
+        "gunzip-maybe": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "nanoid": true,
-        "pump": true
+        "pump": true,
+        "readable-web-to-node-stream": true,
+        "semver": true,
+        "tar-stream": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -973,6 +1028,11 @@
         "define": true
       }
     },
+    "ajv": {
+      "packages": {
+        "fast-deep-equal": true
+      }
+    },
     "analytics-node": {
       "globals": {
         "clearTimeout": true,
@@ -1158,6 +1218,7 @@
     "bl": {
       "packages": {
         "buffer": true,
+        "inherits": true,
         "readable-stream": true,
         "util": true
       }
@@ -1270,6 +1331,16 @@
         "btoa": true
       }
     },
+    "browserify-zlib": {
+      "packages": {
+        "assert": true,
+        "buffer": true,
+        "pako": true,
+        "process": true,
+        "readable-stream": true,
+        "util": true
+      }
+    },
     "bs58": {
       "packages": {
         "base-x": true
@@ -1294,6 +1365,11 @@
       "packages": {
         "base64-js": true,
         "ieee754": true
+      }
+    },
+    "buffer-from": {
+      "packages": {
+        "buffer": true
       }
     },
     "buffer-split": {
@@ -1424,6 +1500,13 @@
         "os-browserify": true,
         "process": true,
         "util": true
+      }
+    },
+    "concat-stream": {
+      "packages": {
+        "buffer": true,
+        "inherits": true,
+        "readable-stream": true
       }
     },
     "constant-case": {
@@ -1707,6 +1790,16 @@
         "stream-browserify": true
       }
     },
+    "duplexify": {
+      "packages": {
+        "buffer": true,
+        "end-of-stream": true,
+        "inherits": true,
+        "process": true,
+        "readable-stream": true,
+        "stream-shift": true
+      }
+    },
     "elliptic": {
       "packages": {
         "bn.js": true,
@@ -1889,19 +1982,20 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "console.warn": true,
         "open": true,
+        "rlp.encode": true,
         "setInterval": true
       },
       "packages": {
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
-        "bignumber.js": true,
+        "bn.js": true,
         "buffer": true,
         "crypto-browserify": true,
         "ethereumjs-util": true,
         "events": true,
-        "gridplus-sdk": true
+        "gridplus-sdk": true,
+        "secp256k1": true
       }
     },
     "eth-method-registry": {
@@ -2167,12 +2261,6 @@
         "stream-browserify": true
       }
     },
-    "extensionizer": {
-      "globals": {
-        "browser": true,
-        "chrome": true
-      }
-    },
     "faker": {
       "globals": {
         "console.error": true,
@@ -2210,6 +2298,11 @@
         "define": true,
         "importScripts": true,
         "postMessage": true
+      }
+    },
+    "fs-constants": {
+      "packages": {
+        "constants-browserify": true
       }
     },
     "fsm-event": {
@@ -2261,9 +2354,12 @@
     "gridplus-sdk": {
       "globals": {
         "console.error": true,
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
         "aes-js": true,
         "bech32": true,
         "bignumber.js": true,
@@ -2274,10 +2370,22 @@
         "crc-32": true,
         "elliptic": true,
         "eth-eip712-util-browser": true,
+        "hash.js": true,
         "js-sha3": true,
+        "rlp": true,
         "rlp-browser": true,
         "secp256k1": true,
         "superagent": true
+      }
+    },
+    "gunzip-maybe": {
+      "packages": {
+        "browserify-zlib": true,
+        "is-deflate": true,
+        "is-gzip": true,
+        "peek-stream": true,
+        "pumpify": true,
+        "through2": true
       }
     },
     "hamt-sharding": {
@@ -3930,6 +4038,14 @@
         "sha.js": true
       }
     },
+    "peek-stream": {
+      "packages": {
+        "buffer": true,
+        "buffer-from": true,
+        "duplexify": true,
+        "through2": true
+      }
+    },
     "peer-book": {
       "packages": {
         "bs58": true,
@@ -4150,6 +4266,13 @@
         "end-of-stream": true,
         "once": true,
         "process": true
+      }
+    },
+    "pumpify": {
+      "packages": {
+        "duplexify": true,
+        "inherits": true,
+        "pump": true
       }
     },
     "punycode": {
@@ -4465,6 +4588,11 @@
         "util-deprecate": true
       }
     },
+    "readable-web-to-node-stream": {
+      "packages": {
+        "readable-stream": true
+      }
+    },
     "receptacle": {
       "globals": {
         "clearTimeout": true,
@@ -4512,6 +4640,9 @@
       }
     },
     "rlp": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "bn.js": true,
         "buffer": true
@@ -4786,6 +4917,19 @@
         "upper-case": true
       }
     },
+    "tar-stream": {
+      "packages": {
+        "bl": true,
+        "buffer": true,
+        "end-of-stream": true,
+        "fs-constants": true,
+        "inherits": true,
+        "process": true,
+        "readable-stream": true,
+        "string_decoder": true,
+        "util": true
+      }
+    },
     "textarea-caret": {
       "globals": {
         "document.body.appendChild": true,
@@ -4858,7 +5002,6 @@
         "document.createTextNode": true,
         "document.getElementById": true,
         "document.querySelectorAll": true,
-        "fetch": true,
         "location": true,
         "navigator": true,
         "open": true,
@@ -4868,8 +5011,9 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "events": true,
-        "whatwg-fetch": true
+        "@metamask/eth-sig-util": true,
+        "cross-fetch": true,
+        "events": true
       }
     },
     "truncate-utf8-bytes": {
@@ -5064,6 +5208,15 @@
         "number-to-bn": true,
         "randombytes": true,
         "utf8": true
+      }
+    },
+    "webextension-polyfill": {
+      "globals": {
+        "browser": true,
+        "chrome": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
       }
     },
     "webrtcsupport": {

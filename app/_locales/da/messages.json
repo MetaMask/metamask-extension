@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Tilføj foreslåede tokens"
   },
-  "addToAddressBook": {
-    "message": "Føj til adressebogen"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "f.eks. John D."
-  },
   "addToken": {
     "message": "Tilføj Polet"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Se konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Brug Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Din browser er ikke understøttet..."
@@ -342,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Fejl i ENS-navneregistrering"
-  },
-  "enterAnAlias": {
-    "message": "Indtast et alias"
   },
   "enterPassword": {
     "message": "Indtast kodeord"
@@ -749,9 +737,6 @@
   "restore": {
     "message": "Gendan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gendan din konto med Seed-sætning"
-  },
   "revealSeedWords": {
     "message": "Vis Seedord"
   },
@@ -802,9 +787,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Adskil hvert ord med et enkelt mellemrum"
   },
   "seedPhraseReq": {
     "message": "Backupsætninger er 12 ord lange"

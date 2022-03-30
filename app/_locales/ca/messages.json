@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Afegir Fitxes Suggerides"
   },
-  "addToAddressBook": {
-    "message": "Afegir al llibre d'adreces"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Afegir Fitxa"
   },
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "Veure compte a $1 ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Fer servir els Identicon Blockies"
   },
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
@@ -339,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
-  },
-  "enterAnAlias": {
-    "message": "Introdueix Àlies"
   },
   "enterPassword": {
     "message": "Introdueix contrasenya"
@@ -746,9 +734,6 @@
   "restore": {
     "message": "Restaura"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
   },
@@ -799,9 +784,6 @@
   },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separa cada paraula amb un únic espai"
   },
   "seedPhraseReq": {
     "message": "Les frases de recuperació tenen 12 paraules"

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import IconCaretDown from '../icon/icon-caret-down';
 
 const Dropdown = ({
   className,
@@ -21,22 +22,25 @@ const Dropdown = ({
   );
 
   return (
-    <select
-      className={classnames('dropdown', className)}
-      disabled={disabled}
-      title={title}
-      onChange={_onChange}
-      style={style}
-      value={selectedOption}
-    >
-      {options.map((option) => {
-        return (
-          <option key={option.value} value={option.value}>
-            {option.name || option.value}
-          </option>
-        );
-      })}
-    </select>
+    <div className={classnames('dropdown', className)}>
+      <select
+        className="dropdown__select"
+        disabled={disabled}
+        title={title}
+        onChange={_onChange}
+        style={style}
+        value={selectedOption}
+      >
+        {options.map((option) => {
+          return (
+            <option key={option.value} value={option.value}>
+              {option.name || option.value}
+            </option>
+          );
+        })}
+      </select>
+      <IconCaretDown size={16} className="dropdown__icon-caret-down" />
+    </div>
   );
 };
 

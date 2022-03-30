@@ -1,33 +1,31 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { getPermissionDescription } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
 
-  const PERMISSION_TYPES = useMemo(() => {
-    return {
-      eth_accounts: {
-        leftIcon: 'fas fa-eye',
-        label: t('eth_accounts'),
-        rightIcon: null,
-      },
-    };
-  }, [t]);
-
   return (
     <div className="permissions-connect-permission-list">
-      {Object.keys(permissions).map((permission) => (
-        <div className="permission" key={PERMISSION_TYPES[permission].label}>
-          <i className={PERMISSION_TYPES[permission].leftIcon} />
-          {PERMISSION_TYPES[permission].label}
-          <i className={PERMISSION_TYPES[permission].rightIcon} />
-        </div>
-      ))}
+      {Object.keys(permissions).map((permission) => {
+        const { label, leftIcon, rightIcon } = getPermissionDescription(
+          t,
+          permission,
+        );
+
+        return (
+          <div className="permission" key={permission}>
+            <i className={leftIcon} />
+            {label}
+            {rightIcon && <i className={rightIcon} />}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 PermissionsConnectPermissionList.propTypes = {
-  permissions: PropTypes.objectOf(PropTypes.bool).isRequired,
+  permissions: PropTypes.object.isRequired,
 };

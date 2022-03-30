@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { util } from '@metamask/controllers';
+import slip44 from '@metamask/slip44';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -62,14 +63,6 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
-}
-
-// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
-export function isEqualCaseInsensitive(value1, value2) {
-  if (typeof value1 !== 'string' || typeof value2 !== 'string') {
-    return false;
-  }
-  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -579,4 +572,30 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
   return toBigNumber
     .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
     .toNumber();
+}
+
+/**
+ * Gets the name of the SLIP-44 protocol corresponding to the specified
+ * `coin_type`.
+ *
+ * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
+ * to retrieve.
+ * @returns {string | undefined} The name of the protocol if found.
+ */
+export function coinTypeToProtocolName(coinType) {
+  if (String(coinType) === '1') {
+    return 'Test Networks';
+  }
+  return slip44[coinType]?.name || undefined;
+}
+
+/**
+ * Tests "nullishness". Used to guard a section of a component from being
+ * rendered based on a value.
+ *
+ * @param {any} value - A value (literally anything).
+ * @returns `true` if the value is null or undefined, `false` otherwise.
+ */
+export function isNullish(value) {
+  return value === null || value === undefined;
 }

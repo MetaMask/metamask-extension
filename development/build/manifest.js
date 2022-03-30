@@ -3,9 +3,9 @@ const path = require('path');
 const { mergeWith, cloneDeep } = require('lodash');
 
 const baseManifest = require('../../app/manifest/_base.json');
+const { BuildType } = require('../lib/build-type');
 
 const { createTask, composeSeries } = require('./task');
-const { BuildType } = require('./utils');
 
 module.exports = createManifestTasks;
 

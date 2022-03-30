@@ -41,8 +41,16 @@ export default class SignatureRequest extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
+
+  state = {
+    hasScrolledMessage: false,
+  };
+
+  setMessageRootRef(ref) {
+    this.messageRootRef = ref;
+  }
 
   formatWallet(wallet) {
     return `${wallet.slice(0, 8)}...${wallet.slice(
@@ -65,17 +73,16 @@ export default class SignatureRequest extends PureComponent {
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
-    const { metricsEvent } = this.context;
+    const { trackEvent } = this.context;
 
     const onSign = (event) => {
       sign(event);
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
+      trackEvent({
+        category: 'Transactions',
+        event: 'Confirm',
+        properties: {
           action: 'Sign Request',
-          name: 'Confirm',
-        },
-        customVariables: {
+          legacy_event: true,
           type,
           version,
         },
@@ -84,18 +91,20 @@ export default class SignatureRequest extends PureComponent {
 
     const onCancel = (event) => {
       cancel(event);
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
+      trackEvent({
+        category: 'Transactions',
+        event: 'Cancel',
+        properties: {
           action: 'Sign Request',
-          name: 'Cancel',
-        },
-        customVariables: {
+          legacy_event: true,
           type,
           version,
         },
       });
     };
+
+    const messageIsScrollable =
+      this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
 
     return (
       <div className="signature-request page-container">
@@ -124,11 +133,20 @@ export default class SignatureRequest extends PureComponent {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        <Message data={sanitizeMessage(message, primaryType, types)} />
+        <Message
+          data={sanitizeMessage(message, primaryType, types)}
+          onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
+          setMessageRootRef={this.setMessageRootRef.bind(this)}
+          messageRootRef={this.messageRootRef}
+          messageIsScrollable={messageIsScrollable}
+        />
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
-          disabled={hardwareWalletRequiresConnection}
+          disabled={
+            hardwareWalletRequiresConnection ||
+            (messageIsScrollable && !this.state.hasScrolledMessage)
+          }
         />
       </div>
     );

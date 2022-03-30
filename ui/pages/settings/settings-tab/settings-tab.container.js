@@ -20,6 +20,9 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     useBlockie,
     currentLocale,
+    selectedAddress,
+    useTokenDetection,
+    tokenList,
   } = metamask;
   const {
     useNativeCurrencyAsPrimaryCurrency,
@@ -37,6 +40,9 @@ const mapStateToProps = (state, ownProps) => {
     useNativeCurrencyAsPrimaryCurrency,
     hideZeroBalanceTokens,
     lastFetchedConversionDate,
+    selectedAddress,
+    useTokenDetection,
+    tokenList,
   };
 };
 

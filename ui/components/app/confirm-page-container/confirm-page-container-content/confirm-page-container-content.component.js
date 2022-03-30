@@ -2,9 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
-import ErrorMessage from '../../../ui/error-message';
+import Button from '../../../ui/button';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
+import ErrorMessage from '../../../ui/error-message';
+import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import Typography from '../../../ui/typography';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
+
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -21,7 +27,7 @@ export default class ConfirmPageContainerContent extends Component {
     errorMessage: PropTypes.string,
     hasSimulationError: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
-    identiconAddress: PropTypes.string,
+    tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -44,6 +50,13 @@ export default class ConfirmPageContainerContent extends Component {
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
+    currentTransaction: PropTypes.string,
+    nativeCurrency: PropTypes.string,
+    networkName: PropTypes.string,
+    showBuyModal: PropTypes.func,
+    toAddress: PropTypes.string,
+    transactionType: PropTypes.string,
+    isBuyableChain: PropTypes.bool,
   };
 
   renderContent() {
@@ -93,7 +106,7 @@ export default class ConfirmPageContainerContent extends Component {
       titleComponent,
       subtitleComponent,
       hideSubtitle,
-      identiconAddress,
+      tokenAddress,
       nonce,
       detailsComponent,
       dataComponent,
@@ -113,6 +126,13 @@ export default class ConfirmPageContainerContent extends Component {
       hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
       hasTopBorder,
+      currentTransaction,
+      nativeCurrency,
+      networkName,
+      showBuyModal,
+      toAddress,
+      transactionType,
+      isBuyableChain,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -121,6 +141,13 @@ export default class ConfirmPageContainerContent extends Component {
           label: this.context.t('tryAnywayOption'),
           onClick: setUserAcknowledgedGasMissing,
         };
+    const { t } = this.context;
+
+    const showInsuffienctFundsError =
+      supportsEIP1559V2 &&
+      !hasSimulationError &&
+      (errorKey || errorMessage) &&
+      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -137,7 +164,7 @@ export default class ConfirmPageContainerContent extends Component {
             <ActionableMessage
               type="danger"
               primaryAction={primaryAction}
-              message={this.context.t('simulationErrorMessage')}
+              message={t('simulationErrorMessage')}
             />
           </div>
         )}
@@ -152,19 +179,59 @@ export default class ConfirmPageContainerContent extends Component {
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}
-          identiconAddress={identiconAddress}
+          tokenAddress={tokenAddress}
           nonce={nonce}
           origin={origin}
           hideTitle={hideTitle}
+          toAddress={toAddress}
+          transactionType={transactionType}
         />
         {this.renderContent()}
         {!supportsEIP1559V2 &&
           !hasSimulationError &&
-          (errorKey || errorMessage) && (
+          (errorKey || errorMessage) &&
+          currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND && (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
             </div>
           )}
+        {showInsuffienctFundsError && (
+          <div className="confirm-page-container-content__error-container">
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={
+                isBuyableChain ? (
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyBuyOrDeposit', [
+                      nativeCurrency,
+                      networkName,
+
+                      <Button
+                        type="inline"
+                        className="confirm-page-container-content__link"
+                        onClick={showBuyModal}
+                        key={`${nativeCurrency}-buy-button`}
+                      >
+                        {t('buyAsset', [nativeCurrency])}
+                      </Button>,
+                    ])}
+                  </Typography>
+                ) : (
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrencyDeposit', [
+                      nativeCurrency,
+                      networkName,
+                    ])}
+                  </Typography>
+                )
+              }
+              useIcon
+              iconFillColor="var(--color-error-default)"
+              type="danger"
+            />
+          </div>
+        )}
+
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}

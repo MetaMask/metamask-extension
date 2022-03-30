@@ -16,7 +16,7 @@ import { returnToOnboardingInitiator } from '../../onboarding-initiator-util';
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -42,11 +42,12 @@ export default class RevealSeedPhrase extends PureComponent {
     const { isShowingSeedPhrase } = this.state;
     const { history } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    this.context.trackEvent({
+      category: 'Onboarding',
+      event: 'Advance to Verify',
+      properties: {
         action: 'Seed Phrase Setup',
-        name: 'Advance to Verify',
+        legacy_event: true,
       },
     });
 
@@ -65,11 +66,12 @@ export default class RevealSeedPhrase extends PureComponent {
       onboardingInitiator,
     } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    this.context.trackEvent({
+      category: 'Onboarding',
+      event: 'Remind me later',
+      properties: {
         action: 'Seed Phrase Setup',
-        name: 'Remind me later',
+        legacy_event: true,
       },
     });
 
@@ -102,17 +104,22 @@ export default class RevealSeedPhrase extends PureComponent {
           <div
             className="reveal-seed-phrase__secret-blocker"
             onClick={() => {
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Onboarding',
+              this.context.trackEvent({
+                category: 'Onboarding',
+                event: 'Revealed Words',
+                properties: {
                   action: 'Seed Phrase Setup',
-                  name: 'Revealed Words',
+                  legacy_event: true,
                 },
               });
               this.setState({ isShowingSeedPhrase: true });
             }}
           >
-            <LockIcon width="28px" height="35px" fill="#FFFFFF" />
+            <LockIcon
+              width="28px"
+              height="35px"
+              fill="var(--color-overlay-inverse)"
+            />
             <div className="reveal-seed-phrase__reveal-button">
               {t('clickToRevealSeed')}
             </div>

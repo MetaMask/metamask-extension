@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Pridať navrhované tokeny"
   },
-  "addToAddressBook": {
-    "message": "Pridať do adresára"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "napr. Ján D."
-  },
   "addToken": {
     "message": "Přidat token"
   },
@@ -132,9 +126,6 @@
   "blockExplorerView": {
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
@@ -336,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
-  },
-  "enterAnAlias": {
-    "message": "Zadať alias"
   },
   "enterPassword": {
     "message": "Zadejte heslo"
@@ -737,9 +725,6 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnoviť účet pomocou seed frázy"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
@@ -784,9 +769,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Každé slovo oddeľte jednou medzerou"
   },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"

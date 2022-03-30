@@ -4,21 +4,21 @@
   align-items: flex-start;
   padding-left: 21px;
   height: 324px;
-  background: #f5f7f8;
-  border-bottom: 1px solid #d2d8dd;
+  background: var(--color-background-alternative);
+  border-bottom: 1px solid var(--color-border-default);
 
   &__title {
     @include Paragraph;
 
     margin-top: 19px;
-    color: var(--black);
+    color: var(--color-text-default);
   }
 
   &__blurb {
     @include H7;
 
     width: 95%;
-    color: var(--black);
+    color: var(--color-text-default);
     margin-top: 5px;
     margin-bottom: 15px;
   }
@@ -27,7 +27,7 @@
     @include H7;
 
     width: 95%;
-    color: #979797;
+    color: var(--color-text-alternative);
     margin-top: 15px;
   }
 }

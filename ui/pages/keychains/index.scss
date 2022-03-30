@@ -57,35 +57,19 @@
 }
 
 .import-account {
-  &__title {
-    @include H1;
-
-    color: #1b344d;
-    margin-bottom: 10px;
-  }
-
   &__back-button {
     @include Paragraph;
 
     margin-bottom: 18px;
-    color: #22232c;
+    color: var(--color-text-default);
     position: absolute;
     top: -25px;
   }
 
-  &__selector-label {
-    @include Paragraph;
-
-    color: #1b344d;
-  }
-
-  &__selector-typography {
-    line-height: 22px;
-    display: flex;
-    align-items: center;
-    color: #000;
-    margin-top: 18px;
-    margin-bottom: 16px;
+  &__link {
+    display: inline;
+    padding: 0;
+    font-size: inherit;
   }
 }
 
@@ -103,7 +87,7 @@
   &__error {
     @include H6;
 
-    color: var(--crimson);
+    color: var(--color-error-default);
     padding-top: 5px;
   }
 }

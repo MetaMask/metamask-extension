@@ -29,6 +29,7 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
         gasLimit,
         hasErrors:
           errors.maxFeePerGas || errors.maxPriorityFeePerGas || errors.gasLimit,
+        gasErrors: errors,
         maxFeePerGas,
         maxPriorityFeePerGas,
         setErrorValue,

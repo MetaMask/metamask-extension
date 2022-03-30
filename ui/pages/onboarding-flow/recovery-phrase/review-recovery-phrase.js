@@ -25,6 +25,8 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
+  const [hiddenPhrase, setHiddenPhrase] = useState(false);
+
   return (
     <div className="recovery-phrase">
       <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
@@ -58,12 +60,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         <ul>
           <li>
             <Typography variant={TYPOGRAPHY.H4}>
-              {t('seedPhraseIntroSidebarBulletFour')}
-            </Typography>
-          </li>
-          <li>
-            <Typography variant={TYPOGRAPHY.H4}>
-              {t('seedPhraseIntroSidebarBulletTwo')}
+              {t('seedPhraseIntroSidebarBulletOne')}
             </Typography>
           </li>
           <li>
@@ -80,21 +77,43 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       </Box>
       <RecoveryPhraseChips
         secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
-        phraseRevealed={phraseRevealed}
+        phraseRevealed={phraseRevealed && !hiddenPhrase}
+        hiddenPhrase={hiddenPhrase}
       />
       <div className="recovery-phrase__footer">
         {phraseRevealed ? (
-          <div className="recovery-phrase__footer--copy">
-            <Button
-              onClick={() => {
-                handleCopy(secretRecoveryPhrase);
-              }}
-              icon={copied ? null : <Copy size={20} color="#3098DC" />}
-              className="recovery-phrase__footer--copy--button"
-              type="link"
-            >
-              {copied ? t('copiedExclamation') : t('copyToClipboard')}
-            </Button>
+          <div className="recovery-phrase__footer__copy-and-hide">
+            <div className="recovery-phrase__footer__copy-and-hide__area">
+              <Button
+                type="link"
+                icon={
+                  <i
+                    className={`far fa-eye${hiddenPhrase ? '' : '-slash'}`}
+                    color="var(--color-primary-default)"
+                  />
+                }
+                className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__hide-seed"
+                onClick={() => {
+                  setHiddenPhrase(!hiddenPhrase);
+                }}
+              >
+                {hiddenPhrase ? t('revealTheSeedPhrase') : t('hideSeedPhrase')}
+              </Button>
+              <Button
+                onClick={() => {
+                  handleCopy(secretRecoveryPhrase);
+                }}
+                icon={
+                  copied ? null : (
+                    <Copy size={20} color="var(--color-primary-default)" />
+                  )
+                }
+                className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__copy-to-clipboard"
+                type="link"
+              >
+                {copied ? t('copiedExclamation') : t('copyToClipboard')}
+              </Button>
+            </div>
             <Button
               data-testid="recovery-phrase-next"
               type="primary"

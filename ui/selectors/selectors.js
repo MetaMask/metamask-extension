@@ -1,4 +1,7 @@
 import { createSelector } from 'reselect';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { memoize } from 'lodash';
+///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
@@ -17,17 +20,20 @@ import {
 } from '../../shared/constants/hardware-wallets';
 
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_SWAPS_CHAIN_IDS,
-} from '../../shared/constants/swaps';
+  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SUBJECT_TYPES,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
-  shortenAddress,
-  getAccountByAddress,
-  isEqualCaseInsensitive,
-} from '../helpers/utils/util';
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_SWAPS_CHAIN_IDS,
+} from '../../shared/constants/swaps';
+
+import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -50,7 +56,7 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -475,6 +481,10 @@ function getSuggestedAssetCount(state) {
   return suggestedAssets.length;
 }
 
+export function getSuggestedAssets(state) {
+  return state.metamask.suggestedAssets;
+}
+
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
   return chainId === MAINNET_CHAIN_ID;
@@ -524,6 +534,31 @@ export function getCustomNonceValue(state) {
 
 export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
+}
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * @param {string} svgString - The raw SVG string to make embeddable.
+ * @returns {string} The embeddable SVG string.
+ */
+const getEmbeddableSvg = memoize(
+  (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
+);
+///: END:ONLY_INCLUDE_IN
+
+export function getTargetSubjectMetadata(state, origin) {
+  const metadata = getSubjectMetadata(state)[origin];
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (metadata?.subjectType === SUBJECT_TYPES.SNAP) {
+    const { svgIcon, ...remainingMetadata } = metadata;
+    return {
+      ...remainingMetadata,
+      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
+    };
+  }
+  ///: END:ONLY_INCLUDE_IN
+  return metadata;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -637,6 +672,11 @@ export function getIsBuyableTransakChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
 }
 
+export function getIsBuyableMoonPayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -649,6 +689,12 @@ export function getNextSuggestedNonce(state) {
 export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function getSnaps(state) {
+  return state.metamask.snaps;
+}
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Get an object of notification IDs and if they are allowed or not.
@@ -673,6 +719,8 @@ function getAllowedNotificationIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: getIsMainnet(state),
+    10: Boolean(process.env.TOKEN_DETECTION_V2),
+    11: Boolean(process.env.TOKEN_DETECTION_V2),
   };
 }
 
@@ -750,6 +798,16 @@ export function getOpenSeaEnabled(state) {
 }
 
 /**
+ * To get the `theme` value which determines which theme is selected
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getTheme(state) {
+  return state.metamask.theme;
+}
+
+/**
  * To retrieve the tokenList produced by TokenListcontroller
  *
  * @param {*} state
@@ -810,7 +868,7 @@ export function getIsOptimism(state) {
   );
 }
 
-export function getNetworkSupportsSettingGasPrice(state) {
+export function getNetworkSupportsSettingGasFees(state) {
   return !getIsOptimism(state);
 }
 

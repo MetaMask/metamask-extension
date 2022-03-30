@@ -52,12 +52,6 @@
   "addSuggestedTokens": {
     "message": "أضف العملات الرمزية المقترحة"
   },
-  "addToAddressBook": {
-    "message": "إضافة إلى دفتر العناوين"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلا جون دي"
-  },
   "addToken": {
     "message": "إضافة عملة رمزية"
   },
@@ -146,9 +140,6 @@
   "blockExplorerView": {
     "message": "عرض الحساب في $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "استخدم خدمة تكتلات Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
@@ -350,9 +341,6 @@
   },
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
-  },
-  "enterAnAlias": {
-    "message": "أدخل اسمًا مستعارًا"
   },
   "enterPassword": {
     "message": "أدخل كلمة مرور"
@@ -769,9 +757,6 @@
   "restore": {
     "message": "استعادة"
   },
-  "restoreAccountWithSeed": {
-    "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
-  },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
@@ -822,9 +807,6 @@
   },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "يرجى فصل كل كلمة بمسافة واحدة"
   },
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"

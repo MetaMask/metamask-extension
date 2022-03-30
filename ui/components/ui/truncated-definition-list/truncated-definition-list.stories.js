@@ -1,11 +1,12 @@
 import React from 'react';
-import { object, text } from '@storybook/addon-knobs';
-
 import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {
   title: 'Components/UI/TruncatedDefinitionList',
   id: __filename,
+  argTypes: {
+    title: { control: 'text', defaultValue: 'Basic definitions' },
+  },
 };
 
 const basic = {
@@ -30,21 +31,34 @@ const tooltips = {
   Ticker: 'The currency symbol of the primary currency for this network',
 };
 
-export const DefaultStory = () => (
-  <TruncatedDefinitionList
-    dictionary={object('dictionary', basic)}
-    title={text('title', 'Basic definitions')}
-    prefaceKeys={object('prefaceKeys', ['term', 'definition'])}
-  />
-);
+export const DefaultStory = (args) => <TruncatedDefinitionList {...args} />;
+
+DefaultStory.argTypes = {
+  dictionary: {
+    control: 'object',
+    defaultValue: basic,
+  },
+  prefaceKeys: {
+    control: 'object',
+    defaultValue: ['term', 'definition'],
+  },
+};
 
 DefaultStory.storyName = 'Default';
 
-export const WithTooltips = () => (
-  <TruncatedDefinitionList
-    dictionary={object('dictionary', advanced)}
-    title={text('title', 'Network Details')}
-    tooltips={object('tooltips', tooltips)}
-    prefaceKeys={object('prefaceKeys', ['Chain ID'])}
-  />
-);
+export const WithTooltips = (args) => <TruncatedDefinitionList {...args} />;
+
+WithTooltips.argTypes = {
+  dictionary: {
+    control: 'object',
+    defaultValue: advanced,
+  },
+  tooltips: {
+    control: 'object',
+    defaultValue: tooltips,
+  },
+  prefaceKeys: {
+    control: 'array',
+    defaultValue: ['Chain ID'],
+  },
+};

@@ -1,4 +1,4 @@
-import { constructPermission } from '@metamask/snap-controllers';
+import { constructPermission, PermissionType } from '@metamask/controllers';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -90,6 +90,7 @@ export const getPermissionSpecifications = ({
 }) => {
   return {
     [PermissionKeys.eth_accounts]: {
+      permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.eth_accounts,
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 

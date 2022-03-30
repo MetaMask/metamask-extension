@@ -55,12 +55,6 @@
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },
-  "addToAddressBook": {
-    "message": "Aggiungi alla rubrica"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Ad esempio, John D."
-  },
   "addToken": {
     "message": "Aggiungi Token"
   },
@@ -196,9 +190,6 @@
   "blockExplorerView": {
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Usa le icone Blockie"
   },
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
@@ -530,9 +521,6 @@
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
   },
-  "enterAnAlias": {
-    "message": "Inserisci un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
@@ -564,10 +552,6 @@
   },
   "estimatedProcessingTimes": {
     "message": "Tempi di Elaborazione Stimati"
-  },
-  "eth_accounts": {
-    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Indirizzo pubblico Ethereum "
@@ -1054,6 +1038,10 @@
   "pending": {
     "message": "in corso"
   },
+  "permission_ethereumAccounts": {
+    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Permessi"
   },
@@ -1155,9 +1143,6 @@
   "restore": {
     "message": "Ripristina"
   },
-  "restoreAccountWithSeed": {
-    "message": "Ripristina Account con la Frase Seed"
-  },
   "restoreWalletPreferences": {
     "message": "È stato trovato un backup dei tuoi dati da $1. Vuoi ripristinare le preferenze del portafoglio?",
     "description": "$1 is the date at which the data was backed up"
@@ -1221,12 +1206,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separa ogni parola con un singolo spazio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Incolla frase seed dagli appunti"
   },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
@@ -1303,9 +1282,6 @@
   },
   "showPrivateKeys": {
     "message": "Mostra Chiave Privata"
-  },
-  "showSeedPhrase": {
-    "message": "Mostra frase seed"
   },
   "sigRequest": {
     "message": "Firma Richiesta"
@@ -1481,10 +1457,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si chiama \"slippage\" la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il \"massimo slippage\" impostato."
-  },
-  "swapQuoteNofN": {
-    "message": "Quotazione $1 di $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Sorgente della quota"
