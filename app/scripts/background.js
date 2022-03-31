@@ -75,23 +75,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
   global.metamaskGetState = localStore.get.bind(localStore);
 }
 
-let initialState;
-let initialLangCode;
-// const initApp = (remotePort) => initialize(remotePort).catch(log.error);
-
-// TODO this listener as opposed to initialize on initial load is messing this up
-// if (process.env.ENABLE_MV3) {
-//   browser.runtime.onConnect.addListener(initApp);
-//   (async () => {
-//     initialState = await loadStateFromPersistence();
-//     initialLangCode = await getFirstPreferredLangCode();
-//   })();
-
-//   // THIS IS ADDED as a test
-//   initialize().catch(log.error)
-// } else {
-  initialize().catch(log.error);
-// }
+initialize().catch(log.error);
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -151,18 +135,12 @@ let initialLangCode;
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
- * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize(remotePort) {
-  if (!initialState) {
-    initialState = await loadStateFromPersistence();
-  }
-  if (!initialLangCode) {
-    initialLangCode = await getFirstPreferredLangCode();
-  }
-  console.log('IN INITIALIZE: initialState:', initialState,  'remotePort:', remotePort)
-  await setupController(initialState, initialLangCode, remotePort);
+async function initialize() {
+  const initialState = await loadStateFromPersistence();
+  const initialLangCode = await getFirstPreferredLangCode();
+  await setupController(initialState, initialLangCode);
   log.info('MetaMask initialization complete.');
 }
 
@@ -234,16 +212,12 @@ async function loadStateFromPersistence() {
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
- * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
  */
-async function setupController(initState, initLangCode, remoteSourcePort) {
+async function setupController(initState, initLangCode) {
   //
   // MetaMask Controller
   //
-
-  console.log("SETUP CONtROLLER:", remoteSourcePort)
-
   const controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
@@ -323,11 +297,9 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
     }
   }
 
-  console.log("process.env.ENABLE_MV3 && remoteSourcePort", process.env.ENABLE_MV3, remoteSourcePort)
-  if (process.env.ENABLE_MV3 && !remoteSourcePort) {
-    const extensionPort = browser.tabs.connect({type: 'test'});
-    connectRemote(extensionPort);
-  }
+  // if (process.env.ENABLE_MV3 && remoteSourcePort) {
+  //   connectRemote(remoteSourcePort);
+  // }
 
   //
   // connect to other contexts
@@ -400,10 +372,9 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-      console.log("CONNECTREMOTE HAPPENING", process.env.ENABLE_MV3)
-      if (process.env.ENABLE_MV3) {
-        remotePort.postMessage({ name: 'CONNECTION_READY' });
-      }
+      // if (process.env.ENABLE_MV3) {
+      //   remotePort.postMessage({ name: 'CONNECTION_READY' });
+      // }
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {

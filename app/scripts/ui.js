@@ -27,11 +27,6 @@ async function start() {
   // create platform global
   global.platform = new ExtensionPlatform();
 
-  browser.runtime.onConnect(msg => {
-    if(msg.type = "test"){
-      console.log("TEST COMPLETE")
-    }
-  })
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
 
@@ -40,16 +35,8 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
-  console.log("IN THE UI SCRIPT")
-  // if (process.env.ENABLE_MV3) {
-  //   extensionPort.onMessage.addListener((message) => {
-  //     if (message?.name === 'CONNECTION_READY') {
-  //       initializeUiWithTab(activeTab);
-  //     }
-  //   });
-  // } else {
-    initializeUiWithTab(activeTab);
-  // }
+
+  initializeUiWithTab(activeTab);
 
   function displayCriticalError(container, err) {
     container.innerHTML =
