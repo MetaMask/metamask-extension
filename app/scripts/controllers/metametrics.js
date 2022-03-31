@@ -608,7 +608,7 @@ export default class MetaMetricsController {
 
   /**
    * Validates the trait value. Segment accepts any data type. We are adding validation here to
-   * support data types for our Segment destimation(s) e.g. MixPanel
+   * support data types for our Segment destination(s) e.g. MixPanel
    *
    * @param {*} value
    * @returns {boolean}
