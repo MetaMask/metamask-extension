@@ -1738,9 +1738,6 @@
   "newNFTsDetected": {
     "message": "新機能! NFT検出"
   },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMaskがOpenseからNFTを自動的に検出し、MetaMaskウォレットに表示できるようにします。"
-  },
   "newNetworkAdded": {
     "message": "「$1」が追加されました!"
   },

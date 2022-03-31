@@ -1738,9 +1738,6 @@
   "newNFTsDetected": {
     "message": "Νέο! Εντοπισμός NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Επιτρέψτε στο MetaMask να ανιχνεύει αυτόματα NFTs από το Opensea και να εμφανίζεται στο πορτοφόλι σας MetaMask."
-  },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },
