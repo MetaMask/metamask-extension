@@ -656,32 +656,16 @@ function cspModificationProcessor(details) {
         'x-webkit-csp',
       ].indexOf(name) > -1
     ) {
-      // Get if the header already contains a script CSP
-      const hasScriptSrc = header.value
+      header.value = header.value
         .split(';')
-        .some((policy) => policy.split(' ')[0].toLowerCase() === 'script-src');
-      if (hasScriptSrc) {
-        header.value = header.value
-          .split(';')
-          .map((policy) => {
-            if (policy.split(' ')[0].toLowerCase() !== 'script-src') {
-              return policy;
-            }
-            return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
-          })
-          .join(';');
-      } else {
-        // If not, modify the default
-        header.value = header.value
-          .split(';')
-          .map((policy) => {
-            if (policy.split(' ')[0].toLowerCase() !== 'default-src') {
-              return policy;
-            }
-            return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
-          })
-          .join(';');
-      }
+        .map((policy) => {
+          if (!policy.trim().length) {
+            return policy; // If policy is empty, don't add anything!
+          }
+          return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
+        })
+        .join(';');
+      headers[j] = header;
     }
   }
   return {
@@ -708,5 +692,5 @@ browser.webRequest.onHeadersReceived.addListener(
     urls: ['file://*/*', 'http://*/*', 'https://*/*'],
     types: ['main_frame', 'sub_frame'],
   },
-  ['blocking', 'responseHeaders'],
+  ['blocking', 'requestHeaders', 'responseHeaders'],
 );
