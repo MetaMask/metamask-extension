@@ -285,9 +285,6 @@ class Driver {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
   }
 
-  async getUrl() {
-    return await this.driver.getCurrentUrl();
-  }
   // Metrics
 
   async collectMetrics() {

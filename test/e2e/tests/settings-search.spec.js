@@ -46,7 +46,6 @@ describe('Settings Search', function () {
     },
   };
   let found;
-  let url;
 
   it('should find element inside the General tab', async function () {
     await withFixtures(
@@ -66,9 +65,8 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settings.general.target);
 
         await driver.clickElement({ text: 'General', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.general.urlSubstring),
+          await driver.isElementPresent({ text: 'General', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -94,9 +92,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Advanced', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.advanced.urlSubstring),
+          await driver.isElementPresent({ text: 'Advanced', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -122,9 +119,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Contacts', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.contacts.urlSubstring),
+          await driver.isElementPresent({ text: 'Contacts', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -150,9 +146,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Security', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.security.urlSubstring),
+          await driver.isElementPresent({ text: 'Security', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -178,9 +173,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Alerts', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.alerts.urlSubstring),
+          await driver.isElementPresent({ text: 'Alerts', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -206,9 +200,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Networks', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.networks.urlSubstring),
+          await driver.isElementPresent({ text: 'Networks', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -234,9 +227,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Experimental', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.experimental.urlSubstring),
+          await driver.isElementPresent({ text: 'Experimental', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
@@ -262,9 +254,8 @@ describe('Settings Search', function () {
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'About', tag: 'span' });
-        url = await driver.getUrl();
         assert.equal(
-          url.includes(settings.about.urlSubstring),
+          await driver.isElementPresent({ text: 'About', tag: 'div' }),
           true,
           'Item does not redirect to correct page',
         );
