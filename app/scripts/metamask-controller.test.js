@@ -6,6 +6,7 @@ import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
+import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
@@ -154,6 +155,8 @@ describe('MetaMaskController', function () {
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
+
+    sandbox.stub(browser).returns({ runtime: { sendMessage: noop } });
 
     // add sinon method spies
     sandbox.spy(
