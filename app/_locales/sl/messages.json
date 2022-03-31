@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj priporočene žetone"
   },
-  "addToAddressBook": {
-    "message": "Dodaj stik v imenik"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. Jaka N."
-  },
   "addToken": {
     "message": "Dodaj žeton"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Napaka pri registraciji imena ENS"
-  },
-  "enterAnAlias": {
-    "message": "Vnesite vzdevek"
   },
   "enterPassword": {
     "message": "Vnesite geslo"

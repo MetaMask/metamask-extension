@@ -16,6 +16,7 @@ import {
 } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
+  ASSET_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
@@ -34,7 +35,6 @@ import sendReducer, {
   toggleSendMaxMode,
   signTransaction,
   SEND_STATUSES,
-  ASSET_TYPES,
   SEND_STAGES,
   AMOUNT_MODES,
   RECIPIENT_SEARCH_MODES,

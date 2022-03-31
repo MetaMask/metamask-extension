@@ -105,11 +105,9 @@ export default class Routes extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (process.env.DARK_MODE_V1) {
-      const { theme } = this.props;
-      if (theme !== prevProps.theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-      }
+    const { theme } = this.props;
+    if (theme !== prevProps.theme) {
+      document.documentElement.setAttribute('data-theme', theme);
     }
   }
 
@@ -130,9 +128,7 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    if (process.env.DARK_MODE_V1 && theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-    }
+    document.documentElement.setAttribute('data-theme', theme);
   }
 
   renderRoutes() {
@@ -333,7 +329,6 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
-      theme,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -345,7 +340,6 @@ export default class Routes extends Component {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
-          [`theme-${theme}`]: process.env.DARK_MODE_V1 && theme,
         })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}

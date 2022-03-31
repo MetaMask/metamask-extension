@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -982,9 +976,6 @@
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
@@ -1462,9 +1453,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
   },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"

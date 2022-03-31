@@ -73,7 +73,7 @@ DefaultStory.args = {
   resize: RESIZE.BOTH,
   scrollable: false,
   boxProps: {
-    borderColor: COLORS.UI3,
+    borderColor: COLORS.BORDER_MUTED,
     borderRadius: SIZES.SM,
     borderStyle: BORDER_STYLE.SOLID,
     padding: [2, 4],

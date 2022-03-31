@@ -11,11 +11,8 @@ exports[`SearchableItemList renders the component with initial props 1`] = `
       class="MuiInputAdornment-root MuiInputAdornment-positionStart"
       style="margin-right: 12px;"
     >
-      <img
-        alt=""
-        height="17"
-        src="images/search.svg"
-        width="17"
+      <i
+        class="fa fa-search fa-lg"
       />
     </div>
     <input

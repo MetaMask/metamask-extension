@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Vorgeschlagene Token hinzufügen"
   },
-  "addToAddressBook": {
-    "message": "Zum Adressbuch hinzufügen"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "z.B. Max M."
-  },
   "addToken": {
     "message": "Token hinzufügen"
   },
@@ -962,9 +956,6 @@
   "ensUnknownError": {
     "message": "ENS Lookup fehlgeschlagen."
   },
-  "enterAnAlias": {
-    "message": "Ein Alias eingeben"
-  },
   "enterMaxSpendLimit": {
     "message": "Max. Ausgabelimit eingeben"
   },
@@ -1416,9 +1407,6 @@
   },
   "lastConnected": {
     "message": "Zuletzt verbunden"
-  },
-  "layer1Fees": {
-    "message": "Ebene 1 Gebühren"
   },
   "learmMoreAboutGas": {
     "message": "Wollen Sie 1 $ über Gas?"

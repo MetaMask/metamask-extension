@@ -11,7 +11,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 class PrivateKeyImportView extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -43,22 +43,24 @@ class PrivateKeyImportView extends Component {
     importNewAccount('Private Key', [privateKey])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
+          this.context.trackEvent({
+            category: 'Accounts',
+            event: 'Imported Account with Private Key',
+            properties: {
               action: 'Import Account',
-              name: 'Imported Account with Private Key',
+              legacy_event: true,
             },
           });
           history.push(mostRecentOverviewPage);
           displayWarning(null);
         } else {
           displayWarning(t('importAccountError'));
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
+          this.context.trackEvent({
+            category: 'Accounts',
+            event: 'Error importing with Private Key',
+            properties: {
               action: 'Import Account',
-              name: 'Error importing with Private Key',
+              legacy_event: true,
             },
           });
           setSelectedAddress(firstAddress);
@@ -88,7 +90,7 @@ class PrivateKeyImportView extends Component {
 
     return (
       <div className="new-account-import-form__private-key">
-        <span className="new-account-create-form__instruction">
+        <span className="new-account-import-form__instruction">
           {this.context.t('pastePrivateKey')}
         </span>
         <div className="new-account-import-form__private-key-password-container">

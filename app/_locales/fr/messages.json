@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
-  "addToAddressBook": {
-    "message": "Ajouter au carnet d’adresses"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Ajouter un jeton"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
   },
-  "enterAnAlias": {
-    "message": "Saisissez un pseudonyme"
-  },
   "enterMaxSpendLimit": {
     "message": "Saisissez la limite de dépenses maximale"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Dernière connexion"
-  },
-  "layer1Fees": {
-    "message": "Frais de couche 1 (L1)"
   },
   "learmMoreAboutGas": {
     "message": "Souhaitez-vous $1 sur le carburant ?"

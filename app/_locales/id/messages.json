@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Tambahkan Token yang Disarankan"
   },
-  "addToAddressBook": {
-    "message": "Tambahkan ke buku alamat"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "contoh: John D."
-  },
   "addToken": {
     "message": "Tambahkan Token"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Pencarian ENS gagal."
   },
-  "enterAnAlias": {
-    "message": "Masukkan alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Masukkan Batas Penggunaan Maksimum"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Terakhir Terhubung"
-  },
-  "layer1Fees": {
-    "message": "Biaya lapis 1"
   },
   "learmMoreAboutGas": {
     "message": "Ingin $1 seputar gas?"

@@ -15,7 +15,9 @@ export default function SettingsSearch({
   const t = useContext(I18nContext);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchIconColor, setSearchIconColor] = useState('#9b9b9b');
+  const [searchIconColor, setSearchIconColor] = useState(
+    'var(--color-icon-muted)',
+  );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
@@ -32,10 +34,10 @@ export default function SettingsSearch({
   const handleSearch = (_searchQuery) => {
     const sanitizedSearchQuery = _searchQuery.replace(/[^A-z0-9\s]|[\\]/gu, '');
     setSearchQuery(sanitizedSearchQuery);
-    if (searchQuery === '') {
-      setSearchIconColor('#9b9b9b');
+    if (sanitizedSearchQuery === '') {
+      setSearchIconColor('var(--color-icon-muted)');
     } else {
-      setSearchIconColor('#24292E');
+      setSearchIconColor('var(--color-icon-default)');
     }
 
     const fuseSearchResult = settingsSearchFuse.search(sanitizedSearchQuery);
@@ -69,12 +71,9 @@ export default function SettingsSearch({
             onClick={() => handleSearch('')}
             style={{ cursor: 'pointer' }}
           >
-            <img
-              className="imageclose"
-              src="images/close-gray.svg"
-              width="17"
-              height="17"
-              alt=""
+            <i
+              className="fa fa-times"
+              style={{ color: 'var(--color-icon-default)' }}
             />
           </InputAdornment>
         )}
@@ -93,7 +92,6 @@ export default function SettingsSearch({
       fullWidth
       autoFocus
       autoComplete="off"
-      style={{ backgroundColor: '#fff' }}
       startAdornment={renderStartAdornment()}
       endAdornment={renderEndAdornment()}
     />
