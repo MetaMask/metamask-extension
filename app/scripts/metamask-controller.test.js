@@ -135,7 +135,9 @@ describe('MetaMaskController', function () {
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
 
-    sandbox.replace(browser, 'runtime', { sendMessage: noop });
+    sandbox.replace(browser, 'runtime', {
+      sendMessage: sandbox.stub().rejects(),
+    });
 
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
