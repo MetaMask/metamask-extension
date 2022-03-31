@@ -76,6 +76,7 @@
     @include Paragraph;
 
     color: var(--color-error-default);
+    background-color: var(--color-background-default);
     border: none;
     height: 75px;
     width: 100%;
