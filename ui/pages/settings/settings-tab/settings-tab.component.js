@@ -14,6 +14,7 @@ import {
   getSettingsSectionNumber,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { THEME_TYPE } from './settings-tab.constants';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -56,6 +57,8 @@ export default class SettingsTab extends PureComponent {
     selectedAddress: PropTypes.string,
     useTokenDetection: PropTypes.bool,
     tokenList: PropTypes.object,
+    theme: PropTypes.string,
+    setTheme: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -135,6 +138,43 @@ export default class SettingsTab extends PureComponent {
               options={localeOptions}
               selectedOption={currentLocale}
               onChange={async (newLocale) => updateCurrentLocale(newLocale)}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderTheme() {
+    const { t } = this.context;
+    const { theme, setTheme } = this.props;
+
+    const themesOptions = [
+      {
+        name: t('defaultTheme'),
+        value: THEME_TYPE.DEFAULT,
+      },
+      {
+        name: t('darkTheme'),
+        value: THEME_TYPE.DARK,
+      },
+    ];
+
+    return (
+      <div ref={this.settingsRefs[5]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{this.context.t('theme')}</span>
+          <div className="settings-page__content-description">
+            {this.context.t('themeDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Dropdown
+              id="select-theme"
+              options={themesOptions}
+              selectedOption={theme}
+              onChange={async (newTheme) => setTheme(newTheme)}
             />
           </div>
         </div>
@@ -324,6 +364,7 @@ export default class SettingsTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
+        {this.renderTheme()}
         {this.renderCurrentConversion()}
         {this.renderUsePrimaryCurrencyOptions()}
         {this.renderCurrentLocale()}

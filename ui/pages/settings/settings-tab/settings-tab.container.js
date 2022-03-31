@@ -6,8 +6,9 @@ import {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
+  setTheme,
 } from '../../../store/actions';
-import { getPreferences } from '../../../selectors';
+import { getPreferences, getTheme } from '../../../selectors';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -43,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
     selectedAddress,
     useTokenDetection,
     tokenList,
+    theme: getTheme(state),
   };
 };
 
@@ -58,6 +60,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setParticipateInMetaMetrics(val)),
     setHideZeroBalanceTokens: (value) =>
       dispatch(setHideZeroBalanceTokens(value)),
+    setTheme: (val) => dispatch(setTheme(val)),
   };
 };
 

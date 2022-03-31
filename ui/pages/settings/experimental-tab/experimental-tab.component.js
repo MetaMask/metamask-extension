@@ -5,9 +5,6 @@ import {
   getSettingsSectionNumber,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import Dropdown from '../../../components/ui/dropdown';
-
-import { THEME_TYPE } from './experimental-tab.constant';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -24,8 +21,6 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     eip1559V2Enabled: PropTypes.bool,
     setEIP1559V2Enabled: PropTypes.func,
-    theme: PropTypes.string,
-    setTheme: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -229,43 +224,6 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  renderTheme() {
-    const { t } = this.context;
-    const { theme, setTheme } = this.props;
-
-    const themesOptions = [
-      {
-        name: t('defaultTheme'),
-        value: THEME_TYPE.DEFAULT,
-      },
-      {
-        name: t('darkTheme'),
-        value: THEME_TYPE.DARK,
-      },
-    ];
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{this.context.t('theme')}</span>
-          <div className="settings-page__content-description">
-            {this.context.t('themeDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Dropdown
-              id="select-theme"
-              options={themesOptions}
-              selectedOption={theme}
-              onChange={async (newTheme) => setTheme(newTheme)}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   render() {
     return (
       <div className="settings-page__body">
@@ -276,7 +234,6 @@ export default class ExperimentalTab extends PureComponent {
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
-        {this.renderTheme()}
       </div>
     );
   }
