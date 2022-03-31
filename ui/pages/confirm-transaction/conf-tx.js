@@ -7,6 +7,7 @@ import log from 'loglevel';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
+import SignatureRequestSIWE from '../../components/app/signature-request-siwe';
 import SignatureRequestOriginal from '../../components/app/signature-request-original';
 import Loading from '../../components/ui/loading-screen';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -115,13 +116,18 @@ class ConfirmTxScreen extends Component {
   }
 
   signatureSelect(txData) {
-    const { type, msgParams: { version, siwe } } = txData;
+    const { type, msgParams: { version, siwe: { isSIWEMessage } } } = txData;
+
     // Temporarily direct only v3 and v4 requests to new code.
     if (
       type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA &&
       (version === 'V3' || version === 'V4')
     ) {
       return SignatureRequest;
+    }
+
+    if (isSIWEMessage) {
+      return SignatureRequestSIWE;
     }
 
     return SignatureRequestOriginal;

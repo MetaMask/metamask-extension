@@ -19,8 +19,8 @@ const detectSIWE = (msgParams) => {
     const messageData = new ParsedMessage(message);
     let isSIWEDomainValid = false;
 
-    if (domainToVerify) {
-      const { hostname } = new URL(domainToVerify);
+    if (origin) {
+      const { hostname } = new URL(origin);
       isSIWEDomainValid = messageData.domain === hostname;
     }
 

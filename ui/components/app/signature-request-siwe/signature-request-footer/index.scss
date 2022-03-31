@@ -1,0 +1,24 @@
+.signature-request-footer {
+  display: flex;
+  border-top: 1px solid var(--color-border-muted);
+
+  button {
+    text-transform: uppercase;
+    flex: 1;
+    margin: 1rem 0.5rem;
+  }
+
+  button:first-child {
+    flex: 1 1 100%;
+    padding: 0;
+  }
+
+  button:last-child {
+    flex: 1 1 100%;
+    margin-right: 1rem;
+  }
+
+  &__tooltip {
+    display: flex;
+  }
+}
