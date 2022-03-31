@@ -135,6 +135,8 @@ describe('MetaMaskController', function () {
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
 
+    sandbox.replace(browser, 'runtime', { sendMessage: noop });
+
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: {
@@ -155,8 +157,6 @@ describe('MetaMaskController', function () {
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
-
-    sandbox.stub(browser).returns({ runtime: { sendMessage: noop } });
 
     // add sinon method spies
     sandbox.spy(
