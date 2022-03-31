@@ -19,7 +19,14 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <UrlIcon name={args.name} url={args.url} className={args.className} fallbackClassName={fallbackClassName} />;
+  return (
+    <UrlIcon
+      name={args.name}
+      url={args.url}
+      className={args.className}
+      fallbackClassName={args.fallbackClassName}
+    />
+  );
 };
 
 export const AST = () => {
