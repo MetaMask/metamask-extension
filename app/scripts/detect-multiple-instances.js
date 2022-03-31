@@ -13,6 +13,9 @@ import {
 
 const MESSAGE_TEXT = 'isRunning';
 
+const showWarning = () =>
+  console.warn('Warning! You have multiple instances of MetaMask running!');
+
 /**
  * Handles the ping message sent from other extension.
  *
@@ -20,7 +23,7 @@ const MESSAGE_TEXT = 'isRunning';
  */
 export const onMessageReceived = (message) => {
   if (message === MESSAGE_TEXT) {
-    console.warn('Warning! You have multiple instances of MetaMask running!');
+    showWarning();
   }
 };
 
@@ -34,5 +37,10 @@ export const checkForMultipleVersionsRunning = () => {
       ? METAMASK_PROD_BUILD_ID
       : METAMASK_FLASK_BUILD_ID;
 
-  browser.runtime.sendMessage(idToPing, MESSAGE_TEXT);
+  browser.runtime
+    .sendMessage(idToPing, MESSAGE_TEXT)
+    .then(() => {
+      showWarning();
+    })
+    .catch(() => null);
 };
