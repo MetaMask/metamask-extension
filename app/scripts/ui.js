@@ -35,7 +35,6 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
-
   initializeUiWithTab(activeTab);
 
   function displayCriticalError(container, err) {

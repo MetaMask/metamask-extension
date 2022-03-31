@@ -297,16 +297,9 @@ async function setupController(initState, initLangCode) {
     }
   }
 
-  // if (process.env.ENABLE_MV3 && remoteSourcePort) {
-  //   connectRemote(remoteSourcePort);
-  // }
-
   //
   // connect to other contexts
   //
-  // if (process.env.ENABLE_MV3) {
-  //   browser.runtime.onConnect.removeListener(initApp);
-  // }
   browser.runtime.onConnect.addListener(connectRemote);
   browser.runtime.onConnectExternal.addListener(connectExternal);
 
@@ -372,9 +365,6 @@ async function setupController(initState, initLangCode) {
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-      // if (process.env.ENABLE_MV3) {
-      //   remotePort.postMessage({ name: 'CONNECTION_READY' });
-      // }
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
