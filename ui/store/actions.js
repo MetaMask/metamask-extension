@@ -80,20 +80,39 @@ export function tryUnlockMetamask(password) {
   };
 }
 
-export function createNewVaultAndRestore(password, seed) {
+/**
+ * Adds a new account where all data is encrypted using the given password and
+ * where all addresses are generated from a given seed phrase.
+ *
+ * @param {string} password - The password.
+ * @param {string} seedPhrase - The seed phrase.
+ * @returns {Object} The updated state of the keyring controller.
+ */
+export function createNewVaultAndRestore(password, seedPhrase) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
+
+    // Encode the secret recovery phrase as an array of integers so that it is
+    // serialized as JSON properly.
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(seedPhrase, 'utf8').values(),
+    );
+
     let vault;
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, (err, _vault) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        vault = _vault;
-        resolve();
-      });
+      background.createNewVaultAndRestore(
+        password,
+        encodedSeedPhrase,
+        (err, _vault) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          vault = _vault;
+          resolve();
+        },
+      );
     })
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
@@ -115,8 +134,8 @@ export function createNewVaultAndGetSeedPhrase(password) {
 
     try {
       await createNewVault(password);
-      const seedWords = await verifySeedPhrase();
-      return seedWords;
+      const seedPhrase = await verifySeedPhrase();
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -132,9 +151,9 @@ export function unlockAndGetSeedPhrase(password) {
 
     try {
       await submitPassword(password);
-      const seedWords = await verifySeedPhrase();
+      const seedPhrase = await verifySeedPhrase();
       await forceUpdateMetamaskState(dispatch);
-      return seedWords;
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -183,17 +202,9 @@ export function verifyPassword(password) {
   });
 }
 
-export function verifySeedPhrase() {
-  return new Promise((resolve, reject) => {
-    background.verifySeedPhrase((error, seedWords) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(seedWords);
-    });
-  });
+export async function verifySeedPhrase() {
+  const encodedSeedPhrase = await promisifiedBackground.verifySeedPhrase();
+  return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(password) {
@@ -203,11 +214,11 @@ export function requestRevealSeedWords(password) {
 
     try {
       await verifyPassword(password);
-      const seedWords = await verifySeedPhrase();
-      return seedWords;
+      const seedPhrase = await verifySeedPhrase();
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
-      throw new Error(error.message);
+      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
