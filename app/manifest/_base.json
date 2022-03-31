@@ -69,6 +69,7 @@
     "https://lattice.gridplus.io/*",
     "activeTab",
     "webRequest",
+    "webRequestBlocking",
     "*://*.eth/",
     "notifications",
     "file://*/*",
