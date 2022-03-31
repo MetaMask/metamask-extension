@@ -11,39 +11,15 @@ describe('Settings Search', function () {
       },
     ],
   };
-  const settings = {
-    general: {
-      urlSubstring: 'general',
-      target: 'Primary Currency',
-    },
-    advanced: {
-      urlSubstring: 'advanced',
-      target: 'State Logs',
-    },
-    contacts: {
-      urlSubstring: 'contact-list',
-      target: 'Contacts',
-    },
-    security: {
-      urlSubstring: 'security',
-      target: 'Reveal Secret',
-    },
-    alerts: {
-      urlSubstring: 'alerts',
-      target: 'Browsing a website',
-    },
-    networks: {
-      urlSubstring: 'networks',
-      target: 'Ethereum Mainnet',
-    },
-    experimental: {
-      urlSubstring: 'experimental',
-      target: 'Token Detection',
-    },
-    about: {
-      urlSubstring: 'about-us',
-      target: 'Terms of Use',
-    },
+  const settingsSearch = {
+    general: 'Primary Currency',
+    advanced: 'State Logs',
+    contacts: 'Contacts',
+    security: 'Reveal Secret',
+    alerts: 'Browsing a website',
+    networks: 'Ethereum Mainnet',
+    experimental: 'Token Detection',
+    about: 'Terms of Use',
   };
   let found;
 
@@ -62,7 +38,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.general.target);
+        await driver.fill('#search-settings', settingsSearch.general);
 
         await driver.clickElement({ text: 'General', tag: 'span' });
         assert.equal(
@@ -88,7 +64,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.advanced.target);
+        await driver.fill('#search-settings', settingsSearch.advanced);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Advanced', tag: 'span' });
@@ -115,7 +91,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.contacts.target);
+        await driver.fill('#search-settings', settingsSearch.contacts);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Contacts', tag: 'span' });
@@ -142,7 +118,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.security.target);
+        await driver.fill('#search-settings', settingsSearch.security);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Security', tag: 'span' });
@@ -169,7 +145,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.alerts.target);
+        await driver.fill('#search-settings', settingsSearch.alerts);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Alerts', tag: 'span' });
@@ -196,7 +172,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.networks.target);
+        await driver.fill('#search-settings', settingsSearch.networks);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Networks', tag: 'span' });
@@ -223,7 +199,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.experimental.target);
+        await driver.fill('#search-settings', settingsSearch.experimental);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'Experimental', tag: 'span' });
@@ -250,7 +226,7 @@ describe('Settings Search', function () {
 
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.fill('#search-settings', settings.about.target);
+        await driver.fill('#search-settings', settingsSearch.about);
 
         // Check if element redirects to the correct page
         await driver.clickElement({ text: 'About', tag: 'span' });
