@@ -8,6 +8,7 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 import { EVENT } from '../../../shared/constants/metametrics';
 import { addHexPrefix } from './util';
+import detectSIWE from './siwe/siwe-validation';
 
 const hexRe = /^[0-9A-Fa-f]+$/gu;
 
@@ -135,6 +136,11 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams.origin = req.origin;
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
+
+    // check for SIWE message
+    const siwe = detectSIWE(msgParams);
+    msgParams.siwe = siwe;
+
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();

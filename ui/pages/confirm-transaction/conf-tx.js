@@ -114,7 +114,8 @@ class ConfirmTxScreen extends Component {
       : unconfTxList[index];
   }
 
-  signatureSelect(type, version) {
+  signatureSelect(txData) {
+    const { type, msgParams: { version, siwe } } = txData;
     // Temporarily direct only v3 and v4 requests to new code.
     if (
       type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA &&
@@ -251,18 +252,15 @@ class ConfirmTxScreen extends Component {
     const { currentCurrency, blockGasLimit } = this.props;
 
     const txData = this.getTxData() || {};
-    const {
-      msgParams,
-      type,
-      msgParams: { version },
-    } = txData;
+    const { msgParams } = txData;
+
     log.debug('msgParams detected, rendering pending msg');
 
     if (!msgParams) {
       return <Loading />;
     }
 
-    const SigComponent = this.signatureSelect(type, version);
+    const SigComponent = this.signatureSelect(txData);
     return (
       <SigComponent
         txData={txData}
