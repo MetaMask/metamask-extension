@@ -5,17 +5,18 @@
  * versions running simultaneously.
  */
 
+import browser from 'webextension-polyfill';
 import {
   METAMASK_PROD_BUILD_ID,
   METAMASK_FLASK_BUILD_ID,
 } from '../../shared/constants/app';
 
-import extension from 'extensionizer';
-
 const MESSAGE_TEXT = 'isRunning';
 
 /**
  * Handles the ping message sent from other extension.
+ *
+ * @param message - The message received from the other extension
  */
 export const onMessageReceived = (message) => {
   if (message === MESSAGE_TEXT) {
@@ -29,9 +30,9 @@ export const onMessageReceived = (message) => {
  */
 export const checkForMultipleVersionsRunning = () => {
   const idToPing =
-    extension.runtime.id === METAMASK_FLASK_BUILD_ID
+    browser.runtime.id === METAMASK_FLASK_BUILD_ID
       ? METAMASK_PROD_BUILD_ID
       : METAMASK_FLASK_BUILD_ID;
 
-  extension.runtime.sendMessage(idToPing, MESSAGE_TEXT);
+  browser.runtime.sendMessage(idToPing, MESSAGE_TEXT);
 };
