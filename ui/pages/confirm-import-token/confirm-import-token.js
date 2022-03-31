@@ -14,6 +14,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
 import { TOKEN_STANDARDS } from '../../helpers/constants/common';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 const getTokenName = (name, symbol) => {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -45,6 +46,7 @@ const ConfirmImportToken = () => {
           unlisted: pendingToken.unlisted,
           source: pendingToken.isCustom ? 'custom' : 'list',
           token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
         },
       });
     });
