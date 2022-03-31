@@ -714,6 +714,9 @@
   "custom": {
     "message": "Advanced"
   },
+  "customContentSearch": {
+    "message": "Search for a previously added network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -2798,7 +2801,7 @@
     "message": "Settings"
   },
   "settingsSearchMatchingNotFound": {
-    "message": "No matching results found"
+    "message": "No matching results found."
   },
   "shorthandVersion": {
     "message": "v$1",
@@ -3538,6 +3541,9 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
+  },
+  "testNetworks": {
+    "message": "Test networks"
   },
   "theme": {
     "message": "Theme"
