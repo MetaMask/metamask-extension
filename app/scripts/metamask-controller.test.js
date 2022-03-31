@@ -71,6 +71,9 @@ const browserPolyfillMock = {
     onInstalled: {
       addListener: () => undefined,
     },
+    onMessageExternal: {
+      addListener: () => undefined,
+    },
     getPlatformInfo: async () => 'mac',
   },
 };
