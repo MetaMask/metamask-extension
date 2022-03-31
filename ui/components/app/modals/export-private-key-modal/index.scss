@@ -28,7 +28,7 @@
   &__password--error {
     @include H6;
 
-    color: var(--color-text-muted);
+    color: var(--color-text-default);
     margin-bottom: 10px;
   }
 
