@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Chain Interactions', function () {
-  it('should add the XDAI chain', async function () {
+  it('should add the XDAI chain and not switch the network', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -64,7 +64,7 @@ describe('Chain Interactions', function () {
     );
   });
 
-  it('should switch to the XDAI chain', async function () {
+  it('should add the XDAI chain and switch the network', async function () {
     const ganacheOptions = {
       accounts: [
         {
