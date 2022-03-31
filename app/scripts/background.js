@@ -324,8 +324,9 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
   }
 
   console.log("process.env.ENABLE_MV3 && remoteSourcePort", process.env.ENABLE_MV3, remoteSourcePort)
-  if (process.env.ENABLE_MV3 && remoteSourcePort) {
-    connectRemote(remoteSourcePort);
+  if (process.env.ENABLE_MV3 && !remoteSourcePort) {
+    const extensionPort = browser.tabs.connect({type: 'test'});
+    connectRemote(extensionPort);
   }
 
   //

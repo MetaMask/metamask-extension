@@ -27,6 +27,11 @@ async function start() {
   // create platform global
   global.platform = new ExtensionPlatform();
 
+  browser.runtime.onConnect(msg => {
+    if(msg.type = "test"){
+      console.log("TEST COMPLETE")
+    }
+  })
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
 
