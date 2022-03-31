@@ -14,20 +14,25 @@ export default {
   argTypes: {
     title: {
       control: 'text',
-      defaultValue: 'Send DAI',
     },
     subtitle: {
       control: 'text',
-      defaultValue: 'Sept 20 · To: 00X4...3058',
     },
     primaryCurrency: {
       control: 'text',
-      defaultValue: '2 ETH',
     },
     secondaryCurrency: {
       control: 'text',
-      defaultValue: '70 USD',
     },
+    className: {
+      control: 'text',
+    },
+  },
+  args: {
+    title: 'Send DAI',
+    subtitle: 'Sept 20 · To: 00X4...3058',
+    primaryCurrency: '2 ETH',
+    secondaryCurrency: '70 USD',
   },
 };
 
@@ -54,7 +59,7 @@ export const SendComponent = (args) => (
     titleIcon={<Preloader size={16} color={failColor} />}
     title={args.title}
     subtitle={args.subtitle}
-    className="list-item"
+    className={args.className}
     rightContent={
       <Currencies
         primary={args.primaryCurrency}
@@ -84,9 +89,10 @@ SendComponent.argTypes = {
 
 export const PendingComponent = (args) => (
   <ListItem
-    {...args}
+    title={args.title}
+    subtitle={args.subtitle}
     icon={<Interaction color={failColor} size={28} />}
-    className="list-item"
+    className={args.className}
     subtitleStatus={
       <span>
         <span style={{ color: 'var(--color-warning-default)' }}>
@@ -106,9 +112,10 @@ export const PendingComponent = (args) => (
 
 export const ApproveComponent = (args) => (
   <ListItem
-    {...args}
+    title={args.title}
+    subtitle={args.subtitle}
     icon={<Approve color={okColor} size={28} />}
-    className="list-item"
+    className={args.className}
     rightContent={
       <Currencies
         primary={args.primaryCurrency}
@@ -122,7 +129,7 @@ export const ReceiveComponent = (args) => (
   <ListItem
     {...args}
     icon={<Receive color={okColor} size={28} />}
-    className="list-item"
+    className={args.className}
     rightContent={
       <Currencies
         primary={args.primaryCurrency}
