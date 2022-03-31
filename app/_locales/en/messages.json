@@ -733,6 +733,12 @@
   "customToken": {
     "message": "Custom Token"
   },
+  "customTokenWarningInNonTokenDetectionNetwork": {
+    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
+  },
+  "customTokenWarningInTokenDetectionNetwork": {
+    "message": "Before manually importing a token, make sure you trust it. Learn about $1."
+  },
   "customerSupport": {
     "message": "customer support"
   },
@@ -3582,6 +3588,9 @@
   },
   "tokenDetection": {
     "message": "Token detection"
+  },
+  "tokenDetectionAlertMessage": {
+    "message": "Token detection is currently available on $1. $2"
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
