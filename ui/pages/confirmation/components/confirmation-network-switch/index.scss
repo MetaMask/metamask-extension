@@ -19,6 +19,13 @@
     justify-content: center;
     position: absolute;
     filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.25));
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 35%;
+      top: 25%;
+    }
   }
 
   [dir='rtl'] &__arrow {
@@ -29,5 +36,17 @@
     width: 130px;
     border-bottom: 1px solid var(--color-border-muted);
     border-style: dashed;
+  }
+
+  &__unknown-icon {
+    color: var(--color-icon-muted);
+    border-radius: 50%;
+    border: 1px solid var(--color-border-muted);
+    background-color: var(--color-background-alternative);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    width: 64px;
   }
 }

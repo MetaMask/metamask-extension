@@ -40,6 +40,13 @@
     justify-content: center;
     position: absolute;
     filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.25));
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 18%;
+      top: 25%;
+    }
   }
 
   &__dashed-line {
