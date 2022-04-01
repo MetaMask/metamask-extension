@@ -28,7 +28,7 @@
   &__password--error {
     @include H6;
 
-    color: var(--color-text-muted);
+    color: var(--color-text-default);
     margin-bottom: 10px;
   }
 
@@ -76,6 +76,7 @@
     @include Paragraph;
 
     color: var(--color-error-default);
+    background-color: var(--color-background-default);
     border: none;
     height: 75px;
     width: 100%;
