@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -18,6 +19,8 @@ import IconCaretLeft from '../../ui/icon/icon-caret-left';
 import Tooltip from '../../ui/tooltip';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import IconBorder from '../../ui/icon-border';
+import { getTheme } from '../../../selectors';
+import { THEME_TYPE } from '../../../pages/settings/experimental-tab/experimental-tab.constant';
 
 const AddNetwork = ({
   onBackClick,
@@ -26,6 +29,7 @@ const AddNetwork = ({
   featuredRPCS,
 }) => {
   const t = useContext(I18nContext);
+  const theme = useSelector(getTheme);
 
   const infuraRegex = /infura.io/u;
 
@@ -119,6 +123,7 @@ const AddNetwork = ({
                       </Box>
                     }
                     trigger="mouseenter"
+                    theme={theme === THEME_TYPE.DEFAULT ? 'light' : 'dark'}
                   >
                     <i
                       className="fa fa-exclamation-triangle add-network__warning-icon"
