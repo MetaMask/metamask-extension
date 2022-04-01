@@ -1,7 +1,9 @@
 .detected-token-details {
-  width: 100%;
-
   &__identicon {
     margin-top: 4px;
+  }
+
+  &__data {
+    flex-grow: 1;
   }
 }

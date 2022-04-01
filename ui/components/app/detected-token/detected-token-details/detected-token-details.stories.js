@@ -14,7 +14,11 @@ export default {
 };
 
 const Template = (args) => {
-  return <DetectedTokenDetails tokenAddress={args.address} />;
+  return (
+    <div style={{ width: '320px' }}>
+      <DetectedTokenDetails tokenAddress={args.address} />
+    </div>
+  );
 };
 
 export const DefaultStory = Template.bind({});

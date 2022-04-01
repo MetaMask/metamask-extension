@@ -15,13 +15,17 @@ const DetectedTokenDetails = ({ tokenAddress }) => {
   const token = tokenList[tokenAddress];
 
   return (
-    <Box display={DISPLAY.INLINE_FLEX} className="detected-token-details">
+    <Box display={DISPLAY.FLEX} className="detected-token-details">
       <Identicon
         className="detected-token-details__identicon"
         address={tokenAddress}
         diameter={40}
       />
-      <Box display={DISPLAY.GRID} marginLeft={2}>
+      <Box
+        display={DISPLAY.GRID}
+        marginLeft={2}
+        className="detected-token-details__data"
+      >
         <DetectedTokenValues token={token} />
         <DetectedTokenAddress address={token.address} />
         <DetectedTokenAggregators aggregatorsList={token.aggregators} />
