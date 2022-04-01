@@ -1176,7 +1176,20 @@
         "pump>once": true
       }
     },
+<<<<<<< HEAD
     "3box>ipfs>libp2p-webrtc-star>simple-peer": {
+=======
+    "apg-js": {
+      "globals": {
+        "mode": true
+      },
+      "packages": {
+        "buffer": true,
+        "is-buffer": true
+      }
+    },
+    "asap": {
+>>>>>>> 91b312a8f (lavalmoat generation)
       "globals": {
         "clearInterval": true,
         "console.warn": true,
