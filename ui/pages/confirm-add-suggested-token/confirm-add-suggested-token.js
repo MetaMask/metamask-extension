@@ -6,7 +6,7 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -67,7 +67,7 @@ const ConfirmAddSuggestedToken = () => {
   const suggestedAssets = useSelector(getSuggestedAssets);
   const tokens = useSelector(getTokens);
 
-  const trackEvent = useContext(NewMetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const knownTokenActionableMessage = useMemo(() => {
     return (

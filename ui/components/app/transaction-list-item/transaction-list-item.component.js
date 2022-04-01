@@ -37,7 +37,7 @@ import CancelButton from '../cancel-button';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 function TransactionListItemInner({
   transactionGroup,

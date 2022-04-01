@@ -16,7 +16,7 @@ import {
 import { getCurrentChainId, isCustomPriceExcessive } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
-import { MetaMetricsContext } from '../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
