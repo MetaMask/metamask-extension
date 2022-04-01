@@ -699,14 +699,19 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
   }
 });
 
-/**
- * Modified from https://github.com/Rufflewind/chrome_cspmod
- */
-browser.webRequest.onHeadersReceived.addListener(
-  cspModificationProcessor,
-  {
-    urls: ['file://*/*', 'http://*/*', 'https://*/*'],
-    types: ['main_frame', 'sub_frame'],
-  },
-  ['blocking', 'responseHeaders'],
-);
+// In try/catch because chrome doesn't like this sometimes
+try {
+  /**
+   * Modified from https://github.com/Rufflewind/chrome_cspmod
+   */
+  browser.webRequest.onHeadersReceived.addListener(
+    cspModificationProcessor,
+    {
+      urls: ['file://*/*', 'http://*/*', 'https://*/*'],
+      types: ['main_frame', 'sub_frame'],
+    },
+    ['blocking', 'responseHeaders'],
+  );
+} catch {
+  // Do nothing
+}
