@@ -16,17 +16,6 @@
   @media screen and (min-width: $break-large) {
     height: 75px;
     justify-content: center;
-
-    &--back-drop {
-      &::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 32px;
-        background: var(--color-background-alternative);
-        bottom: -32px;
-      }
-    }
   }
 
   &__metafox-logo {
