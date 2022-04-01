@@ -22,17 +22,8 @@ export default {
     siteImage: {
       control: 'text',
     },
-    showCustomizeGasModal: {
-      action: 'showCustomizeGasModal',
-    },
-    showEditApprovalPermissionModal: {
-      action: 'showEditApprovalPermissionModal',
-    },
     origin: {
       control: 'text',
-    },
-    setCustomAmount: {
-      action: 'setCustomAmount',
     },
     tokenBalance: {
       control: 'text',
@@ -61,26 +52,11 @@ export default {
     customNonceValue: {
       control: 'text',
     },
-    updateCustomNonce: {
-      action: 'updateCustomNonce',
-    },
-    getNextNonce: {
-      action: 'getNextNonce',
-    },
     nextNonce: {
       control: 'number',
     },
-    showCustomizeNonceModal: {
-      action: 'showCustomizeNonceModal',
-    },
     warning: {
       control: 'text',
-    },
-    txData: {
-      control: 'object',
-    },
-    fromAddressIsLedger: {
-      control: 'boolean',
     },
     chainId: {
       control: 'text',
@@ -90,21 +66,6 @@ export default {
     },
     isContract: {
       control: 'boolean',
-    },
-    hexTransactionTotal: {
-      control: 'text',
-    },
-    isMultiLayerFeeNetwork: {
-      control: 'boolean',
-    },
-    supportsEIP1559V2: {
-      control: 'boolean',
-    },
-    assetName: {
-      control: 'text',
-    },
-    tokenId: {
-      control: 'text',
     },
     assetStandard: {
       control: 'text',

@@ -6,12 +6,6 @@ export default {
   id: __filename,
   component: ConfirmRemoveAccount,
   argTypes: {
-    hideModal: {
-      action: 'hideModal',
-    },
-    removeAccount: {
-      action: 'removeAccount',
-    },
     identity: {
       control: 'object',
     },
