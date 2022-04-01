@@ -1405,9 +1405,6 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "layer1Fees": {
-    "message": "레이어 1 요금"
-  },
   "learmMoreAboutGas": {
     "message": "가스에 대해 $1하시겠습니까?"
   },
@@ -1740,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "신규! NFT 감지"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask가 Opensea에서 자동으로 NFT를 감지하고 MetaMask 지갑에 표시하도록 허용합니다."
   },
   "newNetworkAdded": {
     "message": "“$1”가 성공적으로 추가되었습니다!"

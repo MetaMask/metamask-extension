@@ -25,7 +25,7 @@ import {
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -179,11 +179,12 @@ export default class AdvancedTab extends PureComponent {
               className="settings-tab__button--red"
               onClick={(event) => {
                 event.preventDefault();
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Reset Account',
+                  properties: {
                     action: 'Reset Account',
-                    name: 'Reset Account',
+                    legacy_event: true,
                   },
                 });
                 showResetAccountConfirmationModal();
@@ -696,11 +697,12 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={useTokenDetection}
               onToggle={(value) => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Token Detection',
+                  properties: {
                     action: 'Token Detection',
-                    name: 'Token Detection',
+                    legacy_event: true,
                   },
                 });
                 setUseTokenDetection(!value);

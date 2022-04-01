@@ -1,15 +1,12 @@
 .info-tab {
   &__logo-wrapper {
-    height: 80px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
   }
 
   &__logo {
-    max-height: 100%;
-    max-width: 50%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    height: 80px;
   }
 
   &__item {

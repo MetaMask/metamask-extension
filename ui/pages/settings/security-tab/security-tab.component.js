@@ -11,7 +11,7 @@ import {
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -62,11 +62,12 @@ export default class SecurityTab extends PureComponent {
               large
               onClick={(event) => {
                 event.preventDefault();
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Reveal Seed Phrase',
+                  properties: {
                     action: 'Reveal Seed Phrase',
-                    name: 'Reveal Seed Phrase',
+                    legacy_event: true,
                   },
                 });
                 history.push(REVEAL_SEED_ROUTE);

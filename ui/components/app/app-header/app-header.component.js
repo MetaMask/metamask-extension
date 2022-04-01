@@ -24,7 +24,7 @@ export default class AppHeader extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   handleNetworkIndicatorClick(event) {
@@ -44,11 +44,12 @@ export default class AppHeader extends PureComponent {
     }
 
     if (networkDropdownOpen === false) {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
+      this.context.trackEvent({
+        category: 'Navigation',
+        event: 'Opened Network Menu',
+        properties: {
           action: 'Home',
-          name: 'Opened Network Menu',
+          legacy_event: true,
         },
       });
       showNetworkDropdown();
@@ -75,11 +76,12 @@ export default class AppHeader extends PureComponent {
           onClick={() => {
             if (!disabled) {
               !isAccountMenuOpen &&
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Navigation',
+                this.context.trackEvent({
+                  category: 'Navigation',
+                  event: 'Opened Main Menu',
+                  properties: {
                     action: 'Home',
-                    name: 'Opened Main Menu',
+                    legacy_event: true,
                   },
                 });
               toggleAccountMenu();
@@ -95,7 +97,6 @@ export default class AppHeader extends PureComponent {
   render() {
     const {
       history,
-      isUnlocked,
       hideNetworkIndicator,
       disableNetworkIndicator,
       disabled,
@@ -103,11 +104,7 @@ export default class AppHeader extends PureComponent {
     } = this.props;
 
     return (
-      <div
-        className={classnames('app-header', {
-          'app-header--back-drop': isUnlocked,
-        })}
-      >
+      <div className="app-header">
         <div className="app-header__contents">
           <MetaFoxLogo
             unsetIconHeight

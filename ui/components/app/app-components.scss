@@ -45,6 +45,7 @@
 @import 'menu-bar/index';
 @import 'modal/index';
 @import 'modals/index';
+@import 'multilayer-fee-message/index';
 @import 'multiple-notifications/index';
 @import 'network-display/index';
 @import 'permission-page-container/index';
@@ -84,3 +85,5 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
 @import 'detected-token/detected-token-address/index';
+@import 'detected-token/detected-token-aggregators/index';
+@import 'detected-token/detected-token-values/index';

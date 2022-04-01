@@ -1178,6 +1178,9 @@
       }
     },
     "bip39": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "buffer": true,
         "create-hash": true,
@@ -1892,6 +1895,7 @@
     "eth-hd-keyring": {
       "packages": {
         "bip39": true,
+        "buffer": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
         "ethereumjs-wallet": true
@@ -1950,6 +1954,7 @@
       "packages": {
         "bip39": true,
         "browser-passworder": true,
+        "buffer": true,
         "eth-hd-keyring": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,

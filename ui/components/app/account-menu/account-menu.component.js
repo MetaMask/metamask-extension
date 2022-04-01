@@ -68,7 +68,7 @@ AccountMenuItem.propTypes = {
 export default class AccountMenu extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -196,11 +196,12 @@ export default class AccountMenu extends Component {
         <div
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            this.context.trackEvent({
+              category: 'Navigation',
+              event: 'Switched Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Switched Account',
+                legacy_event: true,
               },
             });
             showAccountDetail(identity.address);
@@ -284,7 +285,7 @@ export default class AccountMenu extends Component {
   }
 
   render() {
-    const { t, metricsEvent } = this.context;
+    const { t, trackEvent } = this.context;
     const {
       shouldShowAccountsSearch,
       isAccountMenuOpen,
@@ -338,11 +339,12 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Create Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Create Account',
+                legacy_event: true,
               },
             });
             history.push(NEW_ACCOUNT_ROUTE);
@@ -353,11 +355,12 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Import Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Import Account',
+                legacy_event: true,
               },
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
@@ -373,11 +376,12 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Connect Hardware',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Connect Hardware',
+                legacy_event: true,
               },
             });
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -412,11 +416,12 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             history.push(SETTINGS_ROUTE);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            this.context.trackEvent({
+              category: 'Navigation',
+              event: 'Opened Settings',
+              properties: {
                 action: 'Main Menu',
-                name: 'Opened Settings',
+                legacy_event: true,
               },
             });
           }}

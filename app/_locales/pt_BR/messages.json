@@ -1438,9 +1438,6 @@
   "lastConnected": {
     "message": "Conectado pela última vez em"
   },
-  "layer1Fees": {
-    "message": "Taxas de camada 1"
-  },
   "learmMoreAboutGas": {
     "message": "Quer $1 sobre o gás?"
   },
@@ -1773,9 +1770,6 @@
   },
   "newNFTsDetected": {
     "message": "Novidade! Detecção de NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Autorize que a MetaMask detecte NFTs automaticamente do Opensea e os exiba na sua carteira MetaMask."
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
