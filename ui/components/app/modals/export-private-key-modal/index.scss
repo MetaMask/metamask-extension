@@ -66,12 +66,12 @@
   }
 
   &__private-key-display {
+    @include Paragraph;
+
     height: 80px;
     width: 291px;
     border: 1px solid var(--color-border-default);
     border-radius: 2px;
-
-    @include Paragraph;
     color: var(--color-error-default);
     padding: 9px 13px 8px;
     overflow: hidden;
@@ -101,7 +101,6 @@
     padding: 5px 10px;
     margin-top: 7px;
     max-width: 286px;
-
     direction: ltr;
     overflow: hidden;
     text-overflow: ellipsis;
