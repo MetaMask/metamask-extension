@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },
-  "addToAddressBook": {
-    "message": "Hozzáadás a címjegyzékhez"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pl. John D."
-  },
   "addToken": {
     "message": "Token hozzáadása"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
-  },
-  "enterAnAlias": {
-    "message": "Adjon meg álnevet"
   },
   "enterPassword": {
     "message": "Adja meg a jelszót"
@@ -808,9 +799,6 @@
   },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "A szavakat egy-egy szóközzel válassza el"
   },
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"

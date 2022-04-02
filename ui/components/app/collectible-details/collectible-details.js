@@ -45,12 +45,13 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
-import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
+import { updateSendAsset } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -310,7 +311,7 @@ export default function CollectibleDetails({ collectible }) {
                 {copied ? (
                   t('copiedExclamation')
                 ) : (
-                  <Copy size={15} color="#6a737d" />
+                  <Copy size={15} color="var(--color-icon-default)" />
                 )}
               </button>
             </Box>

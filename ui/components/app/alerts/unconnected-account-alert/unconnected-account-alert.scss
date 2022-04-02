@@ -17,8 +17,8 @@
   }
 
   & &__dismiss-button {
-    background: var(--primary-blue);
-    color: white;
+    background: var(--color-primary-default);
+    color: var(--color-primary-inverse);
     height: 40px;
     width: 100px;
     border: 0;
@@ -29,8 +29,8 @@
 
     margin-bottom: 16px;
     padding: 16px;
-    border: 1px solid var(--accent-red);
-    background: #f8eae8;
+    border: 1px solid var(--color-error-default);
+    background: var(--color-error-muted);
     border-radius: 3px;
   }
 
@@ -52,7 +52,7 @@
     display: flex;
     margin-top: auto;
     margin-bottom: auto;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__checkbox-label-tooltip {

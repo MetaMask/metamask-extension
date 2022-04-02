@@ -24,7 +24,7 @@ describe('ConfirmSeedPhrase Component', () => {
   });
 
   it('should add/remove selected on click', () => {
-    const metricsEventSpy = sinon.spy();
+    const trackEventSpy = sinon.spy();
     const replaceSpy = sinon.spy();
     const component = shallowRender(
       {
@@ -32,7 +32,7 @@ describe('ConfirmSeedPhrase Component', () => {
         history: { replace: replaceSpy },
       },
       {
-        metricsEvent: metricsEventSpy,
+        trackEvent: trackEventSpy,
       },
     );
 
@@ -57,7 +57,7 @@ describe('ConfirmSeedPhrase Component', () => {
   });
 
   it('should render correctly on hover', () => {
-    const metricsEventSpy = sinon.spy();
+    const trackEventSpy = sinon.spy();
     const replaceSpy = sinon.spy();
     const component = shallowRender(
       {
@@ -65,7 +65,7 @@ describe('ConfirmSeedPhrase Component', () => {
         history: { replace: replaceSpy },
       },
       {
-        metricsEvent: metricsEventSpy,
+        trackEvent: trackEventSpy,
       },
     );
 
@@ -92,7 +92,7 @@ describe('ConfirmSeedPhrase Component', () => {
   });
 
   it('should insert seed in place on drop', () => {
-    const metricsEventSpy = sinon.spy();
+    const trackEventSpy = sinon.spy();
     const replaceSpy = sinon.spy();
     const component = shallowRender(
       {
@@ -100,7 +100,7 @@ describe('ConfirmSeedPhrase Component', () => {
         history: { replace: replaceSpy },
       },
       {
-        metricsEvent: metricsEventSpy,
+        trackEvent: trackEventSpy,
       },
     );
 
@@ -137,7 +137,7 @@ describe('ConfirmSeedPhrase Component', () => {
       '狗',
       '豬',
     ];
-    const metricsEventSpy = sinon.spy();
+    const trackEventSpy = sinon.spy();
     const replaceSpy = sinon.spy();
     const initialize3BoxSpy = sinon.spy();
     const component = shallowRender(
@@ -148,7 +148,7 @@ describe('ConfirmSeedPhrase Component', () => {
         initializeThreeBox: initialize3BoxSpy,
       },
       {
-        metricsEvent: metricsEventSpy,
+        trackEvent: trackEventSpy,
       },
     );
 
@@ -166,11 +166,12 @@ describe('ConfirmSeedPhrase Component', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    expect(metricsEventSpy.args[0][0]).toStrictEqual({
-      eventOpts: {
-        category: 'Onboarding',
+    expect(trackEventSpy.args[0][0]).toStrictEqual({
+      category: 'Onboarding',
+      event: 'Verify Complete',
+      properties: {
         action: 'Seed Phrase Setup',
-        name: 'Verify Complete',
+        legacy_event: true,
       },
     });
     expect(initialize3BoxSpy.calledOnce).toStrictEqual(true);

@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     margin: 0 24px 24px 24px;
-    border-bottom: 1px solid var(--Grey-100);
+    border-bottom: 1px solid var(--color-border-muted);
     position: relative;
   }
 
@@ -41,7 +41,7 @@
   }
 
   &__notification-date {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__button {
@@ -56,7 +56,7 @@
   &__link {
     @include H6;
 
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 

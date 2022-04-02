@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getFirstTimeFlowType } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreationSuccessful() {
   const firstTimeFlowTypeNameMap = {

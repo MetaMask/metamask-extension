@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lägg till föreslagna tokens"
   },
-  "addToAddressBook": {
-    "message": "Lägg till i adressbok"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "exempelvis John D."
-  },
   "addToken": {
     "message": "Lägg till token"
   },
@@ -333,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
-  },
-  "enterAnAlias": {
-    "message": "Ange ett alias"
   },
   "enterPassword": {
     "message": "Ange lösenord"
@@ -799,9 +790,6 @@
   },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separera varje ord med ett enda mellanslag."
   },
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."

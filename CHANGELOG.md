@@ -6,6 +6,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.12.2]
+### Fixed
+- Fix error where unlock failed after update to v10.12.0
+
+## [10.12.1]
+### Changed
+- This version was used to rollback from v10.12.0 to v10.11.4.
+
+## [10.12.0]
+### Added
+- Add a search feature to the settings page ([#13214](https://github.com/MetaMask/metamask-extension/pull/13214))
+- Add AirGap Vault detail links to the hardware wallet connection flow ([#13650](https://github.com/MetaMask/metamask-extension/pull/13650))
+
+### Changed
+- Prevent users from entering too long a number for slippage in swaps ([#13914](https://github.com/MetaMask/metamask-extension/pull/13914))
+- Hide non-essential information in our EIP-1559 v2 gas modal when the gas api is down ([#13865](https://github.com/MetaMask/metamask-extension/pull/13865))
+- Updating colors of the account list ([#13864](https://github.com/MetaMask/metamask-extension/pull/13864))
+- Show a more useful warning is users don't have enough of their networks base currency to pay for gas ([#13182](https://github.com/MetaMask/metamask-extension/pull/13182))
+- Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
+- Show the address of the contract that is being interacted with next to the method name in transaction confirmation headers ([#13683](https://github.com/MetaMask/metamask-extension/pull/13683))
+- Show the address of the contract that is being interacted next to 'Transfer' and 'Transfer From' method names in transaction confirmation headers ([#13776](https://github.com/MetaMask/metamask-extension/pull/13776))
+- Performance and UX improvements for Gridplus lattice users (([#14158]https://github.com/MetaMask/metamask-extension/pull/14158))
+
+### Fixed
+- Ensure long signature request text is visible ([#13828](https://github.com/MetaMask/metamask-extension/pull/13828))
+- Fix spelling of 'Ethereum' in German translation ([#13915](https://github.com/MetaMask/metamask-extension/pull/13915))
+- Fix cases where the action buttons in a switch network confirmation window wouldn't work  ([#13847](https://github.com/MetaMask/metamask-extension/pull/13847))
+- Ensure the origin of a site requesting permissions is fully visible in the permission request UI ([#13868](https://github.com/MetaMask/metamask-extension/pull/13868))
+- Fix visual overflow problems with the account list in the connect flow
+    - ([#13859](https://github.com/MetaMask/metamask-extension/pull/13859))
+    - ([#13592](https://github.com/MetaMask/metamask-extension/pull/13592))
+- Show the users primary currency in the "Max Base Fee" and "Priority Fee" fields of the gas customization window ([#13830](https://github.com/MetaMask/metamask-extension/pull/13830))
+- Ensure latest gas estimates are shown on the transaction screen for users of the EIP-1559 v2 gas UI ([#13809](https://github.com/MetaMask/metamask-extension/pull/13809))
+- Fix to allow toggling of the currency in the send flow when the user has "fiat" selected as the primary currency ([#13813](https://github.com/MetaMask/metamask-extension/pull/13813))
+- Shows the sign and cancel button fully in signature page ([#13686](https://github.com/MetaMask/metamask-extension/pull/13686))
+- Harden keyring type check in EthOverview ([#13711](https://github.com/MetaMask/metamask-extension/pull/13711))
+- Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
+- Confirm transaction page: use method name only for contract transactions ([#13643](https://github.com/MetaMask/metamask-extension/pull/13643))
+- Fix issues
+- **[FLASK]** Fix Snap permission list item shrinkage with short permission names ([#13996](https://github.com/MetaMask/metamask-extension/pull/13996))
+
+## [10.11.4]
+### Added
+- **[FLASK]** Snap removal confirmation ([#13619](https://github.com/MetaMask/metamask-extension/pull/13619))
+
+### Changed
+- **[FLASK]** Update MetaMask Flask
+  - This is the first release of [MetaMask Flask](https://metamask.io/flask) since the initial release on January 18. This release includes a significant number of fixes and DevX improvements. Flask will henceforth be released at a more frequent cadence, usually in close proximity to releases of the regular MetaMask Extension.
+  - For reference, [#13462](https://github.com/MetaMask/metamask-extension/pull/13462) used the feature branch that produced the original Flask release after some additional changes were made.
+- **[FLASK]** Update Snaps packages to version `^0.10.6` ([#13901](https://github.com/MetaMask/metamask-extension/pull/13901), [#14041](https://github.com/MetaMask/metamask-extension/pull/14041), [#14070](https://github.com/MetaMask/metamask-extension/pull/14070))
+  - Updates the following packages from `0.9.0` to `0.10.6`:
+    - `@metamask/iframe-execution-environment-service`
+    - `@metamask/rpc-methods`
+    - `@metamask/snap-controllers`
+  - Updates the targeted [`iframe-execution-environment`](https://github.com/MetaMask/iframe-execution-environment) version from `0.3.1` to `0.4.2`.
+  - These changes encompass a variety of fixes and devX improvements. See the [releases](https://github.com/MetaMask/snaps-skunkworks/releases) of the Snaps monorepo for details.
+
+### Fixed
+- **[FLASK]** Various UI issues ([#13462](https://github.com/MetaMask/metamask-extension/pull/13462))
+  - _Note:_ The original Flask release was cut from the feature branch of [#13462](https://github.com/MetaMask/metamask-extension/pull/13462) before it was merged.
+  - Fix Snaps permission request confirmation page title ([#13342](https://github.com/MetaMask/metamask-extension/pull/13342))
+  - Fix Snaps custom confirmation `textarea` height ([#13572](https://github.com/MetaMask/metamask-extension/pull/13572))
+  - Fix various styling issues ([#13577](https://github.com/MetaMask/metamask-extension/pull/13577))
+- **[FLASK]** Fix Snap key management install warning appearance ([#13844](https://github.com/MetaMask/metamask-extension/pull/13844))
+
+## [10.11.3]
+### Changed
+- Split secret recovery phrase input into one-field-per-word ([#14016](https://github.com/MetaMask/metamask-extension/pull/14016))
+
+## [10.11.2]
+### Fixed
+- Fix bug that users who are connected to another extension would hit when viewing connected sites ([#13974](https://github.com/MetaMask/metamask-extension/pull/13974))
+
+
 ## [10.11.1]
 ### Changed
 - Fixes GridPlus Lattice bugs by upgrading to `gridplus-sdk` v1.0.0, `eth-lattice-keyring` v0.5.0 and to compatibility with v0.14.0 ([#13834](https://github.com/MetaMask/metamask-extension/pull/13834))
@@ -2775,7 +2849,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.12.2...HEAD
+[10.12.2]: https://github.com/MetaMask/metamask-extension/compare/v10.12.1...v10.12.2
+[10.12.1]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...v10.12.1
+[10.12.0]: https://github.com/MetaMask/metamask-extension/compare/v10.11.4...v10.12.0
+[10.11.4]: https://github.com/MetaMask/metamask-extension/compare/v10.11.3...v10.11.4
+[10.11.3]: https://github.com/MetaMask/metamask-extension/compare/v10.11.2...v10.11.3
+[10.11.2]: https://github.com/MetaMask/metamask-extension/compare/v10.11.1...v10.11.2
 [10.11.1]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...v10.11.1
 [10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...v10.11.0
 [10.10.2]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.10.2

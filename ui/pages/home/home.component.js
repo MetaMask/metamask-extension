@@ -13,6 +13,7 @@ import TransactionList from '../../components/app/transaction-list';
 import MenuBar from '../../components/app/menu-bar';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -24,6 +25,7 @@ import Typography from '../../components/ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
+  DISPLAY,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   COLORS,
   ///: END:ONLY_INCLUDE_IN
@@ -98,6 +100,8 @@ export default class Home extends PureComponent {
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     defaultHomeActiveTabName: PropTypes.string,
+    firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -308,11 +312,8 @@ export default class Home extends PureComponent {
             type="success"
             className="home__new-network-notification"
             message={
-              <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -320,11 +321,11 @@ export default class Home extends PureComponent {
                   {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
-                  className="fas fa-times home__close"
+                  className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
                 />
-              </div>
+              </Box>
             }
           />
         ) : null}
@@ -333,11 +334,8 @@ export default class Home extends PureComponent {
             type="success"
             className="home__new-network-notification"
             message={
-              <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -345,11 +343,11 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
                 <button
-                  className="fas fa-times home__close"
+                  className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
                   onClick={() => setNewNetworkAdded('')}
                 />
-              </div>
+              </Box>
             }
           />
         ) : null}
@@ -496,6 +494,8 @@ export default class Home extends PureComponent {
       hideWhatsNewPopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
+      firstTimeFlowType,
+      completedOnboarding,
     } = this.props;
 
     if (forgottenPassword) {
@@ -504,7 +504,11 @@ export default class Home extends PureComponent {
       return null;
     }
 
-    const showWhatsNew = notificationsToShow && showWhatsNewPopup;
+    const showWhatsNew =
+      ((completedOnboarding && firstTimeFlowType === 'import') ||
+        !completedOnboarding) &&
+      notificationsToShow &&
+      showWhatsNewPopup;
 
     return (
       <div className="main-container">
