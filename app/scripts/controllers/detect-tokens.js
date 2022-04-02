@@ -165,10 +165,20 @@ export default class DetectTokensController {
         if (result) {
           const nonZeroTokenAddresses = Object.keys(result);
           for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
-            const { address, symbol, decimals } = tokenList[
-              nonZeroTokenAddress
-            ];
-            tokensWithBalance.push({ address, symbol, decimals });
+            const {
+              address,
+              symbol,
+              decimals,
+              iconUrl,
+              aggregators,
+            } = tokenList[nonZeroTokenAddress];
+            tokensWithBalance.push({
+              address,
+              symbol,
+              decimals,
+              image: iconUrl,
+              aggregators,
+            });
           }
           if (tokensWithBalance.length > 0) {
             await this.tokensController.addDetectedTokens(tokensWithBalance);
