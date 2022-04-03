@@ -48,15 +48,19 @@
     "message": "À propos"
   },
   "acceleratingATransaction": {
-    "message": "* Accélérer une transaction en utilisant un prix de l’essence plus élevé augmente ses chances d’être traitée plus rapidement par le réseau, mais ce n’est pas toujours garanti."
+    "message": "* Accélérer une transaction en utilisant un prix de gaz plus élevé augmente ses chances d’être traitée plus rapidement par le réseau, mais ce n’est pas toujours garanti."
   },
   "acceptTermsOfUse": {
     "message": "J’ai lu et j’accepte les $1",
-    "description": "$1 is the `terms` message"
+    "description": "$1 est le message des conditions générales"
   },
   "accessAndSpendNotice": {
     "message": "$1 peut accéder et dépenser jusqu’à ce montant maximal",
-    "description": "$1 is the url of the site requesting ability to spend"
+    "description": "$1 est l'URL du site demandant la possibilité de dépenser"
+  },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 peut accéder et dépenser cet actif",
+    "description": "$1 est l'URL du site demandant la possibilité de dépenser"
   },
   "accessingYourCamera": {
     "message": "Accès à votre appareil photo..."
@@ -67,12 +71,15 @@
   "accountDetails": {
     "message": "Détails du compte"
   },
+  "accountIdenticon": {
+    "message": "Identicon du compte"
+  },
   "accountName": {
     "message": "Nom du compte"
   },
   "accountNameDuplicate": {
     "message": "Ce nom de compte existe déjà",
-    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+    "description": "Il s'agit d'un message d'erreur affiché lorsque l'utilisateur entre un nouveau nom de compte qui correspond à un nom de compte déja existant"
   },
   "accountOptions": {
     "message": "Options du compte"
@@ -94,6 +101,9 @@
   },
   "addANetwork": {
     "message": "Ajouter un réseau"
+  },
+  "addANetworkManually": {
+    "message": "Ajouter manuellement un réseau"
   },
   "addANickname": {
     "message": "Ajouter un pseudo"
