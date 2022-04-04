@@ -21,7 +21,6 @@ describe('Settings Search', function () {
     experimental: 'Token Detection',
     about: 'Terms of Use',
   };
-  let found;
 
   it('should find element inside the General tab', async function () {
     await withFixtures(
@@ -255,7 +254,7 @@ describe('Settings Search', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', 'Lorem ipsum');
 
-        found = await driver.isElementPresent({
+        const found = await driver.isElementPresent({
           text: 'No matching results found',
           tag: 'span',
         });
