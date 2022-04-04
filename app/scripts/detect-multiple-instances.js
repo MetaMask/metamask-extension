@@ -32,15 +32,10 @@ export const onMessageReceived = (message) => {
  * Displays console warning if it's active.
  */
 export const checkForMultipleVersionsRunning = () => {
-  const idToPing =
-    browser.runtime.id === METAMASK_FLASK_BUILD_ID
-      ? METAMASK_PROD_BUILD_ID
-      : METAMASK_FLASK_BUILD_ID;
-
-  browser.runtime
-    .sendMessage(idToPing, MESSAGE_TEXT)
-    .then(() => {
-      showWarning();
-    })
-    .catch(() => null);
+  if (browser.runtime.id !== METAMASK_FLASK_BUILD_ID) {
+    browser.runtime.sendMessage(METAMASK_FLASK_BUILD_ID, MESSAGE_TEXT);
+  }
+  if (browser.runtime.id !== METAMASK_PROD_BUILD_ID) {
+    browser.runtime.sendMessage(METAMASK_PROD_BUILD_ID, MESSAGE_TEXT);
+  }
 };
