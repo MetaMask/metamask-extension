@@ -12,10 +12,10 @@
 
   &__tips {
     flex-direction: column;
-    margin-inline-start: 27px;
+    width: 84%;
 
-    @media screen and (min-width: $break-large) {
-      margin-inline-start: 48px;
+    @media screen and (max-width: $break-large) {
+      margin-inline-start: 27px;
     }
 
     ul {
@@ -94,6 +94,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
 
     @media screen and (max-width: $break-small) {
       margin-inline-start: 40px;
@@ -102,8 +103,13 @@
     }
 
     &--button {
+      align-self: center;
       @media screen and (min-width: $break-large) {
-        align-self: center;
+        width: 50%;
+      }
+
+      @media screen and (max-width: $break-large) {
+      width: 80%;
       }
 
       &__confirm {
