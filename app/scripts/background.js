@@ -476,14 +476,18 @@ function setupController(initState, initLangCode) {
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
-    if (process.env.ENABLE_MV3 !== true) {
       let label = '';
       const count = getUnapprovedTransactionCount();
       if (count) {
         label = String(count);
       }
-      browser.browserAction.setBadgeText({ text: label });
-      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+      if (process.env.ENABLE_MV3 !== true) {
+        browser.browserAction.setBadgeText({ text: label });
+        browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+      } else {
+        browser.action.setBadgeText({ text: label });
+        browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
+      }
     }
   }
 
