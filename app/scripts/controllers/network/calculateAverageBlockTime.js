@@ -3,7 +3,7 @@ import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
-const getBlockTimestamp = async (rpcUrl, block) => {
+const getBlock = async (rpcUrl, block) => {
   const res = await fetchWithTimeout(rpcUrl, {
     method: 'POST',
     body: JSON.stringify({
@@ -17,7 +17,7 @@ const getBlockTimestamp = async (rpcUrl, block) => {
     },
   });
 
-  return Number.parseInt((await res.json()).result.timestamp, 16) * 1000;
+  return (await res.json()).result;
 };
 
 export const calculateAverageBlockTimeInMs = async (rpcUrl) => {
@@ -36,11 +36,12 @@ export const calculateAverageBlockTimeInMs = async (rpcUrl) => {
 
   const NUM_PAST = 128;
   const latestBlock = Number.parseInt((await response.json()).result, 16);
-  const latestBlockTimestamp = await getBlockTimestamp(rpcUrl, latestBlock);
-  const pastBlockTimestamp = await getBlockTimestamp(
+  const {timestamp: latestBlockTimestamp, number: latestBlockNumber} = await getBlock(rpcUrl, latestBlock);
+  const pastBlock = latestBlock - NUM_PAST;
+  const {timestamp: pastBlockTimestamp, number: pastBlockNumber} = await getBlock(
     rpcUrl,
-    latestBlock - NUM_PAST,
+    pastBlock >= 0 ? pastBlock : 0,
   );
 
-  return (latestBlockTimestamp - pastBlockTimestamp) / NUM_PAST;
+  return (latestBlockTimestamp - pastBlockTimestamp) / (latestBlockNumber - pastBlockNumber);
 };
