@@ -2131,6 +2131,12 @@
   "notifications11Title": {
     "message": "Scam and security risks"
   },
+  "notifications12Description": {
+    "message": "Dark Mode will be enabled for user users depending on OS system preferences. For existing users, turn it on manually under Settings -> Experimental."
+  },
+  "notifications12Title": {
+    "message": "Wen dark mode? Now dark mode! 🕶️🦊"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
