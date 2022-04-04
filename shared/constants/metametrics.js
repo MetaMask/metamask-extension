@@ -213,3 +213,10 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
 export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTFICIATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
+
+export const EVENT_NAMES = {
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  DECRYPTION_REQUESTED: 'Decryption Requested',
+  PERMISSIONS_REQUESTED: 'Permissions Requested',
+};
