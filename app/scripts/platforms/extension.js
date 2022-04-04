@@ -92,7 +92,7 @@ export default class ExtensionPlatform {
       }
       // On Chrome, a more descriptive representation of the version is stored in the
       // `version_name` field for display purposes. We use this field instead of the `version`
-      // field on Chrome for for non-main builds (i.e. Flask, Beta) because we want to show the
+      // field on Chrome for non-main builds (i.e. Flask, Beta) because we want to show the
       // version in the SemVer-compliant format "v[major].[minor].[patch]-[build-type].[build-number]",
       // yet Chrome does not allow letters in the `version` field.
       return versionName;
