@@ -30,7 +30,6 @@ export default function SettingsSearch({
     keys: ['tab', 'section', 'description'],
   });
 
-  // eslint-disable-next-line no-shadow
   const handleSearch = (_searchQuery) => {
     const sanitizedSearchQuery = _searchQuery.replace(/[^A-z0-9\s]|[\\]/gu, '');
     setSearchQuery(sanitizedSearchQuery);

@@ -151,7 +151,6 @@ class SettingsPage extends PureComponent {
             />
             {isSearchList && searchText.length >= 3 && (
               <SettingsSearchList
-                key=""
                 results={searchResults}
                 onClickSetting={(setting) => this.handleClickSetting(setting)}
               />
