@@ -24,11 +24,11 @@
     border-radius: 10px;
 
     @media screen and (min-width: 461px) and (max-width: $break-small) {
-      max-width: 446px;
+      max-width: 410px;
     }
 
     @media screen and (min-width: 350px) and (max-width: 460px) {
-      max-width: 346px;
+      max-width: 310px;
     }
   }
 
@@ -67,7 +67,10 @@
     background-color: var(--color-primary-muted);
     padding: 12px;
     border-radius: 10px;
-    margin-inline-end: 43px;
+
+    @media screen and (min-width: $break-large) {
+      margin-inline-end: 43px;
+    }
   }
 }
 
