@@ -6,6 +6,21 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import AccountListItem from '../account-list-item';
 import convertMsg from '../../../helpers/utils/format-message-params';
 import ErrorMessage from '../../ui/error-message';
+import MetaFoxLogo from '../../ui/metafox-logo';
+import Typography from '../../ui/typography';
+
+import Box from '../../ui/box';
+import UrlIcon from '../../ui/url-icon';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { isBeta } from '../../../helpers/utils/build-types';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  BLOCK_SIZES,
+  JUSTIFY_CONTENT,
+  COLORS,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
@@ -73,13 +88,40 @@ export default class SignatureRequest extends PureComponent {
     }
   };
 
-  renderHeader = () => {
+  renderHeader = (domain) => {
     const { fromAccount } = this.props;
     return (
       <div className="siwe-request-header">
         <div className="siwe-request-header--domain">
           <div className="request-signature__overview__item">
-            {/* {domain} */}
+            {domain}
+            {/* <Box
+              display={DISPLAY.FLEX}
+              className="confirm-approve-content__icon-display-content"
+            >
+              <Box className="confirm-approve-content__metafoxlogo">
+                <MetaFoxLogo useDark={isBeta()} />
+              </Box>
+              <Box
+                display={DISPLAY.FLEX}
+                className="confirm-approve-content__siteinfo"
+              >
+                <UrlIcon
+                  className="confirm-approve-content__siteimage-identicon"
+                  fallbackClassName="confirm-approve-content__siteimage-identicon"
+                  name={getURLHostName(domain)}
+                  // url={siteImage}
+                />
+                <Typography
+                  variant={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                  color={COLORS.TEXT_ALTERNATIVE}
+                  boxProps={{ marginLeft: 1, marginTop: 2 }}
+                >
+                  {getURLHostName(domain)}
+                </Typography>
+              </Box>
+            </Box> */}
           </div>
         </div>
         <div className="title">{this.context.t('SIWESiteRequestTitle')}</div>
@@ -150,7 +192,7 @@ export default class SignatureRequest extends PureComponent {
     return (
       <div className="signature-request page-container">
         {/* <Header fromAccount={fromAccount} /> */}
-        {this.renderHeader()}
+        {this.renderHeader(messageData.domain)}
         <Message
           data={convertMsg(messageData)}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}

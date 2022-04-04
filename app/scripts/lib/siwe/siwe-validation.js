@@ -20,8 +20,8 @@ const detectSIWE = (msgParams) => {
     let isSIWEDomainValid = false;
 
     if (origin) {
-      const { hostname } = new URL(origin);
-      isSIWEDomainValid = messageData.domain === hostname;
+      const { host } = new URL(origin);
+      isSIWEDomainValid = messageData.domain === host;
     }
 
     return {
