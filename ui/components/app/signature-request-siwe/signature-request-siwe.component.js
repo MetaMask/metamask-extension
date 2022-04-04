@@ -119,6 +119,7 @@ export default class SignatureRequest extends PureComponent {
                   boxProps={{ marginLeft: 1, marginTop: 2 }}
                 >
                   {getURLHostName(domain)}
+                  {domain}
                 </Typography>
               </Box>
             </Box> */}
