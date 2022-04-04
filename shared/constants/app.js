@@ -73,3 +73,4 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
 
 export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
 export const METAMASK_FLASK_CHROME_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
+export const METAMASK_PROD_FIREFOX_ID = 'webextension@metamask.io';
