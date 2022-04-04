@@ -1,7 +1,6 @@
-.signature-request-message {
+.siwe-message {
   flex: 1 60%;
   display: flex;
-  max-height: 230px;
   flex-direction: column;
   position: relative;
 
@@ -26,50 +25,28 @@
 
   &--root {
     flex: 1 100%;
-    background-color: var(--color-background-alternative);
     padding-bottom: 0.5rem;
-    overflow: auto;
-    padding-left: 12px;
-    padding-right: 12px;
-
-    @media screen and (min-width: $break-large) {
-      width: auto;
-    }
+    border-radius: 8px;
+    padding: 0.5rem 0.875rem;
+    margin: 1rem;
+    border: 1px solid var(--color-border-muted);
   }
 
-  &--node,
-  &--node-leaf {
-    padding-left: 0.3rem;
+  &--param {
+    flex: 1;
+    flex-direction: column;
 
-    &-label {
-      color: var(--color-text-alternative);
-      margin-left: 0.5rem;
+    .label {
+      @include H4;
+      margin: 8px auto;
     }
 
-    &-value {
-      color: var(--color-text-default);
-      margin-left: 0.5rem;
+    .value {
+      @include H6;
+      margin: 8px auto;
       white-space: pre-line;
       overflow: hidden;
       word-wrap: break-word;
     }
-  }
-
-  &--node-leaf {
-    display: flex;
-  }
-
-  &__scroll-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--color-border-default);
-    background: var(--color-background-alternative);
-    color: var(--color-icon-default);
-    position: absolute;
-    right: 24px;
-    bottom: 12px;
-    border-radius: 50%;
-    cursor: pointer;
   }
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequestSIWE from './signature-request-siwe.component';
+import msgParams from './example.msgParams.json';
+import badMsgParams from './example2.msgParams.json';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
 
@@ -41,20 +43,24 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   txData: {
-    msgParams: {
-      data: JSON.stringify({
-        domain: {
-          name: 'happydapp.website',
-        },
-        message: {
-          string: 'haay wuurl',
-          number: 42,
-        },
-      }),
-      origin: 'https://happydapp.website/governance?futarchy=true',
-    },
+    msgParams,
   },
   fromAccount: primaryIdentity,
 };
 
 DefaultStory.storyName = 'Default';
+
+export const BadDomainStory = (args) => {
+  return <SignatureRequestSIWE {...args} />;
+};
+
+BadDomainStory.storyName = 'BadDomain';
+
+BadDomainStory.args = {
+  txData: {
+    msgParams: badMsgParams,
+  },
+  fromAccount: primaryIdentity,
+};
+
+BadDomainStory.storyName = 'BadDomain';

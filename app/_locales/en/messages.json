@@ -2944,6 +2944,15 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "SIWEDomainInvalid": {
+    "message": "The domain does not match the site you are attempting to sign-in to. Proceed with caution."
+  },
+  "SIWESiteRequestSubtitle": {
+    "message": "This site is requesting to sign in with"
+  },
+  "SIWESiteRequestTitle": {
+    "message": "Sign-in request"
+  },
   "skip": {
     "message": "Skip"
   },

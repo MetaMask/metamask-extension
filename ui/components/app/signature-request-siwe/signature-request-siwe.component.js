@@ -1,8 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { stripHexPrefix } from 'ethereumjs-util';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage } from '../../../helpers/utils/util';
+import AccountListItem from '../account-list-item';
+import convertMsg from '../../../helpers/utils/format-message-params';
+import ErrorMessage from '../../ui/error-message';
+
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -59,20 +63,57 @@ export default class SignatureRequest extends PureComponent {
     )}`;
   }
 
+  msgHexToText = (hex) => {
+    try {
+      const stripped = stripHexPrefix(hex);
+      const buff = Buffer.from(stripped, 'hex');
+      return buff.length === 32 ? hex : buff.toString('utf8');
+    } catch (e) {
+      return hex;
+    }
+  };
+
+  renderHeader = () => {
+    const { fromAccount } = this.props;
+    return (
+      <div className="siwe-request-header">
+        <div className="siwe-request-header--domain">
+          <div className="request-signature__overview__item">
+            {/* {domain} */}
+          </div>
+        </div>
+        <div className="title">{this.context.t('SIWESiteRequestTitle')}</div>
+        <div className="subtitle">
+          {this.context.t('SIWESiteRequestSubtitle')}
+        </div>
+        <div className="siwe-request-header--account">
+          {fromAccount && <AccountListItem account={fromAccount} />}
+        </div>
+      </div>
+    );
+    // header
+
+    // domain
+    // Sign-in request
+    // This site is requesting to sign in with
+    // AccountComponent
+  };
+
   render() {
     const {
-      fromAccount,
       txData: {
-        msgParams: { data, origin, version },
+        msgParams: {
+          version,
+          siwe: { isSIWEDomainValid, messageData },
+        },
         type,
       },
       cancel,
       sign,
-      isLedgerWallet,
       hardwareWalletRequiresConnection,
     } = this.props;
-    const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+
+    // const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { trackEvent } = this.context;
 
     const onSign = (event) => {
@@ -108,35 +149,20 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request page-container">
-        <Header fromAccount={fromAccount} />
-        <div className="signature-request-content">
-          <div className="signature-request-content__title">
-            {/* {this.context.t('sigRequest')} */}
-            {"SIWE"}
-          </div>
-          <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial">
-              {domain.name && domain.name[0]}
-            </div>
-            <div className="signature-request-content__identicon-border" />
-            <Identicon address={fromAddress} diameter={70} />
-          </div>
-          <div className="signature-request-content__info--bolded">
-            {domain.name}
-          </div>
-          <div className="signature-request-content__info">{origin}</div>
-          <div className="signature-request-content__info">
-            {this.formatWallet(fromAddress)}
-          </div>
-        </div>
-
-        {/* <Message
-          data={sanitizeMessage(message, primaryType, types)}
+        {/* <Header fromAccount={fromAccount} /> */}
+        {this.renderHeader()}
+        <Message
+          data={convertMsg(messageData)}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}
           messageIsScrollable={messageIsScrollable}
-        /> */}
+        />
+        {!isSIWEDomainValid && (
+          <div className="domain-mismatch-warning">
+            <ErrorMessage errorKey="SIWEDomainInvalid" />
+          </div>
+        )}
         <Footer
           cancelAction={onCancel}
           signAction={onSign}

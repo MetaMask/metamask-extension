@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
-import classnames from 'classnames';
 
 export default class SignatureRequestMessage extends PureComponent {
   static propTypes = {
-    data: PropTypes.object.isRequired,
+    data: PropTypes.array.isRequired,
     onMessageScrolled: PropTypes.func,
     setMessageRootRef: PropTypes.func,
     messageRootRef: PropTypes.object,
@@ -38,25 +37,11 @@ export default class SignatureRequestMessage extends PureComponent {
 
   renderNode(data) {
     return (
-      <div className="signature-request-message--node">
-        {Object.entries(data).map(([label, value], i) => (
-          <div
-            className={classnames('signature-request-message--node', {
-              'signature-request-message--node-leaf':
-                typeof value !== 'object' || value === null,
-            })}
-            key={i}
-          >
-            <span className="signature-request-message--node-label">
-              {label}:{' '}
-            </span>
-            {typeof value === 'object' && value !== null ? (
-              this.renderNode(value)
-            ) : (
-              <span className="signature-request-message--node-value">
-                {`${value}`}
-              </span>
-            )}
+      <div className="siwe-message--node">
+        {data.map(({ label, value }, i) => (
+          <div className="siwe-message--param" key={i}>
+            <div className="label">{label}</div>
+            <div className="value">{`${value}`}</div>
           </div>
         ))}
       </div>
@@ -74,8 +59,8 @@ export default class SignatureRequestMessage extends PureComponent {
             this.props.messageRootRef.scrollHeight,
           );
         }}
-        className="signature-request-message__scroll-button"
-        data-testid="signature-request-scroll-button"
+        className="siwe-message__scroll-button"
+        data-testid="siwe-scroll-button"
       >
         <i className="fa fa-arrow-down" title={this.context.t('scrollDown')} />
       </div>
@@ -83,18 +68,10 @@ export default class SignatureRequestMessage extends PureComponent {
   }
 
   render() {
-    const { data, messageIsScrollable } = this.props;
-
+    const { data } = this.props;
     return (
-      <div onScroll={this.onScroll} className="signature-request-message">
-        {messageIsScrollable ? this.renderScrollButton() : null}
-        <div className="signature-request-message__title">
-          {this.context.t('signatureRequest1')}
-        </div>
-        <div
-          className="signature-request-message--root"
-          ref={this.props.setMessageRootRef}
-        >
+      <div className="siwe-message">
+        <div className="siwe-message--root" ref={this.props.setMessageRootRef}>
           {this.renderNode(data)}
         </div>
       </div>
