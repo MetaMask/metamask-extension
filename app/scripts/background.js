@@ -640,26 +640,33 @@ try {
   browser.webRequest.onHeadersReceived.addListener(
     function (details) {
       // Ignore if tab ID isn't a tab
-      if (details.tabId == -1) return { responseHeaders: details.responseHeaders };
+      if (details.tabId === -1) {
+        return { responseHeaders: details.responseHeaders };
+      }
       // Fetch & store real CSP header
-      const cspHeader = details.responseHeaders.find(header => header.name == 'content-security-policy');
+      const cspHeader = details.responseHeaders.find(
+        (header) => header.name.toLowerCase() === 'content-security-policy',
+      );
       if (cspHeader) {
         // It so happens that onHeadersRecieved is the first time you can run executeScript. Let's do that!
-        chrome.tabs.executeScript(details.tabId, {
+        browser.tabs.executeScript(details.tabId, {
           code: `var meta = document.createElement('meta');
           meta.httpEquiv = 'Content-Security-Policy';
           meta.content = ${JSON.stringify(cspHeader.value)};
           document.getElementsByTagName('head')[0].appendChild(meta);`,
-          runAt: "document_end" // Needs to run at document_end so that the head element has loaded but the scripts have not
+          runAt: 'document_end', // Needs to run at document_end so that the head element has loaded but the scripts have not
         });
       }
       // Remove CSP headers
       return {
-        responseHeaders: details.responseHeaders.filter(header => [
-          'content-security-policy',
-          'content-security-policy-report-only',
-          'x-webkit-csp',
-        ].indexOf(header.name) < 0)
+        responseHeaders: details.responseHeaders.filter(
+          (header) =>
+            [
+              'content-security-policy',
+              'content-security-policy-report-only',
+              'x-webkit-csp',
+            ].indexOf(header.name.toLowerCase()) < 0,
+        ),
       };
     },
     {
