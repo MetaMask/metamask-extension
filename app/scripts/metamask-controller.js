@@ -1048,16 +1048,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getRpcMessageHandler',
         ),
-        getSnapState: async (...args) => {
-          // TODO:flask Just return the action result directly in the next
-          // @metamask/snap-controllers update.
-          return (
-            (await this.controllerMessenger.call(
-              'SnapController:getSnapState',
-              ...args,
-            )) ?? null
-          );
-        },
+        getSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnapState',
+        ),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
