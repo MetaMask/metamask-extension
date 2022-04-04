@@ -4,7 +4,7 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -26,7 +26,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(
+    getNumberOfSettingsInSection(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),

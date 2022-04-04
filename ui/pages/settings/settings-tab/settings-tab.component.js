@@ -11,7 +11,7 @@ import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon'
 import Typography from '../../../components/ui/typography';
 
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -59,7 +59,7 @@ export default class SettingsTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('general')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('general')),
   )
     .fill(undefined)
     .map(() => {

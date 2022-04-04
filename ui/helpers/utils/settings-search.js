@@ -13,7 +13,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../constants/routes';
 
-function showHideSettings(t, settings) {
+function addHiddenSettings(t, settings) {
   if (process.env.COLLECTIBLES_V1) {
     return [
       ...settings,
@@ -362,15 +362,14 @@ export function getSettingsRoutes(t) {
   for (let i = 0; i < settingsRoutesList.length; i++) {
     settingsRoutesList[i].id = i + 1;
   }
-  // TODO: write to json file?
-  return showHideSettings(t, settingsRoutesList);
+  return addHiddenSettings(t, settingsRoutesList);
 }
 
 function getFilteredSettingsRoutes(t, tabName) {
   return getSettingsRoutes(t).filter((s) => s.tab === tabName);
 }
 
-export function getSettingsSectionNumber(t, tabName) {
+export function getNumberOfSettingsInSection(t, tabName) {
   return getSettingsRoutes(t).filter((s) => s.tab === tabName).length;
 }
 
@@ -379,34 +378,18 @@ export function handleSettingsRefs(t, tabName, settingsRefs) {
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (s) => s.route.substring(1) === window.location.hash.substring(1),
   );
-  if (
-    settingsRefsIndex !== -1 &&
-    settingsRefs[settingsRefsIndex].current !== null
-  ) {
-    settingsRefs[settingsRefsIndex].current.scrollIntoView({
-      behavior: 'smooth',
-    });
-    settingsRefs[settingsRefsIndex].current.focus();
-    const historySettingsUrl = window.location.hash.split('#')[1];
-    window.location.hash = historySettingsUrl;
+  if (settingsRefsIndex === -1) {
+    return;
   }
-}
-
-export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
-  const settingsSearchJsonFiltered = getFilteredSettingsRoutes(t, tabName);
-  const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
-    (s) => s.route.substring(1) === window.location.hash.substring(1),
-  );
-
-  if (
-    settingsRefsIndex !== -1 &&
-    settingsRefs !== null &&
-    itemIndex === settingsRefsIndex
-  ) {
-    settingsRefs.current.scrollIntoView({
+  const settingsRef =
+    settingsSearchJsonFiltered.length === 1
+      ? settingsRefs
+      : settingsRefs[settingsRefsIndex];
+  if (settingsRef !== null) {
+    settingsRef.current.scrollIntoView({
       behavior: 'smooth',
     });
-    settingsRefs.current.focus();
+    settingsRef.current.focus();
     const historySettingsUrl = window.location.hash.split('#')[1];
     window.location.hash = historySettingsUrl;
   }
@@ -414,7 +397,7 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
 
 function colorText(menuElement, regex) {
   if (menuElement !== null) {
-    let elemText = menuElement?.innerHTML;
+    let elemText = menuElement.innerHTML;
     elemText = elemText.replace('&amp;', '&');
     elemText = elemText.replace(
       /(<span style="background:#ffd33d">|<\/span>)/gim,
@@ -426,6 +409,7 @@ function colorText(menuElement, regex) {
     );
   }
 }
+
 export function highlightSearchedText() {
   const searchElem = document.getElementById('search-settings');
   const searchRegex = new RegExp(searchElem.value, 'gi');

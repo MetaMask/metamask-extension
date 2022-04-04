@@ -17,12 +17,7 @@ import { getProvider } from '../../../../selectors';
 
 import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
 
-const NetworksListItem = ({
-  network,
-  networkIsSelected,
-  selectedRpcUrl,
-  networkIndex,
-}) => {
+const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -48,8 +43,8 @@ const NetworksListItem = ({
   const settingsRefs = useRef();
 
   useEffect(() => {
-    handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
-  }, [networkIndex, settingsRefs, t]);
+    handleHooksSettingsRefs(t, t('networks'), settingsRefs);
+  }, [settingsRefs, t]);
 
   return (
     <div
@@ -90,7 +85,6 @@ NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
-  networkIndex: PropTypes.number,
 };
 
 export default NetworksListItem;
