@@ -2135,7 +2135,7 @@
     "message": "Enable dark mode"
   },
   "notifications12Description": {
-    "message": "Dark Mode will be enabled for user users depending on OS system preferences. For existing users, turn it on manually under Settings -> Experimental."
+    "message": "Dark Mode will be enabled for new users depending on their system preferences. For existing users, enable Dark Mode manually under Settings -> Experimental."
   },
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
