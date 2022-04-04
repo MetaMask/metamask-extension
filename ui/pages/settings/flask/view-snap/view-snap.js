@@ -74,7 +74,7 @@ function ViewSnap() {
   }
 
   const versionHistory = snap.versionHistory ?? [];
-  const firstInstall = versionHistory[0];
+  const [firstInstall] = versionHistory;
 
   return (
     <div className="view-snap">
