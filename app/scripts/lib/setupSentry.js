@@ -68,9 +68,9 @@ export const SENTRY_STATE = {
 };
 
 export default function setupSentry({ release, getState }) {
-  let sentryTarget;
-
-  if (METAMASK_DEBUG) {
+  if (!release) {
+    throw new Error('Missing release');
+  } else if (METAMASK_DEBUG) {
     return undefined;
   }
 
@@ -79,6 +79,7 @@ export default function setupSentry({ release, getState }) {
       ? METAMASK_ENVIRONMENT
       : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
 
+  let sentryTarget;
   if (METAMASK_ENVIRONMENT === 'production') {
     if (!process.env.SENTRY_DSN) {
       throw new Error(
