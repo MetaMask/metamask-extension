@@ -7,8 +7,8 @@
 
 import browser from 'webextension-polyfill';
 import {
-  METAMASK_PROD_BUILD_ID,
-  METAMASK_FLASK_BUILD_ID,
+  METAMASK_PROD_CHROME_ID,
+  METAMASK_FLASK_CHROME_ID,
 } from '../../shared/constants/app';
 
 const MESSAGE_TEXT = 'isRunning';
@@ -32,10 +32,10 @@ export const onMessageReceived = (message) => {
  * Displays console warning if it's active.
  */
 export const checkForMultipleVersionsRunning = () => {
-  if (browser.runtime.id !== METAMASK_FLASK_BUILD_ID) {
-    browser.runtime.sendMessage(METAMASK_FLASK_BUILD_ID, MESSAGE_TEXT);
+  if (browser.runtime.id !== METAMASK_FLASK_CHROME_ID) {
+    browser.runtime.sendMessage(METAMASK_FLASK_CHROME_ID, MESSAGE_TEXT);
   }
-  if (browser.runtime.id !== METAMASK_PROD_BUILD_ID) {
-    browser.runtime.sendMessage(METAMASK_PROD_BUILD_ID, MESSAGE_TEXT);
+  if (browser.runtime.id !== METAMASK_PROD_CHROME_ID) {
+    browser.runtime.sendMessage(METAMASK_PROD_CHROME_ID, MESSAGE_TEXT);
   }
 };
