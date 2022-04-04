@@ -2131,6 +2131,9 @@
   "notifications11Title": {
     "message": "Scam and security risks"
   },
+  "notifications12ActionText": {
+    "message": "Enable dark mode"
+  },
   "notifications12Description": {
     "message": "Dark Mode will be enabled for user users depending on OS system preferences. For existing users, turn it on manually under Settings -> Experimental."
   },
