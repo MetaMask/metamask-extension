@@ -30,7 +30,7 @@ import SendIcon from '../../ui/icon/overview-send-icon.component';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {

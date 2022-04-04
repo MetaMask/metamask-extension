@@ -27,7 +27,7 @@ import SendIcon from '../../ui/icon/overview-send-icon.component';
 import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 

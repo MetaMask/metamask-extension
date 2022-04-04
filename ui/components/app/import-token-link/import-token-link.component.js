@@ -7,7 +7,7 @@ import Button from '../../ui/button';
 import Box from '../../ui/box/box';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function ImportTokenLink({ isMainnet }) {
   const trackEvent = useContext(MetaMetricsContext);

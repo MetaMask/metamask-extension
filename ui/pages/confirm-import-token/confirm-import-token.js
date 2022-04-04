@@ -9,7 +9,7 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
@@ -24,7 +24,7 @@ const ConfirmImportToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const trackEvent = useContext(NewMetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const pendingTokens = useSelector(getPendingTokens);
