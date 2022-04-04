@@ -1,15 +1,16 @@
+import { EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
 const USER_PROMPTED_EVENT_NAME_MAP = {
-  eth_signTypedData_v4: 'Signature Requested',
-  eth_signTypedData_v3: 'Signature Requested',
-  eth_signTypedData: 'Signature Requested',
-  eth_personal_sign: 'Signature Requested',
-  eth_sign: 'Signature Requested',
-  eth_getEncryptionPublicKey: 'Encryption Public Key Requested',
-  eth_decrypt: 'Decryption Requsted',
-  wallet_requestPermissions: 'Permissions Requested',
-  eth_requestAccounts: 'Permissions Requested',
+  eth_signTypedData_v4: EVENT_NAMES.SIGNATURE_REQUESTED,
+  eth_signTypedData_v3: EVENT_NAMES.SIGNATURE_REQUESTED,
+  eth_signTypedData: EVENT_NAMES.SIGNATURE_REQUESTED,
+  eth_personal_sign: EVENT_NAMES.SIGNATURE_REQUESTED,
+  eth_sign: EVENT_NAMES.SIGNATURE_REQUESTED,
+  eth_getEncryptionPublicKey: EVENT_NAMES.ENCRYPTION_PUBLIC_KEY_REQUESTED,
+  eth_decrypt: EVENT_NAMES.DECRYPTION_REQUESTED,
+  wallet_requestPermissions: EVENT_NAMES.PERMISSIONS_REQUESTED,
+  eth_requestAccounts: EVENT_NAMES.PERMISSIONS_REQUESTED,
 };
 
 const samplingTimeouts = {};
