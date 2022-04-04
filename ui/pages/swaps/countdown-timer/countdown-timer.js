@@ -5,7 +5,10 @@ import classnames from 'classnames';
 import { Duration } from 'luxon';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import { getSwapsQuoteRefreshTime } from '../../../ducks/swaps/swaps';
+import {
+  getSwapsQuoteRefreshTime,
+  getSwapsQuotePrefetchingRefreshTime,
+} from '../../../ducks/swaps/swaps';
 import { SECOND } from '../../../../shared/constants/time';
 import TimerIcon from './timer-icon';
 
@@ -43,7 +46,13 @@ export default function CountdownTimer({
   const initialTimeStartedRef = useRef();
 
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
-  const timerStart = Number(timerBase) || swapsQuoteRefreshTime;
+  const swapsQuotePrefetchingRefreshTime = useSelector(
+    getSwapsQuotePrefetchingRefreshTime,
+  );
+  const refreshTime = initialTimeStartedRef.current
+    ? swapsQuoteRefreshTime
+    : swapsQuotePrefetchingRefreshTime;
+  const timerStart = Number(timerBase) || refreshTime;
 
   const [currentTime, setCurrentTime] = useState(() => Date.now());
   const [timer, setTimer] = useState(() =>
