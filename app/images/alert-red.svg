@@ -1,9 +1,0 @@
-<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg">
-    <g fill="none" fill-rule="evenodd">
-        <circle cx="8" cy="8" fill="#d0021b" r="8"/>
-        <g fill="#fff">
-            <rect height="7" rx="1" width="2" x="7" y="3"/>
-            <rect height="2" rx="1" width="2" x="7" y="11"/>
-        </g>
-    </g>
-</svg>

@@ -8,325 +8,291 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAPS_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../constants/routes';
 
 function showHideSettings(t, settings) {
-  if (!process.env.COLLECTIBLES_V1) {
-    return settings.filter(
-      (e) =>
-        e.section !== t('enableOpenSeaAPI') &&
-        e.section !== t('useCollectibleDetection'),
-    );
+  if (process.env.COLLECTIBLES_V1) {
+    return [
+      ...settings,
+      {
+        tab: t('experimental'),
+        section: t('enableOpenSeaAPI'),
+        description: t('enableOpenSeaAPIDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
+        icon: 'fa fa-flask',
+        id: settings.length + 1,
+      },
+      {
+        tab: t('experimental'),
+        section: t('useCollectibleDetection'),
+        description: t('useCollectibleDetectionDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+        icon: 'fa fa-flask',
+        id: settings.length + 2,
+      },
+    ];
   }
   return settings;
 }
 
 export function getSettingsRoutes(t) {
-  const settingsRoutesList = [
+  let settingsRoutesList = [
     {
       tab: t('general'),
       section: t('currencyConversion'),
       description: '',
       route: `${GENERAL_ROUTE}#currency-conversion`,
-      image: 'general-icon.svg',
-      id: 1,
+      icon: 'fa fa-cog',
     },
     {
       tab: t('general'),
       section: t('primaryCurrencySetting'),
       description: t('primaryCurrencySettingDescription'),
       route: `${GENERAL_ROUTE}#primary-currency`,
-      image: 'general-icon.svg',
-      id: 2,
+      icon: 'fa fa-cog',
     },
     {
       tab: t('general'),
       section: t('currentLanguage'),
       description: '',
       route: `${GENERAL_ROUTE}#current-language`,
-      image: 'general-icon.svg',
-      id: 3,
+      icon: 'fa fa-cog',
     },
     {
       tab: t('general'),
       section: t('accountIdenticon'),
       description: '',
       route: `${GENERAL_ROUTE}#account-identicon`,
-      image: 'general-icon.svg',
-      id: 4,
+      icon: 'fa fa-cog',
     },
     {
       tab: t('general'),
       section: t('hideZeroBalanceTokens'),
       description: '',
       route: `${GENERAL_ROUTE}#zero-balancetokens`,
-      image: 'general-icon.svg',
-      id: 5,
+      icon: 'fa fa-cog',
     },
     {
       tab: t('advanced'),
       section: t('stateLogs'),
       description: t('stateLogsDescription'),
       route: `${ADVANCED_ROUTE}#state-logs`,
-      image: 'advanced-icon.svg',
-      id: 6,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('syncWithMobile'),
       description: '',
       route: `${ADVANCED_ROUTE}#sync-withmobile`,
-      image: 'advanced-icon.svg',
-      id: 7,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('resetAccount'),
       description: t('resetAccountDescription'),
       route: `${ADVANCED_ROUTE}#reset-account`,
-      image: 'advanced-icon.svg',
-      id: 8,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('showAdvancedGasInline'),
       description: t('showAdvancedGasInlineDescription'),
       route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
-      image: 'advanced-icon.svg',
-      id: 9,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('showHexData'),
       description: t('showHexDataDescription'),
       route: `${ADVANCED_ROUTE}#show-hexdata`,
-      image: 'advanced-icon.svg',
-      id: 10,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('showFiatConversionInTestnets'),
       description: t('showFiatConversionInTestnetsDescription'),
       route: `${ADVANCED_ROUTE}#conversion-testnetworks`,
-      image: 'advanced-icon.svg',
-      id: 11,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('showTestnetNetworks'),
       description: t('showTestnetNetworksDescription'),
       route: `${ADVANCED_ROUTE}#show-testnets`,
-      image: 'advanced-icon.svg',
-      id: 12,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('nonceField'),
       description: t('nonceFieldDescription'),
       route: `${ADVANCED_ROUTE}#customize-nonce`,
-      image: 'advanced-icon.svg',
-      id: 13,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('autoLockTimeLimit'),
       description: t('autoLockTimeLimitDescription'),
       route: `${ADVANCED_ROUTE}#autolock-timer`,
-      image: 'advanced-icon.svg',
-      id: 14,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('syncWithThreeBox'),
       description: t('syncWithThreeBoxDescription'),
       route: `${ADVANCED_ROUTE}#sync-with3box`,
-      image: 'advanced-icon.svg',
-      id: 15,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('ipfsGateway'),
       description: t('ipfsGatewayDescription'),
       route: `${ADVANCED_ROUTE}#ipfs-gateway`,
-      image: 'advanced-icon.svg',
-      id: 16,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('preferredLedgerConnectionType'),
       description: t('preferredLedgerConnectionType'),
       route: `${ADVANCED_ROUTE}#ledger-connection`,
-      image: 'advanced-icon.svg',
-      id: 17,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('advanced'),
       section: t('dismissReminderField'),
       description: t('dismissReminderDescriptionField'),
       route: `${ADVANCED_ROUTE}#dimiss-secretrecovery`,
-      image: 'advanced-icon.svg',
-      id: 18,
+      icon: 'fas fa-sliders-h',
     },
     {
       tab: t('contacts'),
       section: t('contacts'),
       description: t('contacts'),
       route: CONTACT_LIST_ROUTE,
-      image: 'contacts-icon.svg',
-      id: 19,
+      icon: 'fa fa-address-book',
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    {
+      tab: t('snaps'),
+      section: t('snaps'),
+      description: t('snaps'),
+      route: SNAPS_LIST_ROUTE,
+      icon: 'fa fa-flask',
+    },
+    ///: END:ONLY_INCLUDE_IN
     {
       tab: t('securityAndPrivacy'),
       section: t('revealSeedWords'),
       description: t('revealSeedWords'),
       route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
-      image: 'security-icon.svg',
-      id: 20,
+      icon: 'fa fa-lock',
     },
     {
       tab: t('securityAndPrivacy'),
       section: t('showIncomingTransactions'),
       description: t('showIncomingTransactionsDescription'),
       route: `${SECURITY_ROUTE}#incoming-transaction`,
-      image: 'security-icon.svg',
-      id: 21,
+      icon: 'fa fa-lock',
     },
     {
       tab: t('securityAndPrivacy'),
       section: t('usePhishingDetection'),
       description: t('usePhishingDetectionDescription'),
       route: `${SECURITY_ROUTE}#phishing-detection`,
-      image: 'security-icon.svg',
-      id: 22,
+      icon: 'fa fa-lock',
     },
     {
       tab: t('securityAndPrivacy'),
       section: t('participateInMetaMetrics'),
       description: t('participateInMetaMetricsDescription'),
       route: `${SECURITY_ROUTE}#metrametrics`,
-      image: 'security-icon.svg',
-      id: 23,
+      icon: 'fa fa-lock',
     },
     {
       tab: t('alerts'),
       section: t('alertSettingsUnconnectedAccount'),
       description: t('alertSettingsUnconnectedAccount'),
       route: `${ALERTS_ROUTE}#unconnected-account`,
-      image: 'alerts-icon.svg',
-      id: 24,
+      icon: 'fa fa-bell',
     },
     {
       tab: t('alerts'),
       section: t('alertSettingsWeb3ShimUsage'),
       description: t('alertSettingsWeb3ShimUsage'),
       route: `${ALERTS_ROUTE}#web3-shimusage`,
-      image: 'alerts-icon.svg',
-      id: 25,
+      icon: 'fa fa-bell',
     },
     {
       tab: t('networks'),
       section: t('mainnet'),
       description: t('mainnet'),
       route: `${NETWORKS_ROUTE}#networks-mainnet`,
-      image: 'network-icon.svg',
-      id: 26,
+      icon: 'fa fa-plug',
     },
     {
       tab: t('networks'),
       section: t('ropsten'),
       description: t('ropsten'),
       route: `${NETWORKS_ROUTE}#networks-ropsten`,
-      image: 'network-icon.svg',
-      id: 27,
+      icon: 'fa fa-plug',
     },
     {
       tab: t('networks'),
       section: t('rinkeby'),
       description: t('rinkeby'),
       route: `${NETWORKS_ROUTE}#networks-rinkeby`,
-      image: 'network-icon.svg',
-      id: 28,
+      icon: 'fa fa-plug',
     },
     {
       tab: t('networks'),
       section: t('goerli'),
       description: t('goerli'),
       route: `${NETWORKS_ROUTE}#networks-goerli`,
-      image: 'network-icon.svg',
-      id: 29,
+      icon: 'fa fa-plug',
     },
     {
       tab: t('networks'),
       section: t('kovan'),
       description: t('kovan'),
-      route: `${NETWORKS_ROUTE}#networtks-kovan`,
-      image: 'network-icon.svg',
-      id: 30,
+      route: `${NETWORKS_ROUTE}#networks-kovan`,
+      icon: 'fa fa-plug',
     },
     {
       tab: t('networks'),
       section: t('localhost'),
       description: t('localhost'),
-      route: `${NETWORKS_ROUTE}#network-localhost`,
-      image: 'network-icon.svg',
-      id: 31,
+      route: `${NETWORKS_ROUTE}#networks-localhost`,
+      icon: 'fa fa-plug',
     },
-    {
-      tab: t('experimental'),
-      section: t('useTokenDetection'),
-      description: t('useTokenDetectionDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#token-description`,
-      image: 'experimental-icon.svg',
-      id: 32,
-    },
-    {
-      tab: t('experimental'),
-      section: t('enableOpenSeaAPI'),
-      description: t('enableOpenSeaAPIDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
-      image: 'experimental-icon.svg',
-      id: 33,
-    },
-    {
-      tab: t('experimental'),
-      section: t('useCollectibleDetection'),
-      description: t('useCollectibleDetectionDescription'),
-      route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
-      image: 'experimental-icon.svg',
-      id: 34,
-    },
-
     {
       tab: t('about'),
       section: t('metamaskVersion'),
       description: t('builtAroundTheWorld'),
       route: `${ABOUT_US_ROUTE}#version`,
-      image: 'info-icon.svg',
-      id: 35,
+      icon: 'fa fa-info-circle',
     },
     {
       tab: t('about'),
       section: t('links'),
       description: '',
       route: `${ABOUT_US_ROUTE}#links`,
-      image: 'info-icon.svg',
-      id: 36,
+      icon: 'fa fa-info-circle',
     },
     {
       tab: t('about'),
       section: t('privacyMsg'),
       description: t('privacyMsg'),
       route: `${ABOUT_US_ROUTE}#privacy-policy`,
-      image: 'info-icon.svg',
-      id: 37,
+      icon: 'fa fa-info-circle',
     },
     {
       tab: t('about'),
       section: t('terms'),
       description: t('terms'),
       route: `${ABOUT_US_ROUTE}#terms`,
-      image: 'info-icon.svg',
-      id: 38,
+      icon: 'fa fa-info-circle',
     },
 
     {
@@ -334,8 +300,7 @@ export function getSettingsRoutes(t) {
       section: t('attributions'),
       description: t('attributions'),
       route: `${ABOUT_US_ROUTE}#attributions`,
-      image: 'info-icon.svg',
-      id: 39,
+      icon: 'fa fa-info-circle',
     },
 
     {
@@ -343,8 +308,7 @@ export function getSettingsRoutes(t) {
       section: t('supportCenter'),
       description: t('supportCenter'),
       route: `${ABOUT_US_ROUTE}#supportcenter`,
-      image: 'info-icon.svg',
-      id: 40,
+      icon: 'fa fa-info-circle',
     },
 
     {
@@ -352,8 +316,7 @@ export function getSettingsRoutes(t) {
       section: t('visitWebSite'),
       description: t('visitWebSite'),
       route: `${ABOUT_US_ROUTE}#visitwebsite`,
-      image: 'info-icon.svg',
-      id: 41,
+      icon: 'fa fa-info-circle',
     },
 
     {
@@ -361,11 +324,44 @@ export function getSettingsRoutes(t) {
       section: t('contactUs'),
       description: t('contactUs'),
       route: `${ABOUT_US_ROUTE}#contactus`,
-      image: 'info-icon.svg',
-      id: 42,
+      icon: 'fa fa-info-circle',
+    },
+    {
+      tab: t('experimental'),
+      section: t('enableEIP1559V2'),
+      description: t('enableEIP1559V2Description'),
+      route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
+      icon: 'fa fa-flask',
     },
   ];
-
+  if (process.env.TOKEN_DETECTION_V2) {
+    settingsRoutesList = [
+      ...settingsRoutesList,
+      {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        tab: t('advanced'),
+        section: t('tokenDetection'),
+        description: t('tokenDetectionToggleDescription'),
+        route: `${ADVANCED_ROUTE}#token-description`,
+        icon: 'fas fa-sliders-h',
+      },
+    ];
+  } else {
+    settingsRoutesList = [
+      ...settingsRoutesList,
+      {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        tab: t('experimental'),
+        section: t('useTokenDetection'),
+        description: t('useTokenDetectionDescription'),
+        route: `${EXPERIMENTAL_ROUTE}#token-description`,
+        icon: 'fa fa-flask',
+      },
+    ];
+  }
+  for (let i = 0; i < settingsRoutesList.length; i++) {
+    settingsRoutesList[i].id = i + 1;
+  }
   // TODO: write to json file?
   return showHideSettings(t, settingsRoutesList);
 }
@@ -383,7 +379,6 @@ export function handleSettingsRefs(t, tabName, settingsRefs) {
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (s) => s.route.substring(1) === window.location.hash.substring(1),
   );
-
   if (
     settingsRefsIndex !== -1 &&
     settingsRefs[settingsRefsIndex].current !== null

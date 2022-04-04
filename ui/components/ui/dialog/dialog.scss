@@ -2,25 +2,24 @@
   @include H7;
 
   padding: 1rem;
-  border: 1px solid var(--black);
   box-sizing: border-box;
   border-radius: 8px;
 
   &--message {
-    border-color: var(--Blue-200);
-    color: var(--Blue-600);
-    background-color: var(--Blue-000);
+    color: var(--color-text-default);
+    background-color: var(--color-info-muted);
+    border: 1px solid var(--color-info-default);
   }
 
   &--error {
-    border-color: var(--Red-300);
-    color: var(--Red-600);
-    background-color: var(--Red-000);
+    color: 1px solid var(--color-text-default);
+    background-color: var(--color-error-muted);
+    border: 1px solid var(--color-error-default);
   }
 
   &--warning {
-    border-color: var(--Orange-300);
-    color: var(--Orange-600);
-    background-color: var(--Orange-000);
+    color: 1px solid var(--color-text-default);
+    background-color: var(--color-warning-muted);
+    border: 1px solid var(--color-warning-default);
   }
 }

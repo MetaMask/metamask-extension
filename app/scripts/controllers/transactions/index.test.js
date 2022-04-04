@@ -2186,10 +2186,10 @@ describe('Transaction Controller', function () {
       assert.equal(result.userFeeLevel, 'high');
     });
 
-    it('does not update if status is not unapproved', function () {
+    it('should not update and should throw error if status is not type "unapproved"', function () {
       txStateManager.addTransaction({
         id: '4',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TRANSACTION_STATUSES.DROPPED,
         metamaskNetworkId: currentNetworkId,
         txParams: {
           maxPriorityFeePerGas: '0x007',
@@ -2200,14 +2200,18 @@ describe('Transaction Controller', function () {
         estimateUsed: '0x009',
       });
 
-      txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
-      let result = txStateManager.getTransaction('4');
-      assert.equal(result.txParams.maxFeePerGas, '0x008');
+      assert.throws(
+        () =>
+          txController.updateTransactionGasFees('4', {
+            maxFeePerGas: '0x0088',
+          }),
+        Error,
+        `TransactionsController: Can only call updateTransactionGasFees on an unapproved transaction.
+         Current tx status: ${TRANSACTION_STATUSES.DROPPED}`,
+      );
 
-      // test update estimate used
-      txController.updateTransactionGasFees('4', { estimateUsed: '0x0099' });
-      result = txStateManager.getTransaction('4');
-      assert.equal(result.estimateUsed, '0x009');
+      const transaction = txStateManager.getTransaction('4');
+      assert.equal(transaction.txParams.maxFeePerGas, '0x008');
     });
 
     it('does not update unknown parameters in update method', function () {

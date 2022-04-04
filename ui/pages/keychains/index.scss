@@ -61,7 +61,7 @@
     @include Paragraph;
 
     margin-bottom: 18px;
-    color: var(--black);
+    color: var(--color-text-default);
     position: absolute;
     top: -25px;
   }
@@ -87,7 +87,7 @@
   &__error {
     @include H6;
 
-    color: var(--crimson);
+    color: var(--color-error-default);
     padding-top: 5px;
   }
 }

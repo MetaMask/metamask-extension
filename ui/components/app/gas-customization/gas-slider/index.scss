@@ -16,7 +16,7 @@
     -webkit-appearance: none !important;
     height: 34px;
     width: 34px;
-    background-color: var(--primary-blue);
+    background-color: var(--color-primary-default);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 50%;
     position: relative;
@@ -26,7 +26,7 @@
   &__bar {
     height: 6px;
     width: 322px;
-    background: var(--alto);
+    background: var(--color-background-alternative);
     display: flex;
     justify-content: space-between;
     position: absolute;
@@ -41,7 +41,7 @@
     margin-left: 102px;
     width: 322px;
     z-index: 1;
-    background-color: var(--blizzard-blue);
+    background-color: var(--color-primary-muted);
   }
 
   &__labels {
@@ -50,6 +50,6 @@
     display: flex;
     justify-content: space-between;
     margin-top: -6px;
-    color: var(--mid-gray);
+    color: var(--color-text-alternative);
   }
 }

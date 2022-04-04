@@ -7,8 +7,7 @@ import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
   getCurrentChainId,
@@ -31,6 +30,7 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
   setSwapsFromToken,
@@ -68,7 +68,7 @@ export default function AwaitingSwap({
   submittingSwap,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const animationEventEmitter = useRef(new EventEmitter());
@@ -113,6 +113,9 @@ export default function AwaitingSwap({
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const sensitiveProperties = {
     token_from: sourceTokenInfo?.symbol,
     token_from_amount: fetchParams?.value,
@@ -124,18 +127,9 @@ export default function AwaitingSwap({
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
     stx_enabled: smartTransactionsEnabled,
+    current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
-  const quotesExpiredEvent = useNewMetricEvent({
-    event: 'Quotes Timed Out',
-    sensitiveProperties,
-    category: 'swaps',
-  });
-  const makeAnotherSwapEvent = useNewMetricEvent({
-    event: 'Make Another Swap',
-    sensitiveProperties,
-    category: 'swaps',
-  });
 
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
@@ -192,7 +186,11 @@ export default function AwaitingSwap({
 
     if (!trackedQuotesExpiredEvent) {
       setTrackedQuotesExpiredEvent(true);
-      quotesExpiredEvent();
+      trackEvent({
+        event: 'Quotes Timed Out',
+        category: 'swaps',
+        sensitiveProperties,
+      });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
     headerText = t('swapFetchingQuotesErrorTitle');
@@ -255,7 +253,11 @@ export default function AwaitingSwap({
         <a
           href="#"
           onClick={async () => {
-            makeAnotherSwapEvent();
+            trackEvent({
+              event: 'Make Another Swap',
+              category: 'swaps',
+              sensitiveProperties,
+            });
             await dispatch(navigateBackToBuildQuote(history));
             dispatch(setSwapsFromToken(defaultSwapsToken));
           }}
@@ -301,7 +303,7 @@ export default function AwaitingSwap({
                 history,
                 fromTokenInputValue,
                 maxSlippage,
-                metaMetricsEvent,
+                trackEvent,
               ),
             );
           } else if (errorKey) {

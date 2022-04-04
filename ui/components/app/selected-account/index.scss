@@ -25,7 +25,7 @@
   &__address {
     @include H7;
 
-    color: #989a9b;
+    color: var(--color-text-muted);
     display: flex;
     align-items: center;
   }

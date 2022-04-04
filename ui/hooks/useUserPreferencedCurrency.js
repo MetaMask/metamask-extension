@@ -44,7 +44,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     getPreferences,
     shallowEqual,
   );
-  const showFiat = useSelector(getShouldShowFiat);
+  const showFiat = useSelector(getShouldShowFiat) || opts.showFiatOverride;
   const currentCurrency = useSelector(getCurrentCurrency);
 
   let currency, numberOfDecimals;

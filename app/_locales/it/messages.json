@@ -55,12 +55,6 @@
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },
-  "addToAddressBook": {
-    "message": "Aggiungi alla rubrica"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Ad esempio, John D."
-  },
   "addToken": {
     "message": "Aggiungi Token"
   },
@@ -526,9 +520,6 @@
   },
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
-  },
-  "enterAnAlias": {
-    "message": "Inserisci un alias"
   },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
@@ -1216,12 +1207,6 @@
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separa ogni parola con un singolo spazio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Incolla frase seed dagli appunti"
-  },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
   },
@@ -1297,9 +1282,6 @@
   },
   "showPrivateKeys": {
     "message": "Mostra Chiave Privata"
-  },
-  "showSeedPhrase": {
-    "message": "Mostra frase seed"
   },
   "sigRequest": {
     "message": "Firma Richiesta"

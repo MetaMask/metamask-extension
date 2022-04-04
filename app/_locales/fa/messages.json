@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },
-  "addToAddressBook": {
-    "message": "به کتاب آدرسها اضافه کنید"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلًا. John D."
-  },
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "خطا در ثبت نام ENS"
-  },
-  "enterAnAlias": {
-    "message": "یک نام مستعار را وارد کنید"
   },
   "enterPassword": {
     "message": "رمز عبور را وارد کنید"
@@ -815,9 +806,6 @@
   },
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
   "seedPhraseReq": {
     "message": "عبارات بازیاب 12 کلمه اند"

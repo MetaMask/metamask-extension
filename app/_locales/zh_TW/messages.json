@@ -41,12 +41,6 @@
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
   },
-  "addToAddressBook": {
-    "message": "新增至位址簿中"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如 John D。"
-  },
   "addToken": {
     "message": "加入代幣"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS 名稱註冊錯誤"
-  },
-  "enterAnAlias": {
-    "message": "輸入化名"
   },
   "enterPassword": {
     "message": "請輸入密碼"
@@ -797,9 +788,6 @@
   },
   "securityAndPrivacy": {
     "message": "安全＆隱私"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "單詞之間請用空白分隔"
   },
   "seedPhraseReq": {
     "message": "助憶詞為 12 個詞語"

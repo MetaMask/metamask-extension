@@ -95,7 +95,7 @@
   &__back-button {
     @include Paragraph;
 
-    color: #2f9ae0;
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
@@ -152,7 +152,7 @@
   }
 
   &__warning-container {
-    background: var(--color-warning-muted);
+    background: var(--color-error-muted);
     padding: 20px;
     display: flex;
     align-items: start;
@@ -168,6 +168,7 @@
 
   &__warning-icon {
     padding-top: 5px;
+    color: var(--color-error-default);
   }
 }
 

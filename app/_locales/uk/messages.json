@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Додати рекомендовані токени"
   },
-  "addToAddressBook": {
-    "message": "Додати до адресної книги"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Напр.: Джон Д."
-  },
   "addToken": {
     "message": "Додати токен"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Помилка у реєстрації ENS ім'я"
-  },
-  "enterAnAlias": {
-    "message": "Введіть псевдонім"
   },
   "enterPassword": {
     "message": "Введіть пароль"
@@ -815,9 +806,6 @@
   },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Відділіть кожне слово одним пробілом"
   },
   "seedPhraseReq": {
     "message": "Початкові фрази мають 12 слів"

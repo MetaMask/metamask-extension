@@ -142,7 +142,11 @@ export default class InfoTab extends PureComponent {
           {this.renderInfoLinks()}
         </div>
         <div className="info-tab__logo-wrapper">
-          <img src="./images/info-logo.png" className="info-tab__logo" alt="" />
+          <img
+            src="./images/logo/metamask-fox.svg"
+            className="info-tab__logo"
+            alt="MetaMask Logo"
+          />
         </div>
       </div>
     );

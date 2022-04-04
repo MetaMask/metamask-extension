@@ -138,22 +138,42 @@
     margin-bottom: 50px;
   }
 
-  &__new-network-notification-message {
+  &__new-network-notification {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
-    &--image {
-      margin-right: 10px;
+    &-icon {
+      margin-right: 8px;
+      padding-top: 8px;
+      color: var(--color-success-default);
     }
-  }
 
-  &__close {
-    color: var(--color-text-default);
-    background: none;
-    margin-left: 20px;
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 20px;
+    }
   }
 
   &__error-message {
     left: 8px;
+  }
+
+  &__new-nft-notification {
+    margin-bottom: 24px;
+    margin-right: 8px;
+
+    &-icon {
+      margin-right: 10px;
+      padding-top: 6px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 44px;
+    }
   }
 }

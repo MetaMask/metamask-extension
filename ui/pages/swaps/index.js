@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useContext,
+  useState,
+  useCallback,
+} from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
@@ -37,6 +43,7 @@ import {
   getPendingSmartTransactions,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   dismissCurrentSmartTransactionsErrorMessage,
   getCurrentSmartTransactionsErrorMessageDismissed,
@@ -74,16 +81,17 @@ import {
   setSwapsErrorKey,
 } from '../../store/actions';
 
-import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   fetchTokens,
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
+  stxErrorTypes,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
@@ -96,6 +104,7 @@ export default function Swap() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
@@ -106,6 +115,7 @@ export default function Swap() {
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
 
+  const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
@@ -134,6 +144,9 @@ export default function Swap() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
@@ -230,27 +243,30 @@ export default function Swap() {
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const exitedSwapsEvent = useNewMetricEvent({
-    event: 'Exited Swaps',
-    category: 'swaps',
-    sensitiveProperties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-      stx_enabled: smartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
-    },
-  });
+  const trackExitedSwapsEvent = () => {
+    trackEvent({
+      event: 'Exited Swaps',
+      category: 'swaps',
+      sensitiveProperties: {
+        token_from: fetchParams?.sourceTokenInfo?.symbol,
+        token_from_amount: fetchParams?.value,
+        request_type: fetchParams?.balanceError,
+        token_to: fetchParams?.destinationTokenInfo?.symbol,
+        slippage: fetchParams?.slippage,
+        custom_slippage: fetchParams?.slippage !== 2,
+        current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+    });
+  };
   const exitEventRef = useRef();
   useEffect(() => {
     exitEventRef.current = () => {
-      exitedSwapsEvent();
+      trackExitedSwapsEvent();
     };
   });
 
@@ -288,36 +304,61 @@ export default function Swap() {
     return () => window.removeEventListener('beforeunload', fn);
   }, [dispatch, isLoadingQuotesRoute]);
 
-  const errorStxEvent = useNewMetricEvent({
-    event: 'Error Smart Transactions',
-    category: 'swaps',
-    sensitiveProperties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-      stx_enabled: smartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
-      stx_error: currentSmartTransactionsError,
-    },
-  });
+  const trackErrorStxEvent = useCallback(() => {
+    trackEvent({
+      event: 'Error Smart Transactions',
+      category: 'swaps',
+      sensitiveProperties: {
+        token_from: fetchParams?.sourceTokenInfo?.symbol,
+        token_from_amount: fetchParams?.value,
+        request_type: fetchParams?.balanceError,
+        token_to: fetchParams?.destinationTokenInfo?.symbol,
+        slippage: fetchParams?.slippage,
+        custom_slippage: fetchParams?.slippage !== 2,
+        current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+        stx_error: currentSmartTransactionsError,
+      },
+    });
+  }, [
+    currentSmartTransactionsError,
+    currentSmartTransactionsEnabled,
+    trackEvent,
+    fetchParams?.balanceError,
+    fetchParams?.destinationTokenInfo?.symbol,
+    fetchParams?.slippage,
+    fetchParams?.sourceTokenInfo?.symbol,
+    fetchParams?.value,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    pathname,
+    smartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+  ]);
+
   useEffect(() => {
-    if (currentSmartTransactionsError) {
-      errorStxEvent();
+    if (currentSmartTransactionsError && !currentStxErrorTracked) {
+      setCurrentStxErrorTracked(true);
+      trackErrorStxEvent();
     }
-  }, [errorStxEvent, currentSmartTransactionsError]);
+  }, [
+    currentSmartTransactionsError,
+    trackErrorStxEvent,
+    currentStxErrorTracked,
+  ]);
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   const isStxNotEnoughFundsError =
-    currentSmartTransactionsError === 'not_enough_funds';
+    currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
+  const isStxRegularTxPendingError =
+    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_PENDING;
 
   return (
     <div className="swaps">
@@ -371,10 +412,20 @@ export default function Swap() {
                   </div>
                 ) : (
                   <div className="build-quote__token-verification-warning-message">
-                    <div className="build-quote__bold">
+                    <button
+                      onClick={() => {
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage());
+                      }}
+                      className="swaps__notification-close-button"
+                    />
+                    <div className="swaps__notification-title">
                       {t('stxUnavailable')}
                     </div>
-                    <div>{t('stxFallbackToNormal')}</div>
+                    <div>
+                      {isStxRegularTxPendingError
+                        ? t('stxFallbackPendingTx')
+                        : t('stxFallbackUnavailable')}
+                    </div>
                   </div>
                 )
               }
@@ -383,16 +434,6 @@ export default function Swap() {
                   ? 'swaps__error-message'
                   : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
               }
-              primaryAction={
-                isStxNotEnoughFundsError
-                  ? null
-                  : {
-                      label: t('dismiss'),
-                      onClick: () =>
-                        dispatch(dismissCurrentSmartTransactionsErrorMessage()),
-                    }
-              }
-              withRightButton
             />
           )}
           <Switch>

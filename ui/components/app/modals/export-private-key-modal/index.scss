@@ -10,7 +10,7 @@
     width: 100%;
     height: 1px;
     margin: 19px 0 8px 0;
-    background-color: var(--alto);
+    background-color: var(--color-border-default);
   }
 
   &__account-name {
@@ -28,12 +28,12 @@
   &__password--error {
     @include H6;
 
-    color: var(--scorpion);
+    color: var(--color-text-default);
     margin-bottom: 10px;
   }
 
   &__password--error {
-    color: var(--crimson);
+    color: var(--color-error-default);
     margin-bottom: 0;
   }
 
@@ -43,41 +43,39 @@
     padding: 10px 0 13px 17px;
     width: 291px;
     height: 44px;
+    background: var(--color-background-default);
+    color: var(--color-text-default);
+    border: 1px solid var(--color-border-default);
   }
 
   &__password::-webkit-input-placeholder {
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &__password--warning {
     @include H7;
 
     border-radius: 8px;
-    background-color: #fff6f6;
+    background-color: var(--color-error-muted);
     font-weight: 500;
-    color: var(--crimson);
+    color: var(--color-text-default);
+    border: 1px solid var(--color-error-default);
     width: 292px;
     padding: 9px 15px;
     margin-top: 18px;
   }
 
-  &__password-display-wrapper {
-    height: 80px;
-    width: 291px;
-    border: 1px solid var(--silver);
-    border-radius: 2px;
-  }
-
-  &__password-display-textarea {
+  &__private-key-display {
     @include Paragraph;
 
-    color: var(--crimson);
-    border: none;
-    height: 75px;
-    width: 100%;
-    overflow: hidden;
-    resize: none;
+    height: 80px;
+    width: 291px;
+    border: 1px solid var(--color-border-default);
+    border-radius: 2px;
+    color: var(--color-error-default);
     padding: 9px 13px 8px;
+    overflow: hidden;
+    overflow-wrap: break-word;
   }
 
   &__buttons {
@@ -98,13 +96,14 @@
     margin-right: 15px;
   }
 
-  & .ellip-address-wrapper {
-    display: flex;
-    justify-content: center;
-    border: 1px solid var(--alto);
+  .ellip-address-wrapper {
+    border: 1px solid var(--color-border-default);
     padding: 5px 10px;
     margin-top: 7px;
-    width: 286px;
+    max-width: 286px;
+    direction: ltr;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
