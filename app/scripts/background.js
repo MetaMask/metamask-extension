@@ -625,70 +625,6 @@ async function openPopup() {
   });
 }
 
-/**
- * Fetch csp identifier
- */
-let cspIdentifier = 'undefined';
-browser.runtime.onMessage.addListener(function (msg, _, sendResponse) {
-  if (msg.cspIdentifier && cspIdentifier === 'undefined') {
-    cspIdentifier = msg.cspIdentifier;
-    sendResponse();
-  }
-});
-
-/**
- * Modified from https://github.com/Rufflewind/chrome_cspmod
- *
- * @param details
- */
-function cspModificationProcessor(details) {
-  // Fetch all headers
-  const headers = details.responseHeaders;
-  const thisCspIdentifier = cspIdentifier;
-  for (let j = 0; j < headers.length; j++) {
-    const header = headers[j];
-    const name = header.name.toLowerCase();
-    // Only modify CSP headers
-    if (
-      [
-        'content-security-policy',
-        'content-security-policy-report-only',
-        'x-webkit-csp',
-      ].indexOf(name) > -1
-    ) {
-      // Get if the header already contains a script CSP
-      const hasScriptSrc = header.value
-        .split(';')
-        .some((policy) => policy.split(' ')[0].toLowerCase() === 'script-src');
-      if (hasScriptSrc) {
-        header.value = header.value
-          .split(';')
-          .map((policy) => {
-            if (policy.split(' ')[0].toLowerCase() !== 'script-src') {
-              return policy;
-            }
-            return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
-          })
-          .join(';');
-      } else {
-        // If not, modify the default
-        header.value = header.value
-          .split(';')
-          .map((policy) => {
-            if (policy.split(' ')[0].toLowerCase() !== 'default-src') {
-              return policy;
-            }
-            return [...policy.split(' '), thisCspIdentifier].join(' '); // Add sha hash to CSP
-          })
-          .join(';');
-      }
-    }
-  }
-  return {
-    responseHeaders: headers,
-  };
-}
-
 // On first install, open a new tab with MetaMask
 browser.runtime.onInstalled.addListener(({ reason }) => {
   if (
@@ -701,14 +637,34 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 
 // In try/catch because chrome doesn't like this sometimes
 try {
-  /**
-   * Modified from https://github.com/Rufflewind/chrome_cspmod
-   */
   browser.webRequest.onHeadersReceived.addListener(
-    cspModificationProcessor,
+    function (details) {
+      // Ignore if tab ID isn't a tab
+      if (details.tabId == -1) return { responseHeaders: details.responseHeaders };
+      // Fetch & store real CSP header
+      const cspHeader = details.responseHeaders.find(header => header.name == 'content-security-policy');
+      if (cspHeader) {
+        // It so happens that onHeadersRecieved is the first time you can run executeScript. Let's do that!
+        chrome.tabs.executeScript(details.tabId, {
+          code: `var meta = document.createElement('meta');
+          meta.httpEquiv = 'Content-Security-Policy';
+          meta.content = ${JSON.stringify(cspHeader.value)};
+          document.getElementsByTagName('head')[0].appendChild(meta);`,
+          runAt: "document_end" // Needs to run at document_end so that the head element has loaded but the scripts have not
+        });
+      }
+      // Remove CSP headers
+      return {
+        responseHeaders: details.responseHeaders.filter(header => [
+          'content-security-policy',
+          'content-security-policy-report-only',
+          'x-webkit-csp',
+        ].indexOf(header.name) < 0)
+      };
+    },
     {
-      urls: ['file://*/*', 'http://*/*', 'https://*/*'],
-      types: ['main_frame', 'sub_frame'],
+      urls: ['http://*/*', 'https://*/*'],
+      types: ['main_frame'],
     },
     ['blocking', 'responseHeaders'],
   );
