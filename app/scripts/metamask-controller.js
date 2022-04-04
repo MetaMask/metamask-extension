@@ -1034,10 +1034,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:add',
         ),
         clearSnapState: (fromSubject) =>
-          this.controllerMessenger(
-            'SnapController:updateSnap',
+          this.controllerMessenger.call(
+            'SnapController:updateSnapState',
             fromSubject,
-            {},
+            null,
           ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
         getSnap: this.controllerMessenger.call.bind(
