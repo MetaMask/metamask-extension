@@ -269,6 +269,7 @@ function createScriptTasks({
       testing,
       policyOnly,
       shouldLintFenceFiles,
+      version,
     });
   }
 
@@ -285,6 +286,7 @@ function createScriptTasks({
       testing,
       policyOnly,
       shouldLintFenceFiles,
+      version,
     });
   }
 
@@ -301,6 +303,7 @@ function createScriptTasks({
       testing,
       policyOnly,
       shouldLintFenceFiles,
+      version,
     });
   }
 
@@ -320,6 +323,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         testing,
+        version,
       }),
       createNormalBundle({
         buildType,
@@ -332,6 +336,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         testing,
+        version,
       }),
     );
   }
@@ -532,6 +537,7 @@ function createNormalBundle({
   modulesToExpose,
   shouldLintFenceFiles,
   testing,
+  version,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -543,7 +549,12 @@ function createNormalBundle({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
+    const envVars = getEnvironmentVariables({
+      buildType,
+      devMode,
+      testing,
+      version,
+    });
     setupBundlerDefaults(buildConfiguration, {
       buildType,
       devMode,
