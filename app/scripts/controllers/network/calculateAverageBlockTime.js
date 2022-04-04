@@ -34,7 +34,7 @@ export const calculateAverageBlockTimeInMs = async (rpcUrl) => {
     },
   });
 
-  const NUM_PAST = 5;
+  const NUM_PAST = 128;
   const latestBlock = Number.parseInt((await response.json()).result, 16);
   const latestBlockTimestamp = await getBlockTimestamp(rpcUrl, latestBlock);
   const pastBlockTimestamp = await getBlockTimestamp(
