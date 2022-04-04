@@ -104,12 +104,13 @@
 
     &--button {
       align-self: center;
+
       @media screen and (min-width: $break-large) {
         width: 50%;
       }
 
       @media screen and (max-width: $break-large) {
-      width: 80%;
+        width: 80%;
       }
 
       &__confirm {
