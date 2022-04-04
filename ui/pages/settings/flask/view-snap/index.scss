@@ -25,7 +25,7 @@
   }
 
   &__install-details {
-    border-bottom: 1px solid var(--alto);
+    border-bottom: 1px solid var(--color-border-muted);
     margin-right: 24px;
 
     @media screen and (max-width: $break-small) {
@@ -34,7 +34,7 @@
   }
 
   &__version {
-   font-family: monospace;
+    font-family: monospace;
   }
 
   &__title {

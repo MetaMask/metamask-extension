@@ -76,7 +76,6 @@ function ViewSnap() {
   const versionHistory = snap.versionHistory ?? [];
   const firstInstall = versionHistory[0];
 
-  console.log(snap);
   return (
     <div className="view-snap">
       <div className="settings-page__content-row">
@@ -110,6 +109,7 @@ function ViewSnap() {
           className="view-snap__install-details"
           display="flex"
           justifyContent="space-between"
+          alignItems="center"
           padding={2}
         >
           {firstInstall && (
