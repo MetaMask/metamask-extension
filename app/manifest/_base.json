@@ -72,7 +72,6 @@
     "webRequestBlocking",
     "*://*.eth/",
     "notifications",
-    "file://*/*",
     "http://*/*",
     "https://*/*"
   ],
