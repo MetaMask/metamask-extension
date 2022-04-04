@@ -18,7 +18,7 @@ import {
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';

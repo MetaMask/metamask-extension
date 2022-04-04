@@ -112,6 +112,29 @@ const state = {
   ],
   metamask: {
     tokenList: {
+      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
+        address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+        symbol: 'SNX',
+        decimals: 18,
+        name: 'Synthetix Network Token',
+        iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Synthetix',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        occurrences: 12,
+        unlisted: false
+      },
       '0x6b175474e89094c44da98b954eedeac495271d0f': {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'META',
@@ -1086,6 +1109,7 @@ const state = {
     suggestedAssets: [],
     useNonceField: false,
     usePhishDetect: true,
+    useTokenDetection: true,
     lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',
