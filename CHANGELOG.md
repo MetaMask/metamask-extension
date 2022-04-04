@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.12.4]
+### Fixed
+- Fix MetaMask internal error reporting (#14344)
+
+## [10.12.3]
+### Changed
+- This version was used to rollback from v10.12.0 to v10.11.4.
 
 ## [10.12.2]
 ### Fixed
