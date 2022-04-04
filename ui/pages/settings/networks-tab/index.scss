@@ -1,9 +1,45 @@
+@use "design-system";
+
 .networks-tab {
+  &__imageclose {
+    cursor: pointer;
+    color: var(--color-icon-default);
+  }
+
   &__content {
     display: flex;
     height: 100%;
-    max-width: 739px;
+    max-width: 779px;
     justify-content: space-between;
+
+    &__custom-image {
+      border: 1px solid var(--color-border-default);
+      margin-inline-start: 8px;
+    }
+
+    &__check-icon {
+      margin-inline-end: 10px;
+      color: var(--color-success-default);
+
+      &__transparent {
+        color: transparent;
+        width: 16px;
+        margin-inline-end: 10px;
+      }
+    }
+
+    &__icon-with-fallback {
+      padding: 0 1px 2px 2px;
+      color: var(--color-primary-inverse); // TODO: design-tokens needs network colors
+      margin-inline-start: 8px;
+
+      @each $variant, $color in design-system.$color-map {
+        &--color-#{$variant} {
+          background: var($color);
+          color: var(--color-primary-inverse); // TODO: design-tokens needs network colors
+        }
+      }
+    }
 
     @media screen and (max-width: $break-small) {
       margin-top: 0;
@@ -52,7 +88,9 @@
     flex-direction: column;
     justify-content: space-between;
     max-height: 465px;
+    max-width: 400px;
     margin-top: 24px;
+    padding-inline-start: 24px;
 
     .page-container__footer {
       border-top: none;
@@ -74,6 +112,7 @@
       align-items: center;
       width: 90%;
       margin-top: 10px;
+      padding: 0;
     }
   }
 
@@ -103,8 +142,38 @@
 
   &__networks-list {
     flex: 0.5 0 auto;
-    max-width: 343px;
-    margin-top: 24px;
+    max-width: 350px;
+    border-right: 1px solid var(--color-border-default);
+
+    &__custom-search-network {
+      margin-top: 24px;
+    }
+
+    .MuiInput-input {
+      font-size: 14px;
+
+      @media screen and (max-width: $break-small) {
+        font-size: 12px;
+      }
+    }
+
+    .MuiTextField-root {
+      padding-inline-end: 16px;
+
+      #search-networks-helper-text {
+        color: var(--color-text-alternative);
+      }
+
+      @media screen and (max-width: $break-small) {
+        padding: 0 24px 0 24px;
+      }
+    }
+
+    &__label {
+      @media screen and (max-width: $break-small) {
+        margin-inline-start: 58px;
+      }
+    }
 
     @media screen and (max-width: $break-small) {
       flex: 1;
@@ -149,9 +218,10 @@
 
   &__networks-list-item {
     display: flex;
-    padding: 13px 0 13px 17px;
+    padding: 12px 24px 12px 0;
     position: relative;
     align-items: center;
+    width: 311px;
 
     .color-indicator {
       &:hover {
@@ -159,13 +229,12 @@
       }
 
       @media screen and (max-width: $break-small) {
-        margin: 0 4px 0 10px;
+        margin: 0 4px 0 20px;
       }
     }
 
     @media screen and (max-width: $break-small) {
-      padding: 20px 23px 21px 17px;
-      border-bottom: 1px solid var(--color-border-default);
+      padding: 12px 0 12px 24px;
       max-width: 351px;
     }
   }
@@ -191,35 +260,31 @@
     }
 
     svg {
-      margin-left: 10px;
+      margin-inline-start: 15px;
       padding-top: 3px;
     }
-  }
-
-  &__networks-list-arrow {
-    display: none;
 
     @media screen and (max-width: $break-small) {
-      display: block;
-      right: 10px;
-      cursor: pointer;
-      position: absolute;
-      margin: 0 5px;
-
-      [dir='rtl'] & {
-        transform: rotate(180deg);
-      }
+      color: var(--color-text-default);
     }
   }
 
   &__networks-list-name--selected {
     font-weight: bold;
     color: var(--color-text-default);
+
+    @media screen and (max-width: $break-small) {
+      font-weight: normal;
+      color: var(--color-text-default);
+    }
   }
 
   &__networks-list-name--disabled {
-    font-weight: 300;
     color: var(--color-text-muted);
+
+    @media screen and (max-width: $break-small) {
+      color: var(--color-text-default);
+    }
   }
 
   &__network-form-footer {

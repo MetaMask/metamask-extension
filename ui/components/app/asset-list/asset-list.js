@@ -25,7 +25,7 @@ import {
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();

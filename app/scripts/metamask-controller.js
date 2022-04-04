@@ -596,7 +596,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.2',
+        'https://metamask.github.io/iframe-execution-environment/0.4.3',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -1034,10 +1034,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:add',
         ),
         clearSnapState: (fromSubject) =>
-          this.controllerMessenger(
-            'SnapController:updateSnap',
+          this.controllerMessenger.call(
+            'SnapController:updateSnapState',
             fromSubject,
-            {},
+            null,
           ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
         getSnap: this.controllerMessenger.call.bind(
@@ -1048,16 +1048,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getRpcMessageHandler',
         ),
-        getSnapState: async (...args) => {
-          // TODO:flask Just return the action result directly in the next
-          // @metamask/snap-controllers update.
-          return (
-            (await this.controllerMessenger.call(
-              'SnapController:getSnapState',
-              ...args,
-            )) ?? null
-          );
-        },
+        getSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnapState',
+        ),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
@@ -1881,12 +1875,15 @@ export default class MetamaskController extends EventEmitter {
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
-   * @param {string} seed
+   * @param {number[]} encodedSeedPhrase - The seed phrase, encoded as an array
+   * of UTF-8 bytes.
    */
-  async createNewVaultAndRestore(password, seed) {
+  async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       let accounts, lastBalance;
+
+      const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       const { keyringController } = this;
 
@@ -1908,7 +1905,7 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(
         password,
-        seed,
+        seedPhraseAsBuffer,
       );
 
       const ethQuery = new EthQuery(this.provider);
@@ -2416,7 +2413,8 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
-   * @returns {Promise<string>} Seed phrase to be confirmed by the user.
+   * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
+   * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
     const primaryKeyring = this.keyringController.getKeyringsByType(
@@ -2427,7 +2425,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const serialized = await primaryKeyring.serialize();
-    const seedWords = serialized.mnemonic;
+    const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
 
     const accounts = await primaryKeyring.getAccounts();
     if (accounts.length < 1) {
@@ -2435,8 +2433,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedWords);
-      return seedWords;
+      await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
+      return Array.from(seedPhraseAsBuffer.values());
     } catch (err) {
       log.error(err.message);
       throw err;

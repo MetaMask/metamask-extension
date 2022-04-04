@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../../contexts/i18n';
 import { getURLHostName } from '../../../../helpers/utils/util';
-import { MetaMetricsContext } from '../../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 export default function ViewOnEtherScanLink({
   txHash,
