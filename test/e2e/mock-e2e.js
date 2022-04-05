@@ -87,6 +87,55 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
+  await server
+    .forGet('https://swap.metaswap.codefi.network/featureFlags')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            ethereum: {
+              mobile_active: true,
+              extension_active: true,
+              fallback_to_v1: false,
+              mobileActive: true,
+              extensionActive: true,
+            },
+            bsc: {
+              mobile_active: true,
+              extension_active: true,
+              fallback_to_v1: false,
+              mobileActive: true,
+              extensionActive: true,
+            },
+            polygon: {
+              mobile_active: true,
+              extension_active: true,
+              fallback_to_v1: false,
+              mobileActive: true,
+              extensionActive: true,
+            },
+            avalanche: {
+              mobile_active: true,
+              extension_active: true,
+              fallback_to_v1: false,
+              mobileActive: true,
+              extensionActive: true,
+            },
+            smart_transactions: {
+              mobile_active: false,
+              extension_active: false,
+            },
+            smartTransactions: {
+              mobileActive: false,
+              extensionActive: false,
+            },
+            updated_at: '2022-03-17T15:54:00.360Z',
+          },
+        ],
+      };
+    });
+
   testSpecificMock(server);
 }
 
