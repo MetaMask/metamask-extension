@@ -67,18 +67,22 @@ export default class AdvancedTab extends PureComponent {
     showLedgerTransportWarning: false,
   };
 
-  settingsRefs = Array(getNumberOfSettingsInSection('advanced'))
+  settingsRefs = Array(
+    getNumberOfSettingsInSection(this.context.t, this.context.t('advanced')),
+  )
     .fill(undefined)
     .map(() => {
       return React.createRef();
     });
 
   componentDidUpdate() {
-    handleSettingsRefs('advanced', this.settingsRefs);
+    const { t } = this.context;
+    handleSettingsRefs(t, t('advanced'), this.settingsRefs);
   }
 
   componentDidMount() {
-    handleSettingsRefs('advanced', this.settingsRefs);
+    const { t } = this.context;
+    handleSettingsRefs(t, t('advanced'), this.settingsRefs);
   }
 
   renderMobileSync() {

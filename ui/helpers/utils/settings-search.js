@@ -13,20 +13,20 @@ export function getSettingsRoutes() {
   return settingsRoutes;
 }
 
-function getFilteredSettingsRoutes(tabName) {
+function getFilteredSettingsRoutes(t, tabMessage) {
   return getSettingsRoutes().filter(
-    (routeObject) => routeObject.tabMessage === tabName,
+    (routeObject) => routeObject.tabMessage(t) === tabMessage,
   );
 }
 
-export function getNumberOfSettingsInSection(tabName) {
+export function getNumberOfSettingsInSection(t, tabMessage) {
   return getSettingsRoutes().filter(
-    (routeObject) => routeObject.tabMessage === tabName,
+    (routeObject) => routeObject.tabMessage(t) === tabMessage,
   ).length;
 }
 
-export function handleSettingsRefs(tabName, settingsRefs) {
-  const settingsSearchJsonFiltered = getFilteredSettingsRoutes(tabName);
+export function handleSettingsRefs(t, tabMessage, settingsRefs) {
+  const settingsSearchJsonFiltered = getFilteredSettingsRoutes(t, tabMessage);
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (routeObject) =>
       routeObject.route.substring(1) === window.location.hash.substring(1),

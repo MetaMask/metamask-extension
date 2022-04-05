@@ -15,8 +15,8 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
   const settingsRefs = useRef();
 
   useEffect(() => {
-    handleSettingsRefs('alerts', settingsRefs);
-  }, [settingsRefs]);
+    handleSettingsRefs(t, t('alerts'), settingsRefs);
+  }, [settingsRefs, t]);
 
   const isEnabled = useSelector((state) => getAlertEnabledness(state)[alertId]);
 
