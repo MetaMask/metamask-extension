@@ -34,7 +34,7 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                     'settings-page__header__search__list__item__tab',
                     {
                       'settings-page__header__search__list__item__tab-multiple-lines':
-                        tab === 'securityAndPrivacy',
+                        tabKey === 'securityAndPrivacy',
                     },
                   )}
                 >
