@@ -10,6 +10,7 @@
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
     "start": "yarn build:dev dev",
+    "start:mv3": "ENABLE_MV3=true yarn build:dev dev",
     "start:lavamoat": "yarn build dev",
     "dist": "yarn build prod",
     "build": "yarn lavamoat:build",

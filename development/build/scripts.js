@@ -43,6 +43,7 @@ const metamaskrc = require('rc')('metamask', {
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
+  ENABLE_MV3: process.env.ENABLE_MV3,
 });
 
 const { streamFlatMap } = require('../stream-flat-map.js');
@@ -342,6 +343,48 @@ function createScriptTasks({
   }
 }
 
+function bundleAppInitialiser({
+  jsBundles,
+  browserPlatforms,
+  buildType,
+  devMode,
+  ignoredFiles,
+  testing,
+  policyOnly,
+  shouldLintFenceFiles,
+}) {
+  const label = 'app-init';
+  // TODO: remove this filter for firefox once MV3 is supported in it
+  const mv3BrowserPlatforms = browserPlatforms.filter(
+    (platform) => platform !== 'firefox',
+  );
+  const fileList = jsBundles.reduce(
+    (result, file) => `${result}'${file}',\n    `,
+    '',
+  );
+
+  createNormalBundle({
+    browserPlatforms: mv3BrowserPlatforms,
+    buildType,
+    destFilepath: 'app-init.js',
+    devMode,
+    entryFilepath: './app/scripts/app-init.js',
+    ignoredFiles,
+    label,
+    testing,
+    policyOnly,
+    shouldLintFenceFiles,
+  })().then(() => {
+    mv3BrowserPlatforms.forEach((browser) => {
+      const appInitFile = `./dist/${browser}/app-init.js`;
+      const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+      const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+      writeFileSync(appInitFile, fileOutput);
+    });
+    console.log(`Bundle end: service worker app-init.js`);
+  });
+}
+
 function createFactoredBuild({
   browserPlatforms,
   buildType,
@@ -499,6 +542,22 @@ function createFactoredBuild({
               browserPlatforms,
               useLavamoat: true,
             });
+            if (process.env.ENABLE_MV3) {
+              const jsBundles = [
+                ...commonSet.values(),
+                ...groupSet.values(),
+              ].map((label) => `./${label}.js`);
+              bundleAppInitialiser({
+                jsBundles,
+                browserPlatforms,
+                buildType,
+                devMode,
+                ignoredFiles,
+                testing,
+                policyOnly,
+                shouldLintFenceFiles,
+              });
+            }
             break;
           }
           case 'content-script': {
@@ -830,6 +889,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
+    ENABLE_MV3: metamaskrc.ENABLE_MV3 === '1',
   };
 }
 

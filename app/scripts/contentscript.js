@@ -85,7 +85,11 @@ function injectScript(content) {
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
-    scriptTag.textContent = content;
+    if (process.env.ENABLE_MV3) {
+      scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
+    } else {
+      scriptTag.textContent = content;
+    }
     modifyCSP();
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
