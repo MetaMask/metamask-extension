@@ -65,24 +65,17 @@
     margin-top: 18px;
   }
 
-  &__password-display-wrapper {
+  &__private-key-display {
+    @include Paragraph;
+
     height: 80px;
     width: 291px;
     border: 1px solid var(--color-border-default);
     border-radius: 2px;
-  }
-
-  &__password-display-textarea {
-    @include Paragraph;
-
     color: var(--color-error-default);
-    background-color: var(--color-background-default);
-    border: none;
-    height: 75px;
-    width: 100%;
-    overflow: hidden;
-    resize: none;
     padding: 9px 13px 8px;
+    overflow: hidden;
+    overflow-wrap: break-word;
   }
 
   &__buttons {
@@ -104,18 +97,13 @@
   }
 
   .ellip-address-wrapper {
-    display: flex;
-    justify-content: center;
     border: 1px solid var(--color-border-default);
     padding: 5px 10px;
     margin-top: 7px;
-    width: 286px;
-
-    input {
-      background: var(--color-background-default);
-      color: var(--color-text-default);
-      border: 0;
-    }
+    max-width: 286px;
+    direction: ltr;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

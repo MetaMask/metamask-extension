@@ -2827,10 +2827,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-9.0.0.tgz#22d4911b705f7e4e566efbdda0e37912da33e30f"
   integrity sha512-mWlLGQKjXXFOj9EtDClKSoTLeQuPW2kM1w3EpUMf4goYAQ+kLXCCa8pEff6h8ApWAnjhYmXydA1znQ2J4XvD+A==
 
-"@metamask/eth-ledger-bridge-keyring@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.10.0.tgz#9d5103be22221f4ef71393a2e11f24b788e343a5"
-  integrity sha512-ewcnEFmIL2lkUta811yQeJVWhTjll9U62GdbuauvxdQ0c6VBGZnf02GU3gcxyMOcEvZBnlU+d5LWpURQA8iNZQ==
+"@metamask/eth-ledger-bridge-keyring@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.11.0.tgz#8502e2fd36c89aff7de6724354217274917cecd3"
+  integrity sha512-fCwM8LYC6SXLfsKc4oNiAatz2X8p/pjbM5zMfm4nb4sZPshBAWU32M4vnB3BSVeQEsisGuLfOWCOWhxmq25n+Q==
   dependencies:
     "@ethereumjs/tx" "^3.2.0"
     eth-sig-util "^2.0.0"
@@ -8006,10 +8006,10 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@^99.0.0:
-  version "99.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-99.0.0.tgz#fbfcc7e74991dd50962e7dd456d78eaf49f56774"
-  integrity sha512-pyB+5LuyZdb7EBPL3i5D5yucZUD+SlkdiUtmpjaEnLd9zAXp+SvD/hP5xF4l/ZmWvUo/1ZLxAI1YBdhazGTpgA==
+chromedriver@^100.0.0:
+  version "100.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-100.0.0.tgz#1b4bf5c89cea12c79f53bc94d8f5bb5aa79ed7be"
+  integrity sha512-oLfB0IgFEGY9qYpFQO/BNSXbPw7bgfJUN5VX8Okps9W2qNT4IqKh5hDwKWtpUIQNI6K3ToWe2/J5NdpurTY02g==
   dependencies:
     "@testim/chrome-version" "^1.1.2"
     axios "^0.24.0"

@@ -137,6 +137,7 @@ import {
   buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
+import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getPlatform } from './lib/util';
@@ -1034,10 +1035,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:add',
         ),
         clearSnapState: (fromSubject) =>
-          this.controllerMessenger(
-            'SnapController:updateSnap',
+          this.controllerMessenger.call(
+            'SnapController:updateSnapState',
             fromSubject,
-            {},
+            null,
           ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
         getSnap: this.controllerMessenger.call.bind(
@@ -1048,16 +1049,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getRpcMessageHandler',
         ),
-        getSnapState: async (...args) => {
-          // TODO:flask Just return the action result directly in the next
-          // @metamask/snap-controllers update.
-          return (
-            (await this.controllerMessenger.call(
-              'SnapController:getSnapState',
-              ...args,
-            )) ?? null
-          );
-        },
+        getSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnapState',
+        ),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
@@ -3335,6 +3330,17 @@ export default class MetamaskController extends EventEmitter {
     // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    engine.push(
+      createRPCMethodTrackingMiddleware({
+        trackEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        getMetricsState: this.metaMetricsController.store.getState.bind(
+          this.metaMetricsController.store,
+        ),
+      }),
+    );
 
     // onboarding
     if (subjectType === SUBJECT_TYPES.WEBSITE) {
