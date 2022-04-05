@@ -307,11 +307,7 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   {
-    /**
-     * TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
-     *
-     * @param t
-     */
+    // TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('tokenDetection'),
     descriptionMessage: (t) => t('tokenDetectionToggleDescription'),
@@ -320,11 +316,7 @@ export const SETTINGS_CONSTANTS = [
     featureFlag: 'TOKEN_DETECTION_V2',
   },
   {
-    /**
-     * TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
-     *
-     * @param t
-     */
+    // TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('useTokenDetection'),
     descriptionMessage: (t) => t('useTokenDetectionDescription'),
