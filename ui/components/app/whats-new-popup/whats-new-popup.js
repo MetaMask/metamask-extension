@@ -51,6 +51,7 @@ function getActionFunctionById(id, history) {
       history.push(`${ADVANCED_ROUTE}#token-description`);
     },
     12: () => {
+      updateViewedNotifications({ 12: true });
       history.push(EXPERIMENTAL_ROUTE);
     },
   };
