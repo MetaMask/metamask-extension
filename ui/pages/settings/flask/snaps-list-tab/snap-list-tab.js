@@ -38,8 +38,8 @@ const SnapListTab = () => {
   };
 
   useEffect(() => {
-    handleSettingsRefs(t, t('snaps'), settingsRef);
-  }, [t, settingsRef]);
+    handleSettingsRefs('snaps', settingsRef);
+  }, [settingsRef]);
 
   return (
     <div className="snap-list-tab" ref={settingsRef}>

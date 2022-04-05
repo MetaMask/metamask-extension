@@ -28,25 +28,18 @@ export default class ExperimentalTab extends PureComponent {
     setTheme: PropTypes.func,
   };
 
-  settingsRefs = Array(
-    getNumberOfSettingsInSection(
-      this.context.t,
-      this.context.t('experimental'),
-    ),
-  )
+  settingsRefs = Array(getNumberOfSettingsInSection('experimental'))
     .fill(undefined)
     .map(() => {
       return React.createRef();
     });
 
   componentDidUpdate() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+    handleSettingsRefs('experimental', this.settingsRefs);
   }
 
   componentDidMount() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+    handleSettingsRefs('experimental', this.settingsRefs);
   }
 
   renderTokenDetectionToggle() {

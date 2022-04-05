@@ -20,22 +20,18 @@ export default class InfoTab extends PureComponent {
     t: PropTypes.func,
   };
 
-  settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('about')),
-  )
+  settingsRefs = Array(getNumberOfSettingsInSection('about'))
     .fill(undefined)
     .map(() => {
       return React.createRef();
     });
 
   componentDidUpdate() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('about'), this.settingsRefs);
+    handleSettingsRefs('about', this.settingsRefs);
   }
 
   componentDidMount() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('about'), this.settingsRefs);
+    handleSettingsRefs('about', this.settingsRefs);
   }
 
   renderInfoLinks() {

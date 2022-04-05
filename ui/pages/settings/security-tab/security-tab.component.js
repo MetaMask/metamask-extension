@@ -25,25 +25,18 @@ export default class SecurityTab extends PureComponent {
     usePhishDetect: PropTypes.bool.isRequired,
   };
 
-  settingsRefs = Array(
-    getNumberOfSettingsInSection(
-      this.context.t,
-      this.context.t('securityAndPrivacy'),
-    ),
-  )
+  settingsRefs = Array(getNumberOfSettingsInSection('securityAndPrivacy'))
     .fill(undefined)
     .map(() => {
       return React.createRef();
     });
 
   componentDidUpdate() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+    handleSettingsRefs('securityAndPrivacy', this.settingsRefs);
   }
 
   componentDidMount() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+    handleSettingsRefs('securityAndPrivacy', this.settingsRefs);
   }
 
   renderSeedWords() {

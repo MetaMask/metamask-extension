@@ -168,51 +168,49 @@ describe('Settings Search Utils', () => {
 
   describe('getNumberOfSettingsInSection', () => {
     it('should get good general section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(5);
+      expect(getNumberOfSettingsInSection('general')).toStrictEqual(5);
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingsInSection('advanced')).toStrictEqual(13);
     });
 
     it('should get good contact section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('contacts'))).toStrictEqual(1);
+      expect(getNumberOfSettingsInSection('contacts')).toStrictEqual(1);
     });
 
     it('should get good security & privacy section number', () => {
-      expect(
-        getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(4);
-    });
-
-    it('should get good alerts section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('alerts'))).toStrictEqual(2);
-    });
-
-    it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
-    });
-
-    it('should get good experimental section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        2,
+      expect(getNumberOfSettingsInSection('securityAndPrivacy')).toStrictEqual(
+        4,
       );
     });
 
+    it('should get good alerts section number', () => {
+      expect(getNumberOfSettingsInSection('alerts')).toStrictEqual(2);
+    });
+
+    it('should get good network section number', () => {
+      expect(getNumberOfSettingsInSection('networks')).toStrictEqual(6);
+    });
+
+    it('should get good experimental section number', () => {
+      expect(getNumberOfSettingsInSection('experimental')).toStrictEqual(2);
+    });
+
     it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(8);
+      expect(getNumberOfSettingsInSection('about')).toStrictEqual(8);
     });
   });
 
   // Can't be tested without DOM element
   describe('handleSettingsRefs', () => {
     it('should handle general refs', () => {
-      const settingsRefs = Array(getNumberOfSettingsInSection(t, t('general')))
+      const settingsRefs = Array(getNumberOfSettingsInSection('general'))
         .fill(undefined)
         .map(() => {
           return React.createRef();
         });
-      expect(handleSettingsRefs(t, t('general'), settingsRefs)).toBeUndefined();
+      expect(handleSettingsRefs('general', settingsRefs)).toBeUndefined();
     });
   });
 });

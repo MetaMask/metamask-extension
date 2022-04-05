@@ -58,22 +58,18 @@ export default class SettingsTab extends PureComponent {
     tokenList: PropTypes.object,
   };
 
-  settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('general')),
-  )
+  settingsRefs = Array(getNumberOfSettingsInSection('general'))
     .fill(undefined)
     .map(() => {
       return React.createRef();
     });
 
   componentDidUpdate() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('general'), this.settingsRefs);
+    handleSettingsRefs('general', this.settingsRefs);
   }
 
   componentDidMount() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('general'), this.settingsRefs);
+    handleSettingsRefs('general', this.settingsRefs);
   }
 
   renderCurrentConversion() {

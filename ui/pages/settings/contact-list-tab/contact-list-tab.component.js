@@ -31,22 +31,18 @@ export default class ContactListTab extends Component {
     hideAddressBook: PropTypes.bool,
   };
 
-  settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('contacts')),
-  )
+  settingsRefs = Array(getNumberOfSettingsInSection('contacts'))
     .fill(undefined)
     .map(() => {
       return React.createRef();
     });
 
   componentDidUpdate() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('contacts'), this.settingsRefs);
+    handleSettingsRefs('contacts', this.settingsRefs);
   }
 
   componentDidMount() {
-    const { t } = this.context;
-    handleSettingsRefs(t, t('contacts'), this.settingsRefs);
+    handleSettingsRefs('contacts', this.settingsRefs);
   }
 
   renderAddresses() {

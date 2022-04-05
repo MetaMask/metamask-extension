@@ -56,7 +56,7 @@ const NetworksListItem = ({
 
   useEffect(() => {
     handleSettingsRefs('networks', settingsRefs);
-  }, [settingsRefs, t]);
+  }, [settingsRefs]);
 
   return (
     <div
