@@ -1,5 +1,5 @@
 /* eslint-disable require-unicode-regexp */
-import { SETTINGS_ROUTES } from '../constants/settings';
+import { SETTINGS_CONSTANTS } from '../constants/settings';
 
 let settingsRoutes;
 
@@ -7,27 +7,29 @@ export function getSettingsRoutes() {
   if (settingsRoutes) {
     return settingsRoutes;
   }
-  settingsRoutes = SETTINGS_ROUTES.filter((s) => {
-    if (s.featureFlag) {
-      return process.env[s.featureFlag];
-    }
-    return true;
-  });
+  settingsRoutes = SETTINGS_CONSTANTS.filter((routeObject) =>
+    routeObject.featureFlag ? process.env[routeObject.featureFlag] : true,
+  );
   return settingsRoutes;
 }
 
 function getFilteredSettingsRoutes(tabName) {
-  return getSettingsRoutes().filter((s) => s.tab === tabName);
+  return getSettingsRoutes().filter(
+    (routeObject) => routeObject.tab === tabName,
+  );
 }
 
 export function getNumberOfSettingsInSection(tabName) {
-  return getSettingsRoutes().filter((s) => s.tab === tabName).length;
+  return getSettingsRoutes().filter(
+    (routeObject) => routeObject.tab === tabName,
+  ).length;
 }
 
 export function handleSettingsRefs(tabName, settingsRefs) {
   const settingsSearchJsonFiltered = getFilteredSettingsRoutes(tabName);
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
-    (s) => s.route.substring(1) === window.location.hash.substring(1),
+    (routeObject) =>
+      routeObject.route.substring(1) === window.location.hash.substring(1),
   );
   if (settingsRefsIndex === -1) {
     return;

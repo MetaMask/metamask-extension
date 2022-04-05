@@ -13,9 +13,9 @@ export default function SettingsSearchList({ results, onClickSetting }) {
   return (
     <div className="settings-page__header__search__list">
       {results.slice(0, 5).map((result) => {
-        const { icon, tab, section, route } = result;
+        const { icon, tabKey, sectionKey, route } = result;
         return (
-          Boolean(icon || tab || section) && (
+          Boolean(icon || tabKey || sectionKey) && (
             <div key={`settings_${route}`}>
               <div
                 className="settings-page__header__search__list__item"
@@ -38,7 +38,7 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                     },
                   )}
                 >
-                  {t(tab)}
+                  {t(tabKey)}
                 </span>
                 <IconCaretRight
                   size={16}
@@ -50,11 +50,11 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                     'settings-page__header__search__list__item__section',
                     {
                       'settings-page__header__search__list__item__section-multiple-lines':
-                        tab === 'securityAndPrivacy' || tab === 'alerts',
+                        tabKey === 'securityAndPrivacy' || tabKey === 'alerts',
                     },
                   )}
                 >
-                  {t(section)}
+                  {t(sectionKey)}
                 </span>
               </div>
             </div>
