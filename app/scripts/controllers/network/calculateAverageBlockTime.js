@@ -43,5 +43,7 @@ export const calculateAverageBlockTimeInMs = async (rpcUrl) => {
     pastBlock >= 0 ? pastBlock : 0,
   );
 
-  return (latestBlockTimestamp - pastBlockTimestamp) / (latestBlockNumber - pastBlockNumber);
+  const averageBlockTime = (latestBlockTimestamp - pastBlockTimestamp) / (latestBlockNumber - pastBlockNumber)
+
+  return Math.floor(averageBlockTime) * SECOND;
 };
