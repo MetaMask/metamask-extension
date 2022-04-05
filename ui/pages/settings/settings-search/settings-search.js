@@ -27,8 +27,8 @@ export default function SettingsSearch({
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
-    keys: ['tabKey', 'sectionKey', 'descriptionKey'],
-    getFn: (routeObject, path) => t(routeObject[path]),
+    keys: ['tabMessage', 'sectionMessage', 'descriptionMessage'],
+    getFn: (routeObject, path) => routeObject[path](t),
   });
 
   const handleSearch = (_searchQuery) => {
