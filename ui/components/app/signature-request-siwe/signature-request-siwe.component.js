@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import convertMsg from '../../../helpers/utils/format-message-params';
 import ErrorMessage from '../../ui/error-message';
+import Popover from '../../ui/popover';
+import Checkbox from '../../ui/check-box';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import { I18nContext } from '../../../contexts/i18n';
@@ -23,6 +25,9 @@ export default function SignatureRequestSIWE({
 }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
+
+  const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
+  const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
 
   const onSign = (event) => {
     sign(event);
@@ -61,7 +66,38 @@ export default function SignatureRequestSIWE({
           <ErrorMessage errorKey="SIWEDomainInvalid" />
         </div>
       )}
-      <Footer cancelAction={onCancel} signAction={onSign} />
+      <Footer
+        cancelAction={onCancel}
+        signAction={
+          isSIWEDomainValid ? onSign : () => setIsShowingDomainWarning(true)
+        }
+      />
+      {isShowingDomainWarning && (
+        <Popover
+          onClose={() => setIsShowingDomainWarning(false)}
+          title={t('SIWEWarningTitle')}
+          subtitle={t('SIWEWarningSubtitle')}
+          footer={
+            <Footer
+              cancelAction={() => setIsShowingDomainWarning(false)}
+              signAction={onSign}
+              disabled={!agreeToDomainWarning}
+            />
+          }
+        >
+          <div className="checkbox-wrapper">
+            <Checkbox
+              id="domainWarning_checkbox"
+              checked={agreeToDomainWarning}
+              className="checkbox"
+              onClick={() => setAgreeToDomainWarning((checked) => !checked)}
+            />
+            <label className="checkbox-label" htmlFor="domainWarning_checkbox">
+              {t('SIWEWarningBody')}
+            </label>
+          </div>
+        </Popover>
+      )}
     </div>
   );
 }
@@ -79,10 +115,6 @@ SignatureRequestSIWE.propTypes = {
     balance: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
-  /**
-   * Check if the wallet is ledget wallet or not
-   */
-  isLedgerWallet: PropTypes.bool,
   /**
    * Handler for cancel button
    */

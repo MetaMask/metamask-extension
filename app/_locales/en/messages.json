@@ -2953,6 +2953,15 @@
   "SIWESiteRequestTitle": {
     "message": "Sign-in request"
   },
+  "SIWEWarningBody": {
+    "message": "The domain does not match the site you are attempting to sign-in to. The may be trying to deceive you."
+  },
+  "SIWEWarningTitle": {
+    "message": "Are you sure?"
+  },
+  "SIWEWarningSubtitle": {
+    "message": "To confirm you understand, check:"
+  },
   "skip": {
     "message": "Skip"
   },

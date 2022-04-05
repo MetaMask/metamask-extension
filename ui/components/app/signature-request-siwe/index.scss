@@ -61,7 +61,7 @@
     font-style: normal;
     font-weight: 500;
     font-size: 60px;
-    color: var(--color-background-default);
+    color: solid var(--color-background-default);
     z-index: 1;
     text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
   }
@@ -95,4 +95,29 @@
   padding: 0.25rem 1rem;
 }
 
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 16px;
+}
 
+.checkbox {
+  height: 13px;
+  width: 13px;
+  font-size: 16px;
+  color: var(--color-error-default);
+  cursor: pointer;
+}
+
+.checkbox-label {
+  @include H7;
+
+  color: var(--color-text-default);
+  margin-left: 8px;
+  margin-top: 1px;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
