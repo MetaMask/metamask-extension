@@ -109,10 +109,15 @@ describe('CurrencyInput Component', () => {
         },
       };
       const store = configureMockStore()(mockStore);
+      const handleChangeSpy = sinon.spy();
 
       const wrapper = mount(
         <Provider store={store}>
-          <CurrencyInput hexValue="f602f2234d0ea" featureSecondary />
+          <CurrencyInput
+            onChange={handleChangeSpy}
+            hexValue="f602f2234d0ea"
+            featureSecondary
+          />
         </Provider>,
       );
 
@@ -140,12 +145,16 @@ describe('CurrencyInput Component', () => {
         },
         hideSecondary: true,
       };
-
       const store = configureMockStore()(mockStore);
+      const handleChangeSpy = sinon.spy();
 
       const wrapper = mount(
         <Provider store={store}>
-          <CurrencyInput hexValue="f602f2234d0ea" featureSecondary />
+          <CurrencyInput
+            onChange={handleChangeSpy}
+            hexValue="f602f2234d0ea"
+            featureSecondary
+          />
         </Provider>,
         {
           context: { t: (str) => `${str}_t` },

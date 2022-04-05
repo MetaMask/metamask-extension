@@ -79,7 +79,7 @@ export default function CurrencyInput({
     setShouldDisplayFiat(!shouldDisplayFiat);
   };
 
-  const handleChange = async (newDecimalValue) => {
+  const handleChange = (newDecimalValue) => {
     const hexValueNew = shouldUseFiat()
       ? getWeiHexFromDecimalValue({
           value: newDecimalValue,
@@ -95,7 +95,7 @@ export default function CurrencyInput({
         });
 
     setNewHexValue(hexValueNew);
-    await onChange(hexValueNew);
+    onChange(hexValueNew);
     setSwapped(!isSwapped);
   };
 
