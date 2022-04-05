@@ -63,8 +63,14 @@
       }
 
       &__icon {
-        margin-inline-end: 16px;
         display: flex;
+        justify-content: center;
+        margin-inline-end: 16px;
+        flex: 0 0 18px;
+
+        @media screen and (min-width: $break-large) {
+          flex: 0 0 14px;
+        }
       }
     }
 
