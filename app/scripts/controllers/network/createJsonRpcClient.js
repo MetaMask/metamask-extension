@@ -30,22 +30,27 @@ const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 };
 
-export default async function createJsonRpcClient({ rpcUrl, chainId }) {
+export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
-  const blockTracker = new PollingBlockTracker({
-    ...(await getChainOpts(rpcUrl)),
-    ...blockTrackerOpts,
-    provider: blockProvider,
-  });
 
   const networkMiddleware = mergeMiddleware([
     ...getTestMiddlewares(),
     createChainIdMiddleware(chainId),
-    createBlockRefRewriteMiddleware({ blockTracker }),
-    createBlockCacheMiddleware({ blockTracker }),
-    createInflightCacheMiddleware(),
-    createBlockTrackerInspectorMiddleware({ blockTracker }),
+    createAsyncMiddleware(async () => {
+      const blockTracker = new PollingBlockTracker({
+        ...(await getChainOpts(rpcUrl)),
+        ...blockTrackerOpts,
+        provider: blockProvider,
+      });
+
+      return mergeMiddleware([
+        createBlockRefRewriteMiddleware({ blockTracker }),
+        createBlockCacheMiddleware({ blockTracker }),
+        createInflightCacheMiddleware(),
+        createBlockTrackerInspectorMiddleware({ blockTracker }),
+      ])
+    }),
     fetchMiddleware,
   ]);
 
