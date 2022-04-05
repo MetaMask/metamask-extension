@@ -24,8 +24,8 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
-import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 
+import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -147,7 +147,7 @@ class SettingsPage extends PureComponent {
                   searchText: searchQuery,
                 });
               }}
-              settingsRoutesList={getSettingsRoutes(t)}
+              settingsRoutesList={getSettingsRoutes()}
             />
             {isSearchList && searchText.length >= 3 && (
               <SettingsSearchList
