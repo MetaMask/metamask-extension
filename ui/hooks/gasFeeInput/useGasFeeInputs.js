@@ -84,6 +84,7 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  * @param {object} [transaction]
  * @param {string} [minimumGasLimit]
  * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
+ * @param setRetryTxMeta
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
  * ).GasEstimates} gas fee input state and the GasFeeEstimates object
@@ -93,6 +94,7 @@ export function useGasFeeInputs(
   transaction,
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
+  setRetryTxMeta,
 ) {
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
@@ -272,6 +274,7 @@ export function useGasFeeInputs(
     maxPriorityFeePerGas,
     minimumGasLimit,
     transaction,
+    setRetryTxMeta,
   });
 
   // When a user selects an estimate level, it will wipe out what they have
