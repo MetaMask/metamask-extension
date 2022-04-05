@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  settingsRoutes,
+  getSettingsRoutes,
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from './settings-search';
@@ -8,7 +8,7 @@ import {
 describe('Settings Search Utils', () => {
   describe('settingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      expect(settingsRoutes.length).toBeGreaterThan(0);
+      expect(getSettingsRoutes().length).toBeGreaterThan(0);
     });
   });
 
