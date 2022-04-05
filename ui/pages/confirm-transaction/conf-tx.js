@@ -116,7 +116,10 @@ class ConfirmTxScreen extends Component {
   }
 
   signatureSelect(txData) {
-    const { type, msgParams: { version, siwe: { isSIWEMessage } } } = txData;
+    const {
+      type,
+      msgParams: { version, siwe },
+    } = txData;
 
     // Temporarily direct only v3 and v4 requests to new code.
     if (
@@ -126,7 +129,7 @@ class ConfirmTxScreen extends Component {
       return SignatureRequest;
     }
 
-    if (isSIWEMessage) {
+    if (siwe && siwe.isSIWEMessage) {
       return SignatureRequestSIWE;
     }
 
