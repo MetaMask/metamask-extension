@@ -34,7 +34,7 @@ async function buildBrowserWebDriver(browser, webDriverOptions) {
     }
   }
 }
-
+// fgdf
 async function setupFetchMocking(driver) {
   // define fetchMocking script, to be evaluated in the browser
   function fetchMocking(mockResponses) {
