@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.12.3]
 ### Changed
-- This version was used to rollback from v10.12.0 to v10.11.4.
+- This version was used to rollback from v10.12.0 to v10.11.3.
 
 ## [10.12.2]
 ### Fixed
