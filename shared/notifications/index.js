@@ -61,6 +61,10 @@ export const UI_NOTIFICATIONS = {
   12: {
     id: 12,
     date: '2022-04-18',
+    image: {
+      src: 'images/darkmode-banner.png',
+      width: '100%',
+    },
   },
 };
 
