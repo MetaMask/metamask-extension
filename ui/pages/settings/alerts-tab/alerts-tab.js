@@ -69,7 +69,6 @@ const AlertsTab = () => {
       {Object.entries(alertConfig).map(
         ([alertId, { title, description }], _) => (
           <AlertSettingsEntry
-            alertId={alertId}
             description={description}
             key={alertId}
             title={title}

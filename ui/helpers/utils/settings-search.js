@@ -37,10 +37,10 @@ export function handleSettingsRefs(tabName, settingsRefs) {
       ? settingsRefs
       : settingsRefs[settingsRefsIndex];
   if (settingsRef !== null) {
-    settingsRef.current.scrollIntoView({
+    settingsRef?.current.scrollIntoView({
       behavior: 'smooth',
     });
-    settingsRef.current.focus();
+    settingsRef?.current.focus();
     const historySettingsUrl = window.location.hash.split('#')[1];
     window.location.hash = historySettingsUrl;
   }

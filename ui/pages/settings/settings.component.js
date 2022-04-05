@@ -105,7 +105,6 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
-    const { t } = this.context;
 
     return (
       <div
