@@ -2,6 +2,19 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import AccountListItem from '../../account-list-item';
 import { I18nContext } from '../../../../contexts/i18n';
+import MetaFoxLogo from '../../../ui/metafox-logo';
+import Typography from '../../../ui/typography';
+
+import Box from '../../../ui/box';
+import UrlIcon from '../../../ui/url-icon';
+import { getURLHostName } from '../../../../helpers/utils/util';
+import { isBeta } from '../../../../helpers/utils/build-types';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  COLORS,
+  DISPLAY,
+} from '../../../../helpers/constants/design-system';
 
 export default function SIWERequestHeader({ fromAccount, domain }) {
   const t = useContext(I18nContext);
