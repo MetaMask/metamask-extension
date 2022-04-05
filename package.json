@@ -128,7 +128,7 @@
     "@metamask/providers": "^8.1.1",
     "@metamask/rpc-methods": "^0.10.6",
     "@metamask/slip44": "^2.0.0",
-    "@metamask/smart-transactions-controller": "^1.9.1",
+    "@metamask/smart-transactions-controller": "^1.10.0",
     "@metamask/snap-controllers": "^0.10.6",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
