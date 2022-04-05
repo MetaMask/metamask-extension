@@ -15,13 +15,13 @@ export function getSettingsRoutes() {
 
 function getFilteredSettingsRoutes(tabName) {
   return getSettingsRoutes().filter(
-    (routeObject) => routeObject.tab === tabName,
+    (routeObject) => routeObject.tabKey === tabName,
   );
 }
 
 export function getNumberOfSettingsInSection(tabName) {
   return getSettingsRoutes().filter(
-    (routeObject) => routeObject.tab === tabName,
+    (routeObject) => routeObject.tabKey === tabName,
   ).length;
 }
 
