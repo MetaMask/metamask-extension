@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ImportTokenLink from '../import-token-link';
 import TokenList from '../token-list';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
+import {
+  IMPORT_TOKEN_ROUTE,
+  DETECTED_TOKEN_ROUTE,
+} from '../../../helpers/constants/routes';
 import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -13,6 +16,7 @@ import {
   getShouldShowFiat,
   getNativeCurrencyImage,
   getIsMainnet,
+  getDetectedTokensInCurrentNetwork,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -27,6 +31,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
@@ -65,6 +70,7 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const isMainnet = useSelector(getIsMainnet) || process.env.IN_TEST;
+  const detectedTokens = process.env.TOKEN_DETECTION_V2 ? useSelector(getDetectedTokensInCurrentNetwork) : -1;
 
   return (
     <>
@@ -92,6 +98,7 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
+      {process.env.TOKEN_DETECTION_V2 ? (detectedTokens.length > 0 && <DetectedTokensLink onClick={() => history.push(DETECTED_TOKEN_ROUTE)} />) : null}
       <Box marginTop={4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography

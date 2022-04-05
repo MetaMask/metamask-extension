@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../../contexts/i18n';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
@@ -12,7 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 const DetectedTokenAggregators = ({ aggregatorsList }) => {
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   const numOfHiddenAggregators = parseInt(aggregatorsList.length, 10) - 2;
   const [displayMore, setDisplayMore] = useState(false);
 

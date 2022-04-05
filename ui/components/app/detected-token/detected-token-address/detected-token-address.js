@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../../contexts/i18n';
+
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
 import Box from '../../../ui/box';
@@ -17,7 +18,7 @@ import {
 import { shortenAddress } from '../../../../helpers/utils/util';
 
 const DetectedTokenAddress = ({ address }) => {
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (

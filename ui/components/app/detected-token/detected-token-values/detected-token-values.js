@@ -13,22 +13,26 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 
-const DetectedTokenValues = ({ token }) => {
-  const [selectedTokens, setSelectedTokens] = useState(false);
+const DetectedTokenValues = ({ token, handleTokenSelection }) => {
+  const [selectToken, setSelectToken] = useState(false);
   const { tokensWithBalances } = useTokenTracker([token]);
-  const balanceToRender = tokensWithBalances[0]?.string;
-  const balance = tokensWithBalances[0]?.balance;
+  const balanceString = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
     token.address,
-    balanceToRender,
+    balanceString,
     token.symbol,
   );
+
+  const handleCheckBoxSelection = () => {
+    setSelectToken(!selectToken);
+    handleTokenSelection(token.address)
+  }
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-values">
       <Box marginBottom={1}>
         <Typography variant={TYPOGRAPHY.H4}>
-          {`${balance || '0'} ${token.symbol}`}
+          {`${balanceString || '0'} ${token.symbol}`}
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
           {formattedFiatBalance || '$0'}
@@ -36,8 +40,9 @@ const DetectedTokenValues = ({ token }) => {
       </Box>
       <Box className="detected-token-values__checkbox">
         <CheckBox
-          checked={selectedTokens}
-          onClick={() => setSelectedTokens((checked) => !checked)}
+          checked={selectToken}
+          onClick={handleCheckBoxSelection}
+          // onClick={() => setSelectedTokens((checked) => !checked)}
         />
       </Box>
     </Box>
@@ -52,6 +57,7 @@ DetectedTokenValues.propTypes = {
     iconUrl: PropTypes.string,
     aggregators: PropTypes.array,
   }),
+  handleTokenSelection: PropTypes.func.isRequired
 };
 
 export default DetectedTokenValues;
