@@ -714,6 +714,9 @@
   "custom": {
     "message": "Advanced"
   },
+  "customContentSearch": {
+    "message": "Search for a previously added network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -732,6 +735,12 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "customTokenWarningInNonTokenDetectionNetwork": {
+    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
+  },
+  "customTokenWarningInTokenDetectionNetwork": {
+    "message": "Before manually importing a token, make sure you trust it. Learn about $1."
   },
   "customerSupport": {
     "message": "customer support"
@@ -2003,11 +2012,11 @@
   "newContract": {
     "message": "New Contract"
   },
+  "newNFTDetectedMessage": {
+    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your wallet."
+  },
   "newNFTsDetected": {
     "message": "New! NFT detection"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your MetaMask wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -2792,7 +2801,7 @@
     "message": "Settings"
   },
   "settingsSearchMatchingNotFound": {
-    "message": "No matching results found"
+    "message": "No matching results found."
   },
   "shorthandVersion": {
     "message": "v$1",
@@ -2885,6 +2894,10 @@
   "snapAccess": {
     "message": "$1 snap has access to:",
     "description": "$1 represents the name of the snap"
+  },
+  "snapAdded": {
+    "message": "Added on $1 from $2",
+    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
   },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
@@ -3533,6 +3546,9 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "testNetworks": {
+    "message": "Test networks"
+  },
   "theme": {
     "message": "Theme"
   },
@@ -3582,6 +3598,9 @@
   },
   "tokenDetection": {
     "message": "Token detection"
+  },
+  "tokenDetectionAlertMessage": {
+    "message": "Token detection is currently available on $1. $2"
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"

@@ -19,7 +19,7 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import GasDetailsItemTitle from '../../../components/app/gas-details-item/gas-details-item-title';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';

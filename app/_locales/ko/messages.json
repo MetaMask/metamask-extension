@@ -1738,9 +1738,6 @@
   "newNFTsDetected": {
     "message": "신규! NFT 감지"
   },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask가 Opensea에서 자동으로 NFT를 감지하고 MetaMask 지갑에 표시하도록 허용합니다."
-  },
   "newNetworkAdded": {
     "message": "“$1”가 성공적으로 추가되었습니다!"
   },
