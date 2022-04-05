@@ -8,7 +8,7 @@ import badMsgParams from './example2.msgParams.json';
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
 
 export default {
-  title: 'Components/App/SignatureRequestSIWE',
+  title: 'Components/App/SignInWithEthereum/SignatureRequestSIWE',
   id: __filename,
   component: SignatureRequestSIWE,
   parameters: {

@@ -154,6 +154,7 @@ export default class SignatureRequest extends PureComponent {
       cancel,
       sign,
       hardwareWalletRequiresConnection,
+      fromAccount,
     } = this.props;
 
     // const { message, domain = {}, primaryType, types } = JSON.parse(data);
@@ -192,8 +193,8 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request page-container">
-        {/* <Header fromAccount={fromAccount} /> */}
-        {this.renderHeader(messageData.domain)}
+        <Header fromAccount={fromAccount} domain={messageData.domain} />
+        {/* {this.renderHeader(messageData.domain)} */}
         <Message
           data={convertMsg(messageData)}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
