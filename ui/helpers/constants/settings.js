@@ -16,7 +16,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currencyConversion'),
-    descriptionMessage: (t) => t(''),
+    descriptionMessage: (t) => t('currencyConversion'),
     route: `${GENERAL_ROUTE}#currency-conversion`,
     icon: 'fa fa-cog',
   },
@@ -30,21 +30,21 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currentLanguage'),
-    descriptionMessage: (t) => t(''),
+    descriptionMessage: (t) => t('currentLanguage'),
     route: `${GENERAL_ROUTE}#current-language`,
     icon: 'fa fa-cog',
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('accountIdenticon'),
-    descriptionMessage: (t) => t(''),
+    descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
     icon: 'fa fa-cog',
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('hideZeroBalanceTokens'),
-    descriptionMessage: (t) => t(''),
+    descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
     icon: 'fa fa-cog',
   },
@@ -58,7 +58,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('syncWithMobile'),
-    descriptionMessage: (t) => t(''),
+    descriptionMessage: (t) => t('syncWithMobile'),
     route: `${ADVANCED_ROUTE}#sync-withmobile`,
     icon: 'fas fa-sliders-h',
   },
@@ -249,7 +249,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('links'),
-    descriptionMessage: (t) => t(''),
+    descriptionMessage: (t) => t('links'),
     route: `${ABOUT_US_ROUTE}#links`,
     icon: 'fa fa-info-circle',
   },
