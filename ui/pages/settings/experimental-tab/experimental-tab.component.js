@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
@@ -29,7 +29,10 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('experimental')),
+    getNumberOfSettingsInSection(
+      this.context.t,
+      this.context.t('experimental'),
+    ),
   )
     .fill(undefined)
     .map(() => {

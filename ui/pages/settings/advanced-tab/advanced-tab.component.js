@@ -13,7 +13,7 @@ import { getPlatform } from '../../../../app/scripts/lib/util';
 
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -68,7 +68,7 @@ export default class AdvancedTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('advanced')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('advanced')),
   )
     .fill(undefined)
     .map(() => {
