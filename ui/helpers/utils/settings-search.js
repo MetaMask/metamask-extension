@@ -38,11 +38,11 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
     settingsSearchJsonFiltered.length === 1
       ? settingsRefs
       : settingsRefs[settingsRefsIndex];
-  if (settingsRef !== null) {
-    settingsRef?.current.scrollIntoView({
+  if (settingsRef.current) {
+    settingsRef.current.scrollIntoView({
       behavior: 'smooth',
     });
-    settingsRef?.current.focus();
+    settingsRef.current.focus();
     const historySettingsUrl = window.location.hash.split('#')[1];
     window.location.hash = historySettingsUrl;
   }
