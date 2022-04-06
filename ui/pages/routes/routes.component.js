@@ -70,6 +70,7 @@ import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
+import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -107,7 +108,16 @@ export default class Routes extends Component {
   componentDidUpdate(prevProps) {
     const { theme } = this.props;
     if (theme !== prevProps.theme) {
-      document.documentElement.setAttribute('data-theme', theme);
+      if (theme === THEME_TYPE.OS) {
+        const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')
+          ?.matches
+          ? 'dark'
+          : 'default';
+
+        document.documentElement.setAttribute('data-theme', osTheme);
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
     }
   }
 

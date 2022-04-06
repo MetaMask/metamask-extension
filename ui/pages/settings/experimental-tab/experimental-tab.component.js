@@ -7,7 +7,6 @@ import {
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
 import { EVENT } from '../../../../shared/constants/metametrics';
-
 import { THEME_TYPE } from './experimental-tab.constant';
 
 export default class ExperimentalTab extends PureComponent {
@@ -245,6 +244,10 @@ export default class ExperimentalTab extends PureComponent {
       {
         name: t('darkTheme'),
         value: THEME_TYPE.DARK,
+      },
+      {
+        name: t('osTheme'),
+        value: THEME_TYPE.OS,
       },
     ];
 

@@ -2330,6 +2330,9 @@
   "origin": {
     "message": "Origin"
   },
+  "osTheme": {
+    "message": "OS"
+  },
   "padlock": {
     "message": "Padlock"
   },
