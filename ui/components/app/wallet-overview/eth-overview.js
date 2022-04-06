@@ -10,10 +10,6 @@ import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  useMetricEvent,
-  useNewMetricEvent,
-} from '../../../hooks/useMetricEvent';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -34,25 +30,13 @@ import SendIcon from '../../ui/icon/overview-send-icon.component';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const sendEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Home',
-      name: 'Clicked Send: Eth',
-    },
-  });
-  const depositEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Home',
-      name: 'Clicked Deposit',
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -63,12 +47,6 @@ const EthOverview = ({ className }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-
-  const enteredSwapsEvent = useNewMetricEvent({
-    event: 'Swaps Opened',
-    properties: { source: 'Main View', active_currency: 'ETH' },
-    category: 'swaps',
-  });
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
@@ -119,7 +97,14 @@ const EthOverview = ({ className }) => {
             disabled={!isBuyableChain}
             label={t('buy')}
             onClick={() => {
-              depositEvent();
+              trackEvent({
+                event: 'Clicked Deposit',
+                category: 'Navigation',
+                properties: {
+                  action: 'Home',
+                  legacy_event: true,
+                },
+              });
               dispatch(showModal({ name: 'DEPOSIT_ETHER' }));
             }}
           />
@@ -129,7 +114,14 @@ const EthOverview = ({ className }) => {
             Icon={SendIcon}
             label={t('send')}
             onClick={() => {
-              sendEvent();
+              trackEvent({
+                event: 'Clicked Send: Eth',
+                category: 'Navigation',
+                properties: {
+                  action: 'Home',
+                  legacy_event: true,
+                },
+              });
               history.push(SEND_ROUTE);
             }}
           />
@@ -139,7 +131,14 @@ const EthOverview = ({ className }) => {
             Icon={SwapIcon}
             onClick={() => {
               if (isSwapsChain) {
-                enteredSwapsEvent();
+                trackEvent({
+                  event: 'Swaps Opened',
+                  category: 'swaps',
+                  properties: {
+                    source: 'Main View',
+                    active_currency: 'ETH',
+                  },
+                });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
                 if (usingHardwareWallet) {
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);

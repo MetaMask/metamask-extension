@@ -152,7 +152,10 @@ class AccountList extends Component {
                 rel="noopener noreferrer"
                 title={this.context.t('etherscanView')}
               >
-                <img src="images/popout.svg" alt="" />
+                <i
+                  className="fa fa-share-square"
+                  style={{ color: 'var(--color-icon-default)' }}
+                />
               </a>
             </div>
           );

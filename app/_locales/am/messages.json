@@ -38,12 +38,6 @@
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
-  "addToAddressBook": {
-    "message": "በአድራሻ መዝገብ ላይ አክል"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ለምሳሌ፡ ጆን ዲ."
-  },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
@@ -330,9 +324,6 @@
   },
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
-  "enterAnAlias": {
-    "message": "ተለዋጭ ስም ያስገቡ"
   },
   "enterPassword": {
     "message": "የይለፍ ቃል ያስገቡ"

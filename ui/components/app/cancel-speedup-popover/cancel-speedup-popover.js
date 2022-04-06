@@ -84,7 +84,7 @@ const CancelSpeedupPopover = () => {
     } else {
       speedUpTransaction();
     }
-    closeModal('cancelSpeedUpTransaction');
+    closeModal(['cancelSpeedUpTransaction']);
   };
 
   return (
@@ -96,7 +96,7 @@ const CancelSpeedupPopover = () => {
             : `🚀${t('speedUp')}`}
         </>
       }
-      onClose={() => closeModal('cancelSpeedUpTransaction')}
+      onClose={() => closeModal(['cancelSpeedUpTransaction'])}
       className="cancel-speedup-popover"
     >
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />

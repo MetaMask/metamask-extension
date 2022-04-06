@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
@@ -30,6 +29,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreatePassword({
   createNewAccount,
@@ -47,11 +47,7 @@ export default function CreatePassword({
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-
-  const submitPasswordEvent = useNewMetricEvent({
-    event: 'Submit Password',
-    category: 'Onboarding',
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
@@ -142,7 +138,10 @@ export default function CreatePassword({
         if (createNewAccount) {
           await createNewAccount(password);
         }
-        submitPasswordEvent();
+        trackEvent({
+          event: 'Submit Password',
+          category: 'Onboarding',
+        });
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       } catch (error) {
         setPasswordError(error.message);
@@ -216,26 +215,28 @@ export default function CreatePassword({
             justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             marginBottom={4}
           >
-            <CheckBox
-              dataTestId="create-password-terms"
-              onClick={() => setTermsChecked(!termsChecked)}
-              checked={termsChecked}
-            />
-            <Typography variant={TYPOGRAPHY.H5} boxProps={{ marginLeft: 3 }}>
-              {t('passwordTermsWarning', [
-                <a
-                  onClick={(e) => e.stopPropagation()}
-                  key="create-password__link-text"
-                  href={ZENDESK_URLS.PASSWORD_ARTICLE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="create-password__link-text">
-                    {t('learnMoreUpperCase')}
-                  </span>
-                </a>,
-              ])}
-            </Typography>
+            <label className="create-password__form__terms-label">
+              <CheckBox
+                dataTestId="create-password-terms"
+                onClick={() => setTermsChecked(!termsChecked)}
+                checked={termsChecked}
+              />
+              <Typography variant={TYPOGRAPHY.H5} boxProps={{ marginLeft: 3 }}>
+                {t('passwordTermsWarning', [
+                  <a
+                    onClick={(e) => e.stopPropagation()}
+                    key="create-password__link-text"
+                    href={ZENDESK_URLS.PASSWORD_ARTICLE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="create-password__link-text">
+                      {t('learnMoreUpperCase')}
+                    </span>
+                  </a>,
+                ])}
+              </Typography>
+            </label>
           </Box>
           <Button
             data-testid={

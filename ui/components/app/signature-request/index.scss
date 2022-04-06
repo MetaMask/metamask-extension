@@ -51,7 +51,7 @@
     height: 75px;
     width: 75px;
     border-radius: 50%;
-    border: 1px solid white;
+    border: 1px solid var(--color-background-default);
     position: absolute;
     box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
   }
@@ -61,7 +61,7 @@
     font-style: normal;
     font-weight: 500;
     font-size: 60px;
-    color: white;
+    color: var(--color-background-default);
     z-index: 1;
     text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
   }
@@ -79,7 +79,7 @@
   p {
     @include H6;
 
-    color: #999;
+    color: var(--color-text-muted);
   }
 
   .identicon {}

@@ -79,12 +79,6 @@
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminumungkahing Token"
   },
-  "addToAddressBook": {
-    "message": "Idagdag sa address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "hal. John D."
-  },
   "addToken": {
     "message": "Magdagdag ng Token"
   },
@@ -614,9 +608,6 @@
   },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
-  },
-  "enterAnAlias": {
-    "message": "Maglagay ng alias"
   },
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"

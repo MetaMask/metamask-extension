@@ -35,8 +35,7 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
 import GasTiming from '../gas-timing';
-
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
@@ -133,14 +132,7 @@ export default function EditGasDisplay({
     errorKey = 'gasEstimatesUnavailableWarning';
   }
 
-  const clickedAdvancedOptionsMetricsEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Transactions',
-      action: 'Edit Screen',
-      name: 'Clicked "Advanced Options"',
-    },
-  });
-
+  const trackEvent = useContext(MetaMetricsContext);
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
@@ -154,7 +146,7 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message={warningMessage}
-              iconFillColor="#f8c000"
+              iconFillColor="var(--color-warning-default)"
               useIcon
             />
           </div>
@@ -164,7 +156,7 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message={t('gasDisplayDappWarning', [transaction.origin])}
-              iconFillColor="#f8c000"
+              iconFillColor="var(--color-warning-default)"
               useIcon
             />
           </div>
@@ -174,7 +166,7 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message={t('networkIsBusy')}
-              iconFillColor="#f8c000"
+              iconFillColor="var(--color-warning-default)"
               useIcon
             />
           </div>
@@ -286,7 +278,14 @@ export default function EditGasDisplay({
               className="edit-gas-display__advanced-button"
               onClick={() => {
                 setShowAdvancedForm(!showAdvancedForm);
-                clickedAdvancedOptionsMetricsEvent();
+                trackEvent({
+                  event: 'Clicked "Advanced Options"',
+                  category: 'Transactions',
+                  properties: {
+                    action: 'Edit Screen',
+                    legacy_event: true,
+                  },
+                });
               }}
             >
               {t('advancedOptions')}{' '}

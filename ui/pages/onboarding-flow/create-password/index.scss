@@ -1,14 +1,14 @@
 .create-password {
   &__weak {
-    color: var(--error-1);
+    color: var(--color-error-default);
   }
 
   &__average {
-    color: var(--secondary-3);;
+    color: var(--color-warning-alternative);
   }
 
   &__strong {
-    color: var(--success-3);
+    color: var(--color-success-alternative);
   }
 
   &__wrapper {
@@ -21,7 +21,7 @@
   }
 
   &__link-text {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 
   &__form {
@@ -29,6 +29,7 @@
 
     &--password-button {
       background-color: transparent;
+      color: var(--color-text-default);
     }
 
     &--submit-button {
@@ -37,8 +38,12 @@
 
     &--checkmark {
       i {
-        color: var(--success-1);
+        color: var(--color-success-default);
       }
+    }
+
+    &__terms-label {
+      display: flex;
     }
 
     .form-field__input {

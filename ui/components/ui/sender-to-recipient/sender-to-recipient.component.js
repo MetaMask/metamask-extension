@@ -155,7 +155,7 @@ function Arrow({ variant }) {
   return variant === DEFAULT_VARIANT ? (
     <div className="sender-to-recipient__arrow-container">
       <div className="sender-to-recipient__arrow-circle">
-        <img height="15" width="15" src="./images/arrow-right.svg" alt="" />
+        <i className="fa fa-arrow-right sender-to-recipient__arrow-circle__icon" />
       </div>
     </div>
   ) : (

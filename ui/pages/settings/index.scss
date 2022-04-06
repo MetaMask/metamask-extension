@@ -8,7 +8,7 @@
 
 .settings-page {
   position: relative;
-  background: var(--white);
+  background: var(--color-background-default);
   display: flex;
   flex-flow: column nowrap;
 
@@ -17,7 +17,7 @@
     position: relative;
 
     @media screen and (max-width: $break-small) {
-      background: var(--ui-1);
+      background: var(--color-background-alternative);
     }
 
     &__title-container {
@@ -33,7 +33,7 @@
       &__close-button::after {
         content: '\00D7';
         font-size: 40px;
-        color: var(--ui-4);
+        color: var(--color-icon-default);
         cursor: pointer;
       }
 
@@ -68,7 +68,7 @@
       }
 
       &__list {
-        background: var(--ui-white);
+        background: var(--color-background-default);
         box-sizing: border-box;
         box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
         border-radius: 6px;
@@ -78,7 +78,7 @@
 
         > div {
           &:hover {
-            background: var(--ui-1);
+            background: var(--color-background-alternative);
           }
         }
 
@@ -87,13 +87,13 @@
           display: grid;
           align-items: center;
           padding: 16px;
-          border-top: 1px solid var(--ui-2);
+          border-top: 1px solid var(--color-border-muted);
           cursor: pointer;
           grid-template-columns: 16px max-content 24px auto;
           gap: 8px;
 
           &__icon {
-            background: --ui-2;
+            background: var(--color-background-alternative);
             height: 15px;
             width: 15px;
             margin-right: 16px;
@@ -105,7 +105,7 @@
           &__no-matching {
             @include H6;
 
-            color: var(--ui-4);
+            color: var(--color-icon-default);
           }
 
           &__section-multiple-lines {
@@ -124,7 +124,7 @@
             @include H6;
 
             display: inline;
-            color: var(--primary-blue);
+            color: var(--color-primary-default);
             margin-left: 3px;
           }
         }
@@ -137,7 +137,7 @@
     @include H4;
 
     padding: 16px 4px;
-    border-bottom: 1px solid var(--alto);
+    border-bottom: 1px solid var(--color-border-muted);
     margin-right: 24px;
     height: 72px;
     align-items: center;
@@ -156,7 +156,7 @@
 
   &__subheader--link:hover {
     cursor: pointer;
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
   }
 
   &__subheader--break {
@@ -165,7 +165,7 @@
 
   &__sub-header {
     height: 72px;
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid var(--color-border-muted);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -208,7 +208,7 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    border-top: 1px solid #d8d8d8;
+    border-top: 1px solid var(--color-border-muted);
 
     &__tabs {
       display: flex;
@@ -298,13 +298,15 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        background: unset;
+        border: 1px solid transparent;
 
         &__icon {
           &--active {
             height: 40px;
             width: 40px;
             border-radius: 40px;
-            border: 2px solid #037dd6;
+            border: 2px solid var(--color-primary-default);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -318,7 +320,7 @@
 
       margin-top: 8px;
       margin-bottom: 12px;
-      color: var(--dusty-gray);
+      color: var(--color-icon-default);
     }
   }
 
@@ -329,11 +331,11 @@
   &__content-description {
     @include H6;
 
-    color: var(--dusty-gray);
+    color: var(--color-icon-default);
     padding-top: 5px;
 
     a {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
     }
   }
 

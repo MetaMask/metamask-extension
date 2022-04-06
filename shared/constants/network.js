@@ -39,6 +39,9 @@ export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
+export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
+export const POLYGON_DISPLAY_NAME = 'Polygon';
+export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
 
 const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({ network, excludeProjectId = false }) =>
@@ -127,6 +130,13 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [LOCALHOST_CHAIN_ID]: LOCALHOST_RPC_URL,
 };
 
+export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
+  [MAINNET_CHAIN_ID]: ETH_TOKEN_IMAGE_URL,
+  [AVALANCHE_CHAIN_ID]: AVAX_TOKEN_IMAGE_URL,
+  [BSC_CHAIN_ID]: BNB_TOKEN_IMAGE_URL,
+  [POLYGON_CHAIN_ID]: MATIC_TOKEN_IMAGE_URL,
+};
+
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
   NETWORK_TYPE_TO_ID_MAP,
 ).reduce((chainIdToNetworkIdMap, { chainId, networkId }) => {
@@ -185,11 +195,16 @@ export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 // The first item in transakCurrencies must be the
 // default crypto currency for the network
 const BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME = 'ethereum';
+
 export const BUYABLE_CHAINS_MAP = {
   [MAINNET_CHAIN_ID]: {
     nativeCurrency: ETH_SYMBOL,
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
     transakCurrencies: [ETH_SYMBOL, 'USDT', 'USDC', 'DAI'],
+    moonPay: {
+      defaultCurrencyCode: 'eth',
+      showOnlyCurrencies: 'eth,usdt,usdc,dai',
+    },
   },
   [ROPSTEN_CHAIN_ID]: {
     nativeCurrency: ETH_SYMBOL,
@@ -211,16 +226,28 @@ export const BUYABLE_CHAINS_MAP = {
     nativeCurrency: BNB_SYMBOL,
     network: 'bsc',
     transakCurrencies: [BNB_SYMBOL, 'BUSD'],
+    moonPay: {
+      defaultCurrencyCode: 'bnb_bsc',
+      showOnlyCurrencies: 'bnb_bsc,busd_bsc',
+    },
   },
   [POLYGON_CHAIN_ID]: {
     nativeCurrency: MATIC_SYMBOL,
     network: 'polygon',
     transakCurrencies: [MATIC_SYMBOL, 'USDT', 'USDC', 'DAI'],
+    moonPay: {
+      defaultCurrencyCode: 'matic_polygon',
+      showOnlyCurrencies: 'matic_polygon,usdc_polygon',
+    },
   },
   [AVALANCHE_CHAIN_ID]: {
     nativeCurrency: AVALANCHE_SYMBOL,
     network: 'avaxcchain',
     transakCurrencies: [AVALANCHE_SYMBOL],
+    moonPay: {
+      defaultCurrencyCode: 'avax_cchain',
+      showOnlyCurrencies: 'avax_cchain',
+    },
   },
   [FANTOM_CHAIN_ID]: {
     nativeCurrency: FANTOM_SYMBOL,
@@ -231,5 +258,9 @@ export const BUYABLE_CHAINS_MAP = {
     nativeCurrency: CELO_SYMBOL,
     network: 'celo',
     transakCurrencies: [CELO_SYMBOL],
+    moonPay: {
+      defaultCurrencyCode: 'celo',
+      showOnlyCurrencies: 'celo',
+    },
   },
 };

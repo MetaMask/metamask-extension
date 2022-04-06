@@ -1,7 +1,7 @@
 .new-account-info-link {
   cursor: pointer;
   text-decoration: underline;
-  color: var(--primary-blue);
+  color: var(--color-primary-default);
   margin-inline-start: 4px;
 }
 
@@ -26,7 +26,7 @@
   &__select-label {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
   }
 
   &__select {
@@ -45,7 +45,7 @@
   &__instruction {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
     align-self: flex-start;
   }
 
@@ -57,7 +57,7 @@
   }
 
   &__help-link {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
   }
 
   &__input-password {

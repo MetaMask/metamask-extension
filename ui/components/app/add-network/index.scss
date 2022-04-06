@@ -1,6 +1,6 @@
 .add-network {
   &__header {
-    border-bottom: 1px solid var(--ui-grey);
+    border-bottom: 1px solid var(--color-border-default);
 
     &__back-icon {
       margin-left: 24px;
@@ -15,15 +15,14 @@
   }
 
   &__add-icon {
-    height: 16px;
-    width: 12px;
-    color: var(--ui-4);
+    color: var(--color-text-alternative);
     margin-left: auto;
     margin-right: 0;
+    cursor: pointer;
   }
 
   &__footer {
-    border-top: 1px solid var(--ui-2);
+    border-top: 1px solid var(--color-border-muted);
 
     & .btn-link {
       display: initial;
@@ -31,12 +30,12 @@
     }
 
     &__link {
-      color: var(--primary-1);
+      color: var(--color-primary-default);
     }
 
     & .actionable-message--warning .actionable-message__message,
     .actionable-message--warning .actionable-message__action {
-      color: var(--ui-4);
+      color: var(--color-text-alternative);
     }
   }
 }

@@ -160,7 +160,9 @@ export default function CurrencyInput({
       onChange={handleChange}
       value={decimalValue}
       actionComponent={
-        <div className="currency-input__swap-component" onClick={swap} />
+        <button className="currency-input__swap-component" onClick={swap}>
+          <i className="fa fa-retweet fa-lg" />
+        </button>
       }
     >
       {renderConversionComponent()}

@@ -40,6 +40,9 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  RateLimitController,
+  ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -82,8 +85,8 @@ import {
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
-import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -134,6 +137,7 @@ import {
   buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
+import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getPlatform } from './lib/util';
@@ -161,7 +165,7 @@ export default class MetamaskController extends EventEmitter {
       MILLISECOND * 200,
     );
     this.opts = opts;
-    this.extension = opts.extension;
+    this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
@@ -317,6 +321,10 @@ export default class MetamaskController extends EventEmitter {
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
       captureException,
+    });
+
+    this.on('update', (update) => {
+      this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
@@ -589,7 +597,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.2',
+        'https://metamask.github.io/iframe-execution-environment/0.4.3',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -633,6 +641,27 @@ export default class MetamaskController extends EventEmitter {
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
+    });
+
+    this.rateLimitController = new RateLimitController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'RateLimitController',
+      }),
+      implementations: {
+        showNativeNotification: (origin, message) => {
+          const subjectMetadataState = this.controllerMessenger.call(
+            'SubjectMetadataController:getState',
+          );
+
+          const originMetadata = subjectMetadataState.subjectMetadata[origin];
+
+          this.platform._showNotification(
+            originMetadata?.name ?? origin,
+            message,
+          );
+          return null;
+        },
+      },
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -717,6 +746,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
+      getTokenStandardAndDetails: this.assetsContractController.getTokenStandardAndDetails.bind(
+        this.assetsContractController,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -750,7 +782,7 @@ export default class MetamaskController extends EventEmitter {
             from: userAddress,
           } = txMeta.txParams;
           const { chainId } = txMeta;
-          const transactionData = getTransactionData(data);
+          const transactionData = parseStandardTokenTransactionData(data);
           const tokenAmountOrTokenId = getTokenValueParam(transactionData);
           const { allCollectibles } = this.collectiblesController.state;
 
@@ -974,7 +1006,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Lazily update the store with the current extension environment
-    this.extension.runtime.getPlatformInfo(({ os }) => {
+    this.extension.runtime.getPlatformInfo().then(({ os }) => {
       this.appStateController.setBrowserEnvironment(
         os,
         // This method is presently only supported by Firefox
@@ -1003,10 +1035,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:add',
         ),
         clearSnapState: (fromSubject) =>
-          this.controllerMessenger(
-            'SnapController:updateSnap',
+          this.controllerMessenger.call(
+            'SnapController:updateSnapState',
             fromSubject,
-            {},
+            null,
           ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
         getSnap: this.controllerMessenger.call.bind(
@@ -1017,22 +1049,24 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getRpcMessageHandler',
         ),
-        getSnapState: async (...args) => {
-          // TODO:flask Just return the action result directly in the next
-          // @metamask/snap-controllers update.
-          return (
-            (await this.controllerMessenger.call(
-              'SnapController:getSnapState',
-              ...args,
-            )) ?? null
-          );
-        },
+        getSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnapState',
+        ),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
+        showNotification: (origin, args) =>
+          this.controllerMessenger.call(
+            'RateLimitController:call',
+            origin,
+            'showNativeNotification',
+            origin,
+            args.message,
+          ),
         updateSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:updateSnapState',
@@ -1552,6 +1586,9 @@ export default class MetamaskController extends EventEmitter {
         txController,
       ),
 
+      updatePreviousGasParams: txController.updatePreviousGasParams.bind(
+        txController,
+      ),
       // messageManager
       signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),
@@ -3293,6 +3330,17 @@ export default class MetamaskController extends EventEmitter {
     // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    engine.push(
+      createRPCMethodTrackingMiddleware({
+        trackEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        getMetricsState: this.metaMetricsController.store.getState.bind(
+          this.metaMetricsController.store,
+        ),
+      }),
+    );
 
     // onboarding
     if (subjectType === SUBJECT_TYPES.WEBSITE) {

@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },
-  "addToAddressBook": {
-    "message": "पता पुस्तिका में जोड़ें"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "जैसे जॉन डी."
-  },
   "addToken": {
     "message": "टोकन जोड़ें"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS लुकअप विफल हुआ।"
   },
-  "enterAnAlias": {
-    "message": "एक उपनाम दर्ज करें"
-  },
   "enterMaxSpendLimit": {
     "message": "अधिकतम खर्च सीमा दर्ज करें"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "अंतिम बार कनेक्ट किया गया"
   },
-  "layer1Fees": {
-    "message": "लेयर 1 शुल्क"
-  },
   "learmMoreAboutGas": {
     "message": "गैस के बारे में $1 चाहते हैं?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "नया! NFT डिटेक्शन"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask को Opensea से NFT का स्वचालित रूप से पता लगाने और अपने MetaMask वॉलेट में प्रदर्शित करने की अनुमति दें।"
   },
   "newNetworkAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"

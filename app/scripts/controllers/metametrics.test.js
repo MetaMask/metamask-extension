@@ -5,8 +5,13 @@ import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  TRAITS,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
+import {
+  MAINNET_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../shared/constants/network';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
 
@@ -17,6 +22,20 @@ const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+
+const MOCK_TRAITS = {
+  test_boolean: true,
+  test_string: 'abc',
+  test_number: 123,
+  test_bool_array: [true, true, false],
+  test_string_array: ['test', 'test', 'test'],
+  test_boolean_array: [1, 2, 3],
+};
+
+const MOCK_INVALID_TRAITS = {
+  test_null: null,
+  test_array_multi_types: [true, 'a', 1],
+};
 
 const DEFAULT_TEST_CONTEXT = {
   app: { name: 'MetaMask Extension', version: VERSION },
@@ -208,6 +227,78 @@ describe('MetaMetricsController', function () {
         metaMetricsController.generateMetaMetricsId().startsWith('0x'),
         true,
       );
+    });
+  });
+
+  describe('identify', function () {
+    it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+      });
+      const mock = sinon.mock(segment);
+
+      mock
+        .expects('identify')
+        .once()
+        .withArgs({ userId: TEST_META_METRICS_ID, traits: MOCK_TRAITS });
+
+      metaMetricsController.identify({
+        ...MOCK_TRAITS,
+        ...MOCK_INVALID_TRAITS,
+      });
+      mock.verify();
+    });
+
+    it('should transform date type traits into ISO-8601 timestamp strings', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+      });
+      const mock = sinon.mock(segment);
+
+      const mockDate = new Date();
+      const mockDateISOString = mockDate.toISOString();
+
+      mock
+        .expects('identify')
+        .once()
+        .withArgs({
+          userId: TEST_META_METRICS_ID,
+          traits: {
+            test_date: mockDateISOString,
+          },
+        });
+
+      metaMetricsController.identify({
+        test_date: mockDate,
+      });
+      mock.verify();
+    });
+
+    it('should not call segment.identify if user is not participating in metametrics', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: false,
+      });
+      const mock = sinon.mock(segment);
+
+      mock.expects('identify').never();
+
+      metaMetricsController.identify(MOCK_TRAITS);
+      mock.verify();
+    });
+
+    it('should not call segment.identify if there are no valid traits to identify', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+      });
+      const mock = sinon.mock(segment);
+
+      mock.expects('identify').never();
+
+      metaMetricsController.identify(MOCK_INVALID_TRAITS);
+      mock.verify();
     });
   });
 
@@ -515,6 +606,80 @@ describe('MetaMetricsController', function () {
         { isOptInPath: true },
       );
       mock.verify();
+    });
+  });
+
+  describe('_buildUserTraitsObject', function () {
+    it('should return full user traits object on first call', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const traits = metaMetricsController._buildUserTraitsObject({
+        frequentRpcListDetail: [
+          { chainId: MAINNET_CHAIN_ID },
+          { chainId: ROPSTEN_CHAIN_ID },
+        ],
+        ledgerTransportType: 'web-hid',
+        identities: [{}, {}],
+        threeBoxSyncingAllowed: false,
+      });
+
+      assert.deepEqual(traits, {
+        [TRAITS.THREE_BOX_ENABLED]: false,
+        [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
+        [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
+        [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
+      });
+    });
+
+    it('should return only changed traits object on subsequent calls', function () {
+      const metaMetricsController = getMetaMetricsController();
+      metaMetricsController._buildUserTraitsObject({
+        frequentRpcListDetail: [
+          { chainId: MAINNET_CHAIN_ID },
+          { chainId: ROPSTEN_CHAIN_ID },
+        ],
+        ledgerTransportType: 'web-hid',
+        identities: [{}, {}],
+        threeBoxSyncingAllowed: false,
+      });
+
+      const updatedTraits = metaMetricsController._buildUserTraitsObject({
+        frequentRpcListDetail: [
+          { chainId: MAINNET_CHAIN_ID },
+          { chainId: ROPSTEN_CHAIN_ID },
+        ],
+        ledgerTransportType: 'web-hid',
+        identities: [{}, {}, {}],
+        threeBoxSyncingAllowed: false,
+      });
+
+      assert.deepEqual(updatedTraits, {
+        [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
+      });
+    });
+
+    it('should return null if no traits changed', function () {
+      const metaMetricsController = getMetaMetricsController();
+      metaMetricsController._buildUserTraitsObject({
+        frequentRpcListDetail: [
+          { chainId: MAINNET_CHAIN_ID },
+          { chainId: ROPSTEN_CHAIN_ID },
+        ],
+        ledgerTransportType: 'web-hid',
+        identities: [{}, {}],
+        threeBoxSyncingAllowed: false,
+      });
+
+      const updatedTraits = metaMetricsController._buildUserTraitsObject({
+        frequentRpcListDetail: [
+          { chainId: MAINNET_CHAIN_ID },
+          { chainId: ROPSTEN_CHAIN_ID },
+        ],
+        ledgerTransportType: 'web-hid',
+        identities: [{}, {}],
+        threeBoxSyncingAllowed: false,
+      });
+
+      assert.equal(updatedTraits, null);
     });
   });
 

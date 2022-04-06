@@ -9,7 +9,7 @@
     @include H6;
 
     font-weight: 500;
-    color: #636778;
+    color: var(--color-text-alternative);
     margin-left: 12px;
   }
 
@@ -18,15 +18,15 @@
 
     flex: 1 1 0;
     text-align: left;
-    border-bottom: 1px solid #d2d8dd;
+    border-bottom: 1px solid var(--color-border-default);
     padding: 0.5rem;
     margin: 0;
-    color: #ccc;
+    color: var(--color-text-alternative);
   }
 
   &--root {
     flex: 1 100%;
-    background-color: #f8f9fb;
+    background-color: var(--color-background-alternative);
     padding-bottom: 0.5rem;
     overflow: auto;
     padding-left: 12px;
@@ -42,12 +42,12 @@
     padding-left: 0.3rem;
 
     &-label {
-      color: #5b5d67;
+      color: var(--color-text-alternative);
       margin-left: 0.5rem;
     }
 
     &-value {
-      color: black;
+      color: var(--color-text-default);
       margin-left: 0.5rem;
       white-space: pre-line;
       overflow: hidden;
@@ -63,7 +63,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--Grey-500);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-background-alternative);
+    color: var(--color-icon-default);
     position: absolute;
     right: 24px;
     bottom: 12px;

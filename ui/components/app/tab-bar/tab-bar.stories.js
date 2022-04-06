@@ -18,43 +18,43 @@ export default {
   args: {
     tabs: [
       {
-        icon: <img src="images/general-icon.svg" alt="" />,
+        icon: <i className="fa fa-cog" />,
         content: 'General',
         key: 'general',
       },
       {
-        icon: <img src="images/contacts-icon.svg" alt="" />,
+        icon: <i className="fa fa-address-book" />,
         content: 'Contacts',
         key: 'contacts',
       },
       {
-        icon: <img src="images/experimental-icon.svg" />,
+        icon: <i className="fa fa-flask" />,
         content: 'Snaps',
         key: 'snaps',
       },
 
       {
-        icon: <img src="images/security-icon.svg" alt="" />,
+        icon: <i className="fa fa-lock" />,
         content: 'SecurityAndPrivacy',
         key: 'securityAndPrivacy',
       },
       {
-        icon: <img src="images/alerts-icon.svg" alt="" />,
+        icon: <i className="fa fa-bell" />,
         content: 'Alerts',
         key: 'alerts',
       },
       {
-        icon: <img src="images/network-icon.svg" alt="" />,
+        icon: <i className="fa fa-plug" />,
         content: 'Networks',
         key: 'networks',
       },
       {
-        icon: <img src="images/experimental-icon.svg" alt="" />,
+        icon: <i className="fa fa-flask" />,
         content: 'Experimental',
         key: 'experimental',
       },
       {
-        icon: <img src="images/info-icon.svg" alt="" />,
+        icon: <i className="fa fa-info-circle" />,
         content: 'About',
         key: 'about',
       },

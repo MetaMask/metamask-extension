@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -7,7 +7,6 @@ import TokenList from '../token-list';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
   getCurrentAccountWithSendEtherInfo,
@@ -26,6 +25,7 @@ import {
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
@@ -35,20 +35,7 @@ const AssetList = ({ onClickAsset }) => {
   );
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const selectTokenEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Token Menu',
-      name: 'Clicked Token',
-    },
-  });
-  const addTokenEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Token Menu',
-      name: 'Clicked "Add Token"',
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const {
     currency: primaryCurrency,
@@ -94,7 +81,14 @@ const AssetList = ({ onClickAsset }) => {
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
-          selectTokenEvent();
+          trackEvent({
+            event: 'Clicked Token',
+            category: 'Navigation',
+            properties: {
+              action: 'Token Menu',
+              legacy_event: true,
+            },
+          });
         }}
       />
       <Box marginTop={4}>
@@ -111,7 +105,14 @@ const AssetList = ({ onClickAsset }) => {
           isMainnet={isMainnet}
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
-            addTokenEvent();
+            trackEvent({
+              event: 'Clicked "Add Token"',
+              category: 'Navigation',
+              properties: {
+                action: 'Token Menu',
+                legacy_event: true,
+              },
+            });
           }}
         />
       </Box>

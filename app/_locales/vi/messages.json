@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Thêm token được đề xuất"
   },
-  "addToAddressBook": {
-    "message": "Thêm vào sổ địa chỉ"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ví dụ: John D."
-  },
   "addToken": {
     "message": "Thêm token"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Tra Cứu ENS thất bại."
   },
-  "enterAnAlias": {
-    "message": "Nhập một biệt danh"
-  },
   "enterMaxSpendLimit": {
     "message": "Nhập giới hạn chi tiêu tối đa"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "layer1Fees": {
-    "message": "Phí Lớp 1"
-  },
   "learmMoreAboutGas": {
     "message": "Muốn $1 về gas?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "Mới! Phát hiện NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ Opensea và hiển thị trong ví MetaMask của bạn."
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"

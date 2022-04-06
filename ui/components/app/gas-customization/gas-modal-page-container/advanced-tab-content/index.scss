@@ -10,7 +10,7 @@
   &__transaction-data-summary {
     display: flex;
     flex-flow: column;
-    color: var(--mid-gray);
+    color: var(--color-text-alternative);
     margin-top: 12px;
     padding-left: 18px;
     padding-right: 18px;
@@ -22,7 +22,7 @@
       display: flex;
       flex-flow: row;
       justify-content: space-between;
-      color: #888ea3;
+      color: var(--color-text-muted);
     }
 
     &__container {
@@ -34,7 +34,7 @@
     &__fee {
       @include Paragraph;
 
-      color: #313a5e;
+      color: var(--color-text-alternative);
     }
 
     &__time-remaining {
@@ -42,7 +42,7 @@
 
       /*rtl:ignore*/
       direction: ltr;
-      color: #313a5e;
+      color: var(--color-text-alternative);
 
       .minutes-num,
       .seconds-num {
@@ -65,15 +65,15 @@
   &__fee-chart {
     margin-top: 8px;
     height: 265px;
-    background: #f8f9fb;
-    border-bottom: 1px solid #d2d8dd;
-    border-top: 1px solid #d2d8dd;
+    background: var(--color-background-alternative);
+    border-bottom: 1px solid var(--color-border-muted);
+    border-top: 1px solid var(--color-border-muted);
     position: relative;
 
     &__title {
       @include H7;
 
-      color: #313a5e;
+      color: var(--color-text-alternative);
       margin-left: 22px;
     }
 
@@ -87,7 +87,7 @@
       padding-left: 20px;
       padding-right: 19px;
       width: 100%;
-      color: #888ea3;
+      color: var(--color-text-alternative);
     }
 
     .loading-overlay {
