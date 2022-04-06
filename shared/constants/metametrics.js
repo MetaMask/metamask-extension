@@ -164,6 +164,8 @@
  * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we
  * identify the new number_of_accounts trait
+ * @property {string} [OPENSEA_API_ENABLED] - when the OpenSea API is enabled
+ * we identify the opensea_api_enabled trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
  */
@@ -178,6 +180,7 @@ export const TRAITS = {
   NETWORKS_ADDED: 'networks_added',
   NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
+  OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
 };
 
