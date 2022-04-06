@@ -34,7 +34,7 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
-import DetectedToken from '../../components/app/detected-token'
+import DetectedToken from '../../components/app/detected-token';
 
 import {
   IMPORT_TOKEN_ROUTE,

@@ -1,1 +1,1 @@
-export { default } from './detetcted-token';
+export { default } from './detected-token';

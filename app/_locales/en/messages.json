@@ -1476,6 +1476,12 @@
   "history": {
     "message": "History"
   },
+  "ignoreAll": {
+    "message": "Ignore all"
+  },
+  "ignoreTokenWarning": {
+    "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -3641,6 +3647,10 @@
   "tokenSymbol": {
     "message": "Token Symbol"
   },
+  "tokensFoundTitle": {
+    "message": "$1 new tokens found",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "I understand"
   },
@@ -4019,15 +4029,5 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
-  },
-  "tokensFoundTitle": {
-    "message": "$1 new tokens found",
-    "description": "$1 is the number of new tokens detected"
-  },
-  "ignoreAll": {
-    "message": "Ignore all"
-  },
-  "ignoreTokenWarning": {
-    "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
   }
 }

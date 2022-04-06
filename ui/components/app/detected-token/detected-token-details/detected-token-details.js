@@ -9,9 +9,12 @@ import DetectedTokenAggregators from '../detected-token-aggregators/detected-tok
 import { DISPLAY } from '../../../../helpers/constants/design-system';
 
 const DetectedTokenDetails = ({ token, handleTokenSelection }) => {
-
   return (
-    <Box display={DISPLAY.FLEX} className="detected-token-details" marginBottom={4}>
+    <Box
+      display={DISPLAY.FLEX}
+      className="detected-token-details"
+      marginBottom={4}
+    >
       <Identicon
         className="detected-token-details__identicon"
         address={token.address}
@@ -22,7 +25,10 @@ const DetectedTokenDetails = ({ token, handleTokenSelection }) => {
         marginLeft={2}
         className="detected-token-details__data"
       >
-        <DetectedTokenValues token={token} handleTokenSelection={handleTokenSelection} />
+        <DetectedTokenValues
+          token={token}
+          handleTokenSelection={handleTokenSelection}
+        />
         <DetectedTokenAddress address={token.address} />
         <DetectedTokenAggregators aggregatorsList={token.aggregators} />
       </Box>
@@ -31,8 +37,14 @@ const DetectedTokenDetails = ({ token, handleTokenSelection }) => {
 };
 
 DetectedTokenDetails.propTypes = {
-  tokenAddress: PropTypes.string,
-  handleTokenSelection: PropTypes.func.isRequired
+  token: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    decimals: PropTypes.number,
+    symbol: PropTypes.string,
+    iconUrl: PropTypes.string,
+    aggregators: PropTypes.array,
+  }),
+  handleTokenSelection: PropTypes.func.isRequired,
 };
 
 export default DetectedTokenDetails;

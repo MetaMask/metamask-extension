@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';

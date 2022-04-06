@@ -25,8 +25,8 @@ const DetectedTokenValues = ({ token, handleTokenSelection }) => {
 
   const handleCheckBoxSelection = () => {
     setSelectToken(!selectToken);
-    handleTokenSelection(token.address)
-  }
+    handleTokenSelection(token.address);
+  };
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-values">
@@ -57,7 +57,7 @@ DetectedTokenValues.propTypes = {
     iconUrl: PropTypes.string,
     aggregators: PropTypes.array,
   }),
-  handleTokenSelection: PropTypes.func.isRequired
+  handleTokenSelection: PropTypes.func.isRequired,
 };
 
 export default DetectedTokenValues;

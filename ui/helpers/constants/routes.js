@@ -174,7 +174,7 @@ const PATH_NAME_MAP = {
   [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
   [DETECTED_TOKEN_ROUTE]: 'Tokens Found Page',
   [DETECTED_TOKEN_SELECTION_ROUTE]: 'Token Selection Page',
-  [DETECTED_TOKEN_IGNORED_ROUTE]: 'Tokens Ignored Alert'
+  [DETECTED_TOKEN_IGNORED_ROUTE]: 'Tokens Ignored Alert',
 };
 
 export {
