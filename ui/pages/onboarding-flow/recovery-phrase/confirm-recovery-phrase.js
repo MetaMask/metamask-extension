@@ -81,7 +81,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         inputValue={phraseElements}
         indicesToCheck={indicesToCheck}
       />
-      <div className="recovery-phrase__footer">
+      <div className="recovery-phrase__footer__confirm">
         <Button
           data-testid="recovery-phrase-confirm"
           type="primary"

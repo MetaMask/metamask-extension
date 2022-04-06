@@ -102,6 +102,15 @@
       margin-bottom: 40px;
     }
 
+    &__confirm {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+
     &--button {
       align-self: center;
 
@@ -114,6 +123,7 @@
       }
 
       &__confirm {
+        width: 80%;
         @media screen and (min-width: $break-large) {
           min-width: 327px;
         }
