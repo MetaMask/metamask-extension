@@ -804,9 +804,6 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "defaultTheme": {
-    "message": "Default"
-  },
   "delete": {
     "message": "Delete"
   },
@@ -1713,6 +1710,9 @@
   },
   "levelArrow": {
     "message": "level arrow"
+  },
+  "lightTheme": {
+    "message": "Light"
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"

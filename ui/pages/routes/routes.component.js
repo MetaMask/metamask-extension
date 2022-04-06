@@ -112,7 +112,7 @@ export default class Routes extends Component {
         const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')
           ?.matches
           ? THEME_TYPE.DARK
-          : THEME_TYPE.DEFAULT;
+          : THEME_TYPE.LIGHT;
 
         document.documentElement.setAttribute('data-theme', osTheme);
       } else {
