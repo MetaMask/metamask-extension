@@ -38,7 +38,7 @@ export function handleSettingsRefs(t, tabMessage, settingsRefs) {
     settingsSearchJsonFiltered.length === 1
       ? settingsRefs
       : settingsRefs[settingsRefsIndex];
-  if (settingsRef.current) {
+  if (settingsRef?.current) {
     settingsRef.current.scrollIntoView({
       behavior: 'smooth',
     });
