@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
+import { isEqual } from 'lodash';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   isPrefixedFormattedHexString,
@@ -87,17 +88,22 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
 
   const resetForm = useCallback(() => {
-    setNetworkName(selectedNetworkName || '');
-    setRpcUrl(selectedNetwork.rpcUrl);
-    setChainId(getDisplayChainId(selectedNetwork.chainId));
-    setTicker(selectedNetwork?.ticker);
-    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
-    setErrors({});
-    setWarnings({});
-    setIsSubmitting(false);
-  }, [selectedNetwork, selectedNetworkName]);
+    if (!isEditing || !isEqual(selectedNetwork, previousNetwork)) {
+      setNetworkName(selectedNetworkName || '');
+      setRpcUrl(selectedNetwork.rpcUrl);
+      setChainId(getDisplayChainId(selectedNetwork.chainId));
+      setTicker(selectedNetwork?.ticker);
+      setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
+      setErrors({});
+      setWarnings({});
+      setIsSubmitting(false);
+      setPreviousNetwork(selectedNetwork);
+    }
+  }, [isEditing, selectedNetwork, selectedNetworkName, previousNetwork]);
 
   const stateIsUnchanged = () => {
     // These added conditions are in case the saved chainId is invalid, which
@@ -467,6 +473,7 @@ const NetworksForm = ({
   ]);
 
   const onSubmit = async () => {
+    setIsEditing(false);
     setIsSubmitting(true);
     try {
       const formChainId = chainId.trim().toLowerCase();
@@ -511,11 +518,13 @@ const NetworksForm = ({
       dispatch(setSelectedSettingsRpcUrl(''));
       history.push(NETWORKS_ROUTE);
     } else {
+      setIsEditing(false);
       resetForm();
     }
   };
 
   const onDelete = () => {
+    setIsEditing(false);
     dispatch(
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
@@ -564,21 +573,30 @@ const NetworksForm = ({
         <FormField
           autoFocus
           error={errors.networkName?.msg || ''}
-          onChange={setNetworkName}
+          onChange={(value) => {
+            setIsEditing(true);
+            setNetworkName(value);
+          }}
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
-          onChange={setRpcUrl}
+          onChange={(value) => {
+            setIsEditing(true);
+            setRpcUrl(value);
+          }}
           titleText={t('rpcUrl')}
           value={rpcUrl}
           disabled={viewOnly}
         />
         <FormField
           error={errors.chainId?.msg || ''}
-          onChange={setChainId}
+          onChange={(value) => {
+            setIsEditing(true);
+            setChainId(value);
+          }}
           titleText={t('chainId')}
           value={chainId}
           disabled={viewOnly}
@@ -586,14 +604,20 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.ticker?.msg || ''}
-          onChange={setTicker}
+          onChange={(value) => {
+            setIsEditing(true);
+            setTicker(value);
+          }}
           titleText={t('currencySymbol')}
           value={ticker}
           disabled={viewOnly}
         />
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
-          onChange={setBlockExplorerUrl}
+          onChange={(value) => {
+            setIsEditing(true);
+            setBlockExplorerUrl(value);
+          }}
           titleText={t('blockExplorerUrl')}
           titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
