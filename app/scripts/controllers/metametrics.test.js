@@ -619,13 +619,17 @@ describe('MetaMetricsController', function () {
         ],
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
+        openSeaEnabled: true,
         threeBoxSyncingAllowed: false,
+        useCollectibleDetection: false,
       });
 
       assert.deepEqual(traits, {
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
+        [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
+        [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
       });
     });
