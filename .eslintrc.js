@@ -44,14 +44,6 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.babel.js'),
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
-      parserOptions: {
-        sourceType: 'module',
-      },
-      rules: {
-        // This rule does not work with CommonJS modules. We will just have to
-        // trust that all of the files specified above are indeed modules.
-        'import/unambiguous': 'off',
-      },
       settings: {
         'import/resolver': {
           // When determining the location of a `require()` call, use Node's
