@@ -9,19 +9,9 @@ export default {
     identity: {
       control: 'object',
     },
-    chainId: {
-      control: 'text',
-    },
-    rpcPrefs: {
-      control: 'object',
-    },
   },
   args: {
     identity: {
-      control: 'object',
-    },
-    chainId: 'chainId',
-    rpcPrefs: {
       control: 'object',
     },
   },
