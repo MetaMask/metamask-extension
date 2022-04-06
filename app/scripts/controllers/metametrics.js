@@ -534,11 +534,11 @@ export default class MetaMetricsController {
   _buildUserTraitsObject(metamaskState) {
     const currentTraits = {
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
-        .length,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
     };
 
