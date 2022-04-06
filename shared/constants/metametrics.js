@@ -164,8 +164,8 @@
  * identify the new number_of_accounts trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
- * @property {string} [NUMBER_OF_NFT_COLLECTIONS] - when 3box feature is toggled we
- * identify the 3box_enabled trait
+ * @property {string} [NUMBER_OF_NFT_COLLECTIONS] - user trait for number of
+ * unique NFT addresses
  */
 
 /**
