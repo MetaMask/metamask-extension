@@ -591,20 +591,19 @@ export default class MetaMetricsController {
    */
   _getNumberOfNFtCollection(metamaskState) {
     const { allCollectibles } = metamaskState;
-    if (allCollectibles) {
-      const allAccounts = Object.keys(allCollectibles);
-      const allAddresses = allAccounts.flatMap((account) =>
-        Object.keys(allCollectibles[account]).flatMap((chainId) =>
-          allCollectibles[account][chainId].map(
-            (collectible) => collectible.address,
-          ),
-        ),
-      );
-      const unique = [...new Set(allAddresses)];
-      return unique.length;
+    if (!allCollectibles) {
+      return 0;
     }
-
-    return 0;
+    const allAccounts = Object.keys(allCollectibles);
+    const allAddresses = allAccounts.flatMap((account) =>
+      Object.keys(allCollectibles[account]).flatMap((chainId) =>
+        allCollectibles[account][chainId].map(
+          (collectible) => collectible.address,
+        ),
+      ),
+    );
+    const unique = [...new Set(allAddresses)];
+    return unique.length;
   }
 
   /**
