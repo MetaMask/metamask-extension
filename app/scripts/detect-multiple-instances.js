@@ -8,9 +8,9 @@
 import browser from 'webextension-polyfill';
 import { getPlatform } from './lib/util';
 import {
+  METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
-  METAMASK_PROD_FIREFOX_ID
 } from '../../shared/constants/app';
 
 const MESSAGE_TEXT = 'isRunning';
@@ -38,13 +38,11 @@ export const checkForMultipleVersionsRunning = () => {
     if (browser.runtime.id !== METAMASK_FLASK_CHROME_ID) {
       browser.runtime.sendMessage(METAMASK_FLASK_CHROME_ID, MESSAGE_TEXT);
     }
+    if (browser.runtime.id !== METAMASK_BETA_CHROME_ID) {
+      browser.runtime.sendMessage(METAMASK_BETA_CHROME_ID, MESSAGE_TEXT);
+    }
     if (browser.runtime.id !== METAMASK_PROD_CHROME_ID) {
       browser.runtime.sendMessage(METAMASK_PROD_CHROME_ID, MESSAGE_TEXT);
-    }
-  }
-  if (getPlatform() === PLATFORM_FIREFOX) {
-    if (browser.runtime.id !== METAMASK_PROD_FIREFOX_ID) {
-      browser.runtime.sendMessage(METAMASK_PROD_FIREFOX_ID, MESSAGE_TEXT);
     }
   }
 };
