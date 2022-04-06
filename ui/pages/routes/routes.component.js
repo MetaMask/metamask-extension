@@ -105,16 +105,20 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
+  handleOsTheme() {
+    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
+      ? THEME_TYPE.DARK
+      : THEME_TYPE.LIGHT;
+
+    document.documentElement.setAttribute('data-theme', osTheme);
+  }
+
   componentDidUpdate(prevProps) {
     const { theme } = this.props;
+
     if (theme !== prevProps.theme) {
       if (theme === THEME_TYPE.OS) {
-        const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')
-          ?.matches
-          ? THEME_TYPE.DARK
-          : THEME_TYPE.LIGHT;
-
-        document.documentElement.setAttribute('data-theme', osTheme);
+        this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
       }
@@ -138,7 +142,11 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === THEME_TYPE.OS) {
+      this.handleOsTheme();
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
   }
 
   renderRoutes() {
