@@ -40,9 +40,10 @@ export default function TokenDetailsPage() {
   );
   const aggregators = tokenMetadata?.aggregators?.join(', ');
   const fileName = tokenMetadata?.iconUrl;
-  const imagePath = useTokenDetection
-    ? fileName
-    : `images/contract/${fileName}`;
+  let imagePath = fileName;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    imagePath = useTokenDetection ? fileName : `images/contract/${fileName}`;
+  }
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
