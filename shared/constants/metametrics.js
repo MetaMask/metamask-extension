@@ -164,6 +164,8 @@
  * identify the new number_of_accounts trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
+ * @property {string} [NUMBER_OF_NFT_COLLECTIONS] - when 3box feature is toggled we
+ * identify the 3box_enabled trait
  */
 
 /**
@@ -176,6 +178,7 @@ export const TRAITS = {
   THREE_BOX_ENABLED: 'three_box_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NETWORKS_ADDED: 'networks_added',
+  NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
 };
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
