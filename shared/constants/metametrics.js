@@ -160,6 +160,8 @@
  * type is changed we identify the ledger_connection_type trait
  * @property {string} [NETWORKS_ADDED] - when user modifies networks we
  * identify the networks_added trait
+ * @property {string} [NFT_AUTODETECTION_ENABLED] - when Autodetect NFTs
+ * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we
  * identify the new number_of_accounts trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
@@ -174,6 +176,7 @@
 export const TRAITS = {
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   NETWORKS_ADDED: 'networks_added',
+  NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   THREE_BOX_ENABLED: 'three_box_enabled',
 };
