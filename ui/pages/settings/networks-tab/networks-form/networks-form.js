@@ -92,18 +92,16 @@ const NetworksForm = ({
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
 
   const resetForm = useCallback(() => {
-    if (!isEditing || !isEqual(selectedNetwork, previousNetwork)) {
-      setNetworkName(selectedNetworkName || '');
-      setRpcUrl(selectedNetwork.rpcUrl);
-      setChainId(getDisplayChainId(selectedNetwork.chainId));
-      setTicker(selectedNetwork?.ticker);
-      setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
-      setErrors({});
-      setWarnings({});
-      setIsSubmitting(false);
-      setPreviousNetwork(selectedNetwork);
-    }
-  }, [isEditing, selectedNetwork, selectedNetworkName, previousNetwork]);
+    setNetworkName(selectedNetworkName || '');
+    setRpcUrl(selectedNetwork.rpcUrl);
+    setChainId(getDisplayChainId(selectedNetwork.chainId));
+    setTicker(selectedNetwork?.ticker);
+    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
+    setErrors({});
+    setWarnings({});
+    setIsSubmitting(false);
+    setPreviousNetwork(selectedNetwork);
+  }, [selectedNetwork, selectedNetworkName]);
 
   const stateIsUnchanged = () => {
     // These added conditions are in case the saved chainId is invalid, which
@@ -138,11 +136,12 @@ const NetworksForm = ({
       setErrors({});
       setIsSubmitting(false);
     } else if (
-      prevNetworkName.current !== selectedNetworkName ||
-      prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-      prevChainId.current !== selectedNetwork.chainId ||
-      prevTicker.current !== selectedNetwork.ticker ||
-      prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl
+      (prevNetworkName.current !== selectedNetworkName ||
+        prevRpcUrl.current !== selectedNetwork.rpcUrl ||
+        prevChainId.current !== selectedNetwork.chainId ||
+        prevTicker.current !== selectedNetwork.ticker ||
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
+      (!isEditing || !isEqual(selectedNetwork, previousNetwork))
     ) {
       resetForm(selectedNetwork);
     }
@@ -150,6 +149,7 @@ const NetworksForm = ({
     selectedNetwork,
     selectedNetworkName,
     addNewNetwork,
+    previousNetwork,
     setNetworkName,
     setRpcUrl,
     setChainId,
@@ -158,6 +158,7 @@ const NetworksForm = ({
     setErrors,
     setIsSubmitting,
     resetForm,
+    isEditing,
   ]);
 
   useEffect(() => {
