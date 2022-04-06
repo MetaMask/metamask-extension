@@ -617,16 +617,16 @@ describe('MetaMetricsController', function () {
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
         ],
-        ledgerTransportType: 'web-hid',
         identities: [{}, {}],
+        ledgerTransportType: 'web-hid',
         threeBoxSyncingAllowed: false,
       });
 
       assert.deepEqual(traits, {
-        [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
-        [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
+        [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
+        [TRAITS.THREE_BOX_ENABLED]: false,
       });
     });
 
