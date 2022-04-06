@@ -3795,16 +3795,6 @@
         "strip-hex-prefix": true
       }
     },
-    "obj-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "end-of-stream": true,
-        "once": true,
-        "readable-stream": true
-      }
-    },
     "obs-store": {
       "packages": {
         "safe-event-emitter": true,

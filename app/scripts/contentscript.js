@@ -1,7 +1,7 @@
 import querystring from 'querystring';
 import pump from 'pump';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
@@ -184,15 +184,15 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 /**
  * This function must ONLY be called in pump destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
- * Relies on obj-multiplex and post-message-stream implementation details.
+ * Relies on @metamask/object-multiplex and post-message-stream implementation details.
  */
 function notifyInpageOfStreamFailure() {
   window.postMessage(
     {
       target: INPAGE, // the post-message-stream "target"
       data: {
-        // this object gets passed to obj-multiplex
-        name: PROVIDER, // the obj-multiplex channel name
+        // this object gets passed to @metamask/object-multiplex
+        name: PROVIDER, // the @metamask/object-multiplex channel name
         data: {
           jsonrpc: '2.0',
           method: 'METAMASK_STREAM_FAILURE',
