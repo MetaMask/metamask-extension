@@ -22,8 +22,6 @@ describe('Settings Search', function () {
     about: 'Terms of Use',
   };
 
-  let page;
-
   it('should find element inside the General tab', async function () {
     await withFixtures(
       {
@@ -41,7 +39,7 @@ describe('Settings Search', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.general);
 
-        page = 'General';
+        const page = 'General';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -69,7 +67,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.advanced);
 
         // Check if element redirects to the correct page
-        page = 'Advanced';
+        const page = 'Advanced';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -97,7 +95,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.contacts);
 
         // Check if element redirects to the correct page
-        page = 'Contacts';
+        const page = 'Contacts';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -125,7 +123,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.security);
 
         // Check if element redirects to the correct page
-        page = 'Security';
+        const page = 'Security';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -153,7 +151,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.alerts);
 
         // Check if element redirects to the correct page
-        page = 'Alerts';
+        const page = 'Alerts';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -181,7 +179,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.networks);
 
         // Check if element redirects to the correct page
-        page = 'Networks';
+        const page = 'Networks';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -209,7 +207,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.experimental);
 
         // Check if element redirects to the correct page
-        page = 'Experimental';
+        const page = 'Experimental';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
@@ -237,7 +235,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.about);
 
         // Check if element redirects to the correct page
-        page = 'About';
+        const page = 'About';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
