@@ -10,6 +10,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsTokenDetectionSupported,
   getTokenDetectionSupportNetworkByChainId,
+  getIsMainnet,
 } from '../../selectors/selectors';
 import ImportToken from './import-token.component';
 
@@ -25,8 +26,12 @@ const mapStateToProps = (state) => {
       selectedAddress,
     },
   } = state;
-  const showSearchTab =
-    getIsTokenDetectionSupported(state) || process.env.IN_TEST;
+
+  const tokenDetectionV2Supported =
+    process.env.TOKEN_DETECTION_V2 && getIsTokenDetectionSupported(state);
+    const showSearchTab =
+    getIsMainnet(state) || tokenDetectionV2Supported || process.env.IN_TEST;
+
   return {
     identities,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

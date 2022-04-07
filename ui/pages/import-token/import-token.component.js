@@ -73,7 +73,7 @@ class ImportToken extends Component {
     /**
      * Boolean flag that shows/hides the search tab.
      */
-    showSearchTab: PropTypes.bool.isRequired,
+    showSearchTab: PropTypes.bool,
 
     /**
      * The most recent overview page route, which is 'navigated' to when closing the modal.
