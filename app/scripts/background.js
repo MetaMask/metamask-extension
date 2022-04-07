@@ -480,8 +480,13 @@ function setupController(initState, initLangCode) {
     if (count) {
       label = String(count);
     }
-    browser.browserAction.setBadgeText({ text: label });
-    browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    if (process.env.ENABLE_MV3) {
+      browser.action.setBadgeText({ text: label });
+      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    } else {
+      browser.browserAction.setBadgeText({ text: label });
+      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    }
   }
 
   function getUnapprovedTransactionCount() {
