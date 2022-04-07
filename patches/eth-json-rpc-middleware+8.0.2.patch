@@ -1,0 +1,12 @@
+diff --git a/node_modules/eth-json-rpc-middleware/dist/block-cache.js b/node_modules/eth-json-rpc-middleware/dist/block-cache.js
+index ebea7d1..3bb3d6b 100644
+--- a/node_modules/eth-json-rpc-middleware/dist/block-cache.js
++++ b/node_modules/eth-json-rpc-middleware/dist/block-cache.js
+@@ -118,6 +118,7 @@ function createBlockCacheMiddleware({ blockTracker, } = {}) {
+         if (!blockTag) {
+             blockTag = 'latest';
+         }
++        console.log('[eth-json-rpc-middleware] blockTag', blockTag, 'req', req);
+         // get exact block number
+         let requestedBlockNumber;
+         if (blockTag === 'earliest') {

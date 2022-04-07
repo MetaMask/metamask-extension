@@ -26,10 +26,10 @@ export default function createInfuraClient({ network, projectId }) {
   const networkMiddleware = mergeMiddleware([
     createNetworkAndChainIdMiddleware({ network }),
     createBlockCacheMiddleware({ blockTracker }),
-    createInflightCacheMiddleware(),
-    createBlockRefMiddleware({ blockTracker, provider: infuraProvider }),
-    createRetryOnEmptyMiddleware({ blockTracker, provider: infuraProvider }),
-    createBlockTrackerInspectorMiddleware({ blockTracker }),
+    // createInflightCacheMiddleware(),
+    // createBlockRefMiddleware({ blockTracker, provider: infuraProvider }),
+    // createRetryOnEmptyMiddleware({ blockTracker, provider: infuraProvider }),
+    // createBlockTrackerInspectorMiddleware({ blockTracker }),
     infuraMiddleware,
   ]);
   return { networkMiddleware, blockTracker };

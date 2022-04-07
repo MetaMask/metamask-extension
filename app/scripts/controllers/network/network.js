@@ -123,9 +123,8 @@ export default class NetworkController extends EventEmitter {
 
     const { blockTracker } = this.getProviderAndBlockTracker();
     if (blockTracker !== null) {
-      // Stop polling for blocks.
-      blockTracker.removeAllListeners();
-      blockTracker._maybeEnd();
+      console.log('[NetworkController#destroy] Destroying block tracker');
+      blockTracker.destroy();
     }
   }
 
@@ -149,12 +148,14 @@ export default class NetworkController extends EventEmitter {
     const { type, rpcUrl, chainId } = this.getProviderConfig();
     this._configureProvider({ type, rpcUrl, chainId });
     // We intentionally do not wait for this promise to resolve outside of this
-    // method so we don't have to make MetamaskController asynchronous. If you
-    // really want to wait for this, then `await
-    // this._promiseForProviderInitialization`.
-    this.lookupNetwork().then(() => {
-      this._providerInitialized();
-    });
+    // method so we don't have to make MetamaskController asynchronous.
+    this.lookupNetwork()
+      .then(() => {
+        this._providerInitialized();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   // return the proxies so the references will always be good
@@ -169,20 +170,9 @@ export default class NetworkController extends EventEmitter {
    *
    * @returns {Object} Block header
    */
-  getLatestBlock() {
-    return new Promise((resolve, reject) => {
-      const { provider } = this.getProviderAndBlockTracker();
-      const ethQuery = new EthQuery(provider);
-      ethQuery.sendAsync(
-        { method: 'eth_getBlockByNumber', params: ['latest', false] },
-        (err, block) => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve(block);
-        },
-      );
-    });
+  async getLatestBlock() {
+    const { blockTracker } = this.getProviderAndBlockTracker();
+    return await blockTracker.getLatestBlock();
   }
 
   /**
@@ -383,6 +373,8 @@ export default class NetworkController extends EventEmitter {
       networkChanged = true;
     });
 
+    console.log('[NetworkController] Checking Infura availability');
+
     try {
       const response = await fetchWithTimeout(rpcUrl, {
         method: 'POST',
@@ -410,6 +402,7 @@ export default class NetworkController extends EventEmitter {
         }
       }
     } catch (err) {
+      console.log('[NetworkController] Infura availability check failed', err);
       log.warn(`MetaMask - Infura availability check failed`, err);
     }
   }
