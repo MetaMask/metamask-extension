@@ -17,6 +17,7 @@ import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
+import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -81,21 +82,31 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  *
  * @param {EstimateLevel} [defaultEstimateToUse] - which estimate
  *  level to default the 'estimateToUse' state variable to.
- * @param {object} [transaction]
+ * @param {object} [_transaction]
  * @param {string} [minimumGasLimit]
  * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
- * @param setRetryTxMeta
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
  * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
   defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
-  transaction,
+  _transaction,
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
-  setRetryTxMeta,
 ) {
+  const [retryTxMeta, setRetryTxMeta] = useState({
+    txParams: _transaction.txParams,
+    id: _transaction.id,
+    userFeeLevel: _transaction.userFeeLevel,
+    originalGasEstimate: _transaction.originalGasEstimate,
+    userEditedGasLimit: _transaction.userEditedGasLimit,
+  });
+
+  const transaction = editGasModeIsSpeedUpOrCancel(editGasMode)
+    ? retryTxMeta
+    : _transaction;
+
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const supportsEIP1559 =

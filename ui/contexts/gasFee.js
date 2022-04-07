@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useGasFeeInputs } from '../hooks/gasFeeInput/useGasFeeInputs';
-import { editGasModeIsSpeedUpOrCancel } from '../helpers/utils/gas';
 
 export const GasFeeContext = createContext({});
 
@@ -12,24 +11,11 @@ export const GasFeeContextProvider = ({
   minimumGasLimit,
   editGasMode,
 }) => {
-  const [retryTxMeta, setRetryTxMeta] = useState({
-    txParams: transaction.txParams,
-    id: transaction.id,
-    userFeeLevel: transaction.userFeeLevel,
-    originalGasEstimate: transaction.originalGasEstimate,
-    userEditedGasLimit: transaction.userEditedGasLimit,
-  });
-
-  const transactionToUse = editGasModeIsSpeedUpOrCancel(editGasMode)
-    ? retryTxMeta
-    : transaction;
-
   const gasFeeDetails = useGasFeeInputs(
     defaultEstimateToUse,
-    transactionToUse,
+    transaction,
     minimumGasLimit,
     editGasMode,
-    setRetryTxMeta,
   );
   return (
     <GasFeeContext.Provider value={gasFeeDetails}>
