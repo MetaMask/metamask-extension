@@ -160,11 +160,11 @@
  * type is changed we identify the ledger_connection_type trait
  * @property {string} [NETWORKS_ADDED] - when user modifies networks we
  * identify the networks_added trait
- * @property {string} [NFT_AUTODETECTION_ENABLED] - when Autodetect NFTs
+ * @property {'nft_autodetection_enabled'} [NFT_AUTODETECTION_ENABLED] - when Autodetect NFTs
  * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we
  * identify the new number_of_accounts trait
- * @property {string} [OPENSEA_API_ENABLED] - when the OpenSea API is enabled
+ * @property {'opensea_api_enabled'} [OPENSEA_API_ENABLED] - when the OpenSea API is enabled
  * we identify the opensea_api_enabled trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
