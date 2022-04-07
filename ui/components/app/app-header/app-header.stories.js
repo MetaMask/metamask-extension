@@ -5,27 +5,6 @@ export default {
   title: 'Components/App/AppHeader',
   id: __filename,
   argTypes: {
-    history: {
-      control: 'object',
-    },
-    networkDropdownOpen: {
-      control: 'boolean',
-    },
-    showNetworkDropdown: {
-      action: 'showNetworkDropdown',
-    },
-    hideNetworkDropdown: {
-      action: 'hideNetworkDropdown',
-    },
-    toggleAccountMenu: {
-      action: 'toggleAccountMenu',
-    },
-    selectedAddress: {
-      control: 'text',
-    },
-    isUnlocked: {
-      control: 'boolean',
-    },
     hideNetworkIndicator: {
       control: 'boolean',
     },
@@ -33,9 +12,6 @@ export default {
       control: 'boolean',
     },
     disableNetworkIndicator: {
-      control: 'boolean',
-    },
-    isAccountMenuOpen: {
       control: 'boolean',
     },
     onClick: {

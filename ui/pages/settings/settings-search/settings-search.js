@@ -27,12 +27,15 @@ export default function SettingsSearch({
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
-    keys: ['tab', 'section', 'description'],
+    keys: ['tabMessage', 'sectionMessage', 'descriptionMessage'],
+    getFn: (routeObject, path) => routeObject[path](t),
   });
 
-  // eslint-disable-next-line no-shadow
   const handleSearch = (_searchQuery) => {
-    const sanitizedSearchQuery = _searchQuery.replace(/[^A-z0-9\s]|[\\]/gu, '');
+    const sanitizedSearchQuery = _searchQuery.replace(
+      /[^A-z0-9\s&]|[\\]/gu,
+      '',
+    );
     setSearchQuery(sanitizedSearchQuery);
     if (sanitizedSearchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');

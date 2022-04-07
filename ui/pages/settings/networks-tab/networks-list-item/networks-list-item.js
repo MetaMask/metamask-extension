@@ -18,13 +18,12 @@ import { getProvider } from '../../../../selectors';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
-import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
+import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 
 const NetworksListItem = ({
   network,
   networkIsSelected,
   selectedRpcUrl,
-  networkIndex,
   setSearchQuery,
   setSearchedNetworks,
 }) => {
@@ -56,8 +55,8 @@ const NetworksListItem = ({
   const settingsRefs = useRef();
 
   useEffect(() => {
-    handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
-  }, [networkIndex, settingsRefs, t]);
+    handleSettingsRefs(t, t('networks'), settingsRefs);
+  }, [settingsRefs, t]);
 
   return (
     <div
@@ -126,7 +125,6 @@ NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
-  networkIndex: PropTypes.number,
   setSearchQuery: PropTypes.func,
   setSearchedNetworks: PropTypes.func,
 };
