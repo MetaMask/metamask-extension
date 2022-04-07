@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -21,7 +21,7 @@ export default class InfoTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('about')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('about')),
   )
     .fill(undefined)
     .map(() => {
@@ -142,7 +142,11 @@ export default class InfoTab extends PureComponent {
           {this.renderInfoLinks()}
         </div>
         <div className="info-tab__logo-wrapper">
-          <img src="./images/info-logo.png" className="info-tab__logo" alt="" />
+          <img
+            src="./images/logo/metamask-fox.svg"
+            className="info-tab__logo"
+            alt="MetaMask Logo"
+          />
         </div>
       </div>
     );

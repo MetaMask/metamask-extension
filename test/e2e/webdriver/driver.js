@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { until, error: webdriverError, By } = require('selenium-webdriver');
+const { until, error: webdriverError, By, Key } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
 /**
@@ -255,6 +255,28 @@ class Driver {
     } catch (err) {
       return false;
     }
+  }
+
+  /**
+   * Paste a string into a field.
+   *
+   * @param {string} element - The element locator.
+   * @param {string} contentToPaste - The content to paste.
+   */
+  async pasteIntoField(element, contentToPaste) {
+    // Throw if double-quote is present in content to paste
+    // so that we don't have to worry about escaping double-quotes
+    if (contentToPaste.includes('"')) {
+      throw new Error('Cannot paste content with double-quote');
+    }
+    // Click to focus the field
+    await this.clickElement(element);
+    await this.executeScript(
+      `navigator.clipboard.writeText("${contentToPaste}")`,
+    );
+    const modifierKey =
+      process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL;
+    await this.fill(element, Key.chord(modifierKey, 'v'));
   }
 
   // Navigation

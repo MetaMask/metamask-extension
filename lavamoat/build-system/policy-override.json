@@ -3,13 +3,14 @@
     "@babel/core": {
       "packages": {
         "<root>": true,
-        "@babel/preset-env": true,
-        "@babel/preset-react": true,
-        "@babel/plugin-transform-runtime": true,
         "@babel/plugin-proposal-class-properties": true,
+        "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
-        "@babel/plugin-proposal-nullish-coalescing-operator": true
+        "@babel/plugin-transform-runtime": true,
+        "@babel/preset-env": true,
+        "@babel/preset-react": true,
+        "@babel/preset-typescript": true
       }
     },
     "@eslint/eslintrc": {
@@ -19,6 +20,8 @@
         "@babel/eslint-plugin": true,
         "@metamask/eslint-config": true,
         "@metamask/eslint-config-nodejs": true,
+        "@metamask/eslint-config-typescript": true,
+        "@typescript-eslint/eslint-plugin": true,
         "eslint": true,
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
@@ -29,19 +32,57 @@
         "eslint-plugin-react-hooks": true
       }
     },
-    "eslint-module-utils": {
+    "@typescript-eslint/eslint-plugin": {
       "packages": {
-        "eslint-import-resolver-node": true,
-        "@babel/eslint-parser": true
+        "@typescript-eslint/experimental-utils": true,
+        "@typescript-eslint/scope-manager": true,
+        "debug": true,
+        "eslint": true,
+        "ignore": true,
+        "regexpp": true,
+        "semver": true,
+        "tsutils": true,
+        "typescript": true
       }
     },
-    "node-sass": {
-      "native": true
+    "@typescript-eslint/experimental-utils": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@typescript-eslint/scope-manager": true,
+        "@typescript-eslint/types": true,
+        "eslint": true,
+        "eslint-scope": true,
+        "eslint-utils": true
+      }
+    },
+    "@typescript-eslint/scope-manager": {
+      "packages": {
+        "@typescript-eslint/types": true,
+        "@typescript-eslint/visitor-keys": true
+      }
+    },
+    "@typescript-eslint/visitor-keys": {
+      "packages": {
+        "eslint-visitor-keys": true
+      }
+    },
+    "eslint-module-utils": {
+      "packages": {
+        "@babel/eslint-parser": true,
+        "@typescript-eslint/parser": true,
+        "eslint-import-resolver-node": true,
+        "eslint-import-resolver-typescript": true
+      }
     },
     "module-deps": {
       "packages": {
         "loose-envify": true
       }
+    },
+    "node-sass": {
+      "native": true
     },
     "sass": {
       "env": "unfrozen",
@@ -50,6 +91,17 @@
       },
       "globals": {
         "Buffer": true
+      }
+    },
+    "tsutils": {
+      "packages": {
+        "typescript": true,
+        "tslib": true
+      }
+    },
+    "typescript": {
+      "globals": {
+        "globalThis": true
       }
     }
   }

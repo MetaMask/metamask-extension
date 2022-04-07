@@ -23,7 +23,7 @@
     @include H6;
 
     font-weight: bold;
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
   }
 
   &__quote-link-container {
@@ -35,13 +35,13 @@
   &__quote-link-text {
     @include H7;
 
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-right: 4px;
   }
 
   &__caret-right {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     width: 6px;
     height: 6px;
     display: flex;
@@ -56,8 +56,8 @@
 
   &__main {
     .transaction-detail {
-      border-top: 1px solid #bbc0c5;
-      border-bottom: 1px solid #bbc0c5;
+      border-top: 1px solid var(--color-border-muted);
+      border-bottom: 1px solid var(--color-border-muted);
       margin-bottom: 12px;
     }
   }
@@ -84,7 +84,7 @@
   }
 
   &__row-header-text--bold {
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__row-header-text {
@@ -106,7 +106,7 @@
   }
 
   &__top-bordered-row {
-    border-top: 1px solid #bbc0c5;
+    border-top: 1px solid var(--color-border-muted);
     padding-top: 12px;
   }
 
@@ -147,18 +147,18 @@
 
   &__link,
   &__link:hover {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
   &__edit-link {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-left: 6px;
   }
 
   &__total-box {
-    border-top: 1px solid var(--Grey-100);
+    border-top: 1px solid var(--color-border-muted);
     padding: 12px 16px 16px 16px;
   }
 
@@ -174,13 +174,13 @@
     display: flex;
     justify-content: flex-end;
     font-weight: bold;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-top: 4px;
   }
 
   &__row-header-secondary,
   &__row-header-secondary--bold {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__row-header-secondary,
@@ -189,11 +189,11 @@
   }
 
   &__row-header-primary {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__row-header-primary--bold {
-    color: var(--Black-100);
+    color: var(--color-text-default);
   }
 
   &__row-header-text--bold,

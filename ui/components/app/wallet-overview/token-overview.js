@@ -12,10 +12,9 @@ import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
+import { updateSendAsset } from '../../../ducks/send';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
@@ -28,7 +27,8 @@ import SendIcon from '../../ui/icon/overview-send-icon.component';
 import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -47,11 +47,6 @@ const TokenOverview = ({ className, token }) => {
     token.symbol,
   );
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const enteredSwapsEvent = useNewMetricEvent({
-    event: 'Swaps Opened',
-    properties: { source: 'Token View', active_currency: token.symbol },
-    category: 'swaps',
-  });
 
   useEffect(() => {
     if (token.isERC721 && process.env.COLLECTIBLES_V1) {
@@ -120,10 +115,18 @@ const TokenOverview = ({ className, token }) => {
             Icon={SwapIcon}
             onClick={() => {
               if (isSwapsChain) {
-                enteredSwapsEvent();
+                trackEvent({
+                  event: 'Swaps Opened',
+                  category: 'swaps',
+                  properties: {
+                    source: 'Token View',
+                    active_currency: token.symbol,
+                  },
+                });
                 dispatch(
                   setSwapsFromToken({
                     ...token,
+                    address: token.address.toLowerCase(),
                     iconUrl: token.image,
                     balance,
                     string: balanceToRender,

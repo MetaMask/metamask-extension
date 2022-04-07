@@ -23,16 +23,23 @@ IconFactory.prototype.iconForAddress = function (
   useTokenDetection,
   tokenList,
 ) {
-  // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
-  // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
-  // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
-  // And since the token.address from allTokens is checksumaddress
-  // tokenAddress have to be changed to lowercase when we are using dynamic list
-  const addr = useTokenDetection
-    ? address.toLowerCase()
-    : toChecksumHexAddress(address);
-  if (iconExistsFor(addr, tokenList)) {
-    return imageElFor(addr, useTokenDetection, tokenList);
+  if (process.env.TOKEN_DETECTION_V2) {
+    if (iconExistsFor(address.toLowerCase(), tokenList)) {
+      return imageElFor(address.toLowerCase(), useTokenDetection, tokenList);
+    }
+  } else {
+    /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+    // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
+    // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
+    // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
+    // And since the token.address from allTokens is checksumaddress
+    // tokenAddress have to be changed to lowercase when we are using dynamic list
+    const addr = useTokenDetection
+      ? address.toLowerCase()
+      : toChecksumHexAddress(address);
+    if (iconExistsFor(addr, tokenList)) {
+      return imageElFor(addr, useTokenDetection, tokenList);
+    }
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -76,7 +83,7 @@ function imageElFor(address, useTokenDetection, tokenList) {
   //  so that it can be accessed using the filename in iconUrl.
   const path = useTokenDetection ? fileName : `images/contract/${fileName}`;
   const img = document.createElement('img');
-  img.src = path;
+  img.src = process.env.TOKEN_DETECTION_V2 ? fileName : path;
   img.style.width = '100%';
   return img;
 }

@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
-  "addToAddressBook": {
-    "message": "Ajouter au carnet d’adresses"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Ajouter un jeton"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
   },
-  "enterAnAlias": {
-    "message": "Saisissez un pseudonyme"
-  },
   "enterMaxSpendLimit": {
     "message": "Saisissez la limite de dépenses maximale"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "Dernière connexion"
   },
-  "layer1Fees": {
-    "message": "Frais de couche 1 (L1)"
-  },
   "learmMoreAboutGas": {
     "message": "Souhaitez-vous $1 sur le carburant ?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "Nouveau ! Détection de NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Cela permet à MetaMask de détecter automatiquement les NFT d’Opensea et de les afficher dans votre portefeuille MetaMask."
   },
   "newNetworkAdded": {
     "message": "« $1 » a été ajouté avec succès !"
@@ -2343,12 +2328,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Avant de commencer, regardez cette courte vidéo pour vous informer sur votre phrase secrète de récupération et sur la manière de sécuriser votre portefeuille."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Séparez chaque mot par un espace simple"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Collez la Phrase secrète de récupération depuis le presse-papiers"
-  },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
   },
@@ -2458,9 +2437,6 @@
   },
   "showRecommendations": {
     "message": "Afficher les recommandations"
-  },
-  "showSeedPhrase": {
-    "message": "Afficher la phrase secrète de récupération"
   },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"

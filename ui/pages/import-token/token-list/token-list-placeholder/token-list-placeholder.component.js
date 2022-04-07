@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../../components/ui/button';
+import IconTokenSearch from '../../../../components/ui/icon/icon-token-search';
 
 export default class TokenListPlaceholder extends Component {
   static contextTypes = {
@@ -10,7 +11,7 @@ export default class TokenListPlaceholder extends Component {
   render() {
     return (
       <div className="token-list-placeholder">
-        <img src="images/tokensearch.svg" alt="" width="65" height="58" />
+        <IconTokenSearch size={64} color="var(--color-icon-muted)" />
         <div className="token-list-placeholder__text">
           {this.context.t('addAcquiredTokens')}
         </div>

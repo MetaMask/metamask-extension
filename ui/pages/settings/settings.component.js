@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
+import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
+
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -22,8 +24,8 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
-import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 
+import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -103,7 +105,6 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
-    const { t } = this.context;
 
     return (
       <div
@@ -112,13 +113,16 @@ class SettingsPage extends PureComponent {
         })}
       >
         <div className="settings-page__header">
-          {currentPath !== SETTINGS_ROUTE && (
-            <div
-              className="settings-page__back-button"
-              onClick={() => history.push(backRoute)}
-            />
-          )}
           <div className="settings-page__header__title-container">
+            {currentPath !== SETTINGS_ROUTE && (
+              <IconCaretLeft
+                className="settings-page__back-button"
+                color="var(--color-icon-default)"
+                size={32}
+                onClick={() => history.push(backRoute)}
+              />
+            )}
+
             {this.renderTitle()}
 
             <div
@@ -142,11 +146,10 @@ class SettingsPage extends PureComponent {
                   searchText: searchQuery,
                 });
               }}
-              settingsRoutesList={getSettingsRoutes(t)}
+              settingsRoutesList={getSettingsRoutes()}
             />
             {isSearchList && searchText.length >= 3 && (
               <SettingsSearchList
-                key=""
                 results={searchResults}
                 onClickSetting={(setting) => this.handleClickSetting(setting)}
               />
@@ -255,26 +258,26 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={[
           {
-            icon: <img src="images/general-icon.svg" alt="" />,
+            icon: <i className="fa fa-cog" />,
             content: t('general'),
             key: GENERAL_ROUTE,
           },
           {
-            icon: <img src="images/advanced-icon.svg" alt="" />,
+            icon: <i className="fas fa-sliders-h" />,
             content: t('advanced'),
             key: ADVANCED_ROUTE,
           },
           {
-            icon: <img src="images/contacts-icon.svg" alt="" />,
+            icon: <i className="fa fa-address-book" />,
             content: t('contacts'),
             key: CONTACT_LIST_ROUTE,
           },
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
           {
             icon: (
-              <img
-                src="images/experimental-icon.svg"
-                alt={t('snapsSettingsDescription')}
+              <i
+                className="fa fa-flask"
+                title={t('snapsSettingsDescription')}
               />
             ),
             content: t('snaps'),
@@ -282,27 +285,27 @@ class SettingsPage extends PureComponent {
           },
           ///: END:ONLY_INCLUDE_IN
           {
-            icon: <img src="images/security-icon.svg" alt="" />,
+            icon: <i className="fa fa-lock" />,
             content: t('securityAndPrivacy'),
             key: SECURITY_ROUTE,
           },
           {
-            icon: <img src="images/alerts-icon.svg" alt="" />,
+            icon: <i className="fa fa-bell" />,
             content: t('alerts'),
             key: ALERTS_ROUTE,
           },
           {
-            icon: <img src="images/network-icon.svg" alt="" />,
+            icon: <i className="fa fa-plug" />,
             content: t('networks'),
             key: NETWORKS_ROUTE,
           },
           {
-            icon: <img src="images/experimental-icon.svg" alt="" />,
+            icon: <i className="fa fa-flask" />,
             content: t('experimental'),
             key: EXPERIMENTAL_ROUTE,
           },
           {
-            icon: <img src="images/info-icon.svg" alt="" />,
+            icon: <i className="fa fa-info-circle" />,
             content: t('about'),
             key: ABOUT_US_ROUTE,
           },

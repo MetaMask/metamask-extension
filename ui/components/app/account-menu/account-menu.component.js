@@ -68,7 +68,7 @@ AccountMenuItem.propTypes = {
 export default class AccountMenu extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -196,11 +196,12 @@ export default class AccountMenu extends Component {
         <div
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            this.context.trackEvent({
+              category: 'Navigation',
+              event: 'Switched Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Switched Account',
+                legacy_event: true,
               },
             });
             showAccountDetail(identity.address);
@@ -278,18 +279,13 @@ export default class AccountMenu extends Component {
         className="account-menu__scroll-button"
         onClick={this.handleScrollDown}
       >
-        <img
-          src="./images/icons/down-arrow.svg"
-          width="28"
-          height="28"
-          alt={this.context.t('scrollDown')}
-        />
+        <i className="fa fa-arrow-down" title={this.context.t('scrollDown')} />
       </div>
     );
   }
 
   render() {
-    const { t, metricsEvent } = this.context;
+    const { t, trackEvent } = this.context;
     const {
       shouldShowAccountsSearch,
       isAccountMenuOpen,
@@ -316,6 +312,7 @@ export default class AccountMenu extends Component {
           {t('myAccounts')}
           <Button
             className="account-menu__lock-button"
+            type="secondary"
             onClick={() => {
               lockMetamask();
               history.push(DEFAULT_ROUTE);
@@ -342,41 +339,49 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Create Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Create Account',
+                legacy_event: true,
               },
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus />}
+          icon={<IconPlus color="var(--color-icon-default)" />}
           text={t('createAccount')}
         />
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Import Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Import Account',
+                legacy_event: true,
               },
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
-          icon={<IconImport ariaLabel={t('importAccount')} />}
+          icon={
+            <IconImport
+              color="var(--color-icon-default)"
+              ariaLabel={t('importAccount')}
+            />
+          }
           text={t('importAccount')}
         />
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Connect Hardware',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Connect Hardware',
+                legacy_event: true,
               },
             });
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -385,7 +390,12 @@ export default class AccountMenu extends Component {
               history.push(CONNECT_HARDWARE_ROUTE);
             }
           }}
-          icon={<IconConnect ariaLabel={t('connectHardwareWallet')} />}
+          icon={
+            <IconConnect
+              color="var(--color-icon-default)"
+              ariaLabel={t('connectHardwareWallet')}
+            />
+          }
           text={t('connectHardwareWallet')}
         />
         <div className="account-menu__divider" />
@@ -393,7 +403,12 @@ export default class AccountMenu extends Component {
           onClick={() => {
             global.platform.openTab({ url: supportLink });
           }}
-          icon={<IconSpeechBubbles ariaLabel={supportText} />}
+          icon={
+            <IconSpeechBubbles
+              color="var(--color-icon-default)"
+              ariaLabel={supportText}
+            />
+          }
           text={supportText}
         />
 
@@ -401,15 +416,21 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             history.push(SETTINGS_ROUTE);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            this.context.trackEvent({
+              category: 'Navigation',
+              event: 'Opened Settings',
+              properties: {
                 action: 'Main Menu',
-                name: 'Opened Settings',
+                legacy_event: true,
               },
             });
           }}
-          icon={<IconCog ariaLabel={t('settings')} />}
+          icon={
+            <IconCog
+              color="var(--color-icon-default)"
+              ariaLabel={t('settings')}
+            />
+          }
           text={t('settings')}
         />
       </div>

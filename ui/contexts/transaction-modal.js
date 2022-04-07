@@ -6,13 +6,15 @@ export const TransactionModalContext = createContext({});
 export const TransactionModalContextProvider = ({ children }) => {
   const [openModals, setOpenModals] = useState([]);
 
-  const closeModal = (modalName) => {
-    const index = openModals.indexOf(modalName);
+  const closeModal = (modalNames) => {
     if (openModals < 0) {
       return;
     }
     const modals = [...openModals];
-    modals.splice(index, 1);
+    modalNames.forEach((modal) => {
+      const index = openModals.indexOf(modal);
+      modals.splice(index, 1);
+    });
     setOpenModals(modals);
   };
 

@@ -10,6 +10,10 @@
     text-overflow: ellipsis;
   }
 
+  &__prefix {
+    padding-right: 4px;
+  }
+
   &__suffix {
     padding-left: 4px;
   }
