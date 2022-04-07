@@ -8,7 +8,6 @@ const CLASSNAME_WARNING = 'actionable-message--warning';
 const CLASSNAME_DANGER = 'actionable-message--danger';
 const CLASSNAME_SUCCESS = 'actionable-message--success';
 const CLASSNAME_WITH_RIGHT_BUTTON = 'actionable-message--with-right-button';
-const CLASSNAME_SUCCESS = 'actionable-message--success';
 
 export const typeHash = {
   warning: CLASSNAME_WARNING,
