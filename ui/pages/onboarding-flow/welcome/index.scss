@@ -26,6 +26,18 @@
     opacity: 1;
     color: var(--color-icon-default);
     padding: 80px;
+
+    @media screen and (min-width: 461px) and (max-width: 560px) {
+      padding: 60px;
+    }
+
+    @media screen and (min-width: 361px) and (max-width: 460px) {
+      padding: 40px;
+    }
+
+    @media screen and (min-width: 261px) and (max-width: 360px) {
+      padding: 20px;
+    }
   }
 
   .carousel .control-next.control-arrow::before {
