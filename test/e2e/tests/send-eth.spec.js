@@ -197,7 +197,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > label > div',
         );
         await driver.clickElement('.app-header__logo-container');
-        
+
         // initiates a send from the dapp
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Send', tag: 'button' });
