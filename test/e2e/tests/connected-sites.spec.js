@@ -1,11 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
-describe('Disconnect single connected account', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
+describe('Connected sites', function () {
   it('should disconnect the single connected account from the dapp', async function () {
     const ganacheOptions = {
       accounts: [
@@ -32,13 +28,13 @@ describe('Disconnect single connected account', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        const windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
+        const popup = windowHandles.find(
           (handle) => handle !== extension && handle !== dapp,
         );
 
@@ -80,13 +76,7 @@ describe('Disconnect single connected account', function () {
       },
     );
   });
-});
 
-describe('Disconnect 1 of 3 connected accounts', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   it('should disconnect 1 of 3 connected accounts from the dapp', async function () {
     const ganacheOptions = {
       accounts: [
@@ -113,13 +103,13 @@ describe('Disconnect 1 of 3 connected accounts', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        const windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
+        const popup = windowHandles.find(
           (handle) => handle !== extension && handle !== dapp,
         );
 
@@ -166,13 +156,7 @@ describe('Disconnect 1 of 3 connected accounts', function () {
       },
     );
   });
-});
 
-describe('Disconnect all accounts', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   it('should disconnect 3 of 3 connected accounts from the dapp', async function () {
     const ganacheOptions = {
       accounts: [
@@ -199,13 +183,13 @@ describe('Disconnect all accounts', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        const windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
+        const popup = windowHandles.find(
           (handle) => handle !== extension && handle !== dapp,
         );
 
