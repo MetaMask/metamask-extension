@@ -1,31 +1,27 @@
+const blacklistedUrls = [
+  'mainnet.infura.io',
+  'ropsten.infura.io',
+  'kovan.infura.io',
+  'rinkeby.infura.io',
+  'goerli.infura.io',
+  'polygon-rpc.com',
+  'mainnet.optimism.io',
+  'api.avax.network/ext/bc/C/rpc',
+]
+
 async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough();
 
-  await server.forAnyRequest()
-  .forHost('mainnet.infura.io')
-  .thenPassThrough({
-    beforeRequest: () => { 
-      {
+  await server
+    .forAnyRequest()
+    .forHost('mainnet.infura.io')
+    .thenPassThrough({
+      beforeRequest: () => {
         return {
           url: 'http://localhost:8545',
-        }
-      }
-    }
-  })
-
-  /*
-  await server.forAnyRequest()
-  .forHost('mainnet.infura.io')
-  .thenCallback(() => {
-    return {
-      statusCode: 404,
-      json:
-        {
-          error: 'You are not on the correct Network'
-        }
-      }
-    })
-  */
+        };
+      },
+    });
 
   await server.forPost('https://api.segment.io/v1/batch').thenCallback(() => {
     return {
