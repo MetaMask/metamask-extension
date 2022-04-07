@@ -31,10 +31,14 @@ describe('Swap Eth for another Token', function () {
         );
         await driver.fill('input[placeholder*="0"]', '2');
         await driver.clickElement(
+          '[class*="dropdown-search-list"] + div[class*="MuiFormControl-root MuiTextField-root"]',
+        );
+        await driver.clickElement(
           '[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]',
         );
         await driver.clickElement('[placeholder="Search for a token"]');
-        await driver.fill('[placeholder="Search for a token"]', 'Matic');
+        await driver.clickElement('[placeholder="Search for a token"]');
+        await driver.fill('[placeholder="Search for a token"]', 'DAI');
         await driver.waitForSelector(
           '[class="searchable-item-list__primary-label"]',
         );
@@ -56,7 +60,7 @@ describe('Swap Eth for another Token', function () {
         );
         await driver.waitForSelector({
           css: '[class="countdown-timer__time"]',
-          text: '0:30',
+          text: '0:24',
         });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         const sucessfulTransactionMessage = await driver.waitForSelector({
@@ -69,9 +73,9 @@ describe('Swap Eth for another Token', function () {
         );
         const sucessfulTransactionToken = await driver.waitForSelector({
           css: '[class="awaiting-swap__amount-and-symbol"]',
-          text: 'MATIC',
+          text: 'DAI',
         });
-        assert.equal(await sucessfulTransactionToken.getText(), 'MATIC');
+        assert.equal(await sucessfulTransactionToken.getText(), 'DAI');
         await driver.clickElement({ text: 'Close', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const swaptotal = await driver.waitForSelector({
@@ -81,9 +85,9 @@ describe('Swap Eth for another Token', function () {
         assert.equal(await swaptotal.getText(), '-2 TESTETH');
         const swaptotaltext = await driver.waitForSelector({
           css: '[class="list-item__title"]',
-          text: 'Swap TESTETH to MATIC',
+          text: 'Swap TESTETH to DAI',
         });
-        assert.equal(await swaptotaltext.getText(), 'Swap TESTETH to MATIC');
+        assert.equal(await swaptotaltext.getText(), 'Swap TESTETH to DAI');
       },
     );
   });
