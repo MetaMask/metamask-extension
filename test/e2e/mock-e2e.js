@@ -136,6 +136,10 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
+  await server.forAnyRequest()
+    .forHost('mainnet.infura.io')
+    .thenForwardTo('127.0.0.1:8545')
+
   testSpecificMock(server);
 }
 
