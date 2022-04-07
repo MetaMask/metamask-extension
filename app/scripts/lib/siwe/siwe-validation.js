@@ -1,6 +1,5 @@
 import { stripHexPrefix } from 'ethereumjs-util';
-// import { ParsedMessage } from '@spruceid/siwe-parser';
-import { ParsedMessage } from './siwe-parser';
+import { ParsedMessage } from '@spruceid/siwe-parser';
 
 const msgHexToText = (hex) => {
   try {

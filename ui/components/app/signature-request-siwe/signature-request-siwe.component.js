@@ -78,11 +78,13 @@ export default function SignatureRequestSIWE({
           title={t('SIWEWarningTitle')}
           subtitle={t('SIWEWarningSubtitle')}
           footer={
-            <Footer
-              cancelAction={() => setIsShowingDomainWarning(false)}
-              signAction={onSign}
-              disabled={!agreeToDomainWarning}
-            />
+            <div>
+              <Footer
+                cancelAction={() => setIsShowingDomainWarning(false)}
+                signAction={onSign}
+                disabled={!agreeToDomainWarning}
+              />
+            </div>
           }
         >
           <div className="checkbox-wrapper">
