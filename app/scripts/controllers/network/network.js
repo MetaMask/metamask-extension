@@ -109,6 +109,24 @@ export default class NetworkController extends EventEmitter {
     this._blockTrackerProxy = null;
 
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
+
+    this._hasInitializationBegun = false;
+    this._promiseForProviderInitialized = new Promise((resolve) => {
+      this._providerInitialized = resolve;
+    });
+  }
+
+  async destroy() {
+    if (this._hasInitializationBegun) {
+      await this._promiseForProviderInitialized;
+    }
+
+    const { blockTracker } = this.getProviderAndBlockTracker();
+    if (blockTracker !== null) {
+      // Stop polling for blocks.
+      blockTracker.removeAllListeners();
+      blockTracker._maybeEnd();
+    }
   }
 
   /**
@@ -126,10 +144,17 @@ export default class NetworkController extends EventEmitter {
   }
 
   initializeProvider(providerParams) {
+    this._hasInitializationBegun = true;
     this._baseProviderParams = providerParams;
     const { type, rpcUrl, chainId } = this.getProviderConfig();
     this._configureProvider({ type, rpcUrl, chainId });
-    this.lookupNetwork();
+    // We intentionally do not wait for this promise to resolve outside of this
+    // method so we don't have to make MetamaskController asynchronous. If you
+    // really want to wait for this, then `await
+    // this._promiseForProviderInitialization`.
+    this.lookupNetwork().then(() => {
+      this._providerInitialized();
+    });
   }
 
   // return the proxies so the references will always be good
@@ -178,10 +203,11 @@ export default class NetworkController extends EventEmitter {
     return supportsEIP1559;
   }
 
-  verifyNetwork() {
+  // TODO: Remove, as this seems unused
+  async verifyNetwork() {
     // Check network when restoring connectivity:
     if (this.isNetworkLoading()) {
-      this.lookupNetwork();
+      await this.lookupNetwork();
     }
   }
 
@@ -218,7 +244,7 @@ export default class NetworkController extends EventEmitter {
     return this.getNetworkState() === 'loading';
   }
 
-  lookupNetwork() {
+  async lookupNetwork() {
     // Prevent firing when provider is not defined.
     if (!this._provider) {
       log.warn(
@@ -245,25 +271,29 @@ export default class NetworkController extends EventEmitter {
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
-      this._checkInfuraAvailability(type);
+      await this._checkInfuraAvailability(type);
     } else {
       this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
     }
 
-    ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
-      const currentNetwork = this.getNetworkState();
-      if (initialNetwork === currentNetwork) {
-        if (err) {
-          this.setNetworkState('loading');
-          // keep network details in sync with network state
-          this.clearNetworkDetails();
-          return;
+    await new Promise((resolve) => {
+      ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
+        const currentNetwork = this.getNetworkState();
+        if (initialNetwork === currentNetwork) {
+          if (err) {
+            this.setNetworkState('loading');
+            // keep network details in sync with network state
+            this.clearNetworkDetails();
+            resolve();
+          } else {
+            this.setNetworkState(networkVersion);
+            // look up EIP-1559 support
+            this.getEIP1559Compatibility().then(() => resolve());
+          }
+        } else {
+          resolve();
         }
-
-        this.setNetworkState(networkVersion);
-        // look up EIP-1559 support
-        this.getEIP1559Compatibility();
-      }
+      });
     });
   }
 
