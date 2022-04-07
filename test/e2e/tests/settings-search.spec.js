@@ -22,7 +22,7 @@ describe('Settings Search', function () {
     about: 'Terms of Use',
   };
 
-  var page;
+  let page;
 
   it('should find element inside the General tab', async function () {
     await withFixtures(
@@ -237,7 +237,7 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.about);
 
         // Check if element redirects to the correct page
-        page = 'About'
+        page = 'About';
         await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
           await driver.isElementPresent({ text: page, tag: 'div' }),
