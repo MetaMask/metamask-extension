@@ -21,7 +21,7 @@ function ExportTextContainer({ text = '' }) {
             handleCopy(text);
           }}
         >
-          <Copy size={17} color="#3098DC" />
+          <Copy size={17} color="var(--color-primary-default)" />
           <div className="export-text-container__button-text">
             {copied ? t('copiedExclamation') : t('copyToClipboard')}
           </div>

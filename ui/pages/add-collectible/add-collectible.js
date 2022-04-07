@@ -93,7 +93,7 @@ export default function AddCollectible() {
       }}
       disabled={disabled}
       contentComponent={
-        <Box padding={[1, 4]}>
+        <Box>
           {isMainnet &&
           !useCollectibleDetection &&
           !collectibleDetectionNoticeDismissed ? (
@@ -103,7 +103,7 @@ export default function AddCollectible() {
             <ActionableMessage
               type="danger"
               useIcon
-              iconFillColor="#d73a49"
+              iconFillColor="var(--color-error-default)"
               message={
                 <Box display={DISPLAY.INLINE_FLEX}>
                   <Typography
@@ -122,7 +122,7 @@ export default function AddCollectible() {
               }
             />
           )}
-          <Box marginTop={4}>
+          <Box margin={4}>
             <FormField
               id="address"
               titleText={t('address')}

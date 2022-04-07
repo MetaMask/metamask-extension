@@ -55,7 +55,7 @@ const EnhancedReader = ({ handleScan }) => {
           filter: 'blur(4px)',
         }}
       />
-      {canplay ? null : <Spinner color="#F7C06C" />}
+      {canplay ? null : <Spinner color="var(--color-secondary-default)" />}
     </div>
   );
 };

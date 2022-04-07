@@ -1,26 +1,48 @@
+/**
+ * This file is intended to be renamed to metametrics.js once the conversion is complete.
+ * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
+ * metrics system. This file implements Segment analytics tracking.
+ */
 import React, {
   Component,
   createContext,
   useEffect,
+  useRef,
   useCallback,
-  useState,
 } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
-import { captureException } from '@sentry/browser';
+import { matchPath, useLocation } from 'react-router-dom';
+import { captureException, captureMessage } from '@sentry/browser';
 
-import {
-  getAccountType,
-  getNumberOfAccounts,
-  getNumberOfTokens,
-} from '../selectors/selectors';
-import { getSendAsset, ASSET_TYPES } from '../ducks/send';
-import { txDataSelector } from '../selectors/confirm-transaction';
+import { omit } from 'lodash';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { trackMetaMetricsEvent } from '../store/actions';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { PATH_NAME_MAP } from '../helpers/constants/routes';
+import { useSegmentContext } from '../hooks/useSegmentContext';
 
+import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
+
+// type imports
+/**
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageObject} MetaMetricsPageObject
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsReferrerObject} MetaMetricsReferrerObject
+ */
+
+// types
+/**
+ * @typedef {Omit<MetaMetricsEventPayload, 'environmentType' | 'page' | 'referrer'>} UIMetricsEventPayload
+ */
+/**
+ * @typedef {(
+ *  payload: UIMetricsEventPayload,
+ *  options: MetaMetricsEventOptions
+ * ) => Promise<void>} UITrackEventMethod
+ */
+
+/**
+ * @type {React.Context<UITrackEventMethod>}
+ */
 export const MetaMetricsContext = createContext(() => {
   captureException(
     Error(
@@ -29,94 +51,89 @@ export const MetaMetricsContext = createContext(() => {
   );
 });
 
+const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
+
 export function MetaMetricsProvider({ children }) {
-  const txData = useSelector(txDataSelector) || {};
-  const environmentType = getEnvironmentType();
-  const activeAsset = useSelector(getSendAsset);
-  const nativeAssetSymbol = useSelector(getNativeCurrency);
-  const accountType = useSelector(getAccountType);
-  const confirmTransactionOrigin = txData.origin;
-  const numberOfTokens = useSelector(getNumberOfTokens);
-  const numberOfAccounts = useSelector(getNumberOfAccounts);
-  const history = useHistory();
-  const [state, setState] = useState(() => ({
-    currentPath: new URL(window.location.href).pathname,
-    previousPath: '',
-  }));
+  const location = useLocation();
+  const context = useSegmentContext();
 
-  const { currentPath } = state;
-
-  useEffect(() => {
-    const unlisten = history.listen(() =>
-      setState((prevState) => ({
-        currentPath: new URL(window.location.href).pathname,
-        previousPath: prevState.currentPath,
-      })),
-    );
-    // remove this listener if the component is no longer mounted
-    return unlisten;
-  }, [history]);
-
-  const metricsEvent = useCallback(
-    (config = {}, overrides = {}) => {
-      const { eventOpts = {} } = config;
-      const referrer = confirmTransactionOrigin
-        ? { url: confirmTransactionOrigin }
-        : undefined;
-      const page = {
-        path: currentPath,
-      };
-      return trackMetaMetricsEvent(
+  /**
+   * @type {UITrackEventMethod}
+   */
+  const trackEvent = useCallback(
+    (payload, options) => {
+      trackMetaMetricsEvent(
         {
-          event: eventOpts.name,
-          category: eventOpts.category,
-          properties: {
-            action: eventOpts.action,
-            number_of_tokens: numberOfTokens,
-            number_of_accounts: numberOfAccounts,
-            active_currency:
-              activeAsset.type === ASSET_TYPES.NATIVE
-                ? nativeAssetSymbol
-                : activeAsset?.details?.symbol,
-            account_type: accountType,
-            is_new_visit: config.is_new_visit,
-            // the properties coming from this key will not match our standards for
-            // snake_case on properties, and they may be redundant and/or not in the
-            // proper location (origin not as a referrer, for example). This is a temporary
-            // solution to not lose data, and the entire event system will be reworked in
-            // forthcoming PRs to deprecate the old Matomo events in favor of the new schema.
-            ...config.customVariables,
-          },
-          page,
-          referrer,
-          environmentType,
+          ...payload,
+          environmentType: getEnvironmentType(),
+          ...context,
         },
-        {
-          isOptIn: config.isOptIn,
-          excludeMetaMetricsId:
-            eventOpts.excludeMetaMetricsId ??
-            overrides.excludeMetaMetricsId ??
-            false,
-          metaMetricsId: config.metaMetricsId,
-          matomoEvent: true,
-          flushImmediately: config.flushImmediately,
-        },
+        options,
       );
     },
-    [
-      accountType,
-      currentPath,
-      confirmTransactionOrigin,
-      activeAsset,
-      nativeAssetSymbol,
-      numberOfTokens,
-      numberOfAccounts,
-      environmentType,
-    ],
+    [context],
   );
 
+  // Used to prevent double tracking page calls
+  const previousMatch = useRef();
+
+  /**
+   * Anytime the location changes, track a page change with segment.
+   * Previously we would manually track changes to history and keep a
+   * reference to the previous url, but with page tracking we can see
+   * which page the user is on and their navigation path.
+   */
+  useEffect(() => {
+    const environmentType = getEnvironmentType();
+    const match = matchPath(location.pathname, {
+      path: PATHS_TO_CHECK,
+      exact: true,
+      strict: true,
+    });
+    // Start by checking for a missing match route. If this falls through to
+    // the else if, then we know we have a matched route for tracking.
+    if (!match) {
+      captureMessage(`Segment page tracking found unmatched route`, {
+        extra: {
+          previousMatch,
+          currentPath: location.pathname,
+        },
+      });
+    } else if (
+      previousMatch.current !== match.path &&
+      !(
+        environmentType === 'notification' &&
+        match.path === '/' &&
+        previousMatch.current === undefined
+      )
+    ) {
+      // When a notification window is open by a Dapp we do not want to track
+      // the initial home route load that can sometimes happen. To handle
+      // this we keep track of the previousMatch, and we skip the event track
+      // in the event that we are dealing with the initial load of the
+      // homepage
+      const { path, params } = match;
+      const name = PATH_NAME_MAP[path];
+      trackMetaMetricsPage(
+        {
+          name,
+          // We do not want to send addresses or accounts in any events
+          // Some routes include these as params.
+          params: omit(params, ['account', 'address']),
+          environmentType,
+          page: context.page,
+          referrer: context.referrer,
+        },
+        {
+          isOptInPath: location.pathname.startsWith('/initialize'),
+        },
+      );
+    }
+    previousMatch.current = match?.path;
+  }, [location, context]);
+
   return (
-    <MetaMetricsContext.Provider value={metricsEvent}>
+    <MetaMetricsContext.Provider value={trackEvent}>
       {children}
     </MetaMetricsContext.Provider>
   );
@@ -136,12 +153,15 @@ export class LegacyMetaMetricsProvider extends Component {
   static contextType = MetaMetricsContext;
 
   static childContextTypes = {
-    metricsEvent: PropTypes.func,
+    // This has to be different than the type name for the old metametrics file
+    // using the same name would result in whichever was lower in the tree to be
+    // used.
+    trackEvent: PropTypes.func,
   };
 
   getChildContext() {
     return {
-      metricsEvent: this.context,
+      trackEvent: this.context,
     };
   }
 

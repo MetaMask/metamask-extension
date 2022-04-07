@@ -40,11 +40,7 @@ class RevealSeedPage extends Component {
   renderWarning() {
     return (
       <div className="page-container__warning-container">
-        <img
-          className="page-container__warning-icon"
-          src="images/warning.svg"
-          alt=""
-        />
+        <i className="fa fa-exclamation-triangle fa-2x page-container__warning-icon" />
         <div className="page-container__warning-message">
           <div className="page-container__warning-title">
             {this.context.t('revealSeedWordsWarningTitle')}

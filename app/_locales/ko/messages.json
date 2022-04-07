@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
   },
-  "addToAddressBook": {
-    "message": "주소록에 추가"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "예: John D."
-  },
   "addToken": {
     "message": "토큰 추가"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
   },
-  "enterAnAlias": {
-    "message": "별칭 입력"
-  },
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
-  "layer1Fees": {
-    "message": "레이어 1 요금"
-  },
   "learmMoreAboutGas": {
     "message": "가스에 대해 $1하시겠습니까?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "신규! NFT 감지"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask가 Opensea에서 자동으로 NFT를 감지하고 MetaMask 지갑에 표시하도록 허용합니다."
   },
   "newNetworkAdded": {
     "message": "“$1”가 성공적으로 추가되었습니다!"
@@ -2343,12 +2328,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "시작하기 전에 이 짧은 동영상을 보고 비밀 복구 구문과 지갑을 안전하게 보호하는 방법에 대해 알아보세요."
   },
-  "seedPhrasePlaceholder": {
-    "message": "공백 한 칸으로 각 단어를 구분하세요."
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "클립보드에서 비밀 복구 구문 붙여넣기"
-  },
   "seedPhraseReq": {
     "message": "비밀 복구 구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
   },
@@ -2458,9 +2437,6 @@
   },
   "showRecommendations": {
     "message": "추천 보기"
-  },
-  "showSeedPhrase": {
-    "message": "비밀 복구 구문 표시"
   },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 보기"

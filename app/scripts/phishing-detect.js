@@ -1,6 +1,6 @@
 import querystring from 'querystring';
 import PortStream from 'extension-port-stream';
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
 import createRandomId from '../../shared/modules/random-id';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
@@ -21,7 +21,7 @@ function start() {
 
   global.platform = new ExtensionPlatform();
 
-  const extensionPort = extension.runtime.connect({
+  const extensionPort = browser.runtime.connect({
     name: getEnvironmentType(),
   });
   const connectionStream = new PortStream(extensionPort);

@@ -17,7 +17,7 @@ import { TYPOGRAPHY, COLORS } from '../../helpers/constants/design-system';
 class RestoreVaultPage extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -40,11 +40,12 @@ class RestoreVaultPage extends Component {
 
     leaveImportSeedScreenState();
     await createNewVaultAndRestore(password, seedPhrase);
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Retention',
+    this.context.trackEvent({
+      category: 'Retention',
+      event: 'onboardingRestoredVault',
+      properties: {
         action: 'userEntersSeedPhrase',
-        name: 'onboardingRestoredVault',
+        legacy_event: true,
       },
     });
     initializeThreeBox();

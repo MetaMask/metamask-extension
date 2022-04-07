@@ -48,31 +48,4 @@ $color-map: (
   'localhost': --localhost,
   'transparent': transparent,
   'flask-purple': --flask-purple,
-  /**
-  * !!! DEPRECATED DO NOT USE!!!
-  */
-  'ui-1': --ui-1,
-  'ui-2': --ui-2,
-  'ui-3': --ui-3,
-  'ui-4': --ui-4,
-  'ui-5': --ui-5,
-  'white': --ui-white,
-  'black': --ui-black,
-  'grey': --ui-grey,
-  'neutral-grey': --neutral-grey,
-  'primary-1': --primary-1,
-  'primary-2': --primary-2,
-  'primary-3': --primary-3,
-  'secondary-1': --secondary-1,
-  'secondary-2': --secondary-2,
-  'secondary-3': --secondary-3,
-  'alert-1': --alert-1,
-  'alert-2': --alert-2,
-  'alert-3': --alert-3,
-  'error-1': --error-1,
-  'error-2': --error-2,
-  'error-3': --error-3,
-  'success-1': --success-1,
-  'success-2': --success-2,
-  'success-3': --success-3
 );

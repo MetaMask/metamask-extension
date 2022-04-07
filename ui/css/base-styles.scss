@@ -38,7 +38,7 @@ html {
   /ui/pages/keychains/restore-vault.js
 */
 .error {
-  color: #f7861c;
+  color: var(--color-error-default);
   margin-top: 3px;
   margin-bottom: 9px;
 }
@@ -63,7 +63,7 @@ a {
 }
 
 a:hover {
-  color: var(--Blue-400);
+  color: var(--color-primary-alternative);
 }
 
 input.large-input,
@@ -89,28 +89,30 @@ input.form-control {
   padding-left: 10px;
   font-size: 14px;
   height: 40px;
-  border: 1px solid var(--color-border-muted);
+  border: 1px solid var(--color-border-default);
+  color: 1px solid var(--color-text-default);
+  background: transparent;
   border-radius: 3px;
   width: 100%;
 
   &::-webkit-input-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &::-moz-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &:-ms-input-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &:-moz-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &--error {

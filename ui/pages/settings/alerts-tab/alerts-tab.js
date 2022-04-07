@@ -8,15 +8,15 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import { setAlertEnabledness } from '../../../store/actions';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { handleHooksSettingsRefs } from '../../../helpers/utils/settings-search';
+import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 
-const AlertSettingsEntry = ({ alertId, description, title, alertIndex }) => {
+const AlertSettingsEntry = ({ alertId, description, title }) => {
   const t = useI18nContext();
-  const settingsRefs = useRef(alertIndex);
+  const settingsRefs = useRef();
 
   useEffect(() => {
-    handleHooksSettingsRefs(t, t('alerts'), settingsRefs, alertIndex);
-  }, [settingsRefs, t, alertIndex]);
+    handleSettingsRefs(t, t('alerts'), settingsRefs);
+  }, [settingsRefs, t]);
 
   const isEnabled = useSelector((state) => getAlertEnabledness(state)[alertId]);
 
@@ -48,7 +48,6 @@ AlertSettingsEntry.propTypes = {
   alertId: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  alertIndex: PropTypes.number.isRequired,
 };
 
 const AlertsTab = () => {
@@ -68,13 +67,11 @@ const AlertsTab = () => {
   return (
     <div className="alerts-tab__body">
       {Object.entries(alertConfig).map(
-        ([alertId, { title, description }], index) => (
+        ([alertId, { title, description }], _) => (
           <AlertSettingsEntry
-            alertId={alertId}
             description={description}
             key={alertId}
             title={title}
-            alertIndex={index}
           />
         ),
       )}

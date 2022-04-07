@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
   },
-  "addToAddressBook": {
-    "message": "Tambah kepada buku alamat"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "cth. John D."
-  },
   "addToken": {
     "message": "Tambah Token"
   },
@@ -336,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
-  },
-  "enterAnAlias": {
-    "message": "Masukkan alias"
   },
   "enterPassword": {
     "message": "Masukkan kata laluan"
@@ -795,9 +786,6 @@
   },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Pisahkan setiap perkataan dengan satu ruang"
   },
   "seedPhraseReq": {
     "message": "Frasa benih panjangnya 12 patah perkataan"

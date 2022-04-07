@@ -23,9 +23,9 @@ const ICON_MAP = {
   [TRANSACTION_GROUP_CATEGORIES.SWAP]: Swap,
 };
 
-const FAIL_COLOR = '#D73A49';
-const PENDING_COLOR = '#6A737D';
-const OK_COLOR = '#2F80ED';
+const FAIL_COLOR = 'var(--color-error-default)';
+const PENDING_COLOR = 'var(--color-icon-default)';
+const OK_COLOR = 'var(--color-primary-default)';
 
 const COLOR_MAP = {
   [TRANSACTION_GROUP_STATUSES.PENDING]: PENDING_COLOR,
