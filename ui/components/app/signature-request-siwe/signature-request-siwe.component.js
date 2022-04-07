@@ -7,6 +7,7 @@ import Checkbox from '../../ui/check-box';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import { I18nContext } from '../../../contexts/i18n';
+import { PageContainerFooter } from '../../ui/page-container';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -66,25 +67,30 @@ export default function SignatureRequestSIWE({
           <ErrorMessage errorKey="SIWEDomainInvalid" />
         </div>
       )}
-      <Footer
-        cancelAction={onCancel}
-        signAction={
+      <PageContainerFooter
+        footerClassName="no-border"
+        onCancel={onCancel}
+        onSubmit={
           isSIWEDomainValid ? onSign : () => setIsShowingDomainWarning(true)
         }
+        cancelText={t('cancel')}
+        submitText={t('sign')}
       />
       {isShowingDomainWarning && (
         <Popover
           onClose={() => setIsShowingDomainWarning(false)}
           title={t('SIWEWarningTitle')}
           subtitle={t('SIWEWarningSubtitle')}
+          footerClassName="no-padding"
           footer={
-            <div>
-              <Footer
-                cancelAction={() => setIsShowingDomainWarning(false)}
-                signAction={onSign}
-                disabled={!agreeToDomainWarning}
-              />
-            </div>
+            <PageContainerFooter
+              footerClassName="warning-footer no-border"
+              onCancel={() => setIsShowingDomainWarning(false)}
+              cancelText={t('cancel')}
+              onSubmit={onSign}
+              submitText={t('sign')}
+              disabled={!agreeToDomainWarning}
+            />
           }
         >
           <div className="checkbox-wrapper">

@@ -121,3 +121,17 @@
   -webkit-user-select: none;
   cursor: pointer;
 }
+
+
+.no-border {
+  border: none !important;
+}
+
+.popover-footer {
+  padding: inherit !important;
+}
+.warning-footer {
+  margin: inherit;
+  width: -webkit-fill-available;
+}
+
