@@ -22,6 +22,7 @@ export default class AccountDetailsModal extends Component {
     history: PropTypes.object,
     hideModal: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
+    blockExplorerLinkText: PropTypes.string,
   };
 
   static contextTypes = {
@@ -41,6 +42,7 @@ export default class AccountDetailsModal extends Component {
       history,
       hideModal,
       isCustomNetwork,
+      blockExplorerLinkText,
     } = this.props;
     const { name, address } = selectedIdentity;
 
@@ -58,6 +60,31 @@ export default class AccountDetailsModal extends Component {
     // This feature is disabled for hardware wallets
     if (isHardwareKeyring(keyring?.type)) {
       exportPrivateKeyFeatureEnabled = false;
+    }
+
+    const routeToAddBlockExplorerUrl = () => {
+      this.props.hideModal();
+      history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    }
+
+    const openBlockExplorer = () => {
+      const accountLink = getAccountLink(
+        address,
+        chainId,
+        rpcPrefs,
+      );
+      this.context.trackEvent({
+        category: 'Navigation',
+        event: 'Clicked Block Explorer Link',
+        properties: {
+          link_type: 'Account Tracker',
+          action: 'Account Details Modal',
+          block_explorer_domain: getURLHostName(accountLink),
+        },
+      });
+      global.platform.openTab({
+        url: accountLink,
+      });
     }
 
     return (
@@ -81,33 +108,34 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-details-modal__button"
           onClick={
-            !rpcPrefs.blockExplorerUrl && isCustomNetwork
-              ? () => {
-                  hideModal();
-                  history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-                }
-              : () => {
-                  const accountLink = getAccountLink(
-                    address,
-                    chainId,
-                    rpcPrefs,
-                  );
-                  this.context.trackEvent({
-                    category: 'Navigation',
-                    event: 'Clicked Block Explorer Link',
-                    properties: {
-                      link_type: 'Account Tracker',
-                      action: 'Account Details Modal',
-                      block_explorer_domain: getURLHostName(accountLink),
-                    },
-                  });
-                  global.platform.openTab({
-                    url: accountLink,
-                  });
-                }
+            // !rpcPrefs.blockExplorerUrl && isCustomNetwork
+            //   ? () => {
+            //       hideModal();
+            //       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+            //     }
+            //   : () => {
+            //       const accountLink = getAccountLink(
+            //         address,
+            //         chainId,
+            //         rpcPrefs,
+            //       );
+            //       this.context.trackEvent({
+            //         category: 'Navigation',
+            //         event: 'Clicked Block Explorer Link',
+            //         properties: {
+            //           link_type: 'Account Tracker',
+            //           action: 'Account Details Modal',
+            //           block_explorer_domain: getURLHostName(accountLink),
+            //         },
+            //       });
+            //       global.platform.openTab({
+            //         url: accountLink,
+            //       });
+            //     }
+            blockExplorerLinkText === this.context.t('addBlockExplorer') ? routeToAddBlockExplorerUrl : openBlockExplorer
           }
         >
-          {rpcPrefs.blockExplorerUrl &&
+          {/* {rpcPrefs.blockExplorerUrl &&
             this.context.t('blockExplorerView', [
               getURLHostName(rpcPrefs.blockExplorerUrl),
             ])}
@@ -116,7 +144,8 @@ export default class AccountDetailsModal extends Component {
             this.context.t('addBlockExplorer')}
           {!rpcPrefs.blockExplorerUrl &&
             !isCustomNetwork &&
-            this.context.t('etherscanViewOn')}
+            this.context.t('etherscanViewOn')} */}
+            {blockExplorerLinkText}
         </Button>
 
         {exportPrivateKeyFeatureEnabled ? (

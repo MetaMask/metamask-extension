@@ -12,6 +12,7 @@ import {
 import { getURLHostName } from '../../../helpers/utils/util';
 import { Menu, MenuItem } from '../../ui/menu';
 import {
+  getBlockExplorerLinkText,
   getCurrentChainId,
   getCurrentKeyring,
   getIsCustomNetwork,
@@ -38,8 +39,29 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const trackEvent = useContext(MetaMetricsContext);
   const isCustomNetwork = useSelector(getIsCustomNetwork);
+  const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
   const isRemovable = keyring.type !== 'HD Key Tree';
+
+  const routeToAddBlockExplorerUrl = () => {
+    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+  }
+
+  const openBlockExplorer = () => {
+    trackEvent({
+      event: 'Clicked Block Explorer Link',
+      category: 'Navigation',
+      properties: {
+        link_type: 'Account Tracker',
+        action: 'Account Options',
+        block_explorer_domain: getURLHostName(addressLink),
+      },
+    });
+    global.platform.openTab({
+      url: addressLink,
+    });
+    onClose();
+  }
 
   return (
     <Menu
@@ -49,25 +71,26 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
     >
       <MenuItem
         onClick={
-          !rpcPrefs.blockExplorerUrl && isCustomNetwork
-            ? () => {
-                history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-              }
-            : () => {
-                trackEvent({
-                  event: 'Clicked Block Explorer Link',
-                  category: 'Navigation',
-                  properties: {
-                    link_type: 'Account Tracker',
-                    action: 'Account Options',
-                    block_explorer_domain: getURLHostName(addressLink),
-                  },
-                });
-                global.platform.openTab({
-                  url: addressLink,
-                });
-                onClose();
-              }
+          // !rpcPrefs.blockExplorerUrl && isCustomNetwork
+          //   ? () => {
+          //       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+          //     }
+          //   : () => {
+          //       trackEvent({
+          //         event: 'Clicked Block Explorer Link',
+          //         category: 'Navigation',
+          //         properties: {
+          //           link_type: 'Account Tracker',
+          //           action: 'Account Options',
+          //           block_explorer_domain: getURLHostName(addressLink),
+          //         },
+          //       });
+          //       global.platform.openTab({
+          //         url: addressLink,
+          //       });
+          //       onClose();
+          //     }
+          blockExplorerLinkText === t('addBlockExplorer') ? routeToAddBlockExplorerUrl : openBlockExplorer
         }
         subtitle={
           blockExplorerUrlSubTitle ? (
@@ -78,12 +101,13 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {rpcPrefs.blockExplorerUrl &&
+        {blockExplorerLinkText}
+        {/* {rpcPrefs.blockExplorerUrl && 
           t('viewinExplorer', [t('blockExplorerAccountAction')])}
         {!rpcPrefs.blockExplorerUrl && isCustomNetwork && t('addBlockExplorer')}
         {!rpcPrefs.blockExplorerUrl &&
           !isCustomNetwork &&
-          t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
+          t('viewOnEtherscan', [t('blockExplorerAccountAction')])} */}
       </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem

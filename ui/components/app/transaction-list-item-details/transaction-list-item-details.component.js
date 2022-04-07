@@ -48,6 +48,7 @@ export default class TransactionListItemDetails extends PureComponent {
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
     history: PropTypes.object,
+    blockExplorerLinkText: PropTypes.string,
   };
 
   state = {
@@ -147,6 +148,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionStatus: TransactionStatus,
       rpcPrefs,
       isCustomNetwork,
+      blockExplorerLinkText,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -202,9 +204,10 @@ export default class TransactionListItemDetails extends PureComponent {
                   onClick={this.handleBlockExplorerClick}
                   disabled={!hash}
                 >
-                  {!rpcPrefs.blockExplorerUrl && isCustomNetwork
+                  {/* {!rpcPrefs.blockExplorerUrl && isCustomNetwork
                     ? t('addBlockExplorer')
-                    : t('viewOnBlockExplorer')}
+                    : t('viewOnBlockExplorer')} */}
+                  {blockExplorerLinkText === t('addBlockExplorer') ? t('addBlockExplorer') : t('viewOnBlockExplorer')}
                 </Button>
               </div>
               <div>

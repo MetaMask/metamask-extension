@@ -12,6 +12,7 @@ import {
   getCurrentChainId,
   getMetaMaskAccountsOrdered,
   getIsCustomNetwork,
+  getBlockExplorerLinkText,
 } from '../../../../selectors';
 import AccountDetailsModal from './account-details-modal.component';
 
@@ -23,6 +24,7 @@ const mapStateToProps = (state) => {
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     accounts: getMetaMaskAccountsOrdered(state),
     isCustomNetwork: getIsCustomNetwork(state),
+    blockExplorerLinkText: getBlockExplorerLinkText(state, true),
   };
 };
 

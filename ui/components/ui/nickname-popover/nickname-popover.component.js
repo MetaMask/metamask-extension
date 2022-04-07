@@ -1,7 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
@@ -11,7 +10,7 @@ import Identicon from '../identicon/identicon.component';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { getUseTokenDetection, getTokenList } from '../../../selectors';
+import { getUseTokenDetection, getTokenList, getBlockExplorerLinkText } from '../../../selectors';
 import {
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
@@ -38,6 +37,17 @@ const NicknamePopover = ({
 
   const isCustomNetwork = useSelector(getIsCustomNetwork);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+
+  const routeToAddBlockExplorerUrl = () => {
+    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+  }
+
+  const openBlockExplorer = () => {
+    global.platform.openTab({
+      url: explorerLink,
+    });
+  }
 
   return (
     <div className="nickname-popover">
@@ -78,27 +88,32 @@ const NicknamePopover = ({
             type="link"
             className="nickname-popover__etherscan-link"
             onClick={
-              !rpcPrefs.blockExplorerUrl && isCustomNetwork
-                ? () => {
-                    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-                  }
-                : () => {
-                    global.platform.openTab({
-                      url: explorerLink,
-                    });
-                  }
+              // !rpcPrefs.blockExplorerUrl && isCustomNetwork
+              //   ? () => {
+              //       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+              //     }
+              //   : () => {
+              //       global.platform.openTab({
+              //         url: explorerLink,
+              //       });
+              //     }
+              blockExplorerLinkText === t('addBlockExplorer') ? routeToAddBlockExplorerUrl : openBlockExplorer
             }
             target="_blank"
             rel="noopener noreferrer"
             title={
-              !rpcPrefs.blockExplorerUrl && isCustomNetwork
-                ? t('addBlockExplorer')
-                : t('etherscanView')
+              // !rpcPrefs.blockExplorerUrl && isCustomNetwork
+              //   ? t('addBlockExplorer')
+              //   : t('etherscanView')
+              blockExplorerLinkText === t('addBlockExplorer') ? t('addBlockExplorer') : t('etherscanView')
             }
           >
-            {!rpcPrefs.blockExplorerUrl && isCustomNetwork
-              ? t('addBlockExplorer')
-              : t('viewOnBlockExplorer')}
+            {
+            // !rpcPrefs.blockExplorerUrl && isCustomNetwork
+            //   ? t('addBlockExplorer')
+            //   : t('viewOnBlockExplorer')
+            blockExplorerLinkText === t('addBlockExplorer') ? t('addBlockExplorer') : t('viewOnBlockExplorer')
+              }
           </Button>
         </div>
         <Button

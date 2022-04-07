@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
-import { getRpcPrefsForCurrentProvider } from '../../../selectors';
+import { getBlockExplorerLinkText, getRpcPrefsForCurrentProvider } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 
 const AssetOptions = ({
@@ -24,6 +24,16 @@ const AssetOptions = ({
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const history = useHistory();
+  const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
+
+  const routeToAddBlockExplorerUrl = () => {
+    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+  };
+
+  const openBlockExplorer = () => {
+    setAssetOptionsOpen(false);
+    onClickBlockExplorer();
+  }
 
   return (
     <>
@@ -53,24 +63,26 @@ const AssetOptions = ({
             iconClassName="fas fa-external-link-alt asset-options__icon"
             data-testid="asset-options__etherscan"
             onClick={
-              !rpcPrefs.blockExplorerUrl && isCustomNetwork
-                ? () => {
-                    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-                  }
-                : () => {
-                    setAssetOptionsOpen(false);
-                    onClickBlockExplorer();
-                  }
+              // !rpcPrefs.blockExplorerUrl && isCustomNetwork
+              //   ? () => {
+              //       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+              //     }
+              //   : () => {
+              //       setAssetOptionsOpen(false);
+              //       onClickBlockExplorer();
+              //     }
+              blockExplorerLinkText === t('addBlockExplorer') ? routeToAddBlockExplorerUrl : openBlockExplorer
             }
           >
-            {rpcPrefs.blockExplorerUrl &&
+            {blockExplorerLinkText}
+            {/* {rpcPrefs.blockExplorerUrl &&
               t('viewinExplorer', [t('blockExplorerAssetAction')])}
             {!rpcPrefs.blockExplorerUrl &&
               isCustomNetwork &&
               t('addBlockExplorer')}
             {!rpcPrefs.blockExplorerUrl &&
               !isCustomNetwork &&
-              t('viewOnEtherscan', [t('blockExplorerAssetAction')])}
+              t('viewOnEtherscan', [t('blockExplorerAssetAction')])} */}
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem

@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import {
   getAddressBook,
+  getBlockExplorerLinkText,
   getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
@@ -37,6 +38,7 @@ const mapStateToProps = (state, ownProps) => {
     senderNickname: getNickName(senderAddress),
     recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
     isCustomNetwork,
+    blockExplorerLinkText: getBlockExplorerLinkText(state),
   };
 };
 
