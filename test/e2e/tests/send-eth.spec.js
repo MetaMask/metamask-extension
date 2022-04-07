@@ -158,10 +158,6 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
 });
 
 describe('Send ETH from dapp using advanced gas controls', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   const ganacheOptions = {
     accounts: [
       {
@@ -176,7 +172,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -200,34 +196,14 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.clickElement(
           '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > label > div',
         );
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        await driver.closeAllWindowHandlesExcept([extension]);
         await driver.clickElement('.app-header__logo-container');
-
-        // connects the dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-        popup = windowHandles.find(
-          (handle) => handle !== extension && handle !== dapp,
-        );
-        await driver.switchToWindow(popup);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(dapp);
-
+        
         // initiates a send from the dapp
+        await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.delay(2000);
-        windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
