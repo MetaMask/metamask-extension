@@ -96,11 +96,11 @@ export function useGasFeeInputs(
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
   const [retryTxMeta, setRetryTxMeta] = useState({
-    txParams: _transaction.txParams,
-    id: _transaction.id,
-    userFeeLevel: _transaction.userFeeLevel,
-    originalGasEstimate: _transaction.originalGasEstimate,
-    userEditedGasLimit: _transaction.userEditedGasLimit,
+    txParams: _transaction?.txParams,
+    id: _transaction?.id,
+    userFeeLevel: _transaction?.userFeeLevel,
+    originalGasEstimate: _transaction?.originalGasEstimate,
+    userEditedGasLimit: _transaction?.userEditedGasLimit,
   });
 
   const transaction = editGasModeIsSpeedUpOrCancel(editGasMode)
