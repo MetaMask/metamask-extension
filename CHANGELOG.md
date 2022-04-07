@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix token icon when going from token detail page to Swaps view ([#14062](https://github.com/MetaMask/metamask-extension/pull/14062))
 - Fix issue where the contract address is shown as recipient when calling safe transfer method on erc721 or erc1155 contracts ([#13535](https://github.com/MetaMask/metamask-extension/pull/13535))
 - Ensure accounts still line up in dropdown ([#13986](https://github.com/MetaMask/metamask-extension/pull/13986))
+
 ## [10.12.4]
 ### Fixed
 - Fix MetaMask internal error reporting (#14344)
@@ -2884,8 +2885,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...HEAD
-[10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.0...v10.13.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...HEAD
+[10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
 [10.12.3]: https://github.com/MetaMask/metamask-extension/compare/v10.12.2...v10.12.3
 [10.12.2]: https://github.com/MetaMask/metamask-extension/compare/v10.12.1...v10.12.2
