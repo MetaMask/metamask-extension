@@ -18,7 +18,7 @@ describe('migration #71', () => {
   it('should rename NotificationController', async () => {
     const oldStorage = {
       meta: {
-        version: 69,
+        version: 70,
       },
       data: {
         FooController: { a: 'b' },
@@ -73,12 +73,12 @@ describe('migration #71', () => {
     const newStorage = await migration71.migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
-        version: 70,
+        version: 71,
       },
       data: {
         FooController: { a: 'b' },
         AnnouncementController: {
-          announcements: oldStorage.NotificationController.notifications,
+          announcements: oldStorage.data.NotificationController.notifications,
         },
       },
     });
