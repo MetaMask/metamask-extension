@@ -30,7 +30,9 @@ const mapStateToProps = (state) => {
   const tokenDetectionV2Supported =
     process.env.TOKEN_DETECTION_V2 && getIsTokenDetectionSupported(state);
   const showSearchTab =
-    getIsMainnet(state) || tokenDetectionV2Supported || process.env.IN_TEST;
+    getIsMainnet(state) ||
+    tokenDetectionV2Supported ||
+    Boolean(process.env.IN_TEST);
 
   return {
     identities,
