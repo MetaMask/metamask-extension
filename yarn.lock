@@ -11708,6 +11708,16 @@ eth-block-tracker@^5.0.1:
     json-rpc-random-id "^1.0.1"
     pify "^3.0.0"
 
+eth-block-tracker@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/eth-block-tracker/-/eth-block-tracker-6.0.0.tgz#24d9d730f16d1f39fd69b67109fb09d9d3d8e8fb"
+  integrity sha512-dkrflt13vxcbXUCzwqBxe4faahWFDGccVPAHgN+9fd1FMu9l+fvMYaNPPVO9LaIUy0zQ7NLKeWiDnsQl/vadbg==
+  dependencies:
+    "@metamask/safe-event-emitter" "^2.0.0"
+    "@metamask/utils" "^3.0.1"
+    json-rpc-random-id "^1.0.1"
+    pify "^3.0.0"
+
 eth-eip712-util-browser@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/eth-eip712-util-browser/-/eth-eip712-util-browser-0.0.3.tgz#334143d76d0a502b456e2ee5f1ce20f678a39fd3"
@@ -11764,12 +11774,29 @@ eth-json-rpc-middleware@^6.0.0:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-middleware@^8.0.0, eth-json-rpc-middleware@^8.1.0:
+eth-json-rpc-middleware@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-8.1.0.tgz#d2bf980768b43dcbcb7830ed1fcc34a16f63074d"
   integrity sha512-0ZZDr6KoddqN4N100a7YWzLTYrVN0P49DJ3Su1vsRavPpieq92rgZymnQcr0tLFBQDEJg1MVqLex46fA0GEkDA==
   dependencies:
     "@metamask/safe-event-emitter" "^2.0.0"
+    btoa "^1.2.1"
+    clone "^2.1.1"
+    eth-block-tracker "^5.0.1"
+    eth-rpc-errors "^4.0.3"
+    eth-sig-util "^1.4.2"
+    json-rpc-engine "^6.1.0"
+    json-stable-stringify "^1.0.1"
+    node-fetch "^2.6.7"
+    pify "^3.0.0"
+
+eth-json-rpc-middleware@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-9.0.0.tgz#8858713fa009e58758c34f7d8cdeb6179428ffd9"
+  integrity sha512-s/3BFGTjnby2CXAmWPXdNdWwmlygvRPsKRMYA3a5TJKCH8F/lVmVwGtckYRgfY3etpsEO8rMbkp6SQ+Ob1zCiQ==
+  dependencies:
+    "@metamask/safe-event-emitter" "^2.0.0"
+    "@metamask/utils" "^3.0.1"
     btoa "^1.2.1"
     clone "^2.1.1"
     eth-block-tracker "^5.0.1"
