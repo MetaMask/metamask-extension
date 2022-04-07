@@ -1,6 +1,32 @@
 async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough();
 
+  await server.forAnyRequest()
+  .forHost('mainnet.infura.io')
+  .thenPassThrough({
+    beforeRequest: () => { 
+      {
+        return {
+          url: 'http://localhost:8545',
+        }
+      }
+    }
+  })
+
+  /*
+  await server.forAnyRequest()
+  .forHost('mainnet.infura.io')
+  .thenCallback(() => {
+    return {
+      statusCode: 404,
+      json:
+        {
+          error: 'You are not on the correct Network'
+        }
+      }
+    })
+  */
+
   await server.forPost('https://api.segment.io/v1/batch').thenCallback(() => {
     return {
       statusCode: 200,
@@ -135,10 +161,6 @@ async function setupMocking(server, testSpecificMock) {
         ],
       };
     });
-
-  await server.forAnyRequest()
-    .forHost('mainnet.infura.io')
-    .thenForwardTo('127.0.0.1:8545')
 
   testSpecificMock(server);
 }
