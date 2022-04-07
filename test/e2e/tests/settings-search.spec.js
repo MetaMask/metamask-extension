@@ -22,6 +22,8 @@ describe('Settings Search', function () {
     about: 'Terms of Use',
   };
 
+  var page;
+
   it('should find element inside the General tab', async function () {
     await withFixtures(
       {
@@ -39,11 +41,12 @@ describe('Settings Search', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.fill('#search-settings', settingsSearch.general);
 
-        await driver.clickElement({ text: 'General', tag: 'span' });
+        page = 'General';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'General', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.general} item does not redirect to ${page} view`,
         );
       },
     );
@@ -66,11 +69,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.advanced);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'Advanced', tag: 'span' });
+        page = 'Advanced';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'Advanced', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.advanced} item does not redirect to ${page} view`,
         );
       },
     );
@@ -93,11 +97,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.contacts);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'Contacts', tag: 'span' });
+        page = 'Contacts';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'Contacts', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.contacts} item does not redirect to ${page} view`,
         );
       },
     );
@@ -120,11 +125,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.security);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'Security', tag: 'span' });
+        page = 'Security';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'Security', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.security} item does not redirect to ${page} view`,
         );
       },
     );
@@ -147,11 +153,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.alerts);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'Alerts', tag: 'span' });
+        page = 'Alerts';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'Alerts', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.alerts} item does not redirect to ${page} view`,
         );
       },
     );
@@ -174,11 +181,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.networks);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'Networks', tag: 'span' });
+        page = 'Networks';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'Networks', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.networks} item does not redirect to ${page} view`,
         );
       },
     );
@@ -201,11 +209,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.experimental);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'Experimental', tag: 'span' });
+        page = 'Experimental';
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'Experimental', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.experimental} item not redirect to ${page} view`,
         );
       },
     );
@@ -228,11 +237,12 @@ describe('Settings Search', function () {
         await driver.fill('#search-settings', settingsSearch.about);
 
         // Check if element redirects to the correct page
-        await driver.clickElement({ text: 'About', tag: 'span' });
+        page = 'About'
+        await driver.clickElement({ text: page, tag: 'span' });
         assert.equal(
-          await driver.isElementPresent({ text: 'About', tag: 'div' }),
+          await driver.isElementPresent({ text: page, tag: 'div' }),
           true,
-          'Item does not redirect to correct page',
+          `${settingsSearch.about} item does not redirect to ${page} view`,
         );
       },
     );
