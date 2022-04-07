@@ -7,21 +7,21 @@ const blacklistedUrls = [
   'polygon-rpc.com',
   'mainnet.optimism.io',
   'api.avax.network/ext/bc/C/rpc',
-]
+];
 
 async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough();
 
-  await server
-    .forAnyRequest()
-    .forHost('mainnet.infura.io')
-    .thenPassThrough({
-      beforeRequest: () => {
+  await server.forAnyRequest().thenPassThrough({
+    beforeRequest: (req) => {
+      if (blacklistedUrls.includes(req.headers.host)) {
         return {
           url: 'http://localhost:8545',
         };
-      },
-    });
+      }
+      return {};
+    },
+  });
 
   await server.forPost('https://api.segment.io/v1/batch').thenCallback(() => {
     return {
