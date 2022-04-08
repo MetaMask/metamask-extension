@@ -7,7 +7,7 @@ const blacklistedUrls = [
   'polygon-rpc.com',
   'rinkeby.infura.io',
   'ropsten.infura.io',
-  'rpc.gnosischain.com'
+  'rpc.gnosischain.com',
 ];
 
 async function setupMocking(server, testSpecificMock) {
