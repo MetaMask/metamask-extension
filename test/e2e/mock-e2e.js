@@ -1,8 +1,16 @@
+const blacklistedHosts = [
+  'goerli.infura.io',
+  'kovan.infura.io',
+  'mainnet.infura.io',
+  'rinkeby.infura.io',
+  'ropsten.infura.io',
+];
+
 async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       const { host } = req.headers;
-      if (host.endsWith('infura.io')) {
+      if (blacklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
         };
