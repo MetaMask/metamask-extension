@@ -66,6 +66,7 @@ import {
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+import { getSettingsRoutes } from '../helpers/utils/settings-search';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -708,18 +709,20 @@ export function getSnaps(state) {
 }
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
-  Object.values(snaps).map((snap) => {
-    return {
-      isSnap: true,
-      tabMessage: snap.manifest.proposedName,
-      descriptionMessage: snap.manifest.description,
-      sectionMessage: snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
-        unescape(encodeURIComponent(snap.id)),
-      )}`,
-      icon: 'fa fa-flask',
-    };
-  });
+  return [
+    ...Object.values(snaps).map((snap) => {
+      return {
+        isSnap: true,
+        tabMessage: snap.manifest.proposedName,
+        descriptionMessage: snap.manifest.description,
+        sectionMessage: snap.manifest.description,
+        route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
+          unescape(encodeURIComponent(snap.id)),
+        )}`,
+        icon: 'fa fa-flask',
+      };
+    }),
+  ];
 });
 ///: END:ONLY_INCLUDE_IN
 

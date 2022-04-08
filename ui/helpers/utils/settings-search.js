@@ -14,15 +14,16 @@ export function getSettingsRoutes() {
 }
 
 function getFilteredSettingsRoutes(t, tabMessage) {
-  return getSettingsRoutes().filter(
-    (routeObject) => routeObject.tabMessage(t) === tabMessage,
-  );
+  return getSettingsRoutes().filter((routeObject) => {
+    if (typeof routeObject.tabMessage === 'function') {
+      return routeObject.tabMessage(t) === tabMessage;
+    }
+    return routeObject.tabMessage === tabMessage;
+  });
 }
 
 export function getNumberOfSettingsInSection(t, tabMessage) {
-  return getSettingsRoutes().filter(
-    (routeObject) => routeObject.tabMessage(t) === tabMessage,
-  ).length;
+  return getFilteredSettingsRoutes(t, tabMessage).length;
 }
 
 export function handleSettingsRefs(t, tabMessage, settingsRefs) {

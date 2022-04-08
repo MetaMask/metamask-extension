@@ -13,9 +13,11 @@ export default function SettingsSearchList({ results, onClickSetting }) {
   return (
     <div className="settings-page__header__search__list">
       {results.slice(0, 5).map((result) => {
-        const { icon, tabMessage, sectionMessage, route } = result;
+        const { icon, tabMessage, sectionMessage, route, isSnap } = result;
+        const tab = isSnap ? tabMessage : tabMessage(t);
+        const section = isSnap ? sectionMessage : sectionMessage(t);
         return (
-          Boolean(icon || tabMessage || sectionMessage) && (
+          Boolean(icon || tab || section) && (
             <div key={`settings_${route}`}>
               <div
                 className="settings-page__header__search__list__item"
@@ -34,11 +36,11 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                     'settings-page__header__search__list__item__tab',
                     {
                       'settings-page__header__search__list__item__tab-multiple-lines':
-                        tabMessage(t) === t('securityAndPrivacy'),
+                        tab === t('securityAndPrivacy'),
                     },
                   )}
                 >
-                  {tabMessage(t)}
+                  {tab}
                 </span>
                 <IconCaretRight
                   size={16}
@@ -50,12 +52,11 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                     'settings-page__header__search__list__item__section',
                     {
                       'settings-page__header__search__list__item__section-multiple-lines':
-                        tabMessage(t) === t('securityAndPrivacy') ||
-                        tabMessage(t) === t('alerts'),
+                        tab === t('securityAndPrivacy') || tab === t('alerts'),
                     },
                   )}
                 >
-                  {sectionMessage(t)}
+                  {section}
                 </span>
               </div>
             </div>
