@@ -9,7 +9,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import Header from './signature-request-header';
-import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
 export default function SignatureRequestSIWE({
