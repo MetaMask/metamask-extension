@@ -1,5 +1,7 @@
 import React, { useState, useContext } from 'react';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { useSelector } from 'react-redux';
+///: END:ONLY_INCLUDE_IN
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -7,7 +9,9 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapsRouteObjects } from '../../../selectors';
+///: END:ONLY_INCLUDE_IN
 
 export default function SettingsSearch({
   onSearch,
