@@ -87,8 +87,10 @@ export default function SignatureRequestSIWE({
               footerClassName="warning-footer no-border"
               onCancel={() => setIsShowingDomainWarning(false)}
               cancelText={t('cancel')}
+              cancelButtonType="default"
               onSubmit={onSign}
               submitText={t('sign')}
+              submitButtonType="danger-primary"
               disabled={!agreeToDomainWarning}
             />
           }
@@ -97,7 +99,7 @@ export default function SignatureRequestSIWE({
             <Checkbox
               id="domainWarning_checkbox"
               checked={agreeToDomainWarning}
-              className="checkbox"
+              className="checkbox color-red"
               onClick={() => setAgreeToDomainWarning((checked) => !checked)}
             />
             <label className="checkbox-label" htmlFor="domainWarning_checkbox">

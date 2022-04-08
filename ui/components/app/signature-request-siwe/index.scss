@@ -110,6 +110,10 @@
   cursor: pointer;
 }
 
+.color-red {
+  color: var(--color-error-default) !important;
+}
+
 .checkbox-label {
   @include H7;
 
