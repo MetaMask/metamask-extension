@@ -32,7 +32,21 @@ function importAllScripts() {
   );
 }
 
-importAllScripts();
+// eslint-disable-next-line
+self.oninstall = () => {
+  importAllScripts();
+};
+
+// eslint-disable-next-line
+chrome.runtime.onMessage.addListener((msg, _2, sendResponse) => {
+  // eslint-disable-next-line
+  if (!self.LavaPack) {
+    importAllScripts();
+    // eslint-disable-next-line
+    chrome.runtime.sendMessage({ name: 'APP_INIT' });
+  }
+  sendResponse({ name: 'SERVICE_WORKER_ACTIVATION' });
+});
 
 /**
  * An open issue is changes in this file break during hot reloading. Reason is dynamic injection of "FILE NAMES".

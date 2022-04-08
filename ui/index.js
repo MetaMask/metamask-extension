@@ -30,6 +30,8 @@ import txHelper from './helpers/utils/tx-helper';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
+let reduxStore;
+
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
   actions._setBackgroundConnection(backgroundConnection);
@@ -40,11 +42,27 @@ export default function launchMetamaskUi(opts, cb) {
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
+      reduxStore = store;
       setupDebuggingHelpers(store);
       cb(null, store);
     });
   });
 }
+
+export const updateBackgroundConnection = (backgroundConnection) => {
+  actions._setBackgroundConnection(backgroundConnection);
+  backgroundConnection.onNotification((data) => {
+    if (data.method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else {
+      throw new Error(
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
+  });
+};
 
 async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts
