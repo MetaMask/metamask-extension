@@ -1,6 +1,8 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
+import { Provider } from 'react-redux';
 import TextField from '../../components/ui/text-field';
+import configureStore from '../../store/store';
 import Settings from './settings.container';
 import SettingsSearch from './settings-search';
 
@@ -37,8 +39,15 @@ describe('SettingsPage', () => {
   });
 
   it('should render search correctly', () => {
-    wrapper = shallow(
-      <SettingsSearch onSearch={() => undefined} settingsRoutesList={[]} />,
+    const store = configureStore({
+      metamask: {
+        snaps: {},
+      },
+    });
+    wrapper = mount(
+      <Provider store={store}>
+        <SettingsSearch onSearch={() => undefined} settingsRoutesList={[]} />
+      </Provider>,
       {
         context: {
           t: (s) => `${s}`,
