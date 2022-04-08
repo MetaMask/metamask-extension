@@ -65,7 +65,9 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IN
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
