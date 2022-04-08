@@ -1,19 +1,8 @@
-const blacklistedUrls = [
-  'api.avax.network/ext/bc/C/rpc',
-  'goerli.infura.io',
-  'kovan.infura.io',
-  'mainnet.infura.io',
-  'mainnet.optimism.io',
-  'polygon-rpc.com',
-  'rinkeby.infura.io',
-  'ropsten.infura.io',
-  'rpc.gnosischain.com',
-];
-
 async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
-      if (blacklistedUrls.includes(req.headers.host)) {
+      const { host } = req.headers;
+      if (host.includes('infura.io')) {
         return {
           url: 'http://localhost:8545',
         };
