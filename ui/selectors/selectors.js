@@ -41,7 +41,11 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { shortenAddress, getAccountByAddress, getURLHostName } from '../helpers/utils/util';
+import {
+  shortenAddress,
+  getAccountByAddress,
+  getURLHostName,
+} from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -65,7 +69,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { useI18nContext } from '../hooks/useI18nContext';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -962,28 +965,35 @@ export function getIsCustomNetwork(state) {
   return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
 }
 
-export function getBlockExplorerLinkText(state, accountDetailsModalComponent = false) {
+export function getBlockExplorerLinkText(
+  state,
+  accountDetailsModalComponent = false,
+) {
   const isCustomNetwork = getIsCustomNetwork(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
-  const t = useI18nContext();
 
-  let blockExplorerLinkText = t('addBlockExplorer');
+  let blockExplorerLinkText = {
+    firstPart: 'addBlockExplorer',
+    secondPart: '',
+  };
 
   if (rpcPrefs.blockExplorerUrl) {
-
-    // if (callingComponent === 'accountDetailsModalComponent') {
-    //   blockExplorerLinkText = t('blockExplorerView', [getURLHostName(rpcPrefs.blockExplorerUrl),])
-    // }
-
-
-    blockExplorerLinkText =  accountDetailsModalComponent ? t('blockExplorerView', [getURLHostName(rpcPrefs.blockExplorerUrl)]) : t('viewInExplorer', [t('blockExplorerAccountAction')]);
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? {
+          firstPart: 'blockExplorerView',
+          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+        }
+      : {
+          firstPart: 'viewinExplorer',
+          secondPart: 'blockExplorerAccountAction',
+        };
   } else if (isCustomNetwork === false) {
-
-    // if (callingComponent === 'accountDetailsModalComponent') {
-    //   blockExplorerLinkText = t('etherscanViewOn');
-    // }
-
-    blockExplorerLinkText = accountDetailsModalComponent ? t('etherscanViewOn') : t('viewOnEtherscan', [t('blockExplorerAccountAction')]);
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? { firstPart: 'etherscanViewOn', secondPart: '' }
+      : {
+          firstPart: 'viewOnEtherscan',
+          secondPart: 'blockExplorerAccountAction',
+        };
   }
 
   return blockExplorerLinkText;

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
-import { getBlockExplorerLinkText, getRpcPrefsForCurrentProvider } from '../../../selectors';
+import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 
 const AssetOptions = ({
@@ -15,14 +15,12 @@ const AssetOptions = ({
   onViewTokenDetails,
   tokenSymbol,
   isNativeAsset,
-  isCustomNetwork,
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsButtonElement, setAssetOptionsButtonElement] = useState(
     null,
   );
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const history = useHistory();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
@@ -33,7 +31,7 @@ const AssetOptions = ({
   const openBlockExplorer = () => {
     setAssetOptionsOpen(false);
     onClickBlockExplorer();
-  }
+  };
 
   return (
     <>
@@ -63,26 +61,17 @@ const AssetOptions = ({
             iconClassName="fas fa-external-link-alt asset-options__icon"
             data-testid="asset-options__etherscan"
             onClick={
-              // !rpcPrefs.blockExplorerUrl && isCustomNetwork
-              //   ? () => {
-              //       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-              //     }
-              //   : () => {
-              //       setAssetOptionsOpen(false);
-              //       onClickBlockExplorer();
-              //     }
-              blockExplorerLinkText === t('addBlockExplorer') ? routeToAddBlockExplorerUrl : openBlockExplorer
+              blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                ? routeToAddBlockExplorerUrl
+                : openBlockExplorer
             }
           >
-            {blockExplorerLinkText}
-            {/* {rpcPrefs.blockExplorerUrl &&
-              t('viewinExplorer', [t('blockExplorerAssetAction')])}
-            {!rpcPrefs.blockExplorerUrl &&
-              isCustomNetwork &&
-              t('addBlockExplorer')}
-            {!rpcPrefs.blockExplorerUrl &&
-              !isCustomNetwork &&
-              t('viewOnEtherscan', [t('blockExplorerAssetAction')])} */}
+            {t(
+              blockExplorerLinkText.firstPart,
+              blockExplorerLinkText.secondPart === ''
+                ? null
+                : [t('blockExplorerAssetAction')],
+            )}
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem
@@ -121,7 +110,6 @@ AssetOptions.propTypes = {
   onViewAccountDetails: PropTypes.func.isRequired,
   onViewTokenDetails: PropTypes.func.isRequired,
   tokenSymbol: PropTypes.string,
-  isCustomNetwork: PropTypes.bool,
 };
 
 export default AssetOptions;

@@ -34,6 +34,11 @@ describe('TransactionListItemDetails Component', () => {
       blockExplorerUrl: 'https://customblockexplorer.com/',
     };
 
+    const blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -45,6 +50,7 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
         rpcPrefs={rpcPrefs}
+        blockExplorerLinkText={blockExplorerLinkText}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -84,6 +90,11 @@ describe('TransactionListItemDetails Component', () => {
       blockExplorerUrl: 'https://customblockexplorer.com/',
     };
 
+    const blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -96,6 +107,7 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
         rpcPrefs={rpcPrefs}
+        blockExplorerLinkText={blockExplorerLinkText}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -131,6 +143,11 @@ describe('TransactionListItemDetails Component', () => {
       blockExplorerUrl: 'https://customblockexplorer.com/',
     };
 
+    const blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -142,6 +159,7 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
         rpcPrefs={rpcPrefs}
+        blockExplorerLinkText={blockExplorerLinkText}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -180,6 +198,11 @@ describe('TransactionListItemDetails Component', () => {
       blockExplorerUrl: 'https://customblockexplorer.com/',
     };
 
+    const blockExplorerLinkText = {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -191,6 +214,7 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
         rpcPrefs={rpcPrefs}
+        blockExplorerLinkText={blockExplorerLinkText}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );

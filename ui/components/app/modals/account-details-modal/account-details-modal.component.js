@@ -21,8 +21,7 @@ export default class AccountDetailsModal extends Component {
     accounts: PropTypes.array,
     history: PropTypes.object,
     hideModal: PropTypes.func,
-    isCustomNetwork: PropTypes.bool,
-    blockExplorerLinkText: PropTypes.string,
+    blockExplorerLinkText: PropTypes.object,
   };
 
   static contextTypes = {
@@ -41,7 +40,6 @@ export default class AccountDetailsModal extends Component {
       accounts,
       history,
       hideModal,
-      isCustomNetwork,
       blockExplorerLinkText,
     } = this.props;
     const { name, address } = selectedIdentity;
@@ -63,16 +61,12 @@ export default class AccountDetailsModal extends Component {
     }
 
     const routeToAddBlockExplorerUrl = () => {
-      this.props.hideModal();
+      hideModal();
       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-    }
+    };
 
     const openBlockExplorer = () => {
-      const accountLink = getAccountLink(
-        address,
-        chainId,
-        rpcPrefs,
-      );
+      const accountLink = getAccountLink(address, chainId, rpcPrefs);
       this.context.trackEvent({
         category: 'Navigation',
         event: 'Clicked Block Explorer Link',
@@ -85,7 +79,7 @@ export default class AccountDetailsModal extends Component {
       global.platform.openTab({
         url: accountLink,
       });
-    }
+    };
 
     return (
       <AccountModalContainer className="account-details-modal">
@@ -108,44 +102,17 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-details-modal__button"
           onClick={
-            // !rpcPrefs.blockExplorerUrl && isCustomNetwork
-            //   ? () => {
-            //       hideModal();
-            //       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
-            //     }
-            //   : () => {
-            //       const accountLink = getAccountLink(
-            //         address,
-            //         chainId,
-            //         rpcPrefs,
-            //       );
-            //       this.context.trackEvent({
-            //         category: 'Navigation',
-            //         event: 'Clicked Block Explorer Link',
-            //         properties: {
-            //           link_type: 'Account Tracker',
-            //           action: 'Account Details Modal',
-            //           block_explorer_domain: getURLHostName(accountLink),
-            //         },
-            //       });
-            //       global.platform.openTab({
-            //         url: accountLink,
-            //       });
-            //     }
-            blockExplorerLinkText === this.context.t('addBlockExplorer') ? routeToAddBlockExplorerUrl : openBlockExplorer
+            blockExplorerLinkText.firstPart === 'addBlockExplorer'
+              ? routeToAddBlockExplorerUrl
+              : openBlockExplorer
           }
         >
-          {/* {rpcPrefs.blockExplorerUrl &&
-            this.context.t('blockExplorerView', [
-              getURLHostName(rpcPrefs.blockExplorerUrl),
-            ])}
-          {!rpcPrefs.blockExplorerUrl &&
-            isCustomNetwork &&
-            this.context.t('addBlockExplorer')}
-          {!rpcPrefs.blockExplorerUrl &&
-            !isCustomNetwork &&
-            this.context.t('etherscanViewOn')} */}
-            {blockExplorerLinkText}
+          {this.context.t(
+            blockExplorerLinkText.firstPart,
+            blockExplorerLinkText.secondPart === ''
+              ? null
+              : [blockExplorerLinkText.secondPart],
+          )}
         </Button>
 
         {exportPrivateKeyFeatureEnabled ? (
