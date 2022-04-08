@@ -586,7 +586,7 @@ export default class MetaMetricsController {
 
   /**
    *
-   * @param {*} metamaskState
+   * @param {object} metamaskState
    * @returns number of unique collectible addresses
    */
   _getNumberOfNFtCollection(metamaskState) {
