@@ -49,6 +49,10 @@ const metamaskStream = new WindowPostMessageStream({
   target: 'metamask-contentscript',
 });
 
+// metamaskStream.on('data', (chunk) => {
+//   console.log('METAMASK STREAM CHUNK', chunk);
+// });
+
 initializeProvider({
   connectionStream: metamaskStream,
   logger: log,

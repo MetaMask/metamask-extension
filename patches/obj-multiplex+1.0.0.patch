@@ -1,0 +1,13 @@
+diff --git a/node_modules/obj-multiplex/index.js b/node_modules/obj-multiplex/index.js
+index cfc0c99..de1a81e 100644
+--- a/node_modules/obj-multiplex/index.js
++++ b/node_modules/obj-multiplex/index.js
+@@ -20,7 +20,7 @@ class ObjectMultiplex extends Duplex {
+   createStream (name) {
+     // validate name
+     if (!name) throw new Error('ObjectMultiplex - name must not be empty')
+-    if (this._substreams[name]) throw new Error('ObjectMultiplex - Substream for name "${name}" already exists')
++    if (this._substreams[name]) throw new Error(`ObjectMultiplex - Substream for name "${name}" already exists`)
+ 
+     // create substream
+     const substream = new Substream({ parent: this, name: name })
