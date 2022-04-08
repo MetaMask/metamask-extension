@@ -1,12 +1,13 @@
 const blacklistedUrls = [
-  'mainnet.infura.io',
-  'ropsten.infura.io',
-  'kovan.infura.io',
-  'rinkeby.infura.io',
-  'goerli.infura.io',
-  'polygon-rpc.com',
-  'mainnet.optimism.io',
   'api.avax.network/ext/bc/C/rpc',
+  'goerli.infura.io',
+  'kovan.infura.io',
+  'mainnet.infura.io',
+  'mainnet.optimism.io',
+  'polygon-rpc.com',
+  'rinkeby.infura.io',
+  'ropsten.infura.io',
+  'rpc.gnosischain.com'
 ];
 
 async function setupMocking(server, testSpecificMock) {
