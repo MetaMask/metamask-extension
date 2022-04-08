@@ -594,14 +594,11 @@ export default class MetaMetricsController {
     if (!allCollectibles) {
       return 0;
     }
-    const allAccounts = Object.keys(allCollectibles);
-    const allAddresses = allAccounts.flatMap((account) =>
-      Object.keys(allCollectibles[account]).flatMap((chainId) =>
-        allCollectibles[account][chainId].map(
-          (collectible) => collectible.address,
-        ),
-      ),
-    );
+
+    const allAddresses = Object.values(allCollectibles)
+      .flatMap((chainCollectibles) => Object.values(chainCollectibles))
+      .flat()
+      .map((collectible) => collectible.address);
     const unique = [...new Set(allAddresses)];
     return unique.length;
   }
