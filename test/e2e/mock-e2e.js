@@ -11,8 +11,6 @@ const blacklistedUrls = [
 ];
 
 async function setupMocking(server, testSpecificMock) {
-  await server.forAnyRequest().thenPassThrough();
-
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       if (blacklistedUrls.includes(req.headers.host)) {
