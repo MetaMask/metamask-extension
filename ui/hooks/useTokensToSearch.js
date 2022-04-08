@@ -72,10 +72,9 @@ export function getRenderableTokenData(
     // token Address have to be changed to lowercase when we are using dynamic list
     tokenAddress = useTokenDetection ? address?.toLowerCase() : address;
 
-    if (useTokenDetection) {
-      tokenIconUrl =
-        tokenList[tokenAddress]?.iconUrl ||
-        `images/contract/${tokenList[tokenAddress]?.iconUrl}`;
+    tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
+    if (!useTokenDetection && tokenIconUrl) {
+      tokenIconUrl = `images/contract/${tokenIconUrl}`;
     }
   }
   const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
