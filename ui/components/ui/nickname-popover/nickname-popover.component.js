@@ -46,7 +46,7 @@ const NicknamePopover = ({
       url: explorerLink,
     });
   };
-  console.log(blockExplorerLinkText);
+
   return (
     <div className="nickname-popover">
       <Popover onClose={onClose} className="nickname-popover__popover-wrap">
