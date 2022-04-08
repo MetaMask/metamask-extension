@@ -39,7 +39,6 @@ describe('Confirm Page Container Content', () => {
       action: ' Withdraw Stake',
       errorMessage: null,
       errorKey: null,
-      hasSimulationError: true,
       onCancelAll: mockOnCancelAll,
       onCancel: mockOnCancel,
       cancelText: 'Reject',
@@ -83,7 +82,6 @@ describe('Confirm Page Container Content', () => {
   });
 
   it('render ConfirmPageContainer component with another error', async () => {
-    props.hasSimulationError = false;
     props.disabled = true;
     props.errorKey = TRANSACTION_ERROR_KEY;
     props.currentTransaction = {
@@ -111,7 +109,6 @@ describe('Confirm Page Container Content', () => {
   });
 
   it('render ConfirmPageContainer component with no errors', async () => {
-    props.hasSimulationError = false;
     props.disabled = false;
     const { queryByText, getByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
@@ -138,7 +135,6 @@ describe('Confirm Page Container Content', () => {
   });
 
   it('render contract address name from addressBook in title for contract', async () => {
-    props.hasSimulationError = false;
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
     props.transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
@@ -151,7 +147,6 @@ describe('Confirm Page Container Content', () => {
   });
 
   it('render simple title without address name for simple send', async () => {
-    props.hasSimulationError = false;
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
     props.transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
