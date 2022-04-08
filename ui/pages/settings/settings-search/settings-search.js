@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -6,6 +7,7 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { getSnapsRouteObjects } from '../../../selectors';
 
 export default function SettingsSearch({
   onSearch,
@@ -19,7 +21,11 @@ export default function SettingsSearch({
     'var(--color-icon-muted)',
   );
 
-  const settingsRoutesListArray = Object.values(settingsRoutesList);
+  let settingsRoutesListArray = Object.values(settingsRoutesList);
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const snaps = useSelector(getSnapsRouteObjects);
+  settingsRoutesListArray = [settingsRoutesListArray, ...snaps];
+  ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
     threshold: 0.2,
@@ -28,7 +34,10 @@ export default function SettingsSearch({
     maxPatternLength: 32,
     minMatchCharLength: 1,
     keys: ['tabMessage', 'sectionMessage', 'descriptionMessage'],
-    getFn: (routeObject, path) => routeObject[path](t),
+    getFn: (routeObject, path) =>
+      typeof routeObject[path] === 'function'
+        ? routeObject[path](t)
+        : routeObject[path],
   });
 
   const handleSearch = (_searchQuery) => {
