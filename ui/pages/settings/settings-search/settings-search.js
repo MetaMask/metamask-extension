@@ -24,7 +24,7 @@ export default function SettingsSearch({
   let settingsRoutesListArray = Object.values(settingsRoutesList);
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snaps = useSelector(getSnapsRouteObjects);
-  settingsRoutesListArray = [settingsRoutesListArray, ...snaps];
+  settingsRoutesListArray = [...settingsRoutesListArray, ...snaps];
   ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
