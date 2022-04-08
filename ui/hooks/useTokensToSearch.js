@@ -62,17 +62,15 @@ export function getRenderableTokenData(
       false,
     ) || '';
   let tokenAddress;
-  let tokenIconUrl;
+  let tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
   if (process.env.TOKEN_DETECTION_V2) {
     tokenAddress = address?.toLowerCase();
-    tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
   } else {
     // token from dynamic api list is fetched when useTokenDetection is true
     // And since the token.address from allTokens is checksumaddress
     // token Address have to be changed to lowercase when we are using dynamic list
     tokenAddress = useTokenDetection ? address?.toLowerCase() : address;
 
-    tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
     if (!useTokenDetection && tokenIconUrl) {
       tokenIconUrl = `images/contract/${tokenIconUrl}`;
     }
