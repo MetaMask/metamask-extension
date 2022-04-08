@@ -2,7 +2,7 @@ async function setupMocking(server, testSpecificMock) {
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       const { host } = req.headers;
-      if (host.includes('infura.io')) {
+      if (host.endsWith('infura.io')) {
         return {
           url: 'http://localhost:8545',
         };
