@@ -75,7 +75,7 @@ export function getRenderableTokenData(
     if (useTokenDetection) {
       tokenIconUrl =
         tokenList[tokenAddress]?.iconUrl ||
-        `images/contract/${tokenList[tokenAddress].iconUrl}`;
+        `images/contract/${tokenList[tokenAddress]?.iconUrl}`;
     }
   }
   const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
