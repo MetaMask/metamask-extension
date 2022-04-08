@@ -8,7 +8,11 @@ import DetectedTokenAddress from '../detected-token-address/detected-token-addre
 import DetectedTokenAggregators from '../detected-token-aggregators/detected-token-aggregators';
 import { DISPLAY } from '../../../../helpers/constants/design-system';
 
-const DetectedTokenDetails = ({ token, handleTokenSelection }) => {
+const DetectedTokenDetails = ({
+  token,
+  handleTokenSelection,
+  selectedTokens,
+}) => {
   return (
     <Box
       display={DISPLAY.FLEX}
@@ -28,6 +32,7 @@ const DetectedTokenDetails = ({ token, handleTokenSelection }) => {
         <DetectedTokenValues
           token={token}
           handleTokenSelection={handleTokenSelection}
+          selectedTokens={selectedTokens}
         />
         <DetectedTokenAddress address={token.address} />
         <DetectedTokenAggregators aggregatorsList={token.aggregators} />
@@ -45,6 +50,7 @@ DetectedTokenDetails.propTypes = {
     aggregators: PropTypes.array,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
+  selectedTokens: PropTypes.array,
 };
 
 export default DetectedTokenDetails;

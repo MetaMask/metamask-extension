@@ -969,6 +969,22 @@ export function getIsTokenDetectionSupported(state) {
   ].includes(chainId);
 }
 
+/**
+ * To retrieve the list of tokens detected and saved on the state to detectedToken object.
+ *
+ * @param {*} state
+ * @returns list of token objects
+ */
 export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.detectedTokens;
+}
+
+/**
+ * To fetch the name of the tokens that are imported from tokens found page
+ *
+ * @param {*} state
+ * @returns
+ */
+export function getNewTokensImported(state) {
+  return state.appState.newTokensImported;
 }

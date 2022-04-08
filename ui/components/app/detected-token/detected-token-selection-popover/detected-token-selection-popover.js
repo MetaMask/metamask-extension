@@ -14,6 +14,7 @@ import DetectedTokenDetails from '../detected-token-details/detected-token-detai
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 const DetectedTokenSelectionPopover = ({
+  selectedTokens,
   handleTokenSelection,
   onImport,
   onIgnoreAll,
@@ -23,34 +24,9 @@ const DetectedTokenSelectionPopover = ({
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
-  // const [selectedTokens, setSelectedTokens] = useState([]);
-
-  // const onImport = () => {
-  //   console.log('import tokens', selectedTokens);
-  // }
-
-  // const onIgnoreAll = () => {
-  //   // setSelectedTokens([]);
-  //   console.log('ignore tokens', selectedTokens)
-  //   history.push(DETECTED_TOKEN_IGNORED_ROUTE);
-  // }
-
   const onClose = () => {
     history.push(DEFAULT_ROUTE);
   };
-  // const handleClearTokensSelection = () => {
-  //   setSelectedTokens([]);
-  // }
-
-  // const handleTokenSelection = (tokenAddress) => {
-  //   const newSelectedTokens = new Set(selectedTokens);
-  //   if (newSelectedTokens.has(tokenAddress)) {
-  //     newSelectedTokens.delete(tokenAddress);
-  //   } else {
-  //     newSelectedTokens.add(tokenAddress);
-  //   }
-  //   setSelectedTokens(newSelectedTokens);
-  // }
 
   const footer = (
     <>
@@ -85,6 +61,7 @@ const DetectedTokenSelectionPopover = ({
               key={index}
               token={token}
               handleTokenSelection={handleTokenSelection}
+              selectedTokens={selectedTokens}
             />
           );
         })}
@@ -94,6 +71,7 @@ const DetectedTokenSelectionPopover = ({
 };
 
 DetectedTokenSelectionPopover.propTypes = {
+  selectedTokens: PropTypes.array,
   handleTokenSelection: PropTypes.func,
   onIgnoreAll: PropTypes.func,
   onImport: PropTypes.func,

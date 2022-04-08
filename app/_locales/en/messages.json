@@ -2041,6 +2041,12 @@
   "newToMetaMask": {
     "message": "New to MetaMask?"
   },
+  "newTokensImportedMessage": {
+    "message": "You’ve successfully imported $1"
+  },
+  "newTokensImportedTitle": {
+    "message": "Token imported"
+  },
   "newTotal": {
     "message": "New Total"
   },

@@ -19,6 +19,7 @@ import {
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
+  getNewTokensImported,
 } from '../../selectors';
 
 import {
@@ -37,6 +38,7 @@ import {
   setNewCollectibleAddedMessage,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
+  setNewTokensImported,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
@@ -135,6 +137,7 @@ const mapStateToProps = (state) => {
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
+    newTokensImported: getNewTokensImported(state),
   };
 };
 
@@ -173,6 +176,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setNewCollectibleAddedMessage: (message) => {
     dispatch(setNewCollectibleAddedMessage(message));
+  },
+  setNewTokensImported: (newToken) => {
+    dispatch(setNewTokensImported(newToken));
   },
 });
 

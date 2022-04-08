@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '../../../ui/box';
@@ -13,8 +13,16 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 
-const DetectedTokenValues = ({ token, handleTokenSelection }) => {
-  const [selectToken, setSelectToken] = useState(false);
+const DetectedTokenValues = ({
+  token,
+  handleTokenSelection,
+  selectedTokens,
+}) => {
+  const [selectToken, setSelectToken] = useState(() => {
+    return Boolean(
+      selectedTokens.filter((address) => token.address === address),
+    );
+  });
   const { tokensWithBalances } = useTokenTracker([token]);
   const balanceString = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
@@ -23,9 +31,15 @@ const DetectedTokenValues = ({ token, handleTokenSelection }) => {
     token.symbol,
   );
 
+  useEffect(() => {
+    setSelectToken(
+      Boolean(selectedTokens.find(({ address }) => address === token.address)),
+    );
+  }, [selectedTokens, token.address, selectToken, setSelectToken]);
+
   const handleCheckBoxSelection = () => {
     setSelectToken(!selectToken);
-    handleTokenSelection(token.address);
+    handleTokenSelection(token);
   };
 
   return (
@@ -58,6 +72,7 @@ DetectedTokenValues.propTypes = {
     aggregators: PropTypes.array,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
+  selectedTokens: PropTypes.array,
 };
 
 export default DetectedTokenValues;
