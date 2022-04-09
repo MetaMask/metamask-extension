@@ -554,6 +554,7 @@ export default class MetaMetricsController {
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
+      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
         metamaskState,
       ),
@@ -617,6 +618,27 @@ export default class MetaMetricsController {
       .map((collectible) => collectible.address);
     const unique = [...new Set(allAddresses)];
     return unique.length;
+  }
+
+  /**
+   * @param {object} metamaskState
+   * @returns number of unique token addresses
+   */
+  _getNumberOfTokens(metamaskState) {
+    const allUniqueAddresses = Object.values(metamaskState.allTokens).reduce(
+      (result, tokensByAccountByChain) => {
+        Object.values(tokensByAccountByChain).forEach((tokensByAccount) => {
+          tokensByAccount.forEach((token) => {
+            result.add(token.address);
+          });
+        });
+
+        return result;
+      },
+      new Set(),
+    );
+
+    return allUniqueAddresses.size;
   }
 
   /**
