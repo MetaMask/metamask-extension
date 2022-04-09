@@ -34,8 +34,8 @@ const DetectedTokenDetails = ({
           handleTokenSelection={handleTokenSelection}
           selectedTokens={selectedTokens}
         />
-        <DetectedTokenAddress address={token.address} />
-        <DetectedTokenAggregators aggregatorsList={token.aggregators} />
+        <DetectedTokenAddress tokenAddress={token.address} />
+        <DetectedTokenAggregators aggregators={token.aggregators} />
       </Box>
     </Box>
   );

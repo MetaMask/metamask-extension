@@ -488,17 +488,26 @@ const state = {
       {
         address: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
         decimals: 18,
-        symbol: "LINK"
+        symbol: "LINK",
+        aggregators:[
+          "coinGecko","oneInch","paraswap","zapper","zerion"
+        ]
       },
       {
         address: "0xc00e94Cb662C3520282E6f5717214004A7f26888",
         decimals: 18,
-        symbol: "COMP"
+        symbol: "COMP",
+        aggregators:[
+          "bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"
+        ]
       },
       {
         address: "0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB",
         decimals: 18,
-        symbol: "FSW"
+        symbol: "FSW",
+        aggregators:[
+          "coinGecko","oneInch","paraswap","zapper","zerion"
+        ]
       }
     ],
     pendingTokens: {},

@@ -176,4 +176,30 @@
       margin-left: 44px;
     }
   }
+
+  &__new-tokens-imported-notification {
+    margin-bottom: 32px;
+    margin-left: 8px;
+
+    &-title,
+    &-message {
+      text-align: justify;
+    }
+
+    &-icon {
+      @include H3;
+
+      margin-right: 12px;
+      padding-top: 12px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      @include H4;
+
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 44px;
+    }
+  }
 }

@@ -12,9 +12,9 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 
-const DetectedTokenAggregators = ({ aggregatorsList }) => {
+const DetectedTokenAggregators = ({ aggregators }) => {
   const t = useI18nContext();
-  const numOfHiddenAggregators = parseInt(aggregatorsList.length, 10) - 2;
+  const numOfHiddenAggregators = parseInt(aggregators.length, 10) - 2;
   const [displayMore, setDisplayMore] = useState(false);
 
   return (
@@ -23,7 +23,7 @@ const DetectedTokenAggregators = ({ aggregatorsList }) => {
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
             <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
-              {`${aggregatorsList.slice(0, 2).join(', ')}`}
+              {`${aggregators.slice(0, 2).join(', ')}`}
               <Button
                 type="link"
                 className="detected-token-aggregators__link"
@@ -35,7 +35,7 @@ const DetectedTokenAggregators = ({ aggregatorsList }) => {
             </Typography>
           ) : (
             <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
-              {`${aggregatorsList.join(', ')}.`}
+              {`${aggregators.join(', ')}.`}
             </Typography>
           ),
         ])}
@@ -45,7 +45,7 @@ const DetectedTokenAggregators = ({ aggregatorsList }) => {
 };
 
 DetectedTokenAggregators.propTypes = {
-  aggregatorsList: PropTypes.array.isRequired,
+  aggregators: PropTypes.array.isRequired,
 };
 
 export default DetectedTokenAggregators;

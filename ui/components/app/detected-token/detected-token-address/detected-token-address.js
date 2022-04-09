@@ -17,7 +17,7 @@ import {
 
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-const DetectedTokenAddress = ({ address }) => {
+const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -31,7 +31,7 @@ const DetectedTokenAddress = ({ address }) => {
         color={COLORS.PRIMARY_DEFAULT}
         margin={[1, 2]}
       >
-        {shortenAddress(address)}
+        {shortenAddress(tokenAddress)}
       </Typography>
       <Tooltip
         position="bottom"
@@ -41,7 +41,7 @@ const DetectedTokenAddress = ({ address }) => {
           type="link"
           className="detected-token-address__copy-link"
           onClick={() => {
-            handleCopy(address);
+            handleCopy(tokenAddress);
           }}
         >
           <i className="fa fa-copy" />
@@ -52,7 +52,7 @@ const DetectedTokenAddress = ({ address }) => {
 };
 
 DetectedTokenAddress.propTypes = {
-  address: PropTypes.string,
+  tokenAddress: PropTypes.string,
 };
 
 export default DetectedTokenAddress;

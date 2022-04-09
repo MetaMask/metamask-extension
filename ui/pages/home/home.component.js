@@ -132,7 +132,7 @@ export default class Home extends PureComponent {
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
-    newTokensImported: PropTypes.array,
+    newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
   };
 
@@ -269,7 +269,7 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
-      newTokensImported = [],
+      newTokensImported,
       setNewTokensImported,
     } = this.props;
     return (
@@ -355,23 +355,33 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-        {newTokensImported.length > 0 ? (
+        {newTokensImported ? (
           <ActionableMessage
             type="success"
-            className="home__new-network-notification"
+            className="home__new-tokens-imported-notification"
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
-                <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
-                  {t('newNetworkAdded', [newTokensImported.join(', ')])}
-                </Typography>
+                <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
+                <Box>
+                  <Typography
+                    className="home__new-tokens-imported-notification-title"
+                    variant={TYPOGRAPHY.H6}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('newTokensImportedTitle')}
+                  </Typography>
+                  <Typography
+                    className="home__new-tokens-imported-notification-message"
+                    variant={TYPOGRAPHY.H7}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                  >
+                    {t('newTokensImportedMessage', [newTokensImported])}
+                  </Typography>
+                </Box>
                 <button
-                  className="fas fa-times home__new-network-notification-close"
+                  className="fas fa-times home__new-tokens-imported-notification-close"
                   title={t('close')}
-                  onClick={() => setNewTokensImported([])}
+                  onClick={() => setNewTokensImported('')}
                 />
               </Box>
             }

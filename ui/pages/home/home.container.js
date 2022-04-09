@@ -38,8 +38,8 @@ import {
   setNewCollectibleAddedMessage,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
-  setNewTokensImported,
   ///: END:ONLY_INCLUDE_IN
+  setNewTokensImported,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -177,8 +177,8 @@ const mapDispatchToProps = (dispatch) => ({
   setNewCollectibleAddedMessage: (message) => {
     dispatch(setNewCollectibleAddedMessage(message));
   },
-  setNewTokensImported: (newToken) => {
-    dispatch(setNewTokensImported(newToken));
+  setNewTokensImported: (newTokens) => {
+    dispatch(setNewTokensImported(newTokens));
   },
 });
 

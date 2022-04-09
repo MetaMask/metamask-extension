@@ -31,6 +31,8 @@ const DetectedToken = () => {
     if (unSelectedTokens.length < detectedTokens.length) {
       await dispatch(ignoreTokens(unSelectedTokens));
       await dispatch(importTokens(selectedTokens));
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
     } else {
       setUnSelectedTokens(detectedTokens);
       setSelectedTokens([]);
@@ -66,10 +68,9 @@ const DetectedToken = () => {
     if (selectedTokens.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);
     } else {
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
       await dispatch(importTokens(selectedTokens));
-      console.log(tokenSymbols);
-      setNewTokensImported(tokenSymbols);
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
       history.push(DEFAULT_ROUTE);
     }
   };
@@ -95,6 +96,7 @@ const DetectedToken = () => {
         />
       )}
       <DetectedTokenSelectionPopover
+        detectedTokens={detectedTokens}
         selectedTokens={selectedTokens}
         handleTokenSelection={handleTokenSelection}
         onImport={onImport}
