@@ -51,36 +51,6 @@ describe('Confirm Page Container Content', () => {
     };
   });
 
-  it('render ConfirmPageContainer component with simulation error', async () => {
-    const { queryByText, getByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(
-      queryByText('Transaction Error. Exception thrown in contract code.'),
-    ).not.toBeInTheDocument();
-    expect(
-      queryByText(
-        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
-      ),
-    ).toBeInTheDocument();
-    expect(queryByText('I will try anyway')).toBeInTheDocument();
-
-    const confirmButton = getByText('Confirm');
-    expect(getByText('Confirm').closest('button')).toBeDisabled();
-    fireEvent.click(confirmButton);
-    expect(props.onSubmit).toHaveBeenCalledTimes(0);
-
-    const iWillTryButton = getByText('I will try anyway');
-    fireEvent.click(iWillTryButton);
-    expect(props.setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
-
-    const cancelButton = getByText('Reject');
-    fireEvent.click(cancelButton);
-    expect(props.onCancel).toHaveBeenCalledTimes(1);
-  });
-
   it('render ConfirmPageContainer component with another error', async () => {
     props.disabled = true;
     props.errorKey = TRANSACTION_ERROR_KEY;
@@ -94,10 +64,10 @@ describe('Confirm Page Container Content', () => {
 
     expect(
       queryByText(
-        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
+        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
       ),
     ).not.toBeInTheDocument();
-    expect(queryByText('I will try anyway')).not.toBeInTheDocument();
+    expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
     expect(getByText('Confirm').closest('button')).toBeDisabled();
     expect(
       getByText('Transaction Error. Exception thrown in contract code.'),
@@ -117,13 +87,13 @@ describe('Confirm Page Container Content', () => {
 
     expect(
       queryByText(
-        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
+        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
       ),
     ).not.toBeInTheDocument();
     expect(
       queryByText('Transaction Error. Exception thrown in contract code.'),
     ).not.toBeInTheDocument();
-    expect(queryByText('I will try anyway')).not.toBeInTheDocument();
+    expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
 
     const confirmButton = getByText('Confirm');
     fireEvent.click(confirmButton);
