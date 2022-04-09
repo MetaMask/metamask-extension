@@ -419,7 +419,7 @@ class ImportToken extends Component {
       <div className="import-token__custom-token-form">
         {TOKEN_DETECTION_V2 ? (
           <ActionableMessage
-            type={isTokenDetectionSupported ? 'warning' : 'info'}
+            type={isTokenDetectionSupported ? 'warning' : 'default'}
             message={t(
               isTokenDetectionSupported
                 ? 'customTokenWarningInTokenDetectionNetwork'

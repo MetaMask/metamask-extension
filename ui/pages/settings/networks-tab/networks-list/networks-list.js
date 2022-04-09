@@ -53,13 +53,12 @@ const NetworksList = ({
         networksList={networksToRender}
         searchQueryInput={searchQuery}
       />
-      {searchedNetworksToRenderThatAreNotTestNetworks.map((network, index) => (
+      {searchedNetworksToRenderThatAreNotTestNetworks.map((network, _) => (
         <NetworksListItem
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
           selectedRpcUrl={selectedRpcUrl}
-          networkIndex={index}
           setSearchQuery={setSearchQuery}
           setSearchedNetworks={setSearchedNetworks}
         />
@@ -74,13 +73,12 @@ const NetworksList = ({
           {t('testNetworks')}
         </Typography>
       )}
-      {searchedNetworksToRenderThatAreTestNetworks.map((network, index) => (
+      {searchedNetworksToRenderThatAreTestNetworks.map((network, _) => (
         <NetworksListItem
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
           selectedRpcUrl={selectedRpcUrl}
-          networkIndex={index}
           setSearchQuery={setSearchQuery}
           setSearchedNetworks={setSearchedNetworks}
         />
