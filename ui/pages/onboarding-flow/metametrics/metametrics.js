@@ -17,7 +17,7 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',

@@ -1405,9 +1405,6 @@
   "lastConnected": {
     "message": "Huling Kumonekta"
   },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
-  },
   "learmMoreAboutGas": {
     "message": "Gusto mo bang $1 ang tungkol sa gas?"
   },
@@ -1740,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "Bago! Pag-detect ng NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Payagan ang MetaMask na awtomatikong i-detect ang mga NFT mula sa Opensea at ipakita sa iyong MetaMask wallet."
   },
   "newNetworkAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"

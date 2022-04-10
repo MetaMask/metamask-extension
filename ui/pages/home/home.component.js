@@ -13,6 +13,7 @@ import TransactionList from '../../components/app/transaction-list';
 import MenuBar from '../../components/app/menu-bar';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -24,6 +25,7 @@ import Typography from '../../components/ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
+  DISPLAY,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   COLORS,
   ///: END:ONLY_INCLUDE_IN
@@ -310,8 +312,8 @@ export default class Home extends PureComponent {
             type="success"
             className="home__new-network-notification"
             message={
-              <div className="home__new-network-notification-message">
-                <i className="fa fa-check-circle home__new-network-notification-message--icon" />
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -319,11 +321,11 @@ export default class Home extends PureComponent {
                   {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
-                  className="fas fa-times home__close"
+                  className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
                 />
-              </div>
+              </Box>
             }
           />
         ) : null}
@@ -332,8 +334,8 @@ export default class Home extends PureComponent {
             type="success"
             className="home__new-network-notification"
             message={
-              <div className="home__new-network-notification-message">
-                <i className="fa fa-check-circle home__new-network-notification-message--icon" />
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -341,11 +343,11 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
                 <button
-                  className="fas fa-times home__close"
+                  className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
                   onClick={() => setNewNetworkAdded('')}
                 />
-              </div>
+              </Box>
             }
           />
         ) : null}
