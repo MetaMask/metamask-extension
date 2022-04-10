@@ -540,6 +540,9 @@ export default class MetaMetricsController {
         (rpc) => rpc.chainId,
       ),
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
+        metamaskState,
+      ),
     };
 
     if (!this.previousTraits) {
@@ -579,6 +582,25 @@ export default class MetaMetricsController {
       }
       return validTraits;
     }, {});
+  }
+
+  /**
+   *
+   * @param {object} metamaskState
+   * @returns number of unique collectible addresses
+   */
+  _getNumberOfNFtCollection(metamaskState) {
+    const { allCollectibles } = metamaskState;
+    if (!allCollectibles) {
+      return 0;
+    }
+
+    const allAddresses = Object.values(allCollectibles)
+      .flatMap((chainCollectibles) => Object.values(chainCollectibles))
+      .flat()
+      .map((collectible) => collectible.address);
+    const unique = [...new Set(allAddresses)];
+    return unique.length;
   }
 
   /**
