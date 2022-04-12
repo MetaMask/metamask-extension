@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ImportTokenLink from '../import-token-link';
 import TokenList from '../token-list';
-import {
-  IMPORT_TOKEN_ROUTE,
-  DETECTED_TOKEN_ROUTE,
-} from '../../../helpers/constants/routes';
+import { DETECTED_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -113,19 +110,7 @@ const AssetList = ({ onClickAsset }) => {
             {t('missingToken')}
           </Typography>
         </Box>
-        <ImportTokenLink
-          onClick={() => {
-            history.push(IMPORT_TOKEN_ROUTE);
-            trackEvent({
-              event: 'Clicked "Add Token"',
-              category: EVENT.CATEGORIES.NAVIGATION,
-              properties: {
-                action: 'Token Menu',
-                legacy_event: true,
-              },
-            });
-          }}
-        />
+        <ImportTokenLink />
       </Box>
     </>
   );
