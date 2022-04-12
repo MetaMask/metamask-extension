@@ -73,7 +73,7 @@ function getValues(pendingApproval, t, actions) {
           },
           {
             element: 'a',
-            children: t('learnMore'),
+            children: t('learnMoreUpperCase'),
             key: 'learnMore-a-href',
             props: {
               href:

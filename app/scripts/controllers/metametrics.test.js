@@ -613,6 +613,32 @@ describe('MetaMetricsController', function () {
     it('should return full user traits object on first call', function () {
       const metaMetricsController = getMetaMetricsController();
       const traits = metaMetricsController._buildUserTraitsObject({
+        allCollectibles: {
+          '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
+            56: [
+              {
+                address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+                tokenId: '100',
+              },
+              {
+                address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+                tokenId: '101',
+              },
+              {
+                address: '0x7488d2ce5deb26db021285b50b661d655eb3d3d9',
+                tokenId: '99',
+              },
+            ],
+          },
+          '0xe04AB39684A24D8D4124b114F3bd6FBEB779cacA': {
+            69: [
+              {
+                address: '0x63d646bc7380562376d5de205123a57b1718184d',
+                tokenId: '14',
+              },
+            ],
+          },
+        },
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -629,6 +655,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
+        [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
       });
