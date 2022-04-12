@@ -2844,10 +2844,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/design-tokens@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.5.1.tgz#723f10bc5fe03ce14d47b1ad6190a835df62745a"
-  integrity sha512-HLXpuzQGnVPZHOvHpzOVQoe/1mvjNOTNxvAgR1na3BAUiO3NhnUxhYE2RzV0rpbc3UUUGbjVB+dceMZ4FtFfRw==
+"@metamask/design-tokens@^1.4.2":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.4.4.tgz#85a80f0ba5ff34a595bd1d879dbf4219c0fbfe7a"
+  integrity sha512-OzlUv3GSBbmVlO4EcFrkK2/InxaBMH31O2ncVabJvySc/HbhpXMEm7ZtowPqxlBI05V0WdVxSv/0MZtRkbIyXA==
 
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
@@ -2913,15 +2913,27 @@
   resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-2.1.0.tgz#c0be8e68445b7b83cf85bcc03a56cdf8e256c973"
   integrity sha512-ADuWlTUkFfN2vXlz81Bg/0BA+XRor+CdK1055p6k7H6BLIPoDKn9SBOFld9haQFuR9cKh/JYHcnlSIv5R4fUEw==
 
+<<<<<<< HEAD
 "@metamask/execution-environments@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.11.1.tgz#04bfd945a2b8b5379957917255faed0dec27b226"
   integrity sha512-E2UVccqKxzF1M6ZnrH8zqI0XO0IIGuB7fS3dUk2Ha44SDw0V/4ufqg9wCGy9H5DIRyLZQN5bDElnTLeEzedt3A==
+=======
+"@metamask/execution-environments@^0.10.6":
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.10.6.tgz#930ff056e63accf7ab7a59a28bd99064d217599c"
+  integrity sha512-6ID8vzmIiy418LqRiDKPuDl0RBhHmDMzhgyb65ia6zZNDXKhsBotF/lNMhtHlsAbD9+3XYhi/Nl6YprJxaRisA==
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
   dependencies:
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/post-message-stream" "^4.0.0"
     "@metamask/providers" "^8.1.1"
+<<<<<<< HEAD
     "@metamask/snap-types" "^0.11.1"
+=======
+    "@metamask/snap-types" "^0.10.6"
+    cross-fetch "^3.1.5"
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
     eth-rpc-errors "^4.0.3"
     pump "^3.0.0"
     ses "^0.15.15"
@@ -2932,6 +2944,7 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
+<<<<<<< HEAD
 "@metamask/iframe-execution-environment-service@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.11.1.tgz#cf3495e26c83cb6389b197797c61e55df7144934"
@@ -2942,6 +2955,19 @@
     "@metamask/post-message-stream" "^4.0.0"
     "@metamask/snap-controllers" "^0.11.1"
     "@metamask/snap-types" "^0.11.1"
+=======
+"@metamask/iframe-execution-environment-service@^0.10.6":
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.10.6.tgz#ba7e5499efba2018cef38fff916eaabbfbe1b27b"
+  integrity sha512-BZbE4+CffNmD1J7Mpvh/evvKcDuP82Jl9panIV0JKzddG8zzOi9xlGtImYf8QWjwN5zx2TyTHAb/WxA+R+nFzw==
+  dependencies:
+    "@metamask/controllers" "^26.0.0"
+    "@metamask/execution-environments" "^0.10.6"
+    "@metamask/object-multiplex" "^1.2.0"
+    "@metamask/post-message-stream" "^4.0.0"
+    "@metamask/snap-controllers" "^0.10.6"
+    "@metamask/snap-types" "^0.10.6"
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
     eth-rpc-errors "^4.0.3"
     json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^3.0.0"
@@ -2978,6 +3004,11 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
+
+"@metamask/metamask-eth-abis@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-2.1.0.tgz#316c2e72373506f1a0120b76e432760a27eb6806"
+  integrity sha512-T8LBEB0PQo0N1tZQKZ2K8BGmv+IDLcXkzt8Pn7x0YnwZD6YpCIvKqYM3iy2fJ6wFXeCvRKqpn4K6EqwnkSJAbQ==
 
 "@metamask/object-multiplex@^1.1.0", "@metamask/object-multiplex@^1.2.0":
   version "1.2.0"
@@ -3030,14 +3061,25 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
+<<<<<<< HEAD
 "@metamask/rpc-methods@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.11.1.tgz#180ce27d1d408fb5eb80edf69351611b231d4f56"
   integrity sha512-QinfBpYy6m5BikADEUNjQvHXJIrG/1eZmwJbiYh4aJL1AcjzUb2KqWIOdI4ihLJ0xEkEy3rWmDwVQDxd9AzteA==
+=======
+"@metamask/rpc-methods@^0.10.6":
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.10.6.tgz#6e91c2bf33c909e203db438effec6663da4e8692"
+  integrity sha512-cPqAQExwZGRLqtl22HUBVblr/tIAm/aI3ZMt6QKhwymwU7f/yM+4BOZB1M3+dVlhcIfX1SFFxDW3rFe+MsCksA==
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
   dependencies:
     "@metamask/controllers" "^28.0.0"
     "@metamask/key-tree" "^3.0.1"
+<<<<<<< HEAD
     "@metamask/snap-controllers" "^0.11.1"
+=======
+    "@metamask/snap-controllers" "^0.10.6"
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
     "@metamask/types" "^1.1.0"
     eth-rpc-errors "^4.0.2"
 
@@ -3064,6 +3106,7 @@
     isomorphic-fetch "^3.0.0"
     lodash "^4.17.21"
 
+<<<<<<< HEAD
 "@metamask/snap-controllers@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.11.1.tgz#00754b8ad2480f4ba5d273b9a3ec2d2251b00e78"
@@ -3071,6 +3114,15 @@
   dependencies:
     "@metamask/controllers" "^28.0.0"
     "@metamask/execution-environments" "^0.11.1"
+=======
+"@metamask/snap-controllers@^0.10.6":
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.10.6.tgz#72fc52271264c4ae8c986ce4d1a64c34505c7a8b"
+  integrity sha512-Pa8g1dBVKtjkemRXFUPDQLnP8gcVmQpSgkTMK/m7tVqUinyZX7Gufq5wuApEh1pwRjMQ2R7he/zQn7oZ4qwTJw==
+  dependencies:
+    "@metamask/controllers" "^26.0.0"
+    "@metamask/execution-environments" "^0.10.6"
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^7.0.0"
     "@metamask/post-message-stream" "4.0.0"
@@ -3092,10 +3144,17 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
+<<<<<<< HEAD
 "@metamask/snap-types@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.11.1.tgz#43ddd6397ab4119dabf8ce42725680e593735cd1"
   integrity sha512-BrB/zypZbm6GWjGK4QahrRiYChGyk+EE+JAIEx2/vhLuzx2DmoEfEi4k1ojV13Rl7VfnOFsQXuK0xZxMX5FyCA==
+=======
+"@metamask/snap-types@^0.10.6":
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.10.6.tgz#83e3eab797829a9f31906a27fa967a8096e5b704"
+  integrity sha512-6eSc9hHhC+X133Nw6/WSUy0RWRipdOF3NBKgGFYJxCpvhkY4jGxQ1HAKDUZRzZ3eSewsmQ4hhhIQ+zczj0Subw==
+>>>>>>> 7f49d07c9 (reverting linked controller repo)
   dependencies:
     "@metamask/controllers" "^28.0.0"
 
