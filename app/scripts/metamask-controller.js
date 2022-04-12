@@ -240,6 +240,8 @@ export default class MetamaskController extends EventEmitter {
     });
     process.env.TOKEN_DETECTION_V2
       ? (this.assetsContractController = new AssetsContractController({
+          onPreferencesStateChange: (listener) =>
+            this.preferencesController.store.subscribe(listener),
           onNetworkStateChange: (cb) =>
             this.networkController.store.subscribe((networkState) => {
               const modifiedNetworkState = {
