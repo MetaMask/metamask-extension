@@ -166,7 +166,7 @@
  *  we identify the networks_added trait
  * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
  *  change, we identify the new number_of_accounts trait
- * @property {'number_of_nft_collections'} [NUMBER_OF_NFT_COLLECTIONS] - user
+ * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
  *  trait for number of unique NFT addresses
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
