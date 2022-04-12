@@ -82,7 +82,7 @@ export default function AddCollectible() {
     );
 
     trackEvent({
-      event: 'Collectible Added',
+      event: 'Token Added',
       category: 'Wallet',
       sensitiveProperties: {
         token_contract_address: address,
