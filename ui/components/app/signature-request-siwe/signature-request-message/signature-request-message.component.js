@@ -15,7 +15,7 @@ export default class SignatureRequestMessage extends PureComponent {
       <div className="siwe-message--node">
         {data.map(({ label, value }, i) => (
           <div className="siwe-message--param" key={i}>
-            <div className="label">{label}</div>
+            <div className="label">{label}:</div>
             <div className="value">{`${value}`}</div>
           </div>
         ))}

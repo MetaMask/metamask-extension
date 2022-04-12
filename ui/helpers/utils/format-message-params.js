@@ -24,35 +24,35 @@ export const formatParams = (parsedMessage) => {
 
     if (statement) {
       output.push({
-        label: 'Message',
+        label: 'Message:',
         value: statement,
       });
     }
 
     if (uri) {
       output.push({
-        label: 'URI',
+        label: 'URI:',
         value: uri,
       });
     }
 
     if (version) {
       output.push({
-        label: 'Version',
+        label: 'Version:',
         value: version,
       });
     }
 
     if (chainId) {
       output.push({
-        label: 'Chain ID',
+        label: 'Chain ID:',
         value: chainId,
       });
     }
 
     if (nonce) {
       output.push({
-        label: 'Nonce',
+        label: 'Nonce:',
         value: nonce,
       });
     }
@@ -88,11 +88,12 @@ export const formatParams = (parsedMessage) => {
     }
 
     if (resources && resources.length > 0) {
-      output.push(
-        ...resources.map((resource, index) => {
-          return { label: `Resources: ${index + 1}`, value: resource };
-        }),
-      );
+      output.push({
+        label: `Resources: ${resources.length}`,
+        value: resources
+          .reduce((previous, resource) => `${previous}${resource}\n`, '')
+          .trim(),
+      });
     }
 
     return output;

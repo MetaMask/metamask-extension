@@ -73,7 +73,7 @@ export default function SignatureRequestSIWE({
           isSIWEDomainValid ? onSign : () => setIsShowingDomainWarning(true)
         }
         cancelText={t('cancel')}
-        submitText={t('sign')}
+        submitText={t('signin')}
       />
       {isShowingDomainWarning && (
         <Popover
@@ -88,7 +88,7 @@ export default function SignatureRequestSIWE({
               cancelText={t('cancel')}
               cancelButtonType="default"
               onSubmit={onSign}
-              submitText={t('sign')}
+              submitText={t('confirm')}
               submitButtonType="danger-primary"
               disabled={!agreeToDomainWarning}
             />
