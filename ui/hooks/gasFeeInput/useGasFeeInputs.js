@@ -95,13 +95,19 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
-  const [retryTxMeta, setRetryTxMeta] = useState({
+  const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
     id: _transaction?.id,
     userFeeLevel: _transaction?.userFeeLevel,
     originalGasEstimate: _transaction?.originalGasEstimate,
     userEditedGasLimit: _transaction?.userEditedGasLimit,
-  });
+  };
+
+  if (_transaction?.previousGas) {
+    initialRetryTxMeta.previousGas = _transaction?.previousGas;
+  }
+
+  const [retryTxMeta, setRetryTxMeta] = useState(initialRetryTxMeta);
 
   const transaction = editGasModeIsSpeedUpOrCancel(editGasMode)
     ? retryTxMeta
