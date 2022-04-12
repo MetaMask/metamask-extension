@@ -1544,14 +1544,6 @@ export default class MetamaskController extends EventEmitter {
         collectiblesController,
       ),
 
-      getERC721TokenURI: collectiblesController.getERC721TokenURI.bind(
-        collectiblesController,
-      ),
-
-      getERC1155TokenURI: collectiblesController.getERC1155TokenURI.bind(
-        collectiblesController,
-      ),
-
       // AddressController
       setAddressBook: addressBookController.set.bind(addressBookController),
       removeFromAddressBook: addressBookController.delete.bind(

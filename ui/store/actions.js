@@ -1502,18 +1502,6 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export function getERC721TokenURI(address, tokenID) {
-  return async () => {
-    return await promisifiedBackground.getERC721TokenURI(address, tokenID);
-  };
-}
-
-export function getERC1155TokenURI(address, tokenID) {
-  return async () => {
-    return await promisifiedBackground.getERC1155TokenURI(address, tokenID);
-  };
-}
-
 export function addCollectibleVerifyOwnership(
   address,
   tokenID,
