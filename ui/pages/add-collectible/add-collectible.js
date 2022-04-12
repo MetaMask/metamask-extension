@@ -17,6 +17,8 @@ import ActionableMessage from '../../components/ui/actionable-message';
 import PageContainer from '../../components/ui/page-container';
 import {
   addCollectibleVerifyOwnership,
+  getERC1155TokenURI,
+  getERC721TokenURI,
   removeToken,
   setNewCollectibleAddedMessage,
 } from '../../store/actions';
@@ -25,6 +27,8 @@ import { getIsMainnet, getUseCollectibleDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 
 export default function AddCollectible() {
   const t = useI18nContext();
@@ -50,6 +54,29 @@ export default function AddCollectible() {
   const [collectibleAddFailed, setCollectibleAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
+  const getCollectibleStandard = async () => {
+    // try ERC721 uri
+    let tokenStandard;
+    try {
+      const result = await dispatch(getERC721TokenURI(address, tokenId));
+      if (result) {
+        tokenStandard = TOKEN_STANDARDS.ERC721;
+      }
+    } catch {
+      // try ERC1155 uri
+      try {
+        const result = await dispatch(getERC1155TokenURI(address, tokenId));
+        if (result) {
+          tokenStandard = TOKEN_STANDARDS.ERC1155;
+        }
+      } catch (err) {
+        tokenStandard = '';
+      }
+    }
+
+    return tokenStandard;
+  };
+
   const handleAddCollectible = async () => {
     try {
       await dispatch(
@@ -68,13 +95,20 @@ export default function AddCollectible() {
     }
     dispatch(setNewCollectibleAddedMessage('success'));
 
+    const tokenStandard = await getCollectibleStandard(
+      address,
+      tokenId.toString(),
+    );
+
     trackEvent({
       event: 'Collectible Added',
       category: 'Wallet',
       sensitiveProperties: {
         token_contract_address: address,
         tokenId: tokenId.toString(),
-        source: 'manual',
+        asset_type: ASSET_TYPES.COLLECTIBLE,
+        token_standard: tokenStandard,
+        source: 'custom',
       },
     });
 
