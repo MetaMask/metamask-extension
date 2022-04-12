@@ -690,7 +690,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
-        [TRAITS.NUMBER_OF_TOKENS]: 3,
+        [TRAITS.NUMBER_OF_TOKENS]: 5,
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
       });

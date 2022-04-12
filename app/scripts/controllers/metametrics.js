@@ -625,20 +625,12 @@ export default class MetaMetricsController {
    * @returns number of unique token addresses
    */
   _getNumberOfTokens(metamaskState) {
-    const allUniqueAddresses = Object.values(metamaskState.allTokens).reduce(
-      (result, tokensByAccountByChain) => {
-        Object.values(tokensByAccountByChain).forEach((tokensByAccount) => {
-          tokensByAccount.forEach((token) => {
-            result.add(token.address);
-          });
-        });
-
-        return result;
+    return Object.values(metamaskState.allTokens).reduce(
+      (result, accountsByChain) => {
+        return result + sum(Object.values(accountsByChain).map(size));
       },
-      new Set(),
+      0,
     );
-
-    return allUniqueAddresses.size;
   }
 
   /**
