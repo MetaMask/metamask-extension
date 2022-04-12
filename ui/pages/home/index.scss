@@ -178,8 +178,15 @@
   }
 
   &__new-tokens-imported-notification {
-    margin-bottom: 32px;
+    margin-bottom: 4px;
     margin-left: 8px;
+    padding: 8px;
+
+    @media screen and (min-width: $break-large) {
+      margin-bottom: 50px;
+      margin-right: 8px;
+      left: 70%;
+    }
 
     &-title,
     &-message {
@@ -195,11 +202,9 @@
     }
 
     &-close {
-      @include H4;
-
-      color: var(--color-icon-default);
+      color: var(--color-success-default);
       background: none;
-      margin-left: 44px;
+      margin-left: 32px;
     }
   }
 }
