@@ -164,15 +164,15 @@ export function useTokensToSearch({
         tokenList,
         useTokenDetection,
       );
-      if (memoizedTopTokens[token.address.toLowerCase()]) {
-        tokensToSearchBuckets.top[
-          memoizedTopTokens[token.address.toLowerCase()].index
-        ] = renderableDataToken;
-      } else if (
+      if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
         usersTokensAddressMap[token.address.toLowerCase()]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
+      } else if (memoizedTopTokens[token.address.toLowerCase()]) {
+        tokensToSearchBuckets.top[
+          memoizedTopTokens[token.address.toLowerCase()].index
+        ] = renderableDataToken;
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);
       }
@@ -185,8 +185,8 @@ export function useTokensToSearch({
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
     return [
-      ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.owned,
+      ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.others,
     ];
   }, [
