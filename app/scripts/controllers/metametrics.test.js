@@ -669,8 +669,10 @@ describe('MetaMetricsController', function () {
           { chainId: ROPSTEN_CHAIN_ID },
         ],
         ledgerTransportType: 'web-hid',
+        openSeaEnabled: true,
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        useCollectibleDetection: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -679,12 +681,15 @@ describe('MetaMetricsController', function () {
           { chainId: ROPSTEN_CHAIN_ID },
         ],
         ledgerTransportType: 'web-hid',
+        openSeaEnabled: false,
         identities: [{}, {}, {}],
         threeBoxSyncingAllowed: false,
+        useCollectibleDetection: false,
       });
 
       assert.deepEqual(updatedTraits, {
         [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
+        [TRAITS.OPENSEA_API_ENABLED]: false,
       });
     });
 
@@ -696,8 +701,10 @@ describe('MetaMetricsController', function () {
           { chainId: ROPSTEN_CHAIN_ID },
         ],
         ledgerTransportType: 'web-hid',
+        openSeaEnabled: true,
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        useCollectibleDetection: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -706,8 +713,10 @@ describe('MetaMetricsController', function () {
           { chainId: ROPSTEN_CHAIN_ID },
         ],
         ledgerTransportType: 'web-hid',
+        openSeaEnabled: true,
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        useCollectibleDetection: true,
       });
 
       assert.equal(updatedTraits, null);
