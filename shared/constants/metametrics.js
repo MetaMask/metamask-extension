@@ -162,6 +162,8 @@
  * identify the networks_added trait
  * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we
  * identify the new number_of_accounts trait
+ * @property {number_of_nft_collections} [NUMBER_OF_NFT_COLLECTIONS] - user trait for number of
+ * unique NFT addresses
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
  */
@@ -173,9 +175,10 @@
 
 export const TRAITS = {
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
-  THREE_BOX_ENABLED: 'three_box_enabled',
-  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NETWORKS_ADDED: 'networks_added',
+  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
+  NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  THREE_BOX_ENABLED: 'three_box_enabled',
 };
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
