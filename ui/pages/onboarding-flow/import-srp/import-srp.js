@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { ethers } from 'ethers';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   TwoStepProgressBar,
@@ -16,33 +14,45 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
-import { clearClipboard } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import SrpInput from '../../../components/app/srp-input';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
-  const [revealSRP, setRevealSRP] = useState(false);
-  const [error, setError] = useState('');
   const history = useHistory();
   const t = useI18nContext();
-  const { isValidMnemonic } = ethers.utils;
 
-  const parseSeedPhrase = (seedPhrase) =>
-    (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || '';
-
-  const handleSecretRecoveryPhraseChange = (recoveryPhrase) => {
-    setError('');
-    if (recoveryPhrase) {
-      const parsedSecretRecoveryPhrase = parseSeedPhrase(recoveryPhrase);
-      const wordCount = parsedSecretRecoveryPhrase.split(/\s/u).length;
-      if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
-        setError(t('seedPhraseReq'));
-      } else if (!isValidMnemonic(parsedSecretRecoveryPhrase)) {
-        setError(t('invalidSeedPhrase'));
-      }
+  /**
+   * Function checks if the button is disabled or enabled
+   *
+   * If secretRecoveryPhrase.length = 0 button will be disabled
+   * If we choose "I have 12-word phrase" in Dropdown component than,
+   * secretRecoveryPhrase.length = 11 and the button will be disabled
+   * If we choose "I have 15-word phrase" in Dropdown component than,
+   * secretRecoveryPhrase.length = 14 and the button will be disabled
+   * If we choose "I have 18-word phrase" in Dropdown component than,
+   * secretRecoveryPhrase.length = 14 and the button will be disabled
+   * If we choose "I have 21-word phrase" in Dropdown component than,
+   * secretRecoveryPhrase.length = 20 and the button will be disabled
+   * If we choose "I have 24-word phrase" in Dropdown component than,
+   * secretRecoveryPhrase.length = 23 and the button will be disabled
+   */
+  const checkButtonVisibility = () => {
+    if (secretRecoveryPhrase.length === 0) {
+      return true;
+    } else if (secretRecoveryPhrase.length === 11) {
+      return true;
+    } else if (secretRecoveryPhrase.length === 14) {
+      return true;
+    } else if (secretRecoveryPhrase.length === 17) {
+      return true;
+    } else if (secretRecoveryPhrase.length === 20) {
+      return true;
+    } else if (secretRecoveryPhrase.length === 23) {
+      return true;
     }
-    setSecretRecoveryPhrase(recoveryPhrase);
+    return false;
   };
 
   return (
@@ -50,10 +60,12 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       <TwoStepProgressBar stage={twoStepStages.RECOVERY_PHRASE_CONFIRM} />
       <div className="import-srp__header">
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('importExistingWalletTitle')}
+          {t('accessYourWalletWithSRP')}
         </Typography>
+      </div>
+      <div className="import-srp__description">
         <Typography variant={TYPOGRAPHY.H4}>
-          {t('importExistingWalletDescription', [
+          {t('accessYourWalletWithSRPDescription', [
             <a
               key="learnMore"
               type="link"
@@ -68,45 +80,20 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       </div>
       <div className="import-srp__actions">
         <Box textAlign={TEXT_ALIGN.LEFT}>
-          <Typography variant={TYPOGRAPHY.H4}>
-            {t('secretRecoveryPhrase')}
-          </Typography>
-
-          <div className="srp-text-area">
-            <button onClick={() => setRevealSRP(!revealSRP)}>
-              <i
-                className={`far fa-eye${revealSRP ? '-slash' : ''}`}
-                style={{ color: 'var(--color-icon-default' }}
-              />
-            </button>
-            <textarea
-              data-testid="import-srp-text"
-              className={classnames('srp-text-area__textarea', {
-                'srp-text-area__textarea--blur': !revealSRP,
-                'srp-text-area__textarea--error': error,
-              })}
-              onChange={({ target: { value } }) =>
-                handleSecretRecoveryPhraseChange(value)
-              }
-              onPaste={clearClipboard}
-              autoComplete="off"
-              autoCorrect="off"
-            />
-            {error && (
-              <span className="srp-text-area__textarea__error-message">
-                {error}
-              </span>
-            )}
-          </div>
+          <SrpInput
+            onChange={setSecretRecoveryPhrase}
+            srpText={t('typeYourSRP')}
+          />
           <Button
             type="primary"
             data-testid="import-srp-confirm"
             large
+            className="import-srp__confirm-button"
             onClick={() => {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
             }}
-            disabled={error || secretRecoveryPhrase.length === 0}
+            disabled={checkButtonVisibility()}
           >
             {t('confirmRecoveryPhrase')}
           </Button>

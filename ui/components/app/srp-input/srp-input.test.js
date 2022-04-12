@@ -44,7 +44,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       await waitFor(() => getByText(enLocale.secretRecoveryPhrase.message));
 
@@ -614,7 +617,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByText, queryByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       await waitFor(() => getByText(enLocale.secretRecoveryPhrase.message));
 

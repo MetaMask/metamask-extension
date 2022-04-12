@@ -8,6 +8,18 @@
 
 ul.two-steps {
   margin: 0 auto;
+
+  @media screen and (max-width: 349px) {
+    margin-inline-start: -110px;
+  }
+
+  @media screen and (min-width: 350px) and (max-width: 460px) {
+    margin-inline-start: -80px;
+  }
+
+  @media screen and (min-width: 461px) and (max-width: $break-small) {
+    margin-inline-start: -30px;
+  }
 }
 
 .progressbar li {
