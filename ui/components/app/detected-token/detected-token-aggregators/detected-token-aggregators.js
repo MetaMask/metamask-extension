@@ -22,7 +22,11 @@ const DetectedTokenAggregators = ({ aggregators }) => {
       <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
-            <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              fontWeight={FONT_WEIGHT.NORMAL}
+              key="detected-token-aggrgators-with-more"
+            >
               {`${aggregators.slice(0, 2).join(', ')}`}
               <Button
                 type="link"
@@ -34,7 +38,11 @@ const DetectedTokenAggregators = ({ aggregators }) => {
               </Button>
             </Typography>
           ) : (
-            <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              fontWeight={FONT_WEIGHT.NORMAL}
+              key="detected-token-aggrgators-without-more"
+            >
               {`${aggregators.join(', ')}.`}
             </Typography>
           ),
