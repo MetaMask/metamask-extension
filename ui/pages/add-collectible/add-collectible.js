@@ -55,7 +55,6 @@ export default function AddCollectible() {
   const [disabled, setDisabled] = useState(true);
   const [collectibleAddFailed, setCollectibleAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
-  const selectedAddress = useSelector(getSelectedAddress);
 
   const handleAddCollectible = async () => {
     try {
@@ -77,7 +76,7 @@ export default function AddCollectible() {
 
     const tokenDetails = await getTokenStandardAndDetails(
       address,
-      selectedAddress,
+      null,
       tokenId.toString(),
     );
 
