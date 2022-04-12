@@ -534,7 +534,7 @@ export default class MetaMetricsController {
 
   /**
    * This method generates the MetaMetrics user traits object, omitting any
-   * traits that have not changes since the last invocation of this method.
+   * traits that have not changed since the last invocation of this method.
    *
    * @param {object} metamaskState - Full metamask state object.
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
