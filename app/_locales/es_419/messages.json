@@ -1319,13 +1319,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
   },
-  "importExistingWalletDescription": {
-    "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importar la cartera existente con la frase secreta de recuperación"
-  },
   "importMyWallet": {
     "message": "Importar Mi cartera"
   },
