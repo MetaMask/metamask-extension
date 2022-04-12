@@ -22,18 +22,6 @@
     padding: 32px;
     border: 1px solid var(--color-border-muted);
     border-radius: 20px;
-
-    @media screen and (max-width: 349px) {
-      border: none;
-    }
-
-    @media screen and (min-width: 350px) and (max-width: 460px) {
-      border: none;
-    }
-
-    @media screen and (min-width: 461px) and (max-width: $break-small) {
-      border: none;
-    }
   }
 
   &__twitter-button {
