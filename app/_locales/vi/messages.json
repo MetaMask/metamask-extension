@@ -2462,9 +2462,6 @@
   "signed": {
     "message": "Đã ký"
   },
-  "simulationErrorMessage": {
-    "message": "Giao dịch này có khả năng thất bại. Việc cố gắng thực hiện sẽ được cho là gây tốn kém nhưng lại không thành công và không được khuyến khích."
-  },
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
   },
@@ -3129,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "Thử lại"
-  },
-  "tryAnywayOption": {
-    "message": "Tôi vẫn sẽ thử"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"
