@@ -2879,9 +2879,6 @@
   "signed": {
     "message": "Signed"
   },
-  "simulationErrorMessage": {
-    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
-  },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
@@ -3756,9 +3753,6 @@
   },
   "tryAgain": {
     "message": "Try again"
-  },
-  "tryAnywayOption": {
-    "message": "I will try anyway"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
