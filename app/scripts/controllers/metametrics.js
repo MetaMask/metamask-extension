@@ -554,11 +554,11 @@ export default class MetaMetricsController {
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
-      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
         metamaskState,
       ),
+      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
+      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
     };
 
     if (!this.previousTraits) {
