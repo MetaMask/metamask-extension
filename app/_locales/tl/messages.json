@@ -2465,9 +2465,6 @@
   "signed": {
     "message": "Nilagdaan"
   },
-  "simulationErrorMessage": {
-    "message": "Inaasahang mabibigo ang transaksyong ito. Ang pagsisikap na isagawa ito ay inaasahang magastos ngunit nabigo, at hindi inirerekomenda."
-  },
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
   },
@@ -3132,9 +3129,6 @@
   },
   "tryAgain": {
     "message": "Subukan ulit"
-  },
-  "tryAnywayOption": {
-    "message": "Susubukan ko pa rin"
   },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"

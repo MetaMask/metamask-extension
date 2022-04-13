@@ -2517,9 +2517,6 @@
   "signed": {
     "message": "Firmado"
   },
-  "simulationErrorMessage": {
-    "message": "Se anticipa que esta transacción falle. En caso de intentar ejecutarla, se anticipa que eso sea costoso y a la vez falle, y por lo tanto no se recomienda."
-  },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
@@ -3190,9 +3187,6 @@
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
-  },
-  "tryAnywayOption": {
-    "message": "Lo intentaré de todos modos"
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"

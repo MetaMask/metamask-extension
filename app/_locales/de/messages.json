@@ -2462,9 +2462,6 @@
   "signed": {
     "message": "Unterschrieben"
   },
-  "simulationErrorMessage": {
-    "message": "Diese Transaktion wird voraussichtlich fehlschlagen. Der Versuch, sie auszuführen, wird voraussichtlich teuer aber fehlschlagen und wird nicht empfohlen."
-  },
   "simulationErrorMessageV2": {
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Vertrag geben und diese Transaktion könnte fehlschlagen."
   },
@@ -3132,9 +3129,6 @@
   },
   "tryAgain": {
     "message": "Erneut versuchen"
-  },
-  "tryAnywayOption": {
-    "message": "Ich werde es trotzdem versuchen"
   },
   "turnOnTokenDetection": {
     "message": "Erweiterte Token-Erkennung aktivieren"
