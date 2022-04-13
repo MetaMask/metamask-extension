@@ -1,4 +1,4 @@
-import { merge, omit, omitBy } from 'lodash';
+import { isEqual, merge, omit, omitBy, pickBy } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { generateUUID } from 'pubnub';
@@ -6,6 +6,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
@@ -304,150 +305,6 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Build the context object to attach to page and track events.
-   *
-   * @private
-   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
-   *  the notification window.
-   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
-   *  view of the extension. Defaults to the background-process object.
-   * @returns {MetaMetricsContext}
-   */
-  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
-    return {
-      app: {
-        name: 'MetaMask Extension',
-        version: this.version,
-      },
-      userAgent: window.navigator.userAgent,
-      page,
-      referrer,
-    };
-  }
-
-  /**
-   * Build's the event payload, processing all fields into a format that can be
-   * fed to Segment's track method
-   *
-   * @private
-   * @param {
-   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
-   * } rawPayload - raw payload provided to trackEvent
-   * @returns {SegmentEventPayload} formatted event payload for segment
-   */
-  _buildEventPayload(rawPayload) {
-    const {
-      event,
-      properties,
-      revenue,
-      value,
-      currency,
-      category,
-      page,
-      referrer,
-      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-    } = rawPayload;
-    return {
-      event,
-      properties: {
-        // These values are omitted from properties because they have special meaning
-        // in segment. https://segment.com/docs/connections/spec/track/#properties.
-        // to avoid accidentally using these inappropriately, you must add them as top
-        // level properties on the event payload. We also exclude locale to prevent consumers
-        // from overwriting this context level property. We track it as a property
-        // because not all destinations map locale from context.
-        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
-        revenue,
-        value,
-        currency,
-        category,
-        network: properties?.network ?? this.network,
-        locale: this.locale,
-        chain_id: properties?.chain_id ?? this.chainId,
-        environment_type: environmentType,
-      },
-      context: this._buildContext(referrer, page),
-    };
-  }
-
-  /**
-   * Perform validation on the payload and update the id type to use before
-   * sending to Segment. Also examines the options to route and handle the
-   * event appropriately.
-   *
-   * @private
-   * @param {SegmentEventPayload} payload - properties to attach to event
-   * @param {MetaMetricsEventOptions} [options] - options for routing and
-   *  handling the event
-   * @returns {Promise<void>}
-   */
-  _track(payload, options) {
-    const {
-      isOptIn,
-      metaMetricsId: metaMetricsIdOverride,
-      matomoEvent,
-      flushImmediately,
-    } = options || {};
-    let idType = 'userId';
-    let idValue = this.state.metaMetricsId;
-    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
-    // This is carried over from the old implementation, and will likely need
-    // to be updated to work with the new tracking plan. I think we should use
-    // a config setting for this instead of trying to match the event name
-    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
-    if (isSendFlow) {
-      excludeMetaMetricsId = true;
-    }
-    // If we are tracking sensitive data we will always use the anonymousId
-    // property as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from
-    // associating potentially identifiable information with a specific id.
-    // During the opt in flow we will track all events, but do so with the
-    // anonymous id. The one exception to that rule is after the user opts in
-    // to MetaMetrics. When that happens we receive back the user's new
-    // MetaMetrics id before it is fully persisted to state. To avoid a race
-    // condition we explicitly pass the new id to the track method. In that
-    // case we will track the opt in event to the user's id. In all other cases
-    // we use the metaMetricsId from state.
-    if (excludeMetaMetricsId || (isOptIn && !metaMetricsIdOverride)) {
-      idType = 'anonymousId';
-      idValue = METAMETRICS_ANONYMOUS_ID;
-    } else if (isOptIn && metaMetricsIdOverride) {
-      idValue = metaMetricsIdOverride;
-    }
-    payload[idType] = idValue;
-
-    // If this is an event on the old matomo schema, add a key to the payload
-    // to designate it as such
-    if (matomoEvent === true) {
-      payload.properties.legacy_event = true;
-    }
-
-    // Promises will only resolve when the event is sent to segment. For any
-    // event that relies on this promise being fulfilled before performing UI
-    // updates, or otherwise delaying user interaction, supply the
-    // 'flushImmediately' flag to the trackEvent method.
-    return new Promise((resolve, reject) => {
-      const callback = (err) => {
-        if (err) {
-          // The error that segment gives us has some manipulation done to it
-          // that seemingly breaks with lockdown enabled. Creating a new error
-          // here prevents the system from freezing when the network request to
-          // segment fails for any reason.
-          const safeError = new Error(err.message);
-          safeError.stack = err.stack;
-          return reject(safeError);
-        }
-        return resolve();
-      };
-
-      this.segment.track(payload, callback);
-      if (flushImmediately) {
-        this.segment.flush();
-      }
-    });
-  }
-
-  /**
    * track a page view with Segment
    *
    * @param {MetaMetricsPagePayload} payload - details of the page viewed
@@ -572,5 +429,186 @@ export default class MetaMetricsController {
         }`,
       );
     }
+  }
+
+  handleMetaMaskStateUpdate(newState) {
+    const userTraits = this._buildUserTraitsObject(newState);
+    if (userTraits) {
+      // this.identify(userTraits);
+    }
+  }
+
+  /** PRIVATE METHODS */
+
+  /**
+   * Build the context object to attach to page and track events.
+   *
+   * @private
+   * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
+   *  the notification window.
+   * @param {Pick<MetaMetricsContext, 'page'>} [page] - page object describing the current
+   *  view of the extension. Defaults to the background-process object.
+   * @returns {MetaMetricsContext}
+   */
+  _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    return {
+      app: {
+        name: 'MetaMask Extension',
+        version: this.version,
+      },
+      userAgent: window.navigator.userAgent,
+      page,
+      referrer,
+    };
+  }
+
+  /**
+   * Build's the event payload, processing all fields into a format that can be
+   * fed to Segment's track method
+   *
+   * @private
+   * @param {
+   *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
+   * } rawPayload - raw payload provided to trackEvent
+   * @returns {SegmentEventPayload} formatted event payload for segment
+   */
+  _buildEventPayload(rawPayload) {
+    const {
+      event,
+      properties,
+      revenue,
+      value,
+      currency,
+      category,
+      page,
+      referrer,
+      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+    } = rawPayload;
+    return {
+      event,
+      properties: {
+        // These values are omitted from properties because they have special meaning
+        // in segment. https://segment.com/docs/connections/spec/track/#properties.
+        // to avoid accidentally using these inappropriately, you must add them as top
+        // level properties on the event payload. We also exclude locale to prevent consumers
+        // from overwriting this context level property. We track it as a property
+        // because not all destinations map locale from context.
+        ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
+        revenue,
+        value,
+        currency,
+        category,
+        network: properties?.network ?? this.network,
+        locale: this.locale,
+        chain_id: properties?.chain_id ?? this.chainId,
+        environment_type: environmentType,
+      },
+      context: this._buildContext(referrer, page),
+    };
+  }
+
+  _buildUserTraitsObject(metamaskState) {
+    const currentTraits = {
+      [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
+      [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
+        (rpc) => rpc.chainId,
+      ),
+      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+    };
+
+    if (!this.previousTraits) {
+      this.previousTraits = currentTraits;
+      return currentTraits;
+    }
+
+    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+      const updates = pickBy(
+        currentTraits,
+        (v, k) => !isEqual(this.previousTraits[k], v),
+      );
+      this.previousTraits = currentTraits;
+      return updates;
+    }
+
+    return null;
+  }
+
+  /**
+   * Perform validation on the payload and update the id type to use before
+   * sending to Segment. Also examines the options to route and handle the
+   * event appropriately.
+   *
+   * @private
+   * @param {SegmentEventPayload} payload - properties to attach to event
+   * @param {MetaMetricsEventOptions} [options] - options for routing and
+   *  handling the event
+   * @returns {Promise<void>}
+   */
+  _track(payload, options) {
+    const {
+      isOptIn,
+      metaMetricsId: metaMetricsIdOverride,
+      matomoEvent,
+      flushImmediately,
+    } = options || {};
+    let idType = 'userId';
+    let idValue = this.state.metaMetricsId;
+    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
+    // This is carried over from the old implementation, and will likely need
+    // to be updated to work with the new tracking plan. I think we should use
+    // a config setting for this instead of trying to match the event name
+    const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
+    if (isSendFlow) {
+      excludeMetaMetricsId = true;
+    }
+    // If we are tracking sensitive data we will always use the anonymousId
+    // property as well as our METAMETRICS_ANONYMOUS_ID. This prevents us from
+    // associating potentially identifiable information with a specific id.
+    // During the opt in flow we will track all events, but do so with the
+    // anonymous id. The one exception to that rule is after the user opts in
+    // to MetaMetrics. When that happens we receive back the user's new
+    // MetaMetrics id before it is fully persisted to state. To avoid a race
+    // condition we explicitly pass the new id to the track method. In that
+    // case we will track the opt in event to the user's id. In all other cases
+    // we use the metaMetricsId from state.
+    if (excludeMetaMetricsId || (isOptIn && !metaMetricsIdOverride)) {
+      idType = 'anonymousId';
+      idValue = METAMETRICS_ANONYMOUS_ID;
+    } else if (isOptIn && metaMetricsIdOverride) {
+      idValue = metaMetricsIdOverride;
+    }
+    payload[idType] = idValue;
+
+    // If this is an event on the old matomo schema, add a key to the payload
+    // to designate it as such
+    if (matomoEvent === true) {
+      payload.properties.legacy_event = true;
+    }
+
+    // Promises will only resolve when the event is sent to segment. For any
+    // event that relies on this promise being fulfilled before performing UI
+    // updates, or otherwise delaying user interaction, supply the
+    // 'flushImmediately' flag to the trackEvent method.
+    return new Promise((resolve, reject) => {
+      const callback = (err) => {
+        if (err) {
+          // The error that segment gives us has some manipulation done to it
+          // that seemingly breaks with lockdown enabled. Creating a new error
+          // here prevents the system from freezing when the network request to
+          // segment fails for any reason.
+          const safeError = new Error(err.message);
+          safeError.stack = err.stack;
+          return reject(safeError);
+        }
+        return resolve();
+      };
+
+      this.segment.track(payload, callback);
+      if (flushImmediately) {
+        this.segment.flush();
+      }
+    });
   }
 }

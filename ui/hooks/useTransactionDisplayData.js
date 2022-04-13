@@ -11,7 +11,6 @@ import {
   getTokenValueParam,
 } from '../helpers/utils/token-util';
 import {
-  isEqualCaseInsensitive,
   formatDateWithYearContext,
   shortenAddress,
   stripHttpSchemes,
@@ -28,6 +27,7 @@ import {
   TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';

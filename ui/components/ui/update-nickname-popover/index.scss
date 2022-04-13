@@ -8,7 +8,7 @@
     width: auto;
 
     .popover-header {
-      border-bottom: 1px solid #d2d8dd;
+      border-bottom: 1px solid var(--color-border-muted);
       margin-bottom: 16px;
       border-radius: 10px;
     }
@@ -42,7 +42,7 @@
     &__address {
       margin-top: 8px;
       font-size: 13px;
-      color: #bbc0c5;
+      color: var(--color-text-alternative);
       margin-bottom: 16px;
       overflow-wrap: break-word;
     }
@@ -51,13 +51,13 @@
     &__label--capitalized {
       text-transform: capitalize;
       margin-top: 16px;
-      color: #24292e;
+      color: var(--color-text-default);
       font-size: 14px;
     }
 
     &__nickname-label {
       margin-bottom: 8px;
-      color: #24292e;
+      color: var(--color-text-default);
       font-size: 14px;
     }
   }

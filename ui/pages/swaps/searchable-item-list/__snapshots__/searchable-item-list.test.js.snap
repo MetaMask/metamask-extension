@@ -3,7 +3,6 @@
 exports[`SearchableItemList renders the component with initial props 1`] = `
 <div
   class="MuiFormControl-root MuiTextField-root searchable-item-list__search MuiFormControl-fullWidth"
-  data-testid="search-list-items"
 >
   <div
     class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused TextField-inputFocused-11 MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedStart"
@@ -12,17 +11,15 @@ exports[`SearchableItemList renders the component with initial props 1`] = `
       class="MuiInputAdornment-root MuiInputAdornment-positionStart"
       style="margin-right: 12px;"
     >
-      <img
-        alt=""
-        height="17"
-        src="images/search.svg"
-        width="17"
+      <i
+        class="fa fa-search fa-lg"
       />
     </div>
     <input
       aria-invalid="false"
       autocomplete="off"
       class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedStart"
+      data-testid="search-list-items"
       dir="auto"
       type="text"
       value=""

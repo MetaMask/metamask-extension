@@ -1,7 +1,7 @@
 .new-account-info-link {
   cursor: pointer;
   text-decoration: underline;
-  color: var(--primary-blue);
+  color: var(--color-primary-default);
   margin-inline-start: 4px;
 }
 
@@ -26,7 +26,7 @@
   &__select-label {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
   }
 
   &__select {
@@ -45,7 +45,7 @@
   &__instruction {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
     align-self: flex-start;
   }
 
@@ -57,7 +57,7 @@
   }
 
   &__help-link {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
   }
 
   &__input-password {
@@ -65,11 +65,11 @@
 
     height: 54px;
     width: 315px;
-    border: 1px solid var(--geyser);
+    border: 1px solid var(--color-border-default);
     border-radius: 4px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
+    color: var(--color-text-default);
     margin-top: 16px;
-    color: var(--scorpion);
     padding: 0 20px;
   }
 

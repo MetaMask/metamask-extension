@@ -13,6 +13,7 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
+import IconCaretLeft from '../../ui/icon/icon-caret-left';
 
 const AddNetwork = ({
   onBackClick,
@@ -36,13 +37,12 @@ const AddNetwork = ({
         flexDirection={FLEX_DIRECTION.ROW}
         className="add-network__header"
       >
-        <img
-          src="./images/caret-left-black.svg"
-          alt={t('back')}
+        <IconCaretLeft
+          aria-label={t('back')}
           onClick={onBackClick}
           className="add-network__header__back-icon"
         />
-        <Typography variant={TYPOGRAPHY.H3} color={COLORS.BLACK}>
+        <Typography variant={TYPOGRAPHY.H3} color={COLORS.TEXT_DEFAULT}>
           {t('addNetwork')}
         </Typography>
       </Box>
@@ -53,14 +53,14 @@ const AddNetwork = ({
       >
         <Typography
           variant={TYPOGRAPHY.H6}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           margin={[4, 0, 0, 0]}
         >
           {t('addFromAListOfPopularNetworks')}
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H7}
-          color={COLORS.UI3}
+          color={COLORS.TEXT_MUTED}
           margin={[4, 0, 3, 0]}
         >
           {t('customNetworks')}
@@ -77,14 +77,13 @@ const AddNetwork = ({
               src={item?.rpcPrefs?.imageUrl}
               alt={t('logo', [item.ticker])}
             />
-            <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>
+            <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
               {item.ticker}
             </Typography>
-            <img
-              className="add-network__add-icon"
-              src="./images/times.svg"
-              alt={`${t('add')} ${item.ticker}`}
+            <i
+              className="fa fa-plus add-network__add-icon"
               onClick={onAddNetworkClick}
+              title={`${t('add')} ${item.ticker}`}
             />
           </Box>
         ))}
@@ -95,7 +94,7 @@ const AddNetwork = ({
         className="add-network__footer"
       >
         <Button type="link" onClick={onAddNetworkManuallyClick}>
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
+          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
             {t('addANetworkManually')}
           </Typography>
         </Button>
@@ -114,7 +113,7 @@ const AddNetwork = ({
               </a>
             </>
           }
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
         />

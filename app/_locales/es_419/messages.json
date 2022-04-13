@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -982,9 +976,6 @@
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
@@ -1462,9 +1453,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
   },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"
@@ -2392,12 +2380,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo proteger su cartera."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separar cada palabra con un solo espacio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Pegar la frase secreta de recuperación desde el Portapapeles"
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -2510,9 +2492,6 @@
   },
   "showRecommendations": {
     "message": "Mostrar recomendaciones"
-  },
-  "showSeedPhrase": {
-    "message": "Mostrar frase secreta de recuperación"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"

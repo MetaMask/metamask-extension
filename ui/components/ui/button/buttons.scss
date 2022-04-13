@@ -138,7 +138,7 @@
 }
 
 .btn-primary {
-  color: var(--color-background-default);
+  color: var(--color-primary-inverse);
   border: 1px solid var(--color-primary-default);
   background-color: var(--color-primary-default);
 
@@ -302,7 +302,7 @@ input[type="submit"][disabled] {
 
 .btn--inline {
   display: inline;
-  padding: 0 4px;
+  padding: 0;
   font-size: inherit;
   width: auto;
   color: var(--color-primary-default);

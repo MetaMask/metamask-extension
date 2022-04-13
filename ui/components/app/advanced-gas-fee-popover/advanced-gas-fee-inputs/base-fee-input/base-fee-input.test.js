@@ -12,6 +12,7 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
+import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import BaseFeeInput from './base-fee-input';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -50,6 +51,7 @@ const render = (txProps, contextProps) => {
     >
       <AdvancedGasFeePopoverContextProvider>
         <BaseFeeInput />
+        <AdvancedGasFeeGasLimit />
       </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
@@ -88,14 +90,27 @@ describe('BaseFeeInput', () => {
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
+
+  it('should show current value of estimatedBaseFee in users primary currency in right side of input box', () => {
+    render({
+      txParams: {
+        gas: '0x5208',
+        maxFeePerGas: '0x2E90EDD000',
+      },
+    });
+    expect(screen.queryByText('≈ 0.0042 ETH')).toBeInTheDocument();
+  });
+
   it('should show current value of estimatedBaseFee in subtext', () => {
     render();
     expect(screen.queryByText('50 GWEI')).toBeInTheDocument();
   });
+
   it('should show 12hr range value in subtext', () => {
     render();
     expect(screen.queryByText('50 - 100 GWEI')).toBeInTheDocument();
   });
+
   it('should show error if base fee is less than suggested low value', () => {
     render({
       txParams: {
@@ -112,6 +127,7 @@ describe('BaseFeeInput', () => {
       target: { value: 50 },
     });
   });
+
   it('should show error if base if is more than suggested high value', () => {
     render({
       txParams: {

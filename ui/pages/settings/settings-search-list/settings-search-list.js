@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 import { I18nContext } from '../../../contexts/i18n';
+import IconCaretRight from '../../../components/ui/icon/icon-caret-right';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
   const t = useContext(I18nContext);
@@ -12,17 +13,19 @@ export default function SettingsSearchList({ results, onClickSetting }) {
   return (
     <div className="settings-page__header__search__list">
       {results.slice(0, 5).map((result) => {
-        const { image, tab, section, id } = result;
+        const { icon, tab, section, id } = result;
         return (
-          Boolean(image || tab || section) && (
+          Boolean(icon || tab || section) && (
             <div key={`settings_${id}`}>
               <div
                 className="settings-page__header__search__list__item"
                 onClick={() => onClickSetting(result)}
               >
-                <img
-                  className="settings-page__header__search__list__item__icon"
-                  src={`./images/${image}`}
+                <i
+                  className={classnames(
+                    'settings-page__header__search__list__item__icon',
+                    icon,
+                  )}
                 />
 
                 <span
@@ -37,7 +40,10 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                 >
                   {tab}
                 </span>
-                <div className="settings-page__header__search__list__item__caret" />
+                <IconCaretRight
+                  size={16}
+                  className="settings-page__header__search__list__item__caret"
+                />
                 <span
                   id={`menu-section_${id}`}
                   className={classnames(

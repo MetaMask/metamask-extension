@@ -2,7 +2,7 @@
   &__container {
     width: 380px;
     border-radius: 8px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
@@ -54,7 +54,7 @@
 
   &__header-background {
     position: absolute;
-    background-color: var(--athens-grey);
+    background-color: var(--color-background-alternative);
     z-index: 2;
     width: 100%;
     height: 100%;
@@ -63,7 +63,7 @@
   &__header__text {
     @include H3;
 
-    color: #5b5d67;
+    color: var(--color-default-text);
     z-index: 3;
   }
 
@@ -76,7 +76,7 @@
   &__header__tip {
     height: 25px;
     width: 25px;
-    background: var(--athens-grey);
+    background: var(--color-background-alternative);
     transform: rotate(45deg);
     position: absolute;
     bottom: -8px;
@@ -91,7 +91,7 @@
   }
 
   &__account {
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
     margin-left: 17px;
   }
 
@@ -103,7 +103,7 @@
     @include H7;
 
     height: 22px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     width: 124px;
 
     .account-list-item {
@@ -123,7 +123,7 @@
   }
 
   &__balance {
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
     margin-right: 17px;
     width: 124px;
   }
@@ -181,19 +181,19 @@
   }
 
   &__notice {
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
     padding: 0 10px;
   }
 
   &__warning {
-    color: var(--crimson);
+    color: var(--color-error-default);
   }
 
   &__rows {
     height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
-    border-top: 1px solid var(--geyser);
+    border-top: 1px solid var(--color-border-default);
     display: flex;
     flex-flow: column;
   }
@@ -208,7 +208,7 @@
     @include H5;
 
     width: 80px;
-    color: var(--dusty-gray);
+    color: var(--color-text-alternative);
     margin-top: 12px;
     margin-left: 18px;
     width: 100%;
@@ -217,18 +217,18 @@
   &__row-value {
     @include H6;
 
-    color: var(--scorpion);
+    color: var(--color-text-alternative);
     width: 100%;
     overflow-wrap: break-word;
-    border-bottom: 1px solid #d2d8dd;
+    border-bottom: 1px solid var(--color-border-default);
     padding: 6px 18px 15px;
-    white-space: pre;
+    white-space: pre-wrap;
   }
 
   &__help-link {
     cursor: pointer;
     text-decoration: underline;
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     margin-inline-start: 3px;
   }
 
@@ -241,7 +241,7 @@
     justify-content: center;
     position: relative;
     flex: 0 0 auto;
-    border-top: 1px solid var(--geyser);
+    border-top: 1px solid var(--color-border-default);
     padding: 1.6rem;
 
     button {

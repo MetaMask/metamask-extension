@@ -8,6 +8,7 @@ import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
 import { SIZES } from '../../../../helpers/constants/design-system';
 import ColorIndicator from '../../../../components/ui/color-indicator';
 import LockIcon from '../../../../components/ui/lock-icon';
+import IconCaretRight from '../../../../components/ui/icon/icon-caret-right';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -77,10 +78,10 @@ const NetworksListItem = ({
       >
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPE_RPC && (
-          <LockIcon width="14px" height="17px" fill="#cdcdcd" />
+          <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
         )}
       </div>
-      <div className="networks-tab__networks-list-arrow" />
+      <IconCaretRight className="networks-tab__networks-list-arrow" />
     </div>
   );
 };

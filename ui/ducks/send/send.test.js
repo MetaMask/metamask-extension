@@ -16,6 +16,7 @@ import {
 } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
+  ASSET_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
@@ -34,7 +35,6 @@ import sendReducer, {
   toggleSendMaxMode,
   signTransaction,
   SEND_STATUSES,
-  ASSET_TYPES,
   SEND_STAGES,
   AMOUNT_MODES,
   RECIPIENT_SEARCH_MODES,
@@ -95,6 +95,12 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'isCollectibleOwner')
       .mockImplementation(() => Promise.resolve(true));
+    jest.spyOn(Actions, 'updateEditableParams').mockImplementation(() => ({
+      type: 'UPDATE_TRANSACTION_EDITABLE_PARAMS',
+    }));
+    jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_GAS_FEES' }));
   });
 
   describe('Reducers', () => {
@@ -2070,10 +2076,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
-        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
-        expect(actionResult[1].type).toStrictEqual('UPDATE_TRANSACTION_PARAMS');
-        expect(actionResult[2].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult).toHaveLength(2);
+        expect(actionResult[0].type).toStrictEqual(
+          'UPDATE_TRANSACTION_EDITABLE_PARAMS',
+        );
+        expect(actionResult[1].type).toStrictEqual(
+          'UPDATE_TRANSACTION_GAS_FEES',
+        );
       });
     });
 

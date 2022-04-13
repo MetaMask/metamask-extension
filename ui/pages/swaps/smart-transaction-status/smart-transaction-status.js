@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   prepareToLeaveSwaps,
@@ -45,6 +44,7 @@ import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transac
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import { showRemainingTimeInMinAndSec } from '../swaps.util';
+import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -114,18 +114,7 @@ export default function SmartTransactionStatus() {
       destinationTokenInfo.decimals,
     ).toPrecision(8);
   }
-
-  const stxStatusPageLoadedEvent = useNewMetricEvent({
-    event: 'STX Status Page Loaded',
-    category: 'swaps',
-    sensitiveProperties,
-  });
-
-  const cancelSmartTransactionEvent = useNewMetricEvent({
-    event: 'Cancel STX',
-    category: 'swaps',
-    sensitiveProperties,
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const isSmartTransactionPending =
     smartTransactionStatus === SMART_TRANSACTION_STATUSES.PENDING;
@@ -134,7 +123,11 @@ export default function SmartTransactionStatus() {
     smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS;
 
   useEffect(() => {
-    stxStatusPageLoadedEvent();
+    trackEvent({
+      event: 'STX Status Page Loaded',
+      category: 'swaps',
+      sensitiveProperties,
+    });
     // eslint-disable-next-line
   }, []);
 
@@ -184,6 +177,8 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingFinalizing');
     } else if (timeLeftForPendingStxInSec < 150) {
       headerText = t('stxPendingPrivatelySubmitting');
+    } else if (cancelSwapLinkClicked) {
+      headerText = t('stxTryingToCancel');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
@@ -192,7 +187,11 @@ export default function SmartTransactionStatus() {
       description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
     }
     icon = <SuccessIcon />;
-  } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
+  } else if (
+    smartTransactionStatus === 'cancelled_user_cancelled' ||
+    latestSmartTransaction?.statusMetadata?.minedTx ===
+      SMART_TRANSACTION_STATUSES.CANCELLED
+  ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
     icon = <CanceledIcon />;
@@ -236,7 +235,11 @@ export default function SmartTransactionStatus() {
           onClick={(e) => {
             e?.preventDefault();
             setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
-            cancelSmartTransactionEvent();
+            trackEvent({
+              event: 'Cancel STX',
+              category: 'swaps',
+              sensitiveProperties,
+            });
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
@@ -263,11 +266,11 @@ export default function SmartTransactionStatus() {
           justifyContent={JUSTIFY_CONTENT.CENTER}
           alignItems={ALIGN_ITEMS.CENTER}
         >
-          <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
+          <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
             {`${fetchParams?.value && Number(fetchParams.value).toFixed(5)} `}
           </Typography>
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1, marginRight: 2 }}
@@ -290,14 +293,14 @@ export default function SmartTransactionStatus() {
             fallbackClassName="main-quote-summary__icon-fallback"
           />
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             boxProps={{ marginLeft: 2 }}
           >
             {`~${destinationValue && Number(destinationValue).toFixed(5)} `}
           </Typography>
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ marginLeft: 1 }}
@@ -324,14 +327,14 @@ export default function SmartTransactionStatus() {
           >
             <TimerIcon />
             <Typography
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginLeft: 1 }}
             >
               {`${t('swapCompleteIn')} `}
             </Typography>
             <Typography
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{ marginLeft: 1 }}
@@ -342,7 +345,7 @@ export default function SmartTransactionStatus() {
           </Box>
         )}
         <Typography
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           variant={TYPOGRAPHY.H4}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -366,7 +369,7 @@ export default function SmartTransactionStatus() {
           <Typography
             variant={TYPOGRAPHY.H6}
             boxProps={{ marginTop: 0 }}
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
           >
             {description}
           </Typography>
@@ -379,7 +382,7 @@ export default function SmartTransactionStatus() {
           <Typography
             variant={TYPOGRAPHY.H7}
             boxProps={{ marginTop: 8 }}
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
           >
             {subDescription}
           </Typography>

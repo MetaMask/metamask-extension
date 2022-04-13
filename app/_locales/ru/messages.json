@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Добавить рекомендованные токены"
   },
-  "addToAddressBook": {
-    "message": "Добавить в адресную книгу"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр., Джон Д."
-  },
   "addToken": {
     "message": "Добавить токен"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Ошибка поиска ENS."
   },
-  "enterAnAlias": {
-    "message": "Ввести псевдоним"
-  },
   "enterMaxSpendLimit": {
     "message": "Введите максимальный лимит расходов"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Последнее подключение"
-  },
-  "layer1Fees": {
-    "message": "Комиссии 1-го уровня"
   },
   "learmMoreAboutGas": {
     "message": "Хотите $1 о газе?"
@@ -2343,12 +2331,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Прежде чем приступить к делу, посмотрите это короткое видео о секретной фразе для восстановления и споособах обезопасить кошелек."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Отделяйте каждое слово одним пробелом"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Вставить секретную фразу восстановления из буфера обмена"
-  },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
   },
@@ -2458,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "Показать рекомендации"
-  },
-  "showSeedPhrase": {
-    "message": "Показать секретную фразу для восстановления"
   },
   "showTestnetNetworks": {
     "message": "Показать тестовые сети"

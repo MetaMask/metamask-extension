@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },
-  "addToAddressBook": {
-    "message": "पता पुस्तिका में जोड़ें"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "जैसे जॉन डी."
-  },
   "addToken": {
     "message": "टोकन जोड़ें"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS लुकअप विफल हुआ।"
   },
-  "enterAnAlias": {
-    "message": "एक उपनाम दर्ज करें"
-  },
   "enterMaxSpendLimit": {
     "message": "अधिकतम खर्च सीमा दर्ज करें"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "अंतिम बार कनेक्ट किया गया"
-  },
-  "layer1Fees": {
-    "message": "लेयर 1 शुल्क"
   },
   "learmMoreAboutGas": {
     "message": "गैस के बारे में $1 चाहते हैं?"
@@ -2343,12 +2331,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "शुरुआत करने से पहले, अपने गुप्त रिकवरी फ्रेज और अपने वॉलेट को सुरक्षित रखने के तरीके के बारे में जानने के लिए यह छोटा-सा वीडियो देखें।"
   },
-  "seedPhrasePlaceholder": {
-    "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "क्लिपबोर्ड से गुप्त रिकवरी फ्रेज़ को चिपकाएँ"
-  },
   "seedPhraseReq": {
     "message": "गुप्त रिकवरी फ्रेज में 12, 15, 18, 21 या 24 शब्द होते हैं"
   },
@@ -2458,9 +2440,6 @@
   },
   "showRecommendations": {
     "message": "अनुशंसा दिखाएं"
-  },
-  "showSeedPhrase": {
-    "message": "गुप्त रिकवरी फ्रेज दिखाएं"
   },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"

@@ -4,40 +4,6 @@
   flex-flow: column;
   height: 100%;
 
-  &__header {
-    width: 100%;
-    border-radius: 8px 8px 0 0;
-    background-color: var(--mid-gray);
-    display: flex;
-    position: relative;
-    padding: 25px;
-    flex-flow: column;
-    align-items: flex-start;
-
-    &__title {
-      @include H3;
-
-      color: var(--white);
-    }
-
-    &__description {
-      @include Paragraph;
-
-      color: var(--white);
-      margin-top: 10px;
-    }
-
-    &__close::after {
-      content: '\00D7';
-      font-size: 2em;
-      color: var(--white);
-      position: absolute;
-      top: 20.8px;
-      right: 28px;
-      cursor: pointer;
-    }
-  }
-
   &__buy-rows {
     width: 100%;
     padding: 0 30px;
@@ -52,7 +18,7 @@
   }
 
   &__logo {
-    height: 60px;
+    max-height: 40px;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
@@ -60,10 +26,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &--lg {
+      max-height: 60px;
+    }
+
+    @media screen and (min-width: $break-large) {
+      height: 60px;
+    }
   }
 
   &__buy-row {
-    border-bottom: 1px solid var(--alto);
+    border-bottom: 1px solid var(--color-border-default);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -105,7 +79,7 @@
     }
 
     &__description {
-      color: var(--cape-cod);
+      color: var(--color-text-alternative);
       padding-bottom: 20px;
       align-self: flex-start;
 

@@ -79,12 +79,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -611,9 +605,6 @@
   },
   "ensRegistrationError": {
     "message": "Error en el registro del nombre de ENS"
-  },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
   },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
@@ -1520,12 +1511,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo mantener segura su cartera."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separar cada palabra con un solo espacio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Pegar la frase secreta de recuperación desde el Portapapeles"
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -1604,9 +1589,6 @@
   },
   "showPrivateKeys": {
     "message": "Mostrar claves privadas"
-  },
-  "showSeedPhrase": {
-    "message": "Mostrar frase secreta de recuperación"
   },
   "sigRequest": {
     "message": "Solicitud de firma"

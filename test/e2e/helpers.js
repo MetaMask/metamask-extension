@@ -1,13 +1,9 @@
 const path = require('path');
-const sinon = require('sinon');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
-const {
-  createSegmentServer,
-} = require('../../development/lib/create-segment-server');
-const { setupMocking } = require('../../development/mock-e2e');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
+const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
@@ -16,7 +12,8 @@ const { ensureXServerIsRunning } = require('./x-server');
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
-const dappPort = 8080;
+const veryLargeDelayMs = largeDelayMs * 2;
+const dappBasePort = 8080;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
@@ -26,7 +23,7 @@ async function withFixtures(options, testSuite) {
     fixtures,
     ganacheOptions,
     driverOptions,
-    mockSegment,
+    dappOptions,
     title,
     failOnConsoleError = true,
     dappPath = undefined,
@@ -36,11 +33,11 @@ async function withFixtures(options, testSuite) {
   } = options;
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const https = await mockttp.generateCACertificate();
+  const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
-  let dappServer;
-  let segmentServer;
-  let segmentStub;
-  let mockServer;
+  let numberOfDapps = dapp ? 1 : 0;
+  const dappServer = [];
 
   let webDriver;
   let failed = false;
@@ -59,41 +56,33 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
-      let dappDirectory;
-      if (dappPath) {
-        dappDirectory = path.resolve(__dirname, dappPath);
-      } else {
-        dappDirectory = path.resolve(
-          __dirname,
-          '..',
-          '..',
-          'node_modules',
-          '@metamask',
-          'test-dapp',
-          'dist',
-        );
+      if (dappOptions?.numberOfDapps) {
+        numberOfDapps = dappOptions.numberOfDapps;
       }
-      dappServer = createStaticServer(dappDirectory);
-      dappServer.listen(dappPort);
-      await new Promise((resolve, reject) => {
-        dappServer.on('listening', resolve);
-        dappServer.on('error', reject);
-      });
-    }
-    if (mockSegment) {
-      segmentStub = sinon.stub();
-      segmentServer = createSegmentServer((_request, response, events) => {
-        for (const event of events) {
-          segmentStub(event);
+      for (let i = 0; i < numberOfDapps; i++) {
+        let dappDirectory;
+        if (dappPath) {
+          dappDirectory = path.resolve(__dirname, dappPath);
+        } else {
+          dappDirectory = path.resolve(
+            __dirname,
+            '..',
+            '..',
+            'node_modules',
+            '@metamask',
+            'test-dapp',
+            'dist',
+          );
         }
-        response.statusCode = 200;
-        response.end();
-      });
-      await segmentServer.start(9090);
+        dappServer.push(createStaticServer(dappDirectory));
+        dappServer[i].listen(`${dappBasePort + i}`);
+        await new Promise((resolve, reject) => {
+          dappServer[i].on('listening', resolve);
+          dappServer[i].on('error', reject);
+        });
+      }
     }
-    const https = await mockttp.generateCACertificate();
-    mockServer = mockttp.getLocal({ https });
-    setupMocking(mockServer, testSpecificMock);
+    await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
@@ -106,7 +95,6 @@ async function withFixtures(options, testSuite) {
 
     await testSuite({
       driver,
-      segmentStub,
       mockServer,
     });
 
@@ -144,22 +132,21 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         await webDriver.quit();
       }
-      if (dappServer && dappServer.listening) {
-        await new Promise((resolve, reject) => {
-          dappServer.close((error) => {
-            if (error) {
-              return reject(error);
-            }
-            return resolve();
-          });
-        });
+      if (dapp) {
+        for (let i = 0; i < numberOfDapps; i++) {
+          if (dappServer[i] && dappServer[i].listening) {
+            await new Promise((resolve, reject) => {
+              dappServer[i].close((error) => {
+                if (error) {
+                  return reject(error);
+                }
+                return resolve();
+              });
+            });
+          }
+        }
       }
-      if (segmentServer) {
-        await segmentServer.stop();
-      }
-      if (mockServer) {
-        await mockServer.stop();
-      }
+      await mockServer.stop();
     }
   }
 }
@@ -188,7 +175,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 };
 
 const connectDappWithExtensionPopup = async (driver) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappPort}/`);
+  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);
@@ -250,8 +237,8 @@ const completeImportSRPOnboardingFlow = async (
     await driver.clickElement('.btn-secondary');
 
     // Import Secret Recovery Phrase
-    await driver.fill(
-      'input[placeholder="Enter your Secret Recovery Phrase"]',
+    await driver.pasteIntoField(
+      '[data-testid="import-srp__srp-word-0"]',
       seedPhrase,
     );
 
@@ -279,6 +266,7 @@ module.exports = {
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
+  veryLargeDelayMs,
   withFixtures,
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,

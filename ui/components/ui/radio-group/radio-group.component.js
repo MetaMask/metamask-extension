@@ -48,7 +48,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
             <label className="radio-group__column-inner">
               {hasRecommendation && (
                 <Typography
-                  color={COLORS.SUCCESS3}
+                  color={COLORS.SUCCESS_DEFAULT}
                   className="radio-group__column-recommended"
                   variant={TYPOGRAPHY.H7}
                 >
@@ -69,7 +69,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 isLast={index === options.length - 1}
               />
               <Typography
-                color={checked ? COLORS.BLACK : COLORS.UI4}
+                color={checked ? COLORS.TEXT_DEFAULT : COLORS.TEXT_MUTED}
                 fontWeight={FONT_WEIGHT.BOLD}
                 variant={TYPOGRAPHY.H7}
                 className="radio-group__column-label"

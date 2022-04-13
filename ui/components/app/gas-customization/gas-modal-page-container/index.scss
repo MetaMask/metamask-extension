@@ -33,7 +33,7 @@
     &__header-close-text {
       @include H6;
 
-      color: #4eade7;
+      color: var(--color-primary-default);
       position: absolute;
       font-size: 0.75rem;
       top: 8px;
@@ -46,7 +46,7 @@
     &__title {
       @include H5;
 
-      color: var(--black);
+      color: var(--color-text-default);
       font-weight: 500;
       display: flex;
       justify-content: center;
@@ -80,7 +80,7 @@
       }
 
       &.tab--active button {
-        color: var(--primary-blue);
+        color: var(--color-primary-default);
       }
     }
   }
@@ -101,11 +101,11 @@
     @include H7;
 
     width: 100%;
-    background: var(--polar);
+    background: var(--color-background-alternative);
     padding: 15px 21px;
     display: flex;
     flex-flow: column;
-    color: var(--scorpion);
+    color: var(--color-text-alternative);
 
     &__send-info,
     &__transaction-info,
@@ -153,8 +153,8 @@
   }
 
   &__info-row--fade {
-    background: white;
-    color: var(--dusty-gray);
-    border-top: 1px solid var(--mischka);
+    background: var(--color-background-default);
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-border-muted);
   }
 }

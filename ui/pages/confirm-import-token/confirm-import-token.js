@@ -13,6 +13,7 @@ import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/meta
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
+import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 
 const getTokenName = (name, symbol) => {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -43,6 +44,7 @@ const ConfirmImportToken = () => {
           token_decimal_precision: pendingToken.decimals,
           unlisted: pendingToken.unlisted,
           source: pendingToken.isCustom ? 'custom' : 'list',
+          token_standard: TOKEN_STANDARDS.ERC20,
         },
       });
     });
@@ -113,7 +115,10 @@ const ConfirmImportToken = () => {
             type="secondary"
             large
             className="page-container__footer-button"
-            onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
+            onClick={() => {
+              dispatch(clearPendingTokens());
+              history.push(IMPORT_TOKEN_ROUTE);
+            }}
           >
             {t('back')}
           </Button>
