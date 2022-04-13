@@ -624,7 +624,7 @@ export default class MetamaskController extends EventEmitter {
     const usingFirefox = getPlatform() === PLATFORM_FIREFOX;
 
     this.snapController = new SnapController({
-      npmRegistryUrl: usingFirefox ? 'https://registry.npmjs.cf/' : undefined,
+      npmRegistryUrl: undefined,
       endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
