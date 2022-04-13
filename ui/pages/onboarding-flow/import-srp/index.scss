@@ -3,17 +3,14 @@
 
   @media screen and (max-width: 349px) {
     width: 300px;
-    height: 660px;
   }
 
   @media screen and (min-width: 350px) and (max-width: 460px) {
     width: 357px;
-    height: 660px;
   }
 
   @media screen and (min-width: 461px) and (max-width: $break-small) {
     width: 450px;
-    height: 660px;
   }
 
   @media screen and (min-width: $break-small) and (max-width: 840px) {
