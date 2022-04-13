@@ -45,7 +45,7 @@
       "packages": {
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
-        "eslint":true,
+        "eslint": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true
       }
