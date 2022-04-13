@@ -81,6 +81,8 @@ describe('Send token from inside MetaMask', function () {
           tag: 'button',
         });
         nextButton.click();
+
+        await driver.findClickableElement({ text: 'Hex', tag: 'button' });
         await driver.clickElement({ text: 'Hex', tag: 'button' });
 
         const functionType = await driver.findElement(
