@@ -77,7 +77,7 @@ Update the `chromedriver` package to a version matching your local Chrome instal
 ```
 
 An example for running `account-details` testcase with chrome and leaving the browser open would be:
-`yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --leave-running=true`
+`yarn test:e2e:single test/e2e/tests/account-details.spec.js --browser=chrome --leave-running`
 
 ### Changing dependencies
 
