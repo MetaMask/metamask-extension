@@ -17,6 +17,7 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
 import { useEqualityCheck } from './useEqualityCheck';
 
 /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
@@ -96,6 +97,7 @@ export function useTokensToSearch({
   usersTokens = [],
   topTokens = {},
   shuffledTokensList,
+  tokenBucketPriority = TOKEN_BUCKET_PRIORITY.OWNED,
 }) {
   const chainId = useSelector(getCurrentChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
@@ -164,15 +166,28 @@ export function useTokensToSearch({
         tokenList,
         useTokenDetection,
       );
-      if (
-        isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        usersTokensAddressMap[token.address.toLowerCase()]
-      ) {
-        tokensToSearchBuckets.owned.push(renderableDataToken);
+      if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+        if (
+          isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
+          usersTokensAddressMap[token.address.toLowerCase()]
+        ) {
+          tokensToSearchBuckets.owned.push(renderableDataToken);
+        } else if (memoizedTopTokens[token.address.toLowerCase()]) {
+          tokensToSearchBuckets.top[
+            memoizedTopTokens[token.address.toLowerCase()].index
+          ] = renderableDataToken;
+        } else {
+          tokensToSearchBuckets.others.push(renderableDataToken);
+        }
       } else if (memoizedTopTokens[token.address.toLowerCase()]) {
         tokensToSearchBuckets.top[
           memoizedTopTokens[token.address.toLowerCase()].index
         ] = renderableDataToken;
+      } else if (
+        isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
+        usersTokensAddressMap[token.address.toLowerCase()]
+      ) {
+        tokensToSearchBuckets.owned.push(renderableDataToken);
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);
       }
@@ -184,9 +199,16 @@ export function useTokensToSearch({
       },
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
+    if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+      return [
+        ...tokensToSearchBuckets.owned,
+        ...tokensToSearchBuckets.top,
+        ...tokensToSearchBuckets.others,
+      ];
+    }
     return [
-      ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.top,
+      ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.others,
     ];
   }, [
@@ -200,5 +222,6 @@ export function useTokensToSearch({
     chainId,
     tokenList,
     useTokenDetection,
+    tokenBucketPriority,
   ]);
 }
