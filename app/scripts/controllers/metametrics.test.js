@@ -613,6 +613,10 @@ describe('MetaMetricsController', function () {
     it('should return full user traits object on first call', function () {
       const metaMetricsController = getMetaMetricsController();
       const traits = metaMetricsController._buildUserTraitsObject({
+        addressBook: {
+          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
+          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
+        },
         allCollectibles: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
             56: [
@@ -651,6 +655,7 @@ describe('MetaMetricsController', function () {
       });
 
       assert.deepEqual(traits, {
+        [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
@@ -664,6 +669,10 @@ describe('MetaMetricsController', function () {
     it('should return only changed traits object on subsequent calls', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController._buildUserTraitsObject({
+        addressBook: {
+          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
+          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
+        },
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -676,6 +685,10 @@ describe('MetaMetricsController', function () {
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
+        addressBook: {
+          [MAINNET_CHAIN_ID]: [{ address: '0x' }, { address: '0x1' }],
+          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
+        },
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -688,6 +701,7 @@ describe('MetaMetricsController', function () {
       });
 
       assert.deepEqual(updatedTraits, {
+        [TRAITS.ADDRESS_BOOK_ENTRIES]: 4,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
         [TRAITS.OPENSEA_API_ENABLED]: false,
       });
@@ -696,6 +710,10 @@ describe('MetaMetricsController', function () {
     it('should return null if no traits changed', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController._buildUserTraitsObject({
+        addressBook: {
+          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
+          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
+        },
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -708,6 +726,10 @@ describe('MetaMetricsController', function () {
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
+        addressBook: {
+          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
+          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
+        },
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
