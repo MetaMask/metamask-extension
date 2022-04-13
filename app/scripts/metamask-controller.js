@@ -617,7 +617,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.snapController = new SnapController({
-      npmRegistryUrl: undefined,
       endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
