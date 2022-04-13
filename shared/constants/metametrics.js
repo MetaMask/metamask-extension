@@ -209,6 +209,8 @@ export const TRAITS = {
  *  of identities(accounts) added to the user's MetaMask.
  * @property {number} [number_of_nft_collections] - A number representing the
  *  amount of different NFT collections the user possesses an NFT from.
+ * @property {number} [number_of_tokens] - The total number of token contracts
+ *  the user has across all networks and accounts.
  * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
  *  API enabled?
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
