@@ -68,9 +68,12 @@ Update the `chromedriver` package to a version matching your local Chrome instal
 - Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
 ```console
---browser                 Set the browser used; either 'chrome' or 'firefox'.
---leave-running           Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.).
---retries                 Set how many times the test should be retried upon failure. Default is 0.
+--browser             Set the browser used; either 'chrome' or 'firefox'.
+
+--leave-running       Leaves the browser running after a test fails, along with anything else 
+                      that the test used (ganache, the test dapp, etc.).
+                      
+--retries             Set how many times the test should be retried upon failure. Default is 0.
 ```
 
 An example for running `account-details` testcase with chrome and leaving the browser open would be:
