@@ -97,8 +97,6 @@ const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 
 // token detection v2
 const DETECTED_TOKEN_ROUTE = '/detected-token';
-const DETECTED_TOKEN_SELECTION_ROUTE = '/detected-token-selection';
-const DETECTED_TOKEN_IGNORED_ROUTE = '/detected-token-ignored';
 
 // Used to pull a convenient name for analytics tracking events. The key must
 // be react-router ready path, and can include params such as :id for popup windows
@@ -173,8 +171,6 @@ const PATH_NAME_MAP = {
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
   [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
   [DETECTED_TOKEN_ROUTE]: 'Tokens Found Page',
-  [DETECTED_TOKEN_SELECTION_ROUTE]: 'Token Selection Page',
-  [DETECTED_TOKEN_IGNORED_ROUTE]: 'Tokens Ignored Alert',
 };
 
 export {
@@ -270,6 +266,4 @@ export {
   ONBOARDING_EXPERIMENTAL_AREA,
   ///: END:ONLY_INCLUDE_IN
   DETECTED_TOKEN_ROUTE,
-  DETECTED_TOKEN_SELECTION_ROUTE,
-  DETECTED_TOKEN_IGNORED_ROUTE,
 };
