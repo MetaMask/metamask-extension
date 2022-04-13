@@ -17,7 +17,7 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FeeCard from '../fee-card';
 import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
 import {
@@ -955,7 +955,7 @@ export default function ViewQuote() {
             <div className="view-quote__countdown-timer-container">
               <CountdownTimer
                 timeStarted={quotesLastFetched}
-                warningTime="0:30"
+                warningTime="0:10"
                 labelKey="swapNewQuoteIn"
               />
             </div>

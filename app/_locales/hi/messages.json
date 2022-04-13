@@ -1738,9 +1738,6 @@
   "newNFTsDetected": {
     "message": "नया! NFT डिटेक्शन"
   },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask को Opensea से NFT का स्वचालित रूप से पता लगाने और अपने MetaMask वॉलेट में प्रदर्शित करने की अनुमति दें।"
-  },
   "newNetworkAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
   },
@@ -2465,9 +2462,6 @@
   "signed": {
     "message": "हस्ताक्षर किया गया"
   },
-  "simulationErrorMessage": {
-    "message": "यह लेन-देन विफल होने की उम्मीद है। इसे निष्पादित करने के प्रयास के महंगा होने की उम्मीद है लेकिन विफल है, और इसकी अनुशंसा नहीं की जाती है।"
-  },
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। अनुबंध में कोई त्रुटि हो सकती है और यह लेन-देन विफल हो सकता है।"
   },
@@ -3132,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "पुनः प्रयास करें"
-  },
-  "tryAnywayOption": {
-    "message": "मैं फिर भी कोशिश करूंगा"
   },
   "turnOnTokenDetection": {
     "message": "उन्नत टोकन डिटेक्शन चालू करें"

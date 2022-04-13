@@ -948,10 +948,10 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
         "nyc>convert-source-map": true,
         "readable-stream": true,
         "through2": true
@@ -978,15 +978,39 @@
         "path.join": true
       },
       "globals": {
-        "Buffer.from": true
+        "Buffer": true
       }
     },
     "@lavamoat/lavapack>combine-source-map>inline-source-map": {
       "globals": {
-        "Buffer.from": true
+        "Buffer": true
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
+      }
+    },
+    "@lavamoat/lavapack>lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "module.createRequire": true,
+        "module.createRequireFromPath": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.warn": true,
+        "define": true
+      },
+      "packages": {
+        "brfs>resolve": true,
+        "lavamoat-browserify>merge-deep": true,
+        "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-tofu": true,
+        "nyc>process-on-spawn>fromentries": true
       }
     },
     "@metamask/jazzicon>color>color-convert": {
@@ -999,16 +1023,6 @@
         "define": true
       }
     },
-    "@storybook/addon-essentials>@storybook/addon-docs>@mdx-js/mdx>unist-util-visit": {
-      "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>@mdx-js/mdx>unist-util-visit>unist-util-visit-parents": true
-      }
-    },
-    "@storybook/addon-essentials>@storybook/addon-docs>@mdx-js/mdx>unist-util-visit>unist-util-visit-parents": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
-      }
-    },
     "@storybook/api>telejson>is-symbol": {
       "packages": {
         "enzyme>is-regex>has-symbols": true
@@ -1017,22 +1031,6 @@
     "@storybook/api>util-deprecate": {
       "builtin": {
         "util.deprecate": true
-      }
-    },
-    "@storybook/components>react-syntax-highlighter>refractor>parse-entities": {
-      "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-entities": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-reference-invalid": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
-      }
-    },
-    "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
       }
     },
     "@storybook/react>@storybook/core-common>glob-base": {
@@ -2002,57 +2000,6 @@
         "globalthis>define-properties": true
       }
     },
-    "enzyme>cheerio>dom-serializer": {
-      "packages": {
-        "enzyme>cheerio>entities": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "string_decoder.StringDecoder": true
-      },
-      "packages": {
-        "enzyme>cheerio>entities": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true,
-        "enzyme>cheerio>htmlparser2>domhandler": true,
-        "enzyme>cheerio>htmlparser2>domutils": true,
-        "enzyme>cheerio>htmlparser2>readable-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>domhandler": {
-      "packages": {
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>domutils": {
-      "packages": {
-        "enzyme>cheerio>dom-serializer": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
     "enzyme>has": {
       "packages": {
         "enzyme>has>function-bind": true
@@ -2092,6 +2039,14 @@
       }
     },
     "enzyme>object.entries": {
+      "packages": {
+        "enzyme>has": true,
+        "enzyme>is-regex>call-bind": true,
+        "enzyme>object.values>es-abstract": true,
+        "globalthis>define-properties": true
+      }
+    },
+    "enzyme>object.values": {
       "packages": {
         "enzyme>has": true,
         "enzyme>is-regex>call-bind": true,
@@ -2721,6 +2676,7 @@
         "eslint>ajv": true,
         "eslint>debug": true,
         "eslint>espree": true,
+        "eslint>import-fresh": true,
         "mocha>minimatch": true,
         "nyc>js-yaml": true
       }
@@ -3717,8 +3673,7 @@
         "path.sep": true
       },
       "globals": {
-        "Buffer.concat": true,
-        "Buffer.from": true
+        "Buffer": true
       },
       "packages": {
         "fs-extra>graceful-fs": true,
@@ -5452,12 +5407,12 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
+        "@lavamoat/lavapack>lavamoat-core": true,
         "duplexify": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true
+        "lavamoat>json-stable-stringify": true
       }
     },
     "lavamoat-browserify>concat-stream": {
@@ -5600,30 +5555,6 @@
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
-      }
-    },
-    "lavamoat>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "module.createRequire": true,
-        "module.createRequireFromPath": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.sep": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "brfs>resolve": true,
-        "lavamoat-browserify>merge-deep": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
       }
     },
     "lavamoat>lavamoat-tofu": {
@@ -6241,8 +6172,6 @@
         "globby>slash": true,
         "lodash": true,
         "nyc>resolve-from": true,
-        "stylelint>@stylelint/postcss-css-in-js": true,
-        "stylelint>@stylelint/postcss-markdown": true,
         "stylelint>autoprefixer": true,
         "stylelint>balanced-match": true,
         "stylelint>chalk": true,
@@ -6259,154 +6188,19 @@
         "stylelint>mathml-tag-names": true,
         "stylelint>normalize-selector": true,
         "stylelint>postcss": true,
-        "stylelint>postcss-html": true,
-        "stylelint>postcss-less": true,
         "stylelint>postcss-media-query-parser": true,
         "stylelint>postcss-reporter": true,
         "stylelint>postcss-resolve-nested-selector": true,
         "stylelint>postcss-safe-parser": true,
-        "stylelint>postcss-sass": true,
-        "stylelint>postcss-scss": true,
         "stylelint>postcss-selector-parser": true,
         "stylelint>postcss-syntax": true,
         "stylelint>postcss-value-parser": true,
         "stylelint>specificity": true,
         "stylelint>style-search": true,
-        "stylelint>sugarss": true,
         "stylelint>svg-tags": true,
         "stylelint>table": true,
         "stylelint>write-file-atomic": true,
         "yargs>string-width": true
-      }
-    },
-    "stylelint>@stylelint/postcss-css-in-js": {
-      "globals": {
-        "__dirname": true
-      },
-      "packages": {
-        "@babel/core": true,
-        "stylelint>postcss": true,
-        "stylelint>postcss-syntax": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark": true,
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after": true,
-        "stylelint>postcss-html": true,
-        "stylelint>postcss-syntax": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-parse": {
-      "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>collapse-white-space": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-word-character": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>state-toggle": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>trim": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>trim-trailing-lines": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unist-util-remove-position": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>vfile-location": true,
-        "watchify>xtend": true,
-        "webpack>micromatch>braces>fill-range>repeat-string": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": {
-      "packages": {
-        "pumpify>inherits": true,
-        "watchify>xtend": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unist-util-remove-position": {
-      "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>@mdx-js/mdx>unist-util-visit": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": {
-      "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>state-toggle": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>unherit": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>is-alphanumeric": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>longest-streak": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>markdown-table": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>mdast-util-compact": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities": true,
-        "watchify>xtend": true,
-        "webpack>micromatch>braces>fill-range>repeat-string": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>markdown-table": {
-      "packages": {
-        "webpack>micromatch>braces>fill-range>repeat-string": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>mdast-util-compact": {
-      "packages": {
-        "@storybook/addon-essentials>@storybook/addon-docs>@mdx-js/mdx>unist-util-visit": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities": {
-      "packages": {
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
-        "@storybook/components>react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities>character-entities-html4": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>unified": {
-      "packages": {
-        "jsdom>request>extend": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>bail": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>is-buffer": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>is-plain-obj": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>trough": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>unified>vfile": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>is-buffer": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>vfile-message": true,
-        "vinyl>replace-ext": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>vfile-message": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>unified>vfile>unist-util-stringify-position": true
-      }
-    },
-    "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
       }
     },
     "stylelint>autoprefixer": {
@@ -6664,43 +6458,12 @@
         "stylelint>postcss>picocolors": true
       }
     },
-    "stylelint>postcss-html": {
-      "globals": {
-        "__dirname": true
-      },
-      "packages": {
-        "enzyme>cheerio>htmlparser2": true,
-        "stylelint>postcss-syntax": true
-      }
-    },
-    "stylelint>postcss-less": {
-      "packages": {
-        "stylelint>postcss": true
-      }
-    },
     "stylelint>postcss-reporter": {
       "packages": {
         "lodash": true
       }
     },
     "stylelint>postcss-safe-parser": {
-      "packages": {
-        "stylelint>postcss": true
-      }
-    },
-    "stylelint>postcss-sass": {
-      "packages": {
-        "stylelint>postcss": true,
-        "stylelint>postcss-sass>gonzales-pe": true
-      }
-    },
-    "stylelint>postcss-sass>gonzales-pe": {
-      "globals": {
-        "console.error": true,
-        "define": true
-      }
-    },
-    "stylelint>postcss-scss": {
       "packages": {
         "stylelint>postcss": true
       }
@@ -6734,11 +6497,6 @@
     "stylelint>specificity": {
       "globals": {
         "define": true
-      }
-    },
-    "stylelint>sugarss": {
-      "packages": {
-        "stylelint>postcss": true
       }
     },
     "stylelint>table": {

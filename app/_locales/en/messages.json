@@ -714,6 +714,9 @@
   "custom": {
     "message": "Advanced"
   },
+  "customContentSearch": {
+    "message": "Search for a previously added network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -732,6 +735,12 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "customTokenWarningInNonTokenDetectionNetwork": {
+    "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
+  },
+  "customTokenWarningInTokenDetectionNetwork": {
+    "message": "Before manually importing a token, make sure you trust it. Learn about $1."
   },
   "customerSupport": {
     "message": "customer support"
@@ -2003,11 +2012,11 @@
   "newContract": {
     "message": "New Contract"
   },
+  "newNFTDetectedMessage": {
+    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your wallet."
+  },
   "newNFTsDetected": {
     "message": "New! NFT detection"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your MetaMask wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -2122,6 +2131,15 @@
   "notifications11Title": {
     "message": "Scam and security risks"
   },
+  "notifications12ActionText": {
+    "message": "Enable dark mode"
+  },
+  "notifications12Description": {
+    "message": "Dark Mode will be enabled for new users depending on their system preferences. For existing users, enable Dark Mode manually under Settings -> Experimental."
+  },
+  "notifications12Title": {
+    "message": "Wen dark mode? Now dark mode! 🕶️🦊"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2210,6 +2228,10 @@
   },
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
+  },
+  "numberOfNewTokensDetected": {
+    "message": "$1 new tokens found in this account",
+    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "of"
@@ -2792,7 +2814,7 @@
     "message": "Settings"
   },
   "settingsSearchMatchingNotFound": {
-    "message": "No matching results found"
+    "message": "No matching results found."
   },
   "shorthandVersion": {
     "message": "v$1",
@@ -2861,9 +2883,6 @@
   "signed": {
     "message": "Signed"
   },
-  "simulationErrorMessage": {
-    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
-  },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
@@ -2885,6 +2904,10 @@
   "snapAccess": {
     "message": "$1 snap has access to:",
     "description": "$1 represents the name of the snap"
+  },
+  "snapAdded": {
+    "message": "Added on $1 from $2",
+    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
   },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
@@ -3533,6 +3556,9 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "testNetworks": {
+    "message": "Test networks"
+  },
   "theme": {
     "message": "Theme"
   },
@@ -3582,6 +3608,9 @@
   },
   "tokenDetection": {
     "message": "Token detection"
+  },
+  "tokenDetectionAlertMessage": {
+    "message": "Token detection is currently available on $1. $2"
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
@@ -3728,9 +3757,6 @@
   },
   "tryAgain": {
     "message": "Try again"
-  },
-  "tryAnywayOption": {
-    "message": "I will try anyway"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

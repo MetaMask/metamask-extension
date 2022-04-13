@@ -19,6 +19,7 @@ import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
+/** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
 const shuffledContractMap = shuffle(
   Object.entries(contractMap)
     .map(([address, tokenData]) => ({
@@ -38,10 +39,6 @@ export function getRenderableTokenData(
   useTokenDetection,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
-  // token from dynamic api list is fetched when useTokenDetection is true
-  // And since the token.address from allTokens is checksumaddress
-  // token Address have to be changed to lowercase when we are using dynamic list
-  const tokenAddress = useTokenDetection ? address?.toLowerCase() : address;
   const formattedFiat =
     getTokenFiatAmount(
       isSwapsDefaultTokenSymbol(symbol, chainId)
@@ -64,11 +61,21 @@ export function getRenderableTokenData(
       symbol,
       false,
     ) || '';
-  const usedIconUrl =
-    iconUrl ||
-    (tokenList[tokenAddress] &&
-      `images/contract/${tokenList[tokenAddress].iconUrl}`) ||
-    token?.image;
+
+  // token from dynamic api list is fetched when useTokenDetection is true
+  // And since the token.address from allTokens is checksumaddress
+  // token Address have to be changed to lowercase when we are using dynamic list
+  const tokenAddress =
+    useTokenDetection || process.env.TOKEN_DETECTION_V2
+      ? address?.toLowerCase()
+      : address;
+
+  let tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
+
+  if (!process.env.TOKEN_DETECTION_V2 && !useTokenDetection && tokenIconUrl) {
+    tokenIconUrl = `images/contract/${tokenIconUrl}`;
+  }
+  const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
@@ -97,10 +104,13 @@ export function useTokensToSearch({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const useTokenDetection = useSelector(getUseTokenDetection);
-  // token from dynamic api list is fetched when useTokenDetection is true
-  const shuffledTokenList = useTokenDetection
-    ? shuffledTokensList
-    : shuffledContractMap;
+  let shuffledTokenList = shuffledTokensList;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    // token from dynamic api list is fetched when useTokenDetection is true
+    shuffledTokenList = useTokenDetection
+      ? shuffledTokensList
+      : shuffledContractMap;
+  }
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
 

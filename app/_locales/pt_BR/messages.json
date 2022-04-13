@@ -1771,9 +1771,6 @@
   "newNFTsDetected": {
     "message": "Novidade! Detecção de NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Autorize que a MetaMask detecte NFTs automaticamente do Opensea e os exiba na sua carteira MetaMask."
-  },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
   },
@@ -2501,9 +2498,6 @@
   "signed": {
     "message": "Assinado"
   },
-  "simulationErrorMessage": {
-    "message": "É esperado que essa transação falhe. Como é esperado que sua tentativa de execução seja dispendiosa e falhe, ela não é recomendada."
-  },
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
   },
@@ -3174,9 +3168,6 @@
   },
   "tryAgain": {
     "message": "Tente novamente"
-  },
-  "tryAnywayOption": {
-    "message": "Vou tentar mesmo assim"
   },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"

@@ -1738,9 +1738,6 @@
   "newNFTsDetected": {
     "message": "Baru! Deteksi NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Izinkan MetaMask untuk mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet MetaMask Anda."
-  },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
   },
@@ -2465,9 +2462,6 @@
   "signed": {
     "message": "Ditandatangani"
   },
-  "simulationErrorMessage": {
-    "message": "Transaksi ini diperkirakan akan gagal. Pelaksanaannya diperkirakan akan mahal dan berpotensi gagal, dan tidak direkomendasikan."
-  },
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
   },
@@ -3132,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "Coba lagi"
-  },
-  "tryAnywayOption": {
-    "message": "Saya akan tetap mencobanya"
   },
   "turnOnTokenDetection": {
     "message": "Nyalakan deteksi token yang ditingkatkan"
