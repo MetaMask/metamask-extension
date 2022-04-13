@@ -12,20 +12,15 @@ export default function SIWERequestHeader({
   fromAccount,
   domain,
   isSIWEDomainValid,
+  subjectMetadata,
 }) {
   const t = useContext(I18nContext);
-
-  // const subjectMetadata = {
-  //   iconUrl: './gnosis.svg',
-  //   name: 'Gnosis - Manage Digital Assets',
-  //   origin: 'https://gnosis-safe.io',
-  // };
 
   return (
     <div className="siwe-request-header">
       <PermissionsConnectHeader
-        // iconUrl={subjectMetadata.iconUrl}
-        // iconName={subjectMetadata.name}
+        iconUrl={subjectMetadata.iconUrl}
+        iconName={subjectMetadata.name}
         headerTitle={t('SIWESiteRequestTitle')}
         headerText={t('SIWESiteRequestSubtitle')}
         siteOrigin={domain}
@@ -56,4 +51,5 @@ SIWERequestHeader.propTypes = {
   fromAccount: PropTypes.object,
   domain: PropTypes.string,
   isSIWEDomainValid: PropTypes.bool,
+  subjectMetadata: PropTypes.object,
 };

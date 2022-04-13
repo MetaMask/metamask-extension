@@ -5,10 +5,13 @@ import {
 } from '../../../selectors';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request-siwe.component';
 
 function mapStateToProps(state, ownProps) {
+  const {
+    metamask: { subjectMetadata = {} },
+  } = state;
+
   const { txData } = ownProps;
   const {
     msgParams: { from },
@@ -20,6 +23,7 @@ function mapStateToProps(state, ownProps) {
   const isLedgerWallet = isAddressLedger(state, from);
 
   return {
+    subjectMetadata,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
     // not forwarded to component
@@ -29,40 +33,21 @@ function mapStateToProps(state, ownProps) {
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const {
+    subjectMetadata,
     allAccounts,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
   } = stateProps;
-  const {
-    signPersonalMessage,
-    signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    signMessage,
-    cancelMessage,
-    txData,
-  } = ownProps;
+  const { signPersonalMessage, cancelPersonalMessage, txData } = ownProps;
 
   const {
-    type,
-    msgParams: { from },
+    msgParams: { origin, from },
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
-
-  let cancel;
-  let sign;
-
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-    cancel = cancelPersonalMessage;
-    sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-    cancel = cancelTypedMessage;
-    sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-    cancel = cancelMessage;
-    sign = signMessage;
-  }
+  const cancel = cancelPersonalMessage;
+  const sign = signPersonalMessage;
+  const targetSubjectMetadata = subjectMetadata[origin];
 
   return {
     ...ownProps,
@@ -71,6 +56,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
     cancel,
     sign,
+    subjectMetadata: targetSubjectMetadata,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
   };

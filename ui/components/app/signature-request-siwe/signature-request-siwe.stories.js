@@ -4,6 +4,11 @@ import README from './README.mdx';
 import SignatureRequestSIWE from './signature-request-siwe.component';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
+const subjectMetadata = {
+  iconUrl: '/images/logo/metamask-fox.svg',
+  name: 'Metamask',
+  origin: 'metamask.io',
+};
 
 export default {
   title: 'Components/App/SignInWithEthereum/SignatureRequestSIWE',
@@ -27,6 +32,7 @@ export default {
     clearConfirmTransaction: { action: 'Clean Confirm' },
     cancel: { action: 'Cancel' },
     sign: { action: 'Sign' },
+    subjectMetadata: { control: 'object' },
     hardwareWalletRequiresConnection: {
       action: 'hardwareWalletRequiresConnection',
     },
@@ -96,6 +102,7 @@ DefaultStory.args = {
     msgParams,
   },
   fromAccount: primaryIdentity,
+  subjectMetadata,
 };
 
 DefaultStory.storyName = 'Default';
@@ -111,6 +118,7 @@ BadDomainStory.args = {
     msgParams: badMsgParams,
   },
   fromAccount: primaryIdentity,
+  subjectMetadata,
 };
 
 BadDomainStory.storyName = 'BadDomain';

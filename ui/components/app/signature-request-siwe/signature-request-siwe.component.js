@@ -22,6 +22,7 @@ export default function SignatureRequestSIWE({
   cancel,
   sign,
   fromAccount,
+  subjectMetadata,
 }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
@@ -63,6 +64,7 @@ export default function SignatureRequestSIWE({
         fromAccount={fromAccount}
         domain={messageData.domain}
         isSIWEDomainValid={isSIWEDomainValid}
+        subjectMetadata={subjectMetadata}
       />
       <Message data={convertMsg(messageData)} />
       {!isSIWEDomainValid && (
@@ -123,6 +125,10 @@ SignatureRequestSIWE.propTypes = {
    */
   txData: PropTypes.object.isRequired,
   /**
+   * The metadata for the calling site
+   */
+  subjectMetadata: PropTypes.object.isRequired,
+  /**
    * The display content of sender account
    */
   fromAccount: PropTypes.shape({
@@ -138,4 +144,5 @@ SignatureRequestSIWE.propTypes = {
    * Handler for sign button
    */
   sign: PropTypes.func.isRequired,
+
 };

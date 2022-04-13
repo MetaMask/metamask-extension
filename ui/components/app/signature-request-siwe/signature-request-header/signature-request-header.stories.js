@@ -3,6 +3,11 @@ import testData from '../../../../../.storybook/test-data';
 import SignatureRequestHeader from '.';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
+const subjectMetadata = {
+  iconUrl: '/images/logo/metamask-fox.svg',
+  name: 'Metamask',
+  origin: 'http://localhost:8080',
+};
 
 export default {
   title: 'Components/App/SignInWithEthereum/SignatureRequestSIWEHeader',
@@ -16,6 +21,7 @@ export default {
       },
     },
     domain: { control: 'text' },
+    subjectMetadata: { control: 'object' },
   },
 };
 
@@ -26,4 +32,5 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   fromAccount: primaryIdentity,
   domain: window.location.host,
+  subjectMetadata,
 };
