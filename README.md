@@ -62,8 +62,7 @@ Our e2e test suite can be run on either Firefox or Chrome. In either case, start
 
 - Firefox e2e tests can be run with `yarn test:e2e:firefox`.
 
-- Chrome e2e tests can be run with `yarn test:e2e:chrome`. For avoiding potential errors, it is recommended to have the last version installed. 
-Update the `chromedriver` package to a version matching your local Chrome installation to run e2e tests on newer Chrome versions.
+- Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
 
 - Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js` along with the options below.
 
