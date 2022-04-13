@@ -669,8 +669,8 @@ export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
   const isProduction = process.env.METAMASK_ENVIRONMENT === 'production';
   return isProduction
-    ? ALLOWED_PROD_SWAPS_CHAIN_IDS[chainId]
-    : ALLOWED_DEV_SWAPS_CHAIN_IDS[chainId];
+    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
+    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBuyableChain(state) {
