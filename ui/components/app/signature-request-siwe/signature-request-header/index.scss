@@ -56,5 +56,19 @@
 
   }
 
+  .bad-domain {
+    .typography {
+      color: var(--color-error-default)
+    }
+  }
+
+  .domain-warning {
+    &__tooltip-container {
+      &-icon {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
 
 }

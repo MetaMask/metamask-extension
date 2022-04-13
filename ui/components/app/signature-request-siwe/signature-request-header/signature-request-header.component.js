@@ -2,10 +2,17 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import AccountListItem from '../../account-list-item';
 import { I18nContext } from '../../../../contexts/i18n';
+import Tooltip from '../../../ui/tooltip';
+import InfoIcon from '../../../ui/icon/info-icon.component';
+import { SEVERITIES } from '../../../../helpers/constants/design-system';
 
 import PermissionsConnectHeader from '../../permissions-connect-header';
 
-export default function SIWERequestHeader({ fromAccount, domain }) {
+export default function SIWERequestHeader({
+  fromAccount,
+  domain,
+  isSIWEDomainValid,
+}) {
   const t = useContext(I18nContext);
 
   // const subjectMetadata = {
@@ -22,9 +29,22 @@ export default function SIWERequestHeader({ fromAccount, domain }) {
         headerTitle={t('SIWESiteRequestTitle')}
         headerText={t('SIWESiteRequestSubtitle')}
         siteOrigin={domain}
+        className={!isSIWEDomainValid && 'bad-domain'}
+        rightIcon={
+          !isSIWEDomainValid && (
+            <Tooltip
+              position="bottom"
+              html={<p>{t('SIWEWarningBody', [domain])}</p>}
+              wrapperClassName="domain-warning__tooltip-wrapper"
+              containerClassName="domain-warning__tooltip-container"
+            >
+              <div className="domain-warning__tooltip-container-icon">
+                <InfoIcon severity={SEVERITIES.DANGER} />
+              </div>
+            </Tooltip>
+          )
+        }
       />
-      {/* <div className="title">{t('SIWESiteRequestTitle')}</div>
-      <div className="subtitle">{t('SIWESiteRequestSubtitle')}</div> */}
       <div className="siwe-request-header--account">
         {fromAccount && <AccountListItem account={fromAccount} />}
       </div>
@@ -35,4 +55,5 @@ export default function SIWERequestHeader({ fromAccount, domain }) {
 SIWERequestHeader.propTypes = {
   fromAccount: PropTypes.object,
   domain: PropTypes.string,
+  isSIWEDomainValid: PropTypes.bool,
 };

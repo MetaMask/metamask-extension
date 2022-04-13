@@ -59,11 +59,17 @@ export default function SignatureRequestSIWE({
 
   return (
     <div className="signature-request page-container">
-      <Header fromAccount={fromAccount} domain={messageData.domain} />
+      <Header
+        fromAccount={fromAccount}
+        domain={messageData.domain}
+        isSIWEDomainValid={isSIWEDomainValid}
+      />
       <Message data={convertMsg(messageData)} />
       {!isSIWEDomainValid && (
         <div className="domain-mismatch-warning">
-          <ErrorMessage errorKey="SIWEDomainInvalid" />
+          <ErrorMessage
+            errorMessage={t('SIWEDomainInvalid', [messageData.domain])}
+          />
         </div>
       )}
       <PageContainerFooter
@@ -102,7 +108,7 @@ export default function SignatureRequestSIWE({
               onClick={() => setAgreeToDomainWarning((checked) => !checked)}
             />
             <label className="checkbox-label" htmlFor="domainWarning_checkbox">
-              {t('SIWEWarningBody')}
+              {t('SIWEWarningBody', [messageData.domain])}
             </label>
           </div>
         </Popover>

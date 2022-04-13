@@ -2948,7 +2948,7 @@
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "SIWEDomainInvalid": {
-    "message": "The domain does not match the site you are attempting to sign-in to. Proceed with caution."
+    "message": "The website you are attempting to sign-in to ($1) does not match the domain in the sign-in request. Proceed with caution."
   },
   "SIWESiteRequestSubtitle": {
     "message": "This site is requesting to sign in with"
@@ -2957,7 +2957,7 @@
     "message": "Sign-in request"
   },
   "SIWEWarningBody": {
-    "message": "The domain does not match the site you are attempting to sign-in to. They may be trying to deceive you."
+    "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack."
   },
   "SIWEWarningTitle": {
     "message": "Are you sure?"

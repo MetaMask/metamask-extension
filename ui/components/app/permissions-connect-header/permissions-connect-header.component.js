@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
 import {
@@ -18,6 +19,7 @@ export default class PermissionsConnectHeader extends Component {
   ///: END:ONLY_INCLUDE_IN
 
   static propTypes = {
+    className: PropTypes.string,
     iconUrl: PropTypes.string,
     iconName: PropTypes.string.isRequired,
     siteOrigin: PropTypes.string.isRequired,
@@ -27,6 +29,7 @@ export default class PermissionsConnectHeader extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     snapVersion: PropTypes.string,
     isSnapInstall: PropTypes.bool,
+    rightIcon: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -38,6 +41,7 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   renderHeaderIcon() {
+<<<<<<< HEAD
     const {
       iconUrl,
       iconName,
@@ -52,6 +56,9 @@ export default class PermissionsConnectHeader extends Component {
       return null;
     }
     ///: END:ONLY_INCLUDE_IN
+=======
+    const { iconUrl, iconName, siteOrigin, rightIcon } = this.props;
+>>>>>>> 3280aca91 (domain warning updates)
 
     return (
       <div className="permissions-connect-header__icon">
@@ -60,6 +67,7 @@ export default class PermissionsConnectHeader extends Component {
           siteOrigin={siteOrigin}
           iconSrc={iconUrl}
           name={iconName}
+          rightIcon={rightIcon}
         />
       </div>
     );
@@ -68,6 +76,7 @@ export default class PermissionsConnectHeader extends Component {
   render() {
     const {
       boxProps,
+      className,
       headerTitle,
       headerText,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -78,7 +87,7 @@ export default class PermissionsConnectHeader extends Component {
     } = this.props;
     return (
       <Box
-        className="permissions-connect-header"
+        className={classnames('permissions-connect-header', className)}
         flexDirection={FLEX_DIRECTION.COLUMN}
         justifyContent={JUSTIFY_CONTENT.CENTER}
         {...boxProps}
