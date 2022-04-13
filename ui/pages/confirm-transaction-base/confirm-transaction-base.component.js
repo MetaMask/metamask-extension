@@ -560,13 +560,18 @@ export default class ConfirmTransactionBase extends Component {
     const simulationFailureWarning = () => (
       <div className="confirm-page-container-content__error-container">
         <ActionableMessage
+          message={t('simulationErrorMessageV2')}
+          useIcon
+          iconFillColor="var(--color-error-default)"
           type="danger"
-          primaryAction={{
-            label: this.context.t('tryAnywayOption'),
-            onClick: () => this.setUserAcknowledgedGasMissing(),
-          }}
-          message={this.context.t('simulationErrorMessage')}
-          roundedButtons
+          primaryActionV2={
+            userAcknowledgedGasMissing === true
+              ? undefined
+              : {
+                  label: t('proceedWithTransaction'),
+                  onClick: () => this.setUserAcknowledgedGasMissing(),
+                }
+          }
         />
       </div>
     );
@@ -593,7 +598,9 @@ export default class ConfirmTransactionBase extends Component {
               : () => this.handleEditGas()
           }
           rows={[
-            renderSimulationFailureWarning && simulationFailureWarning(),
+            renderSimulationFailureWarning &&
+              !this.supportsEIP1559V2 &&
+              simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
               renderGasDetailsItem(),
@@ -1034,10 +1041,6 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
-    const isDisabled = () => {
-      return userAcknowledgedGasMissing ? false : !valid;
-    };
-
     let functionType;
     if (txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
       functionType = getMethodName(name);
@@ -1089,7 +1092,6 @@ export default class ConfirmTransactionBase extends Component {
           lastTx={lastTx}
           ofText={ofText}
           requestsWaitingText={requestsWaitingText}
-          hideUserAcknowledgedGasMissing={!isDisabled()}
           disabled={
             renderSimulationFailureWarning ||
             !valid ||
@@ -1101,7 +1103,6 @@ export default class ConfirmTransactionBase extends Component {
           onCancelAll={() => this.handleCancelAll()}
           onCancel={() => this.handleCancel()}
           onSubmit={() => this.handleSubmit()}
-          setUserAcknowledgedGasMissing={this.setUserAcknowledgedGasMissing}
           hideSenderToRecipient={hideSenderToRecipient}
           origin={txData.origin}
           ethGasPriceWarning={ethGasPriceWarning}
