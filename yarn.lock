@@ -2776,6 +2776,7 @@
   integrity sha512-sWfzsUe59UH2Y1A7czRjhPmYrWlg4UQDOUPdf+lY7kbXwYrlF/ZUvhQYajdgJVchv2yDzr+cFhWF7DmNb5NyTQ==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@metamask/controllers@^27.1.1":
   version "27.1.1"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-27.1.1.tgz#b3288bfd05e381e9e32ed60b68a09b2855db1140"
@@ -2786,6 +2787,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-26.0.0.tgz#3df4a3071ffb26d357ba99f288d52fb9d913c35a"
   integrity sha512-iAWDoP/omxGzPfYyBFRNPJ32zcYvZHnUhIM2LyWoCwQj9ZYC1qh+dDX6I0O5jEeQcBrEb+Nl6AcnwHKVdEUz5Q==
 >>>>>>> 234c7d061 (resetting yarn lock to origin/develop)
+=======
+"@metamask/controllers@./metamask-controllers-27.1.1.tgz", "@metamask/controllers@^27.1.1":
+  version "27.1.1"
+  resolved "./metamask-controllers-27.1.1.tgz#251b79062ea383ccedb24c139d8b3d65696bc5c1"
+>>>>>>> b86959b8c (updating close button color)
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
@@ -2823,15 +2829,21 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
+<<<<<<< HEAD
 "@metamask/controllers@^28.0.0":
   version "28.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-28.0.0.tgz#dbde11df635daeb9d73ff989cb274f94f913ff39"
   integrity sha512-ABIZ5OO6g9DzyKrDB0yr1KzyleqVZ4V2d9S8jaToz5AaDZ0tnVkcKptCtRfhzV8xC23xynKjoO7cU9ZkDXBbjw==
+=======
+"@metamask/controllers@^26.0.0":
+  version "26.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-26.0.0.tgz#3df4a3071ffb26d357ba99f288d52fb9d913c35a"
+  integrity sha512-iAWDoP/omxGzPfYyBFRNPJ32zcYvZHnUhIM2LyWoCwQj9ZYC1qh+dDX6I0O5jEeQcBrEb+Nl6AcnwHKVdEUz5Q==
+>>>>>>> b86959b8c (updating close button color)
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
-    "@keystonehq/metamask-airgapped-keyring" "^0.3.0"
-    "@metamask/contract-metadata" "^1.33.0"
+    "@metamask/contract-metadata" "^1.31.0"
     "@metamask/metamask-eth-abis" "3.0.0"
     "@metamask/types" "^1.1.0"
     "@types/uuid" "^8.3.0"
@@ -2843,7 +2855,7 @@
     eth-json-rpc-infura "^5.1.0"
     eth-keyring-controller "^6.2.1"
     eth-method-registry "1.1.0"
-    eth-phishing-detect "^1.1.16"
+    eth-phishing-detect "^1.1.14"
     eth-query "^2.1.2"
     eth-rpc-errors "^4.0.0"
     eth-sig-util "^3.0.0"
