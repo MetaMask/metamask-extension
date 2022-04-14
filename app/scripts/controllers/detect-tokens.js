@@ -6,6 +6,8 @@ import { MINUTE } from '../../../shared/constants/time';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { TOKEN_STANDARDS } from '../../../ui/helpers/constants/common';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -26,6 +28,7 @@ export default class DetectTokensController {
    * @param config.tokenList
    * @param config.tokensController
    * @param config.assetsContractController
+   * @param config.trackMetaMetricsEvent
    */
   constructor({
     interval = DEFAULT_INTERVAL,
@@ -35,6 +38,7 @@ export default class DetectTokensController {
     tokenList,
     tokensController,
     assetsContractController = null,
+    trackMetaMetricsEvent,
   } = {}) {
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
@@ -51,6 +55,7 @@ export default class DetectTokensController {
     this.detectedTokens = process.env.TOKEN_DETECTION_V2
       ? this.tokensController?.state.detectedTokens
       : [];
+    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
       if (
@@ -172,6 +177,20 @@ export default class DetectTokensController {
               iconUrl,
               aggregators,
             } = tokenList[nonZeroTokenAddress];
+
+            this._trackMetaMetricsEvent({
+              event: 'Token Detected',
+              category: 'Wallet',
+              properties: {
+                token_symbol: symbol,
+                token_contract_address: address,
+                token_decimal_precision: decimals,
+                source: 'autodetection',
+                token_standard: TOKEN_STANDARDS.ERC20,
+                asset_type: ASSET_TYPES.TOKEN,
+              },
+            });
+
             tokensWithBalance.push({
               address,
               symbol,
@@ -180,6 +199,7 @@ export default class DetectTokensController {
               aggregators,
             });
           }
+
           if (tokensWithBalance.length > 0) {
             await this.tokensController.addDetectedTokens(tokensWithBalance);
           }
