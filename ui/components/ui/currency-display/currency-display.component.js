@@ -35,8 +35,10 @@ export default function CurrencyDisplay({
       style={style}
       title={(!hideTitle && title) || null}
     >
-      {prefixComponent}
-      <span className="currency-display-component__text">AAA
+      <span className="currency-display-component__prefix">
+        {prefixComponent}
+      </span>
+      <span className="currency-display-component__text">
         {parts.prefix}
         {parts.value}
       </span>

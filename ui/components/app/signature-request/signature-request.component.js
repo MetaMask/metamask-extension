@@ -41,7 +41,7 @@ export default class SignatureRequest extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   state = {
@@ -73,17 +73,16 @@ export default class SignatureRequest extends PureComponent {
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
-    const { metricsEvent } = this.context;
+    const { trackEvent } = this.context;
 
     const onSign = (event) => {
       sign(event);
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
+      trackEvent({
+        category: 'Transactions',
+        event: 'Confirm',
+        properties: {
           action: 'Sign Request',
-          name: 'Confirm',
-        },
-        customVariables: {
+          legacy_event: true,
           type,
           version,
         },
@@ -92,13 +91,12 @@ export default class SignatureRequest extends PureComponent {
 
     const onCancel = (event) => {
       cancel(event);
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
+      trackEvent({
+        category: 'Transactions',
+        event: 'Cancel',
+        properties: {
           action: 'Sign Request',
-          name: 'Cancel',
-        },
-        customVariables: {
+          legacy_event: true,
           type,
           version,
         },

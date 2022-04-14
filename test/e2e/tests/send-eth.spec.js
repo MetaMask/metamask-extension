@@ -190,7 +190,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement(
-          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div',
+          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > label > div',
         );
         const advancedGasTitle = await driver.findElement({
           text: 'Advanced gas controls',
@@ -198,7 +198,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         });
         await driver.scrollToElement(advancedGasTitle);
         await driver.clickElement(
-          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > div > div',
+          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > label > div',
         );
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
@@ -245,6 +245,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await gasPriceInput.fill('100');
         await driver.delay(1000);
         await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.delay(1000);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);

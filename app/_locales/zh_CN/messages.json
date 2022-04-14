@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "添加推荐代币"
   },
-  "addToAddressBook": {
-    "message": "添加地址簿"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "如：John D."
-  },
   "addToken": {
     "message": "添加代币"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS 查找失败。"
   },
-  "enterAnAlias": {
-    "message": "输入别名"
-  },
   "enterMaxSpendLimit": {
     "message": "输入最高消费额度"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "最后连接"
   },
-  "layer1Fees": {
-    "message": "1层费用"
-  },
   "learmMoreAboutGas": {
     "message": "想要有关燃料$1？"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "新功能！NFT 检测"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "允许 MetaMask自动检测Opensea 的 NFT，并在您的 MetaMask钱包中显示。"
   },
   "newNetworkAdded": {
     "message": "成功添加了“$1”！"
@@ -2477,9 +2462,6 @@
   "signed": {
     "message": "已签名"
   },
-  "simulationErrorMessage": {
-    "message": "此交易预计将失败。尝试执行该交易预计将是昂贵的，但失败，不推荐。"
-  },
   "simulationErrorMessageV2": {
     "message": "我们无法估计燃料。合同中可能有一个错误，这笔交易可能失败。"
   },
@@ -3144,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "重试"
-  },
-  "tryAnywayOption": {
-    "message": "我仍然会试"
   },
   "turnOnTokenDetection": {
     "message": "打开增强代币检测"

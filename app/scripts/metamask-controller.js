@@ -40,6 +40,9 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  RateLimitController,
+  ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -74,7 +77,6 @@ import { MILLISECOND } from '../../shared/constants/time';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
-  PLATFORM_FIREFOX,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -82,8 +84,8 @@ import {
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
-import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -134,10 +136,7 @@ import {
   buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getPlatform } from './lib/util';
-///: END:ONLY_INCLUDE_IN
+import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -161,7 +160,7 @@ export default class MetamaskController extends EventEmitter {
       MILLISECOND * 200,
     );
     this.opts = opts;
-    this.extension = opts.extension;
+    this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
@@ -234,16 +233,35 @@ export default class MetamaskController extends EventEmitter {
       config: { provider: this.provider },
       state: initState.TokensController,
     });
-
-    this.assetsContractController = new AssetsContractController(
-      {
-        onPreferencesStateChange: (listener) =>
-          this.preferencesController.store.subscribe(listener),
-      },
-      {
-        provider: this.provider,
-      },
-    );
+    process.env.TOKEN_DETECTION_V2
+      ? (this.assetsContractController = new AssetsContractController({
+          onPreferencesStateChange: (listener) =>
+            this.preferencesController.store.subscribe(listener),
+          onNetworkStateChange: (cb) =>
+            this.networkController.store.subscribe((networkState) => {
+              const modifiedNetworkState = {
+                ...networkState,
+                provider: {
+                  ...networkState.provider,
+                  chainId: hexToDecimal(networkState.provider.chainId),
+                },
+              };
+              return cb(modifiedNetworkState);
+            }),
+          config: {
+            provider: this.provider,
+          },
+          state: initState.AssetsContractController,
+        }))
+      : (this.assetsContractController = new AssetsContractController(
+          {
+            onPreferencesStateChange: (listener) =>
+              this.preferencesController.store.subscribe(listener),
+          },
+          {
+            provider: this.provider,
+          },
+        ));
 
     this.collectiblesController = new CollectiblesController(
       {
@@ -319,6 +337,10 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
+    this.on('update', (update) => {
+      this.metaMetricsController.handleMetaMaskStateUpdate(update);
+    });
+
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
       name: 'GasFeeController',
     });
@@ -380,33 +402,50 @@ export default class MetamaskController extends EventEmitter {
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
-    this.tokenListController = new TokenListController({
-      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      useStaticTokenList: !this.preferencesController.store.getState()
-        .useTokenDetection,
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            provider: {
-              ...networkState.provider,
-              chainId: hexToDecimal(networkState.provider.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
-      onPreferencesStateChange: (cb) =>
-        this.preferencesController.store.subscribe((preferencesState) => {
-          const modifiedPreferencesState = {
-            ...preferencesState,
-            useStaticTokenList: !this.preferencesController.store.getState()
-              .useTokenDetection,
-          };
-          return cb(modifiedPreferencesState);
-        }),
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
+    process.env.TOKEN_DETECTION_V2
+      ? (this.tokenListController = new TokenListController({
+          chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+          onNetworkStateChange: (cb) =>
+            this.networkController.store.subscribe((networkState) => {
+              const modifiedNetworkState = {
+                ...networkState,
+                provider: {
+                  ...networkState.provider,
+                  chainId: hexToDecimal(networkState.provider.chainId),
+                },
+              };
+              return cb(modifiedNetworkState);
+            }),
+          messenger: tokenListMessenger,
+          state: initState.TokenListController,
+        }))
+      : (this.tokenListController = new TokenListController({
+          chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+          useStaticTokenList: !this.preferencesController.store.getState()
+            .useTokenDetection,
+          onNetworkStateChange: (cb) =>
+            this.networkController.store.subscribe((networkState) => {
+              const modifiedNetworkState = {
+                ...networkState,
+                provider: {
+                  ...networkState.provider,
+                  chainId: hexToDecimal(networkState.provider.chainId),
+                },
+              };
+              return cb(modifiedNetworkState);
+            }),
+          onPreferencesStateChange: (cb) =>
+            this.preferencesController.store.subscribe((preferencesState) => {
+              const modifiedPreferencesState = {
+                ...preferencesState,
+                useStaticTokenList: !this.preferencesController.store.getState()
+                  .useTokenDetection,
+              };
+              return cb(modifiedPreferencesState);
+            }),
+          messenger: tokenListMessenger,
+          state: initState.TokenListController,
+        }));
 
     this.phishingController = new PhishingController();
 
@@ -589,7 +628,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.2',
+        'https://metamask.github.io/iframe-execution-environment/0.4.3',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -613,10 +652,7 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const usingFirefox = getPlatform() === PLATFORM_FIREFOX;
-
     this.snapController = new SnapController({
-      npmRegistryUrl: usingFirefox ? 'https://registry.npmjs.cf/' : undefined,
       endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
@@ -634,15 +670,45 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapController,
       messenger: snapControllerMessenger,
     });
+
+    this.rateLimitController = new RateLimitController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'RateLimitController',
+      }),
+      implementations: {
+        showNativeNotification: (origin, message) => {
+          const subjectMetadataState = this.controllerMessenger.call(
+            'SubjectMetadataController:getState',
+          );
+
+          const originMetadata = subjectMetadataState.subjectMetadata[origin];
+
+          this.platform._showNotification(
+            originMetadata?.name ?? origin,
+            message,
+          );
+          return null;
+        },
+      },
+    });
     ///: END:ONLY_INCLUDE_IN
 
-    this.detectTokensController = new DetectTokensController({
-      preferences: this.preferencesController,
-      tokensController: this.tokensController,
-      network: this.networkController,
-      keyringMemStore: this.keyringController.memStore,
-      tokenList: this.tokenListController,
-    });
+    process.env.TOKEN_DETECTION_V2
+      ? (this.detectTokensController = new DetectTokensController({
+          preferences: this.preferencesController,
+          tokensController: this.tokensController,
+          assetsContractController: this.assetsContractController,
+          network: this.networkController,
+          keyringMemStore: this.keyringController.memStore,
+          tokenList: this.tokenListController,
+        }))
+      : (this.detectTokensController = new DetectTokensController({
+          preferences: this.preferencesController,
+          tokensController: this.tokensController,
+          network: this.networkController,
+          keyringMemStore: this.keyringController.memStore,
+          tokenList: this.tokenListController,
+        }));
 
     this.addressBookController = new AddressBookController(
       undefined,
@@ -717,6 +783,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
+      getTokenStandardAndDetails: this.assetsContractController.getTokenStandardAndDetails.bind(
+        this.assetsContractController,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -750,7 +819,7 @@ export default class MetamaskController extends EventEmitter {
             from: userAddress,
           } = txMeta.txParams;
           const { chainId } = txMeta;
-          const transactionData = getTransactionData(data);
+          const transactionData = parseStandardTokenTransactionData(data);
           const tokenAmountOrTokenId = getTokenValueParam(transactionData);
           const { allCollectibles } = this.collectiblesController.state;
 
@@ -974,7 +1043,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Lazily update the store with the current extension environment
-    this.extension.runtime.getPlatformInfo(({ os }) => {
+    this.extension.runtime.getPlatformInfo().then(({ os }) => {
       this.appStateController.setBrowserEnvironment(
         os,
         // This method is presently only supported by Firefox
@@ -1003,10 +1072,10 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:add',
         ),
         clearSnapState: (fromSubject) =>
-          this.controllerMessenger(
-            'SnapController:updateSnap',
+          this.controllerMessenger.call(
+            'SnapController:updateSnapState',
             fromSubject,
-            {},
+            null,
           ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
         getSnap: this.controllerMessenger.call.bind(
@@ -1017,22 +1086,24 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getRpcMessageHandler',
         ),
-        getSnapState: async (...args) => {
-          // TODO:flask Just return the action result directly in the next
-          // @metamask/snap-controllers update.
-          return (
-            (await this.controllerMessenger.call(
-              'SnapController:getSnapState',
-              ...args,
-            )) ?? null
-          );
-        },
+        getSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnapState',
+        ),
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
+        showNotification: (origin, args) =>
+          this.controllerMessenger.call(
+            'RateLimitController:call',
+            origin,
+            'showNativeNotification',
+            origin,
+            args.message,
+          ),
         updateSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:updateSnapState',
@@ -1303,6 +1374,7 @@ export default class MetamaskController extends EventEmitter {
       tokensController,
       smartTransactionsController,
       txController,
+      assetsContractController,
     } = this;
 
     return {
@@ -1552,6 +1624,9 @@ export default class MetamaskController extends EventEmitter {
         txController,
       ),
 
+      updatePreviousGasParams: txController.updatePreviousGasParams.bind(
+        txController,
+      ),
       // messageManager
       signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),
@@ -1778,6 +1853,22 @@ export default class MetamaskController extends EventEmitter {
       detectCollectibles: process.env.COLLECTIBLES_V1
         ? collectibleDetectionController.detectCollectibles.bind(
             collectibleDetectionController,
+          )
+        : null,
+
+      /** Token Detection V2 */
+      addDetectedTokens: process.env.TOKEN_DETECTION_V2
+        ? tokensController.addDetectedTokens.bind(tokensController)
+        : null,
+      importTokens: process.env.TOKEN_DETECTION_V2
+        ? tokensController.importTokens.bind(tokensController)
+        : null,
+      ignoreTokens: process.env.TOKEN_DETECTION_V2
+        ? tokensController.ignoreTokens.bind(tokensController)
+        : null,
+      getBalancesInSingleCall: process.env.TOKEN_DETECTION_V2
+        ? assetsContractController.getBalancesInSingleCall.bind(
+            assetsContractController,
           )
         : null,
     };
@@ -3306,6 +3397,17 @@ export default class MetamaskController extends EventEmitter {
     // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    engine.push(
+      createRPCMethodTrackingMiddleware({
+        trackEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+        getMetricsState: this.metaMetricsController.store.getState.bind(
+          this.metaMetricsController.store,
+        ),
+      }),
+    );
 
     // onboarding
     if (subjectType === SUBJECT_TYPES.WEBSITE) {

@@ -154,6 +154,54 @@
  *  the page view
  */
 
+/**
+ * @typedef {Object} Traits
+ * @property {'address_book_entries'} ADDRESS_BOOK_ENTRIES - When the user
+ *  adds or modifies addresses in address book the address_book_entries trait
+ *  is identified.
+ * @property {'ledger_connection_type'} LEDGER_CONNECTION_TYPE - when ledger
+ *  live connnection type is changed we identify the ledger_connection_type
+ *  trait
+ * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
+ *  we identify the networks_added trait
+ * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
+ *  change, we identify the new number_of_accounts trait
+ * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
+ *  trait for number of unique NFT addresses
+ * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
+ *  toggled we identify the 3box_enabled trait
+ */
+
+/**
+ *
+ * @type {Traits}
+ */
+
+export const TRAITS = {
+  ADDRESS_BOOK_ENTRIES: 'address_book_entries',
+  LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
+  NETWORKS_ADDED: 'networks_added',
+  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
+  NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  THREE_BOX_ENABLED: 'three_box_enabled',
+};
+
+/**
+ * @typedef {Object} MetaMetricsTraits
+ * @property {number} [address_book_entries] - The number of entries in the
+ *  user's address book.
+ * @property {'ledgerLive' | 'webhid' | 'u2f'} [ledger_connection_type] - the
+ *  type of ledger connection set by user preference.
+ * @property {Array<string>} [networks_added] - An array consisting of chainIds
+ *  that indicate the networks a user has added to their MetaMask.
+ * @property {number} [number_of_accounts] - A number representing the number
+ *  of identities(accounts) added to the user's MetaMask.
+ * @property {number} [number_of_nft_collections] - A number representing the
+ *  amount of different NFT collections the user possesses an NFT from.
+ * @property {boolean} [three_box_enabled] - does the user have 3box sync
+ *  enabled?
+ */
+
 // Mixpanel converts the zero address value to a truly anonymous event, which
 // speeds up reporting
 export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000';
@@ -189,3 +237,10 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
 export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTFICIATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
+
+export const EVENT_NAMES = {
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  DECRYPTION_REQUESTED: 'Decryption Requested',
+  PERMISSIONS_REQUESTED: 'Permissions Requested',
+};

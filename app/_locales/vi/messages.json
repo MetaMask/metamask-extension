@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Thêm token được đề xuất"
   },
-  "addToAddressBook": {
-    "message": "Thêm vào sổ địa chỉ"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ví dụ: John D."
-  },
   "addToken": {
     "message": "Thêm token"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Tra Cứu ENS thất bại."
   },
-  "enterAnAlias": {
-    "message": "Nhập một biệt danh"
-  },
   "enterMaxSpendLimit": {
     "message": "Nhập giới hạn chi tiêu tối đa"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
   },
-  "layer1Fees": {
-    "message": "Phí Lớp 1"
-  },
   "learmMoreAboutGas": {
     "message": "Muốn $1 về gas?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "Mới! Phát hiện NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ Opensea và hiển thị trong ví MetaMask của bạn."
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
@@ -2477,9 +2462,6 @@
   "signed": {
     "message": "Đã ký"
   },
-  "simulationErrorMessage": {
-    "message": "Giao dịch này có khả năng thất bại. Việc cố gắng thực hiện sẽ được cho là gây tốn kém nhưng lại không thành công và không được khuyến khích."
-  },
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
   },
@@ -3144,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "Thử lại"
-  },
-  "tryAnywayOption": {
-    "message": "Tôi vẫn sẽ thử"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"

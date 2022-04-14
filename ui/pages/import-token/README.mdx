@@ -1,0 +1,31 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import ImportToken from './import-token.component';
+
+import testData from '../../../.storybook/test-data';
+import configureStore from '../../store/store';
+const store = configureStore(testData);
+const { metamask } = store.getState();
+
+export const PersonalAddress = () => <code>{metamask.selectedAddress}</code>
+
+# ImportToken
+
+The `ImportToken` component allows a user to import custom tokens in one of two ways:
+1. By searching for one
+2. By importing one by `Token Contract Address`
+
+<Canvas>
+  <Story id="ui-pages-import-token-import-token-stories-js--default-story" />
+</Canvas>
+
+## Example inputs
+
+An example input that works, to enable the `Add Custom Token` button is `0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`.
+
+### Personal address error
+To show the personal address detected error, input the address <PersonalAddress/> in the `Token Contract Address` field.
+
+## Component API
+
+<ArgsTable of={ImportToken} />

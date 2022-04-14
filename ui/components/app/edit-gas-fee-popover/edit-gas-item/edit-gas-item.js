@@ -87,7 +87,7 @@ const EditGasItem = ({ priorityLevel }) => {
         },
       });
 
-      closeModal('editGasFee');
+      closeModal(['editGasFee']);
 
       if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
         updateTransactionToTenPercentIncreasedGasFee();
@@ -136,7 +136,9 @@ const EditGasItem = ({ priorityLevel }) => {
           <div className="edit-gas-item__maxfee">
             <LoadingHeartBeat
               backgroundColor={
-                priorityLevel === estimateUsed ? '#f2f3f4' : '#fff'
+                priorityLevel === estimateUsed
+                  ? 'var(--color-background-alternative)'
+                  : 'var(--color-background-default)'
               }
               estimateUsed={priorityLevel}
             />

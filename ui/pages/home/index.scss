@@ -6,7 +6,7 @@
 
   &__main-view {
     flex: 1 1 66.5%;
-    background: var(--white);
+    background: var(--color-background-default);
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -30,12 +30,12 @@
     @include H6;
 
     flex-grow: 1;
-    color: var(--Grey-500);
+    color: var(--color-icon-default);
     font-weight: 500;
   }
 
   &__main-view &__tab--active {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
   }
 
   &__main-view &__tab button {
@@ -50,7 +50,7 @@
 
     padding-left: 24px;
     padding-right: 24px;
-    color: var(--Grey-800);
+    color: var(--color-text-default);
 
     div {
       margin-bottom: 20px;
@@ -103,7 +103,7 @@
 
       a,
       a:hover {
-        color: var(--dodger-blue);
+        color: var(--color-primary-alternative);
         cursor: pointer;
       }
     }
@@ -130,7 +130,7 @@
     text-align: center;
 
     a {
-      color: var(--primary-1);
+      color: var(--color-primary-default);
     }
   }
 
@@ -138,22 +138,42 @@
     margin-bottom: 50px;
   }
 
-  &__new-network-notification-message {
+  &__new-network-notification {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
-    &--image {
-      margin-right: 10px;
+    &-icon {
+      margin-right: 8px;
+      padding-top: 8px;
+      color: var(--color-success-default);
     }
-  }
 
-  &__close {
-    color: var(--ui-black);
-    background: none;
-    margin-left: 20px;
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 20px;
+    }
   }
 
   &__error-message {
     left: 8px;
+  }
+
+  &__new-nft-notification {
+    margin-bottom: 24px;
+    margin-right: 8px;
+
+    &-icon {
+      margin-right: 10px;
+      padding-top: 6px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-left: 44px;
+    }
   }
 }

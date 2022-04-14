@@ -7,6 +7,7 @@ export const RestrictedMethods = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   wallet_getLanguage:'wallet_getLanguage',
   snap_confirm: 'snap_confirm',
+  snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
   'snap_getBip44Entropy_*': 'snap_getBip44Entropy_*',
   'wallet_snap_*': 'wallet_snap_*',
@@ -24,5 +25,5 @@ export const EndowmentPermissions = Object.freeze({
 });
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedSnapPermissions = new Set(['snap_notify']);
+export const ExcludedSnapPermissions = new Set([]);
 ///: END:ONLY_INCLUDE_IN

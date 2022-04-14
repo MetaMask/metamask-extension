@@ -110,7 +110,7 @@ export const WithIcon = (args) => <ActionableMessage {...args} />;
 WithIcon.args = {
   className: 'actionable-message--left-aligned actionable-message--warning',
   useIcon: true,
-  iconFillColor: '#f8c000',
+  iconFillColor: 'var(--color-waring-default)',
 };
 
 export const PrimaryV2Action = (args) => <ActionableMessage {...args} />;
@@ -119,7 +119,7 @@ PrimaryV2Action.args = {
   message:
     'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
   useIcon: true,
-  iconFillColor: '#d73a49',
+  iconFillColor: 'var(--color-error-default)',
   type: 'danger',
   primaryActionV2: {
     label: 'I want to proceed anyway',

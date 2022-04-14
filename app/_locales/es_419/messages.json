@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -982,9 +976,6 @@
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
@@ -1463,9 +1454,6 @@
   "lastConnected": {
     "message": "Última conexión"
   },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
-  },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"
   },
@@ -1798,9 +1786,6 @@
   },
   "newNFTsDetected": {
     "message": "¡Nuevo! Detección NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Permitir que MetaMask detecte automáticamente NFT de Opensea y los muestre en su cartera MetaMask."
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -2529,9 +2514,6 @@
   "signed": {
     "message": "Firmado"
   },
-  "simulationErrorMessage": {
-    "message": "Se anticipa que esta transacción falle. En caso de intentar ejecutarla, se anticipa que eso sea costoso y a la vez falle, y por lo tanto no se recomienda."
-  },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
@@ -3202,9 +3184,6 @@
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
-  },
-  "tryAnywayOption": {
-    "message": "Lo intentaré de todos modos"
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"

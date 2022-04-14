@@ -1,6 +1,5 @@
 @import 'account-details-modal/index';
 @import 'account-modal-container/index';
-@import 'add-to-addressbook-modal/index';
 @import 'cancel-transaction/index';
 @import 'confirm-remove-account/index';
 @import 'deposit-ether-modal/index';
@@ -24,7 +23,7 @@
 
   &__content {
     margin: 0;
-    background-color: white;
+    background-color: var(--color-background-default);
     animation-fill-mode: forwards;
   }
 
@@ -35,7 +34,7 @@
     bottom: 0;
     left: 0;
     z-index: 1040;
-    background-color: #373a47;
+    background-color: var(--color-overlay-alterantive);
     animation-fill-mode: forwards;
     animation-duration: 0.3s;
   }

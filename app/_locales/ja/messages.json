@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "推奨されたトークンを追加"
   },
-  "addToAddressBook": {
-    "message": "アドレス帳に追加"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "例: John D."
-  },
   "addToken": {
     "message": "トークンを追加"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
   },
-  "enterAnAlias": {
-    "message": "別名を入力してください"
-  },
   "enterMaxSpendLimit": {
     "message": "使用限度額の最大値を入力してください"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "前回の接続"
   },
-  "layer1Fees": {
-    "message": "レイヤー1手数料"
-  },
   "learmMoreAboutGas": {
     "message": "ガスについて$1しますか?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "新機能! NFT検出"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMaskがOpenseからNFTを自動的に検出し、MetaMaskウォレットに表示できるようにします。"
   },
   "newNetworkAdded": {
     "message": "「$1」が追加されました!"
@@ -2477,9 +2462,6 @@
   "signed": {
     "message": "署名が完了しました"
   },
-  "simulationErrorMessage": {
-    "message": "このトランザクションは失敗する見込みです。実行しようとすると多くのコストがかかるうえに失敗する可能性が高いため、お勧めしません。"
-  },
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もれませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
@@ -3144,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "再試行"
-  },
-  "tryAnywayOption": {
-    "message": "とにかく試してみる"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"

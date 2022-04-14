@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Добавить рекомендованные токены"
   },
-  "addToAddressBook": {
-    "message": "Добавить в адресную книгу"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр., Джон Д."
-  },
   "addToken": {
     "message": "Добавить токен"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Ошибка поиска ENS."
   },
-  "enterAnAlias": {
-    "message": "Ввести псевдоним"
-  },
   "enterMaxSpendLimit": {
     "message": "Введите максимальный лимит расходов"
   },
@@ -1414,9 +1405,6 @@
   "lastConnected": {
     "message": "Последнее подключение"
   },
-  "layer1Fees": {
-    "message": "Комиссии 1-го уровня"
-  },
   "learmMoreAboutGas": {
     "message": "Хотите $1 о газе?"
   },
@@ -1749,9 +1737,6 @@
   },
   "newNFTsDetected": {
     "message": "Новинка! Обнаружение NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Разрешите MetaMask автоматически обнаруживать NFT из Opensea и отображать их в вашем кошельке MetaMask."
   },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
@@ -2477,9 +2462,6 @@
   "signed": {
     "message": "Подписано"
   },
-  "simulationErrorMessage": {
-    "message": "Ожидается, что эта транзакция завершится неудачно. Предполагается, что попытка выполнить ее будет дорогостоящей, но потерпит неудачу, и поэтому ее не рекомендуется выполнять."
-  },
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
   },
@@ -3144,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"
-  },
-  "tryAnywayOption": {
-    "message": "Я все равно попробую"
   },
   "turnOnTokenDetection": {
     "message": "Включите расширенное обнаружение токенов"

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   prepareToLeaveSwaps,
@@ -45,6 +44,7 @@ import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transac
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import { showRemainingTimeInMinAndSec } from '../swaps.util';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -114,18 +114,7 @@ export default function SmartTransactionStatus() {
       destinationTokenInfo.decimals,
     ).toPrecision(8);
   }
-
-  const stxStatusPageLoadedEvent = useNewMetricEvent({
-    event: 'STX Status Page Loaded',
-    category: 'swaps',
-    sensitiveProperties,
-  });
-
-  const cancelSmartTransactionEvent = useNewMetricEvent({
-    event: 'Cancel STX',
-    category: 'swaps',
-    sensitiveProperties,
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const isSmartTransactionPending =
     smartTransactionStatus === SMART_TRANSACTION_STATUSES.PENDING;
@@ -134,7 +123,11 @@ export default function SmartTransactionStatus() {
     smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS;
 
   useEffect(() => {
-    stxStatusPageLoadedEvent();
+    trackEvent({
+      event: 'STX Status Page Loaded',
+      category: 'swaps',
+      sensitiveProperties,
+    });
     // eslint-disable-next-line
   }, []);
 
@@ -242,7 +235,11 @@ export default function SmartTransactionStatus() {
           onClick={(e) => {
             e?.preventDefault();
             setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
-            cancelSmartTransactionEvent();
+            trackEvent({
+              event: 'Cancel STX',
+              category: 'swaps',
+              sensitiveProperties,
+            });
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >

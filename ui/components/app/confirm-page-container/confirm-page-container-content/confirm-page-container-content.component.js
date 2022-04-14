@@ -10,7 +10,6 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -26,7 +25,6 @@ export default class ConfirmPageContainerContent extends Component {
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hasSimulationError: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
@@ -42,10 +40,8 @@ export default class ConfirmPageContainerContent extends Component {
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
     onSubmit: PropTypes.func,
-    setUserAcknowledgedGasMissing: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideUserAcknowledgedGasMissing: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
@@ -57,6 +53,7 @@ export default class ConfirmPageContainerContent extends Component {
     showBuyModal: PropTypes.func,
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
+    isBuyableChain: PropTypes.bool,
   };
 
   renderContent() {
@@ -100,7 +97,6 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      hasSimulationError,
       title,
       image,
       titleComponent,
@@ -122,8 +118,6 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      setUserAcknowledgedGasMissing,
-      hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
       hasTopBorder,
       currentTransaction,
@@ -132,22 +126,15 @@ export default class ConfirmPageContainerContent extends Component {
       showBuyModal,
       toAddress,
       transactionType,
+      isBuyableChain,
     } = this.props;
 
-    const primaryAction = hideUserAcknowledgedGasMissing
-      ? null
-      : {
-          label: this.context.t('tryAnywayOption'),
-          onClick: setUserAcknowledgedGasMissing,
-        };
     const { t } = this.context;
 
     const showInsuffienctFundsError =
       supportsEIP1559V2 &&
-      !hasSimulationError &&
       (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
-      currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND;
+      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -158,15 +145,6 @@ export default class ConfirmPageContainerContent extends Component {
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
-        )}
-        {hasSimulationError && (
-          <div className="confirm-page-container-content__error-container">
-            <ActionableMessage
-              type="danger"
-              primaryAction={primaryAction}
-              message={t('simulationErrorMessage')}
-            />
-          </div>
         )}
         <ConfirmPageContainerSummary
           className={classnames({
@@ -188,7 +166,6 @@ export default class ConfirmPageContainerContent extends Component {
         />
         {this.renderContent()}
         {!supportsEIP1559V2 &&
-          !hasSimulationError &&
           (errorKey || errorMessage) &&
           currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND && (
             <div className="confirm-page-container-content__error-container">
@@ -197,42 +174,38 @@ export default class ConfirmPageContainerContent extends Component {
           )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
-            {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
-              <ActionableMessage
-                className="actionable-message--warning"
-                message={
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={
+                isBuyableChain ? (
                   <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    <Button
-                      key="link"
-                      type="secondary"
-                      className="confirm-page-container-content__link"
-                      onClick={showBuyModal}
-                    >
-                      {t('buyEth')}
-                    </Button>
+                    {t('insufficientCurrencyBuyOrDeposit', [
+                      nativeCurrency,
+                      networkName,
 
-                    {t('orDeposit')}
+                      <Button
+                        type="inline"
+                        className="confirm-page-container-content__link"
+                        onClick={showBuyModal}
+                        key={`${nativeCurrency}-buy-button`}
+                      >
+                        {t('buyAsset', [nativeCurrency])}
+                      </Button>,
+                    ])}
                   </Typography>
-                }
-                useIcon
-                iconFillColor="#d73a49"
-                type="danger"
-              />
-            ) : (
-              <ActionableMessage
-                className="actionable-message--warning"
-                message={
+                ) : (
                   <Typography variant={TYPOGRAPHY.H7} align="left">
-                    {t('insufficientCurrency', [nativeCurrency, networkName])}
-                    {t('buyOther', [nativeCurrency])}
+                    {t('insufficientCurrencyDeposit', [
+                      nativeCurrency,
+                      networkName,
+                    ])}
                   </Typography>
-                }
-                useIcon
-                iconFillColor="#d73a49"
-                type="danger"
-              />
-            )}
+                )
+              }
+              useIcon
+              iconFillColor="var(--color-error-default)"
+              type="danger"
+            />
           </div>
         )}
 

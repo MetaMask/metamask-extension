@@ -2,14 +2,14 @@
   width: 100%;
   min-height: 86px;
   margin: 0;
-  background: #fff;
+  background: var(--color-background-default);
   padding: 24px 16px;
 
   @include Paragraph;
 
-  border-top: 1px solid var(--mercury);
-  border-bottom: 1px solid var(--mercury);
-  color: var(--Black-100);
+  border-top: 1px solid var(--color-border-muted);
+  border-bottom: 1px solid var(--color-border-muted);
+  color: var(--color-text-default);
   display: grid;
   grid-template-columns: 0fr repeat(11, 1fr);
   grid-template-areas:
@@ -21,7 +21,7 @@
 
   &:hover,
   &:focus-within {
-    background-color: var(--Grey-000);
+    background-color: var(--color-background-alternative);
   }
 
   &__icon {
@@ -67,7 +67,7 @@
     @include H7;
 
     grid-area: sub;
-    color: var(--Grey-500);
+    color: var(--color-text-muted);
     margin-top: 4px;
     // all direct descendants should be truncated with ellipses
     // allows flexibility in consuming components to use h3/other tag
@@ -86,7 +86,7 @@
     @include H7;
 
     grid-area: mid;
-    color: var(--Grey-500);
+    color: var(--color-text-muted);
   }
 
   &__right-content {

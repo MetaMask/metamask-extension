@@ -13,12 +13,12 @@ export default class MetaMetricsOptIn extends Component {
   };
 
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
   render() {
-    const { metricsEvent, t } = this.context;
+    const { trackEvent, t } = this.context;
     const {
       nextRoute,
       history,
@@ -109,15 +109,20 @@ export default class MetaMetricsOptIn extends Component {
                     participateInMetaMetrics === null ||
                     participateInMetaMetrics === true
                   ) {
-                    await metricsEvent({
-                      eventOpts: {
+                    await trackEvent(
+                      {
                         category: 'Onboarding',
-                        action: 'Metrics Option',
-                        name: 'Metrics Opt Out',
+                        event: 'Metrics Opt Out',
+                        properties: {
+                          action: 'Metrics Option',
+                          legacy_event: true,
+                        },
                       },
-                      isOptIn: true,
-                      flushImmediately: true,
-                    });
+                      {
+                        isOptIn: true,
+                        flushImmediately: true,
+                      },
+                    );
                   }
                 } finally {
                   history.push(nextRoute);
@@ -136,28 +141,38 @@ export default class MetaMetricsOptIn extends Component {
                     participateInMetaMetrics === false
                   ) {
                     metrics.push(
-                      metricsEvent({
-                        eventOpts: {
+                      trackEvent(
+                        {
                           category: 'Onboarding',
-                          action: 'Metrics Option',
-                          name: 'Metrics Opt In',
+                          event: 'Metrics Opt In',
+                          properties: {
+                            action: 'Metrics Option',
+                            legacy_event: true,
+                          },
                         },
-                        isOptIn: true,
-                        flushImmediately: true,
-                      }),
+                        {
+                          isOptIn: true,
+                          flushImmediately: true,
+                        },
+                      ),
                     );
                   }
                   metrics.push(
-                    metricsEvent({
-                      eventOpts: {
+                    trackEvent(
+                      {
                         category: 'Onboarding',
-                        action: 'Import or Create',
-                        name: firstTimeSelectionMetaMetricsName,
+                        event: firstTimeSelectionMetaMetricsName,
+                        properties: {
+                          action: 'Import or Create',
+                          legacy_event: true,
+                        },
                       },
-                      isOptIn: true,
-                      metaMetricsId,
-                      flushImmediately: true,
-                    }),
+                      {
+                        isOptIn: true,
+                        metaMetricsId,
+                        flushImmediately: true,
+                      },
+                    ),
                   );
                   await Promise.all(metrics);
                 } finally {

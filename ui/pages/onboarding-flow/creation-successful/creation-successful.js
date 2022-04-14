@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
@@ -15,8 +15,8 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { getFirstTimeFlowType } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreationSuccessful() {
   const firstTimeFlowTypeNameMap = {
@@ -28,15 +28,18 @@ export default function CreationSuccessful() {
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const onboardingCompletedEvent = useMetricEvent({
-    category: 'Onboarding',
-    action: 'Onboarding Complete',
-    name: firstTimeFlowTypeNameMap[firstTimeFlowType],
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onComplete = async () => {
     await dispatch(setCompletedOnboarding());
-    onboardingCompletedEvent();
+    trackEvent({
+      event: firstTimeFlowTypeNameMap[firstTimeFlowType],
+      category: 'Onboarding',
+      properties: {
+        action: 'Onboarding Complete',
+        legacy_event: true,
+      },
+    });
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
   return (

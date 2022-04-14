@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodajte sugerisane tokene"
   },
-  "addToAddressBook": {
-    "message": "Dodaj u adresar"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. John D."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -336,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Greška u registraciji ENS imena."
-  },
-  "enterAnAlias": {
-    "message": "Unesite pseudonim"
   },
   "enterPassword": {
     "message": "Unesite lozinku"

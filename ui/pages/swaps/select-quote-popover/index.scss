@@ -28,7 +28,7 @@
   &__popover-bg {
     height: 100%;
     width: 100%;
-    background: var(--Grey-100);
+    background: var(--color-background-alternative);
     opacity: 1;
 
     @media screen and (min-width: $break-large) {
@@ -58,7 +58,7 @@
     @include H8;
 
     font-weight: bold;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     height: 43px;
     margin-bottom: 4px;
   }
@@ -72,25 +72,23 @@
     @include H6;
 
     cursor: pointer;
-    color: var(--black);
+    color: var(--color-text-default);
     height: 49px;
-    border-bottom: 1px solid var(--Grey-100);
+    border: 1px solid transparent;
     margin-bottom: 8px;
     border-radius: 8px;
-    background: var(--Grey-000);
+    background: var(--color-background-alternative);
     padding-right: 12px;
-    border: none;
 
     &:hover {
-      border: 1px solid var(--Blue-500);
-      width: 101%;
+      border: 1px solid var(--color-primary-default);
       padding-right: 11px;
       padding-left: 19.5px;
     }
 
     &--no-hover {
       &:hover {
-        border: 1px solid var(--Grey-100);
+        border: 1px solid var(--color-background-alternative);
         width: 100%;
         padding-right: 12px;
         padding-left: 20px;
@@ -98,32 +96,29 @@
     }
 
     &--selected {
-      color: var(--white);
-      background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
+      color: var(--color-primary-inverse);
+      background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
       box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
       border-radius: 8px;
-      border-bottom: none;
-      border-top: none;
       height: 64px;
 
       &:hover {
-        background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
+        background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
         width: 100%;
         padding-left: 20px;
         padding-right: 12px;
-        border: none;
       }
 
       .select-quote-popover__caret-right {
-        color: var(--white);
+        color: var(--color-primary-inverse);
 
         &:hover {
-          color: var(--Grey-500);
+          color: var(--color-text-default);
         }
       }
 
       .select-quote-popover__zero-slippage {
-        color: var(--white);
+        color: var(--color-primary-inverse);
       }
     }
   }
@@ -146,7 +141,7 @@
   }
 
   &__caret-right {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     width: 32px;
     height: 32px;
     display: flex;
@@ -159,8 +154,8 @@
 
     &:hover {
       border-radius: 8px;
-      background: white;
-      border: 1px solid var(--Blue-500);
+      background: var(--color-primary-inverse);
+      border: 1px solid var(--color-primary-default);
     }
   }
 
@@ -182,7 +177,7 @@
   &__zero-slippage {
     font-size: 12px;
     line-height: 100%;
-    color: #6a737d;
+    color: var(--color-text-muted);
     font-weight: normal;
   }
 
@@ -211,7 +206,7 @@
 
 
   &__receiving-symbol {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
 
     > div {
       width: 12px;
@@ -239,7 +234,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: var(--color-primary-inverse);
     border-radius: 5px;
     padding: 4px;
     font-size: 10px;
@@ -247,15 +242,15 @@
     padding-bottom: 2px;
 
     &--blue {
-      background: var(--Blue-300);
+      background: var(--color-primary-default);
     }
 
     &--orange {
-      background: var(--Orange-400);
+      background: var(--color-secondary-default);
     }
 
     &--green {
-      background: var(--Green-500);
+      background: var(--color-success-default);
     }
   }
 }

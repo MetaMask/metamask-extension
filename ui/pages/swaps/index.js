@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useContext, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useContext,
+  useState,
+  useCallback,
+} from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
@@ -75,11 +81,11 @@ import {
   setSwapsErrorKey,
 } from '../../store/actions';
 
-import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -98,6 +104,7 @@ export default function Swap() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
@@ -236,28 +243,30 @@ export default function Swap() {
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const exitedSwapsEvent = useNewMetricEvent({
-    event: 'Exited Swaps',
-    category: 'swaps',
-    sensitiveProperties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-      stx_enabled: smartTransactionsEnabled,
-      current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
-    },
-  });
+  const trackExitedSwapsEvent = () => {
+    trackEvent({
+      event: 'Exited Swaps',
+      category: 'swaps',
+      sensitiveProperties: {
+        token_from: fetchParams?.sourceTokenInfo?.symbol,
+        token_from_amount: fetchParams?.value,
+        request_type: fetchParams?.balanceError,
+        token_to: fetchParams?.destinationTokenInfo?.symbol,
+        slippage: fetchParams?.slippage,
+        custom_slippage: fetchParams?.slippage !== 2,
+        current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+    });
+  };
   const exitEventRef = useRef();
   useEffect(() => {
     exitEventRef.current = () => {
-      exitedSwapsEvent();
+      trackExitedSwapsEvent();
     };
   });
 
@@ -295,31 +304,52 @@ export default function Swap() {
     return () => window.removeEventListener('beforeunload', fn);
   }, [dispatch, isLoadingQuotesRoute]);
 
-  const errorStxEvent = useNewMetricEvent({
-    event: 'Error Smart Transactions',
-    category: 'swaps',
-    sensitiveProperties: {
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-      stx_enabled: smartTransactionsEnabled,
-      current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
-      stx_error: currentSmartTransactionsError,
-    },
-  });
+  const trackErrorStxEvent = useCallback(() => {
+    trackEvent({
+      event: 'Error Smart Transactions',
+      category: 'swaps',
+      sensitiveProperties: {
+        token_from: fetchParams?.sourceTokenInfo?.symbol,
+        token_from_amount: fetchParams?.value,
+        request_type: fetchParams?.balanceError,
+        token_to: fetchParams?.destinationTokenInfo?.symbol,
+        slippage: fetchParams?.slippage,
+        custom_slippage: fetchParams?.slippage !== 2,
+        current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+        stx_error: currentSmartTransactionsError,
+      },
+    });
+  }, [
+    currentSmartTransactionsError,
+    currentSmartTransactionsEnabled,
+    trackEvent,
+    fetchParams?.balanceError,
+    fetchParams?.destinationTokenInfo?.symbol,
+    fetchParams?.slippage,
+    fetchParams?.sourceTokenInfo?.symbol,
+    fetchParams?.value,
+    hardwareWalletType,
+    hardwareWalletUsed,
+    pathname,
+    smartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+  ]);
+
   useEffect(() => {
     if (currentSmartTransactionsError && !currentStxErrorTracked) {
       setCurrentStxErrorTracked(true);
-      errorStxEvent();
+      trackErrorStxEvent();
     }
-  }, [errorStxEvent, currentSmartTransactionsError, currentStxErrorTracked]);
+  }, [
+    currentSmartTransactionsError,
+    trackErrorStxEvent,
+    currentStxErrorTracked,
+  ]);
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;

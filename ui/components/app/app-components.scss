@@ -45,6 +45,7 @@
 @import 'menu-bar/index';
 @import 'modal/index';
 @import 'modals/index';
+@import 'multilayer-fee-message/index';
 @import 'multiple-notifications/index';
 @import 'network-display/index';
 @import 'permission-page-container/index';
@@ -61,6 +62,7 @@
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';
 @import 'transaction-activity-log/index';
+@import 'transaction-activity-log/transaction-activity-log-icon/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-detail/index';
 @import 'transaction-detail-item/index';
@@ -82,3 +84,8 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
+@import 'asset-list/detetcted-tokens-link/index';
+@import 'detected-token/detected-token-address/index';
+@import 'detected-token/detected-token-aggregators/index';
+@import 'detected-token/detected-token-values/index';
+@import 'detected-token/detected-token-details/index'

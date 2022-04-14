@@ -46,8 +46,8 @@
 
     @media screen and (min-width: $break-large) {
       width: 460px;
-      background: white;
-      border: 1px solid var(--Grey-100);
+      background: var(--color-background-default);
+      border: 1px solid var(--color-border-muted);
       box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
       border-radius: 8px;
       height: 620px;
@@ -77,7 +77,7 @@
     @include H5;
 
     font-weight: bold;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     margin-top: -5px;
     flex: 1;
     text-align: center;
@@ -90,7 +90,7 @@
     align-items: center;
     padding-top: 0;
     padding-bottom: 16px;
-    background: var(--Grey-000);
+    background: var(--color-background-alternative);
     width: 100%;
     position: relative;
     flex-direction: row;
@@ -105,7 +105,7 @@
   &__header-cancel {
     @include H7;
 
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-right: 24px;
     flex: 1;
@@ -115,13 +115,13 @@
   &__header-edit {
     @include H7;
 
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
     padding-left: 24px;
     flex: 1;
   }
 
-  &__notification-close-button {
+  .actionable-message__message &__notification-close-button {
     background-color: transparent;
     position: absolute;
     right: 0;

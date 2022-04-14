@@ -1,4 +1,11 @@
-import React, { useState, useContext, useMemo, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useContext,
+  useMemo,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
@@ -8,10 +15,9 @@ import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FeeCard from '../fee-card';
 import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
 import {
@@ -75,7 +81,6 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getTransactionData } from '../../../helpers/utils/transactions.util';
 import {
   calcTokenAmount,
   calcTokenValue,
@@ -113,6 +118,7 @@ import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -121,7 +127,7 @@ export default function ViewQuote() {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
@@ -286,7 +292,7 @@ export default function ViewQuote() {
   const tokenBalanceUnavailable =
     tokensWithBalances && balanceToken === undefined;
 
-  const approveData = getTransactionData(approveTxParams?.data);
+  const approveData = parseStandardTokenTransactionData(approveTxParams?.data);
   const approveValue = approveData && getTokenValueParam(approveData);
   const approveAmount =
     approveValue &&
@@ -495,76 +501,106 @@ export default function ViewQuote() {
 
   const numberOfQuotes = Object.values(quotes).length;
   const bestQuoteReviewedEventSent = useRef();
-  const eventObjectBase = {
-    token_from: sourceTokenSymbol,
-    token_from_amount: sourceTokenValue,
-    token_to: destinationTokenSymbol,
-    token_to_amount: destinationTokenValue,
-    request_type: fetchParams?.balanceError,
-    slippage: fetchParams?.slippage,
-    custom_slippage: fetchParams?.slippage !== 2,
-    response_time: fetchParams?.responseTime,
-    best_quote_source: topQuote?.aggregator,
-    available_quotes: numberOfQuotes,
-    is_hardware_wallet: hardwareWalletUsed,
-    hardware_wallet_type: hardwareWalletType,
-    stx_enabled: smartTransactionsEnabled,
-    current_stx_enabled: currentSmartTransactionsEnabled,
-    stx_user_opt_in: smartTransactionsOptInStatus,
+  const eventObjectBase = useMemo(() => {
+    return {
+      token_from: sourceTokenSymbol,
+      token_from_amount: sourceTokenValue,
+      token_to: destinationTokenSymbol,
+      token_to_amount: destinationTokenValue,
+      request_type: fetchParams?.balanceError,
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage !== 2,
+      response_time: fetchParams?.responseTime,
+      best_quote_source: topQuote?.aggregator,
+      available_quotes: numberOfQuotes,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+    };
+  }, [
+    sourceTokenSymbol,
+    sourceTokenValue,
+    destinationTokenSymbol,
+    destinationTokenValue,
+    fetchParams?.balanceError,
+    fetchParams?.slippage,
+    fetchParams?.responseTime,
+    topQuote?.aggregator,
+    numberOfQuotes,
+    hardwareWalletUsed,
+    hardwareWalletType,
+    smartTransactionsEnabled,
+    currentSmartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+  ]);
+
+  const trackAllAvailableQuotesOpened = () => {
+    trackEvent({
+      event: 'All Available Quotes Opened',
+      category: 'swaps',
+      sensitiveProperties: {
+        ...eventObjectBase,
+        other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
+        other_quote_selected_source:
+          usedQuote?.aggregator === topQuote?.aggregator
+            ? null
+            : usedQuote?.aggregator,
+      },
+    });
   };
-
-  const allAvailableQuotesOpened = useNewMetricEvent({
-    event: 'All Available Quotes Opened',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source:
-        usedQuote?.aggregator === topQuote?.aggregator
-          ? null
-          : usedQuote?.aggregator,
-    },
-  });
-  const quoteDetailsOpened = useNewMetricEvent({
-    event: 'Quote Details Opened',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
-      other_quote_selected_source:
-        usedQuote?.aggregator === topQuote?.aggregator
-          ? null
-          : usedQuote?.aggregator,
-    },
-  });
-  const editSpendLimitOpened = useNewMetricEvent({
-    event: 'Edit Spend Limit Opened',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      custom_spend_limit_set: originalApproveAmount === approveAmount,
-      custom_spend_limit_amount:
-        originalApproveAmount === approveAmount ? null : approveAmount,
-    },
-  });
-
-  const bestQuoteReviewedEvent = useNewMetricEvent({
-    event: 'Best Quote Reviewed',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      network_fees: feeInFiat,
-    },
-  });
-
-  const viewQuotePageLoadedEvent = useNewMetricEvent({
-    event: 'View Quote Page Loaded',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      response_time: currentTimestamp - reviewSwapClickedTimestamp,
-    },
-  });
+  const trackQuoteDetailsOpened = () => {
+    trackEvent({
+      event: 'Quote Details Opened',
+      category: 'swaps',
+      sensitiveProperties: {
+        ...eventObjectBase,
+        other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
+        other_quote_selected_source:
+          usedQuote?.aggregator === topQuote?.aggregator
+            ? null
+            : usedQuote?.aggregator,
+      },
+    });
+  };
+  const trackEditSpendLimitOpened = () => {
+    trackEvent({
+      event: 'Edit Spend Limit Opened',
+      category: 'swaps',
+      sensitiveProperties: {
+        ...eventObjectBase,
+        custom_spend_limit_set: originalApproveAmount === approveAmount,
+        custom_spend_limit_amount:
+          originalApproveAmount === approveAmount ? null : approveAmount,
+      },
+    });
+  };
+  const trackBestQuoteReviewedEvent = useCallback(() => {
+    trackEvent({
+      event: 'Best Quote Reviewed',
+      category: 'swaps',
+      sensitiveProperties: {
+        ...eventObjectBase,
+        network_fees: feeInFiat,
+      },
+    });
+  }, [trackEvent, eventObjectBase, feeInFiat]);
+  const trackViewQuotePageLoadedEvent = useCallback(() => {
+    trackEvent({
+      event: 'View Quote Page Loaded',
+      category: 'swaps',
+      sensitiveProperties: {
+        ...eventObjectBase,
+        response_time: currentTimestamp - reviewSwapClickedTimestamp,
+      },
+    });
+  }, [
+    trackEvent,
+    eventObjectBase,
+    currentTimestamp,
+    reviewSwapClickedTimestamp,
+  ]);
 
   useEffect(() => {
     if (
@@ -581,24 +617,24 @@ export default function ViewQuote() {
       ].every((dep) => dep !== null && dep !== undefined)
     ) {
       bestQuoteReviewedEventSent.current = true;
-      bestQuoteReviewedEvent();
+      trackBestQuoteReviewedEvent();
     }
   }, [
-    sourceTokenSymbol,
-    sourceTokenValue,
-    destinationTokenSymbol,
-    destinationTokenValue,
     fetchParams,
     topQuote,
     numberOfQuotes,
     feeInFiat,
-    bestQuoteReviewedEvent,
+    destinationTokenSymbol,
+    destinationTokenValue,
+    sourceTokenSymbol,
+    sourceTokenValue,
+    trackBestQuoteReviewedEvent,
   ]);
 
   const metaMaskFee = usedQuote.fee;
 
   const onFeeCardTokenApprovalClick = () => {
-    editSpendLimitOpened();
+    trackEditSpendLimitOpened();
     dispatch(
       showModal({
         name: 'EDIT_APPROVAL_PERMISSION',
@@ -827,9 +863,9 @@ export default function ViewQuote() {
     // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
     if (reviewSwapClickedTimestamp) {
-      viewQuotePageLoadedEvent();
+      trackViewQuotePageLoadedEvent();
     }
-  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
+  }, [dispatch, trackViewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
   useEffect(() => {
     // if smart transaction error is turned off, reset submit clicked boolean
@@ -877,7 +913,7 @@ export default function ViewQuote() {
                 onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
                 swapToSymbol={destinationTokenSymbol}
                 initialAggId={usedQuote.aggregator}
-                onQuoteDetailsIsOpened={quoteDetailsOpened}
+                onQuoteDetailsIsOpened={trackQuoteDetailsOpened}
                 hideEstimatedGasFee={
                   smartTransactionsEnabled && smartTransactionsOptInStatus
                 }
@@ -919,7 +955,7 @@ export default function ViewQuote() {
             <div className="view-quote__countdown-timer-container">
               <CountdownTimer
                 timeStarted={quotesLastFetched}
-                warningTime="0:30"
+                warningTime="0:10"
                 labelKey="swapNewQuoteIn"
               />
             </div>
@@ -973,7 +1009,7 @@ export default function ViewQuote() {
                   metaMaskFee={String(metaMaskFee)}
                   numberOfQuotes={Object.values(quotes).length}
                   onQuotesClick={() => {
-                    allAvailableQuotesOpened();
+                    trackAllAvailableQuotesOpened();
                     setSelectQuotePopoverShown(true);
                   }}
                   chainId={chainId}
@@ -1002,7 +1038,7 @@ export default function ViewQuote() {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
                       unsignedTransaction,
-                      metaMetricsEvent,
+                      trackEvent,
                       history,
                       additionalTrackingParams,
                     }),
@@ -1011,7 +1047,7 @@ export default function ViewQuote() {
                   dispatch(
                     signAndSendTransactions(
                       history,
-                      metaMetricsEvent,
+                      trackEvent,
                       additionalTrackingParams,
                     ),
                   );
