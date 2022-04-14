@@ -76,7 +76,7 @@ describe('Failing contract interaction ', function () {
 
         // display warning when transaction is expected to fail
         const warningText =
-          'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.';
+          'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.';
         const warning = await driver.findElement(
           '.actionable-message__message',
         );
@@ -87,7 +87,10 @@ describe('Failing contract interaction ', function () {
         assert.equal(await confirmButton.isEnabled(), false);
 
         // dismiss warning and confirm the transaction
-        await driver.clickElement({ text: 'I will try anyway', tag: 'button' });
+        await driver.clickElement({
+          text: 'I want to proceed anyway',
+          tag: 'button',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
