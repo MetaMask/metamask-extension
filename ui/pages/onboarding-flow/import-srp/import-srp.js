@@ -32,7 +32,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
    * If we choose "I have 15-word phrase" in Dropdown component than,
    * secretRecoveryPhrase.length = 14 and the button will be disabled
    * If we choose "I have 18-word phrase" in Dropdown component than,
-   * secretRecoveryPhrase.length = 14 and the button will be disabled
+   * secretRecoveryPhrase.length = 17 and the button will be disabled
    * If we choose "I have 21-word phrase" in Dropdown component than,
    * secretRecoveryPhrase.length = 20 and the button will be disabled
    * If we choose "I have 24-word phrase" in Dropdown component than,
