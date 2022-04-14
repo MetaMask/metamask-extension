@@ -48,6 +48,7 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAP_CONFIRM: RestrictedMethods.snap_confirm,
+  GET_LANGUAGE: RestrictedMethods.wallet_getLanguage
   ///: END:ONLY_INCLUDE_IN
 };
 

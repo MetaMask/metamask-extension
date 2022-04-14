@@ -6,6 +6,7 @@ import requestAccounts from './request-accounts';
 import sendMetadata from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset from './watch-asset';
+import wallet_getLanguage from './get-language';
 
 const handlers = [
   addEthereumChain,
@@ -16,5 +17,6 @@ const handlers = [
   sendMetadata,
   switchEthereumChain,
   watchAsset,
+  wallet_getLanguage
 ];
 export default handlers;

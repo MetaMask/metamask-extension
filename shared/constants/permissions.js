@@ -5,6 +5,7 @@ export const CaveatTypes = Object.freeze({
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  wallet_getLanguage:'wallet_getLanguage',
   snap_confirm: 'snap_confirm',
   snap_manageState: 'snap_manageState',
   'snap_getBip44Entropy_*': 'snap_getBip44Entropy_*',

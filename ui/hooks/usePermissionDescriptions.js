@@ -34,6 +34,11 @@ export const usePermissionDescriptions = () => {
         rightIcon: null,
       },
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      [RestrictedMethods.wallet_getLanguage]: {
+        leftIcon: 'fas fa-eye',
+        label: t('permission_ethereumAccounts'),
+        rightIcon: null,
+      },
       [RestrictedMethods.snap_confirm]: {
         leftIcon: 'fas fa-user-check',
         label: t('permission_customConfirmation'),

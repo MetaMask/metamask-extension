@@ -2443,6 +2443,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Gets the default MM locale for the specified account
+   *
+   * @returns {Promise<string[]>} The account locale language
+   */
+
+  async getLanguage() {
+    // TODO WE NEED ERROR HANDLING (E.G. throw/catch)?
+    const { currentLocale } = this.preferencesController.store.getState();
+
+    return currentLocale;
+  }
+
+  /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
    * method uses `PermissionController.updatePermissionsByCaveat` to
@@ -3328,6 +3341,7 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+        getLanguage: this.getLanguage.bind(this),
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
