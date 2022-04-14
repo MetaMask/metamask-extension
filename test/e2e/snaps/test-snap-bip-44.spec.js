@@ -80,11 +80,8 @@ describe('Test Snap bip-44', function () {
           tag: 'button',
         });
 
-        // check the results of the custom confirm
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        const bip44Result = await driver.findElement('.sendResults');
+        // check the results of the public key test
+        const bip44Result = await driver.findElement('.bip44Result');
 
         console.log(bip44Result, '- bip44Result');
         console.log(await bip44Result.getText(), '-getText');
