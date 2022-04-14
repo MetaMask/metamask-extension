@@ -26,11 +26,11 @@
 
     &__label {
       white-space: nowrap;
-      width: 50%;
+      min-width: 50%;
     }
 
     &__value {
-      width: 50%;
+      min-width: 50%;
     }
 
     p {
@@ -44,6 +44,7 @@
       div {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         text-align: left;
       }
     }
