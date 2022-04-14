@@ -148,24 +148,26 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {showingHardwareConnectionContents ? null : (<ConfirmPageContainerSummary
-          className={classnames({
-            'confirm-page-container-summary--border':
-              !detailsComponent || !dataComponent,
-          })}
-          action={action}
-          title={title}
-          image={image}
-          titleComponent={titleComponent}
-          subtitleComponent={subtitleComponent}
-          hideSubtitle={hideSubtitle}
-          tokenAddress={tokenAddress}
-          nonce={nonce}
-          origin={origin}
-          hideTitle={hideTitle}
-          toAddress={toAddress}
-          transactionType={transactionType}
-        />)}
+        {showingHardwareConnectionContents ? null : (
+          <ConfirmPageContainerSummary
+            className={classnames({
+              'confirm-page-container-summary--border':
+                !detailsComponent || !dataComponent,
+            })}
+            action={action}
+            title={title}
+            image={image}
+            titleComponent={titleComponent}
+            subtitleComponent={subtitleComponent}
+            hideSubtitle={hideSubtitle}
+            tokenAddress={tokenAddress}
+            nonce={nonce}
+            origin={origin}
+            hideTitle={hideTitle}
+            toAddress={toAddress}
+            transactionType={transactionType}
+          />
+        )}
         {this.renderContent()}
         {!supportsEIP1559V2 &&
           (errorKey || errorMessage) &&
