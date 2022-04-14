@@ -22,11 +22,7 @@ import {
   setNewCollectibleAddedMessage,
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
-import {
-  getIsMainnet,
-  getSelectedAddress,
-  getUseCollectibleDetection,
-} from '../../selectors';
+import { getIsMainnet, getUseCollectibleDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
