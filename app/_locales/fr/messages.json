@@ -2462,9 +2462,6 @@
   "signed": {
     "message": "Signé"
   },
-  "simulationErrorMessage": {
-    "message": "Cette transaction devrait échouer. Si vous choisissez de l’exécuter, cela devrait à la fois être coûteux et voué à l’échec. Ce n’est donc pas recommandé."
-  },
   "simulationErrorMessageV2": {
     "message": "Nous n’avons pas pu estimer le prix de carburant. Par conséquent, il se peut qu’il y ait une erreur dans le contrat et que cette transaction échoue."
   },
@@ -3129,9 +3126,6 @@
   },
   "tryAgain": {
     "message": "Réessayez"
-  },
-  "tryAnywayOption": {
-    "message": "Je veux quand même essayer"
   },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
