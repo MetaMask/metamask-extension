@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { delay } = require('lodash');
 const { withFixtures } = require('../helpers');
 
 describe('Test Snap bip-44', function () {
@@ -81,14 +82,11 @@ describe('Test Snap bip-44', function () {
         });
 
         // check the results of the public key test
+        await driver.delay(1000);
         const bip44Result = await driver.findElement('.bip44Result');
-
-        console.log(bip44Result, '- bip44Result');
-        console.log(await bip44Result.getText(), '-getText');
-
         assert.equal(
           await bip44Result.getText(),
-          '"Public key: "0x8390d71d5ff0f94e98584e7cdc2d915fb5b708a55f3a2faf22535c857935c37603ae05faaaf8e115405af48d82166""',
+          'Public key: "0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e8d1"',
         );
       },
     );
