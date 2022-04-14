@@ -77,7 +77,6 @@ import { MILLISECOND } from '../../shared/constants/time';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
-  PLATFORM_FIREFOX,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -137,10 +136,6 @@ import {
   buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getPlatform } from './lib/util';
-///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -620,10 +615,7 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const usingFirefox = getPlatform() === PLATFORM_FIREFOX;
-
     this.snapController = new SnapController({
-      npmRegistryUrl: usingFirefox ? 'https://registry.npmjs.cf/' : undefined,
       endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
