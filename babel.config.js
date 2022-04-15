@@ -22,6 +22,23 @@ module.exports = function (api) {
       '@babel/plugin-proposal-object-rest-spread',
       '@babel/plugin-proposal-optional-chaining',
       '@babel/plugin-proposal-nullish-coalescing-operator',
+      [
+        require.resolve('babel-plugin-module-resolver'),
+        {
+          root: ['./'],
+          alias: {
+            '@components': './ui/components/app',
+            '@ui': './ui/components/ui',
+            '@helpers': './ui/helpers',
+            '@hooks': './ui/hooks',
+            '@store': './ui/store',
+            '@contexts': './ui/contexts',
+            '@selectors': './ui/selectors',
+            '@ducks': './ui/ducks',
+            '@shared': './shared',
+          },
+        },
+      ],
     ],
   };
 };
