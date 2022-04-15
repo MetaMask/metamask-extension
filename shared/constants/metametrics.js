@@ -170,6 +170,8 @@
  *  change, we identify the new number_of_accounts trait
  * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
  *  trait for number of unique NFT addresses
+ * @property {'number_of_tokens'} NUMBER_OF_TOKENS - when the number of tokens change, we
+ * identify the new number_of_tokens trait
  * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
  * we identify the opensea_api_enabled trait
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
@@ -188,6 +190,7 @@ export const TRAITS = {
   NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  NUMBER_OF_TOKENS: 'number_of_tokens',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
 };
@@ -206,6 +209,8 @@ export const TRAITS = {
  *  of identities(accounts) added to the user's MetaMask.
  * @property {number} [number_of_nft_collections] - A number representing the
  *  amount of different NFT collections the user possesses an NFT from.
+ * @property {number} [number_of_tokens] - The total number of token contracts
+ *  the user has across all networks and accounts.
  * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
  *  API enabled?
  * @property {boolean} [three_box_enabled] - does the user have 3box sync

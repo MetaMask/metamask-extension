@@ -557,6 +557,7 @@ export default class MetaMetricsController {
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
         metamaskState,
       ),
+      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
     };
@@ -617,6 +618,19 @@ export default class MetaMetricsController {
       .map((collectible) => collectible.address);
     const unique = [...new Set(allAddresses)];
     return unique.length;
+  }
+
+  /**
+   * @param {object} metamaskState
+   * @returns number of unique token addresses
+   */
+  _getNumberOfTokens(metamaskState) {
+    return Object.values(metamaskState.allTokens).reduce(
+      (result, accountsByChain) => {
+        return result + sum(Object.values(accountsByChain).map(size));
+      },
+      0,
+    );
   }
 
   /**

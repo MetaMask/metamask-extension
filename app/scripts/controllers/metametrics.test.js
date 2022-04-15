@@ -611,6 +611,34 @@ describe('MetaMetricsController', function () {
 
   describe('_buildUserTraitsObject', function () {
     it('should return full user traits object on first call', function () {
+      const MOCK_ALL_TOKENS = {
+        '0x1': {
+          '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
+            {
+              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+            },
+            {
+              address: '0xabc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
+            },
+          ],
+          '0xe364b0f9d1879e53e8183055c9d7dd2b7375d86b': [
+            {
+              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+            },
+          ],
+        },
+        '0x4': {
+          '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
+            {
+              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+            },
+            {
+              address: '0x12317F958D2ee523a2206206994597C13D831ec7',
+            },
+          ],
+        },
+      };
+
       const metaMetricsController = getMetaMetricsController();
       const traits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
@@ -643,6 +671,7 @@ describe('MetaMetricsController', function () {
             ],
           },
         },
+        allTokens: MOCK_ALL_TOKENS,
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -661,6 +690,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
+        [TRAITS.NUMBER_OF_TOKENS]: 5,
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
       });
@@ -673,6 +703,7 @@ describe('MetaMetricsController', function () {
           [MAINNET_CHAIN_ID]: [{ address: '0x' }],
           [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
         },
+        allTokens: {},
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -689,6 +720,9 @@ describe('MetaMetricsController', function () {
           [MAINNET_CHAIN_ID]: [{ address: '0x' }, { address: '0x1' }],
           [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
         },
+        allTokens: {
+          '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
+        },
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -703,6 +737,7 @@ describe('MetaMetricsController', function () {
       assert.deepEqual(updatedTraits, {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 4,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
+        [TRAITS.NUMBER_OF_TOKENS]: 1,
         [TRAITS.OPENSEA_API_ENABLED]: false,
       });
     });
@@ -714,6 +749,7 @@ describe('MetaMetricsController', function () {
           [MAINNET_CHAIN_ID]: [{ address: '0x' }],
           [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
         },
+        allTokens: {},
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
@@ -730,6 +766,7 @@ describe('MetaMetricsController', function () {
           [MAINNET_CHAIN_ID]: [{ address: '0x' }],
           [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
         },
+        allTokens: {},
         frequentRpcListDetail: [
           { chainId: MAINNET_CHAIN_ID },
           { chainId: ROPSTEN_CHAIN_ID },
