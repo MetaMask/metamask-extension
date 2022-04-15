@@ -50,7 +50,7 @@ DetectedTokenDetails.propTypes = {
     aggregators: PropTypes.array,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
-  selectedTokens: PropTypes.array,
+  selectedTokens: PropTypes.object,
 };
 
 export default DetectedTokenDetails;

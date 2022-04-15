@@ -34,7 +34,6 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
-import DetectedToken from '../../components/app/detected-token';
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -60,7 +59,6 @@ import {
   ONBOARDING_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
   TOKEN_DETAILS,
-  DETECTED_TOKEN_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -201,13 +199,6 @@ export default class Routes extends Component {
           <Authenticated
             path={ADD_COLLECTIBLE_ROUTE}
             component={AddCollectiblePage}
-            exact
-          />
-        ) : null}
-        {process.env.TOKEN_DETECTION_V2 ? (
-          <Authenticated
-            path={DETECTED_TOKEN_ROUTE}
-            component={DetectedToken}
             exact
           />
         ) : null}

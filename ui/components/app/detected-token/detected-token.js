@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 import {
   importTokens,
@@ -9,81 +9,72 @@ import {
 } from '../../../store/actions';
 import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
 
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
-const DetectedToken = () => {
+const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
-  const [selectedTokens, setSelectedTokens] = useState(detectedTokens);
-  const [unSelectedTokens, setUnSelectedTokens] = useState([]);
+  const [selectedTokens, setSelectedTokens] = useState(() =>
+    detectedTokens.reduce((tokenObj, token) => {
+      tokenObj[token.address] = token;
+      return tokenObj;
+    }, {}),
+  );
   const [
     showDetectedTokenIgnoredPopover,
     setShowDetectedTokenIgnoredPopover,
   ] = useState(false);
 
   const handleClearTokensSelection = async () => {
-    if (unSelectedTokens.length < detectedTokens.length) {
-      await dispatch(ignoreTokens(unSelectedTokens));
-      await dispatch(importTokens(selectedTokens));
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+    const selectedTokensList = Object.values(selectedTokens);
+    const unSelectedTokensList = detectedTokens.filter(
+      (token) => !Object.keys(selectedTokens).includes(token.address),
+    );
+
+    if (selectedTokensList.length < detectedTokens.length) {
+      await dispatch(ignoreTokens(unSelectedTokensList));
+      await dispatch(importTokens(selectedTokensList));
+      const tokenSymbols = selectedTokensList.map(({ symbol }) => symbol);
       dispatch(setNewTokensImported(tokenSymbols.join(', ')));
     } else {
-      setUnSelectedTokens(detectedTokens);
-      setSelectedTokens([]);
-      await dispatch(ignoreTokens(unSelectedTokens));
+      await dispatch(ignoreTokens(unSelectedTokensList));
     }
-    history.push(DEFAULT_ROUTE);
+    setShowDetectedTokens(false);
   };
 
   const handleTokenSelection = (token) => {
-    let newSelectedTokens = [...selectedTokens];
-    let newUnSelectedTokens = [...unSelectedTokens];
+    const newSelectedTokens = { ...selectedTokens };
 
-    if (
-      newSelectedTokens.find(({ address }) =>
-        isEqualCaseInsensitive(address, token.address),
-      )
-    ) {
-      newSelectedTokens = newSelectedTokens.filter(
-        ({ address }) => address !== token.address,
-      );
-      newUnSelectedTokens.push(token);
+    if (selectedTokens[token.address]) {
+      delete newSelectedTokens[token.address];
     } else {
-      newSelectedTokens.push(token);
-      newUnSelectedTokens = newUnSelectedTokens.filter(
-        ({ address }) => address !== token.address,
-      );
+      newSelectedTokens[token.address] = token;
     }
     setSelectedTokens(newSelectedTokens);
-    setUnSelectedTokens(newUnSelectedTokens);
   };
 
   const onImport = async () => {
-    if (selectedTokens.length < detectedTokens.length) {
+    const selectedTokensList = Object.values(selectedTokens);
+
+    if (selectedTokensList.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);
     } else {
-      await dispatch(importTokens(selectedTokens));
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      const tokenSymbols = selectedTokensList.map(({ symbol }) => symbol);
+      await dispatch(importTokens(selectedTokensList));
       dispatch(setNewTokensImported(tokenSymbols.join(', ')));
-      history.push(DEFAULT_ROUTE);
+      setShowDetectedTokens(false);
     }
   };
 
   const onIgnoreAll = () => {
-    setUnSelectedTokens(detectedTokens);
-    setSelectedTokens([]);
+    setSelectedTokens({});
     setShowDetectedTokenIgnoredPopover(true);
   };
 
   const onCancelIgnore = () => {
-    setUnSelectedTokens([]);
-    setSelectedTokens([]);
     setShowDetectedTokenIgnoredPopover(false);
   };
 
@@ -101,9 +92,14 @@ const DetectedToken = () => {
         handleTokenSelection={handleTokenSelection}
         onImport={onImport}
         onIgnoreAll={onIgnoreAll}
+        setShowDetectedTokens={setShowDetectedTokens}
       />
     </>
   );
+};
+
+DetectedToken.propTypes = {
+  setShowDetectedTokens: PropTypes.func.isRequired,
 };
 
 export default DetectedToken;

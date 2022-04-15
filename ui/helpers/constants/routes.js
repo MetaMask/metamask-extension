@@ -95,9 +95,6 @@ const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
 const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 
-// token detection v2
-const DETECTED_TOKEN_ROUTE = '/detected-token';
-
 // Used to pull a convenient name for analytics tracking events. The key must
 // be react-router ready path, and can include params such as :id for popup windows
 const PATH_NAME_MAP = {
@@ -170,7 +167,6 @@ const PATH_NAME_MAP = {
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
   [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
-  [DETECTED_TOKEN_ROUTE]: 'Tokens Found Page',
 };
 
 export {
@@ -265,5 +261,4 @@ export {
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
   ///: END:ONLY_INCLUDE_IN
-  DETECTED_TOKEN_ROUTE,
 };

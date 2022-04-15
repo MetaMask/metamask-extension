@@ -18,11 +18,10 @@ const DetectedTokenValues = ({
   handleTokenSelection,
   selectedTokens,
 }) => {
-  const [selectToken, setSelectToken] = useState(() => {
-    return Boolean(
-      selectedTokens.filter((address) => token.address === address),
-    );
+  const [tokenSelection, setTokenSelection] = useState(() => {
+    return Boolean(selectedTokens[token.address]);
   });
+
   const { tokensWithBalances } = useTokenTracker([token]);
   const balanceString = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
@@ -32,13 +31,11 @@ const DetectedTokenValues = ({
   );
 
   useEffect(() => {
-    setSelectToken(
-      Boolean(selectedTokens.find(({ address }) => address === token.address)),
-    );
-  }, [selectedTokens, token.address, selectToken, setSelectToken]);
+    setTokenSelection(Boolean(selectedTokens[token.address]));
+  }, [selectedTokens, token.address, tokenSelection, setTokenSelection]);
 
   const handleCheckBoxSelection = () => {
-    setSelectToken(!selectToken);
+    setTokenSelection(!tokenSelection);
     handleTokenSelection(token);
   };
 
@@ -53,7 +50,7 @@ const DetectedTokenValues = ({
         </Typography>
       </Box>
       <Box className="detected-token-values__checkbox">
-        <CheckBox checked={selectToken} onClick={handleCheckBoxSelection} />
+        <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} />
       </Box>
     </Box>
   );
@@ -68,7 +65,7 @@ DetectedTokenValues.propTypes = {
     aggregators: PropTypes.array,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
-  selectedTokens: PropTypes.array,
+  selectedTokens: PropTypes.object,
 };
 
 export default DetectedTokenValues;
