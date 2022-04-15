@@ -190,6 +190,7 @@ export const TRAITS = {
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
+  THEME: 'theme',
 };
 
 /**

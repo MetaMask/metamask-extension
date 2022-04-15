@@ -261,7 +261,17 @@ export default class ExperimentalTab extends PureComponent {
               id="select-theme"
               options={themesOptions}
               selectedOption={theme}
-              onChange={async (newTheme) => setTheme(newTheme)}
+              onChange={(newTheme) => {
+                this.context.trackEvent({
+                  category: 'Settings',
+                  event: 'Theme Change',
+                  properties: {
+                    theme_selected: newTheme,
+                    legacy_event: true,
+                  },
+                });
+                setTheme(newTheme);
+              }}
             />
           </div>
         </div>
