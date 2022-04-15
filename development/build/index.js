@@ -35,6 +35,7 @@ require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/preset-typescript');
 require('@babel/core');
+require('babel-plugin-module-resolver');
 // ESLint-related
 require('@babel/eslint-parser');
 require('@babel/eslint-plugin');
