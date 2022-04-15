@@ -76,14 +76,16 @@ describe('Send token from inside MetaMask', function () {
         );
         await driver.fill('.unit-input__input', '1');
         // Continue to next screen
-        const nextButton = await driver.findClickableElement({
-          text: 'Next',
+        await driver.waitForSelector(
+          '[data-testid="page-container-footer-next"]',
+        );
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        const hexButton = await driver.findClickableElement({
+          text: 'Hex',
           tag: 'button',
         });
-        nextButton.click();
-
-        await driver.findClickableElement({ text: 'Hex', tag: 'button' });
-        await driver.clickElement({ text: 'Hex', tag: 'button' });
+        hexButton.click();
 
         const functionType = await driver.findElement(
           '.confirm-page-container-content__function-type',
