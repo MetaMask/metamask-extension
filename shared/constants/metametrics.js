@@ -170,7 +170,7 @@
  *  change, we identify the new number_of_accounts trait
  * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
  *  trait for number of unique NFT addresses
- * @property {'number_of_tokens'} [NUMBER_OF_TOKENS] - when the number of tokens change, we
+ * @property {'number_of_tokens'} NUMBER_OF_TOKENS - when the number of tokens change, we
  * identify the new number_of_tokens trait
  * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
  * we identify the opensea_api_enabled trait
