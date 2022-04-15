@@ -737,8 +737,8 @@ describe('MetaMetricsController', function () {
       assert.deepEqual(updatedTraits, {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 4,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 3,
-        [TRAITS.OPENSEA_API_ENABLED]: false,
         [TRAITS.NUMBER_OF_TOKENS]: 1,
+        [TRAITS.OPENSEA_API_ENABLED]: false,
       });
     });
 
