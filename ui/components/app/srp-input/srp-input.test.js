@@ -59,7 +59,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.keyboard('test');
@@ -71,7 +74,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         for (const index of new Array(11).keys()) {
@@ -86,7 +92,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         for (const index of new Array(11).keys()) {
@@ -103,7 +112,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         for (const index of new Array(10).keys()) {
@@ -120,7 +132,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = invalidChecksum.split(' ');
@@ -136,7 +151,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = invalidWordCorrectChecksum.split(' ');
@@ -152,7 +170,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = correct.split(' ');
@@ -169,7 +190,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = correct.split(' ');
@@ -188,7 +212,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         getByTestId('import-srp__srp-word-0').focus();
@@ -208,7 +235,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste('test');
@@ -220,7 +250,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         for (const index of new Array(11).keys()) {
@@ -235,7 +268,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = invalidChecksum.split(' ');
@@ -251,7 +287,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = invalidWordCorrectChecksum.split(' ');
@@ -267,7 +306,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = correct.split(' ');
@@ -284,7 +326,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         const srpParts = correct.split(' ');
@@ -303,7 +348,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
 
         getByTestId('import-srp__srp-word-0').focus();
@@ -323,7 +371,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste('test');
@@ -335,7 +386,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(tooManyWords);
@@ -348,7 +402,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           getByTestId('import-srp__srp-word-0').focus();
           await userEvent.paste(invalidInput);
@@ -360,7 +417,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           getByTestId('import-srp__srp-word-1').focus();
           await userEvent.paste(invalidInput);
@@ -372,7 +432,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           getByTestId('import-srp__srp-word-1').focus();
           await userEvent.paste(correct);
@@ -386,7 +449,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-1').focus();
         await userEvent.paste(correct);
@@ -401,7 +467,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -417,7 +486,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -436,7 +508,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -455,7 +530,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -475,7 +553,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -490,7 +571,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -507,7 +591,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -526,7 +613,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -545,7 +635,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -563,7 +656,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(correct);
@@ -575,7 +671,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidChecksum);
@@ -589,7 +688,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           getByTestId('import-srp__srp-word-0').focus();
           await userEvent.paste(poorlyFormattedInput);
@@ -601,7 +703,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           getByTestId('import-srp__srp-word-1').focus();
           await userEvent.paste(poorlyFormattedInput);
@@ -637,7 +742,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = tooFewWords.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -655,7 +763,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByRole, getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         await userEvent.selectOptions(getByRole('combobox'), '15');
         const srpParts = invalidWordCount.split(' ');
@@ -674,7 +785,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = invalidChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -694,7 +808,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -714,7 +831,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -735,7 +855,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -759,7 +882,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -783,7 +909,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -808,7 +937,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = tooFewWords.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -826,7 +958,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, getByRole, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         await userEvent.selectOptions(getByRole('combobox'), '15');
         const srpParts = invalidWordCount.split(' ');
@@ -845,7 +980,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = invalidChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -865,7 +1003,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -885,7 +1026,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -906,7 +1050,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -930,7 +1077,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -954,7 +1104,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
@@ -977,7 +1130,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(tooFewWords);
@@ -992,7 +1148,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidWordCount);
@@ -1007,7 +1166,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidChecksum);
@@ -1024,7 +1186,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(invalidWordCorrectChecksum);
@@ -1041,7 +1206,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryByText } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(correct);
@@ -1059,7 +1227,10 @@ describe('srp-input', () => {
           const onChange = jest.fn();
 
           const { getByTestId, queryByText } = renderWithLocalization(
-            <SrpInput onChange={onChange} />,
+            <SrpInput
+              onChange={onChange}
+              srpText={enLocale.secretRecoveryPhrase.message}
+            />,
           );
           getByTestId('import-srp__srp-word-0').focus();
           await userEvent.paste(poorlyFormattedInput);
@@ -1080,7 +1251,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
 
       for (const index of new Array(12).keys()) {
@@ -1099,7 +1273,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryAllByRole } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1114,7 +1291,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryAllByRole } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1129,7 +1309,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryAllByRole } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(correct);
@@ -1143,7 +1326,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1167,7 +1353,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1193,7 +1382,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1223,7 +1415,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1253,7 +1448,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         getByTestId('import-srp__srp-word-0').focus();
         await userEvent.paste(correct);
@@ -1283,7 +1481,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1310,7 +1511,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
@@ -1339,7 +1543,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryAllByRole } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
         getByTestId('import-srp__srp-word-0').focus();
@@ -1359,7 +1566,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryAllByRole } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
         getByTestId('import-srp__srp-word-0').focus();
@@ -1379,7 +1589,10 @@ describe('srp-input', () => {
         const onChange = jest.fn();
 
         const { getByTestId, queryAllByRole } = renderWithLocalization(
-          <SrpInput onChange={onChange} />,
+          <SrpInput
+            onChange={onChange}
+            srpText={enLocale.secretRecoveryPhrase.message}
+          />,
         );
         await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
         getByTestId('import-srp__srp-word-0').focus();
@@ -1396,7 +1609,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryAllByRole } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(correct);
@@ -1416,7 +1632,10 @@ describe('srp-input', () => {
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       const srpParts = correct.split(' ');
       for (const index of new Array(srpParts.length).keys()) {
@@ -1432,7 +1651,10 @@ describe('srp-input', () => {
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       const srpParts = correct.split(' ');
       for (const index of new Array(srpParts.length).keys()) {
@@ -1448,7 +1670,10 @@ describe('srp-input', () => {
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
@@ -1461,7 +1686,10 @@ describe('srp-input', () => {
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooFewWords);
@@ -1474,7 +1702,10 @@ describe('srp-input', () => {
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(correct);
@@ -1488,7 +1719,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { queryByTestId, queryByRole } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
 
       expect(
@@ -1508,7 +1742,12 @@ describe('srp-input', () => {
         getByTestId,
         queryByTestId,
         queryByRole,
-      } = renderWithLocalization(<SrpInput onChange={onChange} />);
+      } = renderWithLocalization(
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
+      );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(new Array(15).fill('test').join(' '));
 
@@ -1530,7 +1769,12 @@ describe('srp-input', () => {
         getByTestId,
         queryByTestId,
         queryByRole,
-      } = renderWithLocalization(<SrpInput onChange={onChange} />);
+      } = renderWithLocalization(
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
+      );
       await userEvent.selectOptions(getByRole('combobox'), '15');
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(correct);
@@ -1552,7 +1796,12 @@ describe('srp-input', () => {
         getByTestId,
         queryByTestId,
         queryByRole,
-      } = renderWithLocalization(<SrpInput onChange={onChange} />);
+      } = renderWithLocalization(
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
+      );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(invalidWordCount);
 
@@ -1570,7 +1819,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByRole, queryByTestId, queryByRole } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       await userEvent.selectOptions(getByRole('combobox'), '24');
 
@@ -1588,7 +1840,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByRole, getByTestId, queryByTestId } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(new Array(15).fill('test').join(' '));
@@ -1609,7 +1864,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
@@ -1623,7 +1881,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId, getByText, queryByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
@@ -1638,7 +1899,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
@@ -1653,7 +1917,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);
@@ -1668,7 +1935,10 @@ describe('srp-input', () => {
       const onChange = jest.fn();
 
       const { getByTestId, queryByText } = renderWithLocalization(
-        <SrpInput onChange={onChange} />,
+        <SrpInput
+          onChange={onChange}
+          srpText={enLocale.secretRecoveryPhrase.message}
+        />,
       );
       getByTestId('import-srp__srp-word-0').focus();
       await userEvent.paste(tooManyWords);

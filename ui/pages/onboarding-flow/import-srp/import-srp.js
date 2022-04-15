@@ -23,38 +23,6 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
 
-  /**
-   * Function checks if the button is disabled or enabled
-   *
-   * If secretRecoveryPhrase.length = 0 button will be disabled
-   * If we choose "I have 12-word phrase" in Dropdown component than,
-   * secretRecoveryPhrase.length = 11 and the button will be disabled
-   * If we choose "I have 15-word phrase" in Dropdown component than,
-   * secretRecoveryPhrase.length = 14 and the button will be disabled
-   * If we choose "I have 18-word phrase" in Dropdown component than,
-   * secretRecoveryPhrase.length = 17 and the button will be disabled
-   * If we choose "I have 21-word phrase" in Dropdown component than,
-   * secretRecoveryPhrase.length = 20 and the button will be disabled
-   * If we choose "I have 24-word phrase" in Dropdown component than,
-   * secretRecoveryPhrase.length = 23 and the button will be disabled
-   */
-  const checkButtonVisibility = () => {
-    if (secretRecoveryPhrase.length === 0) {
-      return true;
-    } else if (secretRecoveryPhrase.length === 11) {
-      return true;
-    } else if (secretRecoveryPhrase.length === 14) {
-      return true;
-    } else if (secretRecoveryPhrase.length === 17) {
-      return true;
-    } else if (secretRecoveryPhrase.length === 20) {
-      return true;
-    } else if (secretRecoveryPhrase.length === 23) {
-      return true;
-    }
-    return false;
-  };
-
   return (
     <div className="import-srp">
       <TwoStepProgressBar stage={twoStepStages.RECOVERY_PHRASE_CONFIRM} />
@@ -93,7 +61,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
             }}
-            disabled={checkButtonVisibility()}
+            disabled={!secretRecoveryPhrase.trim()}
           >
             {t('confirmRecoveryPhrase')}
           </Button>
