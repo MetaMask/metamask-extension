@@ -11,7 +11,19 @@
     "outDir": "tsout",
     "rootDir": ".",
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["ui/components/app/*"],
+      "@ui/*": ["ui/components/ui/*"],
+      "@helpers/*": ["ui/helpers/*"],
+      "@hooks/*": ["ui/hooks/*"],
+      "@store/*": ["ui/store/*"],
+      "@contexts/*": ["ui/contexts/*"],
+      "@selectors/*": ["ui/selectors/*"],
+      "@ducks/*": ["ui/ducks/*"],
+      "@shared/*": ["shared/*"]
+    }
   },
   "exclude": [
     "**/*.test.js",
