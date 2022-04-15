@@ -164,10 +164,14 @@
  *  trait
  * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
  *  we identify the networks_added trait
+ * @property {'nft_autodetection_enabled'} NFT_AUTODETECTION_ENABLED - when Autodetect NFTs
+ * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
  *  change, we identify the new number_of_accounts trait
  * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
  *  trait for number of unique NFT addresses
+ * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
+ * we identify the opensea_api_enabled trait
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
  */
@@ -181,8 +185,10 @@ export const TRAITS = {
   ADDRESS_BOOK_ENTRIES: 'address_book_entries',
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   NETWORKS_ADDED: 'networks_added',
+  NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
 };
 
@@ -194,10 +200,14 @@ export const TRAITS = {
  *  type of ledger connection set by user preference.
  * @property {Array<string>} [networks_added] - An array consisting of chainIds
  *  that indicate the networks a user has added to their MetaMask.
+ * @property {number} [nft_autodetection_enabled] - does the user have the
+ * use collection/nft detection enabled?
  * @property {number} [number_of_accounts] - A number representing the number
  *  of identities(accounts) added to the user's MetaMask.
  * @property {number} [number_of_nft_collections] - A number representing the
  *  amount of different NFT collections the user possesses an NFT from.
+ * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
+ *  API enabled?
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
  *  enabled?
  */
