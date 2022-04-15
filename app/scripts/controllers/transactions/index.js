@@ -1102,7 +1102,8 @@ export default class TransactionController extends EventEmitter {
       previousGasParams,
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
-      type: TRANSACTION_TYPES.CANCEL,
+      type: originalTxMeta.type,
+      isCancel: true,
     });
 
     if (estimatedBaseFee) {
@@ -1148,7 +1149,8 @@ export default class TransactionController extends EventEmitter {
       previousGasParams,
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
-      type: TRANSACTION_TYPES.RETRY,
+      type: originalTxMeta.type,
+      isRetry: true,
     });
 
     if (estimatedBaseFee) {

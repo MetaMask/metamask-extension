@@ -162,7 +162,7 @@ export function isLegacyTransaction(txParams) {
 export function getStatusKey(transaction) {
   const {
     txReceipt: { status: receiptStatus } = {},
-    type,
+    isCancel,
     status,
   } = transaction;
 
@@ -171,10 +171,7 @@ export function getStatusKey(transaction) {
     return TRANSACTION_STATUSES.FAILED;
   }
 
-  if (
-    status === TRANSACTION_STATUSES.CONFIRMED &&
-    type === TRANSACTION_TYPES.CANCEL
-  ) {
+  if (status === TRANSACTION_STATUSES.CONFIRMED && isCancel) {
     return TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
 

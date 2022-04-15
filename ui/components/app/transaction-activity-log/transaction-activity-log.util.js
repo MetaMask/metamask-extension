@@ -64,6 +64,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
     },
     txReceipt: { status } = {},
     type,
+    isRetry,
+    isCancel,
     estimatedBaseFee: paramsEstimatedBaseFee,
   } = transaction;
 
@@ -136,13 +138,13 @@ export function getActivities(transaction, isFirstTransaction = false) {
                 // If the status is 'submitted', we need to determine whether the event is a
                 // transaction retry or a cancellation attempt.
                 if (value === SUBMITTED_STATUS) {
-                  if (type === TRANSACTION_TYPES.RETRY) {
+                  if (isRetry) {
                     eventKey = TRANSACTION_RESUBMITTED_EVENT;
-                  } else if (type === TRANSACTION_TYPES.CANCEL) {
+                  } else if (isCancel) {
                     eventKey = TRANSACTION_CANCEL_ATTEMPTED_EVENT;
                   }
                 } else if (value === CONFIRMED_STATUS) {
-                  if (type === TRANSACTION_TYPES.CANCEL) {
+                  if (isCancel) {
                     eventKey = TRANSACTION_CANCEL_SUCCESS_EVENT;
                   }
                 }
