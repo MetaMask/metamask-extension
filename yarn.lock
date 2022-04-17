@@ -11246,16 +11246,16 @@ eth-keyring-controller@^6.2.0, eth-keyring-controller@^6.2.1:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-lattice-keyring@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.6.1.tgz#ebb6dfb8039d4c4c979280110aa49a7b74064850"
-  integrity sha512-FzP/TPIFuyo37B4dGKg6bQN0H61h9Bdejh9bxH6sUqmDB+X+a/PlydeWxZIhEjmIvD+Huuy+bcp9hXTcCcr2Ig==
+eth-lattice-keyring@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.7.1.tgz#d686586484bd27ffc701300ada7bae0f26e0088d"
+  integrity sha512-qWj/c9AztwwMassvDkmphyS7vB0wXyB5unBqWHn+xcOFUDfNhnC9IbZU/L6OfZrE5/tCwGqTIsKaBuskGooAbw==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
     bn.js "^5.2.0"
     ethereumjs-util "^7.0.10"
-    gridplus-sdk "^1.1.6"
+    gridplus-sdk "^1.2.0"
     rlp "^3.0.0"
     secp256k1 "4.0.2"
 
@@ -13627,10 +13627,10 @@ graphql-subscriptions@^1.1.0:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
-gridplus-sdk@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-1.1.6.tgz#abec7eab81daa295806aaafda50cf3b463a53ae6"
-  integrity sha512-AjpnKouda18gwJpOqZRB9aY/cXKGLCj2U915hxjtlQvulRQfCtS1aNA71ZeN/rlBb77NPDZ8v1jJVerte4vKLQ==
+gridplus-sdk@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-1.2.0.tgz#47ae25b0beac7f3e4f0906bd23e7827531164d64"
+  integrity sha512-GQkemyKIEsjYuj9X7aGAhLDMoTriYt34fktXF1gbqLeA6zYKAGRoBLyiDkJtzRjeP+7WK0BfKO/GySSJJPvChQ==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
