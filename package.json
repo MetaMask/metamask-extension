@@ -328,7 +328,7 @@
     "jest-canvas-mock": "^2.3.1",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
-    "lavamoat": "6.1.0",
+    "lavamoat": "^6.1.0",
     "lavamoat-browserify": "^14.1.0",
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.0.0",
