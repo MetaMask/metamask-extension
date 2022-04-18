@@ -3,7 +3,7 @@ const { delay } = require('lodash');
 const { withFixtures } = require('../helpers');
 
 describe('Test Snap bip-44', function () {
-  it('can pop up a snap bip-44 and get its result', async function () {
+  it('can pop up bip-44 snap and get private key result', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -31,7 +31,8 @@ describe('Test Snap bip-44', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3/');
-        await driver.fill('.snapId3', 'local:http://127.0.0.1:8083');
+        // await driver.fill('.snapId3', 'local:http://127.0.0.1:8083');
+        await driver.fill('.snapId3', 'npm:@metamask/test-snap-bip44');
         await driver.clickElement({
           text: 'Connect BIP-44 Snap',
           tag: 'button',
@@ -66,6 +67,7 @@ describe('Test Snap bip-44', function () {
           tag: 'button',
         });
         // deal with permissions popover
+        await driver.delay(1000);
         await driver.press('#warning-accept', driver.Key.SPACE);
         await driver.clickElement({
           text: 'Confirm',
