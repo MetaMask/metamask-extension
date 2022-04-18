@@ -247,6 +247,17 @@ export default class ExperimentalTab extends PureComponent {
       },
     ];
 
+    const onChange = (newTheme) => {
+      this.context.trackEvent({
+        category: 'Settings',
+        event: 'Theme Changed',
+        properties: {
+          theme_selected: newTheme,
+        },
+      });
+      setTheme(newTheme);
+    };
+
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
@@ -261,17 +272,7 @@ export default class ExperimentalTab extends PureComponent {
               id="select-theme"
               options={themesOptions}
               selectedOption={theme}
-              onChange={(newTheme) => {
-                this.context.trackEvent({
-                  category: 'Settings',
-                  event: 'Theme Change',
-                  properties: {
-                    theme_selected: newTheme,
-                    legacy_event: true,
-                  },
-                });
-                setTheme(newTheme);
-              }}
+              onChange={onChange}
             />
           </div>
         </div>
