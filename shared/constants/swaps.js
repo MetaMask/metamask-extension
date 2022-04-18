@@ -201,3 +201,8 @@ export const RINKEBY = 'rinkeby';
 export const AVALANCHE = 'avalanche';
 
 export const SWAPS_CLIENT_ID = 'extension';
+
+export const TOKEN_BUCKET_PRIORITY = {
+  OWNED: 'owned',
+  TOP: 'top',
+};
