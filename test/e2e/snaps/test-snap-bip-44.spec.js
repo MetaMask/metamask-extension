@@ -31,7 +31,6 @@ describe('Test Snap bip-44', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3/');
-        // await driver.fill('.snapId3', 'local:http://127.0.0.1:8083');
         await driver.fill('.snapId3', 'npm:@metamask/test-snap-bip44');
         await driver.clickElement({
           text: 'Connect BIP-44 Snap',
