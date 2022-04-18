@@ -681,6 +681,7 @@ describe('MetaMetricsController', function () {
         openSeaEnabled: true,
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
+        theme: 'default',
       });
 
       assert.deepEqual(traits, {
@@ -693,6 +694,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.NUMBER_OF_TOKENS]: 5,
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
+        [TRAITS.THEME]: 'default',
       });
     });
 
@@ -713,6 +715,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
+        theme: 'default',
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -732,6 +735,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}, {}],
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
+        theme: 'default',
       });
 
       assert.deepEqual(updatedTraits, {
@@ -759,6 +763,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
+        theme: 'default',
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -776,6 +781,7 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
+        theme: 'default',
       });
 
       assert.equal(updatedTraits, null);

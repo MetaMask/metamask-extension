@@ -176,6 +176,7 @@
  * we identify the opensea_api_enabled trait
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
+ * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  */
 
 /**
@@ -193,6 +194,7 @@ export const TRAITS = {
   NUMBER_OF_TOKENS: 'number_of_tokens',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
+  THEME: 'theme',
 };
 
 /**
@@ -215,6 +217,7 @@ export const TRAITS = {
  *  API enabled?
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
  *  enabled?
+ * @property {string} [theme] - which theme the user has selected
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
