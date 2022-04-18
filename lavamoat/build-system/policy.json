@@ -3279,8 +3279,8 @@
       },
       "packages": {
         "gulp-autoprefixer>postcss>chalk": true,
-        "gulp-autoprefixer>postcss>supports-color": true,
-        "source-map": true
+        "gulp-autoprefixer>postcss>source-map": true,
+        "gulp-autoprefixer>postcss>supports-color": true
       }
     },
     "gulp-autoprefixer>postcss>chalk": {
@@ -3716,7 +3716,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss>chalk": true,
         "gulp-rtlcss>rtlcss>chalk>supports-color": true,
-        "source-map": true
+        "gulp-rtlcss>rtlcss>postcss>source-map": true
       }
     },
     "gulp-rtlcss>through2": {
@@ -3752,18 +3752,18 @@
         "gulp-sourcemaps>css": true,
         "gulp-sourcemaps>debug-fabulous": true,
         "gulp-sourcemaps>detect-newline": true,
+        "gulp-sourcemaps>source-map": true,
         "gulp-sourcemaps>strip-bom-string": true,
         "gulp-sourcemaps>through2": true,
-        "nyc>convert-source-map": true,
-        "source-map": true
+        "nyc>convert-source-map": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
       "packages": {
         "css-loader>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true,
-        "source-map": true,
         "stylelint>postcss": true
       }
     },
@@ -3837,9 +3837,9 @@
         "path.sep": true
       },
       "packages": {
+        "gulp-sourcemaps>css>source-map": true,
         "gulp-sourcemaps>css>source-map-resolve": true,
-        "pumpify>inherits": true,
-        "source-map": true
+        "pumpify>inherits": true
       }
     },
     "gulp-sourcemaps>css>source-map-resolve": {
@@ -3943,24 +3943,10 @@
       "packages": {
         "eslint>strip-ansi": true,
         "fancy-log": true,
-        "gulp-stylelint>source-map": true,
         "gulp-stylelint>through2": true,
         "gulp-watch>plugin-error": true,
+        "source-map": true,
         "stylelint": true
-      }
-    },
-    "gulp-stylelint>source-map": {
-      "builtin": {
-        "fs.readFile": true,
-        "path.join": true
-      },
-      "globals": {
-        "WebAssembly.instantiate": true,
-        "__dirname": true,
-        "console.debug": true,
-        "console.time": true,
-        "console.timeEnd": true,
-        "fetch": true
       }
     },
     "gulp-stylelint>through2": {
@@ -5434,7 +5420,7 @@
       "packages": {
         "eslint>esutils": true,
         "jsdom>escodegen>estraverse": true,
-        "source-map": true
+        "jsdom>escodegen>source-map": true
       }
     },
     "jsdom>request>safe-buffer": {
@@ -6181,6 +6167,20 @@
         "process.platform": true
       }
     },
+    "source-map": {
+      "builtin": {
+        "fs.readFile": true,
+        "path.join": true
+      },
+      "globals": {
+        "WebAssembly.instantiate": true,
+        "__dirname": true,
+        "console.debug": true,
+        "console.time": true,
+        "console.timeEnd": true,
+        "fetch": true
+      }
+    },
     "squirrelly": {
       "builtin": {
         "fs.existsSync": true,
@@ -6660,8 +6660,8 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "source-map": true,
-        "stylelint>postcss>picocolors": true
+        "stylelint>postcss>picocolors": true,
+        "stylelint>postcss>source-map": true
       }
     },
     "stylelint>postcss-html": {
@@ -6841,21 +6841,7 @@
       },
       "packages": {
         "eslint>espree>acorn": true,
-        "terser>source-map": true
-      }
-    },
-    "terser>source-map": {
-      "builtin": {
-        "fs.readFile": true,
-        "path.join": true
-      },
-      "globals": {
-        "WebAssembly.instantiate": true,
-        "__dirname": true,
-        "console.debug": true,
-        "console.time": true,
-        "console.timeEnd": true,
-        "fetch": true
+        "source-map": true
       }
     },
     "terser>source-map-support": {
@@ -6871,7 +6857,7 @@
       },
       "packages": {
         "browserify>concat-stream>buffer-from": true,
-        "source-map": true
+        "terser>source-map-support>source-map": true
       }
     },
     "through2": {

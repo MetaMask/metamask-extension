@@ -328,7 +328,7 @@
     "jest-canvas-mock": "^2.3.1",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
-    "lavamoat": "6.1.0",
+    "lavamoat": "^6.1.1",
     "lavamoat-browserify": "^14.1.0",
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.0.0",
@@ -358,7 +358,7 @@
     "semver": "^7.3.5",
     "serve-handler": "^6.1.2",
     "sinon": "^9.0.0",
-    "source-map": "^0.6.1",
+    "source-map": "^0.7.2",
     "source-map-explorer": "^2.4.2",
     "squirrelly": "^8.0.8",
     "storybook-dark-mode": "^1.0.9",
@@ -435,7 +435,13 @@
       "@metamask/iframe-execution-environment-service>@metamask/execution-environments": false,
       "@metamask/snap-controllers>@metamask/execution-environments": false,
       "@metamask/iframe-execution-environment-service>@metamask/snap-controllers>@metamask/execution-environments": false,
-      "@metamask/rpc-methods>@metamask/snap-controllers>@metamask/execution-environments": false
+      "@metamask/rpc-methods>@metamask/snap-controllers>@metamask/execution-environments": false,
+      "3box>ipfs>prometheus-gc-stats>gc-stats": false,
+      "@eth-optimism/contracts>@ethersproject/hardware-wallets>@ledgerhq/hw-transport-node-hid>@ledgerhq/hw-transport-node-hid-noevents>node-hid": false,
+      "@eth-optimism/contracts>@ethersproject/hardware-wallets>@ledgerhq/hw-transport-node-hid>node-hid": false,
+      "@eth-optimism/contracts>@ethersproject/hardware-wallets>@ledgerhq/hw-transport-node-hid>usb": false,
+      "ganache>bufferutil": false,
+      "ganache>utf-8-validate": false
     }
   }
 }

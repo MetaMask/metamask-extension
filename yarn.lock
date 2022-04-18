@@ -2487,10 +2487,10 @@
     rlp "^2.2.6"
     uuid "^8.3.2"
 
-"@lavamoat/aa@^2.0.0", "@lavamoat/aa@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-2.0.1.tgz#fff7605101c9b7a5dd6495e999a492010fba702f"
-  integrity sha512-lS0DccPZaZyxEqs3+zj76cITrJdaazfIoTs8J3tjS9uA3yvFmZ/QFPsgE5AZxyoO8HPtaz5bGa8x605iNlBVXA==
+"@lavamoat/aa@^2.0.0", "@lavamoat/aa@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-2.0.2.tgz#e4e2d02ee189f4f6a1fe8243bb33a4b839d1dc5c"
+  integrity sha512-0G6wD21S7I5jWZVgSJat+wG6/g6DV7VAt46SKHOTwxJWctA8hD3zity6LzVDLpPieHoswK7qf+W4Ge/gnnbxcg==
   dependencies:
     resolve "^1.20.0"
 
@@ -17334,14 +17334,14 @@ lavamoat-viz@^6.0.9:
     serve-handler "^6.1.3"
     yargs "^16.0.0"
 
-lavamoat@6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-6.1.0.tgz#69055f9aa7b163439bf9350ba8917030e057b123"
-  integrity sha512-GGkmDOKhvqw2epVHOtAECAFzZSjSrEc3l35OitOiGiwigHYqaO95+sAEMK9CwClnM5leMmm2VPnuoaWxkJCJeQ==
+lavamoat@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-6.1.1.tgz#9f0955a15891e0ce0ebfeb9e8d888a385ed701ff"
+  integrity sha512-0y2k3gWuXgdrixSaS2TYbhd8RCbX5V9i4B45wW6hmgLcFYQ0d9nskko4P5/cVAZ+HKqv7JSAGBZBDuL68GZMSw==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/highlight" "^7.10.4"
-    "@lavamoat/aa" "^2.0.1"
+    "@lavamoat/aa" "^2.0.2"
     bindings "^1.5.0"
     htmlescape "^1.1.1"
     json-stable-stringify "^1.0.1"
@@ -25184,7 +25184,7 @@ source-map@^0.5.0, source-map@^0.5.1, source-map@^0.5.6, source-map@^0.5.7, sour
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=
 
-source-map@^0.7.3, source-map@~0.7.2:
+source-map@^0.7.2, source-map@^0.7.3, source-map@~0.7.2:
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.3.tgz#5302f8169031735226544092e64981f751750383"
   integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
