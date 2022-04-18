@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
   },
-  "importExistingWalletDescription": {
-    "message": "Saisissez la phrase secrète de récupération (aussi appelée « phrase mnémonique » ou « seed ») qui vous a été attribuée lors de la création de votre portefeuille. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importer un portefeuille existant avec la phrase secrète de récupération"
-  },
   "importMyWallet": {
     "message": "Importer mon portefeuille"
   },

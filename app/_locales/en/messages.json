@@ -62,6 +62,13 @@
     "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Access your wallet with your Secret Recovery Phrase"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask cannot recover your password. We will use your Secret Recovery Phrase to validate your ownership, restore your wallet and set up a new password. First, enter the Secret Recovery Phrase that you were given when you created your wallet. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -1479,13 +1486,6 @@
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
-  },
-  "importExistingWalletDescription": {
-    "message": "Enter your Secret Recovery Phrase (aka Seed Phrase) that you were given when you created your wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Import existing wallet with Secret Recovery Phrase"
   },
   "importMyWallet": {
     "message": "Import My Wallet"
@@ -3772,6 +3772,9 @@
   },
   "typePassword": {
     "message": "Type your MetaMask password"
+  },
+  "typeYourSRP": {
+    "message": "Type your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",

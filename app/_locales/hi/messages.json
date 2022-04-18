@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "गुप्त रिकवरी फ्रेज के साथ एक खाता आयात करें"
   },
-  "importExistingWalletDescription": {
-    "message": "अपना सीक्रेट रिकवरी फ्रेज (उर्फ सीड फ्रेज) दर्ज करें जो आपको अपना वॉलेट बनाने पर दिया गया था। $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "सीक्रेट रिकवरी फ्रेज के साथ मौजूदा वॉलेट आयात करें"
-  },
   "importMyWallet": {
     "message": "मेरा वॉलेट आयात करें"
   },
