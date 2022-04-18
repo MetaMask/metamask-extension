@@ -516,6 +516,7 @@ export default class MetaMetricsController {
         (rpc) => rpc.chainId,
       ),
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THEME]: metamaskState.theme || 'default',
     };
 
     if (!this.previousTraits) {

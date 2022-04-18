@@ -164,6 +164,16 @@
  * identify the new number_of_accounts trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
+ * @property {'address_book_entries'} ADDRESS_BOOK_ENTRIES - When the user
+ *  adds or modifies addresses in address book the address_book_entries trait
+ *  is identified.
+ * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
+ *  we identify the networks_added trait
+ * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
+ *  change, we identify the new number_of_accounts trait
+ * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
+ *  toggled we identify the 3box_enabled trait
+ * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  */
 
 /**
@@ -176,7 +186,31 @@ export const TRAITS = {
   THREE_BOX_ENABLED: 'three_box_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NETWORKS_ADDED: 'networks_added',
+  THEME: 'theme',
 };
+
+/**
+ * @typedef {Object} MetaMetricsTraits
+ * @property {number} [address_book_entries] - The number of entries in the
+ *  user's address book.
+ * @property {'ledgerLive' | 'webhid' | 'u2f'} [ledger_connection_type] - the
+ *  type of ledger connection set by user preference.
+ * @property {Array<string>} [networks_added] - An array consisting of chainIds
+ *  that indicate the networks a user has added to their MetaMask.
+ * @property {number} [nft_autodetection_enabled] - does the user have the
+ * use collection/nft detection enabled?
+ * @property {number} [number_of_accounts] - A number representing the number
+ *  of identities(accounts) added to the user's MetaMask.
+ * @property {number} [number_of_nft_collections] - A number representing the
+ *  amount of different NFT collections the user possesses an NFT from.
+ * @property {number} [number_of_tokens] - The total number of token contracts
+ *  the user has across all networks and accounts.
+ * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
+ *  API enabled?
+ * @property {boolean} [three_box_enabled] - does the user have 3box sync
+ *  enabled?
+ * @property {string} [theme] - which theme the user has selected
+ */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
 // speeds up reporting

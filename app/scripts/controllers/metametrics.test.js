@@ -534,6 +534,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        theme: 'default',
       });
 
       assert.deepEqual(traits, {
@@ -541,6 +542,8 @@ describe('MetaMetricsController', function () {
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
+        [TRAITS.THREE_BOX_ENABLED]: false,
+        [TRAITS.THEME]: 'default',
       });
     });
 
@@ -554,6 +557,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        theme: 'default',
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -564,6 +568,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         identities: [{}, {}, {}],
         threeBoxSyncingAllowed: false,
+        theme: 'default',
       });
 
       assert.deepEqual(updatedTraits, {
@@ -581,6 +586,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        theme: 'default',
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -591,6 +597,7 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         identities: [{}, {}],
         threeBoxSyncingAllowed: false,
+        theme: 'default',
       });
 
       assert.equal(updatedTraits, null);
