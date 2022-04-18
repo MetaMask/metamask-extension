@@ -46,6 +46,3 @@ notes.txt
 .nyc_output
 
 .metamaskrc
-
-# TypeScript
-tsout/

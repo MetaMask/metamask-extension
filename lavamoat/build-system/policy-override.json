@@ -20,8 +20,6 @@
         "@babel/eslint-plugin": true,
         "@metamask/eslint-config": true,
         "@metamask/eslint-config-nodejs": true,
-        "@metamask/eslint-config-typescript": true,
-        "@typescript-eslint/eslint-plugin": true,
         "eslint": true,
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
@@ -32,57 +30,19 @@
         "eslint-plugin-react-hooks": true
       }
     },
-    "@typescript-eslint/eslint-plugin": {
-      "packages": {
-        "@typescript-eslint/experimental-utils": true,
-        "@typescript-eslint/scope-manager": true,
-        "debug": true,
-        "eslint": true,
-        "ignore": true,
-        "regexpp": true,
-        "semver": true,
-        "tsutils": true,
-        "typescript": true
-      }
-    },
-    "@typescript-eslint/experimental-utils": {
-      "builtin": {
-        "path": true
-      },
-      "packages": {
-        "@typescript-eslint/scope-manager": true,
-        "@typescript-eslint/types": true,
-        "eslint": true,
-        "eslint-scope": true,
-        "eslint-utils": true
-      }
-    },
-    "@typescript-eslint/scope-manager": {
-      "packages": {
-        "@typescript-eslint/types": true,
-        "@typescript-eslint/visitor-keys": true
-      }
-    },
-    "@typescript-eslint/visitor-keys": {
-      "packages": {
-        "eslint-visitor-keys": true
-      }
-    },
     "eslint-module-utils": {
       "packages": {
-        "@babel/eslint-parser": true,
-        "@typescript-eslint/parser": true,
         "eslint-import-resolver-node": true,
-        "eslint-import-resolver-typescript": true
+        "@babel/eslint-parser": true
       }
+    },
+    "node-sass": {
+      "native": true
     },
     "module-deps": {
       "packages": {
         "loose-envify": true
       }
-    },
-    "node-sass": {
-      "native": true
     },
     "sass": {
       "env": "unfrozen",
@@ -91,17 +51,6 @@
       },
       "globals": {
         "Buffer": true
-      }
-    },
-    "tsutils": {
-      "packages": {
-        "typescript": true,
-        "tslib": true
-      }
-    },
-    "typescript": {
-      "globals": {
-        "globalThis": true
       }
     }
   }
