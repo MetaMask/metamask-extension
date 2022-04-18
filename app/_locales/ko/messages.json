@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "비밀 복구 구문으로 계정 가져오기"
   },
-  "importExistingWalletDescription": {
-    "message": "지갑을 만들 때 받은 비밀 복구 구문(시드 구문)을 입력하세요. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "비밀 복구 구문을 사용하여 기존 지갑 가져오기"
-  },
   "importMyWallet": {
     "message": "내 지갑 가져오기"
   },
