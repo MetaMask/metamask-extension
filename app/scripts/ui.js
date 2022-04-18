@@ -16,6 +16,8 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
+import { SUPPORT_LINK } from '../../ui/helpers/constants/common';
+import { getErrorHtml } from '../../ui/helpers/utils/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
@@ -24,6 +26,21 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 start().catch(log.error);
 
 async function start() {
+  async function displayCriticalError(container, err, store) {
+    const html = await getErrorHtml(SUPPORT_LINK, store);
+
+    container.innerHTML = html;
+
+    const button = document.getElementById('critical-error-button');
+
+    button.addEventListener('click', (_) => {
+      browser.runtime.reload();
+    });
+
+    log.error(err.stack);
+    throw err;
+  }
+
   // create platform global
   global.platform = new ExtensionPlatform();
 
@@ -32,24 +49,17 @@ async function start() {
 
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
+
   const connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
   initializeUiWithTab(activeTab);
 
-  function displayCriticalError(container, err) {
-    container.innerHTML =
-      '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>';
-    container.style.height = '80px';
-    log.error(err.stack);
-    throw err;
-  }
-
   function initializeUiWithTab(tab) {
     const container = document.getElementById('app-content');
     initializeUi(tab, container, connectionStream, (err, store) => {
       if (err) {
-        displayCriticalError(container, err);
+        displayCriticalError(container, err, store);
         return;
       }
 
@@ -90,7 +100,7 @@ async function queryCurrentActiveTab(windowType) {
 function initializeUi(activeTab, container, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      cb(err);
+      cb(err, null);
       return;
     }
 

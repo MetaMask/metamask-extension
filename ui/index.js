@@ -36,7 +36,7 @@ export default function launchMetamaskUi(opts, cb) {
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      cb(err);
+      cb(err, metamaskState);
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
@@ -46,21 +46,29 @@ export default function launchMetamaskUi(opts, cb) {
   });
 }
 
+export const setupLocale = async (currentLocale) => {
+  const currentLocaleMessages = currentLocale
+    ? await fetchLocale(currentLocale)
+    : {};
+  const enLocaleMessages = await fetchLocale('en');
+
+  await loadRelativeTimeFormatLocaleData('en');
+  if (currentLocale) {
+    await loadRelativeTimeFormatLocaleData(currentLocale);
+  }
+
+  return { currentLocaleMessages, enLocaleMessages };
+};
+
 async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
   }
 
-  const currentLocaleMessages = metamaskState.currentLocale
-    ? await fetchLocale(metamaskState.currentLocale)
-    : {};
-  const enLocaleMessages = await fetchLocale('en');
-
-  await loadRelativeTimeFormatLocaleData('en');
-  if (metamaskState.currentLocale) {
-    await loadRelativeTimeFormatLocaleData(metamaskState.currentLocale);
-  }
+  const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
+    metamaskState.currentLocale,
+  );
 
   if (metamaskState.textDirection === 'rtl') {
     await switchDirection('rtl');
