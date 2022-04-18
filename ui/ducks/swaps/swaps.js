@@ -1172,12 +1172,9 @@ export const signAndSendTransactions = (
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
-      const approveTxMeta = await dispatch(
-        addUnapprovedTransaction(
-          { ...approveTxParams, amount: '0x0' },
-          'metamask',
-          TRANSACTION_TYPES.SWAP_APPROVAL,
-        ),
+      const approveTxMeta = await addUnapprovedTransaction(
+        { ...approveTxParams, amount: '0x0' },
+        TRANSACTION_TYPES.SWAP_APPROVAL,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
       finalApproveTxMeta = await dispatch(
@@ -1195,12 +1192,9 @@ export const signAndSendTransactions = (
       }
     }
 
-    const tradeTxMeta = await dispatch(
-      addUnapprovedTransaction(
-        usedTradeTxParams,
-        'metamask',
-        TRANSACTION_TYPES.SWAP,
-      ),
+    const tradeTxMeta = await addUnapprovedTransaction(
+      usedTradeTxParams,
+      TRANSACTION_TYPES.SWAP,
     );
     dispatch(setTradeTxId(tradeTxMeta.id));
 

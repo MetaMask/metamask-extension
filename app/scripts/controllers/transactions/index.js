@@ -650,7 +650,12 @@ export default class TransactionController extends EventEmitter {
   async addUnapprovedTransaction(txParams, origin, transactionType) {
     if (
       transactionType !== undefined &&
-      !SWAP_TRANSACTION_TYPES.includes(transactionType)
+      !(
+        SWAP_TRANSACTION_TYPES.includes(transactionType) ||
+        transactionType === TRANSACTION_TYPES.SIMPLE_SEND ||
+        transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+        transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
+      )
     ) {
       throw new Error(
         `TransactionController - invalid transactionType value: ${transactionType}`,
