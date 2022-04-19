@@ -270,5 +270,6 @@ export const EVENT_NAMES = {
 export const EVENT = {
   CATEGORIES: {
     BACKGROUND: 'Background',
+    INPAGE_PROVIDER: 'inpage_provider',
   },
 };
