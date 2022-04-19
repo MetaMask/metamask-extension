@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TextField from '../../ui/text-field';
@@ -83,7 +84,7 @@ export default function CreateNewVault({
 
   const toggleTermsCheck = useCallback(() => {
     trackEvent({
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       event: 'Check ToS',
       properties: {
         action: 'Import Seed Phrase',
