@@ -269,6 +269,7 @@ export const EVENT_NAMES = {
 
 export const EVENT = {
   CATEGORIES: {
+    AUTH: 'Auth',
     BACKGROUND: 'Background',
     INPAGE_PROVIDER: 'inpage_provider',
   },
