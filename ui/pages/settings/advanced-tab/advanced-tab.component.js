@@ -21,6 +21,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -180,7 +181,7 @@ export default class AdvancedTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Reset Account',
                   properties: {
                     action: 'Reset Account',
@@ -698,7 +699,7 @@ export default class AdvancedTab extends PureComponent {
               value={useTokenDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Token Detection',
                   properties: {
                     action: 'Token Detection',

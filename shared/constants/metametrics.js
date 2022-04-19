@@ -275,5 +275,6 @@ export const EVENT = {
     INPAGE_PROVIDER: 'inpage_provider',
     MESSAGES: 'Messages',
     RETENTION: 'Retention',
+    SETTINGS: 'Settings',
   },
 };
