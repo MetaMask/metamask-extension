@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Μυστική Φράση Ανάκτησης"
   },
-  "importExistingWalletDescription": {
-    "message": "Εισάγετε τη Μυστική Φράση Ανάκτησης (δλδ Seed Phrase) που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Εισαγωγή υπάρχοντος πορτοφολιού με Μυστική Φράση Ανάκτησης"
-  },
   "importMyWallet": {
     "message": "Εισαγωγή Πορτοφολιού μου"
   },
@@ -2462,9 +2455,6 @@
   "signed": {
     "message": "Συνδεδεμένος"
   },
-  "simulationErrorMessage": {
-    "message": "Αυτή η συναλλαγή αναμένεται να αποτύχει. Η προσπάθεια εκτέλεσης αναμένεται να είναι δαπανηρή αλλά να αποτύχει και δεν συνιστάται."
-  },
   "simulationErrorMessageV2": {
     "message": "Δεν ήμασταν σε θέση να εκτιμήσουμε το τέλος συναλλαγής. Μπορεί να υπάρχει σφάλμα στο συμβόλαιο και αυτή η συναλλαγή μπορεί να αποτύχει."
   },
@@ -3129,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "Δοκιμάστε ξανά"
-  },
-  "tryAnywayOption": {
-    "message": "Θα προσπαθήσω ούτως ή άλλως"
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποιήστε την ενισχυμένη ανίχνευση token"

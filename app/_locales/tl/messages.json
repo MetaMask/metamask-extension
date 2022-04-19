@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang Secret Recovery Phrase"
   },
-  "importExistingWalletDescription": {
-    "message": "Ilagay ang iyong Secret Recovery Phrase (kilala rin bilang Seed Phrase) na ibinigay sa iyo noong gumawa ka ng iyong wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Mag-import ng umiiral na wallet gamit ang Secret Recovery Phrase"
-  },
   "importMyWallet": {
     "message": "I-import ang Wallet Ko"
   },
@@ -2462,9 +2455,6 @@
   "signed": {
     "message": "Nilagdaan"
   },
-  "simulationErrorMessage": {
-    "message": "Inaasahang mabibigo ang transaksyong ito. Ang pagsisikap na isagawa ito ay inaasahang magastos ngunit nabigo, at hindi inirerekomenda."
-  },
   "simulationErrorMessageV2": {
     "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
   },
@@ -3129,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "Subukan ulit"
-  },
-  "tryAnywayOption": {
-    "message": "Susubukan ko pa rin"
   },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"

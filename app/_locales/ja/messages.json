@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "シークレットリカバリーフレーズを使用してウォレットをインポート"
   },
-  "importExistingWalletDescription": {
-    "message": "ウォレットの作成時に提供されたシークレットリカバリーフレーズ (シードフレーズ) を入力してください。$1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "シークレットリカバリーフレーズで既存のウォレットをインポート"
-  },
   "importMyWallet": {
     "message": "ウォレットをインポート"
   },
@@ -2462,9 +2455,6 @@
   "signed": {
     "message": "署名が完了しました"
   },
-  "simulationErrorMessage": {
-    "message": "このトランザクションは失敗する見込みです。実行しようとすると多くのコストがかかるうえに失敗する可能性が高いため、お勧めしません。"
-  },
   "simulationErrorMessageV2": {
     "message": "ガス代を見積もれませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
   },
@@ -3129,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "再試行"
-  },
-  "tryAnywayOption": {
-    "message": "とにかく試してみる"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"

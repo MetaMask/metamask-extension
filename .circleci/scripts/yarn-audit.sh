@@ -7,7 +7,7 @@ set -o pipefail
 
 # use `improved-yarn-audit` since that allows for exclude
 # exclude 1002401 until we remove use of 3Box, 1002581 until we can find a better solution
-yarn run improved-yarn-audit --ignore-dev-deps --min-severity moderate --exclude 1002401,1002581,GHSA-93q8-gq69-wqmw,GHSA-257v-vj4p-3w2h,GHSA-qrpm-p2h7-hrv2
+yarn run improved-yarn-audit --ignore-dev-deps --min-severity moderate --exclude GHSA-93q8-gq69-wqmw,GHSA-257v-vj4p-3w2h,GHSA-fwr7-v2mv-hh25
 audit_status="$?"
 
 # Use a bitmask to ignore INFO and LOW severity audit results
