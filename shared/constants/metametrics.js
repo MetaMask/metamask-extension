@@ -274,10 +274,12 @@ export const EVENT = {
     BACKGROUND: 'Background',
     INPAGE_PROVIDER: 'inpage_provider',
     MESSAGES: 'Messages',
+    NAVIGATION: 'Navigation',
     ONBOARDING: 'Onboarding',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',
+    TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
   },
 };

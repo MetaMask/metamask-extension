@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage } from '../../../helpers/utils/util';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -78,7 +79,7 @@ export default class SignatureRequest extends PureComponent {
     const onSign = (event) => {
       sign(event);
       trackEvent({
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         event: 'Confirm',
         properties: {
           action: 'Sign Request',
@@ -92,7 +93,7 @@ export default class SignatureRequest extends PureComponent {
     const onCancel = (event) => {
       cancel(event);
       trackEvent({
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         event: 'Cancel',
         properties: {
           action: 'Sign Request',

@@ -72,6 +72,8 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
 } from '../../selectors';
+
+import { EVENT } from '../../../shared/constants/metametrics';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -124,7 +126,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: 'swaps',
+  name: EVENT.CATEGORIES.SWAPS,
   initialState,
   reducers: {
     clearSwapsState: () => initialState,
@@ -713,7 +715,7 @@ export const fetchQuotesAndSetQuoteState = (
     );
     trackEvent({
       event: 'Quotes Requested',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         token_from: fromTokenSymbol,
         token_from_amount: String(inputValue),
@@ -767,7 +769,7 @@ export const fetchQuotesAndSetQuoteState = (
       if (Object.values(fetchedQuotes)?.length === 0) {
         trackEvent({
           event: 'No Quotes Available',
-          category: 'swaps',
+          category: EVENT.CATEGORIES.SWAPS,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
@@ -788,7 +790,7 @@ export const fetchQuotesAndSetQuoteState = (
 
         trackEvent({
           event: 'Quotes Received',
-          category: 'swaps',
+          category: EVENT.CATEGORIES.SWAPS,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
@@ -890,7 +892,7 @@ export const signAndSendSwapsSmartTransaction = ({
     };
     trackEvent({
       event: 'STX Swap Started',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: swapMetaData,
     });
 
@@ -1140,7 +1142,7 @@ export const signAndSendTransactions = (
 
     trackEvent({
       event: 'Swap Started',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: swapMetaData,
     });
 
