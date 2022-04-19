@@ -275,6 +275,7 @@ export const EVENT = {
     INPAGE_PROVIDER: 'inpage_provider',
     MESSAGES: 'Messages',
     NAVIGATION: 'Navigation',
+    NETWORK: 'Network',
     ONBOARDING: 'Onboarding',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
