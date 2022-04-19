@@ -126,7 +126,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: EVENT.CATEGORIES.SWAPS,
+  name: 'swaps',
   initialState,
   reducers: {
     clearSwapsState: () => initialState,
