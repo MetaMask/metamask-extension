@@ -65,6 +65,7 @@ ul.two-steps {
     right: 40%;
   }
 
+
   z-index: -1;
 
   [dir='rtl'] & {
@@ -144,6 +145,11 @@ ul.two-steps {
   @media screen and (min-width: 461px) and (max-width: $break-small) {
     right: 44%;
   }
+
+  @media screen and (min-width: $break-small) {
+    right: 46%;
+  }
+
 
   [dir='rtl'] & {
     width: 180px;

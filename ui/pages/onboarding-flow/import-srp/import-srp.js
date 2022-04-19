@@ -53,11 +53,10 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             srpText={t('typeYourSRP')}
           />
           <Button
-            className="import-srp__actions__button"
+            className="import-srp__confirm-button"
             type="primary"
             data-testid="import-srp-confirm"
             large
-            className="import-srp__confirm-button"
             onClick={() => {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
