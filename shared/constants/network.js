@@ -1,3 +1,5 @@
+import { capitalize } from 'lodash';
+
 export const ROPSTEN = 'ropsten';
 export const RINKEBY = 'rinkeby';
 export const KOVAN = 'kovan';
@@ -80,10 +82,10 @@ export const TEST_CHAINS = [
 ];
 
 export const TEST_NETWORK_TICKER_MAP = {
-  [ROPSTEN]: `${ROPSTEN} ${ETH_SYMBOL}`.toUpperCase(),
-  [RINKEBY]: `${RINKEBY} ${ETH_SYMBOL}`.toUpperCase(),
-  [KOVAN]: `${KOVAN} ${ETH_SYMBOL}`.toUpperCase(),
-  [GOERLI]: `${GOERLI} ${ETH_SYMBOL}`.toUpperCase(),
+  [ROPSTEN]: `${capitalize(ROPSTEN)}${ETH_SYMBOL}`,
+  [RINKEBY]: `${capitalize(RINKEBY)}${ETH_SYMBOL}`,
+  [KOVAN]: `${capitalize(KOVAN)}${ETH_SYMBOL}`,
+  [GOERLI]: `${capitalize(GOERLI)}${ETH_SYMBOL}`,
 };
 
 /**

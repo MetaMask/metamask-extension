@@ -95,7 +95,7 @@ export function useCurrencyDisplay(
   let suffix;
 
   if (!opts.hideLabel) {
-    suffix = opts.suffix || currency?.toUpperCase();
+    suffix = opts.suffix || currency;
   }
 
   return [

@@ -22,7 +22,7 @@ const sortedCurrencies = availableCurrencies.sort((a, b) => {
 const currencyOptions = sortedCurrencies.map(({ code, name }) => {
   return {
     name: `${code.toUpperCase()} - ${name}`,
-    value: code,
+    value: code.toUpperCase(),
   };
 });
 
