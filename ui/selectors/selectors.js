@@ -65,6 +65,9 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IN
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -705,6 +708,20 @@ export function getShowWhatsNewPopup(state) {
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
+
+export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).map((snap) => {
+    return {
+      tabMessage: () => snap.manifest.proposedName,
+      descriptionMessage: () => snap.manifest.description,
+      sectionMessage: () => snap.manifest.description,
+      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
+        unescape(encodeURIComponent(snap.id)),
+      )}`,
+      icon: 'fa fa-flask',
+    };
+  });
+});
 ///: END:ONLY_INCLUDE_IN
 
 /**
