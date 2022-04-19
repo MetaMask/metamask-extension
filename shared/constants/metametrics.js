@@ -156,14 +156,26 @@
 
 /**
  * @typedef {Object} Traits
- * @property {string} [LEDGER_CONNECTION_TYPE] - when ledger live connnection
- * type is changed we identify the ledger_connection_type trait
- * @property {string} [NETWORKS_ADDED] - when user modifies networks we
- * identify the networks_added trait
- * @property {string} [NUMBER_OF_ACCOUNTS] - when identities change, we
- * identify the new number_of_accounts trait
- * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
- * identify the 3box_enabled trait
+ * @property {'address_book_entries'} ADDRESS_BOOK_ENTRIES - When the user
+ *  adds or modifies addresses in address book the address_book_entries trait
+ *  is identified.
+ * @property {'ledger_connection_type'} LEDGER_CONNECTION_TYPE - when ledger
+ *  live connnection type is changed we identify the ledger_connection_type
+ *  trait
+ * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
+ *  we identify the networks_added trait
+ * @property {'nft_autodetection_enabled'} NFT_AUTODETECTION_ENABLED - when Autodetect NFTs
+ * feature is toggled we identify the nft_autodetection_enabled trait
+ * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
+ *  change, we identify the new number_of_accounts trait
+ * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
+ *  trait for number of unique NFT addresses
+ * @property {'number_of_tokens'} NUMBER_OF_TOKENS - when the number of tokens change, we
+ * identify the new number_of_tokens trait
+ * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
+ * we identify the opensea_api_enabled trait
+ * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
+ *  toggled we identify the 3box_enabled trait
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  */
 
@@ -173,10 +185,15 @@
  */
 
 export const TRAITS = {
+  ADDRESS_BOOK_ENTRIES: 'address_book_entries',
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
-  THREE_BOX_ENABLED: 'three_box_enabled',
-  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NETWORKS_ADDED: 'networks_added',
+  NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
+  NUMBER_OF_ACCOUNTS: 'number_of_accounts',
+  NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  NUMBER_OF_TOKENS: 'number_of_tokens',
+  OPENSEA_API_ENABLED: 'opensea_api_enabled',
+  THREE_BOX_ENABLED: 'three_box_enabled',
   THEME: 'theme',
 };
 
@@ -238,3 +255,10 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
 export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTFICIATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
+
+export const EVENT_NAMES = {
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  DECRYPTION_REQUESTED: 'Decryption Requested',
+  PERMISSIONS_REQUESTED: 'Permissions Requested',
+};

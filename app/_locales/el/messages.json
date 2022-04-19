@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Μυστική Φράση Ανάκτησης"
   },
-  "importExistingWalletDescription": {
-    "message": "Εισάγετε τη Μυστική Φράση Ανάκτησης (δλδ Seed Phrase) που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Εισαγωγή υπάρχοντος πορτοφολιού με Μυστική Φράση Ανάκτησης"
-  },
   "importMyWallet": {
     "message": "Εισαγωγή Πορτοφολιού μου"
   },
@@ -1737,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Νέο! Εντοπισμός NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Επιτρέψτε στο MetaMask να ανιχνεύει αυτόματα NFTs από το Opensea και να εμφανίζεται στο πορτοφόλι σας MetaMask."
   },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"

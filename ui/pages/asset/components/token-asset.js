@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 

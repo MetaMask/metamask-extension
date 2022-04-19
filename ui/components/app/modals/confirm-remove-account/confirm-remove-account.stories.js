@@ -6,28 +6,12 @@ export default {
   id: __filename,
   component: ConfirmRemoveAccount,
   argTypes: {
-    hideModal: {
-      action: 'hideModal',
-    },
-    removeAccount: {
-      action: 'removeAccount',
-    },
     identity: {
-      control: 'object',
-    },
-    chainId: {
-      control: 'text',
-    },
-    rpcPrefs: {
       control: 'object',
     },
   },
   args: {
     identity: {
-      control: 'object',
-    },
-    chainId: 'chainId',
-    rpcPrefs: {
       control: 'object',
     },
   },

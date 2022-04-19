@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Gizli Kurtarma İfadesi ile bir cüzdanı içe aktarın"
   },
-  "importExistingWalletDescription": {
-    "message": "Cüzdanınızı oluşturduğunuzda size verilen Gizli Kurtarma İfadenizi (başka bir deyişle Tohum İfadesi) girin. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Gizli Kurtarma İfadesi ile mevcut cüzdanı içe aktarın"
-  },
   "importMyWallet": {
     "message": "Cüzdanımı İçe Aktar"
   },
@@ -1737,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Yeni! NFT algılama"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask'in otomatik olarak Opensea'den NFT'leri algılamasına ve MetaMask cüzdanınızda görüntülemesine izin verin."
   },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"

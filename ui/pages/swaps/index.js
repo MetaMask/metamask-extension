@@ -85,7 +85,7 @@ import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
-import { MetaMetricsContext } from '../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   fetchTokens,
   fetchTopAssets,
