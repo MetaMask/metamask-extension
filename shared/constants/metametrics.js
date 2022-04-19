@@ -273,5 +273,6 @@ export const EVENT = {
     AUTH: 'Auth',
     BACKGROUND: 'Background',
     INPAGE_PROVIDER: 'inpage_provider',
+    MESSAGES: 'Messages',
   },
 };
