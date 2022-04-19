@@ -277,5 +277,6 @@ export const EVENT = {
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',
+    WALLET: 'Wallet',
   },
 };
