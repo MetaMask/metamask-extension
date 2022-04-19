@@ -8,6 +8,7 @@ const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
 const { ensureXServerIsRunning } = require('./x-server');
+const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -43,6 +44,13 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
+
+    // Deploy initial smart contracts
+    const debugGanacheSeeder = true;
+    const ganacheSeeder = new GanacheSeeder(debugGanacheSeeder);
+    await ganacheSeeder.deploySmartContracts();
+    const contractRegistry = ganacheSeeder.getContractRegistry();
+
     if (ganacheOptions?.concurrent) {
       const { port, chainId } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
@@ -96,6 +104,7 @@ async function withFixtures(options, testSuite) {
     await testSuite({
       driver,
       mockServer,
+      contractRegistry,
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
