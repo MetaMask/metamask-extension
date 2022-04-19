@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { delay } = require('lodash');
 const { withFixtures } = require('../helpers');
 
 describe('Test Snap bip-44', function () {
@@ -83,7 +82,7 @@ describe('Test Snap bip-44', function () {
         });
 
         // check the results of the public key test
-        await driver.delay(1000);
+        await driver.delay(2000);
         const bip44Result = await driver.findElement('.bip44Result');
         assert.equal(
           await bip44Result.getText(),
