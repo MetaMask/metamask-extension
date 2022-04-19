@@ -164,15 +164,6 @@
  * identify the new number_of_accounts trait
  * @property {string} [THREE_BOX_ENABLED] - when 3box feature is toggled we
  * identify the 3box_enabled trait
- * @property {'address_book_entries'} ADDRESS_BOOK_ENTRIES - When the user
- *  adds or modifies addresses in address book the address_book_entries trait
- *  is identified.
- * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
- *  we identify the networks_added trait
- * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
- *  change, we identify the new number_of_accounts trait
- * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
- *  toggled we identify the 3box_enabled trait
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  */
 
