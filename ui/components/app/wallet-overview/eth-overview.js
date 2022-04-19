@@ -134,7 +134,7 @@ const EthOverview = ({ className }) => {
               if (isSwapsChain) {
                 trackEvent({
                   event: 'Swaps Opened',
-                  category: 'swaps',
+                  category: EVENT.CATEGORIES.SWAPS,
                   properties: {
                     source: 'Main View',
                     active_currency: 'ETH',

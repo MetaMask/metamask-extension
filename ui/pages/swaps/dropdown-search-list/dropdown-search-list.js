@@ -242,7 +242,7 @@ export default function DropdownSearchList({
                             onClick={() => {
                               trackEvent({
                                 event: 'Clicked Block Explorer Link',
-                                category: 'Swaps',
+                                category: EVENT.CATEGORIES.SWAPS,
                                 properties: {
                                   link_type: 'Token Tracker',
                                   action: 'Verify Contract Address',
