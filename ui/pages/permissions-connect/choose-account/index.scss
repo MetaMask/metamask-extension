@@ -4,7 +4,7 @@
   }
 
   &__cancel {
-    color: var(--Red-400);
+    color: var(--color-error-default);
   }
 
   &__content {
@@ -38,7 +38,7 @@
     padding-top: 16px;
     padding-bottom: 16px;
     margin-top: 12px;
-    border-top: 1px solid #d6d9dc;
+    border-top: 1px solid var(--color-border-muted);
 
     @media screen and (min-width: $break-large) {
       border-top: none;
@@ -49,7 +49,6 @@
     }
 
     .btn-secondary {
-      background: white;
       margin-left: 16px;
     }
 

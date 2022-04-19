@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
-  "addToAddressBook": {
-    "message": "Προσθήκη στο βιβλίο διευθύνσεων"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "π.χ. John D."
-  },
   "addToken": {
     "message": "Προσθήκη Token"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "Η αναζήτηση ENS απέτυχε."
   },
-  "enterAnAlias": {
-    "message": "Δώστε ένα ψευδώνυμο"
-  },
   "enterMaxSpendLimit": {
     "message": "Εισάγετε Το Μέγιστο Όριο Δαπάνης"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
-  },
-  "layer1Fees": {
-    "message": "Τέλη επιπέδου 1"
   },
   "learmMoreAboutGas": {
     "message": "Θέλετε να $1 για το τέλος συναλλαγής;"
@@ -2477,9 +2465,6 @@
   "signed": {
     "message": "Συνδεδεμένος"
   },
-  "simulationErrorMessage": {
-    "message": "Αυτή η συναλλαγή αναμένεται να αποτύχει. Η προσπάθεια εκτέλεσης αναμένεται να είναι δαπανηρή αλλά να αποτύχει και δεν συνιστάται."
-  },
   "simulationErrorMessageV2": {
     "message": "Δεν ήμασταν σε θέση να εκτιμήσουμε το τέλος συναλλαγής. Μπορεί να υπάρχει σφάλμα στο συμβόλαιο και αυτή η συναλλαγή μπορεί να αποτύχει."
   },
@@ -3144,9 +3129,6 @@
   },
   "tryAgain": {
     "message": "Δοκιμάστε ξανά"
-  },
-  "tryAnywayOption": {
-    "message": "Θα προσπαθήσω ούτως ή άλλως"
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποιήστε την ενισχυμένη ανίχνευση token"

@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
   },
-  "addToAddressBook": {
-    "message": "주소록에 추가"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "예: John D."
-  },
   "addToken": {
     "message": "토큰 추가"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS를 조회하지 못했습니다."
   },
-  "enterAnAlias": {
-    "message": "별칭 입력"
-  },
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "마지막 연결"
-  },
-  "layer1Fees": {
-    "message": "레이어 1 요금"
   },
   "learmMoreAboutGas": {
     "message": "가스에 대해 $1하시겠습니까?"
@@ -2477,9 +2465,6 @@
   "signed": {
     "message": "서명완료"
   },
-  "simulationErrorMessage": {
-    "message": "이 거래는 실패할 것으로 예상됩니다. 실행하려면 비용이 많이 들지만 실패할 것으로 예상되어 권장하지 않습니다."
-  },
   "simulationErrorMessageV2": {
     "message": "가스 요금을 추정할 수 없었습니다. 계약에 오류가 있을 수 있으며 이 거래가 실패할 수 있습니다."
   },
@@ -3144,9 +3129,6 @@
   },
   "tryAgain": {
     "message": "다시 시도"
-  },
-  "tryAnywayOption": {
-    "message": "계속 시도"
   },
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"

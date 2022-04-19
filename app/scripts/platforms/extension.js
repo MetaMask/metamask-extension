@@ -1,4 +1,5 @@
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
+
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { getEnvironmentType, checkForError } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
@@ -9,12 +10,12 @@ export default class ExtensionPlatform {
   // Public
   //
   reload() {
-    extension.runtime.reload();
+    browser.runtime.reload();
   }
 
   openTab(options) {
     return new Promise((resolve, reject) => {
-      extension.tabs.create(options, (newTab) => {
+      browser.tabs.create(options).then((newTab) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -26,7 +27,7 @@ export default class ExtensionPlatform {
 
   openWindow(options) {
     return new Promise((resolve, reject) => {
-      extension.windows.create(options, (newWindow) => {
+      browser.windows.create(options).then((newWindow) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -38,7 +39,7 @@ export default class ExtensionPlatform {
 
   focusWindow(windowId) {
     return new Promise((resolve, reject) => {
-      extension.windows.update(windowId, { focused: true }, () => {
+      browser.windows.update(windowId, { focused: true }).then(() => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -50,7 +51,7 @@ export default class ExtensionPlatform {
 
   updateWindowPosition(windowId, left, top) {
     return new Promise((resolve, reject) => {
-      extension.windows.update(windowId, { left, top }, () => {
+      browser.windows.update(windowId, { left, top }).then(() => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -62,7 +63,7 @@ export default class ExtensionPlatform {
 
   getLastFocusedWindow() {
     return new Promise((resolve, reject) => {
-      extension.windows.getLastFocused((windowObject) => {
+      browser.windows.getLastFocused().then((windowObject) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -73,8 +74,8 @@ export default class ExtensionPlatform {
   }
 
   closeCurrentWindow() {
-    return extension.windows.getCurrent((windowDetails) => {
-      return extension.windows.remove(windowDetails.id);
+    return browser.windows.getCurrent().then((windowDetails) => {
+      return browser.windows.remove(windowDetails.id);
     });
   }
 
@@ -82,7 +83,7 @@ export default class ExtensionPlatform {
     const {
       version,
       version_name: versionName,
-    } = extension.runtime.getManifest();
+    } = browser.runtime.getManifest();
 
     const versionParts = version.split('.');
     if (versionName) {
@@ -115,7 +116,7 @@ export default class ExtensionPlatform {
     queryString = null,
     keepWindowOpen = false,
   ) {
-    let extensionURL = extension.runtime.getURL('home.html');
+    let extensionURL = browser.runtime.getURL('home.html');
 
     if (route) {
       extensionURL += `#${route}`;
@@ -136,9 +137,9 @@ export default class ExtensionPlatform {
 
   getPlatformInfo(cb) {
     try {
-      extension.runtime.getPlatformInfo((platform) => {
-        cb(null, platform);
-      });
+      const platformInfo = browser.runtime.getPlatformInfo();
+      cb(platformInfo);
+      return;
     } catch (e) {
       cb(e);
       // eslint-disable-next-line no-useless-return
@@ -163,12 +164,12 @@ export default class ExtensionPlatform {
   }
 
   addOnRemovedListener(listener) {
-    extension.windows.onRemoved.addListener(listener);
+    browser.windows.onRemoved.addListener(listener);
   }
 
   getAllWindows() {
     return new Promise((resolve, reject) => {
-      extension.windows.getAll((windows) => {
+      browser.windows.getAll().then((windows) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -180,7 +181,7 @@ export default class ExtensionPlatform {
 
   getActiveTabs() {
     return new Promise((resolve, reject) => {
-      extension.tabs.query({ active: true }, (tabs) => {
+      browser.tabs.query({ active: true }).then((tabs) => {
         const error = checkForError();
         if (error) {
           return reject(error);
@@ -192,7 +193,7 @@ export default class ExtensionPlatform {
 
   currentTab() {
     return new Promise((resolve, reject) => {
-      extension.tabs.getCurrent((tab) => {
+      browser.tabs.getCurrent().then((tab) => {
         const err = checkForError();
         if (err) {
           reject(err);
@@ -205,7 +206,7 @@ export default class ExtensionPlatform {
 
   switchToTab(tabId) {
     return new Promise((resolve, reject) => {
-      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
+      browser.tabs.update(tabId, { highlighted: true }).then((tab) => {
         const err = checkForError();
         if (err) {
           reject(err);
@@ -218,7 +219,7 @@ export default class ExtensionPlatform {
 
   closeTab(tabId) {
     return new Promise((resolve, reject) => {
-      extension.tabs.remove(tabId, () => {
+      browser.tabs.remove(tabId).then(() => {
         const err = checkForError();
         if (err) {
           reject(err);
@@ -252,23 +253,23 @@ export default class ExtensionPlatform {
   }
 
   _showNotification(title, message, url) {
-    extension.notifications.create(url, {
+    browser.notifications.create(url, {
       type: 'basic',
       title,
-      iconUrl: extension.extension.getURL('../../images/icon-64.png'),
+      iconUrl: browser.runtime.getURL('../../images/icon-64.png'),
       message,
     });
   }
 
   _subscribeToNotificationClicked() {
-    if (!extension.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
-      extension.notifications.onClicked.addListener(this._viewOnEtherscan);
+    if (!browser.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
+      browser.notifications.onClicked.addListener(this._viewOnEtherscan);
     }
   }
 
   _viewOnEtherscan(url) {
     if (url.startsWith('https://')) {
-      extension.tabs.create({ url });
+      browser.tabs.create({ url });
     }
   }
 }

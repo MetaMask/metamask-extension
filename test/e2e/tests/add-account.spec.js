@@ -135,7 +135,6 @@ describe('Add account', function () {
           '[data-testid="import-srp__srp-word-0"]',
           testSeedPhrase,
         );
-        await driver.delay(regularDelayMs);
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');

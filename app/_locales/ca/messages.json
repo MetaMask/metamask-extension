@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Afegir Fitxes Suggerides"
   },
-  "addToAddressBook": {
-    "message": "Afegir al llibre d'adreces"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Afegir Fitxa"
   },
@@ -336,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
-  },
-  "enterAnAlias": {
-    "message": "Introdueix Àlies"
   },
   "enterPassword": {
     "message": "Introdueix contrasenya"

@@ -6,7 +6,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 export default function ColorIndicator({
   size = SIZES.SM,
   type = 'outlined',
-  color = COLORS.UI4,
+  color = COLORS.ICON_DEFAULT,
   borderColor,
   iconClassName,
 }) {

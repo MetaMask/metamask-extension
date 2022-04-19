@@ -12,12 +12,11 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
-  chainId,
+  isBuyableChain,
   nativeCurrency,
   networkName,
   showBuyModal,
@@ -43,7 +42,7 @@ const TransactionAlerts = ({
         <ActionableMessage
           message={<I18nValue messageKey="simulationErrorMessageV2" />}
           useIcon
-          iconFillColor="#d73a49"
+          iconFillColor="var(--color-error-default)"
           type="danger"
           primaryActionV2={
             userAcknowledgedGasMissing === true
@@ -92,46 +91,40 @@ const TransactionAlerts = ({
             </Typography>
           }
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           type="warning"
         />
       )}
-      {balanceError &&
-      chainId === MAINNET_CHAIN_ID &&
-      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
+      {balanceError && type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
           message={
-            <Typography variant={TYPOGRAPHY.H7} align="left">
-              {t('insufficientCurrency', [nativeCurrency, networkName])}{' '}
-              <Button
-                type="link"
-                className="transaction-alerts__link"
-                onClick={showBuyModal}
-              >
-                {t('buyEth')}
-              </Button>{' '}
-              {t('orDeposit')}
-            </Typography>
+            isBuyableChain ? (
+              <Typography variant={TYPOGRAPHY.H7} align="left">
+                {t('insufficientCurrencyBuyOrDeposit', [
+                  nativeCurrency,
+                  networkName,
+                  <Button
+                    type="inline"
+                    className="confirm-page-container-content__link"
+                    onClick={showBuyModal}
+                    key={`${nativeCurrency}-buy-button`}
+                  >
+                    {t('buyAsset', [nativeCurrency])}
+                  </Button>,
+                ])}
+              </Typography>
+            ) : (
+              <Typography variant={TYPOGRAPHY.H7} align="left">
+                {t('insufficientCurrencyDeposit', [
+                  nativeCurrency,
+                  networkName,
+                ])}
+              </Typography>
+            )
           }
           useIcon
-          iconFillColor="#d73a49"
-          type="danger"
-        />
-      ) : null}
-      {balanceError &&
-      chainId !== MAINNET_CHAIN_ID &&
-      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
-        <ActionableMessage
-          className="actionable-message--warning"
-          message={
-            <Typography variant={TYPOGRAPHY.H7} align="left">
-              {t('insufficientCurrency', [nativeCurrency, networkName])}
-              {t('buyOther', [nativeCurrency])}
-            </Typography>
-          }
-          useIcon
-          iconFillColor="#d73a49"
+          iconFillColor="var(--color-error-default)"
           type="danger"
         />
       ) : null}
@@ -149,7 +142,7 @@ const TransactionAlerts = ({
             </Typography>
           }
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           type="warning"
         />
       )}
@@ -165,7 +158,7 @@ const TransactionAlerts = ({
               <I18nValue messageKey="networkIsBusy" />
             </Typography>
           }
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           type="warning"
           useIcon
         />
@@ -177,11 +170,11 @@ const TransactionAlerts = ({
 TransactionAlerts.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
   setUserAcknowledgedGasMissing: PropTypes.func,
-  chainId: PropTypes.string,
   nativeCurrency: PropTypes.string,
   networkName: PropTypes.string,
   showBuyModal: PropTypes.func,
   type: PropTypes.string,
+  isBuyableChain: PropTypes.bool,
 };
 
 export default TransactionAlerts;

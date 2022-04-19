@@ -46,6 +46,7 @@ import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
 import {
+  determineTransactionAssetType,
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
@@ -130,6 +131,7 @@ export default class TransactionController extends EventEmitter {
     this.getEventFragmentById = opts.getEventFragmentById;
     this.getDeviceModel = opts.getDeviceModel;
     this.getAccountType = opts.getAccountType;
+    this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
 
     this.memStore = new ObservableStore({});
     this.query = new EthQuery(this.provider);
@@ -376,14 +378,44 @@ export default class TransactionController extends EventEmitter {
    * updates the params that are editible in the send edit flow
    *
    * @param {string} txId - transaction id
-   * @param {object} editableParams - holds the editable parameters
+   * @param {object} previousGasParams - holds the parameter to update
+   * @param {string} previousGasParams.maxFeePerGas
+   * @param {string} previousGasParams.maxPriorityFeePerGas
+   * @param {string} previousGasParams.gasLimit
+   * @returns {TransactionMeta} the txMeta of the updated transaction
+   */
+  updatePreviousGasParams(
+    txId,
+    { maxFeePerGas, maxPriorityFeePerGas, gasLimit },
+  ) {
+    const previousGasParams = {
+      previousGas: {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit,
+      },
+    };
+
+    // only update what is defined
+    previousGasParams.previousGas = pickBy(previousGasParams.previousGas);
+    const note = `Update Previous Gas for ${txId}`;
+    this._updateTransaction(txId, previousGasParams, note);
+    return this._getTransaction(txId);
+  }
+
+  /**
+   *
+   * @param {string} txId - transaction id
+   * @param {object} editableParams - holds the eip1559 fees parameters
    * @param {object} editableParams.data
    * @param {string} editableParams.from
    * @param {string} editableParams.to
    * @param {string} editableParams.value
+   * @param {string} editableParams.gas
+   * @param {string} editableParams.gasPrice
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
-  updateEditableParams(txId, { data, from, to, value }) {
+  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       throw new Error(
         'Cannot call updateEditableParams on a transaction that is not in an unapproved state',
@@ -396,6 +428,8 @@ export default class TransactionController extends EventEmitter {
         from,
         to,
         value,
+        gas,
+        gasPrice,
       },
     };
 
@@ -420,6 +454,8 @@ export default class TransactionController extends EventEmitter {
    * @param {string} txGasFees.defaultGasEstimates
    * @param {string} txGasFees.gas
    * @param {string} txGasFees.originalGasEstimate
+   * @param {string} txGasFees.userEditedGasLimit
+   * @param {string} txGasFees.userFeeLevel
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateTransactionGasFees(
@@ -434,6 +470,8 @@ export default class TransactionController extends EventEmitter {
       estimateSuggested,
       defaultGasEstimates,
       originalGasEstimate,
+      userEditedGasLimit,
+      userFeeLevel,
     },
   ) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
@@ -454,6 +492,8 @@ export default class TransactionController extends EventEmitter {
       estimateSuggested,
       defaultGasEstimates,
       originalGasEstimate,
+      userEditedGasLimit,
+      userFeeLevel,
     };
 
     // only update what is defined
@@ -554,6 +594,7 @@ export default class TransactionController extends EventEmitter {
         'Cannot call updateSwapTransaction on a transaction that is not in an unapproved state',
       );
     }
+
     let swapTransaction = {
       sourceTokenSymbol,
       destinationTokenSymbol,
@@ -1858,6 +1899,12 @@ export default class TransactionController extends EventEmitter {
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
 
+    const { assetType, tokenStandard } = await determineTransactionAssetType(
+      txMeta,
+      this.query,
+      this.getTokenStandardAndDetails,
+    );
+
     const gasParams = {};
 
     if (isEIP1559Transaction(txMeta)) {
@@ -1931,6 +1978,8 @@ export default class TransactionController extends EventEmitter {
       gas_edit_attempted: 'none',
       account_type: await this.getAccountType(this.getSelectedAddress()),
       device_model: await this.getDeviceModel(this.getSelectedAddress()),
+      asset_type: assetType,
+      token_standard: tokenStandard,
     };
 
     const sensitiveProperties = {

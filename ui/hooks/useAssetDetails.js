@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
 import { ERC1155, ERC721, ERC20 } from '../helpers/constants/common';
 import {
@@ -8,14 +9,12 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
-import { getTransactionData } from '../helpers/utils/transactions.util';
 import { getTokenList } from '../selectors';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
 import { usePrevious } from './usePrevious';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();
-
   // state selectors
   const tokens = useSelector(getTokens);
   const collectibles = useSelector(getCollectibles);
@@ -84,7 +83,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       balance,
       decimals: currentAssetDecimals,
     } = currentAsset;
-    const tokenData = getTransactionData(transactionData);
+    const tokenData = parseStandardTokenTransactionData(transactionData);
     assetStandard = standard;
     assetAddress = tokenAddress;
     tokenSymbol = symbol;

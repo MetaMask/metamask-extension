@@ -38,6 +38,7 @@ export default function TokenDetailsPage() {
   const tokenMetadata = Object.values(tokenList).find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
   );
+  const aggregators = tokenMetadata?.aggregators?.join(', ');
   const fileName = tokenMetadata?.iconUrl;
   const imagePath = useTokenDetection
     ? fileName
@@ -140,7 +141,7 @@ export default function TokenDetailsPage() {
                 handleCopy(token.address);
               }}
             >
-              <CopyIcon size={11} color="#037DD6" />
+              <CopyIcon size={11} color="var(--color-primary-default)" />
             </Button>
           </Tooltip>
         </Box>
@@ -176,8 +177,27 @@ export default function TokenDetailsPage() {
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
+        {process.env.TOKEN_DETECTION_V2 && aggregators && (
+          <>
+            <Typography
+              variant={TYPOGRAPHY.H9}
+              margin={[4, 0, 0, 0]}
+              color={COLORS.TEXT_ALTERNATIVE}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('tokenList')}
+            </Typography>
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              margin={[1, 0, 0, 0]}
+              color={COLORS.TEXT_DEFAULT}
+            >
+              {`${aggregators}.`}
+            </Typography>
+          </>
+        )}
         <Button
-          type="primary"
+          type="secondary"
           className="token-details__hide-token-button"
           onClick={() => {
             dispatch(

@@ -5,7 +5,7 @@
   width: 56px;
 
   &__line {
-    background-image: linear-gradient(to right, #037dd6, #d73a49);
+    background-image: linear-gradient(to right, var(--color-primary-default), var(--color-error-default));
     height: 4px;
     width: 100%;
     border-radius: 100px;

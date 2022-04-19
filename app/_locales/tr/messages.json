@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Önerilen Tokenleri ekle"
   },
-  "addToAddressBook": {
-    "message": "Adres defterine ekle"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ör. Hüseyin M."
-  },
   "addToken": {
     "message": "Token ekle"
   },
@@ -952,9 +946,6 @@
   "ensUnknownError": {
     "message": "ENS Arama başarısız oldu."
   },
-  "enterAnAlias": {
-    "message": "Bir diğer ad girin"
-  },
   "enterMaxSpendLimit": {
     "message": "Maks. Harcama Limiti Gir"
   },
@@ -1413,9 +1404,6 @@
   },
   "lastConnected": {
     "message": "Son Bağlanma"
-  },
-  "layer1Fees": {
-    "message": "Aşama 1 ücretleri"
   },
   "learmMoreAboutGas": {
     "message": "Gaz hakkında $1 istiyor musunuz?"
@@ -2477,9 +2465,6 @@
   "signed": {
     "message": "İmzalandı"
   },
-  "simulationErrorMessage": {
-    "message": "Bu işlemin başarısız olması bekleniyor. Gerçekleştirmeye çalışıldığında maliyetli olması ancak başarısız olması bekleniyor ve önerilmiyor."
-  },
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
@@ -3144,9 +3129,6 @@
   },
   "tryAgain": {
     "message": "Tekrar dene"
-  },
-  "tryAnywayOption": {
-    "message": "Yine de deneyeceğim"
   },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
