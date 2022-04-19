@@ -15,9 +15,7 @@ export function getSettingsRoutes() {
 
 function getFilteredSettingsRoutes(t, tabMessage) {
   return getSettingsRoutes().filter((routeObject) => {
-    return typeof routeObject.tabMessage === 'function'
-      ? routeObject.tabMessage(t) === tabMessage
-      : routeObject.tabMessage === tabMessage;
+    return routeObject.tabMessage(t) === tabMessage;
   });
 }
 

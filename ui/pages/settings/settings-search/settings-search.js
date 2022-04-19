@@ -25,10 +25,10 @@ export default function SettingsSearch({
     'var(--color-icon-muted)',
   );
 
-  let settingsRoutesListArray = Object.values(settingsRoutesList);
+  const settingsRoutesListArray = Object.values(settingsRoutesList);
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snaps = useSelector(getSnapsRouteObjects);
-  settingsRoutesListArray = [...settingsRoutesListArray, ...snaps];
+  settingsRoutesListArray.push(...snaps);
   ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
@@ -38,10 +38,7 @@ export default function SettingsSearch({
     maxPatternLength: 32,
     minMatchCharLength: 1,
     keys: ['tabMessage', 'sectionMessage', 'descriptionMessage'],
-    getFn: (routeObject, path) =>
-      typeof routeObject[path] === 'function'
-        ? routeObject[path](t)
-        : routeObject[path],
+    getFn: (routeObject, path) => routeObject[path](t),
   });
 
   const handleSearch = (_searchQuery) => {
@@ -59,7 +56,7 @@ export default function SettingsSearch({
     const fuseSearchResult = settingsSearchFuse.search(sanitizedSearchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
       return (
-        routes.tab &&
+        routes.tabMessage &&
         sanitizedSearchQuery &&
         isEqualCaseInsensitive(routes.tab, sanitizedSearchQuery)
       );

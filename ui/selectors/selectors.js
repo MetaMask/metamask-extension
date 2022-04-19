@@ -712,10 +712,9 @@ export function getSnaps(state) {
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
     return {
-      isSnap: true,
-      tabMessage: snap.manifest.proposedName,
-      descriptionMessage: snap.manifest.description,
-      sectionMessage: snap.manifest.description,
+      tabMessage: () => snap.manifest.proposedName,
+      descriptionMessage: () => snap.manifest.description,
+      sectionMessage: () => snap.manifest.description,
       route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
         unescape(encodeURIComponent(snap.id)),
       )}`,
