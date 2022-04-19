@@ -276,5 +276,6 @@ export const EVENT = {
     MESSAGES: 'Messages',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
+    SNAPS: 'Snaps',
   },
 };
