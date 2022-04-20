@@ -98,10 +98,13 @@ export function useCurrencyDisplay(
   if (!opts.hideLabel) {
     // if the currency we are displaying is the native currency of one of our preloaded test-nets (rinkeby, ropsten etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
-    suffix =
-      opts.suffix || Object.values(TEST_NETWORK_TICKER_MAP).includes(currency)
-        ? currency
-        : currency.toUpperCase();
+    const currencyTickerSymbol = Object.values(
+      TEST_NETWORK_TICKER_MAP,
+    ).includes(currency)
+      ? currency
+      : currency?.toUpperCase();
+
+    suffix = opts.suffix || currencyTickerSymbol;
   }
 
   return [
