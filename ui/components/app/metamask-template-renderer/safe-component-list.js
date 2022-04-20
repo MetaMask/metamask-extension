@@ -9,6 +9,7 @@ import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
 import TextArea from '../../ui/textarea/textarea';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
+import UrlIcon from '../../ui/url-icon';
 
 export const safeComponentList = {
   MetaMaskTranslation,
@@ -27,4 +28,5 @@ export const safeComponentList = {
   NetworkDisplay,
   TextArea,
   ConfirmationNetworkSwitch,
+  UrlIcon,
 };

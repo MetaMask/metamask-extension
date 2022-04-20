@@ -60,6 +60,7 @@ export default function reduceApp(state = {}, action) {
     newCollectibleAddedMessage: '',
     sendInputCurrencySwitched: false,
     newTokensImported: '',
+    newCustomNetworkAdded: {},
     ...state,
   };
 
@@ -393,6 +394,11 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
+    case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
+      return {
+        ...appState,
+        newCustomNetworkAdded: action.value,
+      }
     default:
       return appState;
   }
@@ -443,4 +449,8 @@ export function getLedgerTransportStatus(state) {
 
 export function toggleCurrencySwitch() {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
+}
+
+export function setNewCustomNetworkAdded(value) {
+  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, value };
 }

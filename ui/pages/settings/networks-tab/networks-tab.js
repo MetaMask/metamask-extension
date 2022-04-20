@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../store/actions';
@@ -25,6 +26,7 @@ import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
 import NetworksFormSubheader from './networks-tab-subheader';
+import { useHistory } from 'react-router-dom';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
@@ -36,6 +38,7 @@ const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
+  const history = useHistory();
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -118,10 +121,14 @@ const NetworksTab = ({ addNewNetwork }) => {
               <div className="networks-tab__networks-list-popup-footer">
                 <Button
                   type="primary"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
-                  }}
+                  onClick={() => {
+                    history.push(ADD_POPULAR_CUSTOM_NETWORK)
+                  }
+                  //   (event) => {
+                  //   event.preventDefault();
+                  //   global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+                  // }
+                }
                 >
                   {t('addNetwork')}
                 </Button>

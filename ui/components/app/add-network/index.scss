@@ -51,6 +51,11 @@
       color: var(--color-text-alternative);
     }
   }
+
+  &__link {
+    display: inline !important;
+    padding: 0 !important;
+  }
 }
 
 

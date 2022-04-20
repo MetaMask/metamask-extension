@@ -23,9 +23,11 @@ import {
   CONTACT_VIEW_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
+import AddNetwork from '../../components/app/add-network/add-network';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -124,7 +126,7 @@ class SettingsPage extends PureComponent {
             )}
 
             {this.renderTitle()}
-
+            {currentPath === ADD_POPULAR_CUSTOM_NETWORK ? null : (
             <div
               className="settings-page__header__title-container__close-button"
               onClick={() => {
@@ -134,7 +136,7 @@ class SettingsPage extends PureComponent {
                   history.push(mostRecentOverviewPage);
                 }
               }}
-            />
+            />)}
           </div>
 
           <div className="settings-page__header__search">

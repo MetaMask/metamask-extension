@@ -70,6 +70,10 @@ export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
+export const AETH_TOKEN_IMAGE_URL = './images/arbitrum.svg';
+export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
+export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
+export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 
 export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
 
@@ -309,3 +313,86 @@ export const BUYABLE_CHAINS_MAP = {
     },
   },
 };
+
+export const FEATURED_RPCS = [
+  { 
+    chainId: '0xA4B1',
+    nickname: 'Arbitrum One',
+    rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
+    ticker: 'AETH',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.arbitrum.io',
+      imageUrl: AETH_TOKEN_IMAGE_URL,
+    }
+  },
+  { 
+    chainId: '0xA86A',
+    nickname: 'Avalanche Network C-Chain',
+    rpcUrl:  'https://api.avax.network/ext/bc/C/rpc',
+    ticker: 'AVAX',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://snowtrace.io/',
+      imageUrl: AVAX_TOKEN_IMAGE_URL,
+    }
+  },
+  { 
+    chainId: '0x38',
+    nickname: 'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
+    rpcUrl: 'https://bsc-dataseed.binance.org/',
+    ticker: 'BNB',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://bscscan.com/',
+      imageUrl: BNB_TOKEN_IMAGE_URL,
+    }
+  },
+  { 
+    chainId: '0xFA',
+    nickname: 'Fantom Opera',
+    rpcUrl: 'https://rpc.ftm.tools/',
+    ticker: 'FTM',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://ftmscan.com/',
+      imageUrl: FTM_TOKEN_IMAGE_URL,
+    }
+  },
+  { 
+    chainId: '0x63564C40',
+    nickname: 'Harmony Mainnet Shard 0',
+    rpcUrl: 'https://api.harmony.one/',
+    ticker: 'ONE',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.harmony.one/',
+      imageUrl: HARMONY_ONE_TOKEN_IMAGE_URL,
+    }
+  },
+  { 
+    chainId: '0xA',
+    nickname: 'Optimism',
+    rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
+    ticker: 'ETH',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://optimistic.etherscan.io/',
+      imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
+    }
+  },
+  // { 
+  // chainId: '11297108109',
+  // nickname: 'Palm',
+  // rpcUrl: '[https://palm-mainnet.infura.io/v3/{INFURA_API_KEY}](https://palm-mainnet.infura.io/v3/%7BINFURA_API_KEY%7D)',
+  // ticker: 'PALM',
+  // rpcPrefs: {
+  // blockExplorerUrl: '[https://explorer.palm.io/](https://explorer.palm.io/)',
+  // imageUrl: '[https://drive.google.com/file/d/1fv4nWVWwnB37_Hu3jT3G2FR2uDXSbAAn/view?usp=sharing](https://drive.google.com/file/d/1fv4nWVWwnB37_Hu3jT3G2FR2uDXSbAAn/view?usp=sharing)',
+  // }
+  // },
+  { 
+    chainId: '0x89',
+    nickname: 'Polygon Mainnet',
+    rpcUrl: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+    ticker: 'MATIC',
+    rpcPrefs: {
+      blockExplorerUrl:  'https://polygonscan.com/',
+      imageUrl: MATIC_TOKEN_IMAGE_URL,
+    }
+  }
+  ];

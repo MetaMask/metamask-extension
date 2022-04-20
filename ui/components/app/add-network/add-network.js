@@ -23,21 +23,42 @@ import { getTheme } from '../../../selectors';
 import { THEME_TYPE } from '../../../pages/settings/experimental-tab/experimental-tab.constant';
 
 const AddNetwork = ({
-  onBackClick,
-  onAddNetworkClick,
-  onAddNetworkManuallyClick,
-  featuredRPCS,
+  // onBackClick,
+  // onAddNetworkClick,
+  // onAddNetworkManuallyClick,
 }) => {
   const t = useContext(I18nContext);
   const theme = useSelector(getTheme);
 
   const infuraRegex = /infura.io/u;
 
-  const nets = featuredRPCS
+  const frequentRpcListChainIds = frequentRpcList.map(net => net.chainId);
+
+  const nets = FEATURED_RPCS
     .sort((a, b) => (a.ticker > b.ticker ? 1 : -1))
     .slice(0, 8);
 
   return (
+    <>
+    {isEmpty(notFrequentRpcNetworks) ? (
+      <Box>
+        <Box>
+          <img
+            src='images/info-fox.svg'
+          />
+        </Box>
+        <Box>
+          {t('youHaveAddedAll')}{' '}
+          <Button type='link' className='add-network__link' onClick={() => <Redirect to={{ pathname: 'https://chainlist.org/' }} /> }>
+            {t('here')}{'.'}
+          </Button>
+          {' '}{t('orYouCan')}{' '}
+          <Button type="link" className='add-network__link'>
+            {t('addMoreNetworks')}{'.'}
+          </Button>
+        </Box>
+      </Box>
+    ) : (
     <Box>
       <Box
         height={BLOCK_SIZES.TWO_TWELFTHS}
@@ -49,7 +70,7 @@ const AddNetwork = ({
       >
         <IconCaretLeft
           aria-label={t('back')}
-          onClick={onBackClick}
+          // onClick={onBackClick}
           className="add-network__header__back-icon"
         />
         <Typography variant={TYPOGRAPHY.H3} color={COLORS.TEXT_DEFAULT}>
@@ -75,7 +96,7 @@ const AddNetwork = ({
         >
           {t('popularCustomNetworks')}
         </Typography>
-        {nets.map((item, index) => (
+        {notFrequentRpcNetworks.map((item, index) => (
           <Box
             key={index}
             display={DISPLAY.FLEX}
@@ -148,21 +169,30 @@ const AddNetwork = ({
         padding={[4, 4, 4, 4]}
         className="add-network__footer"
       >
-        <Button type="link" onClick={onAddNetworkManuallyClick}>
+        <Button type="link" onClick={
+          (event) => {
+            event.preventDefault();
+            global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+          }
+        }>
           <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
             {t('addANetworkManually')}
           </Typography>
         </Button>
       </Box>
     </Box>
+    )}
+    {showPopover && <Popover>
+      <ConfirmationPage />
+    </Popover>}
+    </>
   );
 };
 
 AddNetwork.propTypes = {
-  onBackClick: PropTypes.func,
-  onAddNetworkClick: PropTypes.func,
-  onAddNetworkManuallyClick: PropTypes.func,
-  featuredRPCS: PropTypes.array,
+  // onBackClick: PropTypes.func,
+  // onAddNetworkClick: PropTypes.func,
+  // onAddNetworkManuallyClick: PropTypes.func,
 };
 
 export default AddNetwork;

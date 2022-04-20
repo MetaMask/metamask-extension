@@ -207,4 +207,13 @@
       margin-inline-start: 32px;
     }
   }
+  
+  &__new-network-added {
+    border-radius: 10px;
+    text-align: center;
+
+    &__switch-to-button {
+      margin-bottom: 16px;
+    }
+  }
 }

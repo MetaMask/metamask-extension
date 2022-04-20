@@ -27,6 +27,7 @@ import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
+import { addCustomNetworks } from '../../store/actions';
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -214,6 +215,16 @@ export default function ConfirmationPage() {
             title={stripHttpsScheme(originMetadata.origin)}
           />
         </Box>
+        {pendingConfirmation.origin === 'metamask'
+        ? null
+        : <Box justifyContent="center" padding={[4, 4, 4]}>
+          <SiteOrigin
+            siteOrigin={originMetadata.origin}
+            iconSrc={originMetadata.iconUrl}
+            iconName={originMetadata.hostname}
+          />
+        </Box>
+        }
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
       </div>
       <ConfirmationFooter
@@ -234,7 +245,10 @@ export default function ConfirmationPage() {
               </Callout>
             ))
         }
-        onApprove={templatedValues.onApprove}
+        onApprove={() => {
+          templatedValues.onApprove.apply();
+          dispatch(addCustomNetworks(pendingConfirmation.requestData));
+        }}
         onCancel={templatedValues.onCancel}
         approveText={templatedValues.approvalText}
         cancelText={templatedValues.cancelText}

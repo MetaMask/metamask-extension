@@ -20,6 +20,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import IconCheck from '../../ui/icon/icon-check';
@@ -130,9 +131,11 @@ class NetworkDropdown extends Component {
           type="secondary"
           onClick={() => {
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-              global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+              // global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+              this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             } else {
-              this.props.history.push(ADD_NETWORK_ROUTE);
+              // this.props.history.push(ADD_NETWORK_ROUTE);
+              this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             }
             this.props.hideNetworkDropdown();
           }}
@@ -156,6 +159,7 @@ class NetworkDropdown extends Component {
           key={`common${rpcUrl}`}
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
+            console.log("HERE");
             if (isPrefixedFormattedHexString(chainId)) {
               this.props.setRpcTarget(rpcUrl, chainId, ticker, nickname);
             } else {

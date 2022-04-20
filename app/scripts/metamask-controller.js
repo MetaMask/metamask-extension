@@ -1572,7 +1572,8 @@ export default class MetamaskController extends EventEmitter {
       setCustomRpc: this.setCustomRpc.bind(this),
       updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
       delCustomRpc: this.delCustomRpc.bind(this),
-
+      addCustomNetworks: this.addCustomNetworks.bind(this),
+      requestUserApprovalA: this.requestUserApprovalA.bind(this),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,
@@ -2024,6 +2025,88 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  async requestUserApprovalA(customRpc) {
+       const requestUserApproval = await this.approvalController.addAndShowApprovalRequest.bind(
+      this.approvalController,
+    );
+
+          await requestUserApproval({
+        origin: 'metamask',
+        type: 'wallet_addEthereumChain',
+        requestData: {
+          chainId: customRpc.chainId,
+          blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
+          chainName: customRpc.nickname,
+          rpcUrl: customRpc.rpcUrl,
+          ticker: customRpc.ticker,
+        },
+      });
+  }
+
+  async addCustomNetworks(customRpc) {
+    // const chainId = '0x66';
+    // const chainName = 'Arbitrum Testnet';
+    // const rpcUrl =
+    //   'https://arbitrum-rinkeby.infura.io/v3/2b6d4a83d89a438eb1b5d036788ab29c';
+    // const ticker = 'ARETH';
+    // const blockExplorerUrl = 'https://testnet.arbiscan.io/';
+
+    const chainId = customRpc.chainId;
+    const chainName = customRpc.chainName;
+    const rpcUrl = customRpc.rpcUrl;
+    const ticker = customRpc.ticker;
+    const blockExplorerUrl = customRpc.blockExplorerUrl;
+
+    // const requestUserApproval = await this.approvalController.addAndShowApprovalRequest.bind(
+    //   this.approvalController,
+    // );
+
+    const addCustomRpc = async ({
+      chainId,
+      blockExplorerUrl,
+      ticker,
+      chainName,
+      rpcUrl,
+    } = {}) => {
+      await this.preferencesController.addToFrequentRpcList(
+        rpcUrl,
+        chainId,
+        ticker,
+        chainName,
+        {
+          blockExplorerUrl,
+        },
+      );
+    };
+
+    // Without request user approval a network is added to the list.
+    // await addCustomRpc(chainId, blockExplorerUrl, rpcUrl, chainName, ticker);
+
+    // With requestUserApproval following error
+    // "code": -32002,
+    // "message": "Request of type 'wallet_addEthereumChain' already pending for origin metamask. Please wait."
+    await addCustomRpc(
+      {
+        chainId,
+        blockExplorerUrl,
+        chainName,
+        rpcUrl,
+        ticker,
+      }
+      // await requestUserApproval({
+      //   origin: 'metamask',
+      //   type: 'wallet_addEthereumChain',
+      //   requestData: {
+      //     chainId,
+      //     blockExplorerUrl,
+      //     chainName,
+      //     rpcUrl,
+      //     ticker,
+      //   },
+      // }),
+    );
   }
 
   /**
