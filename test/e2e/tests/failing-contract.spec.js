@@ -16,7 +16,7 @@ describe('Failing contract interaction ', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -25,9 +25,9 @@ describe('Failing contract interaction ', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // connects the dapp
+        // deploy contract
         await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#deployFailingButton');
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -35,19 +35,6 @@ describe('Failing contract interaction ', function () {
           'E2E Test Dapp',
           windowHandles,
         );
-        const popup = windowHandles.find(
-          (handle) => handle !== extension && handle !== dapp,
-        );
-        await driver.switchToWindow(popup);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-
-        // deploy contract
-        await driver.switchToWindow(dapp);
-        await driver.clickElement('#deployFailingButton');
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,

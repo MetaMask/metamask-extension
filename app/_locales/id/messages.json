@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Impor dompet dengan Frasa Pemulihan Rahasia"
   },
-  "importExistingWalletDescription": {
-    "message": "Masukkan Frasa Pemulihan Rahasia Anda (alias Frasa Benih) yang diberikan saat Anda membuat dompet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Impor dompet yang ada dengan Frasa Pemulihan Rahasia"
-  },
   "importMyWallet": {
     "message": "Impor Dompet Saya"
   },

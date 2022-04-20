@@ -1,4 +1,3 @@
-/* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
@@ -30,7 +29,7 @@ describe('Phishing Detection', function () {
       },
     ],
   };
-  it.skip('should display the MetaMask Phishing Detection page', async function () {
+  it('should display the MetaMask Phishing Detection page', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',

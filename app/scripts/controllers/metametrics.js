@@ -548,15 +548,19 @@ export default class MetaMetricsController {
         Object.values(metamaskState.addressBook).map(size),
       ),
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
-        .length,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
-      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
         metamaskState,
       ),
+      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
+      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
+      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THEME]: metamaskState.theme || 'default',
     };
 
     if (!this.previousTraits) {
@@ -615,6 +619,19 @@ export default class MetaMetricsController {
       .map((collectible) => collectible.address);
     const unique = [...new Set(allAddresses)];
     return unique.length;
+  }
+
+  /**
+   * @param {object} metamaskState
+   * @returns number of unique token addresses
+   */
+  _getNumberOfTokens(metamaskState) {
+    return Object.values(metamaskState.allTokens).reduce(
+      (result, accountsByChain) => {
+        return result + sum(Object.values(accountsByChain).map(size));
+      },
+      0,
+    );
   }
 
   /**
