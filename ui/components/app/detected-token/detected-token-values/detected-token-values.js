@@ -16,10 +16,10 @@ import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 const DetectedTokenValues = ({
   token,
   handleTokenSelection,
-  selectedTokens,
+  tokensListDetected,
 }) => {
   const [tokenSelection, setTokenSelection] = useState(() => {
-    return Boolean(selectedTokens[token.address]);
+    return tokensListDetected[token.address]?.selected;
   });
 
   const { tokensWithBalances } = useTokenTracker([token]);
@@ -31,8 +31,8 @@ const DetectedTokenValues = ({
   );
 
   useEffect(() => {
-    setTokenSelection(Boolean(selectedTokens[token.address]));
-  }, [selectedTokens, token.address, tokenSelection, setTokenSelection]);
+    setTokenSelection(tokensListDetected[token.address]?.selected);
+  }, [tokensListDetected, token.address, tokenSelection, setTokenSelection]);
 
   const handleCheckBoxSelection = () => {
     setTokenSelection(!tokenSelection);
@@ -65,7 +65,7 @@ DetectedTokenValues.propTypes = {
     aggregators: PropTypes.array,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
-  selectedTokens: PropTypes.object,
+  tokensListDetected: PropTypes.object,
 };
 
 export default DetectedTokenValues;

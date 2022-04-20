@@ -11,7 +11,7 @@ import { DISPLAY } from '../../../../helpers/constants/design-system';
 const DetectedTokenDetails = ({
   token,
   handleTokenSelection,
-  selectedTokens,
+  tokensListDetected,
 }) => {
   return (
     <Box
@@ -32,7 +32,7 @@ const DetectedTokenDetails = ({
         <DetectedTokenValues
           token={token}
           handleTokenSelection={handleTokenSelection}
-          selectedTokens={selectedTokens}
+          tokensListDetected={tokensListDetected}
         />
         <DetectedTokenAddress tokenAddress={token.address} />
         <DetectedTokenAggregators aggregators={token.aggregators} />
@@ -50,7 +50,7 @@ DetectedTokenDetails.propTypes = {
     aggregators: PropTypes.array,
   }),
   handleTokenSelection: PropTypes.func.isRequired,
-  selectedTokens: PropTypes.object,
+  tokensListDetected: PropTypes.object,
 };
 
 export default DetectedTokenDetails;

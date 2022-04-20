@@ -11,7 +11,7 @@ import Button from '../../../ui/button';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
 
 const DetectedTokenSelectionPopover = ({
-  selectedTokens,
+  tokensListDetected,
   handleTokenSelection,
   onImport,
   onIgnoreAll,
@@ -58,7 +58,7 @@ const DetectedTokenSelectionPopover = ({
               key={index}
               token={token}
               handleTokenSelection={handleTokenSelection}
-              selectedTokens={selectedTokens}
+              tokensListDetected={tokensListDetected}
             />
           );
         })}
@@ -68,7 +68,7 @@ const DetectedTokenSelectionPopover = ({
 };
 
 DetectedTokenSelectionPopover.propTypes = {
-  selectedTokens: PropTypes.object,
+  tokensListDetected: PropTypes.object,
   handleTokenSelection: PropTypes.func.isRequired,
   onIgnoreAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,

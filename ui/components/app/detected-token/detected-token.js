@@ -17,9 +17,9 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
-  const [selectedTokens, setSelectedTokens] = useState(() =>
+  const [tokensListDetected, setTokensListDetected] = useState(() =>
     detectedTokens.reduce((tokenObj, token) => {
-      tokenObj[token.address] = token;
+      tokenObj[token.address] = { token, selected: true };
       return tokenObj;
     }, {}),
   );
@@ -29,48 +29,70 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   ] = useState(false);
 
   const handleClearTokensSelection = async () => {
-    const selectedTokensList = Object.values(selectedTokens);
-    const unSelectedTokensList = detectedTokens.filter(
-      (token) => !Object.keys(selectedTokens).includes(token.address),
-    );
+    const selectedTokens = Object.values(tokensListDetected)
+      .filter(({ selected }) => {
+        return selected;
+      })
+      .map(({ token }) => {
+        return token;
+      });
+    const unSelectedTokens = Object.values(tokensListDetected)
+      .filter(({ selected }) => {
+        return !selected;
+      })
+      .map(({ token }) => {
+        return token;
+      });
 
-    if (selectedTokensList.length < detectedTokens.length) {
-      await dispatch(ignoreTokens(unSelectedTokensList));
-      await dispatch(importTokens(selectedTokensList));
-      const tokenSymbols = selectedTokensList.map(({ symbol }) => symbol);
+    if (unSelectedTokens.length < detectedTokens.length) {
+      await dispatch(ignoreTokens(unSelectedTokens));
+      await dispatch(importTokens(selectedTokens));
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
       dispatch(setNewTokensImported(tokenSymbols.join(', ')));
     } else {
-      await dispatch(ignoreTokens(unSelectedTokensList));
+      await dispatch(ignoreTokens(unSelectedTokens));
     }
     setShowDetectedTokens(false);
   };
 
   const handleTokenSelection = (token) => {
-    const newSelectedTokens = { ...selectedTokens };
+    const newTokensListDetected = { ...tokensListDetected };
 
-    if (selectedTokens[token.address]) {
-      delete newSelectedTokens[token.address];
+    if (tokensListDetected[token.address].selected) {
+      newTokensListDetected[token.address].selected = false;
     } else {
-      newSelectedTokens[token.address] = token;
+      newTokensListDetected[token.address].selected = true;
     }
-    setSelectedTokens(newSelectedTokens);
+
+    setTokensListDetected(newTokensListDetected);
   };
 
   const onImport = async () => {
-    const selectedTokensList = Object.values(selectedTokens);
+    const selectedTokens = Object.values(tokensListDetected)
+      .filter(({ selected }) => {
+        return selected;
+      })
+      .map(({ token }) => {
+        return token;
+      });
 
-    if (selectedTokensList.length < detectedTokens.length) {
+    if (selectedTokens.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);
     } else {
-      const tokenSymbols = selectedTokensList.map(({ symbol }) => symbol);
-      await dispatch(importTokens(selectedTokensList));
+      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+      await dispatch(importTokens(selectedTokens));
       dispatch(setNewTokensImported(tokenSymbols.join(', ')));
       setShowDetectedTokens(false);
     }
   };
 
   const onIgnoreAll = () => {
-    setSelectedTokens({});
+    const newTokensListDetected = { ...tokensListDetected };
+    for (const tokenAddress of Object.keys(tokensListDetected)) {
+      newTokensListDetected[tokenAddress].selected = false;
+    }
+
+    setTokensListDetected(newTokensListDetected);
     setShowDetectedTokenIgnoredPopover(true);
   };
 
@@ -88,7 +110,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       )}
       <DetectedTokenSelectionPopover
         detectedTokens={detectedTokens}
-        selectedTokens={selectedTokens}
+        tokensListDetected={tokensListDetected}
         handleTokenSelection={handleTokenSelection}
         onImport={onImport}
         onIgnoreAll={onIgnoreAll}
