@@ -179,12 +179,12 @@
 
   &__new-tokens-imported-notification {
     margin-bottom: 4px;
-    margin-left: 8px;
+    margin-inline-start: 8px;
     padding: 8px;
 
     @media screen and (min-width: $break-large) {
       margin-bottom: 50px;
-      margin-right: 8px;
+      margin-inline-end: 8px;
       left: 70%;
     }
 
@@ -196,7 +196,7 @@
     &-icon {
       @include H3;
 
-      margin-right: 12px;
+      margin-inline-end: 12px;
       padding-top: 12px;
       color: var(--color-success-default);
     }
@@ -204,7 +204,7 @@
     &-close {
       color: var(--color-icon-default);
       background: none;
-      margin-left: 32px;
+      margin-inline-start: 32px;
     }
   }
 }

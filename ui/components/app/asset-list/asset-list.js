@@ -99,7 +99,7 @@ const AssetList = ({ onClickAsset }) => {
             <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
           )
         : null}
-      <Box marginTop={4}>
+      <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography
             color={COLORS.TEXT_ALTERNATIVE}
