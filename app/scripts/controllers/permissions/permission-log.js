@@ -178,8 +178,12 @@ export class PermissionLogController {
       return;
     }
 
+    // The JSON-RPC 2.0 specification defines "success" by the presence of
+    // either the "result" or "error" property. The specification forbids
+    // both properties from being present simultaneously, and our JSON-RPC
+    // stack is spec-compliant at the time of writing.
+    entry.success = Object.hasOwnProperty.call(response, 'result');
     entry.responseTime = time;
-    entry.success = Reflect.hasOwnProperty.call(response, 'result');
   }
 
   /**

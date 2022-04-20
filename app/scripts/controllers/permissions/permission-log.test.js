@@ -142,11 +142,17 @@ describe('PermissionLogController', () => {
         false,
       );
 
-      // validate final state
+      // Validate final state
       expect(entry1).toStrictEqual(log[0]);
       expect(entry2).toStrictEqual(log[1]);
       expect(entry3).toStrictEqual(log[2]);
       expect(entry4).toStrictEqual(log[3]);
+
+      // Regression test: ensure "response" and "request" properties
+      // are not present
+      log.forEach((entry) =>
+        expect('request' in entry && 'response' in entry).toBe(false),
+      );
     });
 
     it('handles responses added out of order', () => {
