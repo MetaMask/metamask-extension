@@ -62,6 +62,15 @@ const SWAP_TRANSACTION_TYPES = [
   TRANSACTION_TYPES.SWAP_APPROVAL,
 ];
 
+// Only certain types of transactions should be allowed to be specified when
+// adding a new unapproved transaction.
+const VALID_UNAPPROVED_TRANSACTION_TYPES = [
+  ...SWAP_TRANSACTION_TYPES,
+  TRANSACTION_TYPES.SIMPLE_SEND,
+  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+];
+
 /**
  * @typedef {import('../../../../shared/constants/transaction').TransactionMeta} TransactionMeta
  * @typedef {import('../../../../shared/constants/transaction').TransactionMetaMetricsEventString} TransactionMetaMetricsEventString
@@ -650,12 +659,7 @@ export default class TransactionController extends EventEmitter {
   async addUnapprovedTransaction(txParams, origin, transactionType) {
     if (
       transactionType !== undefined &&
-      !(
-        SWAP_TRANSACTION_TYPES.includes(transactionType) ||
-        transactionType === TRANSACTION_TYPES.SIMPLE_SEND ||
-        transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
-        transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
-      )
+      !VALID_UNAPPROVED_TRANSACTION_TYPES.includes(transactionType)
     ) {
       throw new Error(
         `TransactionController - invalid transactionType value: ${transactionType}`,
