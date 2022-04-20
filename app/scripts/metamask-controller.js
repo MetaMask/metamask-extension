@@ -2539,8 +2539,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string[]>} The account locale language
    */
 
-  async getLanguage() {
-    // TODO WE NEED ERROR HANDLING (E.G. throw/catch)?
+  async getWalletLocale() {
     const { currentLocale } = this.preferencesController.store.getState();
 
     return currentLocale;
@@ -3443,7 +3442,7 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-        getLanguage: this.getLanguage.bind(this),
+        getWalletLocale: this.getWalletLocale.bind(this),
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),

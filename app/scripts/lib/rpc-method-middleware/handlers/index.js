@@ -6,7 +6,7 @@ import requestAccounts from './request-accounts';
 import sendMetadata from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset from './watch-asset';
-import wallet_getLanguage from './get-language';
+import wallet_getLocale from './get-locale';
 
 const handlers = [
   addEthereumChain,
@@ -17,6 +17,8 @@ const handlers = [
   sendMetadata,
   switchEthereumChain,
   watchAsset,
-  wallet_getLanguage
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  wallet_getLocale
+  ///: END:ONLY_INCLUDE_IN
 ];
 export default handlers;

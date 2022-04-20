@@ -1,23 +1,23 @@
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
-const getLanguageOptions = {
-  methodNames: [MESSAGE_TYPE.GET_LANGUAGE],
-  implementation: getLanguageHandler,
+const getLocaleOptions = {
+  methodNames: [MESSAGE_TYPE.GET_LOCALE],
+  implementation: getLocaleHandler,
   hookNames: {
-    getLanguage: true,
+    getWalletLocale: true,
     sendMetrics: true,
   },
 };
-export default getLanguageOptions;
+export default getLocaleOptions;
 
 /**
- * @typedef {Object} getLanguageOptions
- * @property {Function} getLanguage - The wallet_getLanguage implementation
+ * @typedef {Object} getLocaleOptions
+ * @property {Function} getWalletLocale - The wallet_getLocale implementation
  * @property {Function} sendMetrics - A function that registers a metrics event.
  */
 
 /**
- * @typedef {Object} getLanguageParam
+ * @typedef {Object} getLocaleParam
  * @property {string} origin - The origin url
  */
 
@@ -26,29 +26,29 @@ export default getLanguageOptions;
  * @param {import('json-rpc-engine').JsonRpcResponse<true>} res - The JSON-RPC response object.
  * @param {Function} _next - The json-rpc-engine 'next' callback.
  * @param {Function} end - The json-rpc-engine 'end' callback.
- * @param {getLanguageOptions} options
+ * @param {getLocaleOptions} options
  */
 
-async function getLanguageHandler(
+async function getLocaleHandler(
   req,
   res,
   _next,
   end,
-  { getLanguage, sendMetrics },
+  { getWalletLocale, sendMetrics },
 ) {
   const { origin } = req;
   try {
-    const walletLang = await getLanguage(origin);
+    const walletLocale = await getWalletLocale();
 
     sendMetrics({
-      event: 'Get language',
+      event: 'Get locale',
       category: 'Permission',
       referrer: {
         url: origin,
       },
     });
 
-    res.result = walletLang;
+    res.result = walletLocale;
   } catch (error) {
     return end(error);
   }
