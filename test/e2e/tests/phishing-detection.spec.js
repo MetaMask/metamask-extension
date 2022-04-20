@@ -21,7 +21,6 @@ describe('Phishing Detection', function () {
       });
   }
   const ganacheOptions = {
-    quiet: false,
     accounts: [
       {
         secretKey:
@@ -42,7 +41,6 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.navigate();
         await driver.openNewPage('http://example.com');
         await driver.waitForSelector({ text: 'continuing at your own risk' });
         const header = await driver.findElement('h1');
