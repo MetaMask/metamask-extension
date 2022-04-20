@@ -1,5 +1,4 @@
 import { ObservableStore } from '@metamask/obs-store';
-import stringify from 'fast-safe-stringify';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 import {
   LOG_IGNORE_METHODS,
@@ -158,9 +157,7 @@ export class PermissionLogController {
         ? LOG_METHOD_TYPES.internal
         : LOG_METHOD_TYPES.restricted,
       origin: request.origin,
-      request: stringify(request, null, 2),
       requestTime: Date.now(),
-      response: null,
       responseTime: null,
       success: null,
     };
@@ -181,9 +178,8 @@ export class PermissionLogController {
       return;
     }
 
-    entry.response = stringify(response, null, 2);
     entry.responseTime = time;
-    entry.success = !response.error;
+    entry.success = Reflect.hasOwnProperty.call(response, 'result');
   }
 
   /**
