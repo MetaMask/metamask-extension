@@ -1,12 +1,11 @@
+$progress-bar-width: calc(100% - 34px); // 100% - (circle size + (circle border size * 2))
+$progress-bar-position-left: calc(-50% + 17px); // -50% + ((circle size / 2) + circle border size)
+
 .progressbar {
   counter-reset: step;
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
-
-  @media screen and (max-width: $break-small) {
-    margin-top: 24px;
-  }
 }
 
 ul.two-steps {
@@ -14,9 +13,9 @@ ul.two-steps {
 }
 
 .progressbar li {
+  @include H7;
+
   list-style-type: none;
-  width: 25%;
-  font-size: 12px;
   position: relative;
   text-align: center;
   color: var(--color-text-alternative);
@@ -40,42 +39,24 @@ ul.two-steps {
   text-align: center;
   margin: 0 auto 10px auto;
   border-radius: 50%;
-  background-color: white;
-  right: -42%;
+  background-color: var(--color-background-default);
 }
 
 .progressbar li::after {
-  width: 100%;
+  width: $progress-bar-width;
   height: 2px;
   content: '';
   position: absolute;
   background-color: var(--color-background-alternative);
   top: 15px;
-  right: 36%;
-
-  @media screen and (max-width: 349px) {
-    right: 34%;
-  }
-
-  @media screen and (min-width: 350px) and (max-width: 460px) {
-    right: 38%;
-  }
-
-  @media screen and (min-width: 461px) and (max-width: $break-small) {
-    right: 40%;
-  }
-
-
-  z-index: -1;
+  left: $progress-bar-position-left;
 
   [dir='rtl'] & {
-    width: 100%;
+    width: $progress-bar-width;
     height: 2px;
     content: '';
     position: absolute;
     background-color: var(--color-background-alternative);
-    right: 42%;
-    z-index: -1;
   }
 }
 

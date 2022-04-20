@@ -160,7 +160,6 @@ export default function OnboardingMetametrics() {
       <div className="onboarding-metametrics__buttons">
         <Button
           data-testid="metametrics-no-thanks"
-          className="onboarding-metametrics__buttons__no-thanks"
           type="secondary"
           onClick={onCancel}
         >

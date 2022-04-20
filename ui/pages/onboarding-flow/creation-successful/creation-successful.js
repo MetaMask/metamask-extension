@@ -45,7 +45,7 @@ export default function CreationSuccessful() {
   };
   return (
     <div className="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER} margin={6}>
+      <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
           variant={TYPOGRAPHY.H2}

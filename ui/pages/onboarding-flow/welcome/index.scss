@@ -1,17 +1,6 @@
 @import "./react-gallery/carousel.min.css";
 
 .onboarding-welcome {
-  @media screen and (max-width: $break-small) {
-    margin-top: 25px;
-    margin-bottom: 50px;
-  }
-
-  @media screen and (min-width: $break-large) {
-    max-width: 600px;
-    margin-top: 48px;
-    margin-bottom: 48px;
-  }
-
   .control-dots .dot {
     background: var(--color-icon-muted);
     box-shadow: none;
@@ -25,18 +14,9 @@
   .carousel.carousel-slider .control-arrow {
     opacity: 1;
     color: var(--color-icon-default);
-    padding: 80px;
 
-    @media screen and (min-width: 461px) and (max-width: 560px) {
-      padding: 60px;
-    }
-
-    @media screen and (min-width: 361px) and (max-width: 460px) {
+    @media screen and (min-width: $break-large) {
       padding: 40px;
-    }
-
-    @media screen and (min-width: 261px) and (max-width: 360px) {
-      padding: 20px;
     }
   }
 
@@ -64,7 +44,7 @@
   }
 
   &__buttons {
-    max-width: 50%;
+    max-width: 300px;
     margin: 40px auto 0 auto;
 
     li {
