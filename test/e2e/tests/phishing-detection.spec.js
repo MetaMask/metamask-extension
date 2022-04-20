@@ -21,6 +21,7 @@ describe('Phishing Detection', function () {
       });
   }
   const ganacheOptions = {
+    quiet: false,
     accounts: [
       {
         secretKey:
