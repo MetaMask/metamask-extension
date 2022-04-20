@@ -23,7 +23,11 @@ class Ganache {
     if (!this._server) {
       throw new Error('Server not running yet');
     }
+    console.log('status:', this._server.status)
+    console.time('close')
     await this._server.close();
+    console.timeEnd('close')
+    console.log('status:', this._server.status)
   }
 }
 
