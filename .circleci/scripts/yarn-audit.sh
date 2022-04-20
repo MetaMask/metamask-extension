@@ -10,9 +10,7 @@ set -o pipefail
 yarn run improved-yarn-audit --ignore-dev-deps --min-severity moderate --exclude GHSA-93q8-gq69-wqmw,GHSA-257v-vj4p-3w2h,GHSA-fwr7-v2mv-hh25
 audit_status="$?"
 
-# Use a bitmask to ignore INFO and LOW severity audit results
-# See here: https://yarnpkg.com/lang/en/docs/cli/audit/
-audit_status="$(( audit_status & 11100 ))"
+audit_status="$?"
 
 if [[ "$audit_status" != 0 ]]
 then
