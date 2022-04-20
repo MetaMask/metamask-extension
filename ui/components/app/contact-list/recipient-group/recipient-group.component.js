@@ -28,10 +28,10 @@ export default function RecipientGroup({
           {label}
         </div>
       )}
-      {items.map(({ address, name }) => (
+      {items.map(({ address, name, memo }) => (
         <div
           key={address}
-          onClick={() => onSelect(address, name)}
+          onClick={() => onSelect(address, name, memo)}
           className={classnames({
             'send__select-recipient-wrapper__group-item': !addressesEqual(
               address,
@@ -67,6 +67,7 @@ RecipientGroup.propTypes = {
     PropTypes.shape({
       address: PropTypes.string.isRequired,
       name: PropTypes.string,
+      memo: PropTypes.string,
     }),
   ),
   onSelect: PropTypes.func.isRequired,

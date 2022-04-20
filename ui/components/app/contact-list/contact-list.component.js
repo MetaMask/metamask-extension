@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { sortBy } from 'lodash';
 import Button from '../../ui/button';
+import { EXTERNALLY_OWNED_ACCOUNTS } from '../../../../shared/constants/app';
 import RecipientGroup from './recipient-group/recipient-group.component';
 
 export default class ContactList extends PureComponent {
@@ -25,7 +26,9 @@ export default class ContactList extends PureComponent {
   renderRecents() {
     const { t } = this.context;
     const { isShowingAllRecent } = this.state;
-    const nonContacts = this.props.searchForRecents();
+    const nonContacts = this.props
+      .searchForRecents()
+      .filter(({ addressType }) => addressType === EXTERNALLY_OWNED_ACCOUNTS);
 
     const showLoadMore = !isShowingAllRecent && nonContacts.length > 2;
 
@@ -53,6 +56,11 @@ export default class ContactList extends PureComponent {
   renderAddressBook() {
     const unsortedContactsByLetter = this.props
       .searchForContacts()
+      .filter(
+        ({ addressType }) =>
+          addressType === EXTERNALLY_OWNED_ACCOUNTS ||
+          addressType === undefined,
+      )
       .reduce((obj, contact) => {
         const firstLetter = contact.name[0].toUpperCase();
         return {

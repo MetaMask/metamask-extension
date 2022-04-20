@@ -1231,7 +1231,7 @@ describe('Actions', () => {
 
       const setAddressBookStub = sinon
         .stub()
-        .callsFake((_, __, ___, ____, cb) => cb());
+        .callsFake((_, __, ___, ____, _____, cb) => cb());
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
