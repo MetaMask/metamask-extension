@@ -21,7 +21,6 @@ const mapStateToProps = (state, ownProps) => {
     useBlockie,
     currentLocale,
     selectedAddress,
-    useTokenDetection,
     tokenList,
   } = metamask;
   const {
@@ -41,7 +40,6 @@ const mapStateToProps = (state, ownProps) => {
     hideZeroBalanceTokens,
     lastFetchedConversionDate,
     selectedAddress,
-    useTokenDetection,
     tokenList,
   };
 };

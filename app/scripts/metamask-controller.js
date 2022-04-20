@@ -241,35 +241,26 @@ export default class MetamaskController extends EventEmitter {
       config: { provider: this.provider },
       state: initState.TokensController,
     });
-    process.env.TOKEN_DETECTION_V2
-      ? (this.assetsContractController = new AssetsContractController({
-          onPreferencesStateChange: (listener) =>
-            this.preferencesController.store.subscribe(listener),
-          onNetworkStateChange: (cb) =>
-            this.networkController.store.subscribe((networkState) => {
-              const modifiedNetworkState = {
-                ...networkState,
-                provider: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            }),
-          config: {
-            provider: this.provider,
-          },
-          state: initState.AssetsContractController,
-        }))
-      : (this.assetsContractController = new AssetsContractController(
-          {
-            onPreferencesStateChange: (listener) =>
-              this.preferencesController.store.subscribe(listener),
-          },
-          {
-            provider: this.provider,
-          },
-        ));
+
+    this.assetsContractController = new AssetsContractController({
+      onPreferencesStateChange: (listener) =>
+        this.preferencesController.store.subscribe(listener),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            provider: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+      config: {
+        provider: this.provider,
+      },
+      state: initState.AssetsContractController,
+    });
 
     this.collectiblesController = new CollectiblesController(
       {
@@ -413,50 +404,23 @@ export default class MetamaskController extends EventEmitter {
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
-    process.env.TOKEN_DETECTION_V2
-      ? (this.tokenListController = new TokenListController({
-          chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-          onNetworkStateChange: (cb) =>
-            this.networkController.store.subscribe((networkState) => {
-              const modifiedNetworkState = {
-                ...networkState,
-                provider: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            }),
-          messenger: tokenListMessenger,
-          state: initState.TokenListController,
-        }))
-      : (this.tokenListController = new TokenListController({
-          chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-          useStaticTokenList: !this.preferencesController.store.getState()
-            .useTokenDetection,
-          onNetworkStateChange: (cb) =>
-            this.networkController.store.subscribe((networkState) => {
-              const modifiedNetworkState = {
-                ...networkState,
-                provider: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            }),
-          onPreferencesStateChange: (cb) =>
-            this.preferencesController.store.subscribe((preferencesState) => {
-              const modifiedPreferencesState = {
-                ...preferencesState,
-                useStaticTokenList: !this.preferencesController.store.getState()
-                  .useTokenDetection,
-              };
-              return cb(modifiedPreferencesState);
-            }),
-          messenger: tokenListMessenger,
-          state: initState.TokenListController,
-        }));
+
+    this.tokenListController = new TokenListController({
+      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            provider: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+      messenger: tokenListMessenger,
+      state: initState.TokenListController,
+    });
 
     this.phishingController = new PhishingController();
 
@@ -705,25 +669,17 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IN
 
-    process.env.TOKEN_DETECTION_V2
-      ? (this.detectTokensController = new DetectTokensController({
-          preferences: this.preferencesController,
-          tokensController: this.tokensController,
-          assetsContractController: this.assetsContractController,
-          network: this.networkController,
-          keyringMemStore: this.keyringController.memStore,
-          tokenList: this.tokenListController,
-          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }))
-      : (this.detectTokensController = new DetectTokensController({
-          preferences: this.preferencesController,
-          tokensController: this.tokensController,
-          network: this.networkController,
-          keyringMemStore: this.keyringController.memStore,
-          tokenList: this.tokenListController,
-        }));
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      tokensController: this.tokensController,
+      assetsContractController: this.assetsContractController,
+      network: this.networkController,
+      keyringMemStore: this.keyringController.memStore,
+      tokenList: this.tokenListController,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
 
     this.addressBookController = new AddressBookController(
       undefined,
@@ -1906,20 +1862,14 @@ export default class MetamaskController extends EventEmitter {
         : null,
 
       /** Token Detection V2 */
-      addDetectedTokens: process.env.TOKEN_DETECTION_V2
-        ? tokensController.addDetectedTokens.bind(tokensController)
-        : null,
-      importTokens: process.env.TOKEN_DETECTION_V2
-        ? tokensController.importTokens.bind(tokensController)
-        : null,
-      ignoreTokens: process.env.TOKEN_DETECTION_V2
-        ? tokensController.ignoreTokens.bind(tokensController)
-        : null,
-      getBalancesInSingleCall: process.env.TOKEN_DETECTION_V2
-        ? assetsContractController.getBalancesInSingleCall.bind(
-            assetsContractController,
-          )
-        : null,
+      addDetectedTokens: tokensController.addDetectedTokens.bind(
+        tokensController,
+      ),
+      importTokens: tokensController.importTokens.bind(tokensController),
+      ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
+      getBalancesInSingleCall: assetsContractController.getBalancesInSingleCall.bind(
+        assetsContractController,
+      ),
     };
   }
 
@@ -2096,7 +2046,6 @@ export default class MetamaskController extends EventEmitter {
       frequentRpcList,
       identities,
       selectedAddress,
-      useTokenDetection,
     } = this.preferencesController.store.getState();
 
     const { tokenList } = this.tokenListController.state;
@@ -2122,13 +2071,8 @@ export default class MetamaskController extends EventEmitter {
           checksummedAccountAddress
         ].filter((asset) => {
           if (asset.isERC721 === undefined) {
-            // since the token.address from allTokens is checksumaddress
-            // asset.address have to be changed to lowercase when we are using dynamic list
-            const address = useTokenDetection
-              ? asset.address.toLowerCase()
-              : asset.address;
             // the tokenList will be holding only erc20 tokens
-            if (tokenList[address] !== undefined) {
+            if (tokenList[asset.address.toLowerCase()] !== undefined) {
               return true;
             }
           } else if (asset.isERC721 === false) {

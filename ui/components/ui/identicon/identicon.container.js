@@ -3,12 +3,11 @@ import Identicon from './identicon.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { useBlockie, useTokenDetection, tokenList, ipfsGateway },
+    metamask: { useBlockie, tokenList, ipfsGateway },
   } = state;
 
   return {
     useBlockie,
-    useTokenDetection,
     tokenList,
     ipfsGateway,
   };

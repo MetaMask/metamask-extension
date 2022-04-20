@@ -13,7 +13,6 @@ const state = {
     contractExchangeRates: {
       '0xAnotherToken': 0.015,
     },
-    useTokenDetection: true,
     tokenList: {
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
         address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
@@ -318,15 +317,12 @@ describe('TokenDetailsPage', () => {
   });
 
   it('should render token list title in token details page', () => {
-    process.env.TOKEN_DETECTION_V2 = true;
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
     expect(getByText('Token lists:')).toBeInTheDocument();
-    process.env.TOKEN_DETECTION_V2 = false;
   });
 
   it('should render token list for the token in token details page', () => {
-    process.env.TOKEN_DETECTION_V2 = true;
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
     expect(
@@ -334,7 +330,6 @@ describe('TokenDetailsPage', () => {
         'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Synthetix, Zapper, Zerion, 0x.',
       ),
     ).toBeInTheDocument();
-    process.env.TOKEN_DETECTION_V2 = false;
   });
 
   it('should call hide token button when button is clicked in token details page', () => {

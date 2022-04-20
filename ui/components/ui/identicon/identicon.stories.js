@@ -20,7 +20,6 @@ export default {
     useBlockie: { control: 'boolean' },
     alt: { control: 'text' },
     imageBorder: { control: 'boolean' },
-    useTokenDetection: { control: 'boolean' },
     tokenList: { control: 'object' },
   },
 };

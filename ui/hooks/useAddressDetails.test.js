@@ -75,7 +75,6 @@ describe('useAddressDetails', () => {
     const { result } = renderUseAddressDetails(
       '0x06195827297c7A80a443b6894d3BDB8824b43896',
       {
-        useTokenDetection: true,
         tokenList: {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {
             address: '0x06195827297c7A80a443b6894d3BDB8824b43896',

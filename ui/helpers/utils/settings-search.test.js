@@ -111,11 +111,6 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
-    case 'useTokenDetection':
-      return 'Use Token Detection';
-    case 'useTokenDetectionDescription':
-      return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.';
     case 'tokenDetection':
       return 'Token detection';
     case 'tokenDetectionToggleDescription':
@@ -172,7 +167,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(14);
     });
 
     it('should get good contact section number', () => {

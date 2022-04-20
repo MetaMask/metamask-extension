@@ -48,10 +48,6 @@ export default class Identicon extends PureComponent {
      */
     imageBorder: PropTypes.bool,
     /**
-     * Check if use token detection
-     */
-    useTokenDetection: PropTypes.bool,
-    /**
      * Add list of token in object
      */
     tokenList: PropTypes.object,
@@ -100,14 +96,7 @@ export default class Identicon extends PureComponent {
   }
 
   renderJazzicon() {
-    const {
-      address,
-      className,
-      diameter,
-      alt,
-      useTokenDetection,
-      tokenList,
-    } = this.props;
+    const { address, className, diameter, alt, tokenList } = this.props;
     return (
       <Jazzicon
         address={address}
@@ -115,7 +104,6 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
         alt={alt}
-        useTokenDetection={useTokenDetection}
         tokenList={tokenList}
       />
     );
@@ -141,7 +129,6 @@ export default class Identicon extends PureComponent {
       useBlockie,
       addBorder,
       diameter,
-      useTokenDetection,
       tokenList,
     } = this.props;
     const size = diameter + 8;
@@ -151,21 +138,8 @@ export default class Identicon extends PureComponent {
     }
 
     if (address) {
-      if (process.env.TOKEN_DETECTION_V2) {
-        if (tokenList[address.toLowerCase()]?.iconUrl) {
-          return this.renderJazzicon();
-        }
-      } else {
-        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
-        // token from dynamic api list is fetched when useTokenDetection is true
-        // And since the token.address from allTokens is checksumaddress
-        // tokenAddress have to be changed to lowercase when we are using dynamic list
-        const tokenAddress = useTokenDetection
-          ? address.toLowerCase()
-          : address;
-        if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
-          return this.renderJazzicon();
-        }
+      if (tokenList[address.toLowerCase()]?.iconUrl) {
+        return this.renderJazzicon();
       }
       return (
         <div

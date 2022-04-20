@@ -673,10 +673,6 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderTokenDetectionToggle() {
-    if (!process.env.TOKEN_DETECTION_V2) {
-      return null;
-    }
-
     const { t } = this.context;
     const { useTokenDetection, setUseTokenDetection } = this.props;
 

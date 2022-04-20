@@ -27,11 +27,9 @@ const mapStateToProps = (state) => {
     },
   } = state;
 
-  const tokenDetectionV2Supported =
-    process.env.TOKEN_DETECTION_V2 && getIsTokenDetectionSupported(state);
   const showSearchTab =
     getIsMainnet(state) ||
-    tokenDetectionV2Supported ||
+    getIsTokenDetectionSupported(state) ||
     Boolean(process.env.IN_TEST);
 
   return {

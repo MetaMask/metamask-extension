@@ -29,7 +29,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getPreferences,
   doesAddressRequireLedgerHidConnection,
-  getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
   getEIP1559V2Enabled,
@@ -115,21 +114,9 @@ const mapStateToProps = (state, ownProps) => {
   const toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
 
   const tokenList = getTokenList(state);
-  const useTokenDetection = getUseTokenDetection(state);
-  let casedTokenList = tokenList;
-  if (!process.env.TOKEN_DETECTION_V2) {
-    casedTokenList = useTokenDetection
-      ? tokenList
-      : Object.keys(tokenList).reduce((acc, base) => {
-          return {
-            ...acc,
-            [base.toLowerCase()]: tokenList[base],
-          };
-        }, {});
-  }
   const toName =
     identities[toAddress]?.name ||
-    casedTokenList[toAddress]?.name ||
+    tokenList[toAddress]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
