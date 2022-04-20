@@ -26,6 +26,10 @@ import BigNumber from 'bignumber.js';
 
 import { stripHexPrefix, BN } from 'ethereumjs-util';
 
+BigNumber.config({
+  DECIMAL_PLACES: 32,
+});
+
 // Big Number Constants
 const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000');
 const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000');
