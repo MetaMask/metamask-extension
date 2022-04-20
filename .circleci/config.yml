@@ -4,10 +4,10 @@ executors:
   node-browsers:
     docker:
       - image: circleci/node:14-browsers
-  node-browsers-medium-plus:
+  node-browsers-large:
     docker:
       - image: circleci/node:14-browsers
-    resource_class: medium+
+    resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
@@ -204,7 +204,7 @@ jobs:
           - build-artifacts
 
   validate-lavamoat-config:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -219,7 +219,7 @@ jobs:
             .circleci/scripts/validate-lavamoat-policy.sh
 
   prep-build:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -237,7 +237,7 @@ jobs:
             - builds
 
   prep-build-beta:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -261,7 +261,7 @@ jobs:
             - builds-beta
 
   prep-build-flask:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -285,7 +285,7 @@ jobs:
             - builds-flask
 
   prep-build-test-flask:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -307,7 +307,7 @@ jobs:
 
 
   prep-build-test:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -522,7 +522,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-firefox:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - run:
@@ -549,7 +549,7 @@ jobs:
           destination: test-artifacts
 
   benchmark:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - run:
