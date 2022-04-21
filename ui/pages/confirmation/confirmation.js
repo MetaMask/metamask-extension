@@ -27,7 +27,7 @@ import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
-import { addCustomNetworks } from '../../store/actions';
+import { addCustomNetwork } from '../../store/actions';
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -247,7 +247,7 @@ export default function ConfirmationPage() {
         }
         onApprove={() => {
           templatedValues.onApprove.apply();
-          dispatch(addCustomNetworks(pendingConfirmation.requestData));
+          dispatch(addCustomNetwork(pendingConfirmation.requestData));
         }}
         onCancel={templatedValues.onCancel}
         approveText={templatedValues.approvalText}

@@ -126,7 +126,6 @@ class SettingsPage extends PureComponent {
             )}
 
             {this.renderTitle()}
-            {currentPath === ADD_POPULAR_CUSTOM_NETWORK ? null : (
             <div
               className="settings-page__header__title-container__close-button"
               onClick={() => {
@@ -136,7 +135,7 @@ class SettingsPage extends PureComponent {
                   history.push(mostRecentOverviewPage);
                 }
               }}
-            />)}
+            />
           </div>
 
           <div className="settings-page__header__search">

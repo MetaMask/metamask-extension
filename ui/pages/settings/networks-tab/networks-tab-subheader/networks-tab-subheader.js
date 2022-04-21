@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ADD_NETWORK_ROUTE } from '../../../../helpers/constants/routes';
+import { ADD_NETWORK_ROUTE, ADD_POPULAR_CUSTOM_NETWORK } from '../../../../helpers/constants/routes';
 import Button from '../../../../components/ui/button';
 
 const NetworksFormSubheader = ({ addNewNetwork }) => {
@@ -22,7 +22,7 @@ const NetworksFormSubheader = ({ addNewNetwork }) => {
           type="primary"
           onClick={(event) => {
             event.preventDefault();
-            history.push(ADD_NETWORK_ROUTE);
+            history.push(ADD_POPULAR_CUSTOM_NETWORK);
           }}
         >
           {t('addANetwork')}

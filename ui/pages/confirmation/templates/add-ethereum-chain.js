@@ -132,9 +132,9 @@ function getValues(pendingApproval, t, actions) {
             element: 'Chip',
             key: 'network-chip',
             props: {
-              label: 'Test',
+              label: pendingApproval.requestData.chainName,
               backgroundColor: 'Grey-000',
-              leftIconUrl: './images/avax-token.png',
+              leftIconUrl: pendingApproval.requestData.imageUrl,
             },
           },
         ],

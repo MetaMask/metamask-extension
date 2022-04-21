@@ -290,7 +290,6 @@ export default class Home extends PureComponent {
       setNewCustomNetworkAdded,
       setRpcTarget,
     } = this.props;
-    console.log(newCustomNetworkAdded);
     return (
       <MultipleNotifications>
         {

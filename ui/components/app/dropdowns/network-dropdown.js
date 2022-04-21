@@ -159,7 +159,6 @@ class NetworkDropdown extends Component {
           key={`common${rpcUrl}`}
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
-            console.log("HERE");
             if (isPrefixedFormattedHexString(chainId)) {
               this.props.setRpcTarget(rpcUrl, chainId, ticker, nickname);
             } else {

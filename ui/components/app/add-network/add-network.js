@@ -22,11 +22,7 @@ import IconBorder from '../../ui/icon-border';
 import { getTheme } from '../../../selectors';
 import { THEME_TYPE } from '../../../pages/settings/experimental-tab/experimental-tab.constant';
 
-const AddNetwork = ({
-  // onBackClick,
-  // onAddNetworkClick,
-  // onAddNetworkManuallyClick,
-}) => {
+const AddNetwork = () => {
   const t = useContext(I18nContext);
   const theme = useSelector(getTheme);
 
@@ -60,23 +56,6 @@ const AddNetwork = ({
       </Box>
     ) : (
     <Box>
-      <Box
-        height={BLOCK_SIZES.TWO_TWELFTHS}
-        padding={[4, 0, 4, 0]}
-        display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        flexDirection={FLEX_DIRECTION.ROW}
-        className="add-network__header"
-      >
-        <IconCaretLeft
-          aria-label={t('back')}
-          // onClick={onBackClick}
-          className="add-network__header__back-icon"
-        />
-        <Typography variant={TYPOGRAPHY.H3} color={COLORS.TEXT_DEFAULT}>
-          {t('addNetwork')}
-        </Typography>
-      </Box>
       <Box
         height={BLOCK_SIZES.FOUR_FIFTHS}
         width={BLOCK_SIZES.TEN_TWELFTHS}
@@ -172,7 +151,7 @@ const AddNetwork = ({
         <Button type="link" onClick={
           (event) => {
             event.preventDefault();
-            global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE) : history.push(ADD_NETWORK_ROUTE);
           }
         }>
           <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
@@ -187,12 +166,6 @@ const AddNetwork = ({
     </Popover>}
     </>
   );
-};
-
-AddNetwork.propTypes = {
-  // onBackClick: PropTypes.func,
-  // onAddNetworkClick: PropTypes.func,
-  // onAddNetworkManuallyClick: PropTypes.func,
 };
 
 export default AddNetwork;
