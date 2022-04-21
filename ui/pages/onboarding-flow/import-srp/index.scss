@@ -33,11 +33,11 @@
     align-items: center;
     text-align: left;
     margin: auto;
+  }
 
-    &__button {
-      max-width: 327px;
-      margin: auto;
-      margin-top: 24px;
-    }
+  &__confirm-button {
+    max-width: 327px;
+    margin: auto;
+    margin-top: 24px;
   }
 }
