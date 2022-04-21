@@ -50,6 +50,7 @@ import {
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -683,7 +684,7 @@ export default class TransactionController extends EventEmitter {
       origin,
     });
 
-    if (origin === 'metamask') {
+    if (origin === ORIGIN_METAMASK) {
       // Assert the from address is the selected address
       if (normalizedTxParams.from !== this.getSelectedAddress()) {
         throw ethErrors.rpc.internal({
@@ -792,7 +793,7 @@ export default class TransactionController extends EventEmitter {
         //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        if (eip1559V2Enabled && txMeta.origin !== 'metamask') {
+        if (eip1559V2Enabled && txMeta.origin !== ORIGIN_METAMASK) {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
@@ -803,7 +804,7 @@ export default class TransactionController extends EventEmitter {
             defaultMaxPriorityFeePerGas &&
             !txMeta.txParams.maxFeePerGas &&
             !txMeta.txParams.maxPriorityFeePerGas) ||
-          txMeta.origin === 'metamask'
+          txMeta.origin === ORIGIN_METAMASK
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
         } else if (eip1559V2Enabled) {
@@ -1902,7 +1903,7 @@ export default class TransactionController extends EventEmitter {
       defaultGasEstimates,
       metamaskNetworkId: network,
     } = txMeta;
-    const source = referrer === 'metamask' ? 'user' : 'dapp';
+    const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
     const { assetType, tokenStandard } = await determineTransactionAssetType(
       txMeta,

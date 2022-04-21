@@ -26,6 +26,7 @@ import {
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { TOKEN_STANDARDS } from '../../../../ui/helpers/constants/common';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionController from '.';
 
 const noop = () => true;
@@ -791,7 +792,7 @@ describe('Transaction Controller', function () {
         },
         type: TRANSACTION_TYPES.SIMPLE_SEND,
         transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        origin: 'metamask',
+        origin: ORIGIN_METAMASK,
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
@@ -1442,7 +1443,7 @@ describe('Transaction Controller', function () {
             nonce: '0x4b',
           },
           type: TRANSACTION_TYPES.SIMPLE_SEND,
-          origin: 'metamask',
+          origin: ORIGIN_METAMASK,
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
@@ -1467,7 +1468,7 @@ describe('Transaction Controller', function () {
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
             network: '42',
-            referrer: 'metamask',
+            referrer: ORIGIN_METAMASK,
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
@@ -1546,7 +1547,7 @@ describe('Transaction Controller', function () {
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
             network: '42',
-            referrer: 'metamask',
+            referrer: ORIGIN_METAMASK,
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',

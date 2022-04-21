@@ -77,6 +77,7 @@ import { MILLISECOND } from '../../shared/constants/time';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
+  ORIGIN_METAMASK,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
@@ -1224,7 +1225,7 @@ export default class MetamaskController extends EventEmitter {
       version,
       // account mgmt
       getAccounts: async ({ origin }) => {
-        if (origin === 'metamask') {
+        if (origin === ORIGIN_METAMASK) {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
@@ -3270,7 +3271,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SUBJECT_TYPES.INTERNAL) {
-      origin = 'metamask';
+      origin = ORIGIN_METAMASK;
     }
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     else if (subjectType === SUBJECT_TYPES.SNAP) {
@@ -3572,7 +3573,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string} The connection's id (so that it can be deleted later)
    */
   addConnection(origin, { engine }) {
-    if (origin === 'metamask') {
+    if (origin === ORIGIN_METAMASK) {
       return null;
     }
 

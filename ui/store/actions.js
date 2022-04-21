@@ -11,6 +11,7 @@ import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
@@ -820,7 +821,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await promisifiedBackground.addUnapprovedTransaction(
         txParams,
-        'metamask',
+        ORIGIN_METAMASK,
         type,
       );
       dispatch(showConfTxPage());
@@ -850,7 +851,7 @@ export async function addUnapprovedTransaction(txParams, type) {
   log.debug('background.addUnapprovedTransaction');
   const txMeta = await promisifiedBackground.addUnapprovedTransaction(
     txParams,
-    'metamask',
+    ORIGIN_METAMASK,
     type,
   );
   return txMeta;
