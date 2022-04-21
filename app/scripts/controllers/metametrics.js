@@ -564,8 +564,9 @@ export default class MetaMetricsController {
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
         metamaskState.allCollectibles,
       ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTs(metamaskState.allCollectibles)
-        .length,
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
+        metamaskState.allCollectibles,
+      ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
@@ -618,7 +619,7 @@ export default class MetaMetricsController {
    * @param {Object} allCollectibles
    * @returns {[]}
    */
-  _getAllNFTs = memoize((allCollectibles = {}) => {
+  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
     return Object.values(allCollectibles)
       .flatMap((chainNFTs) => Object.values(chainNFTs))
       .flat();
@@ -632,7 +633,7 @@ export default class MetaMetricsController {
    * @returns {number}
    */
   _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
-    const allNFTAddresses = this._getAllNFTs(allCollectibles).map(
+    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
       (nft) => nft.address,
     );
     const uniqueAddresses = new Set(allNFTAddresses);
