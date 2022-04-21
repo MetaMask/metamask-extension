@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
@@ -29,7 +29,10 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('experimental')),
+    getNumberOfSettingsInSection(
+      this.context.t,
+      this.context.t('experimental'),
+    ),
   )
     .fill(undefined)
     .map(() => {
@@ -244,6 +247,17 @@ export default class ExperimentalTab extends PureComponent {
       },
     ];
 
+    const onChange = (newTheme) => {
+      this.context.trackEvent({
+        category: 'Settings',
+        event: 'Theme Changed',
+        properties: {
+          theme_selected: newTheme,
+        },
+      });
+      setTheme(newTheme);
+    };
+
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
@@ -258,7 +272,7 @@ export default class ExperimentalTab extends PureComponent {
               id="select-theme"
               options={themesOptions}
               selectedOption={theme}
-              onChange={async (newTheme) => setTheme(newTheme)}
+              onChange={onChange}
             />
           </div>
         </div>

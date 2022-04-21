@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "비밀 복구 구문으로 계정 가져오기"
   },
-  "importExistingWalletDescription": {
-    "message": "지갑을 만들 때 받은 비밀 복구 구문(시드 구문)을 입력하세요. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "비밀 복구 구문을 사용하여 기존 지갑 가져오기"
-  },
   "importMyWallet": {
     "message": "내 지갑 가져오기"
   },
@@ -2462,9 +2455,6 @@
   "signed": {
     "message": "서명완료"
   },
-  "simulationErrorMessage": {
-    "message": "이 거래는 실패할 것으로 예상됩니다. 실행하려면 비용이 많이 들지만 실패할 것으로 예상되어 권장하지 않습니다."
-  },
   "simulationErrorMessageV2": {
     "message": "가스 요금을 추정할 수 없었습니다. 계약에 오류가 있을 수 있으며 이 거래가 실패할 수 있습니다."
   },
@@ -3129,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "다시 시도"
-  },
-  "tryAnywayOption": {
-    "message": "계속 시도"
   },
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"

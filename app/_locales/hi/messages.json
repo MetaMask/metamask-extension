@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "गुप्त रिकवरी फ्रेज के साथ एक खाता आयात करें"
   },
-  "importExistingWalletDescription": {
-    "message": "अपना सीक्रेट रिकवरी फ्रेज (उर्फ सीड फ्रेज) दर्ज करें जो आपको अपना वॉलेट बनाने पर दिया गया था। $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "सीक्रेट रिकवरी फ्रेज के साथ मौजूदा वॉलेट आयात करें"
-  },
   "importMyWallet": {
     "message": "मेरा वॉलेट आयात करें"
   },
@@ -2462,9 +2455,6 @@
   "signed": {
     "message": "हस्ताक्षर किया गया"
   },
-  "simulationErrorMessage": {
-    "message": "यह लेन-देन विफल होने की उम्मीद है। इसे निष्पादित करने के प्रयास के महंगा होने की उम्मीद है लेकिन विफल है, और इसकी अनुशंसा नहीं की जाती है।"
-  },
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। अनुबंध में कोई त्रुटि हो सकती है और यह लेन-देन विफल हो सकता है।"
   },
@@ -3129,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "पुनः प्रयास करें"
-  },
-  "tryAnywayOption": {
-    "message": "मैं फिर भी कोशिश करूंगा"
   },
   "turnOnTokenDetection": {
     "message": "उन्नत टोकन डिटेक्शन चालू करें"

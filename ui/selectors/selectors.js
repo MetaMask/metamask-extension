@@ -37,7 +37,8 @@ import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_SWAPS_CHAIN_IDS,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
 import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
@@ -64,6 +65,9 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IN
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -666,7 +670,12 @@ export function getSwapsDefaultToken(state) {
 
 export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
-  return ALLOWED_SWAPS_CHAIN_IDS[chainId];
+  const isNotDevelopment =
+    process.env.METAMASK_ENVIRONMENT !== 'development' ||
+    process.env.METAMASK_ENVIRONMENT !== 'testing';
+  return isNotDevelopment
+    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
+    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBuyableChain(state) {
@@ -701,6 +710,20 @@ export function getShowWhatsNewPopup(state) {
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
+
+export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).map((snap) => {
+    return {
+      tabMessage: () => snap.manifest.proposedName,
+      descriptionMessage: () => snap.manifest.description,
+      sectionMessage: () => snap.manifest.description,
+      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
+        unescape(encodeURIComponent(snap.id)),
+      )}`,
+      icon: 'fa fa-flask',
+    };
+  });
+});
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -728,6 +751,7 @@ function getAllowedNotificationIds(state) {
     9: getIsMainnet(state),
     10: Boolean(process.env.TOKEN_DETECTION_V2),
     11: Boolean(process.env.TOKEN_DETECTION_V2),
+    12: true,
   };
 }
 
@@ -945,10 +969,6 @@ export function getIsTokenDetectionSupported(state) {
   ].includes(chainId);
 }
 
-export function getTokenDetectionNoticeDismissed(state) {
-  return state.metamask.tokenDetectionNoticeDismissed;
-}
-
-export function getTokenDetectionWarningDismissed(state) {
-  return state.metamask.tokenDetectionWarningDismissed;
+export function getDetectedTokensInCurrentNetwork(state) {
+  return state.metamask.detectedTokens;
 }

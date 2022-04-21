@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "使用账户助记词导入账户"
   },
-  "importExistingWalletDescription": {
-    "message": "输入您创建$1钱包时提供的保密恢复短语（或Seed Phrase）。",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "使用账户助记词导入现有钱包"
-  },
   "importMyWallet": {
     "message": "导入我的钱包"
   },
@@ -2462,9 +2455,6 @@
   "signed": {
     "message": "已签名"
   },
-  "simulationErrorMessage": {
-    "message": "此交易预计将失败。尝试执行该交易预计将是昂贵的，但失败，不推荐。"
-  },
   "simulationErrorMessageV2": {
     "message": "我们无法估计燃料。合同中可能有一个错误，这笔交易可能失败。"
   },
@@ -3129,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "重试"
-  },
-  "tryAnywayOption": {
-    "message": "我仍然会试"
   },
   "turnOnTokenDetection": {
     "message": "打开增强代币检测"

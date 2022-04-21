@@ -116,14 +116,17 @@ const mapStateToProps = (state, ownProps) => {
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
-  const casedTokenList = useTokenDetection
-    ? tokenList
-    : Object.keys(tokenList).reduce((acc, base) => {
-        return {
-          ...acc,
-          [base.toLowerCase()]: tokenList[base],
-        };
-      }, {});
+  let casedTokenList = tokenList;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    casedTokenList = useTokenDetection
+      ? tokenList
+      : Object.keys(tokenList).reduce((acc, base) => {
+          return {
+            ...acc,
+            [base.toLowerCase()]: tokenList[base],
+          };
+        }, {});
+  }
   const toName =
     identities[toAddress]?.name ||
     casedTokenList[toAddress]?.name ||

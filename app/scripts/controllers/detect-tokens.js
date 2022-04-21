@@ -4,6 +4,7 @@ import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 import { MINUTE } from '../../../shared/constants/time';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 // By default, poll every 3 minutes
@@ -24,6 +25,7 @@ export default class DetectTokensController {
    * @param config.keyringMemStore
    * @param config.tokenList
    * @param config.tokensController
+   * @param config.assetsContractController
    */
   constructor({
     interval = DEFAULT_INTERVAL,
@@ -32,7 +34,9 @@ export default class DetectTokensController {
     keyringMemStore,
     tokenList,
     tokensController,
+    assetsContractController = null,
   } = {}) {
+    this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
     this.interval = interval;
@@ -44,6 +48,9 @@ export default class DetectTokensController {
       return token.address;
     });
     this.hiddenTokens = this.tokensController?.state.ignoredTokens;
+    this.detectedTokens = process.env.TOKEN_DETECTION_V2
+      ? this.tokensController?.state.detectedTokens
+      : [];
 
     preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
       if (
@@ -55,14 +62,24 @@ export default class DetectTokensController {
         this.restartTokenDetection();
       }
     });
-    tokensController?.subscribe(({ tokens = [], ignoredTokens = [] }) => {
-      this.tokenAddresses = tokens.map((token) => {
-        return token.address;
-      });
-      this.hiddenTokens = ignoredTokens;
-    });
+    tokensController?.subscribe(
+      ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
+        this.tokenAddresses = tokens.map((token) => {
+          return token.address;
+        });
+        this.hiddenTokens = ignoredTokens;
+        this.detectedTokens = process.env.TOKEN_DETECTION_V2
+          ? detectedTokens
+          : [];
+      },
+    );
   }
 
+  /**
+   * TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
+   *
+   * @param tokens
+   */
   async _getTokenBalances(tokens) {
     const ethContract = this.web3.eth
       .contract(SINGLE_CALL_BALANCES_ABI)
@@ -84,14 +101,23 @@ export default class DetectTokensController {
     if (!this.isActive) {
       return;
     }
-
+    if (
+      process.env.TOKEN_DETECTION_V2 &&
+      (!this.useTokenDetection ||
+        !isTokenDetectionEnabledForNetwork(
+          this._network.store.getState().provider.chainId,
+        ))
+    ) {
+      return;
+    }
     const { tokenList } = this._tokenList.state;
     // since the token detection is currently enabled only on Mainnet
     // we can use the chainId check to ensure token detection is not triggered for any other network
     // but once the balance check contract for other networks are deploayed and ready to use, we need to update this check.
     if (
-      this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID ||
-      Object.keys(tokenList).length === 0
+      !process.env.TOKEN_DETECTION_V2 &&
+      (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID ||
+        Object.keys(tokenList).length === 0)
     ) {
       return;
     }
@@ -105,6 +131,9 @@ export default class DetectTokensController {
         ) &&
         !this.hiddenTokens.find((address) =>
           isEqualCaseInsensitive(address, tokenAddress),
+        ) &&
+        !this.detectedTokens.find(({ address }) =>
+          isEqualCaseInsensitive(address, tokenAddress),
         )
       ) {
         tokensToDetect.push(tokenAddress);
@@ -117,7 +146,12 @@ export default class DetectTokensController {
     for (const tokensSlice of sliceOfTokensToDetect) {
       let result;
       try {
-        result = await this._getTokenBalances(tokensSlice);
+        result = process.env.TOKEN_DETECTION_V2
+          ? await this.assetsContractController.getBalancesInSingleCall(
+              this.selectedAddress,
+              tokensSlice,
+            )
+          : await this._getTokenBalances(tokensSlice);
       } catch (error) {
         warn(
           `MetaMask - DetectTokensController single call balance fetch failed`,
@@ -126,20 +160,45 @@ export default class DetectTokensController {
         return;
       }
 
-      const tokensWithBalance = tokensSlice.filter((_, index) => {
-        const balance = result[index];
-        return balance && !balance.isZero();
-      });
-
-      await Promise.all(
-        tokensWithBalance.map((tokenAddress) => {
-          return this.tokensController.addToken(
-            tokenAddress,
-            tokenList[tokenAddress].symbol,
-            tokenList[tokenAddress].decimals,
-          );
-        }),
-      );
+      let tokensWithBalance = [];
+      if (process.env.TOKEN_DETECTION_V2) {
+        if (result) {
+          const nonZeroTokenAddresses = Object.keys(result);
+          for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
+            const {
+              address,
+              symbol,
+              decimals,
+              iconUrl,
+              aggregators,
+            } = tokenList[nonZeroTokenAddress];
+            tokensWithBalance.push({
+              address,
+              symbol,
+              decimals,
+              image: iconUrl,
+              aggregators,
+            });
+          }
+          if (tokensWithBalance.length > 0) {
+            await this.tokensController.addDetectedTokens(tokensWithBalance);
+          }
+        }
+      } else {
+        tokensWithBalance = tokensSlice.filter((_, index) => {
+          const balance = result[index];
+          return balance && !balance.isZero();
+        });
+        await Promise.all(
+          tokensWithBalance.map((tokenAddress) => {
+            return this.tokensController.addToken(
+              tokenAddress,
+              tokenList[tokenAddress].symbol,
+              tokenList[tokenAddress].decimals,
+            );
+          }),
+        );
+      }
     }
   }
 

@@ -38,7 +38,7 @@
     &__content {
       padding: 12px 18px;
       display: flex;
-      flex-flow: row wrap;
+      flex: 1 1 auto;
       align-items: center;
       position: relative;
 
@@ -64,8 +64,14 @@
       }
 
       &__icon {
-        margin-inline-end: 16px;
         display: flex;
+        justify-content: center;
+        margin-inline-end: 16px;
+        flex: 0 0 18px;
+
+        @media screen and (min-width: $break-large) {
+          flex: 0 0 14px;
+        }
       }
     }
 

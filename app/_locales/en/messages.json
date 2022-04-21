@@ -62,6 +62,13 @@
     "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Access your wallet with your Secret Recovery Phrase"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask cannot recover your password. We will use your Secret Recovery Phrase to validate your ownership, restore your wallet and set up a new password. First, enter the Secret Recovery Phrase that you were given when you created your wallet. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -1480,13 +1487,6 @@
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
   },
-  "importExistingWalletDescription": {
-    "message": "Enter your Secret Recovery Phrase (aka Seed Phrase) that you were given when you created your wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Import existing wallet with Secret Recovery Phrase"
-  },
   "importMyWallet": {
     "message": "Import My Wallet"
   },
@@ -2131,6 +2131,15 @@
   "notifications11Title": {
     "message": "Scam and security risks"
   },
+  "notifications12ActionText": {
+    "message": "Enable dark mode"
+  },
+  "notifications12Description": {
+    "message": "Dark Mode will be enabled for new users depending on their system preferences. For existing users, enable Dark Mode manually under Settings -> Experimental."
+  },
+  "notifications12Title": {
+    "message": "Wen dark mode? Now dark mode! 🕶️🦊"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2219,6 +2228,10 @@
   },
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
+  },
+  "numberOfNewTokensDetected": {
+    "message": "$1 new tokens found in this account",
+    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "of"
@@ -2316,6 +2329,9 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "padlock": {
+    "message": "Padlock"
   },
   "parameters": {
     "message": "Parameters"
@@ -2869,9 +2885,6 @@
   },
   "signed": {
     "message": "Signed"
-  },
-  "simulationErrorMessage": {
-    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
@@ -3748,9 +3761,6 @@
   "tryAgain": {
     "message": "Try again"
   },
-  "tryAnywayOption": {
-    "message": "I will try anyway"
-  },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
@@ -3762,6 +3772,9 @@
   },
   "typePassword": {
     "message": "Type your MetaMask password"
+  },
+  "typeYourSRP": {
+    "message": "Type your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",

@@ -585,8 +585,7 @@
         "console.log": true,
         "document.createElement": true,
         "document.head.appendChild": true,
-        "fetch": true,
-        "removeEventListener": true
+        "fetch": true
       },
       "packages": {
         "@ethereumjs/tx": true,
