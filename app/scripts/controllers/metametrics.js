@@ -540,9 +540,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    /**
-     * @type {MetaMetricsTraits}
-     */
+    /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
         Object.values(metamaskState.addressBook).map(size),
@@ -554,9 +552,12 @@ export default class MetaMetricsController {
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
-      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
-        metamaskState,
+      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+        metamaskState.allCollectibles,
       ),
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTAddresses(
+        metamaskState.allCollectibles,
+      ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
@@ -605,20 +606,26 @@ export default class MetaMetricsController {
   /**
    *
    * @param {object} metamaskState
-   * @returns number of unique collectible addresses
+   * @param allCollectibles
+   * @returns {[]} Array of all collectible/NFT addresses
    */
-  _getNumberOfNFtCollection(metamaskState) {
-    const { allCollectibles } = metamaskState;
-    if (!allCollectibles) {
-      return 0;
-    }
-
-    const allAddresses = Object.values(allCollectibles)
+  _getAllNFTAddresses(allCollectibles = {}) {
+    return Object.values(allCollectibles)
       .flatMap((chainCollectibles) => Object.values(chainCollectibles))
       .flat()
       .map((collectible) => collectible.address);
-    const unique = [...new Set(allAddresses)];
-    return unique.length;
+  }
+
+  /**
+   *
+   * @param {object} metamaskState
+   * @param allCollectibles
+   * @returns {[]} Array of unique collectible/NFT addresses
+   */
+  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
+    const allAddresses = this._getAllNFTAddresses(allCollectibles);
+    const uniqueAddresses = new Set(allAddresses);
+    return uniqueAddresses.size;
   }
 
   /**
