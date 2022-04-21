@@ -18,6 +18,7 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
+  TEST_NETWORK_TICKER_MAP,
 } from '../../../../shared/constants/network';
 import { SECOND } from '../../../../shared/constants/time';
 import {
@@ -41,7 +42,11 @@ if (process.env.IN_TEST) {
     nickname: 'Localhost 8545',
   };
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID };
+  defaultProviderConfigOpts = {
+    type: RINKEBY,
+    chainId: RINKEBY_CHAIN_ID,
+    ticker: TEST_NETWORK_TICKER_MAP.rinkeby,
+  };
 } else {
   defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 }
