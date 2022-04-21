@@ -1779,7 +1779,10 @@ export default class TransactionController extends EventEmitter {
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
       );
-      this._dropTransaction(otherTxMeta.id);
+      // Drop any transaction that wasn't previously failed (off chain failure)
+      if (otherTxMeta.status !== TRANSACTION_STATUSES.FAILED) {
+        this._dropTransaction(otherTxMeta.id);
+      }
     });
   }
 
