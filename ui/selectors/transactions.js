@@ -463,6 +463,11 @@ export const nonceSortedTransactionsSelector = createSelector(
     return unapprovedTransactionGroups
       .concat(orderedTransactionGroups)
       .map((txGroup) => {
+        // In the caes that we have a cancel or retry as initial transaction
+        // and there is a valid transaction in the group, we should reassign
+        // the other valid transaction as initial. In this case validity of the
+        // transaction is expanded to include off-chain failures because it is
+        // valid to retry those with higher gas prices.
         if (
           INVALID_INITIAL_TRANSACTION_TYPES.includes(
             txGroup.initialTransaction?.type,
