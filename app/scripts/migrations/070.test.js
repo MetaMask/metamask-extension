@@ -247,4 +247,27 @@ describe('migration #70', () => {
       },
     });
   });
+
+  it('should handle missing PermissionLogController.permissionActivityLog', async () => {
+    const oldStorage = {
+      meta: {
+        version: 69,
+      },
+      data: {
+        FooController: { a: 'b' },
+        PermissionLogController: {},
+      },
+    };
+
+    const newStorage = await migration70.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 70,
+      },
+      data: {
+        FooController: { a: 'b' },
+        PermissionLogController: {},
+      },
+    });
+  });
 });
