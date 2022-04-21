@@ -613,10 +613,11 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Returns an array of all of the collectible/NFT addresses the user
+   * possesses across all networks and accounts.
    *
-   * @param {object} metamaskState
-   * @param allCollectibles
-   * @returns {[]} Array of all collectible/NFT addresses
+   * @param {Object} allCollectibles
+   * @returns {[]}
    */
   _getAllNFTAddresses = memoize((allCollectibles = {}) => {
     return Object.values(allCollectibles)
@@ -626,10 +627,11 @@ export default class MetaMetricsController {
   });
 
   /**
+   * Returns the number of unique collectible/NFT addresses the user
+   * possesses across all networks and accounts.
    *
-   * @param {object} metamaskState
-   * @param allCollectibles
-   * @returns {[]} Array of unique collectible/NFT addresses
+   * @param {Object} allCollectibles
+   * @returns {number}
    */
   _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
     const allAddresses = this._getAllNFTAddresses(allCollectibles);
