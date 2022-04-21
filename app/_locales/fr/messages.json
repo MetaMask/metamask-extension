@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Un problème est survenu et nous n’avons pas pu mener à bien l’action"
   },
-  "fakeTokenWarning": {
-    "message": "Tout un chacun peut créer un jeton, y compris créer de fausses copies de jetons existants. En savoir plus sur $1"
-  },
   "fast": {
     "message": "Rapide"
   },

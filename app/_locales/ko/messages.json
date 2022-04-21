@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "문제가 발생했습니다. 작업을 완료할 수 없습니다."
   },
-  "fakeTokenWarning": {
-    "message": "기존 토큰의 가짜 버전 생성을 포함하여 누구나 토큰을 생성할 수 있습니다. $1에 대해 자세히 알아보기"
-  },
   "fast": {
     "message": "빠름"
   },

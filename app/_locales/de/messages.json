@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Etwas ist schief gelaufen und wir konnten die Aktion nicht abschließen"
   },
-  "fakeTokenWarning": {
-    "message": "Jeder kann ein Token erstellen, einschließlich der Erstellung gefälschter Versionen bestehender Token. Erfahren Sie mehr über $1"
-  },
   "fast": {
     "message": "Schnell"
   },

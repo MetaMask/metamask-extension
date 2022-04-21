@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Nagkaproblema, at hindi namin makumpleto ang aksyon"
   },
-  "fakeTokenWarning": {
-    "message": "Sinuman ay maaaring gumawa ng token, kabilang ang paggawa ng mga pekeng bersyon ng mga umiiral na token. Alamin pa ang tungkol sa $1"
-  },
   "fast": {
     "message": "Mabilis"
   },

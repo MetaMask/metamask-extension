@@ -1188,9 +1188,6 @@
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
-  "fakeTokenWarning": {
-    "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn more about $1"
-  },
   "fast": {
     "message": "Fast"
   },
@@ -3630,9 +3627,6 @@
   "tokenDetectionAlertMessage": {
     "message": "Token detection is currently available on $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
-  },
   "tokenDetectionToggleDescription": {
     "message": "ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import."
   },
@@ -3867,12 +3861,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
-  },
-  "useTokenDetection": {
-    "message": "Use Token Detection"
-  },
-  "useTokenDetectionDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."

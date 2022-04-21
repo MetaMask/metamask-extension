@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Ada yang salah, dan kami tidak dapat menyelesaikan tindakan"
   },
-  "fakeTokenWarning": {
-    "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari selengkapnya seputar $1"
-  },
   "fast": {
     "message": "Cepat"
   },

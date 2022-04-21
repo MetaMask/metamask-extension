@@ -1031,9 +1031,6 @@
   "failureMessage": {
     "message": "Ocorreu algum erro e não conseguimos concluir a ação"
   },
-  "fakeTokenWarning": {
-    "message": "Qualquer um pode criar um token, incluindo versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
   "fast": {
     "message": "Rápido"
   },
@@ -3009,9 +3006,6 @@
   "tokenDecimalFetchFailed": {
     "message": "A casa decimal do token é necessária."
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Novidade! A detecção aprimorada de token está disponível na Mainnet do Ethereum como uma funcionalidade experimental. $1"
-  },
   "tokenId": {
     "message": "ID do token"
   },
@@ -3227,12 +3221,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Exibir uma advertência para os domínios de phishing destinados a usuários do Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Usar detecção de tokens"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Utilizamos APIs terceirizadas para detectar e exibir novos tokens enviados à sua carteira. Desative essa opção se não deseja que a MetaMask extraia dados desses serviços."
   },
   "usedByClients": {
     "message": "Usado por diversos clientes diferentes"

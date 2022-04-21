@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Bir şeyler ters gitti ve işlemi tamamlayamadık"
   },
-  "fakeTokenWarning": {
-    "message": "Mevcut tokenlerin sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında daha fazla bilgi edinin"
-  },
   "fast": {
     "message": "Hızlı"
   },

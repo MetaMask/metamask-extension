@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Đã xảy ra sự cố và chúng tôi không thể hoàn tất hành động"
   },
-  "fakeTokenWarning": {
-    "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả phiên bản giả mạo của các token hiện tại. Tìm hiểu thêm về $1"
-  },
   "fast": {
     "message": "Nhanh"
   },

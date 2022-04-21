@@ -1017,9 +1017,6 @@
   "failureMessage": {
     "message": "出了点问题，我们无法完成这个操作。"
   },
-  "fakeTokenWarning": {
-    "message": "任何人都可以创建代币，包括创建现有代币的假版本。了解更多关于 $1"
-  },
   "fast": {
     "message": "快"
   },
@@ -2970,9 +2967,6 @@
   "tokenDecimalFetchFailed": {
     "message": "需要代币十进制。"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "新功能！改进的代币检测可以作为实验功能在Ethereum Mainnet上进行。$1"
-  },
   "tokenSymbol": {
     "message": "代币符号"
   },
@@ -3185,12 +3179,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "显示针对 Ethereum 用户钓鱼域名的警告。"
-  },
-  "useTokenDetection": {
-    "message": "使用代币检测"
-  },
-  "useTokenDetectionDescription": {
-    "message": "我们使用第三方API来检测和显示发送到您钱包的新代币。 如果您不想从这些服务中拉取数据，请关闭"
   },
   "usedByClients": {
     "message": "可用于各种不同的客户端"
