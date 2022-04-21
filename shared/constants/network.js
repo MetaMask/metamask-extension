@@ -5,6 +5,7 @@ export const MAINNET = 'mainnet';
 export const GOERLI = 'goerli';
 export const LOCALHOST = 'localhost';
 export const NETWORK_TYPE_RPC = 'rpc';
+export const HOMESTEAD = 'homestead';
 
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
@@ -136,6 +137,13 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [BSC_CHAIN_ID]: BNB_TOKEN_IMAGE_URL,
   [POLYGON_CHAIN_ID]: MATIC_TOKEN_IMAGE_URL,
 };
+
+export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
+  [ROPSTEN_NETWORK_ID]: ROPSTEN,
+  [RINKEBY_NETWORK_ID]: RINKEBY,
+  [GOERLI_NETWORK_ID]: GOERLI,
+  [MAINNET_NETWORK_ID]: HOMESTEAD
+}
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
   NETWORK_TYPE_TO_ID_MAP,
