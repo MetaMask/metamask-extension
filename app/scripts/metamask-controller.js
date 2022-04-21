@@ -396,7 +396,10 @@ export default class MetamaskController extends EventEmitter {
     this.currencyRateController = new CurrencyRateController({
       includeUSDRate: true,
       messenger: currencyRateMessenger,
-      state: initState.CurrencyController,
+      state: {
+        ...initState.CurrencyController,
+        nativeCurrency: this.networkController.providerStore.getState().ticker,
+      },
     });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
