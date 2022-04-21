@@ -1187,7 +1187,10 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin }, { suppressUnauthorizedError = true }) => {
+      getAccounts: async (
+        { origin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
         if (origin === 'metamask') {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
@@ -2462,7 +2465,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  async getPermittedAccounts(origin, { suppressUnauthorizedError = true }) {
+  async getPermittedAccounts(
+    origin,
+    { suppressUnauthorizedError = true } = {},
+  ) {
     try {
       return await this.permissionController.executeRestrictedMethod(
         origin,
