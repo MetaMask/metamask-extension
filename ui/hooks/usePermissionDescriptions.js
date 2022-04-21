@@ -34,7 +34,7 @@ export const usePermissionDescriptions = () => {
         rightIcon: null,
       },
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      [wallet_getLocale]: {
+      [RestrictedMethods.wallet_getLocale]: {
         leftIcon: 'fas fa-eye',
         label: t('permission_ethereumAccounts'),
         rightIcon: null,

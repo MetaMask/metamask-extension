@@ -20,7 +20,7 @@ const handlers = [
   switchEthereumChain,
   watchAsset,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  walletgetLocale
+  walletgetLocale,
   ///: END:ONLY_INCLUDE_IN
 ];
 export default handlers;
