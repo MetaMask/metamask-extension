@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
+import { chain } from 'lodash';
 
 import {
   importTokens,
@@ -29,52 +30,47 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   ] = useState(false);
 
   const handleClearTokensSelection = async () => {
-    const selectedTokens = Object.values(tokensListDetected)
-      .filter(({ selected }) => {
-        return selected;
-      })
-      .map(({ token }) => {
-        return token;
-      });
-    const unSelectedTokens = Object.values(tokensListDetected)
-      .filter(({ selected }) => {
-        return !selected;
-      })
-      .map(({ token }) => {
-        return token;
-      });
+    // create a lodash chain on this object
+    const { selected: selectedTokens, deselected: deSelectedTokens } = chain(
+      tokensListDetected,
+    )
+      // get the values
+      .values()
+      // create a new object with keys 'selected', 'deselected' and group the tokens
+      .groupBy((token) => (token.selected ? 'selected' : 'deselected'))
+      // ditch the 'selected' property and get just the tokens'
+      .mapValues((group) => group.map(({ token }) => token))
+      // Exit the chain and get the underlying value, an object.
+      .value();
 
-    if (unSelectedTokens.length < detectedTokens.length) {
-      await dispatch(ignoreTokens(unSelectedTokens));
+    if (deSelectedTokens.length < detectedTokens.length) {
+      await dispatch(ignoreTokens(deSelectedTokens));
       await dispatch(importTokens(selectedTokens));
       const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
       dispatch(setNewTokensImported(tokenSymbols.join(', ')));
     } else {
-      await dispatch(ignoreTokens(unSelectedTokens));
+      await dispatch(ignoreTokens(deSelectedTokens));
     }
     setShowDetectedTokens(false);
   };
 
   const handleTokenSelection = (token) => {
-    const newTokensListDetected = { ...tokensListDetected };
-
-    if (tokensListDetected[token.address].selected) {
-      newTokensListDetected[token.address].selected = false;
-    } else {
-      newTokensListDetected[token.address].selected = true;
-    }
-
-    setTokensListDetected(newTokensListDetected);
+    setTokensListDetected((prevState) => ({
+      ...prevState,
+      [token.address]: {
+        ...prevState[token.address],
+        selected: !prevState[token.address].selected,
+      },
+    }));
   };
 
   const onImport = async () => {
-    const selectedTokens = Object.values(tokensListDetected)
-      .filter(({ selected }) => {
-        return selected;
-      })
-      .map(({ token }) => {
-        return token;
-      });
+    // create a lodash chain on this object
+    const { selected: selectedTokens } = chain(tokensListDetected)
+      .values()
+      .groupBy((token) => (token.selected ? 'selected' : 'deselected'))
+      .mapValues((group) => group.map(({ token }) => token))
+      .value();
 
     if (selectedTokens.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);
