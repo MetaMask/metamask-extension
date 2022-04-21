@@ -25,7 +25,10 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
 
   return (
     <div className="import-srp">
-      <TwoStepProgressBar stage={twoStepStages.RECOVERY_PHRASE_CONFIRM} />
+      <TwoStepProgressBar
+        stage={twoStepStages.RECOVERY_PHRASE_CONFIRM}
+        marginBottom={4}
+      />
       <div className="import-srp__header">
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
           {t('accessYourWalletWithSRP')}

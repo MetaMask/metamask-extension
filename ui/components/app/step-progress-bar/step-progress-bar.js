@@ -19,10 +19,10 @@ export const twoStepStages = {
   PASSWORD_CREATE: 2,
 };
 
-export function ThreeStepProgressBar({ stage }) {
+export function ThreeStepProgressBar({ stage, ...props }) {
   const t = useI18nContext();
   return (
-    <Box>
+    <Box {...props}>
       <ul className="progressbar">
         <li
           className={classnames({
@@ -53,10 +53,10 @@ export function ThreeStepProgressBar({ stage }) {
   );
 }
 
-export function TwoStepProgressBar({ stage }) {
+export function TwoStepProgressBar({ stage, ...props }) {
   const t = useI18nContext();
   return (
-    <Box margin={4} width={BLOCK_SIZES.FULL}>
+    <Box width={BLOCK_SIZES.FULL} {...props}>
       <ul className="progressbar two-steps">
         <li
           className={classnames({

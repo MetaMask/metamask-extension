@@ -1,22 +1,9 @@
 .onboarding-metametrics {
-  @media screen and (max-width: $break-small) {
-    padding: 24px;
-  }
-
   @media screen and (min-width: $break-large) {
-    max-width: 600px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px;
-  }
-
-  &__desc {
-    @media screen and (min-width: $break-large) {
-      margin-inline-start: 77px;
-      margin-inline-end: 73px;
-    }
   }
 
   ul {
@@ -47,29 +34,20 @@
   }
 
   &__buttons {
-    justify-content: space-around;
-    display: flex;
+    margin-top: 24px;
+    width: 100%;
 
     @media screen and (min-width: $break-large) {
       margin-top: 40px;
-    }
-
-    &__no-thanks {
-      @media screen and (min-width: $break-large) {
-        margin-inline-end: 96px;
-      }
-    }
-
-    @media screen and (max-width: $break-small) {
-      margin-top: 24px;
+      justify-content: space-between;
+      display: flex;
     }
 
     button {
-      width: 200px;
+      margin-bottom: 24px;
 
-      @media screen and (max-width: $break-small) {
-        width: 153px;
-        margin-bottom: 24px;
+      @media screen and (min-width: $break-large) {
+        width: 200px;
       }
     }
   }

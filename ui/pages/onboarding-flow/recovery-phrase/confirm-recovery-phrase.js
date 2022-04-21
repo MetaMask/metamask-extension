@@ -55,7 +55,10 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   return (
     <div className="recovery-phrase__confirm">
-      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_CONFIRM} />
+      <ThreeStepProgressBar
+        stage={threeStepStages.RECOVERY_PHRASE_CONFIRM}
+        marginBottom={4}
+      />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}

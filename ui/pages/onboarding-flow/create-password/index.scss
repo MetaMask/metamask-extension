@@ -16,14 +16,6 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    max-width: 600px;
-    max-height: 750px;
-    margin-top: 24px;
-    margin-bottom: 40px;
-
-    @media screen and (min-width: $break-large) {
-      margin-top: 40px;
-    }
   }
 
   &__link-text {
@@ -32,21 +24,12 @@
 
   &__form {
     @media screen and (min-width: $break-large) {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 327px;
+      max-width: 320px;
     }
-
 
     &--password-button {
       background-color: transparent;
       color: var(--color-text-default);
-    }
-
-    &--submit-button {
-      padding: 20px;
     }
 
     &--checkmark {
@@ -61,10 +44,7 @@
 
     .form-field__input {
       height: 50px;
-
-      @media screen and (min-width: $break-large) {
-        width: 327px;
-      }
+      width: 100%;
     }
   }
 }

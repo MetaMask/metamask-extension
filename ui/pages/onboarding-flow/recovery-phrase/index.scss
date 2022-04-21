@@ -1,26 +1,21 @@
 .recovery-phrase {
-  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-
-  @media screen and (min-width: $break-large) {
-    margin-top: 40px;
-    margin-bottom: 40px;
+  &__header {
+    max-width: 420px;
   }
 
   &__tips {
     flex-direction: column;
-    width: 84%;
-
-    @media screen and (max-width: $break-large) {
-      margin-inline-start: 27px;
-    }
+    max-width: 420px;
+    margin: 0 auto;
 
     ul {
       list-style: disc;
       margin-left: 20px;
+      margin-bottom: 24px;
     }
   }
 
@@ -49,13 +44,7 @@
 
   &__secret {
     position: relative;
-    margin-inline-start: 23px;
-    margin-inline-end: 23px;
-
-    @media screen and (min-width: $break-large) {
-      margin-inline-start: 43px;
-      margin-inline-end: 43px;
-    }
+    width: 100%;
   }
 
   &__secret-blocker {
@@ -108,15 +97,15 @@
       justify-content: center;
       align-items: center;
       width: 100%;
-      margin-bottom: 20px;
 
       @media screen and (min-width: $break-small) {
-        margin: 20px 0 0 0;
+        margin-top: 20px;
       }
 
       &--button {
         align-self: center;
-        width: 50%;
+        width: 100%;
+        max-width: 300px;
       }
     }
 
@@ -124,19 +113,7 @@
       align-self: center;
 
       @media screen and (min-width: $break-large) {
-        width: 50%;
-      }
-
-      @media screen and (max-width: $break-large) {
-        width: 80%;
-      }
-
-      &__confirm {
-        width: 80%;
-
-        @media screen and (min-width: $break-large) {
-          min-width: 327px;
-        }
+        max-width: 300px;
       }
     }
 
@@ -211,10 +188,7 @@
 
   &__confirm {
     @media screen and (min-width: $break-large) {
-      margin-top: 40px;
-      margin-bottom: 40px;
       display: flex;
-      max-width: 600px;
       flex-direction: column;
       align-items: center;
     }

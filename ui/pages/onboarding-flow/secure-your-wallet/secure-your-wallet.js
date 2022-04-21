@@ -55,12 +55,14 @@ export default function SecureYourWallet() {
       {showSkipSRPBackupPopover && (
         <SkipSRPBackup handleClose={() => setShowSkipSRPBackupPopover(false)} />
       )}
-      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_VIDEO} />
+      <ThreeStepProgressBar
+        stage={threeStepStages.RECOVERY_PHRASE_VIDEO}
+        marginBottom={4}
+      />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
-        marginTop={8}
       >
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
           {t('seedPhraseIntroTitle')}
