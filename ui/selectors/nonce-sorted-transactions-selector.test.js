@@ -26,6 +26,12 @@ const INCOMING_TX = {
   },
 };
 
+const SIGNING_REQUEST = {
+  type: TRANSACTION_TYPES.SIGNING_REQUEST,
+  id: '0-signing',
+  status: TRANSACTION_STATUSES.UNAPPROVED,
+};
+
 const SIMPLE_SEND_TX = {
   id: '0-simple',
   txParams: {
@@ -62,12 +68,17 @@ const CANCEL_TX = {
   type: TRANSACTION_TYPES.CANCEL,
 };
 
-const getStateTree = (txList, incomingTxList = []) => ({
+const getStateTree = ({
+  txList = [],
+  incomingTxList = [],
+  unapprovedMsgs = [],
+} = {}) => ({
   metamask: {
     provider: {
       nickname: 'mainnet',
       chainId: MAINNET_CHAIN_ID,
     },
+    unapprovedMsgs,
     selectedAddress: SENDERS.ONE,
     featureFlags: {
       showIncomingTransactions: true,
@@ -78,14 +89,19 @@ const getStateTree = (txList, incomingTxList = []) => ({
 });
 
 const duplicateTx = (base, overrides) => {
-  const { nonce = '0x0', time = 0, status = TRANSACTION_STATUSES.CONFIRMED } =
-    overrides ?? {};
+  const {
+    nonce = '0x0',
+    time = 0,
+    status = TRANSACTION_STATUSES.CONFIRMED,
+    txReceipt,
+  } = overrides ?? {};
   return {
     ...base,
     txParams: {
       ...base.txParams,
       nonce,
     },
+    txReceipt,
     time,
     status,
   };
@@ -98,7 +114,7 @@ describe('nonceSortedTransactionsSelector', () => {
       duplicateTx(RETRY_TX, { time: 1 }),
     ];
 
-    const state = getStateTree(txList);
+    const state = getStateTree({ txList });
 
     const result = nonceSortedTransactionsSelector(state);
 
@@ -120,7 +136,7 @@ describe('nonceSortedTransactionsSelector', () => {
       duplicateTx(CANCEL_TX, { time: 1 }),
     ];
 
-    const state = getStateTree(txList);
+    const state = getStateTree({ txList });
 
     const result = nonceSortedTransactionsSelector(state);
 
@@ -143,7 +159,7 @@ describe('nonceSortedTransactionsSelector', () => {
       duplicateTx(CANCEL_TX, { time: 2 }),
     ];
 
-    const state = getStateTree(txList);
+    const state = getStateTree({ txList });
 
     const result = nonceSortedTransactionsSelector(state);
 
@@ -168,7 +184,7 @@ describe('nonceSortedTransactionsSelector', () => {
       duplicateTx(SIMPLE_SEND_TX),
     ];
 
-    const state = getStateTree(txList);
+    const state = getStateTree({ txList });
 
     const result = nonceSortedTransactionsSelector(state);
 
@@ -188,7 +204,7 @@ describe('nonceSortedTransactionsSelector', () => {
     const txList = [duplicateTx(SIMPLE_SEND_TX)];
     const incomingTxList = [duplicateTx(INCOMING_TX, { time: 1 })];
 
-    const state = getStateTree(txList, incomingTxList);
+    const state = getStateTree({ txList, incomingTxList });
 
     const result = nonceSortedTransactionsSelector(state);
 
@@ -206,6 +222,104 @@ describe('nonceSortedTransactionsSelector', () => {
         transactions: incomingTxList,
         initialTransaction: head(incomingTxList),
         primaryTransaction: head(incomingTxList),
+        hasRetried: false,
+        hasCancelled: false,
+      },
+    ]);
+  });
+
+  it('should display a signing request', () => {
+    const state = getStateTree({ unapprovedMsgs: [SIGNING_REQUEST] });
+
+    const result = nonceSortedTransactionsSelector(state);
+
+    expect(result).toStrictEqual([
+      {
+        nonce: undefined,
+        transactions: [SIGNING_REQUEST],
+        initialTransaction: SIGNING_REQUEST,
+        primaryTransaction: SIGNING_REQUEST,
+        hasRetried: false,
+        hasCancelled: false,
+      },
+    ]);
+  });
+
+  it('should not set a failed off-chain transaction as primary, allowing additional retries', () => {
+    const txList = [
+      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.SUBMITTED }),
+      duplicateTx(RETRY_TX, { status: TRANSACTION_STATUSES.FAILED, time: 1 }),
+    ];
+
+    const state = getStateTree({ txList });
+
+    const result = nonceSortedTransactionsSelector(state);
+
+    expect(result).toStrictEqual([
+      {
+        nonce: '0x0',
+        transactions: txList,
+        initialTransaction: head(txList),
+        primaryTransaction: head(txList),
+        hasRetried: false,
+        hasCancelled: false,
+      },
+    ]);
+  });
+
+  it('should not set a failed off-chain transaction as primary, regardless of tx order', () => {
+    // Scenario:
+    // 1. You submit transaction A.
+    // 2. Transaction A fails off-chain (the network rejects it).
+    // 3. You submit transaction B.
+    // 4. You see a pending transaction (B's status) in the activity with the
+    //    details of A. Seeing the pending status is desired. Seeing the
+    //    details of transaction A (recipient, value, etc) is a bug to be fixed
+    //    in a future PR.
+    const txList = [
+      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.FAILED }),
+      duplicateTx(SIMPLE_SEND_TX, {
+        status: TRANSACTION_STATUSES.SUBMITTED,
+        time: 1,
+      }),
+    ];
+
+    const state = getStateTree({ txList });
+
+    const result = nonceSortedTransactionsSelector(state);
+
+    expect(result).toStrictEqual([
+      {
+        nonce: '0x0',
+        transactions: txList,
+        initialTransaction: head(txList),
+        primaryTransaction: last(txList),
+        hasRetried: false,
+        hasCancelled: false,
+      },
+    ]);
+  });
+
+  it('should set a failed on-chain transaction as primary', () => {
+    const txList = [
+      duplicateTx(SIMPLE_SEND_TX, { status: TRANSACTION_STATUSES.SUBMITTED }),
+      duplicateTx(RETRY_TX, {
+        status: TRANSACTION_STATUSES.FAILED,
+        txReceipt: { status: '0x0' },
+        time: 1,
+      }),
+    ];
+
+    const state = getStateTree({ txList });
+
+    const result = nonceSortedTransactionsSelector(state);
+
+    expect(result).toStrictEqual([
+      {
+        nonce: '0x0',
+        transactions: txList,
+        initialTransaction: head(txList),
+        primaryTransaction: last(txList),
         hasRetried: false,
         hasCancelled: false,
       },
