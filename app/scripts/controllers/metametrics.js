@@ -564,9 +564,8 @@ export default class MetaMetricsController {
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
         metamaskState.allCollectibles,
       ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTAddresses(
-        metamaskState.allCollectibles,
-      ).length,
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTs(metamaskState.allCollectibles)
+        .length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
@@ -613,17 +612,16 @@ export default class MetaMetricsController {
   }
 
   /**
-   * Returns an array of all of the collectible/NFT addresses the user
+   * Returns an array of all of the collectibles/NFTs the user
    * possesses across all networks and accounts.
    *
    * @param {Object} allCollectibles
    * @returns {[]}
    */
-  _getAllNFTAddresses = memoize((allCollectibles = {}) => {
+  _getAllNFTs = memoize((allCollectibles = {}) => {
     return Object.values(allCollectibles)
-      .flatMap((chainCollectibles) => Object.values(chainCollectibles))
-      .flat()
-      .map((collectible) => collectible.address);
+      .flatMap((chainNFTs) => Object.values(chainNFTs))
+      .flat();
   });
 
   /**
@@ -634,8 +632,10 @@ export default class MetaMetricsController {
    * @returns {number}
    */
   _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
-    const allAddresses = this._getAllNFTAddresses(allCollectibles);
-    const uniqueAddresses = new Set(allAddresses);
+    const allNFTAddresses = this._getAllNFTs(allCollectibles).map(
+      (nft) => nft.address,
+    );
+    const uniqueAddresses = new Set(allNFTAddresses);
     return uniqueAddresses.size;
   }
 
