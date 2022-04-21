@@ -400,7 +400,8 @@ export const nonceSortedTransactionsSelector = createSelector(
           // block. When this happens, and we have another transaction to
           // consider in a nonce group, we should use the new transaction.
           isEphemeral:
-            TRANSACTION_STATUSES.FAILED &&
+            nonceProps.initialTransaction.status ===
+              TRANSACTION_STATUSES.FAILED &&
             nonceProps.initialTransaction.txReceipt?.status !== '0x0',
         };
 
@@ -463,7 +464,7 @@ export const nonceSortedTransactionsSelector = createSelector(
     return unapprovedTransactionGroups
       .concat(orderedTransactionGroups)
       .map((txGroup) => {
-        // In the caes that we have a cancel or retry as initial transaction
+        // In the case that we have a cancel or retry as initial transaction
         // and there is a valid transaction in the group, we should reassign
         // the other valid transaction as initial. In this case validity of the
         // transaction is expanded to include off-chain failures because it is
