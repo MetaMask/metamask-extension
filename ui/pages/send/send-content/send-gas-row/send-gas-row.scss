@@ -2,10 +2,10 @@
   @include Paragraph;
 
   height: 54px;
-  border: 1px solid var(--alto);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
-  background-color: var(--white);
-  color: var(--scorpion);
+  background-color: var(--color-background-default);
+  color: var(--color-text-muted);
   padding: 8px 10px;
   position: relative;
 
@@ -16,7 +16,7 @@
   &__input {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
     border: none;
     max-width: 22ch;
   }
@@ -24,7 +24,7 @@
   &__primary-currency {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-muted);
     font-weight: 400;
   }
 
@@ -36,7 +36,7 @@
   &__converted-currency {
     @include H7;
 
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &__input-wrapper {
@@ -64,7 +64,7 @@
 
   &__currency-symbol {
     margin-top: 1px;
-    color: var(--scorpion);
+    color: var(--color-text-muted);
   }
 
   .react-numeric-input {

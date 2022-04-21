@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Gizli Kurtarma İfadesi ile bir cüzdanı içe aktarın"
   },
-  "importExistingWalletDescription": {
-    "message": "Cüzdanınızı oluşturduğunuzda size verilen Gizli Kurtarma İfadenizi (başka bir deyişle Tohum İfadesi) girin. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Gizli Kurtarma İfadesi ile mevcut cüzdanı içe aktarın"
-  },
   "importMyWallet": {
     "message": "Cüzdanımı İçe Aktar"
   },
@@ -1404,9 +1397,6 @@
   },
   "lastConnected": {
     "message": "Son Bağlanma"
-  },
-  "layer1Fees": {
-    "message": "Aşama 1 ücretleri"
   },
   "learmMoreAboutGas": {
     "message": "Gaz hakkında $1 istiyor musunuz?"
@@ -1740,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Yeni! NFT algılama"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask'in otomatik olarak Opensea'den NFT'leri algılamasına ve MetaMask cüzdanınızda görüntülemesine izin verin."
   },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
@@ -2468,9 +2455,6 @@
   "signed": {
     "message": "İmzalandı"
   },
-  "simulationErrorMessage": {
-    "message": "Bu işlemin başarısız olması bekleniyor. Gerçekleştirmeye çalışıldığında maliyetli olması ancak başarısız olması bekleniyor ve önerilmiyor."
-  },
   "simulationErrorMessageV2": {
     "message": "Gaz tahmini yapamadık. Sözleşmede bir hata olabilir ve bu işlem başarısız olabilir."
   },
@@ -3135,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "Tekrar dene"
-  },
-  "tryAnywayOption": {
-    "message": "Yine de deneyeceğim"
   },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"

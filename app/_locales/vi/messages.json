@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Nhập một ví bằng Cụm mật khẩu khôi phục bí mật"
   },
-  "importExistingWalletDescription": {
-    "message": "Nhập Cụm Mật Khẩu Khôi Phục Bí Mật (còn được gọi là Cụm Mật Khẩu Gốc) mà bạn được cấp khi tạo ví. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Nhập ví hiện tại bằng Cụm Mật Khẩu Khôi Phục Bí Mật"
-  },
   "importMyWallet": {
     "message": "Nhập Ví Của Tôi"
   },
@@ -1404,9 +1397,6 @@
   },
   "lastConnected": {
     "message": "Đã kết nối lần cuối"
-  },
-  "layer1Fees": {
-    "message": "Phí Lớp 1"
   },
   "learmMoreAboutGas": {
     "message": "Muốn $1 về gas?"
@@ -1740,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Mới! Phát hiện NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ Opensea và hiển thị trong ví MetaMask của bạn."
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
@@ -2468,9 +2455,6 @@
   "signed": {
     "message": "Đã ký"
   },
-  "simulationErrorMessage": {
-    "message": "Giao dịch này có khả năng thất bại. Việc cố gắng thực hiện sẽ được cho là gây tốn kém nhưng lại không thành công và không được khuyến khích."
-  },
   "simulationErrorMessageV2": {
     "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
   },
@@ -3135,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "Thử lại"
-  },
-  "tryAnywayOption": {
-    "message": "Tôi vẫn sẽ thử"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"

@@ -11,6 +11,13 @@ import {
   OPTIMISM_CHAIN_ID,
   OPTIMISM_TESTNET_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
+  MAINNET_DISPLAY_NAME,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+  BSC_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -30,7 +37,8 @@ import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_SWAPS_CHAIN_IDS,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
 import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
@@ -57,6 +65,9 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IN
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -659,7 +670,12 @@ export function getSwapsDefaultToken(state) {
 
 export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
-  return ALLOWED_SWAPS_CHAIN_IDS[chainId];
+  const isNotDevelopment =
+    process.env.METAMASK_ENVIRONMENT !== 'development' ||
+    process.env.METAMASK_ENVIRONMENT !== 'testing';
+  return isNotDevelopment
+    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
+    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBuyableChain(state) {
@@ -694,6 +710,20 @@ export function getShowWhatsNewPopup(state) {
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
+
+export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).map((snap) => {
+    return {
+      tabMessage: () => snap.manifest.proposedName,
+      descriptionMessage: () => snap.manifest.description,
+      sectionMessage: () => snap.manifest.description,
+      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
+        unescape(encodeURIComponent(snap.id)),
+      )}`,
+      icon: 'fa fa-flask',
+    };
+  });
+});
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -719,6 +749,9 @@ function getAllowedNotificationIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: getIsMainnet(state),
+    10: Boolean(process.env.TOKEN_DETECTION_V2),
+    11: Boolean(process.env.TOKEN_DETECTION_V2),
+    12: true,
   };
 }
 
@@ -866,7 +899,7 @@ export function getIsOptimism(state) {
   );
 }
 
-export function getNetworkSupportsSettingGasPrice(state) {
+export function getNetworkSupportsSettingGasFees(state) {
   return !getIsOptimism(state);
 }
 
@@ -898,4 +931,44 @@ export function getIsAdvancedGasFeeDefault(state) {
   return (
     Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
   );
+}
+
+/**
+ * @param state
+ * @returns string e.g. ethereum, bsc or polygon
+ */
+export const getTokenDetectionSupportNetworkByChainId = (state) => {
+  const chainId = getCurrentChainId(state);
+  switch (chainId) {
+    case MAINNET_CHAIN_ID:
+      return MAINNET_DISPLAY_NAME;
+    case BSC_CHAIN_ID:
+      return BSC_DISPLAY_NAME;
+    case POLYGON_CHAIN_ID:
+      return POLYGON_DISPLAY_NAME;
+    case AVALANCHE_CHAIN_ID:
+      return AVALANCHE_DISPLAY_NAME;
+    default:
+      return '';
+  }
+};
+/**
+ * To check for the chainId that supports token detection ,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionSupported(state) {
+  const chainId = getCurrentChainId(state);
+  return [
+    MAINNET_CHAIN_ID,
+    BSC_CHAIN_ID,
+    POLYGON_CHAIN_ID,
+    AVALANCHE_CHAIN_ID,
+  ].includes(chainId);
+}
+
+export function getDetectedTokensInCurrentNetwork(state) {
+  return state.metamask.detectedTokens;
 }

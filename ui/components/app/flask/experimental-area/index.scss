@@ -52,7 +52,7 @@
   button {
     background-color: var(--flask-purple) !important;
     border: 0 !important;
-    color: var(--ui-1);
+    color: var(--color-primary-inverse); //@TODO: We don't have a generic inverse color, using this one for now
     width: 200px;
   }
 }

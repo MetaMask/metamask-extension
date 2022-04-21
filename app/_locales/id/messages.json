@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Impor dompet dengan Frasa Pemulihan Rahasia"
   },
-  "importExistingWalletDescription": {
-    "message": "Masukkan Frasa Pemulihan Rahasia Anda (alias Frasa Benih) yang diberikan saat Anda membuat dompet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Impor dompet yang ada dengan Frasa Pemulihan Rahasia"
-  },
   "importMyWallet": {
     "message": "Impor Dompet Saya"
   },
@@ -1404,9 +1397,6 @@
   },
   "lastConnected": {
     "message": "Terakhir Terhubung"
-  },
-  "layer1Fees": {
-    "message": "Biaya lapis 1"
   },
   "learmMoreAboutGas": {
     "message": "Ingin $1 seputar gas?"
@@ -1740,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Baru! Deteksi NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Izinkan MetaMask untuk mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet MetaMask Anda."
   },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
@@ -2468,9 +2455,6 @@
   "signed": {
     "message": "Ditandatangani"
   },
-  "simulationErrorMessage": {
-    "message": "Transaksi ini diperkirakan akan gagal. Pelaksanaannya diperkirakan akan mahal dan berpotensi gagal, dan tidak direkomendasikan."
-  },
   "simulationErrorMessageV2": {
     "message": "Kami tidak dapat memperkirakan gas. Tampaknya ada kesalahan dalam kontrak dan transaksi ini berpotensi gagal."
   },
@@ -3135,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "Coba lagi"
-  },
-  "tryAnywayOption": {
-    "message": "Saya akan tetap mencobanya"
   },
   "turnOnTokenDetection": {
     "message": "Nyalakan deteksi token yang ditingkatkan"

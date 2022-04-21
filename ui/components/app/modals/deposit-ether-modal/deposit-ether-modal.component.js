@@ -13,7 +13,7 @@ import LogoDepositEth from '../../../ui/logo/logo-deposit-eth';
 export default class DepositEtherModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -136,11 +136,12 @@ export default class DepositEtherModal extends Component {
               text: t('buyCryptoWithTransakDescription', [symbol]),
               buttonLabel: t('continueToTransak'),
               onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
+                this.context.trackEvent({
+                  category: 'Accounts',
+                  event: 'Click buy Ether via Transak',
+                  properties: {
                     action: 'Deposit Ether',
-                    name: 'Click buy Ether via Transak',
+                    legacy_event: true,
                   },
                 });
                 toTransak(address, chainId);
@@ -153,11 +154,12 @@ export default class DepositEtherModal extends Component {
               text: t('buyCryptoWithMoonPayDescription', [symbol]),
               buttonLabel: t('continueToMoonPay'),
               onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
-                    action: 'Deposit tokens',
-                    name: 'Click buy tokens via MoonPay',
+                this.context.trackEvent({
+                  category: 'Accounts',
+                  event: 'Click buy Ether via MoonPay',
+                  properties: {
+                    action: 'Deposit Ether',
+                    legacy_event: true,
                   },
                 });
                 toMoonPay(address, chainId);
@@ -170,11 +172,12 @@ export default class DepositEtherModal extends Component {
               text: t('buyWithWyreDescription'),
               buttonLabel: t('continueToWyre'),
               onButtonClick: () => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Accounts',
+                this.context.trackEvent({
+                  category: 'Accounts',
+                  event: 'Click buy Ether via Wyre',
+                  properties: {
                     action: 'Deposit Ether',
-                    name: 'Click buy Ether via Wyre',
+                    legacy_event: true,
                   },
                 });
                 toWyre(address);

@@ -36,33 +36,43 @@ export default function OnboardingMetametrics() {
   const firstTimeSelectionMetaMetricsName =
     firstTimeFlowTypeNameMap[firstTimeFlowType];
 
-  const metricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
 
     try {
       if (!participateInMetaMetrics) {
-        metricsEvent({
-          eventOpts: {
+        trackEvent(
+          {
             category: 'Onboarding',
-            action: 'Metrics Option',
-            name: 'Metrics Opt In',
+            event: 'Metrics Opt In',
+            properties: {
+              action: 'Metrics Option',
+              legacy_event: true,
+            },
           },
-          isOptIn: true,
-          flushImmediately: true,
-        });
+          {
+            isOptIn: true,
+            flushImmediately: true,
+          },
+        );
       }
-      metricsEvent({
-        eventOpts: {
+      trackEvent(
+        {
           category: 'Onboarding',
-          action: 'Import or Create',
-          name: firstTimeSelectionMetaMetricsName,
+          event: firstTimeSelectionMetaMetricsName,
+          properties: {
+            action: 'Import or Create',
+            legacy_event: true,
+          },
         },
-        isOptIn: true,
-        metaMetricsId,
-        flushImmediately: true,
-      });
+        {
+          isOptIn: true,
+          metaMetricsId,
+          flushImmediately: true,
+        },
+      );
     } finally {
       history.push(nextRoute);
     }
@@ -73,15 +83,20 @@ export default function OnboardingMetametrics() {
 
     try {
       if (!participateInMetaMetrics) {
-        metricsEvent({
-          eventOpts: {
+        trackEvent(
+          {
             category: 'Onboarding',
-            action: 'Metrics Option',
-            name: 'Metrics Opt Out',
+            event: 'Metrics Opt Out',
+            properties: {
+              action: 'Metrics Option',
+              legacy_event: true,
+            },
           },
-          isOptIn: true,
-          flushImmediately: true,
-        });
+          {
+            isOptIn: true,
+            flushImmediately: true,
+          },
+        );
       }
     } finally {
       history.push(nextRoute);

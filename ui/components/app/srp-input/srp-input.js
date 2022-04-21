@@ -8,14 +8,17 @@ import ActionableMessage from '../../ui/actionable-message';
 import Dropdown from '../../ui/dropdown';
 import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
 
 const defaultNumberOfWords = 12;
 
-export default function SrpInput({ onChange }) {
+export default function SrpInput({ onChange, srpText }) {
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
   const [draftSrp, setDraftSrp] = useState(
@@ -121,13 +124,13 @@ export default function SrpInput({ onChange }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Typography variant={TYPOGRAPHY.H4}>
-          {t('secretRecoveryPhrase')}
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+          {srpText}
         </Typography>
       </label>
       <ActionableMessage
         className="import-srp__paste-tip"
-        iconFillColor="#037dd6" // This is `--color-info-default`
+        iconFillColor="var(--color-info-default)"
         message={t('srpPasteTip')}
         useIcon
       />
@@ -197,7 +200,7 @@ export default function SrpInput({ onChange }) {
       {srpError ? (
         <ActionableMessage
           className="import-srp__srp-error"
-          iconFillColor="#d73a49" // This is `--color-error-default`
+          iconFillColor="var(--color-error-default)"
           message={srpError}
           type="danger"
           useIcon
@@ -206,7 +209,7 @@ export default function SrpInput({ onChange }) {
       {pasteFailed ? (
         <ActionableMessage
           className="import-srp__srp-too-many-words-error"
-          iconFillColor="#d73a49" // This is `--color-error-default`
+          iconFillColor="var(--color-error-default)"
           message={t('srpPasteFailedTooManyWords')}
           primaryAction={{
             label: t('dismiss'),
@@ -232,4 +235,8 @@ SrpInput.propTypes = {
    * Otherwise, this is called with an empty string.
    */
   onChange: PropTypes.func.isRequired,
+  /**
+   * Text to show on the left of the Dropdown component. Wrapped in Typography component.
+   */
+  srpText: PropTypes.string.isRequired,
 };

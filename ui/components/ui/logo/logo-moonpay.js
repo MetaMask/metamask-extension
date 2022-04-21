@@ -4,14 +4,17 @@ import PropTypes from 'prop-types';
 const COLOR_MOONPAY_CIRCLES = '#7D00FF';
 
 const LogoMoonPay = ({
-  className,
-  size,
+  width = '100%',
   color = 'var(--color-text-default)',
+  className,
+  ariaLabel,
 }) => {
   return (
     <svg
-      size={size}
+      width={width}
+      fill={color}
       className={className}
+      aria-label={ariaLabel}
       viewBox="0 0 1920 350"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -29,17 +32,21 @@ const LogoMoonPay = ({
 
 LogoMoonPay.propTypes = {
   /**
-   * Additional className to add to the root svg
+   * The width of the logo. Defaults to 100%
    */
-  className: PropTypes.string.isRequired,
+  width: PropTypes.string,
   /**
-   * The color of the text of the logo accepts any valid css value
+   * The color of the logo defaults to var(--color-text-default)
    */
   color: PropTypes.string,
   /**
-   * The width of the logo accepts any valid css value
+   * Additional className to add to the root svg
    */
-  size: PropTypes.string,
+  className: PropTypes.string,
+  /**
+   * Aria label to add to the logo component
+   */
+  ariaLabel: PropTypes.string,
 };
 
 export default LogoMoonPay;

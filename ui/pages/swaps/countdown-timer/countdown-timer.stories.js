@@ -1,66 +1,48 @@
 import React from 'react';
-import { number } from '@storybook/addon-knobs';
 import CountdownTimer from './countdown-timer';
+import README from './README.mdx';
 
 export default {
   title: 'Pages/Swaps/CountdownTimer',
   id: __filename,
+  component: CountdownTimer,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    timeStarted: {
+      type: 'number',
+    },
+    timeOnly: {
+      type: 'boolean',
+    },
+    timerBase: {
+      type: 'number',
+    },
+    labelKey: {
+      type: 'string',
+    },
+    infoTooltipLabelKey: {
+      type: 'string',
+    },
+    warningTime: {
+      type: 'string',
+    },
+  },
+  args: {
+    timeStarted: Date.now(),
+    timeOnly: false,
+    timerBase: 20000,
+    labelKey: 'disconnectPrompt',
+    infoTooltipLabelKey: 'disconnectAllAccountsConfirmationDescription',
+    warningTime: '0:15',
+  },
 };
 
-const getTimeStartedFromDecrimentSeconds = (seconds) =>
-  Date.now() - seconds * 1000;
-
-export const DefaultStory = () => {
-  const timeStartedSecondDecriment = number(
-    'Set timeStarted to curren time minus X seconds',
-    10,
-  );
-
-  return (
-    <CountdownTimer
-      timeStarted={getTimeStartedFromDecrimentSeconds(
-        timeStartedSecondDecriment,
-      )}
-      timeOnly
-    />
-  );
+export const DefaultStory = (args) => {
+  return <CountdownTimer {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
-
-export const CustomTimerBase = () => {
-  const timeStartedSecondDecriment = number(
-    'Set timeStarted to curren time minus X seconds',
-    10,
-  );
-
-  return (
-    <CountdownTimer
-      timeStarted={getTimeStartedFromDecrimentSeconds(
-        timeStartedSecondDecriment,
-      )}
-      timerBase={150000}
-      timeOnly
-    />
-  );
-};
-
-// Label keys used in below stories are just for demonstration purposes
-export const WithLabelInfoTooltipAndWarning = () => {
-  const timeStartedSecondDecriment = number(
-    'Set timeStarted to curren time minus X seconds',
-    0,
-  );
-
-  return (
-    <CountdownTimer
-      timeStarted={getTimeStartedFromDecrimentSeconds(
-        timeStartedSecondDecriment,
-      )}
-      timerBase={20000}
-      labelKey="disconnectPrompt"
-      infoTooltipLabelKey="disconnectAllAccountsConfirmationDescription"
-      warningTime="0:15"
-    />
-  );
-};

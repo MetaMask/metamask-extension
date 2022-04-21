@@ -80,20 +80,39 @@ export function tryUnlockMetamask(password) {
   };
 }
 
-export function createNewVaultAndRestore(password, seed) {
+/**
+ * Adds a new account where all data is encrypted using the given password and
+ * where all addresses are generated from a given seed phrase.
+ *
+ * @param {string} password - The password.
+ * @param {string} seedPhrase - The seed phrase.
+ * @returns {Object} The updated state of the keyring controller.
+ */
+export function createNewVaultAndRestore(password, seedPhrase) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
+
+    // Encode the secret recovery phrase as an array of integers so that it is
+    // serialized as JSON properly.
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(seedPhrase, 'utf8').values(),
+    );
+
     let vault;
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, (err, _vault) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        vault = _vault;
-        resolve();
-      });
+      background.createNewVaultAndRestore(
+        password,
+        encodedSeedPhrase,
+        (err, _vault) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          vault = _vault;
+          resolve();
+        },
+      );
     })
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
@@ -115,8 +134,8 @@ export function createNewVaultAndGetSeedPhrase(password) {
 
     try {
       await createNewVault(password);
-      const seedWords = await verifySeedPhrase();
-      return seedWords;
+      const seedPhrase = await verifySeedPhrase();
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -132,9 +151,9 @@ export function unlockAndGetSeedPhrase(password) {
 
     try {
       await submitPassword(password);
-      const seedWords = await verifySeedPhrase();
+      const seedPhrase = await verifySeedPhrase();
       await forceUpdateMetamaskState(dispatch);
-      return seedWords;
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
       throw new Error(error.message);
@@ -183,17 +202,9 @@ export function verifyPassword(password) {
   });
 }
 
-export function verifySeedPhrase() {
-  return new Promise((resolve, reject) => {
-    background.verifySeedPhrase((error, seedWords) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(seedWords);
-    });
-  });
+export async function verifySeedPhrase() {
+  const encodedSeedPhrase = await promisifiedBackground.verifySeedPhrase();
+  return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(password) {
@@ -203,11 +214,11 @@ export function requestRevealSeedWords(password) {
 
     try {
       await verifyPassword(password);
-      const seedWords = await verifySeedPhrase();
-      return seedWords;
+      const seedPhrase = await verifySeedPhrase();
+      return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error.message));
-      throw new Error(error.message);
+      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -671,66 +682,93 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updatePreviousGasParams(txId, previousGasParams) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await promisifiedBackground.updatePreviousGasParams(
+        txId,
+        previousGasParams,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateSwapApprovalTransaction(txId, txSwapApproval) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateSwapApprovalTransaction(
+      updatedTransaction = await promisifiedBackground.updateSwapApprovalTransaction(
         txId,
         txSwapApproval,
       );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return txSwapApproval;
+    return updatedTransaction;
   };
 }
 
 export function updateEditableParams(txId, editableParams) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateEditableParams(txId, editableParams);
+      updatedTransaction = await promisifiedBackground.updateEditableParams(
+        txId,
+        editableParams,
+      );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return editableParams;
+    return updatedTransaction;
   };
 }
 
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateTransactionGasFees(txId, txGasFees);
+      updatedTransaction = await promisifiedBackground.updateTransactionGasFees(
+        txId,
+        txGasFees,
+      );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return txGasFees;
+    return updatedTransaction;
   };
 }
 
 export function updateSwapTransaction(txId, txSwap) {
   return async (dispatch) => {
+    let updatedTransaction;
     try {
-      await promisifiedBackground.updateSwapTransaction(txId, txSwap);
+      updatedTransaction = await promisifiedBackground.updateSwapTransaction(
+        txId,
+        txSwap,
+      );
     } catch (error) {
       dispatch(txError(error));
-      dispatch(goHome());
       log.error(error.message);
       throw error;
     }
 
-    return txSwap;
+    return updatedTransaction;
   };
 }
 
@@ -1381,6 +1419,65 @@ export function addToken(
     }
   };
 }
+/**
+ * To add detected tokens to state
+ *
+ * @param newDetectedTokens
+ */
+export function addDetectedTokens(newDetectedTokens) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.addDetectedTokens(newDetectedTokens);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To add the tokens user selected to state
+ *
+ * @param tokensToImport
+ */
+export function importTokens(tokensToImport) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.importTokens(tokensToImport);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To add ignored tokens to state
+ *
+ * @param tokensToIgnore
+ */
+export function ignoreTokens(tokensToIgnore) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.ignoreTokens(tokensToIgnore);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To fetch the ERC20 tokens with non-zero balance in a single call
+ *
+ * @param tokens
+ */
+export async function getBalancesInSingleCall(tokens) {
+  return await promisifiedBackground.getBalancesInSingleCall(tokens);
+}
 
 export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
@@ -1566,6 +1663,7 @@ export function rejectWatchAsset(suggestedAssetID) {
     dispatch(showLoadingIndication());
     try {
       await promisifiedBackground.rejectWatchAsset(suggestedAssetID);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1582,6 +1680,7 @@ export function acceptWatchAsset(suggestedAssetID) {
     dispatch(showLoadingIndication());
     try {
       await promisifiedBackground.acceptWatchAsset(suggestedAssetID);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -3230,7 +3329,10 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 }
 
 // Smart Transactions Controller
-export async function setSmartTransactionsOptInStatus(optInState) {
+export async function setSmartTransactionsOptInStatus(
+  optInState,
+  prevOptInState,
+) {
   trackMetaMetricsEvent({
     event: 'STX OptIn',
     category: 'swaps',
@@ -3238,6 +3340,7 @@ export async function setSmartTransactionsOptInStatus(optInState) {
       stx_enabled: true,
       current_stx_enabled: true,
       stx_user_opt_in: optInState,
+      stx_prev_user_opt_in: prevOptInState,
     },
   });
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);

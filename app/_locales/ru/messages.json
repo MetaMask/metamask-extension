@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Импорт кошелька с помощью секретной фразы для восстановления"
   },
-  "importExistingWalletDescription": {
-    "message": "Введите секретную фразу для восстановления (также известную как «сид-фраза»), которую вы получили при создании кошелька. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Импортируйте существующий кошелек с помощью секретной фразы для восстановления"
-  },
   "importMyWallet": {
     "message": "Импорт моего кошелька"
   },
@@ -1404,9 +1397,6 @@
   },
   "lastConnected": {
     "message": "Последнее подключение"
-  },
-  "layer1Fees": {
-    "message": "Комиссии 1-го уровня"
   },
   "learmMoreAboutGas": {
     "message": "Хотите $1 о газе?"
@@ -1740,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Новинка! Обнаружение NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Разрешите MetaMask автоматически обнаруживать NFT из Opensea и отображать их в вашем кошельке MetaMask."
   },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
@@ -2468,9 +2455,6 @@
   "signed": {
     "message": "Подписано"
   },
-  "simulationErrorMessage": {
-    "message": "Ожидается, что эта транзакция завершится неудачно. Предполагается, что попытка выполнить ее будет дорогостоящей, но потерпит неудачу, и поэтому ее не рекомендуется выполнять."
-  },
   "simulationErrorMessageV2": {
     "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
   },
@@ -3135,9 +3119,6 @@
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"
-  },
-  "tryAnywayOption": {
-    "message": "Я все равно попробую"
   },
   "turnOnTokenDetection": {
     "message": "Включите расширенное обнаружение токенов"

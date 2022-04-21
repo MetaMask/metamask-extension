@@ -165,7 +165,7 @@
 
   &__sub-header {
     height: 72px;
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid var(--color-border-muted);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -298,6 +298,8 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        background: unset;
+        border: 1px solid transparent;
 
         &__icon {
           &--active {
