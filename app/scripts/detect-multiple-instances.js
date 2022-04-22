@@ -8,6 +8,8 @@
 import browser from 'webextension-polyfill';
 import { getPlatform } from './lib/util';
 import {
+  PLATFORM_CHROME,
+  PLATFORM_FIREFOX,
   CHROME_BUILD_IDS,
   FIREFOX_BUILD_IDS,
 } from '../../shared/constants/app';
@@ -39,10 +41,12 @@ export const checkForMultipleVersionsRunning = () => {
   const buildIds =
     getPlatform() === PLATFORM_CHROME ? CHROME_BUILD_IDS : FIREFOX_BUILD_IDS;
 
+  console.log(buildIds);
+
   const thisBuild = browser.runtime.id;
 
-  for (id of buildIds) {
-    if (thisBuild !== id) {
+  for (const id of buildIds) {
+    if (id !== thisBuild) {
       browser.runtime.sendMessage(id, MESSAGE_TEXT);
     }
   }
