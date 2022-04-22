@@ -10,6 +10,7 @@ import {
   getTestAccounts,
 } from '../../../../test/stub/provider';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -1459,7 +1460,7 @@ describe('Transaction Controller', function () {
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
           uniqueIdentifier: 'transaction-added-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
@@ -1538,7 +1539,7 @@ describe('Transaction Controller', function () {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
@@ -1627,7 +1628,7 @@ describe('Transaction Controller', function () {
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
           uniqueIdentifier: 'transaction-added-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
@@ -1708,7 +1709,7 @@ describe('Transaction Controller', function () {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
@@ -1789,7 +1790,7 @@ describe('Transaction Controller', function () {
         successEvent: 'Transaction Approved',
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         persist: true,
         properties: {
           chain_id: '0x2a',
@@ -1853,7 +1854,7 @@ describe('Transaction Controller', function () {
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           network: '42',
           referrer: 'other',
@@ -1926,7 +1927,7 @@ describe('Transaction Controller', function () {
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           chain_id: '0x2a',
           eip_1559_version: '1',

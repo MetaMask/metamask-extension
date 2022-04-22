@@ -5,6 +5,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
@@ -211,7 +212,7 @@ export default class MessageManager extends EventEmitter {
       const msg = this.getMsg(msgId);
       this.metricsEvent({
         event: reason,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           action: 'Sign Request',
           type: msg.type,

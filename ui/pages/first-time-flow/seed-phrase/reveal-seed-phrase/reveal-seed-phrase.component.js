@@ -11,6 +11,7 @@ import {
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { exportAsFile } from '../../../../helpers/utils/util';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import { returnToOnboardingInitiator } from '../../onboarding-initiator-util';
 
 export default class RevealSeedPhrase extends PureComponent {
@@ -43,7 +44,7 @@ export default class RevealSeedPhrase extends PureComponent {
     const { history } = this.props;
 
     this.context.trackEvent({
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       event: 'Advance to Verify',
       properties: {
         action: 'Seed Phrase Setup',
@@ -67,7 +68,7 @@ export default class RevealSeedPhrase extends PureComponent {
     } = this.props;
 
     this.context.trackEvent({
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       event: 'Remind me later',
       properties: {
         action: 'Seed Phrase Setup',
@@ -105,7 +106,7 @@ export default class RevealSeedPhrase extends PureComponent {
             className="reveal-seed-phrase__secret-blocker"
             onClick={() => {
               this.context.trackEvent({
-                category: 'Onboarding',
+                category: EVENT.CATEGORIES.ONBOARDING,
                 event: 'Revealed Words',
                 properties: {
                   action: 'Seed Phrase Setup',
