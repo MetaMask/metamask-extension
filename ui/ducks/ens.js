@@ -3,6 +3,7 @@ import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
+import { ethers } from 'ethers';
 
 import { getCurrentChainId } from '../selectors';
 import {
@@ -26,7 +27,6 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
-import { ethers } from 'ethers';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
