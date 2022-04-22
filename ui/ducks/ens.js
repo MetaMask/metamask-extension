@@ -8,7 +8,7 @@ import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   MAINNET_NETWORK_ID,
-  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP
+  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
@@ -113,6 +113,7 @@ const slice = createSlice({
     builder.addCase(CHAIN_CHANGED, (state, action) => {
       if (action.payload !== state.currentChainId) {
         state.stage = 'UNINITIALIZED';
+        provider = null;
       }
     });
   },
@@ -135,14 +136,14 @@ export function initializeEnsSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const name = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network]
+    const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
       provider = new ethers.providers.Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network),
-        name,
-        ensAddress
+        chainId: parseInt(network, 10),
+        name: networkName,
+        ensAddress,
       });
       dispatch(enableEnsLookup(network));
     } else {
