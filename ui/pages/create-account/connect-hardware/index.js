@@ -85,6 +85,13 @@ class ConnectHardwareForm extends Component {
     this.checkIfUnlocked();
   }
 
+  componentWillUnmount() {
+    this.props.setHardwareWalletDefaultHdPath({
+      device: DEVICE_NAMES.LEDGER,
+      path: `m/44'/60'/0'/0/0`,
+    });
+  }
+
   async checkIfUnlocked() {
     for (const device of [
       DEVICE_NAMES.TREZOR,
