@@ -25,8 +25,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProviderType: (type) => {
-      dispatch(actions.setProviderType(type));
+    setProviderType: (...args) => {
+      if (args.length === 1) {
+        dispatch(actions.setProviderType(...args));
+      } else {
+        dispatch(actions.setRpcTarget(...args));
+      }
     },
     rollbackToPreviousProvider: () =>
       dispatch(actions.rollbackToPreviousProvider()),
