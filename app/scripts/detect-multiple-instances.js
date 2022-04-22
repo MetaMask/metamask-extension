@@ -34,7 +34,7 @@ export const onMessageReceived = (message) => {
 /**
  * Sends the ping message sent to other extensions to detect whether it's active or not.
  */
-export const checkForMultipleVersionsRunning = () => {
+export const checkForMultipleVersionsRunning = async () => {
   if (getPlatform() !== PLATFORM_CHROME && getPlatform() !== PLATFORM_FIREFOX) {
     return;
   }
@@ -47,7 +47,7 @@ export const checkForMultipleVersionsRunning = () => {
 
   for (const id of buildIds) {
     if (id !== thisBuild) {
-      browser.runtime.sendMessage(id, MESSAGE_TEXT);
+      await browser.runtime.sendMessage(id, MESSAGE_TEXT);
     }
   }
 };

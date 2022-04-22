@@ -1067,7 +1067,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Multiple MetaMask instances launched warning
     this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
-    checkForMultipleVersionsRunning();
+    await checkForMultipleVersionsRunning();
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
