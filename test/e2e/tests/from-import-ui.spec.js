@@ -71,7 +71,8 @@ describe('Metamask Import UI', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Create a new account
-        // switches to locakhost
+        // switches to localhost
+        await driver.delay(largeDelayMs);
         await driver.clickElement('.network-display');
         await driver.clickElement({ text: 'Localhost', tag: 'span' });
 
