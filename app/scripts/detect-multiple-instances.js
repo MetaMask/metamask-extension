@@ -6,13 +6,13 @@
  */
 
 import browser from 'webextension-polyfill';
-import { getPlatform } from './lib/util';
 import {
   PLATFORM_CHROME,
   PLATFORM_FIREFOX,
   CHROME_BUILD_IDS,
   FIREFOX_BUILD_IDS,
 } from '../../shared/constants/app';
+import { getPlatform } from './lib/util';
 
 const MESSAGE_TEXT = 'isRunning';
 
@@ -45,7 +45,11 @@ export const checkForMultipleVersionsRunning = async () => {
 
   for (const id of buildIds) {
     if (id !== thisBuild) {
-      await browser.runtime.sendMessage(id, MESSAGE_TEXT);
+      try {
+        await browser.runtime.sendMessage(id, MESSAGE_TEXT);
+      } catch (error) {
+        // Should do nothing if receiving end was not reached (no other instances running)
+      }
     }
   }
 };

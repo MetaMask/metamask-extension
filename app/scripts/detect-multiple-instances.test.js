@@ -1,3 +1,6 @@
+import { strict as assert } from 'assert';
+import browser from 'webextension-polyfill';
+import sinon from 'sinon';
 import {
   PLATFORM_CHROME,
   METAMASK_BETA_CHROME_ID,
@@ -8,15 +11,12 @@ import {
   checkForMultipleVersionsRunning,
   onMessageReceived,
 } from './detect-multiple-instances';
-import { strict as assert } from 'assert';
-import browser from 'webextension-polyfill';
 import * as util from './lib/util';
-import sinon from 'sinon';
 
-describe('multiple instances running detector', () => {
+describe('multiple instances running detector', function () {
   const PING_MESSAGE = 'isRunning';
 
-  it('should send ping message to multiple instances', async () => {
+  it('should send ping message to multiple instances', async function () {
     const sandbox = sinon.createSandbox();
 
     sinon.stub(util, 'getPlatform').callsFake((_) => {
@@ -44,7 +44,7 @@ describe('multiple instances running detector', () => {
     );
   });
 
-  it('should print warning message to on ping message received', async () => {
+  it('should print warning message to on ping message received', async function () {
     const consoleSpy = sinon.spy(console, 'warn');
 
     onMessageReceived(PING_MESSAGE);
