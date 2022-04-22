@@ -60,6 +60,7 @@ import {
   getTokenStandardAndDetails,
   showModal,
   addUnapprovedTransactionAndRouteToConfirmationPage,
+  updateTransactionSendFlowHistory,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -110,6 +111,7 @@ import {
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getValueFromWeiHex } from '../../helpers/utils/confirm-tx.util';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -684,12 +686,19 @@ export const initialState = {
     // Layer 1 gas fee total on multi-layer fee networks
     layer1GasTotal: '0x0',
   },
+  history: [],
 };
 
 const slice = createSlice({
   name,
   initialState,
   reducers: {
+    addHistoryEntry: (state, action) => {
+      state.history.push({
+        entry: action.payload,
+        timestamp: Date.now(),
+      });
+    },
     /**
      * update current amount.value in state and run post update validation of
      * the amount field and the send state. Recomputes the draftTransaction
@@ -1402,9 +1411,10 @@ const {
   updateGasLimit,
   validateRecipientUserInput,
   updateRecipientSearchMode,
+  addHistoryEntry,
 } = actions;
 
-export { useDefaultGas, useCustomGas, updateGasLimit };
+export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
 
 // Action Creators
 
@@ -1421,6 +1431,9 @@ export { useDefaultGas, useCustomGas, updateGasLimit };
  */
 export function updateGasPrice(gasPrice) {
   return (dispatch) => {
+    dispatch(
+      addHistoryEntry(`sendFlow - user set legacy gasPrice to ${gasPrice}`),
+    );
     dispatch(
       actions.updateGasFees({
         gasPrice,
@@ -1452,8 +1465,36 @@ export function resetSendState() {
  */
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
-    await dispatch(actions.updateSendAmount(amount));
     const state = getState();
+    let logAmount = amount;
+    if (state[name].asset.type === ASSET_TYPES.TOKEN) {
+      const multiplier = Math.pow(
+        10,
+        Number(state[name].asset.details?.decimals || 0),
+      );
+      const decimalValueString = conversionUtil(addHexPrefix(amount), {
+        fromNumericBase: 'hex',
+        toNumericBase: 'dec',
+        toCurrency: state[name].asset.details?.symbol,
+        conversionRate: multiplier,
+        invertConversionRate: true,
+      });
+
+      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
+        state[name].asset.details?.symbol
+      }`;
+    } else {
+      const ethValue = getValueFromWeiHex({
+        value: amount,
+        toCurrency: ETH,
+        numberOfDecimals: 8,
+      });
+      logAmount = `${ethValue} ${ETH}`;
+    }
+    await dispatch(
+      addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
+    );
+    await dispatch(actions.updateSendAmount(amount));
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
@@ -1482,6 +1523,19 @@ export function updateSendAmount(amount) {
  */
 export function updateSendAsset({ type, details }) {
   return async (dispatch, getState) => {
+    dispatch(addHistoryEntry(`sendFlow - user set asset type to ${type}`));
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user set asset symbol to ${details?.symbol ?? 'undefined'}`,
+      ),
+    );
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user set asset address to ${
+          details?.address ?? 'undefined'
+        }`,
+      ),
+    );
     const state = getState();
     let { balance, error } = state.send.asset;
     const userAddress = state.send.account.address ?? getSelectedAddress(state);
@@ -1593,6 +1647,11 @@ const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
+    await dispatch(
+      addHistoryEntry(
+        `sendFlow - user typed ${userInput} into recipient input field`,
+      ),
+    );
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
     const chainId = getCurrentChainId(state);
@@ -1610,12 +1669,22 @@ export function updateRecipientUserInput(userInput) {
 
 export function useContactListForRecipientSearch() {
   return (dispatch) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user selected back to all on recipient screen`,
+      ),
+    );
     dispatch(updateRecipientSearchMode(RECIPIENT_SEARCH_MODES.CONTACT_LIST));
   };
 }
 
 export function useMyAccountsForRecipientSearch() {
   return (dispatch) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user selected transfer to my accounts on recipient screen`,
+      ),
+    );
     dispatch(updateRecipientSearchMode(RECIPIENT_SEARCH_MODES.MY_ACCOUNTS));
   };
 }
@@ -1638,6 +1707,8 @@ export function useMyAccountsForRecipientSearch() {
  */
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
+    // Do not addHistoryEntry here as this is called from a number of places
+    // each with significance to the user and transaction history.
     const state = getState();
     const nicknameFromAddressBookEntryOrAccountName =
       getAddressBookEntryOrAccountName(state, address) ?? '';
@@ -1656,6 +1727,7 @@ export function updateRecipient({ address, nickname }) {
  */
 export function resetRecipientInput() {
   return async (dispatch) => {
+    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetEnsResolution());
@@ -1675,6 +1747,9 @@ export function resetRecipientInput() {
  */
 export function updateSendHexData(hexData) {
   return async (dispatch, getState) => {
+    await dispatch(
+      addHistoryEntry(`sendFlow - user added custom hexData ${hexData}`),
+    );
     await dispatch(actions.updateUserInputHexData(hexData));
     const state = getState();
     if (state.send.asset.type === ASSET_TYPES.NATIVE) {
@@ -1695,9 +1770,11 @@ export function toggleSendMaxMode() {
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
       await dispatch(actions.updateSendAmount('0x0'));
+      await dispatch(addHistoryEntry(`sendFlow - user toggled max mode off`));
     } else {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
       await dispatch(actions.updateAmountToMax());
+      await dispatch(addHistoryEntry(`sendFlow - user toggled max mode on`));
     }
     await dispatch(computeEstimatedGasLimit());
   };
@@ -1746,6 +1823,12 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
+      await dispatch(
+        addHistoryEntry(
+          `sendFlow - user clicked next and transaction should be updated in controller`,
+        ),
+      );
+      dispatch(updateTransactionSendFlowHistory(id, state[name].history));
       dispatch(updateEditableParams(id, editingTx.txParams));
       dispatch(updateTransactionGasFees(id, editingTx.txParams));
     } else {
@@ -1757,10 +1840,17 @@ export function signTransaction() {
             ? TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
             : TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
       }
+      await dispatch(
+        addHistoryEntry(
+          `sendFlow - user clicked next and transaction should be added to controller`,
+        ),
+      );
+
       dispatch(
         addUnapprovedTransactionAndRouteToConfirmationPage(
           txParams,
           transactionType,
+          state[name].history,
         ),
       );
     }
@@ -1775,6 +1865,11 @@ export function editTransaction(
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    await dispatch(
+      addHistoryEntry(
+        `sendFlow - user clicked edit on transaction with id ${transactionId}`,
+      ),
+    );
     const unapprovedTransactions = getUnapprovedTxs(state);
     const transaction = unapprovedTransactions[transactionId];
     const { txParams } = transaction;
