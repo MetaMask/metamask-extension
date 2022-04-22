@@ -33,6 +33,18 @@ jest.mock(
     },
 );
 
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers');
+  return {
+    ...originalModule,
+    providers: {
+      Web3Provider:jest.fn().mockImplementation(() => {
+        return {}
+      })
+    }
+  };
+});
+
 const baseStore = {
   send: initialState,
   ENS: ensInitialState,
@@ -87,7 +99,7 @@ const baseStore = {
 
 describe('Send Page', () => {
   describe('Send Flow Initialization', () => {
-    it('should initialize the send, ENS, and gas slices on render', () => {
+    it.only('should initialize the send, ENS, and gas slices on render', () => {
       const store = configureMockStore(middleware)(baseStore);
       renderWithProvider(<Send />, store);
       const actions = store.getActions();
