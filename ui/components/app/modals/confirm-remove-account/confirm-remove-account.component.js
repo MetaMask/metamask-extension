@@ -4,6 +4,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
@@ -60,7 +61,7 @@ export default class ConfirmRemoveAccount extends Component {
                 rpcPrefs,
               );
               this.context.trackEvent({
-                category: 'Accounts',
+                category: EVENT.CATEGORIES.ACCOUNTS,
                 event: 'Clicked Block Explorer Link',
                 properties: {
                   link_type: 'Account Tracker',

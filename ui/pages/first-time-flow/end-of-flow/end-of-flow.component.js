@@ -6,6 +6,7 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { returnToOnboardingInitiator } from '../onboarding-initiator-util';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
@@ -35,7 +36,7 @@ export default class EndOfFlowScreen extends PureComponent {
     const { setCompletedOnboarding, completionMetaMetricsName } = this.props;
     await setCompletedOnboarding();
     this.context.trackEvent({
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       event: completionMetaMetricsName,
       properties: {
         action: 'Onboarding Complete',

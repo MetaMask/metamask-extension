@@ -7,6 +7,7 @@ import * as actions from '../../../store/actions';
 import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 class PrivateKeyImportView extends Component {
   static contextTypes = {
@@ -44,7 +45,7 @@ class PrivateKeyImportView extends Component {
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           this.context.trackEvent({
-            category: 'Accounts',
+            category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Imported Account with Private Key',
             properties: {
               action: 'Import Account',
@@ -56,7 +57,7 @@ class PrivateKeyImportView extends Component {
         } else {
           displayWarning(t('importAccountError'));
           this.context.trackEvent({
-            category: 'Accounts',
+            category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Error importing with Private Key',
             properties: {
               action: 'Import Account',

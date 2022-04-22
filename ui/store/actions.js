@@ -31,6 +31,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import * as actionConstants from './actionConstants';
@@ -3335,7 +3336,7 @@ export async function setSmartTransactionsOptInStatus(
 ) {
   trackMetaMetricsEvent({
     event: 'STX OptIn',
-    category: 'swaps',
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,

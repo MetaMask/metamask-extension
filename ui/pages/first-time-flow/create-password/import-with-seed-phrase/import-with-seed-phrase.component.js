@@ -5,6 +5,7 @@ import {
   INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes';
 import CreateNewVault from '../../../../components/app/create-new-vault';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -22,7 +23,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
   UNSAFE_componentWillMount() {
     this._onBeforeUnload = () =>
       this.context.trackEvent({
-        category: 'Onboarding',
+        category: EVENT.CATEGORIES.ONBOARDING,
         event: 'Close window on import screen',
         properties: {
           action: 'Import Seed Phrase',
@@ -48,7 +49,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
     await onSubmit(password, seedPhrase);
     this.context.trackEvent({
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       event: 'Import Complete',
       properties: {
         action: 'Import Seed Phrase',
@@ -71,7 +72,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             onClick={(e) => {
               e.preventDefault();
               this.context.trackEvent({
-                category: 'Onboarding',
+                category: EVENT.CATEGORIES.ONBOARDING,
                 event: 'Go Back from Onboarding Import',
                 properties: {
                   action: 'Import Seed Phrase',
