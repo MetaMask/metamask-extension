@@ -41,8 +41,6 @@ export const checkForMultipleVersionsRunning = async () => {
   const buildIds =
     getPlatform() === PLATFORM_CHROME ? CHROME_BUILD_IDS : FIREFOX_BUILD_IDS;
 
-  console.log(buildIds);
-
   const thisBuild = browser.runtime.id;
 
   for (const id of buildIds) {
