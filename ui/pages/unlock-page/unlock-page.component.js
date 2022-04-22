@@ -7,6 +7,7 @@ import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -77,7 +78,7 @@ export default class UnlockPage extends Component {
       const newState = await forceUpdateMetamaskState();
       this.context.trackEvent(
         {
-          category: 'Navigation',
+          category: EVENT.CATEGORIES.NAVIGATION,
           event: 'Success',
           properties: {
             action: 'Unlock',
@@ -99,7 +100,7 @@ export default class UnlockPage extends Component {
       if (message === 'Incorrect password') {
         const newState = await forceUpdateMetamaskState();
         this.context.trackEvent({
-          category: 'Navigation',
+          category: EVENT.CATEGORIES.NAVIGATION,
           event: 'Incorrect Password',
           properties: {
             action: 'Unlock',

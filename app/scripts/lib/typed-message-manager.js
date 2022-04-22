@@ -8,6 +8,7 @@ import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**
@@ -303,7 +304,7 @@ export default class TypedMessageManager extends EventEmitter {
       const msg = this.getMsg(msgId);
       this.metricsEvent({
         event: reason,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           action: 'Sign Request',
           version: msg.msgParams.version,

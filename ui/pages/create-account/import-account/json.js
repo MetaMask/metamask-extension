@@ -7,6 +7,7 @@ import FileInput from 'react-simple-file-input';
 import * as actions from '../../../store/actions';
 import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 
 const HELP_LINK =
@@ -117,7 +118,7 @@ class JsonImportSubview extends Component {
         if (selectedAddress) {
           history.push(mostRecentOverviewPage);
           this.context.trackEvent({
-            category: 'Accounts',
+            category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Imported Account with JSON',
             properties: {
               action: 'Import Account',
@@ -128,7 +129,7 @@ class JsonImportSubview extends Component {
         } else {
           displayWarning(t('importAccountError'));
           this.context.trackEvent({
-            category: 'Accounts',
+            category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Error importing JSON',
             properties: {
               action: 'Import Account',

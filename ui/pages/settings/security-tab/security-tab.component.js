@@ -7,6 +7,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -63,7 +64,7 @@ export default class SecurityTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Reveal Seed Phrase',
                   properties: {
                     action: 'Reveal Seed Phrase',

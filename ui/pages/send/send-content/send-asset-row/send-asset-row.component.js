@@ -7,6 +7,7 @@ import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { ERC20, ERC721, PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
 
 export default class SendAssetRow extends Component {
@@ -88,7 +89,7 @@ export default class SendAssetRow extends Component {
       },
       () => {
         this.context.trackEvent({
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           event: 'User clicks "Assets" dropdown',
           properties: {
             action: 'Send Screen',

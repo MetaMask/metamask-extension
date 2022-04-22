@@ -8,6 +8,7 @@ import AdvancedGasInputs from '../../../components/app/gas-customization/advance
 import BasicTabContent from '../../../components/app/gas-customization/gas-modal-page-container/basic-tab-content';
 import { GAS_ESTIMATE_TYPES } from '../../../helpers/constants/common';
 import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
@@ -258,7 +259,7 @@ export default class GasModalPageContainer extends Component {
 
             this.context.trackEvent({
               event: 'Gas Fees Changed',
-              category: 'swaps',
+              category: EVENT.CATEGORIES.SWAPS,
               properties: {
                 speed_set: this.state.gasSpeedType,
                 gas_fees: sumHexWEIsToUnformattedFiat(

@@ -39,6 +39,7 @@ import {
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
   MAINNET,
@@ -1833,7 +1834,7 @@ export default class TransactionController extends EventEmitter {
         this._trackMetaMetricsEvent({
           event: 'Swap Failed',
           sensitiveProperties: { ...txMeta.swapMetaData },
-          category: 'swaps',
+          category: EVENT.CATEGORIES.SWAPS,
         });
       } else {
         const tokensReceived = getSwapsTokensReceivedFromTxMeta(
@@ -1863,7 +1864,7 @@ export default class TransactionController extends EventEmitter {
 
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',
-          category: 'swaps',
+          category: EVENT.CATEGORIES.SWAPS,
           sensitiveProperties: {
             ...txMeta.swapMetaData,
             token_to_amount_received: tokensReceived,
@@ -2036,7 +2037,7 @@ export default class TransactionController extends EventEmitter {
       // occur.
       case TRANSACTION_EVENTS.ADDED:
         this.createEventFragment({
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           initialEvent: TRANSACTION_EVENTS.ADDED,
           successEvent: TRANSACTION_EVENTS.APPROVED,
           failureEvent: TRANSACTION_EVENTS.REJECTED,
@@ -2057,7 +2058,7 @@ export default class TransactionController extends EventEmitter {
       case TRANSACTION_EVENTS.APPROVED:
       case TRANSACTION_EVENTS.REJECTED:
         this.createEventFragment({
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           successEvent: TRANSACTION_EVENTS.APPROVED,
           failureEvent: TRANSACTION_EVENTS.REJECTED,
           properties,
@@ -2078,7 +2079,7 @@ export default class TransactionController extends EventEmitter {
       // properties to the transaction event.
       case TRANSACTION_EVENTS.SUBMITTED:
         this.createEventFragment({
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           initialEvent: TRANSACTION_EVENTS.SUBMITTED,
           successEvent: TRANSACTION_EVENTS.FINALIZED,
           properties,
@@ -2097,7 +2098,7 @@ export default class TransactionController extends EventEmitter {
       // fragment does not exist.
       case TRANSACTION_EVENTS.FINALIZED:
         this.createEventFragment({
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           successEvent: TRANSACTION_EVENTS.FINALIZED,
           properties,
           sensitiveProperties,
