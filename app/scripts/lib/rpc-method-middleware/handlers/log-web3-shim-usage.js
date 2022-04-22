@@ -1,4 +1,5 @@
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 /**
  * This RPC method is called by the inpage provider whenever it detects the
@@ -48,7 +49,7 @@ function logWeb3ShimUsageHandler(
     sendMetrics(
       {
         event: `Website Accessed window.web3 Shim`,
-        category: 'inpage_provider',
+        category: EVENT.CATEGORIES.INPAGE_PROVIDER,
         referrer: {
           url: origin,
         },

@@ -6,6 +6,7 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 import { THEME_TYPE } from './experimental-tab.constant';
 
@@ -67,7 +68,7 @@ export default class ExperimentalTab extends PureComponent {
               value={useTokenDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Token Detection',
                   properties: {
                     action: 'Token Detection',
@@ -115,7 +116,7 @@ export default class ExperimentalTab extends PureComponent {
               value={useCollectibleDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Collectible Detection',
                   properties: {
                     action: 'Collectible Detection',
@@ -165,7 +166,7 @@ export default class ExperimentalTab extends PureComponent {
               value={openSeaEnabled}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Enabled/Disable OpenSea',
                   properties: {
                     action: 'Enabled/Disable OpenSea',
@@ -214,7 +215,7 @@ export default class ExperimentalTab extends PureComponent {
               value={eip1559V2Enabled}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Enabled/Disable OpenSea',
                   properties: {
                     action: 'Enabled/Disable OpenSea',
@@ -249,7 +250,7 @@ export default class ExperimentalTab extends PureComponent {
 
     const onChange = (newTheme) => {
       this.context.trackEvent({
-        category: 'Settings',
+        category: EVENT.CATEGORIES.SETTINGS,
         event: 'Theme Changed',
         properties: {
           theme_selected: newTheme,
