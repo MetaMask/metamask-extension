@@ -3580,9 +3580,6 @@
   "tokenDetectionAlertMessage": {
     "message": "La détection du token est actuellement disponible sur $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Nouveau ! Une détection améliorée des jetons est disponible sur le Mainnet d’Ethereum en tant que fonctionnalité expérimentale. $1"
-  },
   "tokenDetectionToggleDescription": {
     "message": "L’API des tokens de ConsenSys regroupe une liste de tokens provenant de diverses listes de tokens externes. Sa désactivation arrêtera la détection de nouveaux tokens ajoutés à votre portefeuille, mais conservera l’option de recherche de tokens à importer."
   },
@@ -3810,12 +3807,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Cela permet d’afficher un avertissement pour les domaines d’hameçonnage ciblant les utilisateurs d’Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Utiliser la détection des jetons"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Nous utilisons des API tierces pour détecter et afficher les nouveaux jetons envoyés à votre portefeuille. Désactivez cette option si vous ne souhaitez pas que MetaMask récupère les données de ces services."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "L’affichage automatique des tokens envoyés sur votre compte implique une communication avec des serveurs externes afin de récupérer les images des tokens. Ces serveurs auront accès à votre adresse IP."

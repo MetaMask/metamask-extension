@@ -1177,9 +1177,6 @@
   "failureMessage": {
     "message": "Ocorreu algum erro e não conseguimos concluir a ação"
   },
-  "fakeTokenWarning": {
-    "message": "Qualquer um pode criar um token, incluindo versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
   "fast": {
     "message": "Rápido"
   },
@@ -3583,9 +3580,6 @@
   "tokenDetectionAlertMessage": {
     "message": "A detecção de tokens está atualmente disponível em $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Novidade! A detecção aprimorada de token está disponível na Mainnet do Ethereum como uma funcionalidade experimental. $1"
-  },
   "tokenDetectionToggleDescription": {
     "message": "A API de token da ConsenSys agrega uma lista de tokens de várias listas de tokens de terceiros. Se você desativá-la, não haverá detecção de novos tokens adicionados à sua carteira, mas continuará com a opção de procurar tokens para importar."
   },
@@ -3813,12 +3807,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Exibir uma advertência para os domínios de phishing destinados a usuários do Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Usar detecção de tokens"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Utilizamos APIs terceirizadas para detectar e exibir novos tokens enviados à sua carteira. Desative essa opção se não deseja que a MetaMask extraia dados desses serviços."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "A exibição automática de tokens enviados para a sua conta envolve a comunicação com servidores de terceiros para buscar as imagens dos tokens. Esses servidores terão acesso ao seu endereço IP."

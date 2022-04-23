@@ -3580,9 +3580,6 @@
   "tokenDetectionAlertMessage": {
     "message": "トークン検出は現在 $1 で利用可能です。$2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "新機能! 実験的な機能として、Ethereum Mainnetでのトークン検出が改善されました。$1"
-  },
   "tokenDetectionToggleDescription": {
     "message": "ConsenSys のトークン API は、さまざまなサードパーティのトークンリストからトークンのリストを集積します。これをオフにすると、ウォレットに追加された新しいトークンは検出されなくなりますが、引き続きトークンを検索してインポートすることは可能です。"
   },
@@ -3810,12 +3807,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "イーサリアムユーザーを対象としたドメインのフィッシングに対して警告を表示します"
-  },
-  "useTokenDetection": {
-    "message": "トークン検出を使用"
-  },
-  "useTokenDetectionDescription": {
-    "message": "弊社はユーザーのウォレットに送信された新しいトークンを検出して表示するために、サードパーティーAPIを使用します。MetaMaskにこれらのサービスからデータを取得させたくない場合は、この機能をオフにしてください。"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送られたトークンを自動的に表示するには、サードパーティーサーバーと通信し、トークンの画像を取得する必要があります。これらのサーバーはユーザーの IP アドレスにアクセスできます。"
