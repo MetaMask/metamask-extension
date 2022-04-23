@@ -682,10 +682,6 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
-        addressBook: {
-          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
-          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
-        },
         useTokenDetection: true,
       });
 
@@ -723,10 +719,6 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
-        addressBook: {
-          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
-          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
-        },
         useTokenDetection: true,
       });
 
@@ -748,10 +740,6 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
-        addressBook: {
-          [MAINNET_CHAIN_ID]: [{ address: '0x' }, { address: '0x1' }],
-          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
-        },
         useTokenDetection: true,
       });
 
@@ -781,6 +769,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -799,10 +788,6 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
-        addressBook: {
-          [MAINNET_CHAIN_ID]: [{ address: '0x' }],
-          [ROPSTEN_CHAIN_ID]: [{ address: '0x' }, { address: '0x0' }],
-        },
         useTokenDetection: true,
       });
 
