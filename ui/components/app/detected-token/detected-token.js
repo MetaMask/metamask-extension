@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
@@ -9,7 +9,10 @@ import {
   setNewTokensImported,
 } from '../../../store/actions';
 import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
+import { TOKEN_STANDARDS } from '../../../helpers/constants/common';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -28,6 +31,7 @@ const sortingBasedOnTokenSelection = (tokensDetected) => {
 };
 const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
@@ -43,12 +47,39 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   ] = useState(false);
 
   const handleClearTokensSelection = async () => {
-    // create a lodash chain on this object
     const {
       selected: selectedTokens,
       deselected: deSelectedTokens,
     } = sortingBasedOnTokenSelection(tokensListDetected);
 
+    selectedTokens.forEach((importedToken) => {
+      trackEvent({
+        event: 'Token Added',
+        category: 'Wallet',
+        sensitiveProperties: {
+          token_symbol: importedToken.symbol,
+          token_contract_address: importedToken.address,
+          token_decimal_precision: importedToken.decimals,
+          source: 'autodetection',
+          token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
+        },
+      });
+    });
+    deSelectedTokens.forEach((ignoredToken) => {
+      trackEvent({
+        event: 'Token Ignored',
+        category: 'Wallet',
+        sensitiveProperties: {
+          token_symbol: ignoredToken.symbol,
+          token_contract_address: ignoredToken.address,
+          token_decimal_precision: ignoredToken.decimals,
+          source: 'autodetection',
+          token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
+        },
+      });
+    });
     if (deSelectedTokens.length < detectedTokens.length) {
       await dispatch(ignoreTokens(deSelectedTokens));
       await dispatch(importTokens(selectedTokens));
@@ -71,11 +102,24 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   };
 
   const onImport = async () => {
-    // create a lodash chain on this object
     const { selected: selectedTokens } = sortingBasedOnTokenSelection(
       tokensListDetected,
     );
 
+    selectedTokens.forEach((importedToken) => {
+      trackEvent({
+        event: 'Token Added',
+        category: 'Wallet',
+        sensitiveProperties: {
+          token_symbol: importedToken.symbol,
+          token_contract_address: importedToken.address,
+          token_decimal_precision: importedToken.decimals,
+          source: 'autodetection',
+          token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
+        },
+      });
+    });
     if (selectedTokens.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);
     } else {

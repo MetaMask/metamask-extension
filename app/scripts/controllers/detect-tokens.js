@@ -181,7 +181,7 @@ export default class DetectTokensController {
             this._trackMetaMetricsEvent({
               event: 'Token Detected',
               category: 'Wallet',
-              properties: {
+              sensitiveProperties: {
                 token_symbol: symbol,
                 token_contract_address: address,
                 token_decimal_precision: decimals,

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
@@ -19,6 +20,7 @@ const DetectedTokenSelectionPopover = ({
   sortingBasedOnTokenSelection,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { selected: selectedTokens = [] } = sortingBasedOnTokenSelection(
@@ -28,9 +30,20 @@ const DetectedTokenSelectionPopover = ({
     selectedTokens.length === detectedTokens.length
       ? `All`
       : `(${selectedTokens.length})`;
+  const detectedTokensDetails = detectedTokens.map(
+    ({ address, symbol }) => `${symbol} - ${address}`,
+  );
 
   const onClose = () => {
     setShowDetectedTokens(false);
+    trackEvent({
+      event: '"Import Tokens" cancelled',
+      category: 'Wallet',
+      properties: {
+        token_quantity: detectedTokens.length,
+        tokens: detectedTokensDetails,
+      },
+    });
   };
 
   const footer = (
