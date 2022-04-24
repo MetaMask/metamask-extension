@@ -8,6 +8,7 @@ import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/netwo
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { TOKEN_STANDARDS } from '../../../ui/helpers/constants/common';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -180,7 +181,7 @@ export default class DetectTokensController {
 
             this._trackMetaMetricsEvent({
               event: 'Token Detected',
-              category: 'Wallet',
+              category: EVENT.CATEGORIES.WALLET,
               sensitiveProperties: {
                 token_symbol: symbol,
                 token_contract_address: address,

@@ -13,6 +13,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import { TOKEN_STANDARDS } from '../../../helpers/constants/common';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -55,7 +56,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     selectedTokens.forEach((importedToken) => {
       trackEvent({
         event: 'Token Added',
-        category: 'Wallet',
+        category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
@@ -69,7 +70,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     deSelectedTokens.forEach((ignoredToken) => {
       trackEvent({
         event: 'Token Ignored',
-        category: 'Wallet',
+        category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: ignoredToken.symbol,
           token_contract_address: ignoredToken.address,
@@ -109,7 +110,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     selectedTokens.forEach((importedToken) => {
       trackEvent({
         event: 'Token Added',
-        category: 'Wallet',
+        category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,

@@ -104,7 +104,7 @@ const AssetList = ({ onClickAsset }) => {
                 setShowDetectedTokens(true);
                 trackEvent({
                   event: 'Clicked "Import Tokens"',
-                  category: 'Wallet',
+                  category: EVENT.CATEGORIES.WALLET,
                   properties: {
                     token_quantity: detectedTokens.length,
                     tokens: detectedTokensDetails,
