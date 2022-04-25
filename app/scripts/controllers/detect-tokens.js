@@ -186,7 +186,7 @@ export default class DetectTokensController {
                 token_symbol: symbol,
                 token_contract_address: address,
                 token_decimal_precision: decimals,
-                source: 'autodetection',
+                source: 'detected',
                 token_standard: TOKEN_STANDARDS.ERC20,
                 asset_type: ASSET_TYPES.TOKEN,
               },
