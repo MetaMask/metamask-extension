@@ -260,9 +260,31 @@ export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTFICIATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
 
+/**
+ * EVENTS
+ */
+
 export const EVENT_NAMES = {
   SIGNATURE_REQUESTED: 'Signature Requested',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+};
+
+export const EVENT = {
+  CATEGORIES: {
+    ACCOUNTS: 'Accounts',
+    AUTH: 'Auth',
+    BACKGROUND: 'Background',
+    INPAGE_PROVIDER: 'inpage_provider',
+    MESSAGES: 'Messages',
+    NAVIGATION: 'Navigation',
+    NETWORK: 'Network',
+    ONBOARDING: 'Onboarding',
+    RETENTION: 'Retention',
+    SETTINGS: 'Settings',
+    SNAPS: 'Snaps',
+    TRANSACTIONS: 'Transactions',
+    WALLET: 'Wallet',
+  },
 };

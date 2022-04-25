@@ -81,6 +81,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
+import { EVENT } from '../../shared/constants/metametrics';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
@@ -851,7 +852,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.trackEvent(
             {
               event: 'Tx Status Update: On-Chain Failure',
-              category: 'Background',
+              category: EVENT.CATEGORIES.BACKGROUND,
               properties: {
                 action: 'Transactions',
                 errorMessage: txMeta.simulationFails?.reason,
@@ -1204,7 +1205,7 @@ export default class MetamaskController extends EventEmitter {
       (snapId) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Installed',
-          category: 'Snaps',
+          category: EVENT.CATEGORIES.SNAPS,
           properties: {
             snap_id: snapId,
           },
