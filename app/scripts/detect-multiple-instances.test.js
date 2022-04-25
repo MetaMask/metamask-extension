@@ -17,11 +17,10 @@ import * as util from './lib/util';
 describe('multiple instances running detector', function () {
   const PING_MESSAGE = 'isRunning';
 
-  const sandbox = sinon.createSandbox();
   let sendMessageStub = sinon.stub();
 
   beforeEach(async function () {
-    sandbox.replace(browser, 'runtime', {
+    sinon.replace(browser, 'runtime', {
       sendMessage: sendMessageStub,
       id: METAMASK_BETA_CHROME_ID,
     });
@@ -32,8 +31,7 @@ describe('multiple instances running detector', function () {
   });
 
   afterEach(function () {
-    sandbox.restore();
-    util.getPlatform.restore();
+    sinon.restore();
   });
 
   describe('checkForMultipleVersionsRunning', function () {
@@ -67,9 +65,9 @@ describe('multiple instances running detector', function () {
     });
 
     it('should not expose an error outside if sendMessage throws', async function () {
-      sandbox.restore();
+      sinon.restore();
 
-      sandbox.replace(browser, 'runtime', {
+      sinon.replace(browser, 'runtime', {
         sendMessage: sinon.stub().throws(),
         id: METAMASK_BETA_CHROME_ID,
       });
@@ -84,7 +82,7 @@ describe('multiple instances running detector', function () {
 
   describe('onMessageReceived', function () {
     beforeEach(function () {
-      sandbox.spy(console, 'warn');
+      sinon.spy(console, 'warn');
     });
 
     it('should print warning message to on ping message received', async function () {
