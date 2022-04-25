@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "Dekrip permintaan"
   },
-  "defaultTheme": {
-    "message": "Awal"
-  },
   "delete": {
     "message": "Hapus"
   },

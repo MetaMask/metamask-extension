@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "リクエストを解読"
   },
-  "defaultTheme": {
-    "message": "デフォルト"
-  },
   "delete": {
     "message": "削除"
   },

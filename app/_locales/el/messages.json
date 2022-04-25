@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "Αίτημα αποκρυπτογράφησης"
   },
-  "defaultTheme": {
-    "message": "Προεπιλεγμένο"
-  },
   "delete": {
     "message": "Διαγραφή"
   },

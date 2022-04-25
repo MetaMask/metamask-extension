@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "Расшифровать запрос"
   },
-  "defaultTheme": {
-    "message": "По умолчанию"
-  },
   "delete": {
     "message": "Удалить"
   },

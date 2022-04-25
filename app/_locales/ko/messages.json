@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "암호 해독 요청"
   },
-  "defaultTheme": {
-    "message": "기본값"
-  },
   "delete": {
     "message": "삭제"
   },

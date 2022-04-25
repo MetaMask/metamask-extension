@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "अनुरोध डिक्रिप्ट करें"
   },
-  "defaultTheme": {
-    "message": "डिफ़ॉल्ट"
-  },
   "delete": {
     "message": "हटाएँ"
   },

@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "Giải mã yêu cầu"
   },
-  "defaultTheme": {
-    "message": "Mặc định"
-  },
   "delete": {
     "message": "Xóa"
   },
