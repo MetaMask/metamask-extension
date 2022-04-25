@@ -36,7 +36,7 @@ export default function SignatureRequestSIWE({
       category: 'Transactions',
       event: 'Confirm',
       properties: {
-        action: 'Sign Request',
+        action: 'SIWE Request',
         legacy_event: true,
         type,
         version,
@@ -50,7 +50,7 @@ export default function SignatureRequestSIWE({
       category: 'Transactions',
       event: 'Cancel',
       properties: {
-        action: 'Sign Request',
+        action: 'SIWE Request',
         legacy_event: true,
         type,
         version,
