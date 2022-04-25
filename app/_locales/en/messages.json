@@ -1442,6 +1442,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideFullTransactionDetails": {
+    "message": "Hide full transaction details"
+  },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
