@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Увеличение комиссии может сократить время обработки, но это не гарантируется."
   },
-  "customNetworks": {
-    "message": "Пользовательские сети"
-  },
   "customSpendLimit": {
     "message": "Пользовательский лимит расходов"
   },
@@ -2300,9 +2297,6 @@
   },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете."
-  },
-  "onlyInteractWith": {
-    "message": "Взаимодействуйте только с объектами, которым вы доверяете."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Откройте MetaMask в полноэкранном режиме, чтобы подключить свой леджер через WebHID.",

@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "手数料を増やすと処理時間は短くなる可能性がありますが、必ずそうなるとは限りません。"
   },
-  "customNetworks": {
-    "message": "カスタムネットワーク"
-  },
   "customSpendLimit": {
     "message": "カスタム使用限度額"
   },
@@ -2300,9 +2297,6 @@
   },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。"
-  },
-  "onlyInteractWith": {
-    "message": "信頼できる相手と以外やり取りしないでください。"
   },
   "openFullScreenForLedgerWebHid": {
     "message": "WebHIDでLedgerを接続するには、MetaMaskを全画面モードで開いてください。",

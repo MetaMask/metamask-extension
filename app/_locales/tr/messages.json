@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Ücretin artırılması işlem süresini kısaltabilir ancak bu garanti edilmez."
   },
-  "customNetworks": {
-    "message": "Özel ağlar"
-  },
   "customSpendLimit": {
     "message": "Özel Harcama Limiti"
   },
@@ -2300,9 +2297,6 @@
   },
   "onlyConnectTrust": {
     "message": "Sadece güvendiğiniz sitelere bağlayın."
-  },
-  "onlyInteractWith": {
-    "message": "Yalnızca güvendiğin varlıklarla etkileşim kur."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Kayıt defterinizi WebHID üzerinden bağlamak için MetaMask'i tam ekran açın.",
