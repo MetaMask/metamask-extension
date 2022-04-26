@@ -8,6 +8,7 @@ import Box from '../../ui/box';
 import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
 import TextArea from '../../ui/textarea/textarea';
+import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 
 export const safeComponentList = {
   MetaMaskTranslation,
@@ -25,4 +26,5 @@ export const safeComponentList = {
   Box,
   NetworkDisplay,
   TextArea,
+  ConfirmationNetworkSwitch,
 };

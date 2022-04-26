@@ -88,6 +88,7 @@ import {
   SMART_TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -950,7 +951,7 @@ export const signAndSendSwapsSmartTransaction = ({
       const sourceTokenSymbol = sourceTokenInfo.symbol;
       await dispatch(
         updateSmartTransaction(uuid, {
-          origin: 'metamask',
+          origin: ORIGIN_METAMASK,
           destinationTokenAddress,
           destinationTokenDecimals,
           destinationTokenSymbol,
@@ -963,7 +964,7 @@ export const signAndSendSwapsSmartTransaction = ({
       if (approvalTxUuid) {
         await dispatch(
           updateSmartTransaction(approvalTxUuid, {
-            origin: 'metamask',
+            origin: ORIGIN_METAMASK,
             type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol,
           }),
@@ -1174,12 +1175,9 @@ export const signAndSendTransactions = (
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
-      const approveTxMeta = await dispatch(
-        addUnapprovedTransaction(
-          { ...approveTxParams, amount: '0x0' },
-          'metamask',
-          TRANSACTION_TYPES.SWAP_APPROVAL,
-        ),
+      const approveTxMeta = await addUnapprovedTransaction(
+        { ...approveTxParams, amount: '0x0' },
+        TRANSACTION_TYPES.SWAP_APPROVAL,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
       finalApproveTxMeta = await dispatch(
@@ -1197,12 +1195,9 @@ export const signAndSendTransactions = (
       }
     }
 
-    const tradeTxMeta = await dispatch(
-      addUnapprovedTransaction(
-        usedTradeTxParams,
-        'metamask',
-        TRANSACTION_TYPES.SWAP,
-      ),
+    const tradeTxMeta = await addUnapprovedTransaction(
+      usedTradeTxParams,
+      TRANSACTION_TYPES.SWAP,
     );
     dispatch(setTradeTxId(tradeTxMeta.id));
 

@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
   },
-  "customNetworks": {
-    "message": "Netzwerke anpassen"
-  },
   "customSpendLimit": {
     "message": "Benutzerdefiniertes Ausgabelimit"
   },
@@ -2300,9 +2297,6 @@
   },
   "onlyConnectTrust": {
     "message": "Verbinden Sie sich nur mit Sites, denen Sie vertrauen."
-  },
-  "onlyInteractWith": {
-    "message": "Interagieren Sie nur mit Organisationen, denen Sie vertrauen."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",

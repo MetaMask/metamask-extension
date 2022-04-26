@@ -11,6 +11,7 @@ import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
@@ -800,25 +801,61 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin, type) {
-  log.debug('background.addUnapprovedTransaction');
-
-  return () => {
-    return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(
+/**
+ * Action to create a new transaction in the controller and route to the
+ * confirmation page. Returns the newly created txMeta in case additional logic
+ * should be applied to the transaction after creation.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function addUnapprovedTransactionAndRouteToConfirmationPage(
+  txParams,
+  type,
+) {
+  return async (dispatch) => {
+    try {
+      log.debug('background.addUnapprovedTransaction');
+      const txMeta = await promisifiedBackground.addUnapprovedTransaction(
         txParams,
-        origin,
+        ORIGIN_METAMASK,
         type,
-        (err, txMeta) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(txMeta);
-        },
       );
-    });
+      dispatch(showConfTxPage());
+      return txMeta;
+    } catch (error) {
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+    }
+    return null;
   };
+}
+
+/**
+ * Wrapper around the promisifedBackground to create a new unapproved
+ * transaction in the background and return the newly created txMeta.
+ * This method does not show errors or route to a confirmation page and is
+ * used primarily for swaps functionality.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export async function addUnapprovedTransaction(txParams, type) {
+  log.debug('background.addUnapprovedTransaction');
+  const txMeta = await promisifiedBackground.addUnapprovedTransaction(
+    txParams,
+    ORIGIN_METAMASK,
+    type,
+  );
+  return txMeta;
 }
 
 export function updateAndApproveTx(txData, dontShowLoadingIndicator) {

@@ -23,6 +23,7 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
+import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 
@@ -126,6 +127,7 @@ class ImportToken extends Component {
     customDecimals: 0,
     searchResults: [],
     selectedTokens: {},
+    standard: TOKEN_STANDARDS.NONE,
     tokenSelectorError: null,
     customAddressError: null,
     customSymbolError: null,
@@ -231,12 +233,14 @@ class ImportToken extends Component {
       customSymbol: symbol,
       customDecimals: decimals,
       selectedTokens,
+      standard,
     } = this.state;
 
     const customToken = {
       address,
       symbol,
       decimals,
+      standard,
     };
 
     setPendingTokens({ customToken, selectedTokens, tokenAddressList });
@@ -281,7 +285,7 @@ class ImportToken extends Component {
     const isMainnetNetwork = this.props.chainId === '0x1';
 
     let standard;
-    if (addressIsValid && process.env.COLLECTIBLES_V1) {
+    if (addressIsValid) {
       try {
         ({ standard } = await this.props.getTokenStandardAndDetails(
           standardAddress,
@@ -353,6 +357,9 @@ class ImportToken extends Component {
       default:
         if (!addressIsEmpty) {
           this.attemptToAutoFillTokenParams(customAddress);
+          if (standard) {
+            this.setState({ standard });
+          }
         }
     }
   }

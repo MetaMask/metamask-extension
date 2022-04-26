@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
-import abiERC721 from 'human-standard-collectible-abi';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
@@ -52,7 +51,6 @@ import {
   estimateGas,
   getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
-  showConfTxPage,
   showLoadingIndication,
   updateEditableParams,
   updateTransactionGasFees,
@@ -61,6 +59,7 @@ import {
   isCollectibleOwner,
   getTokenStandardAndDetails,
   showModal,
+  addUnapprovedTransactionAndRouteToConfirmationPage,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -106,6 +105,7 @@ import {
 import {
   ASSET_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
@@ -1718,9 +1718,6 @@ export function signTransaction() {
       asset,
       stage,
       draftTransaction: { id, txParams },
-      recipient: { address },
-      amount: { value },
-      account: { address: selectedAddress },
       eip1559support,
     } = state[name];
     if (stage === SEND_STAGES.EDIT) {
@@ -1751,63 +1748,21 @@ export function signTransaction() {
       };
       dispatch(updateEditableParams(id, editingTx.txParams));
       dispatch(updateTransactionGasFees(id, editingTx.txParams));
-    } else if (asset.type === ASSET_TYPES.TOKEN) {
-      // When sending a token transaction we have to the token.transfer method
-      // on the token contract to construct the transaction. This results in
-      // the proper transaction data and properties being set and a new
-      // transaction being added to background state. Once the new transaction
-      // is added to state a subsequent confirmation will be queued.
-      try {
-        const token = global.eth.contract(abi).at(asset.details.address);
-        token.transfer(address, value, {
-          ...txParams,
-          to: undefined,
-          data: undefined,
-        });
-        dispatch(showConfTxPage());
-        dispatch(hideLoadingIndication());
-      } catch (error) {
-        dispatch(hideLoadingIndication());
-        dispatch(displayWarning(error.message));
-      }
-    } else if (asset.type === ASSET_TYPES.COLLECTIBLE) {
-      // When sending a collectible transaction we have to use the collectible.transferFrom method
-      // on the collectible contract to construct the transaction. This results in
-      // the proper transaction data and properties being set and a new
-      // transaction being added to background state. Once the new transaction
-      // is added to state a subsequent confirmation will be queued.
-      try {
-        const collectibleContract = global.eth
-          .contract(abiERC721)
-          .at(asset.details.address);
-
-        collectibleContract.transferFrom(
-          selectedAddress,
-          address,
-          asset.details.tokenId,
-          {
-            ...txParams,
-            to: undefined,
-            data: undefined,
-          },
-        );
-
-        dispatch(showConfTxPage());
-        dispatch(hideLoadingIndication());
-      } catch (error) {
-        dispatch(hideLoadingIndication());
-        dispatch(displayWarning(error.message));
-      }
     } else {
-      // When sending a native asset we use the ethQuery.sendTransaction method
-      // which will result in the transaction being added to background state
-      // and a subsequent confirmation will be queued.
-      global.ethQuery.sendTransaction(txParams, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-        }
-      });
-      dispatch(showConfTxPage());
+      let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+
+      if (asset.type !== ASSET_TYPES.NATIVE) {
+        transactionType =
+          asset.type === ASSET_TYPES.COLLECTIBLE
+            ? TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
+            : TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
+      }
+      dispatch(
+        addUnapprovedTransactionAndRouteToConfirmationPage(
+          txParams,
+          transactionType,
+        ),
+      );
     }
   };
 }

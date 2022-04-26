@@ -21,6 +21,7 @@ import {
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
+import { setBackgroundConnection } from '../../../test/jest';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -77,9 +78,17 @@ jest.mock('./send', () => {
   };
 });
 
+setBackgroundConnection({
+  addPollingTokenToAppState: jest.fn(),
+  addUnapprovedTransaction: jest.fn((_x, _y, _z, cb) => {
+    return cb(null, {});
+  }),
+});
+
 describe('Send Slice', () => {
   let getTokenStandardAndDetailsStub;
   beforeEach(() => {
+    jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
       .spyOn(Actions, 'getTokenStandardAndDetails')
       .mockImplementation(() => Promise.resolve({ standard: 'ERC20' }));
@@ -2030,10 +2039,6 @@ describe('Send Slice', () => {
       };
 
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
-        global.ethQuery = {
-          sendTransaction: sinon.stub(),
-        };
-
         const store = mockStore(signTransactionState);
 
         await store.dispatch(signTransaction());
