@@ -6,6 +6,7 @@ import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
+import LogoWalletConnect from '../../../components/ui/logo/logo-walletconnect';
 
 import {
   DEVICE_NAMES,
@@ -60,6 +61,19 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToWalletConnectButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === DEVICE_NAMES.WALLETCONNECT,
+        })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.WALLETCONNECT })}
+      >
+        <LogoWalletConnect className="hw-connect__btn__img" ariaLabel="WalletConnect" />
+      </button>
+    );
+  }
+
   renderConnectToLedgerButton() {
     return (
       <button
@@ -99,6 +113,12 @@ export default class SelectHardware extends Component {
         >
           {this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
+        </div>
+        <div
+          className="hw-connect__btn-wrapper"
+          style={{ margin: '10px 0 0 0' }}
+        >
+          {this.renderConnectToWalletConnectButton()}
         </div>
       </>
     );
@@ -163,6 +183,8 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case DEVICE_NAMES.TREZOR:
         return this.renderTrezorTutorialSteps();
+      case DEVICE_NAMES.WALLETCONNECT:
+        return this.renderTrezorTutorialSteps(); // todo
       case DEVICE_NAMES.LATTICE:
         return this.renderLatticeTutorialSteps();
       case DEVICE_NAMES.QR:

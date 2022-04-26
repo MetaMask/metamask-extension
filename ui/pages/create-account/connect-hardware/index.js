@@ -44,6 +44,12 @@ const LATTICE_HD_PATHS = [
   { name: `Ledger Legacy (${LATTICE_MEW_PATH})`, value: LATTICE_MEW_PATH },
 ];
 
+const WALLETCONNECT_TESTNET_PATH = `m/44'/1'/0'/0`;
+const WALLETCONNECT_HD_PATHS = [
+  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
+  { name: `WalletConnect Testnets`, value: WALLETCONNECT_TESTNET_PATH },
+];
+
 const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
 const TREZOR_HD_PATHS = [
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
@@ -53,6 +59,7 @@ const TREZOR_HD_PATHS = [
 const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
+  walletconnect: WALLETCONNECT_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
 };
 
@@ -90,6 +97,7 @@ class ConnectHardwareForm extends Component {
       DEVICE_NAMES.TREZOR,
       DEVICE_NAMES.LEDGER,
       DEVICE_NAMES.LATTICE,
+      DEVICE_NAMES.WALLETCONNECT,
     ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);

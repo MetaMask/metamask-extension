@@ -226,6 +226,7 @@ export function getAccountType(state) {
     case KEYRING_TYPES.TREZOR:
     case KEYRING_TYPES.LEDGER:
     case KEYRING_TYPES.LATTICE:
+    case KEYRING_TYPES.WALLETCONNECT:
       return 'hardware';
     case 'Simple Key Pair':
       return 'imported';
