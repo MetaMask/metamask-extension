@@ -20,6 +20,7 @@ import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import WalletConnectKeyring from 'eth-walletconnect-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
@@ -547,6 +548,7 @@ export default class MetamaskController extends EventEmitter {
       TrezorKeyring,
       LedgerBridgeKeyring,
       LatticeKeyring,
+      WalletConnectKeyring,
       QRHardwareKeyring,
     ];
     this.keyringController = new KeyringController({
@@ -2118,6 +2120,7 @@ export default class MetamaskController extends EventEmitter {
       ledger: [],
       trezor: [],
       lattice: [],
+      walletconnect: [],
     };
 
     // transactions
@@ -2235,6 +2238,9 @@ export default class MetamaskController extends EventEmitter {
       case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
+      case DEVICE_NAMES.WALLETCONNECT:
+        keyringName = WalletConnectKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -2342,6 +2348,7 @@ export default class MetamaskController extends EventEmitter {
     switch (keyring.type) {
       case KEYRING_TYPES.TREZOR:
       case KEYRING_TYPES.LATTICE:
+      case KEYRING_TYPES.WALLETCONNECT:
       case KEYRING_TYPES.QR:
       case KEYRING_TYPES.LEDGER:
         return 'hardware';
@@ -2373,6 +2380,9 @@ export default class MetamaskController extends EventEmitter {
       case KEYRING_TYPES.LATTICE:
         // TODO: get model after lattice keyring exposes method
         return DEVICE_NAMES.LATTICE;
+      case KEYRING_TYPES.WALLETCONNECT:
+        // TODO: get model after walletconnect keyring exposes method
+        return DEVICE_NAMES.WALLETCONNECT;
       default:
         return 'N/A';
     }
@@ -2891,7 +2901,15 @@ export default class MetamaskController extends EventEmitter {
           );
         });
       }
-
+      
+      case KEYRING_TYPES.WALLETCONNECT: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('WalletConnect does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+      
       case KEYRING_TYPES.QR: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
