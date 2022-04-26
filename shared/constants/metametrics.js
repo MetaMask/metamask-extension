@@ -284,6 +284,7 @@ export const EVENT = {
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',
+    SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
   },
