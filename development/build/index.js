@@ -51,6 +51,7 @@ require('eslint-plugin-node');
 require('eslint-plugin-prettier');
 require('eslint-plugin-react');
 require('eslint-plugin-react-hooks');
+require('eslint-plugin-jest');
 
 defineAndRunBuildTasks();
 
