@@ -751,7 +751,6 @@ function getAllowedNotificationIds(state) {
     9: getIsMainnet(state),
     10: Boolean(process.env.TOKEN_DETECTION_V2),
     11: Boolean(process.env.TOKEN_DETECTION_V2),
-    12: true,
   };
 }
 
