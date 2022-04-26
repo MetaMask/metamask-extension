@@ -176,7 +176,6 @@
     "fast-json-patch": "^2.2.1",
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
-    "human-standard-collectible-abi": "^1.0.2",
     "human-standard-token-abi": "^2.0.0",
     "immer": "^9.0.6",
     "json-rpc-engine": "^6.1.0",
