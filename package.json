@@ -163,6 +163,7 @@
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
     "eth-trezor-keyring": "^0.10.0",
+    "eth-walletconnect-keyring": "file:../eth-walletconnect-keyring",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
@@ -436,7 +437,12 @@
       "@metamask/iframe-execution-environment-service>@metamask/execution-environments": false,
       "@metamask/snap-controllers>@metamask/execution-environments": false,
       "@metamask/iframe-execution-environment-service>@metamask/snap-controllers>@metamask/execution-environments": false,
-      "@metamask/rpc-methods>@metamask/snap-controllers>@metamask/execution-environments": false
+      "@metamask/rpc-methods>@metamask/snap-controllers>@metamask/execution-environments": false,
+      "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": false,
+      "@metamask/rpc-methods>@metamask/key-tree>secp256k1": false,
+      "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
+      "eth-lattice-keyring>secp256k1": false,
+      "ganache>secp256k1": false
     }
   }
 }
