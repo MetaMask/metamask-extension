@@ -442,7 +442,8 @@
       "@metamask/rpc-methods>@metamask/key-tree>secp256k1": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
       "eth-lattice-keyring>secp256k1": false,
-      "ganache>secp256k1": false
+      "ganache>secp256k1": false,
+      "eth-walletconnect-keyring>hdkey>secp256k1": false
     }
   }
 }
