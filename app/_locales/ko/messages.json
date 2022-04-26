@@ -2537,6 +2537,13 @@
   "statusNotConnected": {
     "message": "연결되지 않음"
   },
+  "step1DcentWallet": {
+    "message": "DCENT 지갑 연결."
+  },
+  "step1DcentWalletMsg": {
+    "message": "DCENT 지갑의 잠금을 해제하고 컴퓨터에 바로 연결합니다. DCENT 지갑을 메타마스크에서 사용하는 방법에 관한 자세한 내용은 $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step1LatticeWallet": {
     "message": "Lattice1을 연결할 준비가 되었는지 확인하세요."
   },

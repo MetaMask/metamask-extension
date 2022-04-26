@@ -39,6 +39,7 @@ export default function reduceApp(state = {}, action) {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
       lattice: `m/44'/60'/0'/0`,
+      dcent: `m/44'/60'/0'/0/0`,
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,

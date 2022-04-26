@@ -257,6 +257,7 @@ describe('App State', () => {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
       lattice: "m/44'/60'/0'/0",
+      dcent: "m/44'/60'/0'/0/0",
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,

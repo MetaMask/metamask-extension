@@ -3035,6 +3035,13 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "step1DcentWallet": {
+    "message": "Plug in DCENT wallet"
+  },
+  "step1DcentWalletMsg": {
+    "message": "Connect your wallet directly to your computer. Unlock your DCENT. For more on using your hardware wallet device, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step1LatticeWallet": {
     "message": "Make sure your Lattice1 is ready to connect"
   },

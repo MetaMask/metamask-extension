@@ -21,6 +21,7 @@ import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import DcentKeyring from 'eth-dcent-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
@@ -545,6 +546,7 @@ export default class MetamaskController extends EventEmitter {
       LedgerBridgeKeyring,
       LatticeKeyring,
       QRHardwareKeyring,
+      DcentKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -2232,6 +2234,9 @@ export default class MetamaskController extends EventEmitter {
       case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
+      case DEVICE_NAMES.DCENT:
+        keyringName = DcentKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -2341,6 +2346,7 @@ export default class MetamaskController extends EventEmitter {
       case KEYRING_TYPES.LATTICE:
       case KEYRING_TYPES.QR:
       case KEYRING_TYPES.LEDGER:
+      case KEYRING_TYPES.DCENT:
         return 'hardware';
       case KEYRING_TYPES.IMPORTED:
         return 'imported';
@@ -2370,6 +2376,8 @@ export default class MetamaskController extends EventEmitter {
       case KEYRING_TYPES.LATTICE:
         // TODO: get model after lattice keyring exposes method
         return DEVICE_NAMES.LATTICE;
+      case KEYRING_TYPES.DCENT:
+        return keyring.getModel();
       default:
         return 'N/A';
     }
@@ -2893,6 +2901,14 @@ export default class MetamaskController extends EventEmitter {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
+      }
+
+      case KEYRING_TYPES.DCENT: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('DCENT does not support eth_getEncryptionPublicKey.'),
+          );
+        });
       }
 
       default: {

@@ -6,6 +6,7 @@ import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
+import LogoDcent from '../../../components/ui/logo/logo-dcent';
 
 import {
   DEVICE_NAMES,
@@ -86,6 +87,19 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToDcentButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === DEVICE_NAMES.DCENT,
+        })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.DCENT })}
+      >
+        <LogoDcent className="hw-connect__btn__img" ariaLabel="Dcent" />
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
       <>
@@ -100,6 +114,12 @@ export default class SelectHardware extends Component {
           {this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
         </div>
+        <div
+          className="hw-connect__btn-wrapper"
+          style={{ margin: '10px 0 0 0' }}
+        >
+          {this.renderConnectToDcentButton()}
+        </div>        
       </>
     );
   }
@@ -167,6 +187,8 @@ export default class SelectHardware extends Component {
         return this.renderLatticeTutorialSteps();
       case DEVICE_NAMES.QR:
         return this.renderQRHardwareWalletSteps();
+      case DEVICE_NAMES.DCENT:
+        return this.renderDcentTutorialSteps();
       default:
         return '';
     }
@@ -376,6 +398,46 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderDcentTutorialSteps() {
+    const steps = [
+      {
+        asset: 'connect-dcent',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1DcentWallet'),
+        message: this.context.t('step1DcentWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href="https://userguide.dcentwallet.com/v/kr/external-service/metamask"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="dcent-tutorial-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img

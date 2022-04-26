@@ -90,6 +90,7 @@ class ConnectHardwareForm extends Component {
       DEVICE_NAMES.TREZOR,
       DEVICE_NAMES.LEDGER,
       DEVICE_NAMES.LATTICE,
+      DEVICE_NAMES.DCENT,
     ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
