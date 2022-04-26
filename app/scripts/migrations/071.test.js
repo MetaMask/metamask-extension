@@ -83,4 +83,25 @@ describe('migration #71', () => {
       },
     });
   });
+
+  it('should handle missing NotificationController', async () => {
+    const oldStorage = {
+      meta: {
+        version: 70,
+      },
+      data: {
+        FooController: { a: 'b' },
+      },
+    };
+
+    const newStorage = await migration71.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 71,
+      },
+      data: {
+        FooController: { a: 'b' },
+      },
+    });
+  });
 });
