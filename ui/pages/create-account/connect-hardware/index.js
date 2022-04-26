@@ -87,8 +87,16 @@ class ConnectHardwareForm extends Component {
 
   componentWillUnmount() {
     this.props.setHardwareWalletDefaultHdPath({
+      device: DEVICE_NAMES.TREZOR,
+      path: `m/44'/60'/0'/0`,
+    });
+    this.props.setHardwareWalletDefaultHdPath({
       device: DEVICE_NAMES.LEDGER,
       path: `m/44'/60'/0'/0/0`,
+    });
+    this.props.setHardwareWalletDefaultHdPath({
+      device: DEVICE_NAMES.LATTICE,
+      path: `m/44'/60'/0'/0`,
     });
   }
 
