@@ -30,8 +30,7 @@ import {
   ControllerMessenger,
   CurrencyRateController,
   PhishingController,
-  // @todo Rename when new controllers version is released
-  NotificationController as AnnouncementController,
+  AnnouncementController,
   GasFeeController,
   TokenListController,
   TokensController,
