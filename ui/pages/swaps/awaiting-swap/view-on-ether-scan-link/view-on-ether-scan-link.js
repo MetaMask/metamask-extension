@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { I18nContext } from '../../../../contexts/i18n';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default function ViewOnEtherScanLink({
   txHash,
@@ -22,7 +23,7 @@ export default function ViewOnEtherScanLink({
       onClick={() => {
         trackEvent({
           event: 'Clicked Block Explorer Link',
-          category: 'Swaps',
+          category: EVENT.CATEGORIES.SWAPS,
           properties: {
             link_type: 'Transaction Block Explorer',
             action: 'Swap Transaction',
