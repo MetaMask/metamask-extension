@@ -37,7 +37,6 @@ const ConfirmImportToken = () => {
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
     addedTokenValues.forEach((pendingToken) => {
-      console.log(pendingToken);
       trackEvent({
         event: 'Token Added',
         category: EVENT.CATEGORIES.WALLET,
