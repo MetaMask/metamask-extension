@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.14.0]
 ### Added
-- Dark Mode: Add What's New Announcement ([#14346](https://github.com/MetaMask/metamask-extension/pull/14346))
 - **[FLASK]** Add snap version to details page ([#14110](https://github.com/MetaMask/metamask-extension/pull/14110))
 - **[FLASK]** Add support for searching installed snaps in Settings ([#14419](https://github.com/MetaMask/metamask-extension/pull/14419))
 
