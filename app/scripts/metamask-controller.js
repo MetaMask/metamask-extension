@@ -454,7 +454,7 @@ export default class MetamaskController extends EventEmitter {
     this.phishingController = new PhishingController();
 
     this.announcementController = new AnnouncementController(
-      { allNotifications: UI_NOTIFICATIONS },
+      { allAnnouncements: UI_NOTIFICATIONS },
       initState.AnnouncementController,
     );
 
