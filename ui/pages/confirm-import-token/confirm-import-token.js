@@ -33,7 +33,6 @@ const ConfirmImportToken = () => {
     await dispatch(addTokens(pendingTokens));
 
     const addedTokenValues = Object.values(pendingTokens);
-    console.log(addedTokenValues);
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
     addedTokenValues.forEach((pendingToken) => {
