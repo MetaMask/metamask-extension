@@ -2054,6 +2054,21 @@
         "trezor-connect": true
       }
     },
+    "eth-walletconnect-keyring": {
+      "globals": {
+        "addEventListener": true,
+        "console.warn": true,
+        "document.createElement": true,
+        "document.head.appendChild": true
+      },
+      "packages": {
+        "buffer": true,
+        "ethereumjs-tx": true,
+        "ethereumjs-util": true,
+        "events": true,
+        "hdkey": true
+      }
+    },
     "ethereum-bloom-filters": {
       "packages": {
         "js-sha3": true
@@ -2076,6 +2091,13 @@
       "packages": {
         "bn.js": true,
         "buffer": true,
+        "ethereumjs-util": true
+      }
+    },
+    "ethereumjs-tx": {
+      "packages": {
+        "buffer": true,
+        "ethereum-common": true,
         "ethereumjs-util": true
       }
     },
