@@ -1209,10 +1209,8 @@
     },
     "blakejs": {
       "globals": {
+        "TextEncoder": true,
         "console.log": true
-      },
-      "packages": {
-        "buffer": true
       }
     },
     "blob": {
@@ -2403,8 +2401,8 @@
     "hash-base": {
       "packages": {
         "inherits": true,
-        "safe-buffer": true,
-        "stream-browserify": true
+        "readable-stream": true,
+        "safe-buffer": true
       }
     },
     "hash.js": {
