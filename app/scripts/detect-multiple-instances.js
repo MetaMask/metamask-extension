@@ -5,6 +5,7 @@
  * versions running simultaneously.
  */
 
+import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import {
   PLATFORM_CHROME,
@@ -49,6 +50,10 @@ export const checkForMultipleVersionsRunning = async () => {
         await browser.runtime.sendMessage(id, MESSAGE_TEXT);
       } catch (error) {
         // Should do nothing if receiving end was not reached (no other instances running)
+        log.info(
+          'Multiple instances running detection: sendMessage failed',
+          error,
+        );
       }
     }
   }
