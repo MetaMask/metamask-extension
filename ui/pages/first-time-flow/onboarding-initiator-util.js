@@ -1,10 +1,17 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 
-const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
-  const tab = await browser.tabs.update(onboardingInitiator.tabId, {
-    active: true,
-  });
+export const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
+  let tab;
+  try {
+    tab = await browser.tabs.update(onboardingInitiator.id, {
+      active: true,
+    });
+  } catch (error) {
+    log.debug(
+      `An error occurred while updating tabs in returnToOnboardingInitiatorTab: ${error.message}`,
+    );
+  }
 
   if (tab) {
     window.close();
@@ -14,21 +21,6 @@ const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
       `Setting current tab to onboarding initiator has failed; falling back to redirect`,
     );
 
-    if (browser.runtime.lastError) {
-      log.debug(browser.runtime.lastError);
-    }
-    window.location.assign(onboardingInitiator.location);
-  }
-};
-
-export const returnToOnboardingInitiator = async (onboardingInitiator) => {
-  const tab = await browser.tabs.get(onboardingInitiator.tabId);
-  if (tab) {
-    await returnToOnboardingInitiatorTab(onboardingInitiator);
-  } else {
-    if (browser.runtime.lastError) {
-      log.debug(browser.runtime.lastError);
-    }
     window.location.assign(onboardingInitiator.location);
   }
 };
