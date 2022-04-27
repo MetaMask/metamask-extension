@@ -38,10 +38,13 @@ async function watchAssetHandler(
   try {
     const { options: asset, type } = req.params;
     const handleWatchAssetResult = await handleWatchAssetRequest(asset, type);
-    const result = await handleWatchAssetResult.result;
-    res.result = Boolean(result);
+    await handleWatchAssetResult.result;
+    res.result = true;
     return end();
   } catch (error) {
-    return end(ethErrors.provider.userRejectedRequest());
+    if (error.message === 'User rejected to watch the asset.') {
+      return end(ethErrors.provider.userRejectedRequest());
+    }
+    return end(error);
   }
 }
