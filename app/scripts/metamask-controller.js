@@ -675,7 +675,7 @@ export default class MetamaskController extends EventEmitter {
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
-      window: window.fetch.bind(window),
+      fetchFunction: globalThis.fetch.bind(globalThis),
     });
 
     this.rateLimitController = new RateLimitController({
