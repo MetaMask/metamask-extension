@@ -11,7 +11,7 @@ import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../shared/notifications';
-import { getSortedNotificationsToShow } from '../../../selectors';
+import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
   ADVANCED_ROUTE,
@@ -172,7 +172,7 @@ export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
   const history = useHistory();
 
-  const notifications = useSelector(getSortedNotificationsToShow);
+  const notifications = useSelector(getSortedAnnouncementsToShow);
   const locale = useSelector(getCurrentLocale);
 
   const [seenNotifications, setSeenNotifications] = useState({});

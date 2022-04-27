@@ -30,7 +30,7 @@ import {
   ControllerMessenger,
   CurrencyRateController,
   PhishingController,
-  NotificationController,
+  AnnouncementController,
   GasFeeController,
   TokenListController,
   TokensController,
@@ -454,9 +454,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.phishingController = new PhishingController();
 
-    this.notificationController = new NotificationController(
-      { allNotifications: UI_NOTIFICATIONS },
-      initState.NotificationController,
+    this.announcementController = new AnnouncementController(
+      { allAnnouncements: UI_NOTIFICATIONS },
+      initState.AnnouncementController,
     );
 
     // token exchange rate tracker
@@ -984,7 +984,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
       ThreeBoxController: this.threeBoxController.store,
-      NotificationController: this.notificationController,
+      AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
@@ -1024,7 +1024,7 @@ export default class MetamaskController extends EventEmitter {
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
-        NotificationController: this.notificationController,
+        AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
@@ -1369,7 +1369,7 @@ export default class MetamaskController extends EventEmitter {
       keyringController,
       metaMetricsController,
       networkController,
-      notificationController,
+      announcementController,
       onboardingController,
       permissionController,
       preferencesController,
@@ -1824,8 +1824,8 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // Notifications
-      updateViewedNotifications: notificationController.updateViewed.bind(
-        notificationController,
+      updateViewedNotifications: announcementController.updateViewed.bind(
+        announcementController,
       ),
 
       // GasFeeController
