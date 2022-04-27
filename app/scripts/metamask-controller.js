@@ -2538,6 +2538,21 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Gets the current MetaMask preference selected currency (FIAT)
+   *
+   * @returns {Promise<string[]>} The wallet selected currency
+   */
+
+  async getPreferredCurrency() {
+    console.log(this.currencyRateController.store, 'CCC');
+    const { currentCurrency } = this.currencyRateController.state;
+
+    // console.log(currentCurrency, 'CURRENTTT')
+
+    return currentCurrency;
+  }
+
+  /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
    * method uses `PermissionController.updatePermissionsByCaveat` to
@@ -3434,6 +3449,7 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+        getPreferredCurrency: this.getPreferredCurrency.bind(this),
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
