@@ -3,9 +3,7 @@ import log from 'loglevel';
 
 const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
   const tab = await new Promise((resolve) => {
-    browser.tabs.update(
-      onboardingInitiator.tabId,
-      { active: true },
+    browser.tabs.update(onboardingInitiator.tabId, { active: true }).then(
       // eslint-disable-next-line no-shadow
       (tab) => {
         if (tab) {
@@ -35,7 +33,7 @@ const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
 export const returnToOnboardingInitiator = async (onboardingInitiator) => {
   const tab = await new Promise((resolve) => {
     // eslint-disable-next-line no-shadow
-    browser.tabs.get(onboardingInitiator.tabId, (tab) => {
+    browser.tabs.get(onboardingInitiator.tabId).then((tab) => {
       if (tab) {
         resolve(tab);
       } else {
