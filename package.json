@@ -439,7 +439,11 @@
       "ethereumjs-util>ethereum-cryptography>secp256k1": false,
       "gulp-watch>chokidar>fsevents": false,
       "gulp>glob-watcher>chokidar>fsevents": false,
-      "webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false
-    }
+      "webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
+      "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": false,
+      "@metamask/rpc-methods>@metamask/key-tree>secp256k1": false,
+      "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
+      "eth-lattice-keyring>secp256k1": false
+   }
   }
 }
