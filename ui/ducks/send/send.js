@@ -1828,7 +1828,7 @@ export function signTransaction() {
           `sendFlow - user clicked next and transaction should be updated in controller`,
         ),
       );
-      dispatch(updateTransactionSendFlowHistory(id, state[name].history));
+      await dispatch(updateTransactionSendFlowHistory(id, state[name].history));
       dispatch(updateEditableParams(id, editingTx.txParams));
       dispatch(updateTransactionGasFees(id, editingTx.txParams));
     } else {

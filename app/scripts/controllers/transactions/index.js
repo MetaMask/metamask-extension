@@ -703,8 +703,6 @@ export default class TransactionController extends EventEmitter {
       );
     }
 
-    console.log(sendFlowHistory);
-
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
     const eip1559Compatibility = await this.getEIP1559Compatibility();
