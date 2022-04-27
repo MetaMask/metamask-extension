@@ -30,7 +30,7 @@ import {
   ControllerMessenger,
   CurrencyRateController,
   PhishingController,
-  NotificationController,
+  AnnouncementController,
   GasFeeController,
   TokenListController,
   TokensController,
@@ -75,12 +75,14 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
+  ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
+import { EVENT } from '../../shared/constants/metametrics';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
@@ -452,9 +454,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.phishingController = new PhishingController();
 
-    this.notificationController = new NotificationController(
-      { allNotifications: UI_NOTIFICATIONS },
-      initState.NotificationController,
+    this.announcementController = new AnnouncementController(
+      { allAnnouncements: UI_NOTIFICATIONS },
+      initState.AnnouncementController,
     );
 
     // token exchange rate tracker
@@ -851,7 +853,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.trackEvent(
             {
               event: 'Tx Status Update: On-Chain Failure',
-              category: 'Background',
+              category: EVENT.CATEGORIES.BACKGROUND,
               properties: {
                 action: 'Transactions',
                 errorMessage: txMeta.simulationFails?.reason,
@@ -982,7 +984,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
       ThreeBoxController: this.threeBoxController.store,
-      NotificationController: this.notificationController,
+      AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
@@ -1022,7 +1024,7 @@ export default class MetamaskController extends EventEmitter {
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
-        NotificationController: this.notificationController,
+        AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
@@ -1204,7 +1206,7 @@ export default class MetamaskController extends EventEmitter {
       (snapId) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Installed',
-          category: 'Snaps',
+          category: EVENT.CATEGORIES.SNAPS,
           properties: {
             snap_id: snapId,
           },
@@ -1230,7 +1232,7 @@ export default class MetamaskController extends EventEmitter {
         { origin },
         { suppressUnauthorizedError = true } = {},
       ) => {
-        if (origin === 'metamask') {
+        if (origin === ORIGIN_METAMASK) {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
@@ -1372,7 +1374,7 @@ export default class MetamaskController extends EventEmitter {
       keyringController,
       metaMetricsController,
       networkController,
-      notificationController,
+      announcementController,
       onboardingController,
       permissionController,
       preferencesController,
@@ -1827,8 +1829,8 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // Notifications
-      updateViewedNotifications: notificationController.updateViewed.bind(
-        notificationController,
+      updateViewedNotifications: announcementController.updateViewed.bind(
+        announcementController,
       ),
 
       // GasFeeController
@@ -3285,7 +3287,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SUBJECT_TYPES.INTERNAL) {
-      origin = 'metamask';
+      origin = ORIGIN_METAMASK;
     }
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     else if (subjectType === SUBJECT_TYPES.SNAP) {
@@ -3587,7 +3589,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string} The connection's id (so that it can be deleted later)
    */
   addConnection(origin, { engine }) {
-    if (origin === 'metamask') {
+    if (origin === ORIGIN_METAMASK) {
       return null;
     }
 

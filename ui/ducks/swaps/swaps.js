@@ -72,6 +72,8 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
 } from '../../selectors';
+
+import { EVENT } from '../../../shared/constants/metametrics';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -86,6 +88,7 @@ import {
   SMART_TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -713,7 +716,7 @@ export const fetchQuotesAndSetQuoteState = (
     );
     trackEvent({
       event: 'Quotes Requested',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         token_from: fromTokenSymbol,
         token_from_amount: String(inputValue),
@@ -767,7 +770,7 @@ export const fetchQuotesAndSetQuoteState = (
       if (Object.values(fetchedQuotes)?.length === 0) {
         trackEvent({
           event: 'No Quotes Available',
-          category: 'swaps',
+          category: EVENT.CATEGORIES.SWAPS,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
@@ -788,7 +791,7 @@ export const fetchQuotesAndSetQuoteState = (
 
         trackEvent({
           event: 'Quotes Received',
-          category: 'swaps',
+          category: EVENT.CATEGORIES.SWAPS,
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
@@ -890,7 +893,7 @@ export const signAndSendSwapsSmartTransaction = ({
     };
     trackEvent({
       event: 'STX Swap Started',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: swapMetaData,
     });
 
@@ -948,7 +951,7 @@ export const signAndSendSwapsSmartTransaction = ({
       const sourceTokenSymbol = sourceTokenInfo.symbol;
       await dispatch(
         updateSmartTransaction(uuid, {
-          origin: 'metamask',
+          origin: ORIGIN_METAMASK,
           destinationTokenAddress,
           destinationTokenDecimals,
           destinationTokenSymbol,
@@ -961,7 +964,7 @@ export const signAndSendSwapsSmartTransaction = ({
       if (approvalTxUuid) {
         await dispatch(
           updateSmartTransaction(approvalTxUuid, {
-            origin: 'metamask',
+            origin: ORIGIN_METAMASK,
             type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol,
           }),
@@ -1140,7 +1143,7 @@ export const signAndSendTransactions = (
 
     trackEvent({
       event: 'Swap Started',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: swapMetaData,
     });
 
@@ -1172,12 +1175,9 @@ export const signAndSendTransactions = (
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
-      const approveTxMeta = await dispatch(
-        addUnapprovedTransaction(
-          { ...approveTxParams, amount: '0x0' },
-          'metamask',
-          TRANSACTION_TYPES.SWAP_APPROVAL,
-        ),
+      const approveTxMeta = await addUnapprovedTransaction(
+        { ...approveTxParams, amount: '0x0' },
+        TRANSACTION_TYPES.SWAP_APPROVAL,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
       finalApproveTxMeta = await dispatch(
@@ -1195,12 +1195,9 @@ export const signAndSendTransactions = (
       }
     }
 
-    const tradeTxMeta = await dispatch(
-      addUnapprovedTransaction(
-        usedTradeTxParams,
-        'metamask',
-        TRANSACTION_TYPES.SWAP,
-      ),
+    const tradeTxMeta = await addUnapprovedTransaction(
+      usedTradeTxParams,
+      TRANSACTION_TYPES.SWAP,
     );
     dispatch(setTradeTxId(tradeTxMeta.id));
 

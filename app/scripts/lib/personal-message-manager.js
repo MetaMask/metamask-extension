@@ -6,6 +6,7 @@ import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { addHexPrefix } from './util';
 
 const hexRe = /^[0-9A-Fa-f]+$/gu;
@@ -231,7 +232,7 @@ export default class PersonalMessageManager extends EventEmitter {
       const msg = this.getMsg(msgId);
       this.metricsEvent({
         event: reason,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           action: 'Sign Request',
           type: msg.type,

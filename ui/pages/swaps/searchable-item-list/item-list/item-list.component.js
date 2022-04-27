@@ -11,6 +11,7 @@ import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../../selectors';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -155,7 +156,7 @@ export default function ItemList({
                     onClick={() => {
                       trackEvent({
                         event: 'Clicked Block Explorer Link',
-                        category: 'Swaps',
+                        category: EVENT.CATEGORIES.SWAPS,
                         properties: {
                           link_type: 'Token Tracker',
                           action: 'Verify Contract Address',
