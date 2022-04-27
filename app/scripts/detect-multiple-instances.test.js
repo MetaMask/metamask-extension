@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import sinon from 'sinon';
 import {
@@ -68,8 +67,6 @@ describe('multiple instances running detector', function () {
     it('should not expose an error outside if sendMessage throws', async function () {
       sinon.restore();
 
-      sinon.spy(log, 'info');
-
       sinon.replace(browser, 'runtime', {
         sendMessage: sinon.stub().throws(),
         id: METAMASK_BETA_CHROME_ID,
@@ -80,11 +77,6 @@ describe('multiple instances running detector', function () {
       await checkForMultipleVersionsRunning();
 
       assert(!spy.threw());
-
-      assert.equal(
-        log.info.getCall(0).firstArg,
-        'Multiple instances running detection: sendMessage failed',
-      );
     });
   });
 
