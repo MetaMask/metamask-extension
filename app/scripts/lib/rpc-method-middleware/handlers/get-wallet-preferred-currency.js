@@ -17,7 +17,7 @@ export default getWalletCurrency;
  */
 
 /**
- * @typedef {Object} getLocaleParam
+ * @typedef {Object} getWalletCurrencyParam
  * @property {string} origin - The origin url
  */
 
