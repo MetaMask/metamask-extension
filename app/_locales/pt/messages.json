@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas isso não é garantido."
   },
-  "customNetworks": {
-    "message": "Redes personalizadas"
-  },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
   },
@@ -2300,9 +2297,6 @@
   },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia."
-  },
-  "onlyInteractWith": {
-    "message": "Interaja apenas com entidades de sua confiança."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Abra a MetaMask em tela cheia para conectar sua ledger por meio do WebHID.",

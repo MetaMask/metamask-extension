@@ -73,7 +73,7 @@ export default class ConfirmApproveContent extends Component {
   };
 
   state = {
-    showFullTxDetails: false,
+    showFullTxDetails: true,
     copied: false,
   };
 
@@ -613,7 +613,9 @@ export default class ConfirmApproveContent extends Component {
               >
                 <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
                   <div className="confirm-approve-content__small-blue-text">
-                    {t('viewFullTransactionDetails')}
+                    {this.state.showFullTxDetails
+                      ? t('hideFullTransactionDetails')
+                      : t('viewFullTransactionDetails')}
                   </div>
                   <i
                     className={classnames({
@@ -642,7 +644,9 @@ export default class ConfirmApproveContent extends Component {
                 >
                   <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
                     <div className="confirm-approve-content__small-blue-text">
-                      {t('viewFullTransactionDetails')}
+                      {this.state.showFullTxDetails
+                        ? t('hideFullTransactionDetails')
+                        : t('viewFullTransactionDetails')}
                     </div>
                     <i
                       className={classnames({

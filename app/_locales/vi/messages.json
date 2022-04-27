@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Việc tăng phí có thể giúp giảm thời gian xử lý, nhưng điều này không được đảm bảo."
   },
-  "customNetworks": {
-    "message": "Mạng tùy chỉnh"
-  },
   "customSpendLimit": {
     "message": "Giới hạn chi tiêu tùy chỉnh"
   },
@@ -2300,9 +2297,6 @@
   },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
-  },
-  "onlyInteractWith": {
-    "message": "Chỉ tương tác với các đối tượng mà bạn tin tưởng."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Mở MetaMask ở chế độ toàn màn hình để kết nối thiết bị Ledger của bạn qua WebHID.",
