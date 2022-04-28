@@ -2143,7 +2143,7 @@
     "message": "Enable dark mode"
   },
   "notifications12Description": {
-    "message": "Dark Mode will be enabled for new users depending on their system preferences. For existing users, enable Dark Mode manually under Settings -> Experimental."
+    "message": "Dark mode on Extension is finally here! To turn it on, go to Settings -> Experimental and select one of the display options: Light, Dark, System."
   },
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
