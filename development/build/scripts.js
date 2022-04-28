@@ -395,7 +395,7 @@ function createFactoredBuild({
       policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
-        `../../lavamoat/browserify/${buildType}/policy-override.json`,
+        `../../lavamoat/browserify/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
