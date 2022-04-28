@@ -371,4 +371,3 @@ describe('Create token, approve token and approve token without gas', function (
     });
   });
 });
-
