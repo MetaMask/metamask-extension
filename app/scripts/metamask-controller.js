@@ -88,6 +88,10 @@ import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import {
+  onMessageReceived,
+  checkForMultipleVersionsRunning,
+} from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -1062,6 +1066,11 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
+
+    // Multiple MetaMask instances launched warning
+    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
+    // Fire a ping message to check if other extensions are running
+    checkForMultipleVersionsRunning();
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
