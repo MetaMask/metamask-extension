@@ -1,16 +1,26 @@
 {
   "resources": {
-    "browser-resolve": {
+    "browserify>browser-resolve": {
       "packages": {
-        "core-js": true
+        "ethjs-query>babel-runtime>core-js": true
       }
     },
-    "babel-runtime": {
+    "ethjs-query>babel-runtime": {
       "packages": {
         "@babel/runtime": true
       }
     },
-    "node-fetch": {
+    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
+    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
+    "3box>graphql-request>cross-fetch>node-fetch": {
       "globals": {
         "fetch": true
       }
@@ -21,34 +31,24 @@
         "clearTimeout": true
       }
     },
-    "@ethersproject/random": {
+    "ethers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
       }
     },
-    "browser-passworder": {
+    "eth-keyring-controller>browser-passworder": {
       "globals": {
         "crypto": true
       }
     },
-    "randombytes": {
+    "ethereumjs-wallet>randombytes": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "extensionizer": {
-      "globals": {
-        "console": true
       }
     },
     "web3": {
       "globals": {
         "XMLHttpRequest": true
-      }
-    },
-    "storage": {
-      "globals": {
-        "localStorage": true
       }
     },
     "react-dom": {
@@ -58,10 +58,10 @@
     },
     "react-devtools": {
       "packages": {
-        "react-devtools-core": true
+        "react-devtools>react-devtools-core": true
       }
     },
-    "react-devtools-core": {
+    "react-devtools>react-devtools-core": {
       "globals": {
         "setTimeout": true,
         "WebSocket": true
