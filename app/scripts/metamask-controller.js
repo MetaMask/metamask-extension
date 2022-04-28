@@ -637,7 +637,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.3',
+        'https://metamask.github.io/iframe-execution-environment/0.4.4',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -658,6 +658,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:hasPermissions`,
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
+        `${this.permissionController.name}:revokePermissionForAllSubjects`,
       ],
     });
 
@@ -1085,13 +1086,14 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:add',
         ),
-        clearSnapState: (fromSubject) =>
-          this.controllerMessenger.call(
-            'SnapController:updateSnapState',
-            fromSubject,
-            null,
-          ),
+        clearSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:clearSnapState',
+        ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+          this.appStateController,
+        ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:get',
@@ -3527,6 +3529,10 @@ export default class MetamaskController extends EventEmitter {
 
           return Object.values(approvedPermissions);
         },
+        getPermissions: this.permissionController.getPermissions.bind(
+          this.permissionController,
+          origin,
+        ),
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         installSnaps: this.snapController.installSnaps.bind(
           this.snapController,

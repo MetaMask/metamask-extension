@@ -733,8 +733,10 @@
         "Worker": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.info": true,
         "console.log": true,
         "console.warn": true,
+        "fetch": true,
         "setTimeout": true
       },
       "packages": {
@@ -747,7 +749,6 @@
         "ajv": true,
         "buffer": true,
         "concat-stream": true,
-        "cross-fetch": true,
         "crypto-browserify": true,
         "eth-rpc-errors": true,
         "fast-deep-equal": true,
