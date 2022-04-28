@@ -15,6 +15,7 @@ import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
   ADVANCED_ROUTE,
+  EXPERIMENTAL_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
@@ -48,6 +49,10 @@ function getActionFunctionById(id, history) {
     10: () => {
       updateViewedNotifications({ 10: true });
       history.push(`${ADVANCED_ROUTE}#token-description`);
+    },
+    12: () => {
+      updateViewedNotifications({ 12: true });
+      history.push(EXPERIMENTAL_ROUTE);
     },
   };
 
