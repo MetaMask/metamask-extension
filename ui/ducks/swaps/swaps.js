@@ -555,16 +555,15 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
 };
 
 const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
-  if (transactions?.length > 0) {
-    for (const transaction of transactions) {
-      if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
-        dispatch(
-          setCurrentSmartTransactionsError(
-            stxErrorTypes.REGULAR_TX_IN_PROGRESS,
-          ),
-        );
-        break;
-      }
+  if (transactions?.length <= 0) {
+    return;
+  }
+  for (const transaction of transactions) {
+    if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
+      dispatch(
+        setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_IN_PROGRESS),
+      );
+      break;
     }
   }
 };
