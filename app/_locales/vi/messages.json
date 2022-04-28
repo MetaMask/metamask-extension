@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Nhập một ví bằng Cụm mật khẩu khôi phục bí mật"
   },
-  "importExistingWalletDescription": {
-    "message": "Nhập Cụm Mật Khẩu Khôi Phục Bí Mật (còn được gọi là Cụm Mật Khẩu Gốc) mà bạn được cấp khi tạo ví. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Nhập ví hiện tại bằng Cụm Mật Khẩu Khôi Phục Bí Mật"
-  },
   "importMyWallet": {
     "message": "Nhập Ví Của Tôi"
   },
@@ -1737,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Mới! Phát hiện NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ Opensea và hiển thị trong ví MetaMask của bạn."
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"

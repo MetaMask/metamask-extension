@@ -1276,13 +1276,6 @@
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
   },
-  "importExistingWalletDescription": {
-    "message": "Geben Sie die Geheime Wiederherstellungsphrase (alias Seed Phrase) ein, die Sie beim Erstellen Ihrer Wallet erhalten haben. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Eine bestehende Wallet mit einer Geheime Wiederherstellungsphrase importieren"
-  },
   "importMyWallet": {
     "message": "Meine Wallet importieren"
   },
@@ -1737,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Neu! NFT-Erkennung"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Erlaube der MetaMaske, NFTs automatisch von Opensea zu erkennen und in deiner MetaMask Wallet anzuzeigen."
   },
   "newNetworkAdded": {
     "message": "“$1” wurde erfolgreich hinzugefügt!"

@@ -122,10 +122,38 @@ export default function CountdownTimer({
 }
 
 CountdownTimer.propTypes = {
+  /**
+   * Unix timestamp that indicates the time at which this timer has started
+   * running.
+   */
   timeStarted: PropTypes.number,
+
+  /**
+   * Boolean indicating whether to display only the time (`true`) or to also
+   * display a label (`false`), given by the `labelKey` parameter.
+   */
   timeOnly: PropTypes.bool,
+
+  /**
+   * The duration of this timer in milliseconds.
+   */
   timerBase: PropTypes.number,
+
+  /**
+   * The time at which this timer should turn red, indicating it has almost run
+   * out of time. Given in the format `mm:ss`.
+   */
   warningTime: PropTypes.string,
+
+  /**
+   * The key of the label to display next to the timer, defined in
+   * `app/_locales/`.
+   */
   labelKey: PropTypes.string,
+
+  /**
+   * The key of the label to display in the tooltip when hovering over the info
+   * icon, defined in `app/_locales/`.
+   */
   infoTooltipLabelKey: PropTypes.string,
 };

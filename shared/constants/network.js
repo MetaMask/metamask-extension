@@ -39,6 +39,9 @@ export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
+export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
+export const POLYGON_DISPLAY_NAME = 'Polygon';
+export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
 
 const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({ network, excludeProjectId = false }) =>
@@ -125,6 +128,13 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [GOERLI_CHAIN_ID]: GOERLI_RPC_URL,
   [MAINNET_CHAIN_ID]: MAINNET_RPC_URL,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_RPC_URL,
+};
+
+export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
+  [MAINNET_CHAIN_ID]: ETH_TOKEN_IMAGE_URL,
+  [AVALANCHE_CHAIN_ID]: AVAX_TOKEN_IMAGE_URL,
+  [BSC_CHAIN_ID]: BNB_TOKEN_IMAGE_URL,
+  [POLYGON_CHAIN_ID]: MATIC_TOKEN_IMAGE_URL,
 };
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(

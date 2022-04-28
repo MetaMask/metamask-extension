@@ -108,7 +108,7 @@
       text-decoration: underline;
     }
 
-    button {
+    .actionable-message__actions button {
       background: var(--color-warning-default);
       color: var(--color-warning-inverse);
     }
@@ -126,7 +126,7 @@
       text-align: left;
     }
 
-    button {
+    .actionable-message__actions button {
       background: var(--color-error-default);
       color: var(--color-error-inverse);
     }
@@ -139,7 +139,7 @@
       background: var(--color-success-muted);
     }
 
-    button {
+    .actionable-message__actions button {
       background: var(--color-success-default);
       color: var(--color-success-inverse);
     }

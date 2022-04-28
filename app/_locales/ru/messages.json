@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "Импорт кошелька с помощью секретной фразы для восстановления"
   },
-  "importExistingWalletDescription": {
-    "message": "Введите секретную фразу для восстановления (также известную как «сид-фраза»), которую вы получили при создании кошелька. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Импортируйте существующий кошелек с помощью секретной фразы для восстановления"
-  },
   "importMyWallet": {
     "message": "Импорт моего кошелька"
   },
@@ -1737,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "Новинка! Обнаружение NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Разрешите MetaMask автоматически обнаруживать NFT из Opensea и отображать их в вашем кошельке MetaMask."
   },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
