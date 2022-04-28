@@ -794,9 +794,6 @@
   "decryptRequest": {
     "message": "I-decrypt ang request"
   },
-  "defaultTheme": {
-    "message": "Default"
-  },
   "delete": {
     "message": "I-delete"
   },
