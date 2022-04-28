@@ -12,9 +12,12 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 
+const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
+
 const DetectedTokenAggregators = ({ aggregators }) => {
   const t = useI18nContext();
-  const numOfHiddenAggregators = parseInt(aggregators.length, 10) - 2;
+  const numOfHiddenAggregators =
+    parseInt(aggregators.length, 10) - NUMBER_OF_AGGREGATORS_TO_DISPLAY;
   const [displayMore, setDisplayMore] = useState(false);
 
   return (
@@ -27,7 +30,9 @@ const DetectedTokenAggregators = ({ aggregators }) => {
               fontWeight={FONT_WEIGHT.NORMAL}
               key="detected-token-aggrgators-with-more"
             >
-              {`${aggregators.slice(0, 2).join(', ')}`}
+              {`${aggregators
+                .slice(0, NUMBER_OF_AGGREGATORS_TO_DISPLAY)
+                .join(', ')}`}
               <Button
                 type="link"
                 className="detected-token-aggregators__link"

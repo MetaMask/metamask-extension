@@ -66,7 +66,7 @@ const AssetList = ({ onClickAsset }) => {
   });
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || -1;
+  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
 
   return (
     <>

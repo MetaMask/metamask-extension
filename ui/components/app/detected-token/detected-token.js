@@ -13,6 +13,19 @@ import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
+const sortingBasedOnTokenSelection = (tokensDetected) => {
+  return (
+    chain(tokensDetected)
+      // get the values
+      .values()
+      // create a new object with keys 'selected', 'deselected' and group the tokens
+      .groupBy((token) => (token.selected ? 'selected' : 'deselected'))
+      // ditch the 'selected' property and get just the tokens'
+      .mapValues((group) => group.map(({ token }) => token))
+      // Exit the chain and get the underlying value, an object.
+      .value()
+  );
+};
 const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
 
@@ -31,17 +44,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
   const handleClearTokensSelection = async () => {
     // create a lodash chain on this object
-    const { selected: selectedTokens, deselected: deSelectedTokens } = chain(
-      tokensListDetected,
-    )
-      // get the values
-      .values()
-      // create a new object with keys 'selected', 'deselected' and group the tokens
-      .groupBy((token) => (token.selected ? 'selected' : 'deselected'))
-      // ditch the 'selected' property and get just the tokens'
-      .mapValues((group) => group.map(({ token }) => token))
-      // Exit the chain and get the underlying value, an object.
-      .value();
+    const {
+      selected: selectedTokens,
+      deselected: deSelectedTokens,
+    } = sortingBasedOnTokenSelection(tokensListDetected);
 
     if (deSelectedTokens.length < detectedTokens.length) {
       await dispatch(ignoreTokens(deSelectedTokens));
@@ -66,11 +72,9 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
   const onImport = async () => {
     // create a lodash chain on this object
-    const { selected: selectedTokens } = chain(tokensListDetected)
-      .values()
-      .groupBy((token) => (token.selected ? 'selected' : 'deselected'))
-      .mapValues((group) => group.map(({ token }) => token))
-      .value();
+    const { selected: selectedTokens } = sortingBasedOnTokenSelection(
+      tokensListDetected,
+    );
 
     if (selectedTokens.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);

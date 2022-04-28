@@ -1,13 +1,13 @@
 .detected-token-ignored-popover {
   &__ignore-button {
-    margin-right: 8px;
+    margin-inline-end: 8px;
   }
 
   &__import-button {
-    margin-left: 8px;
+    margin-inline-start: 8px;
   }
 
   .popover-header {
-    margin-left: 85px;
+    margin-inline-start: 85px;
   }
 }
