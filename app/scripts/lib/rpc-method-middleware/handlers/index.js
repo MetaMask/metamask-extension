@@ -17,6 +17,6 @@ const handlers = [
   sendMetadata,
   switchEthereumChain,
   watchAsset,
-  walletPreferredCurrency
+  walletPreferredCurrency,
 ];
 export default handlers;
