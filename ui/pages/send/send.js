@@ -111,7 +111,7 @@ export default function SendTransactionScreen() {
               `sendFlow - User pasted ${text} into address field`,
             ),
           );
-          updateRecipient({ address: text, nickname: '' });
+          return dispatch(updateRecipient({ address: text, nickname: '' }));
         }}
         onReset={() => dispatch(resetRecipientInput())}
         scanQrCode={() => {
