@@ -358,8 +358,8 @@ export default function Swap() {
 
   const isStxNotEnoughFundsError =
     currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
-  const isStxRegularTxPendingError =
-    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_PENDING;
+  const isRegularTxInProgressError =
+    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_IN_PROGRESS;
 
   return (
     <div className="swaps">
@@ -423,7 +423,7 @@ export default function Swap() {
                       {t('stxUnavailable')}
                     </div>
                     <div>
-                      {isStxRegularTxPendingError
+                      {isRegularTxInProgressError
                         ? t('stxFallbackPendingTx')
                         : t('stxFallbackUnavailable')}
                     </div>
