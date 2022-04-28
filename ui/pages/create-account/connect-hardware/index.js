@@ -10,6 +10,7 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   DEVICE_NAMES,
@@ -254,7 +255,7 @@ class ConnectHardwareForm extends Component {
     )
       .then((_) => {
         this.context.trackEvent({
-          category: 'Accounts',
+          category: EVENT.CATEGORIES.ACCOUNTS,
           event: `Connected Account with: ${device}`,
           properties: {
             action: 'Connected Hardware Wallet',
@@ -265,7 +266,7 @@ class ConnectHardwareForm extends Component {
       })
       .catch((e) => {
         this.context.trackEvent({
-          category: 'Accounts',
+          category: EVENT.CATEGORIES.ACCOUNTS,
           event: 'Error connecting hardware wallet',
           properties: {
             action: 'Connected Hardware Wallet',

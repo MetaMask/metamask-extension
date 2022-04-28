@@ -15,6 +15,7 @@ import { showModal } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
@@ -44,7 +45,7 @@ export default function NativeAsset({ nativeCurrency }) {
             onClickBlockExplorer={() => {
               trackEvent({
                 event: 'Clicked Block Explorer Link',
-                category: 'Navigation',
+                category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
                   link_type: 'Account Tracker',
                   action: 'Asset Options',

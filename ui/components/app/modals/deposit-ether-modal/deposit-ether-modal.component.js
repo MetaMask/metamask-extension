@@ -4,6 +4,7 @@ import {
   NETWORK_TO_NAME_MAP,
   BUYABLE_CHAINS_MAP,
 } from '../../../../../shared/constants/network';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import Button from '../../../ui/button';
 import LogoMoonPay from '../../../ui/logo/logo-moonpay';
 import LogoWyre from '../../../ui/logo/logo-wyre';
@@ -137,7 +138,7 @@ export default class DepositEtherModal extends Component {
               buttonLabel: t('continueToTransak'),
               onButtonClick: () => {
                 this.context.trackEvent({
-                  category: 'Accounts',
+                  category: EVENT.CATEGORIES.ACCOUNTS,
                   event: 'Click buy Ether via Transak',
                   properties: {
                     action: 'Deposit Ether',
@@ -155,7 +156,7 @@ export default class DepositEtherModal extends Component {
               buttonLabel: t('continueToMoonPay'),
               onButtonClick: () => {
                 this.context.trackEvent({
-                  category: 'Accounts',
+                  category: EVENT.CATEGORIES.ACCOUNTS,
                   event: 'Click buy Ether via MoonPay',
                   properties: {
                     action: 'Deposit Ether',
@@ -173,7 +174,7 @@ export default class DepositEtherModal extends Component {
               buttonLabel: t('continueToWyre'),
               onButtonClick: () => {
                 this.context.trackEvent({
-                  category: 'Accounts',
+                  category: EVENT.CATEGORIES.ACCOUNTS,
                   event: 'Click buy Ether via Wyre',
                   properties: {
                     action: 'Deposit Ether',

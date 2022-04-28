@@ -86,6 +86,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -441,7 +442,7 @@ export default function BuildQuote({
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Build Quote Page Loaded',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
@@ -473,7 +474,7 @@ export default function BuildQuote({
         onClick={() => {
           trackEvent({
             event: 'Clicked Block Explorer Link',
-            category: 'Swaps',
+            category: EVENT.CATEGORIES.SWAPS,
             properties: {
               link_type: 'Token Tracker',
               action: 'Swaps Confirmation',
@@ -802,7 +803,7 @@ export default function BuildQuote({
                       onClick={() => {
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
-                          category: 'Swaps',
+                          category: EVENT.CATEGORIES.SWAPS,
                           properties: {
                             link_type: 'Token Tracker',
                             action: 'Swaps Confirmation',
