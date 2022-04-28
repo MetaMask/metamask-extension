@@ -452,6 +452,7 @@ export const getSwapsRefreshStates = (state) => {
     swapsStxGetTransactionsRefreshTime,
     swapsStxBatchStatusRefreshTime,
     swapsStxStatusDeadline,
+    swapsStxMaxFeeMultiplier,
   } = state.metamask.swapsState;
   return {
     quoteRefreshTime: swapsQuoteRefreshTime,
@@ -459,6 +460,7 @@ export const getSwapsRefreshStates = (state) => {
     stxGetTransactionsRefreshTime: swapsStxGetTransactionsRefreshTime,
     stxBatchStatusRefreshTime: swapsStxBatchStatusRefreshTime,
     stxStatusDeadline: swapsStxStatusDeadline,
+    stxMaxFeeMultiplier: swapsStxMaxFeeMultiplier,
   };
 };
 

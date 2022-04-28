@@ -43,6 +43,7 @@ const POLL_COUNT_LIMIT = 3;
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
 const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
 const FALLBACK_SMART_TRANSACTIONS_DEADLINE = 180;
+const FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER = 2;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -88,6 +89,7 @@ const initialState = {
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
     swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsFeatureFlags: {},
   },
 };
@@ -152,6 +154,7 @@ export default class SwapsController {
       stxGetTransactions: refreshRates.stxGetTransactions * 1000,
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
+      stxMaxFeeMultiplier: refreshRates.stxMaxFeeMultiplier,
     };
   }
 
@@ -181,6 +184,9 @@ export default class SwapsController {
         swapsStxStatusDeadline:
           swapsRefreshRates?.stxStatusDeadline ||
           FALLBACK_SMART_TRANSACTIONS_DEADLINE,
+        swapsStxMaxFeeMultiplier:
+          swapsRefreshRates?.stxMaxFeeMultiplier ||
+          FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
       },
     });
   }

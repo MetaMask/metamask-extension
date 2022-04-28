@@ -399,7 +399,8 @@ export default function ViewQuote() {
     const stxEstimatedFeeInWeiDec =
       smartTransactionEstimatedGas.txData.feeEstimate +
       (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
-    const stxMaxFeeInWeiDec = stxEstimatedFeeInWeiDec * 2;
+    const stxMaxFeeInWeiDec =
+      stxEstimatedFeeInWeiDec * swapsRefreshRates.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
