@@ -6,6 +6,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.15.0]
+### Uncategorized
+- Unit test proptype ([#14509](https://github.com/MetaMask/metamask-extension/pull/14509))
+- Sync `master` with `develop` ([#14562](https://github.com/MetaMask/metamask-extension/pull/14562))
+- Revert "Revert "Dark Mode: What's New Announcement ([#14346](https://github.com/MetaMask/metamask-extension/pull/14346))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Lavamoat - protect all UI contexts ([#14537](https://github.com/MetaMask/metamask-extension/pull/14537))
+- snaps-skunkworks@0.11.1 ([#14531](https://github.com/MetaMask/metamask-extension/pull/14531))
+- Updating text/muted to text/alternative for select text on home screen ([#14553](https://github.com/MetaMask/metamask-extension/pull/14553))
+- Dark Mode : Add OS option in theme selection dropdown ([#14379](https://github.com/MetaMask/metamask-extension/pull/14379))
+- Update Dark Mode What's New message ([#14535](https://github.com/MetaMask/metamask-extension/pull/14535))
+- Adding 'Swaps' to metametrics event categories ([#14538](https://github.com/MetaMask/metamask-extension/pull/14538))
+- Create new e2e test for bip-44 snap in test-snaps ([#14440](https://github.com/MetaMask/metamask-extension/pull/14440))
+- Warn about multiple MetaMask instances running ([#13836](https://github.com/MetaMask/metamask-extension/pull/13836))
+- Fixed API for watchAsset ([#14545](https://github.com/MetaMask/metamask-extension/pull/14545))
+- Rename NotificationController to AnnouncementController ([#14389](https://github.com/MetaMask/metamask-extension/pull/14389))
+- Adjust package version to 10.13.0 ([#14540](https://github.com/MetaMask/metamask-extension/pull/14540))
+- Add token standard to custom token details ([#14506](https://github.com/MetaMask/metamask-extension/pull/14506))
+- lavamoat@6 - update to secure package naming ([#14488](https://github.com/MetaMask/metamask-extension/pull/14488))
+- Fixing 'Learn more' casing on import token screen ([#14529](https://github.com/MetaMask/metamask-extension/pull/14529))
+- call controller methods directly in send duck ([#14465](https://github.com/MetaMask/metamask-extension/pull/14465))
+- show token approval details on confirm approve screen by default ([#14523](https://github.com/MetaMask/metamask-extension/pull/14523))
+- i18n - remove unused locale strings ([#14527](https://github.com/MetaMask/metamask-extension/pull/14527))
+- Do not show failed off-chain transactions details when grouped with another valid transaction of same nonce ([#14497](https://github.com/MetaMask/metamask-extension/pull/14497))
+- Update for a new Add network page ([#13866](https://github.com/MetaMask/metamask-extension/pull/13866))
+- Update display of switching current network ([#13450](https://github.com/MetaMask/metamask-extension/pull/13450))
+- Ensure network name in confirm page container is defined ([#14520](https://github.com/MetaMask/metamask-extension/pull/14520))
+- New Crowdin translations by Github Action ([#13556](https://github.com/MetaMask/metamask-extension/pull/13556))
+- MetaMetrics: Add EVENT.CATEGORIES const ([#14474](https://github.com/MetaMask/metamask-extension/pull/14474))
+- Update tx data for simpleSends and add isBestQuote to swaps data ([#14496](https://github.com/MetaMask/metamask-extension/pull/14496))
+- Feature/remove bitmask ([#14489](https://github.com/MetaMask/metamask-extension/pull/14489))
+- MetaMetrics: add 'number_of_nfts' user trait ([#14495](https://github.com/MetaMask/metamask-extension/pull/14495))
+- Add testnet name as prefix for native currency of preloaded testnets ([#14454](https://github.com/MetaMask/metamask-extension/pull/14454))
+- Fix ESLint config around files w/ CommonJS imports ([#14380](https://github.com/MetaMask/metamask-extension/pull/14380))
+- Add new token added event (duplicating the existing event structure) when collectible is manually added ([#14279](https://github.com/MetaMask/metamask-extension/pull/14279))
+- increase test coverage of nonce sorted transaction selector ([#14486](https://github.com/MetaMask/metamask-extension/pull/14486))
+- Fix the alerts toggles in settings ([#14498](https://github.com/MetaMask/metamask-extension/pull/14498))
+- Disable swaps whenever the environment is not development or testing, so that behaviour follows production for QA purposes ([#14499](https://github.com/MetaMask/metamask-extension/pull/14499))
+- E2e test timeout ([#14483](https://github.com/MetaMask/metamask-extension/pull/14483))
+- Stop storing request and response objects in the permission activity log ([#14485](https://github.com/MetaMask/metamask-extension/pull/14485))
+- increase test coverage of nonce sorted transaction selector ([#14479](https://github.com/MetaMask/metamask-extension/pull/14479))
+- bump crowdin/github-action ([#14475](https://github.com/MetaMask/metamask-extension/pull/14475))
+- E2e readme docs ([#14434](https://github.com/MetaMask/metamask-extension/pull/14434))
+- E2e connected state ([#14444](https://github.com/MetaMask/metamask-extension/pull/14444))
+
 ## [10.14.0]
 ### Added
 - **[FLASK]** Add snap version to details page ([#14110](https://github.com/MetaMask/metamask-extension/pull/14110))
@@ -2908,7 +2953,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...HEAD
+[10.15.0]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...v10.15.0
 [10.14.0]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.0
 [10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
