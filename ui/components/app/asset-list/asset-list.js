@@ -67,9 +67,6 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const detectedTokensDetails = detectedTokens.map(
-    ({ address, symbol }) => `${symbol} - ${address}`,
-  );
 
   return (
     <>
@@ -99,19 +96,7 @@ const AssetList = ({ onClickAsset }) => {
       />
       {process.env.TOKEN_DETECTION_V2
         ? detectedTokens.length > 0 && (
-            <DetectedTokensLink
-              onClick={() => {
-                setShowDetectedTokens(true);
-                trackEvent({
-                  event: 'Clicked "Import Tokens"',
-                  category: EVENT.CATEGORIES.WALLET,
-                  properties: {
-                    token_quantity: detectedTokens.length,
-                    tokens: detectedTokensDetails,
-                  },
-                });
-              }}
-            />
+            <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
           )
         : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>

@@ -13,7 +13,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import { TOKEN_STANDARDS } from '../../../helpers/constants/common';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -55,13 +55,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
     selectedTokens.forEach((importedToken) => {
       trackEvent({
-        event: 'Token Added',
+        event: EVENT_NAMES.TOKEN_ADDED,
         category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: 'detected',
+          source: EVENT.SOURCE.DETECTED,
           token_standard: TOKEN_STANDARDS.ERC20,
           asset_type: ASSET_TYPES.TOKEN,
         },
@@ -69,13 +69,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     });
     deSelectedTokens.forEach((ignoredToken) => {
       trackEvent({
-        event: 'Token Ignored',
+        event: EVENT_NAMES.TOKEN_IGNORED,
         category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: ignoredToken.symbol,
           token_contract_address: ignoredToken.address,
           token_decimal_precision: ignoredToken.decimals,
-          source: 'detected',
+          source: EVENT.SOURCE.DETECTED,
           token_standard: TOKEN_STANDARDS.ERC20,
           asset_type: ASSET_TYPES.TOKEN,
         },
@@ -109,13 +109,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
     selectedTokens.forEach((importedToken) => {
       trackEvent({
-        event: 'Token Added',
+        event: EVENT_NAMES.TOKEN_ADDED,
         category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: importedToken.symbol,
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
-          source: 'detected',
+          source: EVENT.SOURCE.DETECTED,
           token_standard: TOKEN_STANDARDS.ERC20,
           asset_type: ASSET_TYPES.TOKEN,
         },

@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
@@ -38,7 +41,7 @@ const DetectedTokenSelectionPopover = ({
   const onClose = () => {
     setShowDetectedTokens(false);
     trackEvent({
-      event: '"Import Tokens" cancelled',
+      event: EVENT_NAMES.CANCELLED_IMPORT_TOKENS,
       category: EVENT.CATEGORIES.WALLET,
       properties: {
         token_quantity: detectedTokens.length,

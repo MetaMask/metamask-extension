@@ -27,6 +27,7 @@ import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/me
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default function AddCollectible() {
   const t = useI18nContext();
@@ -77,7 +78,7 @@ export default function AddCollectible() {
     );
 
     trackEvent({
-      event: 'Token Added',
+      event: EVENT_NAMES.TOKEN_ADDED,
       category: 'Wallet',
       sensitiveProperties: {
         token_contract_address: address,
@@ -85,7 +86,7 @@ export default function AddCollectible() {
         tokenId: tokenId.toString(),
         asset_type: ASSET_TYPES.COLLECTIBLE,
         token_standard: tokenDetails?.standard,
-        source: 'custom',
+        source: EVENT.SOURCE.CUSTOM,
       },
     });
 

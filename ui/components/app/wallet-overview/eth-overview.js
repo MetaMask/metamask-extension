@@ -136,7 +136,7 @@ const EthOverview = ({ className }) => {
                   event: 'Swaps Opened',
                   category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: 'Main View',
+                    source: EVENT.SOURCE.MAIN_VIEW,
                     active_currency: 'ETH',
                   },
                 });

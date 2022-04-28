@@ -178,7 +178,7 @@
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
- * @property {'token_detection_enabled'} [TOKEN_DETECTION_ENABLED] - when token detection feature is toggled we
+ * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
  */
 
@@ -225,6 +225,7 @@ export const TRAITS = {
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
  *  enabled?
  * @property {string} [theme] - which theme the user has selected
+ * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -268,10 +269,15 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
-  SIGNATURE_REQUESTED: 'Signature Requested',
+  CANCELLED_IMPORT_TOKENS: 'Import Tokens Canceled',
+  CLICKED_IMPORT_TOKENS: 'Import Tokens Clicked',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  TOKEN_ADDED: 'Token Added',
+  TOKEN_DETECTED: 'Token Detected',
+  TOKEN_IGNORED: 'Token Ignored',
 };
 
 export const EVENT = {
@@ -290,5 +296,15 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+  },
+  SOURCE: {
+    CUSTOM: 'custom',
+    DETECTED: 'detected',
+    DAPP: 'dapp',
+    LIST: 'list',
+    MAIN_VIEW: 'Main View',
+    METAMASK: 'metamask',
+    TOKEN_VIEW: 'Token View',
+    USER: 'user',
   },
 };
