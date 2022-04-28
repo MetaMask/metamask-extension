@@ -2066,7 +2066,8 @@
         "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "events": true,
-        "hdkey": true
+        "hdkey": true,
+        "rlp": true
       }
     },
     "ethereum-bloom-filters": {
@@ -2443,6 +2444,7 @@
     "hash-base": {
       "packages": {
         "inherits": true,
+        "readable-stream": true,
         "safe-buffer": true,
         "stream-browserify": true
       }
