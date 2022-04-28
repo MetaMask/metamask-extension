@@ -1,14 +1,10 @@
 .siwe-request-header {
-  // @include H7;
 
   display: flex;
   padding: 1rem;
-  // border-bottom: 1px solid $geyser;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
-
 
   &--account {
     flex: 1;
