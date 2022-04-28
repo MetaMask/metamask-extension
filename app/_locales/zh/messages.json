@@ -797,9 +797,6 @@
   "decryptRequest": {
     "message": "解密请求"
   },
-  "defaultTheme": {
-    "message": "默认"
-  },
   "delete": {
     "message": "删除"
   },

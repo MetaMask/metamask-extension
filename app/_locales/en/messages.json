@@ -805,9 +805,6 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "defaultTheme": {
-    "message": "Default"
-  },
   "delete": {
     "message": "Delete"
   },
@@ -1251,6 +1248,10 @@
   "flaskWelcomeWarning3": {
     "message": "All Flask APIs are experimental. They may be changed or removed without notice, or they might stay on Flask indefinitely without ever being migrated to stable MetaMask. Use them at your own risk.",
     "description": "This message warns developers about unstable Flask APIs"
+  },
+  "flaskWelcomeWarning4": {
+    "message": "Make sure to disable your regular MetaMask extension when using Flask.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "I accept the risks",
@@ -1718,6 +1719,9 @@
   "levelArrow": {
     "message": "level arrow"
   },
+  "lightTheme": {
+    "message": "Light"
+  },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
@@ -2139,7 +2143,7 @@
     "message": "Enable dark mode"
   },
   "notifications12Description": {
-    "message": "Dark Mode will be enabled for new users depending on their system preferences. For existing users, enable Dark Mode manually under Settings -> Experimental."
+    "message": "Dark mode on Extension is finally here! To turn it on, go to Settings -> Experimental and select one of the display options: Light, Dark, System."
   },
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
@@ -2330,6 +2334,9 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "osTheme": {
+    "message": "System"
   },
   "padlock": {
     "message": "Padlock"

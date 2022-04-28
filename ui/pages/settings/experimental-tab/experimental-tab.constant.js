@@ -1,4 +1,5 @@
 export const THEME_TYPE = {
-  DEFAULT: 'default',
+  LIGHT: 'light',
   DARK: 'dark',
+  OS: 'os',
 };
