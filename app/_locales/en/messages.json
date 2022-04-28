@@ -1954,7 +1954,7 @@
     "message": "Network:"
   },
   "networkAddedSuccessfully": {
-    "message": "Network added successfully"
+    "message": "Network added successfully!"
   },
   "networkDetails": {
     "message": "Network Details"
@@ -2372,6 +2372,9 @@
   "or": {
     "message": "or"
   },
+  "orYouCan": {
+    "message": "Or you can"
+  },
   "origin": {
     "message": "Origin"
   },
@@ -2380,9 +2383,6 @@
   },
   "padlock": {
     "message": "Padlock"
-  },
-  "orYouCan": {
-    "message": "Or you can"
   },
   "parameters": {
     "message": "Parameters"
@@ -4014,11 +4014,11 @@
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
   },
-  "warning": {
-    "message": "Warning"
-  },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
+  },
+  "warning": {
+    "message": "Warning"
   },
   "weak": {
     "message": "Weak"
@@ -4080,7 +4080,7 @@
     "message": "Yes, let's try"
   },
   "youHaveAddedAll": {
-    "message": "You've added all the popular networks. You can discover more networks"
+    "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

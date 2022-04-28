@@ -3,8 +3,14 @@
     border-bottom: 1px solid var(--color-border-default);
 
     &__back-icon {
-      margin-left: 24px;
-      margin-right: 16px;
+      margin-left: -8px;
+      margin-right: 4px;
+    }
+  }
+
+  &__list-of-networks {
+    @media screen and (min-width: $break-large) {
+      width: 50%;
     }
   }
 
@@ -36,6 +42,7 @@
 
   &__footer {
     border-top: 1px solid var(--color-border-muted);
+    width: 100%;
 
     & .btn-link {
       display: initial;
@@ -52,9 +59,19 @@
     }
   }
 
-  &__link {
-    display: inline !important;
-    padding: 0 !important;
+  &__edge-case-box {
+    border: 1px solid var(--brand-colors-grey-grey100);
+
+    &__link {
+      color: var(--color-info-default);
+      display: inline !important;
+      padding: 0 !important;
+    }
+
+    &__button {
+      display: inline !important;
+      padding: 0 !important;
+    }
   }
 }
 

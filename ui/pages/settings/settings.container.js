@@ -66,7 +66,9 @@ const mapStateToProps = (state, ownProps) => {
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
   const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
-  const isAddPopularCustomNetwork = Boolean(pathname.match(ADD_POPULAR_CUSTOM_NETWORK));
+  const isAddPopularCustomNetwork = Boolean(
+    pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
+  );
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];

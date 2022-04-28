@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
+import { isEmpty } from 'lodash';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 ///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
@@ -26,10 +27,7 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   DISPLAY,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   COLORS,
-  ALIGN_ITEMS,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 
 import {
@@ -52,9 +50,7 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
-import { setNewCustomNetworkAdded } from '../../ducks/app/app';
 ///: END:ONLY_INCLUDE_IN
-import { isEmpty } from 'lodash';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
@@ -488,32 +484,53 @@ export default class Home extends PureComponent {
             key="home-infuraBlockedNotification"
           />
         ) : null}
-        {!isEmpty(newCustomNetworkAdded) && 
-          <Popover onClose={() => setNewCustomNetworkAdded()} className="home__new-network-added">
-            <i
-              className="fa fa-check-circle fa-2x"
-              style={{ color: 'var(--color-success-default)' }}
-            />   
-            <Typography variant={TYPOGRAPHY.H4} margin={[5, 9, 0, 9]} fontWeight={FONT_WEIGHT[700]}>
+        {!isEmpty(newCustomNetworkAdded) && (
+          <Popover className="home__new-network-added">
+            <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
+            <Typography
+              variant={TYPOGRAPHY.H4}
+              margin={[5, 9, 0, 9]}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
               {t('networkAddedSuccessfully')}
             </Typography>
             <Box margin={[8, 8, 5, 8]}>
-              <Button type='primary' className="home__new-network-added__switch-to-button" onClick={() => {
-                setRpcTarget(newCustomNetworkAdded.rpcUrl, newCustomNetworkAdded.chainId, newCustomNetworkAdded.ticker, newCustomNetworkAdded.chainName);
-                setNewCustomNetworkAdded();
-              }}> 
-                <Typography variant={TYPOGRAPHY.H6}>
+              <Button
+                type="primary"
+                className="home__new-network-added__switch-to-button"
+                onClick={() => {
+                  setRpcTarget(
+                    newCustomNetworkAdded.rpcUrl,
+                    newCustomNetworkAdded.chainId,
+                    newCustomNetworkAdded.ticker,
+                    newCustomNetworkAdded.chainName,
+                  );
+                  setNewCustomNetworkAdded();
+                }}
+              >
+                <Typography
+                  variant={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                  color={COLORS.PRIMARY_INVERSE}
+                >
                   {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
                 </Typography>
               </Button>
-              <Button type='secondary' onClick={() => setNewCustomNetworkAdded()}>
-                <Typography variant={TYPOGRAPHY.H6}>
+              <Button
+                type="secondary"
+                onClick={() => setNewCustomNetworkAdded()}
+              >
+                <Typography
+                  variant={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                  color={COLORS.PRIMARY_DEFAULT}
+                >
                   {t('dismiss')}
                 </Typography>
               </Button>
             </Box>
-           </Popover>
-        }
+          </Popover>
+        )}
       </MultipleNotifications>
     );
   }

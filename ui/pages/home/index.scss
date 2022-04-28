@@ -212,6 +212,11 @@
     border-radius: 10px;
     text-align: center;
 
+    &__check-circle {
+      color: var(--color-success-default);
+      margin-top: 20px;
+    }
+
     &__switch-to-button {
       margin-bottom: 16px;
     }

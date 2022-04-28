@@ -42,7 +42,11 @@ import {
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import { setThreeBoxLastUpdated, hideWhatsNewPopup, setNewCustomNetworkAdded } from '../../ducks/app/app';
+import {
+  setThreeBoxLastUpdated,
+  hideWhatsNewPopup,
+  setNewCustomNetworkAdded,
+} from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';

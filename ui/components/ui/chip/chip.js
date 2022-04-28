@@ -45,8 +45,12 @@ export default function Chip({
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
     >
-      {leftIcon && !leftIconUrl ? <div className="chip__left-icon">{leftIcon}</div> : null}
-      {leftIconUrl ?  <UrlIcon className="chip__left-url-icon" url={leftIconUrl} /> : null}      
+      {leftIcon && !leftIconUrl ? (
+        <div className="chip__left-icon">{leftIcon}</div>
+      ) : null}
+      {leftIconUrl ? (
+        <UrlIcon className="chip__left-url-icon" url={leftIconUrl} />
+      ) : null}
       {children ?? (
         <Typography
           className="chip__label"
@@ -111,4 +115,12 @@ Chip.propTypes = {
    * max-content can overflow the parent's width and break designs
    */
   maxContent: PropTypes.bool,
+  /**
+   * Icon location
+   */
+  leftIconUrl: PropTypes.string,
+  /**
+   * Display or not the inline block
+   */
+  displayInlineBlock: PropTypes.bool,
 };

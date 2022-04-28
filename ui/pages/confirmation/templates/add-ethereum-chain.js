@@ -1,10 +1,12 @@
 import { ethErrors } from 'eth-rpc-errors';
+import React from 'react';
 import {
   SEVERITIES,
   TYPOGRAPHY,
   TEXT_ALIGN,
   JUSTIFY_CONTENT,
   DISPLAY,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 
@@ -133,7 +135,7 @@ function getValues(pendingApproval, t, actions) {
             key: 'network-chip',
             props: {
               label: pendingApproval.requestData.chainName,
-              backgroundColor: 'Grey-000',
+              backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
               leftIconUrl: pendingApproval.requestData.imageUrl,
             },
           },
@@ -142,7 +144,9 @@ function getValues(pendingApproval, t, actions) {
       {
         element: 'Typography',
         key: 'title',
-        children: originIsMetaMask ? t('wantToAddThisNetwork') : t('addEthereumChainConfirmationTitle'),
+        children: originIsMetaMask
+          ? t('wantToAddThisNetwork')
+          : t('addEthereumChainConfirmationTitle'),
         props: {
           variant: TYPOGRAPHY.H3,
           align: 'center',
@@ -192,6 +196,15 @@ function getValues(pendingApproval, t, actions) {
               ],
             },
           },
+          {
+            element: 'Tooltip',
+            key: 'tooltip',
+            props: {
+              position: 'bottom',
+              title: t('copyToClipboard'),
+              children: <i className="fa fa-copy" />,
+            },
+          },
         ],
         props: {
           variant: TYPOGRAPHY.H7,
@@ -238,7 +251,7 @@ function getValues(pendingApproval, t, actions) {
         pendingApproval.id,
         ethErrors.provider.userRejectedRequest().serialize(),
       ),
-      networkDisplay: !originIsMetaMask,
+    networkDisplay: !originIsMetaMask,
   };
 }
 

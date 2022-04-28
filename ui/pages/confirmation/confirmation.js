@@ -25,9 +25,9 @@ import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
+import { addCustomNetwork } from '../../store/actions';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
-import { addCustomNetwork } from '../../store/actions';
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -198,33 +198,24 @@ export default function ConfirmationPage() {
             />
           </Box>
         ) : null}
-        <Box
-          alignItems="center"
-          marginTop={1}
-          padding={[1, 4, 4]}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-        >
-          <SiteIcon
-            icon={originMetadata.iconUrl}
-            name={originMetadata.hostname}
-            size={36}
-          />
-          <SiteOrigin
-            chip
-            siteOrigin={stripHttpsScheme(originMetadata.origin)}
-            title={stripHttpsScheme(originMetadata.origin)}
-          />
-        </Box>
-        {pendingConfirmation.origin === 'metamask'
-        ? null
-        : <Box justifyContent="center" padding={[4, 4, 4]}>
-          <SiteOrigin
-            siteOrigin={originMetadata.origin}
-            iconSrc={originMetadata.iconUrl}
-            iconName={originMetadata.hostname}
-          />
-        </Box>
-        }
+        {pendingConfirmation.origin === 'metamask' ? null : (
+          <Box
+            alignItems="center"
+            marginTop={1}
+            padding={[1, 4, 4]}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+          >
+            <SiteIcon
+              icon={originMetadata.iconUrl}
+              name={originMetadata.hostname}
+              size={36}
+            />
+            <Chip
+              label={stripHttpsScheme(originMetadata.origin)}
+              borderColor={COLORS.BORDER_DEFAULT}
+            />
+          </Box>
+        )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
       </div>
       <ConfirmationFooter

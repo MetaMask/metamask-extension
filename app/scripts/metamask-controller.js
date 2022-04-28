@@ -2047,38 +2047,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async addCustomNetwork(customRpc) {
-    const chainId = customRpc.chainId;
-    const chainName = customRpc.chainName;
-    const rpcUrl = customRpc.rpcUrl;
-    const ticker = customRpc.ticker;
-    const blockExplorerUrl = customRpc.blockExplorerUrl;
+    const { chainId } = customRpc;
+    const { chainName } = customRpc;
+    const { rpcUrl } = customRpc;
+    const { ticker } = customRpc;
+    const { blockExplorerUrl } = customRpc;
 
-    const addCustomRpc = async ({
+    await this.preferencesController.addToFrequentRpcList(
+      rpcUrl,
       chainId,
-      blockExplorerUrl,
       ticker,
       chainName,
-      rpcUrl,
-    } = {}) => {
-      await this.preferencesController.addToFrequentRpcList(
-        rpcUrl,
-        chainId,
-        ticker,
-        chainName,
-        {
-          blockExplorerUrl,
-        },
-      );
-    };
-
-    await addCustomRpc(
       {
-        chainId,
         blockExplorerUrl,
-        chainName,
-        rpcUrl,
-        ticker,
-      }
+      },
     );
   }
 

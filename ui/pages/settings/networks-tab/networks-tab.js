@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -26,7 +25,6 @@ import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
 import NetworksFormSubheader from './networks-tab-subheader';
-import { useHistory } from 'react-router-dom';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
@@ -122,13 +120,8 @@ const NetworksTab = ({ addNewNetwork }) => {
                 <Button
                   type="primary"
                   onClick={() => {
-                    history.push(ADD_POPULAR_CUSTOM_NETWORK)
-                  }
-                  //   (event) => {
-                  //   event.preventDefault();
-                  //   global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
-                  // }
-                }
+                    history.push(ADD_POPULAR_CUSTOM_NETWORK);
+                  }}
                 >
                   {t('addNetwork')}
                 </Button>

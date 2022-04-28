@@ -44,6 +44,7 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 ///: END:ONLY_INCLUDE_IN
 import * as actionConstants from './actionConstants';
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
+import * as actionConstants from './actionConstants';
 
 let background = null;
 let promisifiedBackground = null;
@@ -3759,7 +3760,7 @@ export function cancelQRHardwareSignRequest() {
 export function addCustomNetwork(customRpc) {
   return async (dispatch) => {
     try {
-      dispatch(setNewCustomNetworkAdded(customRpc))
+      dispatch(setNewCustomNetworkAdded(customRpc));
       await promisifiedBackground.addCustomNetwork(customRpc);
     } catch (error) {
       log.error(error);
