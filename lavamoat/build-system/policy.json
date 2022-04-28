@@ -1196,13 +1196,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "bify-module-groups>through2>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "bify-module-groups>through2>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "brfs": {
@@ -1679,6 +1674,11 @@
         "lavamoat>json-stable-stringify>jsonify": true
       }
     },
+    "browserify>string_decoder": {
+      "packages": {
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
     "browserify>syntax-error": {
       "packages": {
         "brfs>static-module>acorn-node": true
@@ -1974,13 +1974,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "duplexify>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "duplexify>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "end-of-stream": {
@@ -2044,13 +2039,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "enzyme>cheerio>htmlparser2>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "enzyme>has": {
@@ -3757,13 +3747,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources": {
@@ -3939,13 +3924,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "gulp-stylelint>through2>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "gulp-stylelint>through2>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "gulp-watch": {
@@ -6277,13 +6257,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "lavamoat-browserify>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "lavamoat-browserify>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "lavamoat-browserify>through2": {
@@ -7651,13 +7626,8 @@
       },
       "packages": {
         "@storybook/api>util-deprecate": true,
-        "pumpify>inherits": true,
-        "through2>readable-stream>string_decoder": true
-      }
-    },
-    "through2>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "tsutils": {
@@ -7875,7 +7845,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "watchify>browserify>shasum-object>fast-safe-stringify": true
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "webpack>micromatch>braces>snapdragon-node": {
