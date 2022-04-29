@@ -473,21 +473,21 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              useLavamoat: true,
             });
             renderHtmlFile({
               htmlName: 'notification',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              useLavamoat: true,
             });
             renderHtmlFile({
               htmlName: 'home',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              useLavamoat: true,
             });
             break;
           }
