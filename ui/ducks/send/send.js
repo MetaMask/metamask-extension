@@ -1634,6 +1634,11 @@ export function updateSendAsset({ type, details }) {
  * it only applicable for use within action creators.
  */
 const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
+  dispatch(
+    addHistoryEntry(
+      `sendFlow - user typed ${payload.userInput} into recipient input field`,
+    ),
+  );
   dispatch(validateRecipientUserInput(payload));
 }, 300);
 
@@ -1647,11 +1652,6 @@ const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
-    await dispatch(
-      addHistoryEntry(
-        `sendFlow - user typed ${userInput} into recipient input field`,
-      ),
-    );
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
     const chainId = getCurrentChainId(state);
@@ -1659,6 +1659,7 @@ export function updateRecipientUserInput(userInput) {
     const useTokenDetection = getUseTokenDetection(state);
     const tokenAddressList = Object.keys(getTokenList(state));
     debouncedValidateRecipientUserInput(dispatch, {
+      userInput,
       chainId,
       tokens,
       useTokenDetection,
