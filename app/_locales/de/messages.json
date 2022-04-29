@@ -779,9 +779,6 @@
   "data": {
     "message": "Daten"
   },
-  "dataBackupFoundInfo": {
-    "message": "Einige Ihrer Kontodaten wurden während einer früheren MetaMask-Installation gesichert. Dies könnte Ihre Einstellungen, Kontakte und Token umfassen. Möchten Sie diese Daten jetzt wiederherstellen?"
-  },
   "dataHex": {
     "message": "Hexadezimal"
   },
@@ -2661,10 +2658,6 @@
   "restore": {
     "message": "Wiederherstellen"
   },
-  "restoreWalletPreferences": {
-    "message": "$1 hat ein Backup Ihrer Daten gefunden. Möchten Sie die Präferenzen Ihrer Wallet wiederherstellen?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Transaktion wiederholen"
   },
@@ -3605,15 +3598,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Mit Mobilgerät synchronisieren"
-  },
-  "syncWithThreeBox": {
-    "message": "Daten mit 3Box synchronisieren (experimentell)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Aktivieren Sie, um Ihre Einstellungen mit 3Box zu sichern. Diese Funktion ist derzeit experimentell; verwenden Sie diese auf eigene Gefahr."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "3Box wurde aufgrund eines Fehlers während der ersten Synchronisation deaktiviert"
   },
   "tenPercentIncreased": {
     "message": "10% Erhöhung"

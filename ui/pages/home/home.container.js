@@ -27,10 +27,6 @@ import {
 
 import {
   closeNotificationPopup,
-  restoreFromThreeBox,
-  turnThreeBoxSyncingOn,
-  getThreeBoxLastUpdated,
-  setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -45,11 +41,7 @@ import {
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import {
-  setThreeBoxLastUpdated,
-  hideWhatsNewPopup,
-  setNewCustomNetworkAdded,
-} from '../../ducks/app/app';
+import { hideWhatsNewPopup, setNewCustomNetworkAdded } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -69,8 +61,6 @@ const mapStateToProps = (state) => {
     suggestedAssets,
     seedPhraseBackedUp,
     tokens,
-    threeBoxSynced,
-    showRestorePrompt,
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
@@ -80,7 +70,7 @@ const mapStateToProps = (state) => {
     completedOnboarding,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
-  const { forgottenPassword, threeBoxLastUpdated } = appState;
+  const { forgottenPassword } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
@@ -125,10 +115,7 @@ const mapStateToProps = (state) => {
       dismissSeedBackUpReminder === false,
     isPopup,
     isNotification,
-    threeBoxSynced,
-    showRestorePrompt,
     selectedAddress,
-    threeBoxLastUpdated,
     firstPermissionsRequestId,
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
@@ -161,22 +148,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   closeNotificationPopup: () => closeNotificationPopup(),
-  turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
-  setupThreeBox: () => {
-    dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
-      if (lastUpdated) {
-        dispatch(setThreeBoxLastUpdated(lastUpdated));
-      } else {
-        dispatch(setShowRestorePromptToFalse());
-        dispatch(turnThreeBoxSyncingOn());
-      }
-    });
-  },
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError: async (id) => await removeSnapError(id),
   ///: END:ONLY_INCLUDE_IN
-  restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
-  setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   setConnectedStatusPopoverHasBeenShown: () =>
     dispatch(setConnectedStatusPopoverHasBeenShown()),
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

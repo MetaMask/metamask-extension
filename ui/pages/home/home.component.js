@@ -4,7 +4,6 @@ import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 ///: END:ONLY_INCLUDE_IN
-import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
 import CollectiblesTab from '../../components/app/collectibles-tab';
 import HomeNotification from '../../components/app/home-notification';
@@ -83,14 +82,6 @@ export default class Home extends PureComponent {
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
-    threeBoxSynced: PropTypes.bool,
-    setupThreeBox: PropTypes.func,
-    turnThreeBoxSyncingOn: PropTypes.func,
-    showRestorePrompt: PropTypes.bool,
-    selectedAddress: PropTypes.string,
-    restoreFromThreeBox: PropTypes.func,
-    setShowRestorePromptToFalse: PropTypes.func,
-    threeBoxLastUpdated: PropTypes.number,
     firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
@@ -221,26 +212,13 @@ export default class Home extends PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const {
-      closeNotificationPopup,
-      setupThreeBox,
-      showRestorePrompt,
-      threeBoxLastUpdated,
-      threeBoxSynced,
-      isNotification,
-    } = this.props;
+    const { closeNotificationPopup, isNotification } = this.props;
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
     } else if (isNotification) {
       this.checkStatusAndNavigate();
-    } else if (
-      threeBoxSynced &&
-      showRestorePrompt &&
-      threeBoxLastUpdated === null
-    ) {
-      setupThreeBox();
     }
   }
 
@@ -259,12 +237,6 @@ export default class Home extends PureComponent {
       history,
       shouldShowSeedPhraseReminder,
       isPopup,
-      selectedAddress,
-      restoreFromThreeBox,
-      turnThreeBoxSyncingOn,
-      setShowRestorePromptToFalse,
-      showRestorePrompt,
-      threeBoxLastUpdated,
       shouldShowWeb3ShimUsageNotification,
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
@@ -440,25 +412,6 @@ export default class Home extends PureComponent {
             }}
             infoText={t('backupApprovalInfo')}
             key="home-backupApprovalNotice"
-          />
-        ) : null}
-        {threeBoxLastUpdated && showRestorePrompt ? (
-          <HomeNotification
-            descriptionText={t('restoreWalletPreferences', [
-              formatDate(threeBoxLastUpdated, 'M/d/y'),
-            ])}
-            acceptText={t('restore')}
-            ignoreText={t('noThanks')}
-            infoText={t('dataBackupFoundInfo')}
-            onAccept={() => {
-              restoreFromThreeBox(selectedAddress).then(() => {
-                turnThreeBoxSyncingOn();
-              });
-            }}
-            onIgnore={() => {
-              setShowRestorePromptToFalse();
-            }}
-            key="home-privacyModeDefault"
           />
         ) : null}
         {infuraBlocked && this.state.canShowBlockageNotification ? (

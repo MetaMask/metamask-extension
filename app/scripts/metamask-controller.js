@@ -121,7 +121,6 @@ import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
-import ThreeBoxController from './controllers/threebox';
 import IncomingTransactionsController from './controllers/incoming-transactions';
 import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
@@ -783,20 +782,6 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
-    this.threeBoxController = new ThreeBoxController({
-      preferencesController: this.preferencesController,
-      addressBookController: this.addressBookController,
-      keyringController: this.keyringController,
-      initState: initState.ThreeBoxController,
-      getKeyringControllerState: this.keyringController.memStore.getState.bind(
-        this.keyringController.memStore,
-      ),
-      version,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-    });
-
     this.txController = new TransactionController({
       initState:
         initState.TransactionController || initState.TransactionManager,
@@ -1046,7 +1031,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
-      ThreeBoxController: this.threeBoxController.store,
       AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
@@ -1084,7 +1068,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
-        ThreeBoxController: this.threeBoxController.store,
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
@@ -1516,7 +1499,6 @@ export default class MetamaskController extends EventEmitter {
       preferencesController,
       qrHardwareKeyring,
       swapsController,
-      threeBoxController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -1803,21 +1785,6 @@ export default class MetamaskController extends EventEmitter {
         alertController.setUnconnectedAccountAlertShown.bind(alertController),
       setWeb3ShimUsageAlertDismissed:
         alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
-
-      // 3Box
-      setThreeBoxSyncingPermission:
-        threeBoxController.setThreeBoxSyncingPermission.bind(
-          threeBoxController,
-        ),
-      restoreFromThreeBox:
-        threeBoxController.restoreFromThreeBox.bind(threeBoxController),
-      setShowRestorePromptToFalse:
-        threeBoxController.setShowRestorePromptToFalse.bind(threeBoxController),
-      getThreeBoxLastUpdated:
-        threeBoxController.getLastUpdated.bind(threeBoxController),
-      turnThreeBoxSyncingOn:
-        threeBoxController.turnThreeBoxSyncingOn.bind(threeBoxController),
-      initializeThreeBox: this.initializeThreeBox.bind(this),
 
       // permissions
       removePermissionsFor:
@@ -2321,20 +2288,6 @@ export default class MetamaskController extends EventEmitter {
 
     try {
       await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
-    }
-
-    try {
-      const threeBoxSyncingAllowed =
-        this.threeBoxController.getThreeBoxSyncingState();
-      if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
-        // 'await' intentionally omitted to avoid waiting for initialization
-        this.threeBoxController.init();
-        this.threeBoxController.turnThreeBoxSyncingOn();
-      } else if (threeBoxSyncingAllowed && this.threeBoxController.box) {
-        this.threeBoxController.turnThreeBoxSyncingOn();
-      }
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
@@ -4198,10 +4151,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
     return null;
-  }
-
-  async initializeThreeBox() {
-    await this.threeBoxController.init();
   }
 
   /**

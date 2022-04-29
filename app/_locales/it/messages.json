@@ -379,9 +379,6 @@
   "customToken": {
     "message": "Token Personalizzato"
   },
-  "dataBackupFoundInfo": {
-    "message": "Alcuni dati sul tuo account sono state salvate durante una installazione precedente di MetaMask. Questi includono le impostazioni, i contatti, e i token. Vuoi ripristinare questi dati?"
-  },
   "decimal": {
     "message": "Precisione Decimali"
   },
@@ -1130,10 +1127,6 @@
   "restore": {
     "message": "Ripristina"
   },
-  "restoreWalletPreferences": {
-    "message": "È stato trovato un backup dei tuoi dati da $1. Vuoi ripristinare le preferenze del portafoglio?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "reusedTokenNameWarning": {
     "message": "Un token usa un simbolo già usato da un altro token, ciò può confondere o ingannare."
   },
@@ -1586,15 +1579,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Sincronizza con dispositivo mobile"
-  },
-  "syncWithThreeBox": {
-    "message": "Sincronizza dati con 3Box (sperimentale)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Attiva per avere le tue impostazioni salvate su 3Box. Questa funzionalità è attualmente sperimentale; usala a tuo rischio."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "3Box è stato disabilitato a causa di un errore durante la sincronizzazione iniziale"
   },
   "terms": {
     "message": "Termini di Uso"

@@ -787,9 +787,6 @@
   "data": {
     "message": "Dữ liệu"
   },
-  "dataBackupFoundInfo": {
-    "message": "Một số dữ liệu tài khoản của bạn đã được sao lưu trong lần cài đặt MetaMask trước đó. Dữ liệu này có thể bao gồm các tùy chọn cài đặt, danh bạ và token. Bạn có muốn khôi phục dữ liệu này bây giờ không?"
-  },
   "dataHex": {
     "message": "Thập lục phân"
   },
@@ -2698,10 +2695,6 @@
   "restore": {
     "message": "Khôi phục"
   },
-  "restoreWalletPreferences": {
-    "message": "Đã tìm thấy bản sao lưu dữ liệu của bạn từ $1. Bạn có muốn khôi phục các tùy chọn ưu tiên trong ví của mình không?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Thử lại giao dịch"
   },
@@ -3661,15 +3654,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Đồng bộ với thiết bị di động"
-  },
-  "syncWithThreeBox": {
-    "message": "Đồng bộ dữ liệu với 3Box (thử nghiệm)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Bật để sao lưu các tùy chọn cài đặt của bạn với 3Box. Tính năng này hiện đang trong giai đoạn thử nghiệm; bạn tự chịu rủi ro khi sử dụng."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "Đã tắt 3Box do có lỗi xảy ra trong quá trình đồng bộ ban đầu"
   },
   "tenPercentIncreased": {
     "message": "Tăng 10%"
