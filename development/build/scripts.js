@@ -183,6 +183,7 @@ const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
 module.exports = createScriptTasks;
 
 function createScriptTasks({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   ignoredFiles,
@@ -223,6 +224,7 @@ function createScriptTasks({
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
+        applyLavaMoat,
         browserPlatforms,
         buildType,
         devMode,
@@ -363,6 +365,7 @@ function createScriptTasks({
 }
 
 function createFactoredBuild({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   devMode,
@@ -493,21 +496,21 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: true,
+              applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'notification',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: true,
+              applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'home',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: true,
+              applyLavaMoat,
             });
             break;
           }
@@ -517,7 +520,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: true,
+              applyLavaMoat,
             });
             break;
           }
@@ -527,7 +530,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat: false,
             });
             break;
           }
@@ -879,11 +882,11 @@ function renderHtmlFile({
   groupSet,
   commonSet,
   browserPlatforms,
-  useLavamoat,
+  applyLavaMoat,
 }) {
-  if (useLavamoat === undefined) {
+  if (applyLavaMoat === undefined) {
     throw new Error(
-      'build/scripts/renderHtmlFile - must specify "useLavamoat" option',
+      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
     );
   }
   const htmlFilePath = `./app/${htmlName}.html`;
@@ -891,7 +894,7 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
