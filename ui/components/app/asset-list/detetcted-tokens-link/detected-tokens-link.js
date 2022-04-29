@@ -28,6 +28,7 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
       event: EVENT_NAMES.TOKEN_IMPORT_CLICKED,
       category: EVENT.CATEGORIES.WALLET,
       properties: {
+        source: EVENT.SOURCE.DETECTED,
         token_quantity: detectedTokens.length,
         tokens: detectedTokensDetails,
       },

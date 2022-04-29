@@ -44,6 +44,7 @@ const DetectedTokenSelectionPopover = ({
       event: EVENT_NAMES.TOKEN_IMPORT_CANCELLED,
       category: EVENT.CATEGORIES.WALLET,
       properties: {
+        source: EVENT.SOURCE.DETECTED,
         token_quantity: detectedTokens.length,
         tokens: detectedTokensDetails,
       },
