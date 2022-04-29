@@ -1,0 +1,27 @@
+patch from https://github.com/GridPlus/gridplus-sdk/pull/367
+diff --git a/node_modules/gridplus-sdk/dist/util.js b/node_modules/gridplus-sdk/dist/util.js
+index 08cc920..1f58806 100644
+--- a/node_modules/gridplus-sdk/dist/util.js
++++ b/node_modules/gridplus-sdk/dist/util.js
+@@ -22,7 +22,7 @@ var elliptic_1 = __importDefault(require("elliptic"));
+ var constants_1 = require("./constants");
+ var COINS = constants_1.BIP_CONSTANTS.COINS, PURPOSES = constants_1.BIP_CONSTANTS.PURPOSES;
+ var EC = elliptic_1.default.ec;
+-var ec = new EC('p256');
++var ec;
+ //--------------------------------------------------
+ // LATTICE UTILS
+ //--------------------------------------------------
+@@ -219,10 +219,12 @@ var parseDER = function (sigBuf) {
+ };
+ exports.parseDER = parseDER;
+ var getP256KeyPair = function (priv) {
++    if (ec === undefined) ec = new EC('p256');
+     return ec.keyFromPrivate(priv, 'hex');
+ };
+ exports.getP256KeyPair = getP256KeyPair;
+ var getP256KeyPairFromPub = function (pub) {
++    if (ec === undefined) ec = new EC('p256');
+     return ec.keyFromPublic(pub, 'hex');
+ };
+ exports.getP256KeyPairFromPub = getP256KeyPairFromPub;
