@@ -2835,6 +2835,11 @@
         "console.warn": true
       }
     },
+    "@metamask/controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/controllers>web3-provider-engine": {
       "globals": {
         "WebSocket": true,
@@ -3153,6 +3158,11 @@
         "URL": true
       }
     },
+    "@metamask/iframe-execution-environment-service>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -3443,6 +3453,11 @@
         "msCrypto": true
       }
     },
+    "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -3615,6 +3630,11 @@
       "packages": {
         "json-rpc-engine>@metamask/safe-event-emitter": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/snap-controllers>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/snap-controllers>readable-web-to-node-stream": {
@@ -4596,6 +4616,16 @@
       "packages": {
         "browserify>process": true,
         "browserify>stream-browserify": true
+      }
+    },
+    "depcheck>@vue/compiler-sfc>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "end-of-stream": {
@@ -6161,6 +6191,14 @@
         "nock>deep-equal>is-date-object": true,
         "nock>deep-equal>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "fetch": true
       }
     },
     "nonce-tracker": {
