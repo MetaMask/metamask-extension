@@ -6875,6 +6875,14 @@
       "packages": {
         "webpack>memory-fs>errno>prr": true
       }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
     }
   }
 }
