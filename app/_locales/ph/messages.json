@@ -448,9 +448,6 @@
   "customToken": {
     "message": "Custom na Token"
   },
-  "dataBackupFoundInfo": {
-    "message": "Ang ilan sa data ng iyong account ay na-back up sa nakaraang pag-install ng MetaMask. Maaaring kasama rito ang iyong mga setting, contact, at token. Gusto mo na bang i-restore ang data na ito ngayon?"
-  },
   "decimal": {
     "message": "Decimal ng Token"
   },
@@ -1413,10 +1410,6 @@
   "restore": {
     "message": "I-restore"
   },
-  "restoreWalletPreferences": {
-    "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Subukan Ulit ang Transaksyon"
   },
@@ -2008,15 +2001,6 @@
   },
   "syncWithMobileTitle": {
     "message": "I-sync sa mobile"
-  },
-  "syncWithThreeBox": {
-    "message": "I-sync ang data sa 3Box (pinag-eeksperimentuhan)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "I-on para ma-back up ang iyong mga setting sa 3Box. Kasalukuyang pinag-eeksperimentuhan ang feature na ito; gamitin sa sarili mong pagpapasya."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "Na-disable ang 3Box dahil sa isang error sa unang pag-sync"
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"

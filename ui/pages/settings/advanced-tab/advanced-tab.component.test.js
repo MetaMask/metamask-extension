@@ -19,11 +19,8 @@ describe('AdvancedTab Component', () => {
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
         setIpfsGateway={() => undefined}
         setShowFiatConversionOnTestnetsPreference={() => undefined}
-        setThreeBoxSyncingPermission={() => undefined}
         setShowTestNetworks={toggleTestnet}
         showTestNetworks={false}
-        threeBoxDisabled
-        threeBoxSyncingAllowed={false}
         ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
@@ -40,10 +37,6 @@ describe('AdvancedTab Component', () => {
     );
   });
 
-  it('should render correctly when threeBoxFeatureFlag', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(13);
-  });
-
   it('should update autoLockTimeLimit', () => {
     setAutoLockTimeLimitSpy = sinon.spy();
     component = shallow(
@@ -52,9 +45,6 @@ describe('AdvancedTab Component', () => {
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
         setIpfsGateway={() => undefined}
         setShowFiatConversionOnTestnetsPreference={() => undefined}
-        setThreeBoxSyncingPermission={() => undefined}
-        threeBoxDisabled
-        threeBoxSyncingAllowed={false}
         ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
@@ -96,11 +86,8 @@ describe('AdvancedTab Component', () => {
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
         setIpfsGateway={() => undefined}
         setShowFiatConversionOnTestnetsPreference={() => undefined}
-        setThreeBoxSyncingPermission={() => undefined}
         setShowTestNetworks={toggleTestnet}
         showTestNetworks={false}
-        threeBoxDisabled
-        threeBoxSyncingAllowed={false}
         ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
@@ -133,11 +120,8 @@ describe('AdvancedTab Component', () => {
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
         setIpfsGateway={() => undefined}
         setShowFiatConversionOnTestnetsPreference={() => undefined}
-        setThreeBoxSyncingPermission={() => undefined}
         setShowTestNetworks={toggleTestnet}
         showTestNetworks={false}
-        threeBoxDisabled
-        threeBoxSyncingAllowed={false}
         ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}

@@ -645,9 +645,6 @@
   "data": {
     "message": "Datos"
   },
-  "dataBackupFoundInfo": {
-    "message": "Se crearon copias de seguridad de algunos de los datos de la cuenta durante una instalación anterior de MetaMask. Esto podría incluir configuraciones, contactos y tokens. ¿Quiere restaurar estos datos ahora?"
-  },
   "dataHex": {
     "message": "Hex"
   },
@@ -2229,10 +2226,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreWalletPreferences": {
-    "message": "Se encontró una copia de seguridad de los datos de $1. ¿Desea restaurar las preferencias de cartera?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Reintentar transacción"
   },
@@ -2967,15 +2960,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Sincronizar con dispositivo móvil"
-  },
-  "syncWithThreeBox": {
-    "message": "Sincronizar datos con 3Box (experimental)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Active esta opción para crear una copia de seguridad de la configuración con 3Box. Actualmente, esta función es experimental. Úsela bajo su propio riesgo."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "3Box se deshabilitó debido a un error durante la sincronización inicial"
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"

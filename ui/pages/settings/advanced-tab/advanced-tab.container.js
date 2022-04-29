@@ -8,8 +8,6 @@ import {
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setAutoLockTimeLimit,
-  setThreeBoxSyncingPermission,
-  turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
   setLedgerTransportPreference,
@@ -27,8 +25,6 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
-    threeBoxSyncingAllowed,
-    threeBoxDisabled,
     useNonceField,
     ipfsGateway,
     ledgerTransportType,
@@ -50,8 +46,6 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit,
-    threeBoxSyncingAllowed,
-    threeBoxDisabled,
     useNonceField,
     ipfsGateway,
     ledgerTransportType,
@@ -79,13 +73,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
-    },
-    setThreeBoxSyncingPermission: (newThreeBoxSyncingState) => {
-      if (newThreeBoxSyncingState) {
-        dispatch(turnThreeBoxSyncingOnAndInitialize());
-      } else {
-        dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState));
-      }
     },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));

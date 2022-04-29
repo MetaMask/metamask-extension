@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { exportAsFile } from '../../../helpers/utils/util';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
@@ -46,9 +45,6 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    threeBoxSyncingAllowed: PropTypes.bool.isRequired,
-    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
-    threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
@@ -416,55 +412,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderThreeBoxControl() {
-    const { t } = this.context;
-    const {
-      threeBoxSyncingAllowed,
-      setThreeBoxSyncingPermission,
-      threeBoxDisabled,
-    } = this.props;
-
-    let allowed = threeBoxSyncingAllowed;
-    let description = t('syncWithThreeBoxDescription');
-
-    if (threeBoxDisabled) {
-      allowed = false;
-      description = t('syncWithThreeBoxDisabled');
-    }
-    return (
-      <div
-        ref={this.settingsRefs[9]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-3box"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithThreeBox')}</span>
-          <div className="settings-page__content-description">
-            {description}
-          </div>
-        </div>
-        <div
-          className={classnames('settings-page__content-item', {
-            'settings-page__content-item--disabled': threeBoxDisabled,
-          })}
-        >
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={allowed}
-              onToggle={(value) => {
-                if (!threeBoxDisabled) {
-                  setThreeBoxSyncingPermission(!value);
-                }
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderLedgerLiveControl() {
     const { t } = this.context;
     const {
@@ -730,7 +677,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderToggleTestNetworks()}
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
-        {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}

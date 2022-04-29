@@ -787,9 +787,6 @@
   "data": {
     "message": "Veri"
   },
-  "dataBackupFoundInfo": {
-    "message": "MetaMask'ın önceki bir kurulumu sırasında hesap verilerinizden bazıları yedeklenmiştir. Buna ayarlar, kişiler ve tokenler dahil olabilir. Bu verileri şimdi geri yüklemek ister misiniz?"
-  },
   "dataHex": {
     "message": "On Altılı"
   },
@@ -2698,10 +2695,6 @@
   "restore": {
     "message": "Geri Yükle"
   },
-  "restoreWalletPreferences": {
-    "message": "Verilerinizin $1 tarihinden bir yedeği bulundu. Cüzdan tercihlerinizi geri yüklemek ister misiniz?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "İşlemi Tekrar Dene"
   },
@@ -3661,15 +3654,6 @@
   },
   "syncWithMobileTitle": {
     "message": "Mobil ile senkronize et"
-  },
-  "syncWithThreeBox": {
-    "message": "Verileri 3Box ile senkronize et (deneysel)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "Ayarlarınızın 3Box ile yedeklenmesini sağlamak için açın. Bu özellik şu anda deney aşamasındadır; kullanım riski size aittir."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "İlk senkronizasyon işlemi sırasındaki bir hata nedeniyle 3Box devre dışı bırakıldı"
   },
   "tenPercentIncreased": {
     "message": "%10 artış"

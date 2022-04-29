@@ -130,14 +130,6 @@
     "MetaMetricsController": {
       "metaMetricsId": null,
       "participateInMetaMetrics": false
-    },
-    "ThreeBoxController": {
-      "threeBoxSyncingAllowed": true,
-      "showRestorePrompt": true,
-      "threeBoxLastUpdated": 0,
-      "threeBoxAddress": "0x64480aa2768ef12f3f19c5a01206ceb0f82d06b9",
-      "threeBoxSynced": true,
-      "threeBoxDisabled": false
     }
   },
   "meta": {

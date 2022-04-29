@@ -641,9 +641,6 @@
   "data": {
     "message": "数据"
   },
-  "dataBackupFoundInfo": {
-    "message": "您的部分账户数据已在之前安装的 MetaMask 时备份。其中可能包括您的设置、联系人和代币。您现在想恢复这些数据吗？"
-  },
   "dataHex": {
     "message": "十六进制文件"
   },
@@ -2180,10 +2177,6 @@
   "restore": {
     "message": "恢复"
   },
-  "restoreWalletPreferences": {
-    "message": "已找到于 $1 的数据备份。您想恢复您的钱包设置吗？",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "重试交易"
   },
@@ -2915,15 +2908,6 @@
   },
   "syncWithMobileTitle": {
     "message": "使用移动设备进行同步"
-  },
-  "syncWithThreeBox": {
-    "message": "使用 3Box 同步数据（实验功能）"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "开启后可以用 3Box 备份您的设置。此功能目前是实验功能，使用时风险自负。"
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "由于初始同步过程中出现错误，3Box 已被禁用。"
   },
   "terms": {
     "message": "使用条款"
