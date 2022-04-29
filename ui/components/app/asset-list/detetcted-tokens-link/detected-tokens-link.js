@@ -25,7 +25,7 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
   const onClick = () => {
     setShowDetectedTokens(true);
     trackEvent({
-      event: EVENT_NAMES.CLICKED_IMPORT_TOKENS,
+      event: EVENT_NAMES.TOKEN_IMPORT_CLICKED,
       category: EVENT.CATEGORIES.WALLET,
       properties: {
         token_quantity: detectedTokens.length,

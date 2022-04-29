@@ -269,8 +269,6 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
-  CANCELLED_IMPORT_TOKENS: 'Import Tokens Canceled',
-  CLICKED_IMPORT_TOKENS: 'Import Tokens Clicked',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
@@ -278,6 +276,8 @@ export const EVENT_NAMES = {
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_IGNORED: 'Token Ignored',
+  TOKEN_IMPORT_CANCELLED: 'Token Import Cancelled',
+  TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
 
 export const EVENT = {
