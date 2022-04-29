@@ -773,9 +773,6 @@
   "data": {
     "message": "Data"
   },
-  "dataBackupFoundInfo": {
-    "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
-  },
   "dataHex": {
     "message": "Hex"
   },
@@ -2619,10 +2616,6 @@
   },
   "restore": {
     "message": "Restore"
-  },
-  "restoreWalletPreferences": {
-    "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
-    "description": "$1 is the date at which the data was backed up"
   },
   "retryTransaction": {
     "message": "Retry Transaction"
