@@ -193,6 +193,11 @@
         "XMLHttpRequest": true
       }
     },
+    "3box>graphql-request>cross-fetch>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
     "3box>https-did-resolver": {
       "globals": {
         "XMLHttpRequest": true
@@ -2367,11 +2372,6 @@
         "ethereumjs-util": true
       }
     },
-    "@ethersproject/random": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@formatjs/intl-relativetimeformat": {
       "globals": {
         "Intl": true
@@ -2876,6 +2876,11 @@
         "browserify>util": true
       }
     },
+    "@metamask/controllers>web3-provider-engine>cross-fetch>node-fetch": {
+      "globals": {
+        "fetch": true
+      }
+    },
     "@metamask/controllers>web3-provider-engine>eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
@@ -2902,6 +2907,11 @@
         "lavamoat>json-stable-stringify": true,
         "source-map-explorer>btoa": true,
         "vinyl>clone": true
+      }
+    },
+    "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
+      "globals": {
+        "fetch": true
       }
     },
     "@metamask/controllers>web3-provider-engine>eth-rpc-errors": {
@@ -4198,11 +4208,6 @@
         "browserify>timers-browserify": true
       }
     },
-    "babel-runtime": {
-      "packages": {
-        "@babel/runtime": true
-      }
-    },
     "base32-encode": {
       "packages": {
         "base32-encode>to-data-view": true
@@ -4220,16 +4225,6 @@
       },
       "packages": {
         "browserify>browser-resolve": true
-      }
-    },
-    "browser-passworder": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "browser-resolve": {
-      "packages": {
-        "core-js": true
       }
     },
     "browserify>assert": {
@@ -4251,6 +4246,11 @@
       "packages": {
         "browserify>assert>util>inherits": true,
         "browserify>process": true
+      }
+    },
+    "browserify>browser-resolve": {
+      "packages": {
+        "ethjs-query>babel-runtime>core-js": true
       }
     },
     "browserify>buffer": {
@@ -4846,11 +4846,7 @@
     "eth-keyring-controller>browser-passworder": {
       "globals": {
         "btoa": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.decrypt": true,
-        "crypto.subtle.deriveKey": true,
-        "crypto.subtle.encrypt": true,
-        "crypto.subtle.importKey": true
+        "crypto": true
       },
       "packages": {
         "eth-keyring-controller>browser-passworder>browserify-unibabel": true
@@ -5695,6 +5691,9 @@
       }
     },
     "ethers>@ethersproject/random": {
+      "globals": {
+        "crypto.getRandomValues": true
+      },
       "packages": {
         "ethers>@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true
@@ -5932,6 +5931,7 @@
     },
     "ethjs-query>babel-runtime": {
       "packages": {
+        "@babel/runtime": true,
         "addons-linter>regenerator-runtime": true,
         "ethjs-query>babel-runtime>core-js": true
       }
@@ -6018,11 +6018,6 @@
         "browserify>stream-browserify": true
       }
     },
-    "extensionizer": {
-      "globals": {
-        "console": true
-      }
-    },
     "fast-json-patch": {
       "globals": {
         "addEventListener": true,
@@ -6072,11 +6067,6 @@
     "jsonschema": {
       "packages": {
         "browserify>url": true
-      }
-    },
-    "keccak": {
-      "packages": {
-        "readable-stream": true
       }
     },
     "lavamoat>json-stable-stringify": {
@@ -6171,11 +6161,6 @@
         "nock>deep-equal>is-date-object": true,
         "nock>deep-equal>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
-      }
-    },
-    "node-fetch": {
-      "globals": {
-        "fetch": true
       }
     },
     "nonce-tracker": {
@@ -6293,11 +6278,6 @@
         "react": true
       }
     },
-    "randombytes": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "rc>deep-extend": {
       "packages": {
         "browserify>buffer": true
@@ -6314,19 +6294,19 @@
     },
     "react-devtools": {
       "packages": {
-        "react-devtools-core": true
-      }
-    },
-    "react-devtools-core": {
-      "globals": {
-        "WebSocket": true,
-        "setTimeout": true
+        "react-devtools>react-devtools-core": true
       }
     },
     "react-devtools>ip": {
       "packages": {
         "browserify>buffer": true,
         "browserify>os-browserify": true
+      }
+    },
+    "react-devtools>react-devtools-core": {
+      "globals": {
+        "WebSocket": true,
+        "setTimeout": true
       }
     },
     "react-dnd": {
@@ -6761,11 +6741,6 @@
     "source-map-explorer>btoa": {
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "storage": {
-      "globals": {
-        "localStorage": true
       }
     },
     "string.prototype.matchall>call-bind": {

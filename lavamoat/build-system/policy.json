@@ -940,12 +940,12 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>lavamoat-core": true,
+        "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true,
         "nyc>convert-source-map": true,
-        "readable-stream": true,
         "through2": true
       }
     },
@@ -981,28 +981,23 @@
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
       }
     },
-    "@lavamoat/lavapack>lavamoat-core": {
+    "@lavamoat/lavapack>readable-stream": {
       "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "module.createRequire": true,
-        "module.createRequireFromPath": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.sep": true
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
       },
       "globals": {
-        "__dirname": true,
-        "console.warn": true,
-        "define": true
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
       },
       "packages": {
-        "brfs>resolve": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
+        "@storybook/api>util-deprecate": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "@metamask/jazzicon>color>color-convert": {
@@ -5401,8 +5396,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@lavamoat/lavapack": true,
         "duplexify": true,
-        "lavamoat-browserify>@lavamoat/lavapack": true,
         "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
@@ -5410,35 +5405,6 @@
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true
-      }
-    },
-    "lavamoat-browserify>@lavamoat/lavapack": {
-      "builtin": {
-        "assert": true,
-        "buffer.Buffer.from": true,
-        "fs.readFileSync": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.cwd": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>umd": true,
-        "browserify>JSONStream": true,
-        "lavamoat-browserify>@lavamoat/lavapack>through2": true,
-        "lavamoat-browserify>readable-stream": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "nyc>convert-source-map": true
-      }
-    },
-    "lavamoat-browserify>@lavamoat/lavapack>through2": {
-      "packages": {
-        "lavamoat-browserify>readable-stream": true
       }
     },
     "lavamoat-browserify>browser-resolve": {
