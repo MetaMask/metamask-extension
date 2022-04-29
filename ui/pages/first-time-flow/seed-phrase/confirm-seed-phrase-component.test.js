@@ -139,13 +139,11 @@ describe('ConfirmSeedPhrase Component', () => {
     ];
     const trackEventSpy = sinon.spy();
     const replaceSpy = sinon.spy();
-    const initialize3BoxSpy = sinon.spy();
     const component = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
         history: { replace: replaceSpy },
         setSeedPhraseBackedUp: () => Promise.resolve(),
-        initializeThreeBox: initialize3BoxSpy,
       },
       {
         trackEvent: trackEventSpy,
@@ -174,7 +172,6 @@ describe('ConfirmSeedPhrase Component', () => {
         legacy_event: true,
       },
     });
-    expect(initialize3BoxSpy.calledOnce).toStrictEqual(true);
     expect(replaceSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
   });
 });

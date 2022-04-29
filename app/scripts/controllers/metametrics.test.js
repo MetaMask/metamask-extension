@@ -679,7 +679,6 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
       });
@@ -694,7 +693,6 @@ describe('MetaMetricsController', function () {
         [TRAITS.NUMBER_OF_NFTS]: 4,
         [TRAITS.NUMBER_OF_TOKENS]: 5,
         [TRAITS.OPENSEA_API_ENABLED]: true,
-        [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
       });
     });
@@ -714,7 +712,6 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
       });
@@ -734,7 +731,6 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
         identities: [{}, {}, {}],
-        threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
       });
@@ -762,7 +758,6 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
       });
@@ -780,7 +775,6 @@ describe('MetaMetricsController', function () {
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         identities: [{}, {}],
-        threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
       });

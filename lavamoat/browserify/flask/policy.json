@@ -1,67 +1,5 @@
 {
   "resources": {
-    "3box": {
-      "globals": {
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "3box-orbitdb-plugins": true,
-        "3id-resolver": true,
-        "@babel/runtime": true,
-        "buffer": true,
-        "did-jwt": true,
-        "elliptic": true,
-        "ethers": true,
-        "graphql-request": true,
-        "https-did-resolver": true,
-        "ipfs": true,
-        "ipfs-did-document": true,
-        "ipfs-log": true,
-        "ipfs-mini": true,
-        "is-ipfs": true,
-        "js-sha256": true,
-        "multihashes": true,
-        "muport-did-resolver": true,
-        "node-fetch": true,
-        "orbit-db": true,
-        "orbit-db-access-controllers": true,
-        "orbit-db-identity-provider": true,
-        "orbit-db-pubsub": true,
-        "process": true,
-        "store": true,
-        "tweetnacl": true,
-        "tweetnacl-util": true
-      }
-    },
-    "3box-orbitdb-plugins": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "base64url": true,
-        "did-jwt": true,
-        "did-resolver": true,
-        "events": true,
-        "ipfs-log": true,
-        "is-ipfs": true,
-        "orbit-db-access-controllers": true,
-        "orbit-db-io": true,
-        "safe-buffer": true
-      }
-    },
-    "3id-resolver": {
-      "packages": {
-        "@babel/runtime": true,
-        "base64url": true,
-        "did-jwt": true,
-        "did-resolver": true,
-        "ipfs-did-document": true
-      }
-    },
     "@babel/runtime": {
       "packages": {
         "regenerator-runtime": true
@@ -905,12 +843,6 @@
         "tslib": true
       }
     },
-    "@sindresorhus/is": {
-      "packages": {
-        "is-buffer": true,
-        "util": true
-      }
-    },
     "@truffle/abi-utils": {
       "packages": {
         "change-case": true,
@@ -1008,16 +940,6 @@
         "AbortController": true
       }
     },
-    "abstract-leveldown": {
-      "packages": {
-        "buffer": true,
-        "immediate": true,
-        "is-buffer": true,
-        "level-supports": true,
-        "process": true,
-        "xtend": true
-      }
-    },
     "accounting": {
       "globals": {
         "define": true
@@ -1071,14 +993,6 @@
         "vm-browserify": true
       }
     },
-    "assemblyscript": {
-      "globals": {
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "WebAssembly.instantiateStreaming": true,
-        "console.log": true
-      }
-    },
     "assert": {
       "globals": {
         "Buffer": true
@@ -1090,25 +1004,12 @@
     },
     "async": {
       "globals": {
-        "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
         "lodash": true,
         "process": true,
         "timers-browserify": true
-      }
-    },
-    "async-iterator-to-pull-stream": {
-      "packages": {
-        "get-iterator": true,
-        "pull-stream-to-async-iterator": true
-      }
-    },
-    "async-iterator-to-stream": {
-      "packages": {
-        "process": true,
-        "readable-stream": true
       }
     },
     "async-mutex": {
@@ -1176,11 +1077,6 @@
         "to-data-view": true
       }
     },
-    "base64url": {
-      "packages": {
-        "buffer": true
-      }
-    },
     "big.js": {
       "globals": {
         "define": true
@@ -1222,22 +1118,7 @@
       "packages": {
         "buffer": true,
         "inherits": true,
-        "readable-stream": true,
-        "util": true
-      }
-    },
-    "blakejs": {
-      "globals": {
-        "TextEncoder": true,
-        "console.log": true
-      }
-    },
-    "blob": {
-      "globals": {
-        "Blob": true,
-        "MSBlobBuilder": true,
-        "MozBlobBuilder": true,
-        "WebKitBlobBuilder": true
+        "readable-stream": true
       }
     },
     "bn.js": {
@@ -1373,11 +1254,6 @@
         "buffer": true
       }
     },
-    "buffer-split": {
-      "packages": {
-        "buffer-indexof": true
-      }
-    },
     "buffer-xor": {
       "packages": {
         "buffer": true
@@ -1441,9 +1317,6 @@
     },
     "cids": {
       "packages": {
-        "buffer": true,
-        "class-is": true,
-        "is-buffer": true,
         "multibase": true,
         "multicodec": true,
         "multihashes": true,
@@ -1637,40 +1510,6 @@
         "object-assign": true
       }
     },
-    "data-queue": {
-      "packages": {
-        "events": true
-      }
-    },
-    "datastore-core": {
-      "packages": {
-        "async": true,
-        "buffer": true,
-        "interface-datastore": true,
-        "pull-many": true,
-        "pull-stream": true
-      }
-    },
-    "datastore-level": {
-      "packages": {
-        "buffer": true,
-        "encoding-down": true,
-        "interface-datastore": true,
-        "level-js": true,
-        "levelup": true,
-        "pull-stream": true
-      }
-    },
-    "datastore-pubsub": {
-      "packages": {
-        "assert": true,
-        "buffer": true,
-        "debug": true,
-        "err-code": true,
-        "interface-datastore": true,
-        "multibase": true
-      }
-    },
     "debounce": {
       "globals": {
         "clearTimeout": true,
@@ -1686,7 +1525,6 @@
     },
     "debug": {
       "globals": {
-        "chrome": true,
         "console": true,
         "document": true,
         "localStorage": true,
@@ -1708,17 +1546,6 @@
         "regexp.prototype.flags": true
       }
     },
-    "deep-extend": {
-      "packages": {
-        "buffer": true
-      }
-    },
-    "deferred-leveldown": {
-      "packages": {
-        "abstract-leveldown": true,
-        "inherits": true
-      }
-    },
     "define-properties": {
       "packages": {
         "object-keys": true
@@ -1730,32 +1557,12 @@
         "minimalistic-assert": true
       }
     },
-    "did-jwt": {
-      "packages": {
-        "@babel/runtime": true,
-        "@stablelib/utf8": true,
-        "base64url": true,
-        "buffer": true,
-        "did-resolver": true,
-        "elliptic": true,
-        "js-sha256": true,
-        "js-sha3": true,
-        "tweetnacl": true,
-        "tweetnacl-util": true,
-        "uport-base64url": true
-      }
-    },
     "diffie-hellman": {
       "packages": {
         "bn.js": true,
         "buffer": true,
         "miller-rabin": true,
         "randombytes": true
-      }
-    },
-    "dlv": {
-      "globals": {
-        "define": true
       }
     },
     "dnd-core": {
@@ -1778,12 +1585,6 @@
     "dot-case": {
       "packages": {
         "no-case": true
-      }
-    },
-    "drbg.js": {
-      "packages": {
-        "buffer": true,
-        "create-hmac": true
       }
     },
     "duplexer": {
@@ -1812,65 +1613,10 @@
         "minimalistic-crypto-utils": true
       }
     },
-    "encoding-down": {
-      "packages": {
-        "abstract-leveldown": true,
-        "inherits": true,
-        "level-codec": true,
-        "level-errors": true
-      }
-    },
     "end-of-stream": {
       "packages": {
         "once": true,
         "process": true
-      }
-    },
-    "engine.io-client": {
-      "globals": {
-        "MozWebSocket": true,
-        "WebSocket": true,
-        "XDomainRequest": true,
-        "XMLHttpRequest": true,
-        "addEventListener": true,
-        "attachEvent": true,
-        "clearTimeout": true,
-        "document": true,
-        "location": true,
-        "navigator": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browser-resolve": true,
-        "buffer": true,
-        "component-emitter": true,
-        "component-inherit": true,
-        "debug": true,
-        "engine.io-parser": true,
-        "has-cors": true,
-        "indexof": true,
-        "parseqs": true,
-        "parseuri": true,
-        "yeast": true
-      }
-    },
-    "engine.io-parser": {
-      "globals": {
-        "FileReader": true,
-        "btoa": true,
-        "navigator": true
-      },
-      "packages": {
-        "after": true,
-        "arraybuffer.slice": true,
-        "base64-arraybuffer": true,
-        "blob": true,
-        "has-binary2": true
-      }
-    },
-    "errno": {
-      "packages": {
-        "prr": true
       }
     },
     "eth-block-tracker": {
@@ -2109,19 +1855,6 @@
       }
     },
     "ethers": {
-      "globals": {
-        "MessageChannel": true,
-        "XMLHttpRequest": true,
-        "atob": true,
-        "btoa": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "crypto.getRandomValues": true,
-        "define": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
       "packages": {
         "@ethersproject/abi": true,
         "@ethersproject/abstract-signer": true,
@@ -2306,30 +2039,10 @@
         "constants-browserify": true
       }
     },
-    "fsm-event": {
-      "packages": {
-        "assert": true,
-        "events": true,
-        "fsm": true
-      }
-    },
     "fuse.js": {
       "globals": {
         "console": true,
         "define": true
-      }
-    },
-    "get-browser-rtc": {
-      "globals": {
-        "RTCIceCandidate": true,
-        "RTCPeerConnection": true,
-        "RTCSessionDescription": true,
-        "mozRTCIceCandidate": true,
-        "mozRTCPeerConnection": true,
-        "mozRTCSessionDescription": true,
-        "webkitRTCIceCandidate": true,
-        "webkitRTCPeerConnection": true,
-        "webkitRTCSessionDescription": true
       }
     },
     "get-intrinsic": {
@@ -2342,14 +2055,6 @@
         "function-bind": true,
         "has": true,
         "has-symbols": true
-      }
-    },
-    "graphql-request": {
-      "globals": {
-        "fetch": true
-      },
-      "packages": {
-        "cross-fetch": true
       }
     },
     "gridplus-sdk": {
@@ -2389,30 +2094,9 @@
         "through2": true
       }
     },
-    "hamt-sharding": {
-      "packages": {
-        "is-buffer": true,
-        "sparse-array": true
-      }
-    },
     "has": {
       "packages": {
         "function-bind": true
-      }
-    },
-    "has-binary2": {
-      "globals": {
-        "Blob": true,
-        "File": true
-      },
-      "packages": {
-        "buffer": true,
-        "isarray": true
-      }
-    },
-    "has-cors": {
-      "globals": {
-        "XMLHttpRequest": true
       }
     },
     "hash-base": {
@@ -2442,19 +2126,6 @@
       "packages": {
         "no-case": true,
         "upper-case": true
-      }
-    },
-    "heap": {
-      "globals": {
-        "define": true
-      }
-    },
-    "hi-base32": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "process": true
       }
     },
     "history": {
@@ -2492,31 +2163,6 @@
         "url": true
       }
     },
-    "https-did-resolver": {
-      "globals": {
-        "XMLHttpRequest": true
-      },
-      "packages": {
-        "browser-resolve": true,
-        "did-resolver": true
-      }
-    },
-    "human-to-milliseconds": {
-      "packages": {
-        "promisify-es6": true
-      }
-    },
-    "idb-readable-stream": {
-      "globals": {
-        "IDBKeyRange.bound": true,
-        "IDBKeyRange.lowerBound": true,
-        "IDBKeyRange.upperBound": true
-      },
-      "packages": {
-        "stream-browserify": true,
-        "xtend": true
-      }
-    },
     "idna-uts46": {
       "globals": {
         "define": true
@@ -2533,370 +2179,6 @@
         "punycode": true
       }
     },
-    "immediate": {
-      "globals": {
-        "MessageChannel": true,
-        "MutationObserver": true,
-        "WebKitMutationObserver": true,
-        "clearTimeout": true,
-        "document.createElement": true,
-        "document.createTextNode": true,
-        "document.documentElement.appendChild": true,
-        "setImmediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
-    "interface-connection": {
-      "packages": {
-        "pull-defer": true
-      }
-    },
-    "interface-datastore": {
-      "packages": {
-        "async": true,
-        "buffer": true,
-        "class-is": true,
-        "err-code": true,
-        "os-browserify": true,
-        "path-browserify": true,
-        "pull-defer": true,
-        "pull-stream": true,
-        "uuid": true
-      }
-    },
-    "ip": {
-      "packages": {
-        "buffer": true,
-        "os-browserify": true
-      }
-    },
-    "ipfs": {
-      "globals": {
-        "AbortController": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "async": true,
-        "async-iterator-all": true,
-        "async-iterator-to-pull-stream": true,
-        "async-iterator-to-stream": true,
-        "base32.js": true,
-        "bignumber.js": true,
-        "browser-resolve": true,
-        "buffer": true,
-        "callbackify": true,
-        "cids": true,
-        "class-is": true,
-        "datastore-core": true,
-        "datastore-pubsub": true,
-        "debug": true,
-        "dlv": true,
-        "err-code": true,
-        "events": true,
-        "fnv1a": true,
-        "fsm-event": true,
-        "human-to-milliseconds": true,
-        "interface-datastore": true,
-        "ipfs-bitswap": true,
-        "ipfs-block": true,
-        "ipfs-block-service": true,
-        "ipfs-mfs": true,
-        "ipfs-repo": true,
-        "ipfs-unixfs": true,
-        "ipfs-unixfs-exporter": true,
-        "ipfs-unixfs-importer": true,
-        "ipfs-utils": true,
-        "ipld": true,
-        "ipld-dag-cbor": true,
-        "ipld-dag-pb": true,
-        "ipld-raw": true,
-        "ipns": true,
-        "is-buffer": true,
-        "is-ipfs": true,
-        "is-pull-stream": true,
-        "is-stream": true,
-        "iso-url": true,
-        "just-flatten-it": true,
-        "kind-of": true,
-        "libp2p": true,
-        "libp2p-bootstrap": true,
-        "libp2p-crypto": true,
-        "libp2p-kad-dht": true,
-        "libp2p-keychain": true,
-        "libp2p-record": true,
-        "libp2p-secio": true,
-        "libp2p-webrtc-star": true,
-        "libp2p-websocket-star-multi": true,
-        "libp2p-websockets": true,
-        "mafmt": true,
-        "merge-options": true,
-        "multiaddr": true,
-        "multiaddr-to-uri": true,
-        "multibase": true,
-        "multicodec": true,
-        "multihashes": true,
-        "multihashing-async": true,
-        "peer-book": true,
-        "peer-id": true,
-        "peer-info": true,
-        "promisify-es6": true,
-        "protons": true,
-        "pull-cat": true,
-        "pull-defer": true,
-        "pull-mplex": true,
-        "pull-pushable": true,
-        "pull-sort": true,
-        "pull-stream": true,
-        "pull-stream-to-async-iterator": true,
-        "pull-stream-to-stream": true,
-        "pull-traverse": true,
-        "readable-stream": true,
-        "receptacle": true,
-        "stream-to-pull-stream": true,
-        "superstruct": true,
-        "timers-browserify": true,
-        "varint": true
-      }
-    },
-    "ipfs-bitswap": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "assert": true,
-        "async": true,
-        "bignumber.js": true,
-        "cids": true,
-        "debug": true,
-        "events": true,
-        "ipfs-block": true,
-        "just-debounce-it": true,
-        "lodash.isequalwith": true,
-        "moving-average": true,
-        "multicodec": true,
-        "multihashing-async": true,
-        "protons": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true,
-        "varint-decoder": true
-      }
-    },
-    "ipfs-block": {
-      "packages": {
-        "cids": true,
-        "class-is": true,
-        "is-buffer": true
-      }
-    },
-    "ipfs-block-service": {
-      "packages": {
-        "async": true
-      }
-    },
-    "ipfs-log": {
-      "globals": {
-        "clearTimeout": true,
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "buffer": true,
-        "json-stringify-deterministic": true,
-        "orbit-db-io": true,
-        "p-each-series": true,
-        "p-map": true,
-        "p-whilst": true
-      }
-    },
-    "ipfs-mfs": {
-      "globals": {
-        "Blob": true,
-        "FileReader": true
-      },
-      "packages": {
-        "assert": true,
-        "async-iterator-last": true,
-        "browser-resolve": true,
-        "buffer": true,
-        "cids": true,
-        "debug": true,
-        "err-code": true,
-        "hamt-sharding": true,
-        "interface-datastore": true,
-        "ipfs-unixfs": true,
-        "ipfs-unixfs-exporter": true,
-        "ipfs-unixfs-importer": true,
-        "ipld-dag-pb": true,
-        "mortice": true,
-        "multicodec": true,
-        "multihashes": true,
-        "promisify-es6": true
-      }
-    },
-    "ipfs-mini": {
-      "globals": {
-        "XMLHttpRequest": true
-      }
-    },
-    "ipfs-pubsub-1on1": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      },
-      "packages": {
-        "events": true,
-        "path-browserify": true,
-        "safe-buffer": true
-      }
-    },
-    "ipfs-pubsub-peer-monitor": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "events": true
-      }
-    },
-    "ipfs-repo": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "base32.js": true,
-        "bignumber.js": true,
-        "buffer": true,
-        "cids": true,
-        "datastore-core": true,
-        "datastore-level": true,
-        "debug": true,
-        "dlv": true,
-        "interface-datastore": true,
-        "ipfs-block": true,
-        "just-safe-set": true,
-        "path-browserify": true,
-        "pull-stream": true,
-        "sort-keys": true,
-        "timers-browserify": true
-      }
-    },
-    "ipfs-unixfs": {
-      "packages": {
-        "protons": true
-      }
-    },
-    "ipfs-unixfs-exporter": {
-      "packages": {
-        "async-iterator-last": true,
-        "buffer": true,
-        "cids": true,
-        "err-code": true,
-        "hamt-sharding": true,
-        "ipfs-unixfs": true,
-        "ipfs-unixfs-importer": true,
-        "is-buffer": true
-      }
-    },
-    "ipfs-unixfs-importer": {
-      "packages": {
-        "async-iterator-all": true,
-        "async-iterator-batch": true,
-        "async-iterator-first": true,
-        "bl": true,
-        "buffer": true,
-        "deep-extend": true,
-        "err-code": true,
-        "hamt-sharding": true,
-        "ipfs-unixfs": true,
-        "ipld-dag-pb": true,
-        "multicodec": true,
-        "multihashes": true,
-        "multihashing-async": true,
-        "rabin-wasm": true,
-        "superstruct": true
-      }
-    },
-    "ipfs-utils": {
-      "globals": {
-        "FileReader": true
-      },
-      "packages": {
-        "is-buffer": true,
-        "is-pull-stream": true,
-        "is-stream": true,
-        "kind-of": true,
-        "readable-stream": true
-      }
-    },
-    "ipld": {
-      "packages": {
-        "cids": true,
-        "ipfs-block": true,
-        "ipld-dag-cbor": true,
-        "ipld-dag-pb": true,
-        "ipld-raw": true,
-        "is-buffer": true,
-        "merge-options": true,
-        "multicodec": true,
-        "promisify-es6": true,
-        "typical": true
-      }
-    },
-    "ipld-dag-cbor": {
-      "packages": {
-        "borc": true,
-        "buffer": true,
-        "cids": true,
-        "is-buffer": true,
-        "is-circular": true,
-        "multicodec": true,
-        "multihashing-async": true
-      }
-    },
-    "ipld-dag-pb": {
-      "packages": {
-        "assert": true,
-        "buffer": true,
-        "cids": true,
-        "class-is": true,
-        "is-buffer": true,
-        "multicodec": true,
-        "multihashing-async": true,
-        "protons": true,
-        "stable": true
-      }
-    },
-    "ipld-raw": {
-      "packages": {
-        "cids": true,
-        "multicodec": true,
-        "multihashing-async": true
-      }
-    },
-    "ipns": {
-      "packages": {
-        "base32-encode": true,
-        "buffer": true,
-        "debug": true,
-        "interface-datastore": true,
-        "libp2p-crypto": true,
-        "multihashes": true,
-        "peer-id": true,
-        "protons": true,
-        "timestamp-nano": true
-      }
-    },
     "is-dom": {
       "globals": {
         "Node": true
@@ -2909,22 +2191,6 @@
     "is-in-browser": {
       "globals": {
         "document": true
-      }
-    },
-    "is-ip": {
-      "packages": {
-        "ip-regex": true
-      }
-    },
-    "is-ipfs": {
-      "packages": {
-        "bs58": true,
-        "buffer": true,
-        "cids": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "multibase": true,
-        "multihashes": true
       }
     },
     "is-lower-case": {
@@ -2941,15 +2207,6 @@
     "is-upper-case": {
       "packages": {
         "upper-case": true
-      }
-    },
-    "iso-random-stream": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "buffer": true
       }
     },
     "iso-url": {
@@ -2978,14 +2235,6 @@
       },
       "packages": {
         "buffer": true
-      }
-    },
-    "js-sha256": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "process": true
       }
     },
     "js-sha3": {
@@ -3081,411 +2330,10 @@
         "jss": true
       }
     },
-    "just-debounce-it": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      }
-    },
-    "k-bucket": {
-      "packages": {
-        "events": true,
-        "randombytes": true
-      }
-    },
     "keccak": {
       "packages": {
         "buffer": true,
         "readable-stream": true
-      }
-    },
-    "latency-monitor": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "document": true,
-        "performance": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "debug": true,
-        "events": true,
-        "lodash": true,
-        "process": true
-      }
-    },
-    "level-codec": {
-      "packages": {
-        "buffer": true
-      }
-    },
-    "level-errors": {
-      "packages": {
-        "errno": true
-      }
-    },
-    "level-iterator-stream": {
-      "packages": {
-        "inherits": true,
-        "readable-stream": true,
-        "xtend": true
-      }
-    },
-    "level-js": {
-      "globals": {
-        "IDBKeyRange.bound": true,
-        "IDBKeyRange.lowerBound": true,
-        "IDBKeyRange.only": true,
-        "IDBKeyRange.upperBound": true,
-        "indexedDB": true
-      },
-      "packages": {
-        "abstract-leveldown": true,
-        "buffer": true,
-        "idb-readable-stream": true,
-        "immediate": true,
-        "inherits": true,
-        "is-buffer": true,
-        "ltgt": true,
-        "process": true,
-        "stream-browserify": true,
-        "typedarray-to-buffer": true,
-        "util": true,
-        "xtend": true
-      }
-    },
-    "level-supports": {
-      "packages": {
-        "xtend": true
-      }
-    },
-    "levelup": {
-      "packages": {
-        "assert": true,
-        "deferred-leveldown": true,
-        "events": true,
-        "level-errors": true,
-        "level-iterator-stream": true,
-        "process": true,
-        "util": true,
-        "xtend": true
-      }
-    },
-    "libp2p": {
-      "packages": {
-        "async": true,
-        "debug": true,
-        "err-code": true,
-        "events": true,
-        "fsm-event": true,
-        "is-buffer": true,
-        "libp2p-connection-manager": true,
-        "libp2p-floodsub": true,
-        "libp2p-ping": true,
-        "libp2p-switch": true,
-        "libp2p-websockets": true,
-        "multiaddr": true,
-        "once": true,
-        "peer-book": true,
-        "peer-id": true,
-        "peer-info": true,
-        "process": true,
-        "superstruct": true
-      }
-    },
-    "libp2p-bootstrap": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      },
-      "packages": {
-        "async": true,
-        "debug": true,
-        "events": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "peer-id": true,
-        "peer-info": true
-      }
-    },
-    "libp2p-circuit": {
-      "packages": {
-        "async": true,
-        "debug": true,
-        "events": true,
-        "interface-connection": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "once": true,
-        "peer-id": true,
-        "peer-info": true,
-        "protons": true,
-        "pull-handshake": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true
-      }
-    },
-    "libp2p-connection-manager": {
-      "packages": {
-        "debug": true,
-        "events": true,
-        "latency-monitor": true
-      }
-    },
-    "libp2p-crypto": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "asn1.js": true,
-        "async": true,
-        "browserify-aes": true,
-        "bs58": true,
-        "buffer": true,
-        "iso-random-stream": true,
-        "libp2p-crypto-secp256k1": true,
-        "multihashing-async": true,
-        "node-forge": true,
-        "protons": true,
-        "tweetnacl": true
-      }
-    },
-    "libp2p-crypto-secp256k1": {
-      "packages": {
-        "async": true,
-        "bs58": true,
-        "multihashing-async": true,
-        "secp256k1": true
-      }
-    },
-    "libp2p-floodsub": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "debug": true,
-        "libp2p-pubsub": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true
-      }
-    },
-    "libp2p-identify": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "buffer": true,
-        "multiaddr": true,
-        "peer-id": true,
-        "peer-info": true,
-        "protons": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true
-      }
-    },
-    "libp2p-kad-dht": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "abort-controller": true,
-        "assert": true,
-        "async": true,
-        "base32.js": true,
-        "buffer": true,
-        "cids": true,
-        "debug": true,
-        "err-code": true,
-        "events": true,
-        "hashlru": true,
-        "heap": true,
-        "interface-datastore": true,
-        "is-buffer": true,
-        "k-bucket": true,
-        "libp2p-crypto": true,
-        "libp2p-record": true,
-        "multihashes": true,
-        "multihashing-async": true,
-        "p-queue": true,
-        "p-times": true,
-        "peer-id": true,
-        "peer-info": true,
-        "promise-to-callback": true,
-        "promisify-es6": true,
-        "protons": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true,
-        "pull-stream-to-async-iterator": true,
-        "varint": true,
-        "xor-distance": true
-      }
-    },
-    "libp2p-keychain": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "async": true,
-        "buffer": true,
-        "err-code": true,
-        "interface-datastore": true,
-        "libp2p-crypto": true,
-        "merge-options": true,
-        "node-forge": true,
-        "pull-stream": true,
-        "sanitize-filename": true
-      }
-    },
-    "libp2p-ping": {
-      "packages": {
-        "debug": true,
-        "events": true,
-        "libp2p-crypto": true,
-        "pull-handshake": true,
-        "pull-stream": true
-      }
-    },
-    "libp2p-pubsub": {
-      "packages": {
-        "async": true,
-        "bs58": true,
-        "buffer": true,
-        "debug": true,
-        "err-code": true,
-        "events": true,
-        "is-buffer": true,
-        "libp2p-crypto": true,
-        "protons": true,
-        "pull-length-prefixed": true,
-        "pull-pushable": true,
-        "pull-stream": true,
-        "time-cache": true
-      }
-    },
-    "libp2p-record": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "buffer": true,
-        "buffer-split": true,
-        "err-code": true,
-        "is-buffer": true,
-        "multihashing-async": true,
-        "protons": true
-      }
-    },
-    "libp2p-secio": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "buffer": true,
-        "debug": true,
-        "interface-connection": true,
-        "libp2p-crypto": true,
-        "multihashing-async": true,
-        "once": true,
-        "peer-id": true,
-        "peer-info": true,
-        "protons": true,
-        "pull-defer": true,
-        "pull-handshake": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true
-      }
-    },
-    "libp2p-switch": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "bignumber.js": true,
-        "class-is": true,
-        "debug": true,
-        "err-code": true,
-        "events": true,
-        "fsm-event": true,
-        "hashlru": true,
-        "interface-connection": true,
-        "libp2p-circuit": true,
-        "libp2p-identify": true,
-        "moving-average": true,
-        "multiaddr": true,
-        "multistream-select": true,
-        "once": true,
-        "peer-id": true,
-        "peer-info": true,
-        "pull-stream": true,
-        "retimer": true
-      }
-    },
-    "libp2p-webrtc-star": {
-      "packages": {
-        "async": true,
-        "class-is": true,
-        "debug": true,
-        "events": true,
-        "interface-connection": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "once": true,
-        "peer-id": true,
-        "peer-info": true,
-        "simple-peer": true,
-        "socket.io-client": true,
-        "stream-to-pull-stream": true,
-        "webrtcsupport": true
-      }
-    },
-    "libp2p-websocket-star": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "async": true,
-        "buffer": true,
-        "class-is": true,
-        "debug": true,
-        "events": true,
-        "interface-connection": true,
-        "libp2p-crypto": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "once": true,
-        "peer-id": true,
-        "peer-info": true,
-        "pull-stream": true,
-        "socket.io-client": true,
-        "socket.io-pull-stream": true,
-        "uuid": true
-      }
-    },
-    "libp2p-websocket-star-multi": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "async": true,
-        "debug": true,
-        "events": true,
-        "libp2p-websocket-star": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "once": true
-      }
-    },
-    "libp2p-websockets": {
-      "packages": {
-        "class-is": true,
-        "debug": true,
-        "interface-connection": true,
-        "mafmt": true,
-        "multiaddr": true,
-        "multiaddr-to-uri": true,
-        "os-browserify": true,
-        "pull-ws": true
       }
     },
     "locale-currency": {
@@ -3526,12 +2374,6 @@
         "define": true
       }
     },
-    "lodash.throttle": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      }
-    },
     "loglevel": {
       "globals": {
         "console": true,
@@ -3541,28 +2383,9 @@
         "log": "write"
       }
     },
-    "logplease": {
-      "globals": {
-        "LOG": true,
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "browser-resolve": true,
-        "events": true,
-        "process": true,
-        "util": true
-      }
-    },
     "lower-case-first": {
       "packages": {
         "lower-case": true
-      }
-    },
-    "lru": {
-      "packages": {
-        "events": true,
-        "inherits": true
       }
     },
     "lru-cache": {
@@ -3570,19 +2393,9 @@
         "yallist": true
       }
     },
-    "ltgt": {
-      "packages": {
-        "is-buffer": true
-      }
-    },
     "luxon": {
       "globals": {
         "Intl": true
-      }
-    },
-    "mafmt": {
-      "packages": {
-        "multiaddr": true
       }
     },
     "md5": {
@@ -3597,11 +2410,6 @@
         "hash-base": true,
         "inherits": true,
         "safe-buffer": true
-      }
-    },
-    "merge-options": {
-      "packages": {
-        "is-plain-obj": true
       }
     },
     "miller-rabin": {
@@ -3619,36 +2427,6 @@
         "tiny-warning": true
       }
     },
-    "mortice": {
-      "globals": {
-        "Worker": true
-      },
-      "packages": {
-        "browser-resolve": true,
-        "events": true,
-        "observable-webworkers": true,
-        "p-queue": true,
-        "process": true,
-        "promise-timeout": true,
-        "shortid": true
-      }
-    },
-    "multiaddr": {
-      "packages": {
-        "bs58": true,
-        "buffer": true,
-        "class-is": true,
-        "hi-base32": true,
-        "ip": true,
-        "is-ip": true,
-        "varint": true
-      }
-    },
-    "multiaddr-to-uri": {
-      "packages": {
-        "multiaddr": true
-      }
-    },
     "multibase": {
       "globals": {
         "TextDecoder": true,
@@ -3663,7 +2441,6 @@
     },
     "multicodec": {
       "packages": {
-        "buffer": true,
         "uint8arrays": true,
         "varint": true
       }
@@ -3677,62 +2454,11 @@
     },
     "multihashes": {
       "packages": {
-        "bs58": true,
         "buffer": true,
         "multibase": true,
         "uint8arrays": true,
         "varint": true,
         "web-encoding": true
-      }
-    },
-    "multihashing-async": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "blakejs": true,
-        "buffer": true,
-        "err-code": true,
-        "js-sha3": true,
-        "multihashes": true,
-        "murmurhash3js": true,
-        "murmurhash3js-revisited": true,
-        "nodeify": true,
-        "process": true
-      }
-    },
-    "multistream-select": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "buffer": true,
-        "debug": true,
-        "err-code": true,
-        "interface-connection": true,
-        "once": true,
-        "pull-handshake": true,
-        "pull-length-prefixed": true,
-        "pull-stream": true,
-        "semver": true,
-        "varint": true
-      }
-    },
-    "muport-did-resolver": {
-      "packages": {
-        "@babel/runtime": true,
-        "did-resolver": true,
-        "node-fetch": true
-      }
-    },
-    "murmurhash3js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "murmurhash3js-revisited": {
-      "globals": {
-        "define": true
       }
     },
     "nanoid": {
@@ -3747,43 +2473,9 @@
         "lower-case": true
       }
     },
-    "node-forge": {
-      "globals": {
-        "Blob": true,
-        "MutationObserver": true,
-        "QuotaExceededError": true,
-        "URL.createObjectURL": true,
-        "URL.revokeObjectURL": true,
-        "Worker": true,
-        "addEventListener": true,
-        "document": true,
-        "jQuery": true,
-        "localStorage": true,
-        "navigator": true,
-        "postMessage": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browser-resolve": true,
-        "process": true,
-        "timers-browserify": true
-      }
-    },
     "node-interval-tree": {
       "packages": {
         "shallowequal": true
-      }
-    },
-    "nodeify": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "is-promise": true,
-        "process": true,
-        "promise": true,
-        "timers-browserify": true
       }
     },
     "nofilter": {
@@ -3827,165 +2519,10 @@
         "wrappy": true
       }
     },
-    "orbit-db": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "cids": true,
-        "ipfs-pubsub-1on1": true,
-        "logplease": true,
-        "multihashes": true,
-        "orbit-db-access-controllers": true,
-        "orbit-db-cache": true,
-        "orbit-db-counterstore": true,
-        "orbit-db-docstore": true,
-        "orbit-db-eventstore": true,
-        "orbit-db-feedstore": true,
-        "orbit-db-identity-provider": true,
-        "orbit-db-io": true,
-        "orbit-db-keystore": true,
-        "orbit-db-kvstore": true,
-        "orbit-db-pubsub": true,
-        "path-browserify": true
-      }
-    },
-    "orbit-db-access-controllers": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "events": true,
-        "orbit-db-io": true,
-        "p-map-series": true,
-        "path-browserify": true,
-        "safe-buffer": true
-      }
-    },
-    "orbit-db-cache": {
-      "packages": {
-        "level-js": true,
-        "logplease": true,
-        "path-browserify": true
-      }
-    },
-    "orbit-db-counterstore": {
-      "packages": {
-        "crdts": true,
-        "orbit-db-store": true
-      }
-    },
-    "orbit-db-docstore": {
-      "packages": {
-        "orbit-db-store": true,
-        "p-map": true,
-        "readable-stream": true
-      }
-    },
-    "orbit-db-eventstore": {
-      "packages": {
-        "orbit-db-store": true
-      }
-    },
-    "orbit-db-feedstore": {
-      "packages": {
-        "orbit-db-eventstore": true
-      }
-    },
-    "orbit-db-identity-provider": {
-      "packages": {
-        "orbit-db-keystore": true
-      }
-    },
-    "orbit-db-io": {
-      "packages": {
-        "buffer": true,
-        "cids": true,
-        "ipld-dag-pb": true
-      }
-    },
-    "orbit-db-keystore": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "elliptic": true,
-        "level-js": true,
-        "levelup": true,
-        "libp2p-crypto": true,
-        "lru": true,
-        "safe-buffer": true,
-        "secp256k1": true
-      }
-    },
-    "orbit-db-kvstore": {
-      "packages": {
-        "orbit-db-store": true
-      }
-    },
-    "orbit-db-pubsub": {
-      "packages": {
-        "buffer": true,
-        "ipfs-pubsub-peer-monitor": true,
-        "logplease": true,
-        "p-series": true
-      }
-    },
-    "orbit-db-store": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "console.warn": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "buffer": true,
-        "events": true,
-        "ipfs-log": true,
-        "logplease": true,
-        "orbit-db-io": true,
-        "p-each-series": true,
-        "p-map": true,
-        "readable-stream": true
-      }
-    },
     "os-browserify": {
       "globals": {
         "location": true,
         "navigator": true
-      }
-    },
-    "p-each-series": {
-      "packages": {
-        "p-reduce": true
-      }
-    },
-    "p-map-series": {
-      "packages": {
-        "p-reduce": true
-      }
-    },
-    "p-queue": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "eventemitter3": true
-      }
-    },
-    "p-series": {
-      "packages": {
-        "@sindresorhus/is": true,
-        "p-reduce": true
-      }
-    },
-    "p-times": {
-      "packages": {
-        "p-map": true
       }
     },
     "param-case": {
@@ -4047,32 +2584,6 @@
         "through2": true
       }
     },
-    "peer-book": {
-      "packages": {
-        "bs58": true,
-        "is-buffer": true,
-        "peer-id": true,
-        "peer-info": true
-      }
-    },
-    "peer-id": {
-      "packages": {
-        "assert": true,
-        "async": true,
-        "buffer": true,
-        "class-is": true,
-        "libp2p-crypto": true,
-        "multihashes": true
-      }
-    },
-    "peer-info": {
-      "packages": {
-        "assert": true,
-        "multiaddr": true,
-        "peer-id": true,
-        "unique-by": true
-      }
-    },
     "popper.js": {
       "globals": {
         "MSInputMethodContext": true,
@@ -4106,22 +2617,6 @@
         "process": true
       }
     },
-    "promise": {
-      "globals": {
-        "setImediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "is-promise": true,
-        "process": true
-      }
-    },
-    "promise-timeout": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      }
-    },
     "promise-to-callback": {
       "packages": {
         "is-fn": true,
@@ -4135,16 +2630,6 @@
       "packages": {
         "object-assign": true,
         "react-is": true
-      }
-    },
-    "protons": {
-      "packages": {
-        "buffer": true,
-        "is-buffer": true,
-        "protocol-buffers-schema": true,
-        "safe-buffer": true,
-        "signed-varint": true,
-        "varint": true
       }
     },
     "public-encrypt": {
@@ -4173,92 +2658,6 @@
         "navigator": true,
         "setInterval": true,
         "setTimeout": true
-      }
-    },
-    "pull-handshake": {
-      "packages": {
-        "pull-cat": true,
-        "pull-pair": true,
-        "pull-pushable": true,
-        "pull-reader": true
-      }
-    },
-    "pull-length-prefixed": {
-      "packages": {
-        "pull-pushable": true,
-        "pull-reader": true,
-        "safe-buffer": true,
-        "varint": true
-      }
-    },
-    "pull-mplex": {
-      "packages": {
-        "async": true,
-        "buffer": true,
-        "debug": true,
-        "events": true,
-        "interface-connection": true,
-        "looper": true,
-        "pull-abortable": true,
-        "pull-pushable": true,
-        "pull-stream": true,
-        "pull-through": true,
-        "varint": true
-      }
-    },
-    "pull-reader": {
-      "globals": {
-        "cb": true,
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "buffer": true
-      }
-    },
-    "pull-sort": {
-      "packages": {
-        "pull-defer": true,
-        "pull-stream": true
-      }
-    },
-    "pull-stream": {
-      "globals": {
-        "console.log": true
-      }
-    },
-    "pull-stream-to-async-iterator": {
-      "packages": {
-        "pull-stream": true
-      }
-    },
-    "pull-stream-to-stream": {
-      "packages": {
-        "process": true,
-        "stream-browserify": true,
-        "timers-browserify": true
-      }
-    },
-    "pull-through": {
-      "packages": {
-        "looper": true
-      }
-    },
-    "pull-ws": {
-      "globals": {
-        "WebSocket": true,
-        "location": true
-      },
-      "packages": {
-        "browser-resolve": true,
-        "events": true,
-        "https-browserify": true,
-        "process": true,
-        "relative-url": true,
-        "safe-buffer": true,
-        "stream-http": true,
-        "timers-browserify": true,
-        "url": true
       }
     },
     "pump": {
@@ -4295,16 +2694,6 @@
         "prop-types": true,
         "qr.js": true,
         "react": true
-      }
-    },
-    "rabin-wasm": {
-      "globals": {
-        "Blob": true,
-        "Response": true,
-        "WebAssembly": true
-      },
-      "packages": {
-        "assemblyscript": true
       }
     },
     "randombytes": {
@@ -4594,15 +2983,6 @@
         "readable-stream": true
       }
     },
-    "receptacle": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "ms": true
-      }
-    },
     "redux": {
       "globals": {
         "console": true
@@ -4620,17 +3000,6 @@
       "packages": {
         "call-bind": true,
         "define-properties": true
-      }
-    },
-    "relative-url": {
-      "packages": {
-        "url": true
-      }
-    },
-    "retimer": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
       }
     },
     "ripemd160": {
@@ -4669,11 +3038,6 @@
         "util": true
       }
     },
-    "sanitize-filename": {
-      "packages": {
-        "truncate-utf8-bytes": true
-      }
-    },
     "scheduler": {
       "globals": {
         "MessageChannel": true,
@@ -4706,7 +3070,6 @@
         "bip66": true,
         "bn.js": true,
         "create-hash": true,
-        "drbg.js": true,
         "elliptic": true,
         "is-buffer": true,
         "safe-buffer": true
@@ -4723,7 +3086,7 @@
     },
     "semver": {
       "globals": {
-        "console": true
+        "console.error": true
       },
       "packages": {
         "lru-cache": true,
@@ -4750,100 +3113,9 @@
         "safe-buffer": true
       }
     },
-    "shortid": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "nanoid": true
-      }
-    },
-    "signed-varint": {
-      "packages": {
-        "varint": true
-      }
-    },
-    "simple-peer": {
-      "globals": {
-        "clearInterval": true,
-        "console.warn": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "buffer": true,
-        "debug": true,
-        "get-browser-rtc": true,
-        "inherits": true,
-        "randombytes": true,
-        "readable-stream": true
-      }
-    },
     "snake-case": {
       "packages": {
         "no-case": true
-      }
-    },
-    "socket.io-client": {
-      "globals": {
-        "clearTimeout": true,
-        "location": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "backo2": true,
-        "component-bind": true,
-        "component-emitter": true,
-        "debug": true,
-        "engine.io-client": true,
-        "has-binary2": true,
-        "indexof": true,
-        "parseqs": true,
-        "parseuri": true,
-        "socket.io-parser": true,
-        "to-array": true
-      }
-    },
-    "socket.io-parser": {
-      "globals": {
-        "Blob": true,
-        "File": true,
-        "FileReader": true
-      },
-      "packages": {
-        "buffer": true,
-        "component-emitter": true,
-        "debug": true,
-        "isarray": true
-      }
-    },
-    "socket.io-pull-stream": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "buffer": true,
-        "data-queue": true,
-        "debug": true,
-        "pull-stream": true,
-        "uuid": true
-      }
-    },
-    "sort-keys": {
-      "packages": {
-        "is-plain-obj": true
-      }
-    },
-    "stable": {
-      "globals": {
-        "define": true
-      }
-    },
-    "store": {
-      "globals": {
-        "ActiveXObject": true,
-        "console": true
       }
     },
     "stream-browserify": {
@@ -4875,16 +3147,6 @@
         "readable-stream": true,
         "url": true,
         "xtend": true
-      }
-    },
-    "stream-to-pull-stream": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "looper": true,
-        "process": true,
-        "pull-stream": true
       }
     },
     "string_decoder": {
@@ -4956,11 +3218,6 @@
         "xtend": true
       }
     },
-    "time-cache": {
-      "packages": {
-        "lodash.throttle": true
-      }
-    },
     "timers-browserify": {
       "globals": {
         "clearInterval": true,
@@ -5017,11 +3274,6 @@
         "events": true
       }
     },
-    "truncate-utf8-bytes": {
-      "packages": {
-        "utf8-byte-length": true
-      }
-    },
     "tslib": {
       "globals": {
         "define": true
@@ -5046,17 +3298,6 @@
         "browser-resolve": true
       }
     },
-    "typedarray-to-buffer": {
-      "packages": {
-        "buffer": true,
-        "is-typedarray": true
-      }
-    },
-    "typical": {
-      "globals": {
-        "define": true
-      }
-    },
     "uint8arrays": {
       "globals": {
         "TextDecoder": true,
@@ -5070,11 +3311,6 @@
     "unorm": {
       "globals": {
         "define": true
-      }
-    },
-    "uport-base64url": {
-      "packages": {
-        "buffer": true
       }
     },
     "upper-case-first": {
@@ -5116,12 +3352,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "varint-decoder": {
-      "packages": {
-        "is-buffer": true,
-        "varint": true
       }
     },
     "vm-browserify": {
@@ -5220,28 +3450,6 @@
         "define": true
       }
     },
-    "webrtcsupport": {
-      "globals": {
-        "AudioContext": true,
-        "MediaStream": true,
-        "RTCIceCandidate": true,
-        "RTCPeerConnection": true,
-        "RTCSessionDescription": true,
-        "document": true,
-        "location.protocol": true,
-        "mozRTCIceCandidate": true,
-        "mozRTCPeerConnection": true,
-        "mozRTCSessionDescription": true,
-        "navigator.getUserMedia": true,
-        "navigator.mozGetUserMedia": true,
-        "navigator.msGetUserMedia": true,
-        "navigator.userAgent.match": true,
-        "navigator.webkitGetUserMedia": true,
-        "webkitAudioContext": true,
-        "webkitMediaStream": true,
-        "webkitRTCPeerConnection": true
-      }
-    },
     "whatwg-fetch": {
       "globals": {
         "Blob": true,
@@ -5270,11 +3478,6 @@
         "process": true,
         "stream-http": true,
         "url": true
-      }
-    },
-    "xor-distance": {
-      "packages": {
-        "buffer": true
       }
     }
   }

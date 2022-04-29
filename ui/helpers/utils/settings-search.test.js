@@ -57,10 +57,6 @@ const t = (key) => {
       return 'Auto-Lock Timer (minutes)';
     case 'autoLockTimeLimitDescription':
       return 'Set the idle time in minutes before MetaMask will become locked.';
-    case 'syncWithThreeBox':
-      return 'Sync data with 3Box (experimental)';
-    case 'syncWithThreeBoxDescription':
-      return 'Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk.';
     case 'ipfsGateway':
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
@@ -172,7 +168,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
     });
 
     it('should get good contact section number', () => {
