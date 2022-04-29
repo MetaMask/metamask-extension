@@ -781,9 +781,6 @@
   "data": {
     "message": "数据"
   },
-  "dataBackupFoundInfo": {
-    "message": "您的部分账户数据已在之前安装 MetaMask 时备份。其中可能包括您的设置、联系人和代币。您现在想恢复这些数据吗？"
-  },
   "dataHex": {
     "message": "十六进制"
   },
@@ -2686,10 +2683,6 @@
   },
   "restore": {
     "message": "恢复"
-  },
-  "restoreWalletPreferences": {
-    "message": "已找到 $1 的数据备份。您想恢复您的钱包偏好设置吗？",
-    "description": "$1 is the date at which the data was backed up"
   },
   "retryTransaction": {
     "message": "重试交易"
