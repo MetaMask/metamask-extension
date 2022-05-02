@@ -285,6 +285,7 @@ function createScriptTasks({
       installSentrySubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
+        applyLavaMoat,
         buildType,
         isLavaMoat,
         policyOnly,
