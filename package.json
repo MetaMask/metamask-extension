@@ -9,11 +9,11 @@
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
-    "start": "yarn build:dev dev",
-    "start:lavamoat": "yarn build dev",
+    "start": "yarn build:dev --apply-lavamoat=false",
+    "start:lavamoat": "yarn build:dev --apply-lavamoat=true",
     "dist": "yarn build prod",
     "build": "yarn lavamoat:build",
-    "build:dev": "node development/build/index.js",
+    "build:dev": "node development/build/index.js dev",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
@@ -75,6 +75,7 @@
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
     "**/caniuse-lite": "1.0.30001265",
+    "**/cross-fetch": "^3.1.5",
     "**/configstore/dot-prop": "^5.1.1",
     "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
