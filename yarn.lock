@@ -1449,6 +1449,14 @@
     "@ethereumjs/common" "^2.0.0"
     ethereumjs-util "^7.0.7"
 
+"@ethereumjs/tx@3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-3.2.1.tgz#65f5f1c11541764f08377a94ba4b0dcbbd67739e"
+  integrity sha512-i9V39OtKvwWos1uVNZxdVhd7zFOyzFLjgt69CoiOY0EmXugS0HjO3uxpLBSglDKFMRriuGqw6ddKEv+RP1UNEw==
+  dependencies:
+    "@ethereumjs/common" "^2.3.1"
+    ethereumjs-util "^7.0.10"
+
 "@ethereumjs/tx@3.3.0", "@ethereumjs/tx@^3.2.0", "@ethereumjs/tx@^3.2.1", "@ethereumjs/tx@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@ethereumjs/tx/-/tx-3.3.0.tgz#14ed1b7fa0f28e1cd61e3ecbdab824205f6a4378"
@@ -9247,6 +9255,13 @@ dateformat@^3.0.3:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
+dcent-web-connector@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/dcent-web-connector/-/dcent-web-connector-0.11.2.tgz#c0bae44d847dfd1d5bbd93ba2ea4053b3673005d"
+  integrity sha512-2B1xcHe5wgQ9HLWewyAGm7PYwUvjBFCJiKB7Kgos+qcmCQUyDRCgxrqmN2Lz2wGgtuNViyaYWYApkTd6KHHoRw==
+  dependencies:
+    events "^3.0.0"
+
 debounce-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/debounce-stream/-/debounce-stream-2.0.0.tgz#1e33400ccff015abd8ec330661a562b68410b08f"
@@ -11136,6 +11151,15 @@ eth-block-tracker@^5.0.1:
     json-rpc-random-id "^1.0.1"
     pify "^3.0.0"
 
+eth-dcent-keyring@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/eth-dcent-keyring/-/eth-dcent-keyring-0.2.1.tgz#6e7f8d53fb90fa58ba589bbc0befcd6d78acf246"
+  integrity sha512-OcKAUd7frrwsrySq2FH1JBLUnk80LvViaggl3iV67Wrg6M6ElbFqXsKEzPOHkc5RKktKwDCXG3atkvC7bGHm1g==
+  dependencies:
+    "@ethereumjs/tx" "3.2.1"
+    dcent-web-connector "^0.11.2"
+    ethereumjs-util "7.0.9"
+
 eth-eip712-util-browser@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/eth-eip712-util-browser/-/eth-eip712-util-browser-0.0.3.tgz#334143d76d0a502b456e2ee5f1ce20f678a39fd3"
@@ -11464,6 +11488,18 @@ ethereumjs-tx@^2.1.1:
   dependencies:
     ethereumjs-common "^1.5.0"
     ethereumjs-util "^6.0.0"
+
+ethereumjs-util@7.0.9:
+  version "7.0.9"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-7.0.9.tgz#2038baeb30f370a3e576ec175bd70bbbb6807d42"
+  integrity sha512-cRqvYYKJoitq6vMKMf8pXeVwvTrX+dRD0JwHaYqm8jvogK14tqIoCWH/KUHcRwnVxVXEYF/o6pup5jRG4V0xzg==
+  dependencies:
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.1.2"
+    create-hash "^1.1.2"
+    ethereum-cryptography "^0.1.3"
+    ethjs-util "0.1.6"
+    rlp "^2.2.4"
 
 ethereumjs-util@^5.0.0, ethereumjs-util@^5.1.1, ethereumjs-util@^5.1.2, ethereumjs-util@^5.1.5, ethereumjs-util@^5.2.0:
   version "5.2.0"
