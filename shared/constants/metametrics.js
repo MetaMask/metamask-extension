@@ -275,7 +275,7 @@ export const EVENT_NAMES = {
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
-  TOKEN_IGNORED: 'Token Ignored',
+  TOKENS_IGNORED: 'Tokens Ignored',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };

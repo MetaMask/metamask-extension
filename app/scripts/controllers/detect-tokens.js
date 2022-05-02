@@ -167,6 +167,7 @@ export default class DetectTokensController {
       }
 
       let tokensWithBalance = [];
+      const tokensDetailsList = [];
       if (process.env.TOKEN_DETECTION_V2) {
         if (result) {
           const nonZeroTokenAddresses = Object.keys(result);
@@ -179,17 +180,7 @@ export default class DetectTokensController {
               aggregators,
             } = tokenList[nonZeroTokenAddress];
 
-            this._trackMetaMetricsEvent({
-              event: EVENT_NAMES.TOKEN_DETECTED,
-              category: EVENT.CATEGORIES.WALLET,
-              sensitiveProperties: {
-                token_symbol: symbol,
-                token_contract_address: address,
-                token_decimal_precision: decimals,
-                token_standard: TOKEN_STANDARDS.ERC20,
-                asset_type: ASSET_TYPES.TOKEN,
-              },
-            });
+            tokensDetailsList.push(`${symbol} - ${address}`);
 
             tokensWithBalance.push({
               address,
@@ -201,6 +192,15 @@ export default class DetectTokensController {
           }
 
           if (tokensWithBalance.length > 0) {
+            this._trackMetaMetricsEvent({
+              event: EVENT_NAMES.TOKEN_DETECTED,
+              category: EVENT.CATEGORIES.WALLET,
+              properties: {
+                tokens: tokensDetailsList,
+                token_standard: TOKEN_STANDARDS.ERC20,
+                asset_type: ASSET_TYPES.TOKEN,
+              },
+            });
             await this.tokensController.addDetectedTokens(tokensWithBalance);
           }
         }

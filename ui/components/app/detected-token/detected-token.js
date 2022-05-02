@@ -67,20 +67,21 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         },
       });
     });
-    deSelectedTokens.forEach((ignoredToken) => {
+    if (deSelectedTokens.length > 0) {
+      const tokensDetailsList = deSelectedTokens.map(
+        ({ symbol, address }) => `${symbol} - ${address}`,
+      );
       trackEvent({
-        event: EVENT_NAMES.TOKEN_IGNORED,
+        event: EVENT_NAMES.TOKENS_IGNORED,
         category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
-          token_symbol: ignoredToken.symbol,
-          token_contract_address: ignoredToken.address,
-          token_decimal_precision: ignoredToken.decimals,
+          tokens: tokensDetailsList,
           source: EVENT.SOURCE.TOKEN.DETECTED,
           token_standard: TOKEN_STANDARDS.ERC20,
           asset_type: ASSET_TYPES.TOKEN,
         },
       });
-    });
+    }
     if (deSelectedTokens.length < detectedTokens.length) {
       await dispatch(ignoreTokens(deSelectedTokens));
       await dispatch(importTokens(selectedTokens));
