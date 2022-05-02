@@ -14,7 +14,6 @@ export const typeHash = {
   danger: CLASSNAME_DANGER,
   success: CLASSNAME_SUCCESS,
   default: '',
-  success: CLASSNAME_SUCCESS,
 };
 
 export default function ActionableMessage({

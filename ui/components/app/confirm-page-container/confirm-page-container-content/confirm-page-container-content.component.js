@@ -55,6 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     hideConfirmPageContainerSummaryAndButtons: PropTypes.bool.isRequired,
+    showingHardwareConnectionContents: PropTypes.bool,
   };
 
   renderContent() {
@@ -129,6 +130,7 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
       hideConfirmPageContainerSummaryAndButtons,
+      showingHardwareConnectionContents,
     } = this.props;
 
     const { t } = this.context;
