@@ -1655,6 +1655,23 @@
         "multibase": true
       }
     },
+    "dcent-web-connector": {
+      "globals": {
+        "DcentWebConnector": "write",
+        "addEventListener": true,
+        "chrome": true,
+        "clearTimeout": true,
+        "console": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
+        "open": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
+      }
+    },
     "debounce": {
       "globals": {
         "clearTimeout": true,
@@ -1869,6 +1886,15 @@
         "json-rpc-random-id": true,
         "pify": true,
         "safe-event-emitter": true
+      }
+    },
+    "eth-dcent-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "buffer": true,
+        "dcent-web-connector": true,
+        "ethereumjs-util": true,
+        "events": true
       }
     },
     "eth-eip712-util-browser": {
