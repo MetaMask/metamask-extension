@@ -298,13 +298,19 @@ export const EVENT = {
     WALLET: 'Wallet',
   },
   SOURCE: {
-    CUSTOM: 'custom',
-    DETECTED: 'detected',
-    DAPP: 'dapp',
-    LIST: 'list',
-    MAIN_VIEW: 'Main View',
-    METAMASK: 'metamask',
-    TOKEN_VIEW: 'Token View',
-    USER: 'user',
+    SWAPS: {
+      MAIN_VIEW: 'Main View',
+      TOKEN_VIEW: 'Token View',
+    },
+    TRANSACTION: {
+      USER: 'user',
+      DAPP: 'dapp',
+    },
+    TOKEN: {
+      CUSTOM: 'custom',
+      DETECTED: 'detected',
+      DAPP: 'dapp',
+      LIST: 'list',
+    },
   },
 };

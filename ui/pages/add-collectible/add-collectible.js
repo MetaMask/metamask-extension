@@ -86,7 +86,7 @@ export default function AddCollectible() {
         tokenId: tokenId.toString(),
         asset_type: ASSET_TYPES.COLLECTIBLE,
         token_standard: tokenDetails?.standard,
-        source: EVENT.SOURCE.CUSTOM,
+        source: EVENT.SOURCE.TOKEN.CUSTOM,
       },
     });
 

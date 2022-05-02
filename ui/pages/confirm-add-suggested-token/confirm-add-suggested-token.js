@@ -122,7 +122,7 @@ const ConfirmAddSuggestedToken = () => {
             token_contract_address: asset.address,
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
-            source: EVENT.SOURCE.DAPP,
+            source: EVENT.SOURCE.TOKEN.DAPP,
             token_standard: TOKEN_STANDARDS.ERC20,
             asset_type: ASSET_TYPES.TOKEN,
           },

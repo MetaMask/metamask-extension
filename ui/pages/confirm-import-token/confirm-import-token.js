@@ -46,8 +46,8 @@ const ConfirmImportToken = () => {
           token_decimal_precision: pendingToken.decimals,
           unlisted: pendingToken.unlisted,
           source: pendingToken.isCustom
-            ? EVENT.SOURCE.CUSTOM
-            : EVENT.SOURCE.LIST,
+            ? EVENT.SOURCE.TOKEN.CUSTOM
+            : EVENT.SOURCE.TOKEN.LIST,
           token_standard: TOKEN_STANDARDS.ERC20,
           asset_type: ASSET_TYPES.TOKEN,
         },
