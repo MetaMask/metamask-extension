@@ -309,7 +309,7 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('theme'),
-    descriptionMessage: (t) => t('themeDescriptions'),
+    descriptionMessage: (t) => t('themeDescription'),
     route: `${EXPERIMENTAL_ROUTE}#theme`,
     icon: 'fa fa-flask',
   },
