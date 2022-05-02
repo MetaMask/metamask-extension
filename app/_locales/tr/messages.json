@@ -794,9 +794,6 @@
   "decryptRequest": {
     "message": "Şifre çözme talebi"
   },
-  "defaultTheme": {
-    "message": "Varsayılan"
-  },
   "delete": {
     "message": "Sil"
   },
