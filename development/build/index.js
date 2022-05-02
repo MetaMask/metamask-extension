@@ -201,7 +201,7 @@ function parseArgv() {
     },
   });
 
-  if (argv._.length !== 1) {
+  if (argv._.length !== 1 && argv._.length !== 2) {
     throw new Error(
       `Metamask build: Expected a single positional argument, but received "${argv._.length}" arguments.`,
     );
