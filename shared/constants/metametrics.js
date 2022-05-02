@@ -276,7 +276,7 @@ export const EVENT_NAMES = {
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_IGNORED: 'Token Ignored',
-  TOKEN_IMPORT_CANCELLED: 'Token Import Cancelled',
+  TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
 

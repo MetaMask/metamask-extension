@@ -41,7 +41,7 @@ const DetectedTokenSelectionPopover = ({
   const onClose = () => {
     setShowDetectedTokens(false);
     trackEvent({
-      event: EVENT_NAMES.TOKEN_IMPORT_CANCELLED,
+      event: EVENT_NAMES.TOKEN_IMPORT_CANCELED,
       category: EVENT.CATEGORIES.WALLET,
       properties: {
         source: EVENT.SOURCE.TOKEN.DETECTED,
