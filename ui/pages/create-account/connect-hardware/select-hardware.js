@@ -119,7 +119,7 @@ export default class SelectHardware extends Component {
           style={{ margin: '10px 0 0 0' }}
         >
           {this.renderConnectToDcentButton()}
-        </div>        
+        </div>
       </>
     );
   }
@@ -422,7 +422,7 @@ export default class SelectHardware extends Component {
         message: this.context.t('step1DcentWalletMsg', [
           <a
             className="hw-connect__msg-link"
-            href="https://userguide.dcentwallet.com/v/kr/external-service/metamask"
+            href="https://userguide.dcentwallet.com/external-service/metamask"
             rel="noopener noreferrer"
             target="_blank"
             key="dcent-tutorial-link"
