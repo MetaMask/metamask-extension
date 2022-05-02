@@ -1656,22 +1656,18 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(2);
-        expect(actionResult[0]).toMatchObject({
-          type: 'send/addHistoryEntry',
-          payload: `sendFlow - user typed ${newUserRecipientInput} into recipient input field`,
-        });
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult).toHaveLength(1);
+        expect(actionResult[0].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[1].payload).toStrictEqual(newUserRecipientInput);
+        expect(actionResult[0].payload).toStrictEqual(newUserRecipientInput);
 
         clock.tick(300); // debounce
 
         const actionResultAfterDebounce = store.getActions();
         expect(actionResultAfterDebounce).toHaveLength(3);
 
-        expect(actionResultAfterDebounce[0]).toMatchObject({
+        expect(actionResultAfterDebounce[1]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: `sendFlow - user typed ${newUserRecipientInput} into recipient input field`,
         });
@@ -1683,6 +1679,7 @@ describe('Send Slice', () => {
           chainId: '',
           tokens: [],
           useTokenDetection: true,
+          userInput: newUserRecipientInput,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
@@ -1967,28 +1964,24 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(8);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
         });
-        expect(actionResult[1]).toMatchObject({
-          type: 'send/addHistoryEntry',
-          payload: 'sendFlow - user typed  into recipient input field',
-        });
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[1].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[2].payload).toStrictEqual('');
-        expect(actionResult[3].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[1].payload).toStrictEqual('');
+        expect(actionResult[2].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[6].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[7].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[6].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
