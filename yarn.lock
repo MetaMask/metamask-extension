@@ -2507,10 +2507,6 @@
     rlp "^2.2.6"
     uuid "^8.3.2"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
 "@keystonehq/metamask-airgapped-keyring@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@keystonehq/metamask-airgapped-keyring/-/metamask-airgapped-keyring-0.3.0.tgz#3de02b268b28d9f2e2e728a10cad8cfc17870c3c"
@@ -2523,19 +2519,10 @@
     rlp "^2.2.6"
     uuid "^8.3.2"
 
-<<<<<<< HEAD
 "@lavamoat/aa@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-3.0.0.tgz#9c4facf161cfb0d69ad290a729856ae0442205ba"
   integrity sha512-r+p3xMlNq1SunxBnSzmUAsvGBPTf531jdW2xicKyMHQU1+xMebB8LYBgcqSnARDOFkwBV2LUny016M92FpTjtw==
-=======
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-"@lavamoat/allow-scripts@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-2.0.0.tgz#d2b84491961c8b2b80281112e19654beae9eb584"
-  integrity sha512-WC8cvStg5/MZ0JwccYsLNhtFSiK4tGEfv4kdlMoWfji4sB053HB1xCLDMlhFSMM6m0ecKA18CmzhI6J6iyCc0w==
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
   dependencies:
     resolve "^1.20.0"
 
@@ -2775,33 +2762,15 @@
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.33.0.tgz#3f0501d5c6d9119ce09c1edb075fc0a8fed7d09c"
   integrity sha512-sWfzsUe59UH2Y1A7czRjhPmYrWlg4UQDOUPdf+lY7kbXwYrlF/ZUvhQYajdgJVchv2yDzr+cFhWF7DmNb5NyTQ==
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@metamask/controllers@^27.1.1":
   version "27.1.1"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-27.1.1.tgz#b3288bfd05e381e9e32ed60b68a09b2855db1140"
   integrity sha512-RzQ4zKsqmieYqAiVsIIazLTo9GYMcm9fDhYPJklP1M+bzm1k49GRFnZEfru3w/dPVY+wWgcDo/0ZWlOILbu3hg==
-=======
-=======
->>>>>>> d1b2cbdf5 (resetting package.jsob and yarn.lock file again)
-"@metamask/controllers@^26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-26.0.0.tgz#3df4a3071ffb26d357ba99f288d52fb9d913c35a"
-  integrity sha512-iAWDoP/omxGzPfYyBFRNPJ32zcYvZHnUhIM2LyWoCwQj9ZYC1qh+dDX6I0O5jEeQcBrEb+Nl6AcnwHKVdEUz5Q==
-<<<<<<< HEAD
->>>>>>> 234c7d061 (resetting yarn lock to origin/develop)
-=======
-"@metamask/controllers@./metamask-controllers-27.1.1.tgz", "@metamask/controllers@^27.1.1":
-  version "27.1.1"
-  resolved "./metamask-controllers-27.1.1.tgz#251b79062ea383ccedb24c139d8b3d65696bc5c1"
->>>>>>> b86959b8c (updating close button color)
-=======
->>>>>>> d1b2cbdf5 (resetting package.jsob and yarn.lock file again)
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
-    "@metamask/contract-metadata" "^1.31.0"
+    "@keystonehq/metamask-airgapped-keyring" "^0.3.0"
+    "@metamask/contract-metadata" "^1.33.0"
     "@metamask/metamask-eth-abis" "3.0.0"
     "@metamask/types" "^1.1.0"
     "@types/uuid" "^8.3.0"
@@ -2813,7 +2782,7 @@
     eth-json-rpc-infura "^5.1.0"
     eth-keyring-controller "^6.2.1"
     eth-method-registry "1.1.0"
-    eth-phishing-detect "^1.1.14"
+    eth-phishing-detect "^1.1.16"
     eth-query "^2.1.2"
     eth-rpc-errors "^4.0.0"
     eth-sig-util "^3.0.0"
@@ -2834,24 +2803,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@metamask/controllers@^28.0.0":
   version "28.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-28.0.0.tgz#dbde11df635daeb9d73ff989cb274f94f913ff39"
   integrity sha512-ABIZ5OO6g9DzyKrDB0yr1KzyleqVZ4V2d9S8jaToz5AaDZ0tnVkcKptCtRfhzV8xC23xynKjoO7cU9ZkDXBbjw==
-=======
-"@metamask/controllers@^26.0.0":
-  version "26.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-26.0.0.tgz#3df4a3071ffb26d357ba99f288d52fb9d913c35a"
-  integrity sha512-iAWDoP/omxGzPfYyBFRNPJ32zcYvZHnUhIM2LyWoCwQj9ZYC1qh+dDX6I0O5jEeQcBrEb+Nl6AcnwHKVdEUz5Q==
->>>>>>> b86959b8c (updating close button color)
-=======
-"@metamask/controllers@^27.0.0", "@metamask/controllers@^27.1.1":
-  version "27.1.1"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-27.1.1.tgz#b3288bfd05e381e9e32ed60b68a09b2855db1140"
-  integrity sha512-RzQ4zKsqmieYqAiVsIIazLTo9GYMcm9fDhYPJklP1M+bzm1k49GRFnZEfru3w/dPVY+wWgcDo/0ZWlOILbu3hg==
->>>>>>> d1b2cbdf5 (resetting package.jsob and yarn.lock file again)
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
@@ -2958,37 +2913,15 @@
   resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-2.1.0.tgz#c0be8e68445b7b83cf85bcc03a56cdf8e256c973"
   integrity sha512-ADuWlTUkFfN2vXlz81Bg/0BA+XRor+CdK1055p6k7H6BLIPoDKn9SBOFld9haQFuR9cKh/JYHcnlSIv5R4fUEw==
 
-
 "@metamask/execution-environments@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.11.1.tgz#04bfd945a2b8b5379957917255faed0dec27b226"
   integrity sha512-E2UVccqKxzF1M6ZnrH8zqI0XO0IIGuB7fS3dUk2Ha44SDw0V/4ufqg9wCGy9H5DIRyLZQN5bDElnTLeEzedt3A==
-"@metamask/execution-environments@^0.10.7":
-  version "0.10.7"
-  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.10.7.tgz#aedc37c9c371a7229600e74e62a0157690152f2c"
-  integrity sha512-jD8Bzqo/QiDHCbo8D9pvQE7TZNGQJLW0nkz5vY2wLoJ1kLLlyJzyjRU77oZCSZMW0feLZWRifalUQT5tOrGA8w==
   dependencies:
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/post-message-stream" "^4.0.0"
     "@metamask/providers" "^8.1.1"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     "@metamask/snap-types" "^0.11.1"
-=======
-    "@metamask/snap-types" "^0.10.6"
-=======
-    "@metamask/snap-types" "^0.10.7"
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
-    "@metamask/snap-types" "^0.10.6"
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
-    "@metamask/snap-types" "^0.10.7"
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-    cross-fetch "^3.1.5"
->>>>>>> 7f49d07c9 (reverting linked controller repo)
     eth-rpc-errors "^4.0.3"
     pump "^3.0.0"
     ses "^0.15.15"
@@ -2999,10 +2932,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@metamask/iframe-execution-environment-service@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.11.1.tgz#cf3495e26c83cb6389b197797c61e55df7144934"
@@ -3013,50 +2942,6 @@
     "@metamask/post-message-stream" "^4.0.0"
     "@metamask/snap-controllers" "^0.11.1"
     "@metamask/snap-types" "^0.11.1"
-=======
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-"@metamask/iframe-execution-environment-service@^0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.10.6.tgz#ba7e5499efba2018cef38fff916eaabbfbe1b27b"
-  integrity sha512-BZbE4+CffNmD1J7Mpvh/evvKcDuP82Jl9panIV0JKzddG8zzOi9xlGtImYf8QWjwN5zx2TyTHAb/WxA+R+nFzw==
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-"@metamask/iframe-execution-environment-service@^0.10.7":
-  version "0.10.7"
-  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.10.7.tgz#787093962cb04e46759a994b21ab7d8d3b63a518"
-  integrity sha512-pHrWrv5ywdFmp8PdewPqYcDql9djlvsywsdISVCsAIn3oIH65+ICAuycSNXWTaPQ0VMO5/mE9taynEyVOvw8pw==
-<<<<<<< HEAD
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-  dependencies:
-    "@metamask/controllers" "^26.0.0"
-    "@metamask/execution-environments" "^0.10.7"
-    "@metamask/object-multiplex" "^1.2.0"
-    "@metamask/post-message-stream" "^4.0.0"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@metamask/snap-controllers" "^0.10.6"
-    "@metamask/snap-types" "^0.10.6"
->>>>>>> 7f49d07c9 (reverting linked controller repo)
-=======
-    "@metamask/snap-controllers" "^0.10.7"
-    "@metamask/snap-types" "^0.10.7"
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
-    "@metamask/snap-controllers" "^0.10.6"
-    "@metamask/snap-types" "^0.10.6"
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
-    "@metamask/snap-controllers" "^0.10.7"
-    "@metamask/snap-types" "^0.10.7"
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
     eth-rpc-errors "^4.0.3"
     json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^3.0.0"
@@ -3145,56 +3030,14 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@metamask/rpc-methods@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.11.1.tgz#180ce27d1d408fb5eb80edf69351611b231d4f56"
   integrity sha512-QinfBpYy6m5BikADEUNjQvHXJIrG/1eZmwJbiYh4aJL1AcjzUb2KqWIOdI4ihLJ0xEkEy3rWmDwVQDxd9AzteA==
-=======
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-"@metamask/rpc-methods@^0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.10.6.tgz#6e91c2bf33c909e203db438effec6663da4e8692"
-  integrity sha512-cPqAQExwZGRLqtl22HUBVblr/tIAm/aI3ZMt6QKhwymwU7f/yM+4BOZB1M3+dVlhcIfX1SFFxDW3rFe+MsCksA==
-<<<<<<< HEAD
->>>>>>> 7f49d07c9 (reverting linked controller repo)
-=======
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-"@metamask/rpc-methods@^0.10.7":
-  version "0.10.7"
-  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.10.7.tgz#d663599de9207bd35f7cf74e4a1ebb4c27b3ee2e"
-  integrity sha512-K83zkffYDMxzocxHC8eIGWl/XP+YzJu82dK3Ii43f2MEr66oE/bPPPIZAivDmLDxhc/cWE7RUhZCHaiWBR+SGQ==
-<<<<<<< HEAD
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
   dependencies:
     "@metamask/controllers" "^28.0.0"
     "@metamask/key-tree" "^3.0.1"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     "@metamask/snap-controllers" "^0.11.1"
-=======
-    "@metamask/snap-controllers" "^0.10.6"
->>>>>>> 7f49d07c9 (reverting linked controller repo)
-=======
-    "@metamask/snap-controllers" "^0.10.7"
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
-    "@metamask/snap-controllers" "^0.10.6"
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
-    "@metamask/snap-controllers" "^0.10.7"
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
     "@metamask/types" "^1.1.0"
     eth-rpc-errors "^4.0.2"
 
@@ -3221,10 +3064,6 @@
     isomorphic-fetch "^3.0.0"
     lodash "^4.17.21"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@metamask/snap-controllers@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.11.1.tgz#00754b8ad2480f4ba5d273b9a3ec2d2251b00e78"
@@ -3232,40 +3071,6 @@
   dependencies:
     "@metamask/controllers" "^28.0.0"
     "@metamask/execution-environments" "^0.11.1"
-=======
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-"@metamask/snap-controllers@^0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.10.6.tgz#72fc52271264c4ae8c986ce4d1a64c34505c7a8b"
-  integrity sha512-Pa8g1dBVKtjkemRXFUPDQLnP8gcVmQpSgkTMK/m7tVqUinyZX7Gufq5wuApEh1pwRjMQ2R7he/zQn7oZ4qwTJw==
-<<<<<<< HEAD
-  dependencies:
-    "@metamask/controllers" "^26.0.0"
-    "@metamask/execution-environments" "^0.10.6"
->>>>>>> 7f49d07c9 (reverting linked controller repo)
-=======
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-"@metamask/snap-controllers@^0.10.7":
-  version "0.10.7"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.10.7.tgz#df4f049264bcc805c3a5876f6c298b2c37c6734e"
-  integrity sha512-wXuelvjLI06RSxZjCGCCCxxAAyA3djMcjwcjmPbrMPI/6X0neUjrIJrQ4LTBxX2GPzSfU/4z/gFTdAsqi5bHKg==
-<<<<<<< HEAD
-  dependencies:
-    "@metamask/controllers" "^26.0.0"
-    "@metamask/execution-environments" "^0.10.7"
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
-  dependencies:
-    "@metamask/controllers" "^26.0.0"
-    "@metamask/execution-environments" "^0.10.6"
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
-  dependencies:
-    "@metamask/controllers" "^26.0.0"
-    "@metamask/execution-environments" "^0.10.7"
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^7.0.0"
     "@metamask/post-message-stream" "4.0.0"
@@ -3287,36 +3092,10 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@metamask/snap-types@^0.11.1":
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.11.1.tgz#43ddd6397ab4119dabf8ce42725680e593735cd1"
   integrity sha512-BrB/zypZbm6GWjGK4QahrRiYChGyk+EE+JAIEx2/vhLuzx2DmoEfEi4k1ojV13Rl7VfnOFsQXuK0xZxMX5FyCA==
-=======
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-"@metamask/snap-types@^0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.10.6.tgz#83e3eab797829a9f31906a27fa967a8096e5b704"
-  integrity sha512-6eSc9hHhC+X133Nw6/WSUy0RWRipdOF3NBKgGFYJxCpvhkY4jGxQ1HAKDUZRzZ3eSewsmQ4hhhIQ+zczj0Subw==
-<<<<<<< HEAD
->>>>>>> 7f49d07c9 (reverting linked controller repo)
-=======
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
-"@metamask/snap-types@^0.10.7":
-  version "0.10.7"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.10.7.tgz#a314ba1082e65a41bde021735bbc57034416aa53"
-  integrity sha512-AHOwQ/7SxDBRUSrdlWRa5X549mSM1MOl8iErOccxfKzuHdJjmIZIv1Ob34bgdMUxvhkt7ztFCW/lcObmdCIGjA==
-<<<<<<< HEAD
->>>>>>> cd80faf2f (fixing package.json and yarn.lock)
-=======
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
   dependencies:
     "@metamask/controllers" "^28.0.0"
 
@@ -11497,24 +11276,10 @@ eth-method-registry@^2.0.0:
   dependencies:
     ethjs "^0.4.0"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 eth-phishing-detect@^1.1.16:
   version "1.1.16"
   resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.1.16.tgz#637158d5774819e1a861f6d169e6d77d076a47fd"
   integrity sha512-/o9arK5qFOKVdfZK9hJVAQP0eKXjAvImIKNBMfF9Nj1HGicD3wfsVuXDu1OHrxuEi6+4kYtD9wyAn/3G7g7VrA==
-=======
-eth-phishing-detect@^1.1.14:
-  version "1.1.15"
-  resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.1.15.tgz#c42e1aad6cd1c5eeee41c6bf932dcfd0e523d499"
-  integrity sha512-RVNSGMVIuO6VZ1Uv4v8dljjj0ephW+APVAU5QL5mBu3VEqfBluPMNb6jw66kxYrIFrSNalnb/pMeDpAA+W3cvg==
->>>>>>> f01d5bcc2 (fixing package.json and yarn.lock)
-=======
-eth-phishing-detect@^1.1.14, eth-phishing-detect@^1.1.16:
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.1.16.tgz#637158d5774819e1a861f6d169e6d77d076a47fd"
-  integrity sha512-/o9arK5qFOKVdfZK9hJVAQP0eKXjAvImIKNBMfF9Nj1HGicD3wfsVuXDu1OHrxuEi6+4kYtD9wyAn/3G7g7VrA==
->>>>>>> 1a4b535b6 (updating package and yarn.lock files)
   dependencies:
     fast-levenshtein "^2.0.6"
 
