@@ -37,13 +37,15 @@ function start() {
     });
     const redirectTarget = new URL(suspect.href, window.location.href);
     // validate redirect url
-    const invalidProtocol = !(['https:', 'http:'].includes(redirectTarget.protocol));
+    const invalidProtocol = !['https:', 'http:'].includes(
+      redirectTarget.protocol,
+    );
     // if in valid, show warning and abort
     if (invalidProtocol) {
       // we intentionally dont display to the user any potential attacker-written content here
       console.error(`Invalid redirect url.`);
       return;
-    };
+    }
     // use the validated url instance
     window.location.href = redirectTarget.href;
   });
