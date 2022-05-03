@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.1]
+### Changed
+- This version was used to rollback from v10.14.0 to v10.13.0.
+
 ## [10.13.0]
 ### Added
 - Add a new fiat onboarding option via MoonPay ([#13934](https://github.com/MetaMask/metamask-extension/pull/13934))
@@ -2885,7 +2889,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...HEAD
+[10.14.1]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.1
 [10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
 [10.12.3]: https://github.com/MetaMask/metamask-extension/compare/v10.12.2...v10.12.3
