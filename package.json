@@ -34,7 +34,7 @@
     "test:e2e:firefox:snaps": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --snaps",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
     "test:coverage:mocha": "nyc --reporter=text --reporter=html yarn test:unit:mocha",
-    "test:coverage:jest": "yarn test:unit:jest --coverage --maxWorkers=2",
+    "test:coverage:jest": "yarn test:unit:jest --coverage --maxWorkers=2 && yarn jest-it-up -m 5",
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles",
