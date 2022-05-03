@@ -25,6 +25,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import ActionableMessage from '../../components/ui/actionable-message';
 import Disclosure from '../../components/ui/disclosure';
+import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -278,7 +279,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'User clicks "Edit" on gas',
       properties: {
         action: 'Confirm Screen',
@@ -560,13 +561,18 @@ export default class ConfirmTransactionBase extends Component {
     const simulationFailureWarning = () => (
       <div className="confirm-page-container-content__error-container">
         <ActionableMessage
+          message={t('simulationErrorMessageV2')}
+          useIcon
+          iconFillColor="var(--color-error-default)"
           type="danger"
-          primaryAction={{
-            label: this.context.t('tryAnywayOption'),
-            onClick: () => this.setUserAcknowledgedGasMissing(),
-          }}
-          message={this.context.t('simulationErrorMessage')}
-          roundedButtons
+          primaryActionV2={
+            userAcknowledgedGasMissing === true
+              ? undefined
+              : {
+                  label: t('proceedWithTransaction'),
+                  onClick: () => this.setUserAcknowledgedGasMissing(),
+                }
+          }
         />
       </div>
     );
@@ -593,7 +599,9 @@ export default class ConfirmTransactionBase extends Component {
               : () => this.handleEditGas()
           }
           rows={[
-            renderSimulationFailureWarning && simulationFailureWarning(),
+            renderSimulationFailureWarning &&
+              !this.supportsEIP1559V2 &&
+              simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
               renderGasDetailsItem(),
@@ -730,7 +738,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Edit Transaction',
       properties: {
         action: 'Confirm Screen',
@@ -937,7 +945,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Confirm: Started',
       properties: {
         action: 'Confirm Screen',
@@ -1034,10 +1042,6 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
-    const isDisabled = () => {
-      return userAcknowledgedGasMissing ? false : !valid;
-    };
-
     let functionType;
     if (txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
       functionType = getMethodName(name);
@@ -1089,7 +1093,6 @@ export default class ConfirmTransactionBase extends Component {
           lastTx={lastTx}
           ofText={ofText}
           requestsWaitingText={requestsWaitingText}
-          hideUserAcknowledgedGasMissing={!isDisabled()}
           disabled={
             renderSimulationFailureWarning ||
             !valid ||
@@ -1101,7 +1104,6 @@ export default class ConfirmTransactionBase extends Component {
           onCancelAll={() => this.handleCancelAll()}
           onCancel={() => this.handleCancel()}
           onSubmit={() => this.handleSubmit()}
-          setUserAcknowledgedGasMissing={this.setUserAcknowledgedGasMissing}
           hideSenderToRecipient={hideSenderToRecipient}
           origin={txData.origin}
           ethGasPriceWarning={ethGasPriceWarning}

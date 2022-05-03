@@ -8,6 +8,7 @@ import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
@@ -76,7 +77,7 @@ export default class AccountDetailsModal extends Component {
           onClick={() => {
             const accountLink = getAccountLink(address, chainId, rpcPrefs);
             this.context.trackEvent({
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               event: 'Clicked Block Explorer Link',
               properties: {
                 link_type: 'Account Tracker',

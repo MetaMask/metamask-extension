@@ -7,6 +7,7 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { exportAsFile } from '../../../../helpers/utils/util';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import DraggableSeed from './draggable-seed.component';
 
 const EMPTY_SEEDS = Array(12).fill(null);
@@ -78,7 +79,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
     try {
       this.context.trackEvent({
-        category: 'Onboarding',
+        category: EVENT.CATEGORIES.ONBOARDING,
         event: 'Verify Complete',
         properties: {
           action: 'Seed Phrase Setup',
