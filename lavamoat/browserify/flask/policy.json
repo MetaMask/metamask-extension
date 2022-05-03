@@ -2193,14 +2193,6 @@
         "promise-to-callback": true
       }
     },
-    "ethjs-ens": {
-      "packages": {
-        "eth-ens-namehash": true,
-        "ethereum-ens-network-map": true,
-        "ethjs-contract": true,
-        "ethjs-query": true
-      }
-    },
     "ethjs-filter": {
       "globals": {
         "clearInterval": true,
