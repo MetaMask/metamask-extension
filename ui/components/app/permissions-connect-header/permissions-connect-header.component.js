@@ -26,10 +26,10 @@ export default class PermissionsConnectHeader extends Component {
     headerTitle: PropTypes.node,
     boxProps: PropTypes.shape({ ...Box.propTypes }),
     headerText: PropTypes.string,
+    rightIcon: PropTypes.node,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     snapVersion: PropTypes.string,
     isSnapInstall: PropTypes.bool,
-    rightIcon: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
   };
 

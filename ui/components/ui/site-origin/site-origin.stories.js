@@ -36,3 +36,14 @@ DefaultStory.args = {
   iconSrc: './metamark.svg',
   chip: true,
 };
+
+export const RightIcon = (args) => <SiteOrigin {...args} />;
+
+RightIcon.storyName = 'Right Icon';
+
+RightIcon.args = {
+  siteOrigin: 'https://metamask.io',
+  iconName: 'MetaMask',
+  iconSrc: './metamark.svg',
+  // rightIcon: tbd
+};

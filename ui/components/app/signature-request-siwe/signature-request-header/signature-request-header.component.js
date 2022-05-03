@@ -48,8 +48,21 @@ export default function SIWERequestHeader({
 }
 
 SIWERequestHeader.propTypes = {
+  /**
+   * The account that is requesting permissions
+   */
   fromAccount: PropTypes.object,
+  /**
+   * The domain that the request is for
+   */
   domain: PropTypes.string,
+  /**
+   * Whether the domain is valid
+   */
   isSIWEDomainValid: PropTypes.bool,
+  /**
+   * The metadata for the subject. This is used to display the icon and name
+   * and is selected from the domain in the SIWE request.
+   */
   subjectMetadata: PropTypes.object,
 };

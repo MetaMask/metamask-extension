@@ -63,5 +63,5 @@ SiteOrigin.propTypes = {
   /**
    * The icon to display on the right side of the chip.
    */
-  rightIcon: PropTypes.object,
+  rightIcon: PropTypes.node,
 };
