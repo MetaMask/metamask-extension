@@ -6,7 +6,7 @@ module.exports = {
   ],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
-  coverageReporters: ['html', 'text-summary'],
+  coverageReporters: ['html', 'text-summary', 'json-summary'],
   coverageThreshold: {
     global: {
       branches: 35,
