@@ -2411,6 +2411,10 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_getLocale": {
+    "message": "Get user locale from wallet.",
+    "description": "The description for the `wallet_getLocale` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."

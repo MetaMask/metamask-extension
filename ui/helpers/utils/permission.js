@@ -19,6 +19,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  [RestrictedMethods.wallet_getLocale]: {
+    leftIcon: 'fas fa-language',
+    label: (t) => t('permission_getLocale'),
+    rightIcon: null,
+  },
   [RestrictedMethods.snap_confirm]: {
     label: (t) => t('permission_customConfirmation'),
     leftIcon: 'fas fa-user-check',

@@ -1,3 +1,5 @@
+import { ethErrors } from 'eth-rpc-errors';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const getLocaleOptions = {
@@ -5,7 +7,7 @@ const getLocaleOptions = {
   implementation: getLocaleHandler,
   hookNames: {
     getWalletLocale: true,
-    sendMetrics: true,
+    hasPermission: true,
   },
 };
 export default getLocaleOptions;
@@ -29,28 +31,27 @@ export default getLocaleOptions;
  * @param {getLocaleOptions} options
  */
 
+
 async function getLocaleHandler(
   req,
   res,
   _next,
   end,
-  { getWalletLocale, sendMetrics },
+  { getWalletLocale, hasPermission },
 ) {
-  const { origin } = req;
-  try {
-    const walletLocale = await getWalletLocale();
-
-    sendMetrics({
-      event: 'Get locale',
-      category: 'Permission',
-      referrer: {
-        url: origin,
-      },
-    });
-
-    res.result = walletLocale;
-  } catch (error) {
-    return end(error);
-  }
-  return end();
+    if (hasPermission(MESSAGE_TYPE.GET_LOCALE)) {
+      // We wait for the extension to unlock in this case only, because permission
+      // requests are handled when the extension is unlocked, regardless of the
+      // lock state when they were received.
+      try {
+        const walletLocale = await getWalletLocale();
+        res.result = walletLocale;
+      } catch (error) {
+        end(error);
+      }
+      return end();
+    }
+    
+    return end(ethErrors.provider.unauthorized());
+  
 }

@@ -162,6 +162,21 @@ export const getPermissionSpecifications = ({
         }
       },
     },
+    [PermissionKeys['wallet_getLocale']]: {
+      permissionType: PermissionType.RestrictedMethod,
+      targetKey: PermissionKeys.wallet_getLocale,
+
+      factory: (permissionOptions) => {
+        return constructPermission({
+          ...permissionOptions,
+        });
+      },
+
+      methodImplementation: async () => {},
+
+      validator: () => {}
+
+    },
   };
 };
 
