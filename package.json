@@ -325,6 +325,7 @@
     "improved-yarn-audit": "^3.0.0",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.3.1",
+    "jest-it-up": "^2.0.2",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lavamoat": "^6.1.2",
