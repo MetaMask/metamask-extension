@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
   },
-  "customNetworks": {
-    "message": "कस्टम नेटवर्क्स"
-  },
   "customSpendLimit": {
     "message": "खर्च सीमा कस्टम करें"
   },
@@ -796,9 +793,6 @@
   },
   "decryptRequest": {
     "message": "अनुरोध डिक्रिप्ट करें"
-  },
-  "defaultTheme": {
-    "message": "डिफ़ॉल्ट"
   },
   "delete": {
     "message": "हटाएँ"
@@ -2300,9 +2294,6 @@
   },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
-  },
-  "onlyInteractWith": {
-    "message": "सिर्फ उन्हीं संस्थाओं से इंटरैक्ट करें जिनपर आप भरोसा करते हैं।"
   },
   "openFullScreenForLedgerWebHid": {
     "message": "अपने लेजर को WebHID के माध्यम से कनेक्ट करने के लिए MetaMask को पूर्ण स्क्रीन में खोलें।",

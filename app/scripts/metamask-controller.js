@@ -30,7 +30,7 @@ import {
   ControllerMessenger,
   CurrencyRateController,
   PhishingController,
-  NotificationController,
+  AnnouncementController,
   GasFeeController,
   TokenListController,
   TokensController,
@@ -75,6 +75,7 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
+  ORIGIN_METAMASK,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
   ///: END:ONLY_INCLUDE_IN
@@ -87,6 +88,10 @@ import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import {
+  onMessageReceived,
+  checkForMultipleVersionsRunning,
+} from './detect-multiple-instances';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -453,9 +458,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.phishingController = new PhishingController();
 
-    this.notificationController = new NotificationController(
-      { allNotifications: UI_NOTIFICATIONS },
-      initState.NotificationController,
+    this.announcementController = new AnnouncementController(
+      { allAnnouncements: UI_NOTIFICATIONS },
+      initState.AnnouncementController,
     );
 
     // token exchange rate tracker
@@ -632,7 +637,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.3',
+        'https://metamask.github.io/iframe-execution-environment/0.4.4',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -653,6 +658,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:hasPermissions`,
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
+        `${this.permissionController.name}:revokePermissionForAllSubjects`,
       ],
     });
 
@@ -983,7 +989,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
       ThreeBoxController: this.threeBoxController.store,
-      NotificationController: this.notificationController,
+      AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
@@ -1023,7 +1029,7 @@ export default class MetamaskController extends EventEmitter {
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
-        NotificationController: this.notificationController,
+        AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
@@ -1061,6 +1067,11 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
+
+    // Multiple MetaMask instances launched warning
+    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
+    // Fire a ping message to check if other extensions are running
+    checkForMultipleVersionsRunning();
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -1075,13 +1086,14 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:add',
         ),
-        clearSnapState: (fromSubject) =>
-          this.controllerMessenger.call(
-            'SnapController:updateSnapState',
-            fromSubject,
-            null,
-          ),
+        clearSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:clearSnapState',
+        ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+          this.appStateController,
+        ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:get',
@@ -1227,12 +1239,17 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin }) => {
-        if (origin === 'metamask') {
+      getAccounts: async (
+        { origin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
+        if (origin === ORIGIN_METAMASK) {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(origin);
+          return await this.getPermittedAccounts(origin, {
+            suppressUnauthorizedError,
+          });
         }
         return []; // changing this is a breaking change
       },
@@ -1368,7 +1385,7 @@ export default class MetamaskController extends EventEmitter {
       keyringController,
       metaMetricsController,
       networkController,
-      notificationController,
+      announcementController,
       onboardingController,
       permissionController,
       preferencesController,
@@ -1823,8 +1840,8 @@ export default class MetamaskController extends EventEmitter {
       },
 
       // Notifications
-      updateViewedNotifications: notificationController.updateViewed.bind(
-        notificationController,
+      updateViewedNotifications: announcementController.updateViewed.bind(
+        announcementController,
       ),
 
       // GasFeeController
@@ -2520,17 +2537,24 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {boolean} [suppressUnauthorizedError] - Suppresses the unauthorized error.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  async getPermittedAccounts(origin) {
+  async getPermittedAccounts(
+    origin,
+    { suppressUnauthorizedError = true } = {},
+  ) {
     try {
       return await this.permissionController.executeRestrictedMethod(
         origin,
         RestrictedMethods.eth_accounts,
       );
     } catch (error) {
-      if (error.code === rpcErrorCodes.provider.unauthorized) {
+      if (
+        suppressUnauthorizedError &&
+        error.code === rpcErrorCodes.provider.unauthorized
+      ) {
         return [];
       }
       throw error;
@@ -3286,7 +3310,7 @@ export default class MetamaskController extends EventEmitter {
   setupProviderConnection(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SUBJECT_TYPES.INTERNAL) {
-      origin = 'metamask';
+      origin = ORIGIN_METAMASK;
     }
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     else if (subjectType === SUBJECT_TYPES.SNAP) {
@@ -3530,6 +3554,10 @@ export default class MetamaskController extends EventEmitter {
 
           return Object.values(approvedPermissions);
         },
+        getPermissions: this.permissionController.getPermissions.bind(
+          this.permissionController,
+          origin,
+        ),
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         installSnaps: this.snapController.installSnaps.bind(
           this.snapController,
@@ -3589,7 +3617,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string} The connection's id (so that it can be deleted later)
    */
   addConnection(origin, { engine }) {
-    if (origin === 'metamask') {
+    if (origin === ORIGIN_METAMASK) {
       return null;
     }
 

@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
   },
-  "customNetworks": {
-    "message": "사용자 정의 네트워크"
-  },
   "customSpendLimit": {
     "message": "맞춤형 지출 한도"
   },
@@ -796,9 +793,6 @@
   },
   "decryptRequest": {
     "message": "암호 해독 요청"
-  },
-  "defaultTheme": {
-    "message": "기본값"
   },
   "delete": {
     "message": "삭제"
@@ -2300,9 +2294,6 @@
   },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
-  },
-  "onlyInteractWith": {
-    "message": "신뢰할 수 있는 엔터티만 이용하세요."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "전체 화면에서 MetaMask를 열어 WebHID를 통해 Ledger를 연결합니다.",

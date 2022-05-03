@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
   },
-  "customNetworks": {
-    "message": "Custom na mga network"
-  },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
   },
@@ -796,9 +793,6 @@
   },
   "decryptRequest": {
     "message": "I-decrypt ang request"
-  },
-  "defaultTheme": {
-    "message": "Default"
   },
   "delete": {
     "message": "I-delete"
@@ -2300,9 +2294,6 @@
   },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
-  },
-  "onlyInteractWith": {
-    "message": "Makipag-ugnayan lamang sa mga entidad na iyong pinagkakatiwalaan."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Buksan ang MetaMask sa buong screen para ikonekta ang ledger mo sa pamamagitan ng WebHID.",

@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
   },
-  "customNetworks": {
-    "message": "Προσαρμοσμένα δίκτυα"
-  },
   "customSpendLimit": {
     "message": "Προσαρμοσμένο Όριο Δαπάνης"
   },
@@ -796,9 +793,6 @@
   },
   "decryptRequest": {
     "message": "Αίτημα αποκρυπτογράφησης"
-  },
-  "defaultTheme": {
-    "message": "Προεπιλεγμένο"
   },
   "delete": {
     "message": "Διαγραφή"
@@ -2300,9 +2294,6 @@
   },
   "onlyConnectTrust": {
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε."
-  },
-  "onlyInteractWith": {
-    "message": "Να αλληλεπιδράτε μόνο με άτομα/οργανισμούς που εμπιστεύεστε."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το ledger σας μέσω WebHID.",

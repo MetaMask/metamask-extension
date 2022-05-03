@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n’est pas garanti."
   },
-  "customNetworks": {
-    "message": "Réseaux personnalisés"
-  },
   "customSpendLimit": {
     "message": "Limite de dépenses personnalisée"
   },
@@ -796,9 +793,6 @@
   },
   "decryptRequest": {
     "message": "Décrypter la demande"
-  },
-  "defaultTheme": {
-    "message": "Par défaut"
   },
   "delete": {
     "message": "Supprimer"
@@ -2300,9 +2294,6 @@
   },
   "onlyConnectTrust": {
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance."
-  },
-  "onlyInteractWith": {
-    "message": "Interagissez uniquement avec les entités auxquelles vous faites confiance."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Ouvrez MetaMask en mode plein écran pour connecter votre Ledger via WebHID.",

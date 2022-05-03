@@ -727,9 +727,6 @@
   "customGasSubTitle": {
     "message": "Menaikkan biaya dapat mengurangi waktu pemrosesan, namun tidak ada jaminan."
   },
-  "customNetworks": {
-    "message": "Jaringan khusus"
-  },
   "customSpendLimit": {
     "message": "Batas Penggunaan Kustom"
   },
@@ -796,9 +793,6 @@
   },
   "decryptRequest": {
     "message": "Dekrip permintaan"
-  },
-  "defaultTheme": {
-    "message": "Awal"
   },
   "delete": {
     "message": "Hapus"
@@ -2300,9 +2294,6 @@
   },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
-  },
-  "onlyInteractWith": {
-    "message": "Lakukan interaksi hanya dengan entitas yang aman."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka MetaMask dalam layar penuh untuk menghubungkan ledger Anda melalui WebHID.",
