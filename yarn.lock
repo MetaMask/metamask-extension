@@ -7466,7 +7466,7 @@ buffer@^4.3.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-buffer@^5.1.0, buffer@^5.2.1, buffer@^5.4.2, buffer@^5.5.0, buffer@^5.6.0:
+buffer@^5.1.0, buffer@^5.2.1, buffer@^5.5.0, buffer@^5.6.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.7.1.tgz#ba62e7c13133053582197160851a8f648e99eed0"
   integrity sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==
@@ -11235,16 +11235,16 @@ eth-keyring-controller@^6.2.0, eth-keyring-controller@^6.2.1:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-lattice-keyring@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.6.1.tgz#ebb6dfb8039d4c4c979280110aa49a7b74064850"
-  integrity sha512-FzP/TPIFuyo37B4dGKg6bQN0H61h9Bdejh9bxH6sUqmDB+X+a/PlydeWxZIhEjmIvD+Huuy+bcp9hXTcCcr2Ig==
+eth-lattice-keyring@^0.7.3:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.7.3.tgz#fe27b1ff3f81535506be5804801da1bfdc379cbe"
+  integrity sha512-DVyk316MUU0e/871eO/EFGPnMLT4sRwgft1iZ9dhY5dUcrcjs0G+Vza9/HPvKu7jJm3FPLcL2T3DJUlF4+XmZQ==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
     bn.js "^5.2.0"
     ethereumjs-util "^7.0.10"
-    gridplus-sdk "^1.1.6"
+    gridplus-sdk "^1.2.3"
     rlp "^3.0.0"
     secp256k1 "4.0.2"
 
@@ -13616,10 +13616,10 @@ graphql-subscriptions@^1.1.0:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
-gridplus-sdk@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-1.1.6.tgz#abec7eab81daa295806aaafda50cf3b463a53ae6"
-  integrity sha512-AjpnKouda18gwJpOqZRB9aY/cXKGLCj2U915hxjtlQvulRQfCtS1aNA71ZeN/rlBb77NPDZ8v1jJVerte4vKLQ==
+gridplus-sdk@^1.2.3:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-1.2.4.tgz#3bfd73a65b5af0a23bbc0164e8537981d35dd8db"
+  integrity sha512-S4Yg48GG+eAuXxO0I5yWnM8w7VFgvLuP0aS7f6L+h+et1FUF3yNIR2sBuFnijcuGVcMy+jqvA66r8iSttBQfQw==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
@@ -13636,7 +13636,6 @@ gridplus-sdk@^1.1.6:
     hash.js "^1.1.7"
     js-sha3 "^0.8.0"
     rlp "^3.0.0"
-    rlp-browser "^1.0.1"
     secp256k1 "4.0.2"
     superagent "^3.8.3"
 
@@ -24140,13 +24139,6 @@ ripple-lib@1.10.0:
     ripple-keypairs "^1.0.3"
     ripple-lib-transactionparser "0.8.2"
     ws "^7.2.0"
-
-rlp-browser@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/rlp-browser/-/rlp-browser-1.0.1.tgz#d1ea37f289359200d33dfa006d46008a288761eb"
-  integrity sha512-JU+9ntlfyKanOOPwtNuMZBmCQ/fWVoryfa7ZSYDTUKAa1zk4v2smvM0WV8BsskJuqn/DdxpO7HO2vEikMvmhOA==
-  dependencies:
-    buffer "^5.4.2"
 
 rlp@^2.0.0, rlp@^2.2.3, rlp@^2.2.4, rlp@^2.2.6:
   version "2.2.7"
