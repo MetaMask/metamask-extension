@@ -671,7 +671,7 @@ export function getSwapsDefaultToken(state) {
 export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
   const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== 'development' ||
+    process.env.METAMASK_ENVIRONMENT !== 'development' &&
     process.env.METAMASK_ENVIRONMENT !== 'testing';
   return isNotDevelopment
     ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
