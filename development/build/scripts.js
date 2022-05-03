@@ -248,6 +248,7 @@ function createScriptTasks({
       phishingDetectSubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
+        applyLavaMoat,
         buildType,
         isLavaMoat,
         policyOnly,
