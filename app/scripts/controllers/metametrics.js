@@ -614,7 +614,9 @@ export default class MetaMetricsController {
     }
 
     const allAddresses = Object.values(allCollectibles)
-      .flatMap((chainCollectibles) => Object.values(chainCollectibles))
+      .reduce((result, chainCollectibles) => {
+        return result.concat(Object.values(chainCollectibles));
+      }, [])
       .flat()
       .map((collectible) => collectible.address);
     const unique = [...new Set(allAddresses)];
