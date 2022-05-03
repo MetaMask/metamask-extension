@@ -42,6 +42,7 @@ import {
   SubjectMetadataController,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
+  NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -682,6 +683,13 @@ export default class MetamaskController extends EventEmitter {
       messenger: snapControllerMessenger,
     });
 
+    this.notificationController = new NotificationController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NotificationController',
+      }),
+      state: initState.NotificationController,
+    });
+
     this.rateLimitController = new RateLimitController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'RateLimitController',
@@ -698,6 +706,15 @@ export default class MetamaskController extends EventEmitter {
             originMetadata?.name ?? origin,
             message,
           );
+          return null;
+        },
+        showInAppNotification: (origin, message) => {
+          this.controllerMessenger.call(
+            'NotificationController:show',
+            origin,
+            message,
+          );
+
           return null;
         },
       },
@@ -1001,6 +1018,7 @@ export default class MetamaskController extends EventEmitter {
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
+      NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
     });
 
@@ -1041,6 +1059,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
