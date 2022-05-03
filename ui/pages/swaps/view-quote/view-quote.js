@@ -209,7 +209,7 @@ export default function ViewQuote() {
   const smartTransactionEstimatedGas = useSelector(
     getSmartTransactionEstimatedGas,
   );
-  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
@@ -400,7 +400,7 @@ export default function ViewQuote() {
       smartTransactionEstimatedGas.txData.feeEstimate +
       (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
     const stxMaxFeeInWeiDec =
-      stxEstimatedFeeInWeiDec * swapsRefreshRates.stxMaxFeeMultiplier;
+      stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
@@ -836,7 +836,7 @@ export default function ViewQuote() {
         dispatch(
           estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
         );
-      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
+      }, swapsNetworkConfig.stxGetTransactionsRefreshTime);
       dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
     } else if (intervalId) {
       clearInterval(intervalId);
@@ -853,7 +853,7 @@ export default function ViewQuote() {
     unsignedTransaction.gas,
     unsignedTransaction.to,
     chainId,
-    swapsRefreshRates.stxGetTransactionsRefreshTime,
+    swapsNetworkConfig.stxGetTransactionsRefreshTime,
     isSwapButtonDisabled,
   ]);
 
