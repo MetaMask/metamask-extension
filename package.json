@@ -9,8 +9,8 @@
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
-    "start": "yarn build:dev dev",
-    "start:lavamoat": "yarn build dev",
+    "start": "yarn build:dev dev --apply-lavamoat=false",
+    "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
     "dist": "yarn build prod",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
@@ -34,7 +34,7 @@
     "test:e2e:firefox:snaps": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --snaps",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
     "test:coverage:mocha": "nyc --reporter=text --reporter=html yarn test:unit:mocha",
-    "test:coverage:jest": "yarn test:unit:jest --coverage --maxWorkers=2",
+    "test:coverage:jest": "yarn test:unit:jest --coverage --maxWorkers=2 && yarn jest-it-up -m 5",
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles",
@@ -75,6 +75,7 @@
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
     "**/caniuse-lite": "1.0.30001265",
+    "**/cross-fetch": "^3.1.5",
     "**/configstore/dot-prop": "^5.1.1",
     "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
@@ -275,7 +276,7 @@
     "@typescript-eslint/parser": "^4.20.0",
     "addons-linter": "1.14.0",
     "babelify": "^10.0.0",
-    "bify-module-groups": "^1.0.0",
+    "bify-module-groups": "^2.0.0",
     "brfs": "^2.0.2",
     "browser-util-inspect": "^0.2.0",
     "browserify": "^16.5.1",
@@ -324,6 +325,7 @@
     "improved-yarn-audit": "^3.0.0",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.3.1",
+    "jest-it-up": "^2.0.2",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lavamoat": "^6.1.2",
@@ -436,9 +438,14 @@
       "ganache>leveldown": false,
       "ganache>secp256k1": false,
       "ganache>utf-8-validate": false,
+      "ethereumjs-util>ethereum-cryptography>secp256k1": false,
       "gulp-watch>chokidar>fsevents": false,
       "gulp>glob-watcher>chokidar>fsevents": false,
-      "webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false
+      "webpack>watchpack>watchpack-chokidar2>chokidar>fsevents": false,
+      "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": false,
+      "@metamask/rpc-methods>@metamask/key-tree>secp256k1": false,
+      "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
+      "eth-lattice-keyring>secp256k1": false
     }
   }
 }

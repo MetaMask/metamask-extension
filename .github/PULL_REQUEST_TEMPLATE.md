@@ -15,7 +15,7 @@ This is a problem because ...
 In order to solve this problem, this pull request ...
 -->
 
-## More information
+## More Information
 
 <!--
 Are there any issues, Slack conversations, Zendesk issues, user stories, etc. reviewers should consult to understand this pull request better? For instance:
@@ -36,7 +36,7 @@ Are there any issues, Slack conversations, Zendesk issues, user stories, etc. re
 
 <!-- How does it look now? Drag your file(s) below this line: -->
 
-## Manual testing steps
+## Manual Testing Steps
 
 <!--
 How should reviewers and QA manually test your changes? For instance:
@@ -45,3 +45,12 @@ How should reviewers and QA manually test your changes? For instance:
 - Do this
 - Then do this
 -->
+
+## Pre-Merge Checklist
+
+- [ ] PR template is filled out
+- [ ] Manual testing complete & passed
+- [ ] **IF** this PR fixes a bug, a test that _would have_ caught the bug has been added
+- [ ] PR is linked to the appropriate GitHub issue
+- [ ] **IF** QA attention is required, "QA Board" label has been applied
+- [ ] PR has been added to the appropriate release Milestone
