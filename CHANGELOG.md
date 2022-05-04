@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.2]
+### Uncategorized
+- Stop using 4bytes for contract deployment ([#14598](https://github.com/MetaMask/metamask-extension/pull/14598))
+- fix cross-fetch moderate vulnerability alert ([#14570](https://github.com/MetaMask/metamask-extension/pull/14570))
+
 ## [10.14.0]
 ### Added
 - **[FLASK]** Add snap version to details page ([#14110](https://github.com/MetaMask/metamask-extension/pull/14110))
@@ -2908,7 +2913,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...HEAD
+[10.14.2]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...v10.14.2
 [10.14.0]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.0
 [10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
