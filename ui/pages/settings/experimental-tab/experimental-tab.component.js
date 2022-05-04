@@ -263,7 +263,7 @@ export default class ExperimentalTab extends PureComponent {
     };
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">
