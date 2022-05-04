@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
-  connectDappWithExtensionPopup,
   getWindowHandles,
 } = require('../helpers');
 
@@ -20,7 +19,7 @@ describe('Send token from inside MetaMask', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -29,8 +28,9 @@ describe('Send token from inside MetaMask', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await connectDappWithExtensionPopup(driver);
+
         // create token
+        await driver.openNewPage(`http://127.0.0.1:8080/`);
         await driver.waitForSelector({ text: 'Create Token', tag: 'button' });
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
 
@@ -46,10 +46,6 @@ describe('Send token from inside MetaMask', function () {
           text: '0x',
         });
 
-        await driver.waitForSelector({
-          text: 'Add Token to Wallet',
-          tag: 'button',
-        });
         await driver.clickElement({
           text: 'Add Token to Wallet',
           tag: 'button',
@@ -81,11 +77,10 @@ describe('Send token from inside MetaMask', function () {
         );
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        const hexButton = await driver.findClickableElement({
+        await driver.clickElement({
           text: 'Hex',
           tag: 'button',
         });
-        hexButton.click();
 
         const functionType = await driver.findElement(
           '.confirm-page-container-content__function-type',
@@ -135,3 +130,190 @@ describe('Send token from inside MetaMask', function () {
     );
   });
 });
+
+describe('Send a custom token from dapp', function () {
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+  it('sends an already created token', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: 'connected-state',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // create token
+        await driver.openNewPage(`http://127.0.0.1:8080/`);
+        await driver.waitForSelector({ text: 'Create Token', tag: 'button' });
+        await driver.clickElement({ text: 'Create Token', tag: 'button' });
+
+        let windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
+
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        await driver.switchToWindow(windowHandles.dapp);
+
+        await driver.waitForSelector({
+          css: '#tokenAddress',
+          text: '0x',
+        });
+
+        await driver.clickElement({
+          text: 'Add Token to Wallet',
+          tag: 'button',
+        });
+
+        windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
+        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+
+        await driver.switchToWindow(windowHandles.dapp);
+
+    await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
+    windowHandles = await getWindowHandles(driver, 3);
+    await driver.switchToWindow(windowHandles.popup);
+
+    await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
+    await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+    await driver.switchToWindow(windowHandles.extension);
+
+    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await driver.findElements('.transaction-list__pending-transactions');
+    await driver.waitForSelector(
+      {
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      },
+      { timeout: 10000 },
+    );
+    await driver.clickElement('.transaction-list-item__primary-currency');
+
+    const transactionAmounts = await driver.findElements(
+      '.currency-display-component__text',
+    );
+    const transactionAmount = transactionAmounts[0];
+    assert(await transactionAmount.getText(), '1.5 TST');
+  });
+});
+
+  it('customizes gas, submits the transaction and finds the transaction in the transactions list', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: 'connected-state',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // create token
+        await driver.openNewPage(`http://127.0.0.1:8080/`);
+        await driver.waitForSelector({ text: 'Create Token', tag: 'button' });
+        await driver.clickElement({ text: 'Create Token', tag: 'button' });
+
+        let windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
+
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        await driver.switchToWindow(windowHandles.dapp);
+
+        await driver.switchToWindow(windowHandles.dapp);
+
+        await driver.waitForSelector({
+          css: '#tokenAddress',
+          text: '0x',
+        });
+
+        await driver.clickElement({
+          text: 'Add Token to Wallet',
+          tag: 'button',
+        });
+
+        windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
+        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+
+        await driver.switchToWindow(windowHandles.dapp);
+
+        await driver.delay(2000);
+    await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
+    windowHandles = await getWindowHandles(driver, 3);
+    await driver.switchToWindow(windowHandles.popup);
+
+    await driver.waitForSelector({ text: 'Edit', tag: 'button' });
+    await driver.clickElement({ text: 'Edit', tag: 'button' });
+   
+    await driver.clickElement(
+      { text: 'Edit suggested gas fee', tag: 'button' },
+      10000,
+    );
+    
+    const inputs = await driver.findElements('input[type="number"]');
+    const gasLimitInput = inputs[0];
+    const gasPriceInput = inputs[1];
+    await gasLimitInput.fill('60000');
+    await gasPriceInput.fill('10');
+   
+    await driver.clickElement({ text: 'Save', tag: 'button' });
+    
+    await driver.findElement({ tag: 'span', text: '0.0006' });
+ 
+    const tokenAmount = await driver.findElement(
+      '.confirm-page-container-summary__title-text',
+    );
+    const tokenAmountText = await tokenAmount.getText();
+    assert.equal(tokenAmountText, '1.5 TST');
+
+    await driver.clickElement({ text: 'Confirm', tag: 'button' });
+ 
+  
+    await driver.switchToWindow(windowHandles.extension);
+
+    await driver.clickElement({ tag: 'button', text: 'Activity' });
+    await driver.waitForSelector({
+      css:
+        '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+      text: '-1.5 TST',
+    });
+
+    await driver.waitForSelector({
+      css: '.list-item__heading',
+      text: 'Send TST',
+    });
+  
+    await driver.clickElement({
+      text: 'Assets',
+      tag: 'button',
+    });
+
+    await driver.waitForSelector({
+      css: '.asset-list-item__token-button',
+      text: '7.5 TST',
+    });
+
+    await driver.clickElement({
+      text: 'Activity',
+      tag: 'button',
+    });
+  });
+});
+});
+
