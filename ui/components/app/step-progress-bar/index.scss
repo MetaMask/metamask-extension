@@ -114,23 +114,6 @@ ul.two-steps {
   top: 15px;
   z-index: -1;
 
-  @media screen and (max-width: 349px) {
-    right: 39%;
-  }
-
-  @media screen and (min-width: 350px) and (max-width: 460px) {
-    right: 42%;
-  }
-
-  @media screen and (min-width: 461px) and (max-width: $break-small) {
-    right: 44%;
-  }
-
-  @media screen and (min-width: $break-small) {
-    right: 46%;
-  }
-
-
   [dir='rtl'] & {
     width: 180px;
     height: 2px;
