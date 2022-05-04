@@ -6654,23 +6654,13 @@ better-opn@^2.1.1:
   dependencies:
     open "^7.0.3"
 
-bify-module-groups@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/bify-module-groups/-/bify-module-groups-1.0.0.tgz#6fba8f96a8b0f9e8f0b04035650fd56249b6119d"
-  integrity sha512-JAAkE9L5vZoALCEqawXipQNlDn3D0nUyjt0cHgRXj0Kce2RNLQsBxA6wTmnYpQDna6g6VVyC8IUi3n02ppmbhA==
+bify-module-groups@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/bify-module-groups/-/bify-module-groups-2.0.0.tgz#b629b0028db855b7a587d932ea3af7ed4a69dca9"
+  integrity sha512-9hkVBhhjO5ycUGlUT6KW109gOgsmnrDH+vMjPFFkY9oCiP397p5o4wruXZqyI9ZA1p8hA5egoKBoh3GwbKiM4g==
   dependencies:
-    bify-packagedata-stream "1.0.0"
     pump "^3.0.0"
     through2 "^3.0.1"
-
-bify-packagedata-stream@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/bify-packagedata-stream/-/bify-packagedata-stream-1.0.0.tgz#a6dbdcba64f9bf1c87bdc02ba9586fff7b94ccb3"
-  integrity sha512-ckOCceDpAOySFrt89saOShpVbP/iQbmZeWlYSxZV2e3HPTPhcd3JSudMJZhpsihQTyZut39efDo4+8aOb4vo2w==
-  dependencies:
-    module-name-from-path "git+https://git@github.com/kumavis/module-name-from-path.git"
-    resolve-package-path "^1.2.7"
-    through2 "^3.0.0"
 
 big-integer@1.6.36:
   version "1.6.36"
@@ -19277,10 +19267,6 @@ module-lookup-amd@^7.0.0:
     requirejs "^2.3.5"
     requirejs-config-file "^4.0.0"
 
-"module-name-from-path@git+https://git@github.com/kumavis/module-name-from-path.git":
-  version "1.0.4"
-  resolved "git+https://git@github.com/kumavis/module-name-from-path.git#fd9c592663a1af6cc48b1be7b8045ea547fca79a"
-
 module-not-found-error@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/module-not-found-error/-/module-not-found-error-1.0.1.tgz#cf8b4ff4f29640674d6cdd02b0e3bc523c2bbdc0"
@@ -23960,14 +23946,6 @@ resolve-options@^1.1.0:
   integrity sha1-MrueOcBtZzONyTeMDW1gdFZq0TE=
   dependencies:
     value-or-function "^3.0.0"
-
-resolve-package-path@^1.2.7:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-1.2.7.tgz#2a7bc37ad96865e239330e3102c31322847e652e"
-  integrity sha512-fVEKHGeK85bGbVFuwO9o1aU0n3vqQGrezPc51JGu9UTXpFQfWq5qCeKxyaRUSvephs+06c5j5rPq/dzHGEo8+Q==
-  dependencies:
-    path-root "^0.1.1"
-    resolve "^1.10.0"
 
 resolve-pathname@^3.0.0:
   version "3.0.0"
