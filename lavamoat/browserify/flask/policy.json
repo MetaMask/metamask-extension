@@ -531,6 +531,14 @@
         "react-is": true
       }
     },
+    "@metamask/bip39": {
+      "packages": {
+        "buffer": true,
+        "create-hash": true,
+        "pbkdf2": true,
+        "randombytes": true
+      }
+    },
     "@metamask/controllers": {
       "globals": {
         "Headers": true,
@@ -577,6 +585,15 @@
         "uuid": true,
         "web3": true,
         "web3-provider-engine": true
+      }
+    },
+    "@metamask/eth-hd-keyring": {
+      "packages": {
+        "@metamask/bip39": true,
+        "@metamask/eth-sig-util": true,
+        "buffer": true,
+        "eth-simple-keyring": true,
+        "ethereumjs-wallet": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -1196,9 +1213,6 @@
       }
     },
     "bip39": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "buffer": true,
         "create-hash": true,
@@ -1911,7 +1925,6 @@
     "eth-hd-keyring": {
       "packages": {
         "bip39": true,
-        "buffer": true,
         "eth-sig-util": true,
         "eth-simple-keyring": true,
         "ethereumjs-wallet": true
@@ -1968,6 +1981,7 @@
     },
     "eth-keyring-controller": {
       "packages": {
+        "@metamask/eth-hd-keyring": true,
         "bip39": true,
         "browser-passworder": true,
         "buffer": true,
