@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.2]
+### Fixed
+- Make build deterministic (#14610)
+    - The ordering of modules within each bundle was non-deterministic before this change. We fixed this to comply with Firefox store policies.
+
 ## [10.14.1]
 ### Changed
 - This version was used to rollback from v10.14.0 to v10.13.0.
@@ -2889,7 +2894,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...HEAD
+[10.14.2]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...v10.14.2
 [10.14.1]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.1
 [10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
