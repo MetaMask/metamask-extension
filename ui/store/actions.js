@@ -738,6 +738,32 @@ export function updateEditableParams(txId, editableParams) {
   };
 }
 
+/**
+ * Appends new send flow history to a transaction
+ *
+ * @param {string} txId - the id of the transaction to update
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - the new send flow history to append to the
+ *  transaction
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await promisifiedBackground.updateTransactionSendFlowHistory(
+        txId,
+        sendFlowHistory,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
     let updatedTransaction;
@@ -811,11 +837,14 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  * @param {import(
  *  '../../shared/constants/transaction'
  * ).TransactionTypeString} type - The type of the transaction being added.
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
+ *  history of the send flow at time of creation.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
 export function addUnapprovedTransactionAndRouteToConfirmationPage(
   txParams,
   type,
+  sendFlowHistory,
 ) {
   return async (dispatch) => {
     try {
@@ -824,6 +853,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
         txParams,
         ORIGIN_METAMASK,
         type,
+        sendFlowHistory,
       );
       dispatch(showConfTxPage());
       return txMeta;
