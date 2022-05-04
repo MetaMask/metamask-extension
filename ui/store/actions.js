@@ -1005,15 +1005,15 @@ export async function removeSnapError(msgData) {
 
 export function dismissNotifications(ids) {
   return async (dispatch) => {
-    const newState = await promisifiedBackground.dismissNotifications(ids);
-    dispatch(updateMetamaskState(newState));
+    await promisifiedBackground.dismissNotifications(ids);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function markNotificationsAsRead(ids) {
   return async (dispatch) => {
-    const newState = await promisifiedBackground.markNotificationsAsRead(ids);
-    dispatch(updateMetamaskState(newState));
+    await promisifiedBackground.markNotificationsAsRead(ids);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 ///: END:ONLY_INCLUDE_IN
