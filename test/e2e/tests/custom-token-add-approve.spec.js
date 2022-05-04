@@ -337,14 +337,6 @@ describe('Create token, approve token and approve token without gas', function (
 
           await driver.clickElement('.transaction-list-item');
 
-          /* await driver.waitForSelector({
-            css: '.confirm-approve-content__small-blue-text',
-            text: 'View full transaction details',
-          });
-          await driver.clickElement({
-            css: '.confirm-approve-content__small-blue-text',
-            text: 'View full transaction details',
-          }); */
           const permissionInfo = await driver.findElements(
             '.confirm-approve-content__medium-text',
           );
