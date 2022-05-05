@@ -18,7 +18,6 @@ describe('Auto-Lock Timer', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
