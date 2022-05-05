@@ -23,7 +23,7 @@ function NotificationItem({ notification, snaps, onItemClick }) {
   const date = new Date(createdDate).toDateString();
 
   const handleNameClick = (e) => {
-    e.stopPropation();
+    e.stopPropagation();
     history.push(snap.route);
   };
 
@@ -55,8 +55,6 @@ export default function Notifications() {
   const dispatch = useDispatch();
   const notifications = useSelector(getNotifications);
   const snapsRouteObject = useSelector(getSnapsRouteObjects);
-
-  console.log(notifications);
 
   const markAllAsRead = () => {
     const unreadNotificationIds = notifications
