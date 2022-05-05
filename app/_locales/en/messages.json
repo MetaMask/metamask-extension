@@ -439,7 +439,7 @@
     "message": "Buy ETH with Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lets you use a debit card to deposit ETH right in to your MetaMask account."
+    "message": "No ID or SSN entry required for purchases under $1000 and fast verification for higher limit purchases. Supports debit/credit cards, Apple Pay, & bank transfers in 100+ countries. Tokens deposit into your MetaMask Account."
   },
   "bytes": {
     "message": "Bytes"

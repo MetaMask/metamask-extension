@@ -428,7 +428,7 @@
     "message": "Comprar ETH con Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
+    "message": "No entrada de numero de seguridad social requerido para transacciones de $1,000 o menos con verificación rápida y efectiva. Aceptamos tarjetas débito, crédito, Apple Pay y transferencias bancarias en más de 100 países. Tokens serán depósitados en su MetaMask."
   },
   "bytes": {
     "message": "Bytes"
