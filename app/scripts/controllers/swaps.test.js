@@ -136,6 +136,7 @@ const EMPTY_INIT_STATE = {
     swapsQuotePrefetchingRefreshTime: 60000,
     swapsStxBatchStatusRefreshTime: 10000,
     swapsStxGetTransactionsRefreshTime: 10000,
+    swapsStxMaxFeeMultiplier: 2,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
   },
