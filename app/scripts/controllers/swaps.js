@@ -19,6 +19,11 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
+  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+} from '../../../shared/constants/smartTransactions';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
@@ -41,9 +46,6 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
-const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
-const FALLBACK_SMART_TRANSACTIONS_DEADLINE = 180;
-const FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER = 2;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -87,8 +89,8 @@ const initialState = {
     saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsFeatureFlags: {},
   },
@@ -177,10 +179,10 @@ export default class SwapsController {
           swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
         swapsStxGetTransactionsRefreshTime:
           swapsNetworkConfig?.stxGetTransactions ||
-          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
         swapsStxBatchStatusRefreshTime:
           swapsNetworkConfig?.stxBatchStatus ||
-          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
         swapsStxStatusDeadline:
           swapsNetworkConfig?.stxStatusDeadline ||
           FALLBACK_SMART_TRANSACTIONS_DEADLINE,
