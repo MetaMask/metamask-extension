@@ -29,7 +29,6 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
       category: EVENT.CATEGORIES.WALLET,
       properties: {
         source: EVENT.SOURCE.TOKEN.DETECTED,
-        token_count: detectedTokens.length,
         tokens: detectedTokensDetails,
       },
     });
