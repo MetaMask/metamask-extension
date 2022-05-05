@@ -5,6 +5,7 @@ import AccountListItem from '../../components/app/account-list-item';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 
+import { EVENT } from '../../../shared/constants/metametrics';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
@@ -165,7 +166,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           onClick={async (event) => {
             await cancelEncryptionPublicKey(txData, event);
             trackEvent({
-              category: 'Messages',
+              category: EVENT.CATEGORIES.MESSAGES,
               event: 'Cancel',
               properties: {
                 action: 'Encryption public key Request',
@@ -185,7 +186,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           onClick={async (event) => {
             await encryptionPublicKey(txData, event);
             this.context.trackEvent({
-              category: 'Messages',
+              category: EVENT.CATEGORIES.MESSAGES,
               event: 'Confirm',
               properties: {
                 action: 'Encryption public key Request',

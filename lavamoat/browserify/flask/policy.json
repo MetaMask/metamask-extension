@@ -751,8 +751,10 @@
         "Worker": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.info": true,
         "console.log": true,
         "console.warn": true,
+        "fetch": true,
         "setTimeout": true
       },
       "packages": {
@@ -765,7 +767,6 @@
         "ajv": true,
         "buffer": true,
         "concat-stream": true,
-        "cross-fetch": true,
         "crypto-browserify": true,
         "eth-rpc-errors": true,
         "fast-deep-equal": true,
@@ -1227,10 +1228,8 @@
     },
     "blakejs": {
       "globals": {
+        "TextEncoder": true,
         "console.log": true
-      },
-      "packages": {
-        "buffer": true
       }
     },
     "blob": {
@@ -2089,10 +2088,8 @@
         "ethereum-cryptography": true,
         "ethjs-util": true,
         "is-buffer": true,
-        "keccak": true,
         "rlp": true,
-        "safe-buffer": true,
-        "secp256k1": true
+        "safe-buffer": true
       }
     },
     "ethereumjs-wallet": {
@@ -2421,8 +2418,8 @@
     "hash-base": {
       "packages": {
         "inherits": true,
-        "safe-buffer": true,
-        "stream-browserify": true
+        "readable-stream": true,
+        "safe-buffer": true
       }
     },
     "hash.js": {
@@ -3099,10 +3096,7 @@
     "keccak": {
       "packages": {
         "buffer": true,
-        "inherits": true,
-        "readable-stream": true,
-        "safe-buffer": true,
-        "stream-browserify": true
+        "readable-stream": true
       }
     },
     "latency-monitor": {
@@ -4032,7 +4026,10 @@
     "pbkdf2": {
       "globals": {
         "crypto": true,
-        "process": true
+        "process": true,
+        "queueMicrotask": true,
+        "setImmediate": true,
+        "setTimeout": true
       },
       "packages": {
         "create-hash": true,

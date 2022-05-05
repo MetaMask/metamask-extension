@@ -17,6 +17,7 @@ import {
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default function CreationSuccessful() {
   const firstTimeFlowTypeNameMap = {
@@ -34,7 +35,7 @@ export default function CreationSuccessful() {
     await dispatch(setCompletedOnboarding());
     trackEvent({
       event: firstTimeFlowTypeNameMap[firstTimeFlowType],
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       properties: {
         action: 'Onboarding Complete',
         legacy_event: true,

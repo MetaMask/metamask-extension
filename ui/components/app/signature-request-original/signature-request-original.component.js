@@ -6,6 +6,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import Identicon from '../../ui/identicon';
 import AccountListItem from '../account-list-item';
@@ -273,7 +274,7 @@ export default class SignatureRequestOriginal extends Component {
           onClick={async (event) => {
             await cancel(event);
             trackEvent({
-              category: 'Transactions',
+              category: EVENT.CATEGORIES.TRANSACTIONS,
               event: 'Cancel',
               properties: {
                 action: 'Sign Request',
@@ -296,7 +297,7 @@ export default class SignatureRequestOriginal extends Component {
           onClick={async (event) => {
             await sign(event);
             trackEvent({
-              category: 'Transactions',
+              category: EVENT.CATEGORIES.TRANSACTIONS,
               event: 'Confirm',
               properties: {
                 action: 'Sign Request',
