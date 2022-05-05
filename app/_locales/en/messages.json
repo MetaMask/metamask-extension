@@ -1531,6 +1531,10 @@
   "importWallet": {
     "message": "Import wallet"
   },
+  "importWithCount": {
+    "message": "Import $1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
+  },
   "importYourExisting": {
     "message": "Import your existing wallet using a Secret Recovery Phrase"
   },

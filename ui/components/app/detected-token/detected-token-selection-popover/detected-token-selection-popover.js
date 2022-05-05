@@ -16,10 +16,18 @@ const DetectedTokenSelectionPopover = ({
   onImport,
   onIgnoreAll,
   setShowDetectedTokens,
+  sortingBasedOnTokenSelection,
 }) => {
   const t = useI18nContext();
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  const { selected: selectedTokens = [] } = sortingBasedOnTokenSelection(
+    tokensListDetected,
+  );
+  const numOfTokensImporting =
+    selectedTokens.length === detectedTokens.length
+      ? `All`
+      : `(${selectedTokens.length})`;
 
   const onClose = () => {
     setShowDetectedTokens(false);
@@ -39,7 +47,7 @@ const DetectedTokenSelectionPopover = ({
         type="primary"
         onClick={onImport}
       >
-        {t('import')}
+        {t('importWithCount', [numOfTokensImporting])}
       </Button>
     </>
   );
@@ -73,6 +81,7 @@ DetectedTokenSelectionPopover.propTypes = {
   onIgnoreAll: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
   setShowDetectedTokens: PropTypes.func.isRequired,
+  sortingBasedOnTokenSelection: PropTypes.func.isRequired,
 };
 
 export default DetectedTokenSelectionPopover;

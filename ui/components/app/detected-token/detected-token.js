@@ -115,6 +115,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         onImport={onImport}
         onIgnoreAll={onIgnoreAll}
         setShowDetectedTokens={setShowDetectedTokens}
+        sortingBasedOnTokenSelection={sortingBasedOnTokenSelection}
       />
     </>
   );
