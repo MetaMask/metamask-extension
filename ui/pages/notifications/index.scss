@@ -1,10 +1,11 @@
 .notifications {
   width: 100%;
   background-color: var(--color-background-default);
-  
+
   @media screen and (max-width: $break-small) {
     max-height: 100vh;
   }
+
   &__header {
     display: flex;
     flex-direction: row;
@@ -13,17 +14,19 @@
     padding: 10px 20px;
 
     &__title-container {
-      
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
       flex: 0 0 auto;
+
       &__title {
         @include H3;
+
         margin-left: 26px;
 
         @media screen and (max-width: $break-small) {
           @include H6;
+
           margin-left: 16px;
           font-weight: bold;
         }
@@ -32,6 +35,7 @@
 
     &_button {
       width: auto;
+
       @media screen and (max-width: $break-small) {
         font-size: 0.75rem;
         padding: 3.5px 1rem;
@@ -81,5 +85,4 @@
       }
     }
   }
-  
 }
