@@ -3167,7 +3167,7 @@
         "gulp-autoprefixer>autoprefixer": true,
         "gulp-autoprefixer>postcss": true,
         "gulp-autoprefixer>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "vinyl-sourcemaps-apply": true
       }
     },
@@ -3285,7 +3285,7 @@
         "gulp-dart-sass>lodash.clonedeep": true,
         "gulp-dart-sass>strip-ansi": true,
         "gulp-dart-sass>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "sass": true,
         "vinyl-sourcemaps-apply": true,
         "vinyl>replace-ext": true
@@ -3585,7 +3585,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss": true,
         "gulp-rtlcss>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "vinyl-sourcemaps-apply": true
       }
     },
@@ -3670,6 +3670,23 @@
       }
     },
     "gulp-rtlcss>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
+    "gulp-sort": {
+      "packages": {
+        "gulp-sort>through2": true
+      }
+    },
+    "gulp-sort>through2": {
       "builtin": {
         "util.inherits": true
       },
@@ -3894,7 +3911,7 @@
         "eslint>strip-ansi": true,
         "fancy-log": true,
         "gulp-stylelint>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "source-map": true,
         "stylelint": true
       }
@@ -3949,9 +3966,9 @@
         "gulp-watch>fancy-log": true,
         "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
-        "gulp-watch>plugin-error": true,
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
+        "gulp-zip>plugin-error": true,
         "react>object-assign": true,
         "readable-stream": true,
         "vinyl": true
@@ -4476,28 +4493,6 @@
         "process.platform": true
       }
     },
-    "gulp-watch>plugin-error": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "packages": {
-        "gulp-watch>ansi-colors": true,
-        "gulp-watch>plugin-error>arr-union": true,
-        "gulp-watch>plugin-error>extend-shallow": true,
-        "webpack>micromatch>arr-diff": true
-      }
-    },
-    "gulp-watch>plugin-error>extend-shallow": {
-      "packages": {
-        "gulp-watch>plugin-error>extend-shallow>is-extendable": true,
-        "webpack>micromatch>extend-shallow>assign-symbols": true
-      }
-    },
-    "gulp-watch>plugin-error>extend-shallow>is-extendable": {
-      "packages": {
-        "gulp>gulp-cli>liftoff>is-plain-object": true
-      }
-    },
     "gulp-watch>vinyl-file": {
       "builtin": {
         "path.resolve": true
@@ -4580,6 +4575,7 @@
     },
     "gulp-zip": {
       "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
         "path.join": true
       },
       "packages": {
@@ -4592,10 +4588,14 @@
     },
     "gulp-zip>get-stream": {
       "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
         "stream.PassThrough": true
       },
       "globals": {
         "Buffer.concat": true
+      },
+      "packages": {
+        "pump": true
       }
     },
     "gulp-zip>plugin-error": {
@@ -4603,37 +4603,21 @@
         "util.inherits": true
       },
       "packages": {
-        "gulp-zip>plugin-error>ansi-cyan": true,
-        "gulp-zip>plugin-error>ansi-red": true,
-        "gulp-zip>plugin-error>arr-diff": true,
+        "gulp-watch>ansi-colors": true,
         "gulp-zip>plugin-error>arr-union": true,
-        "gulp-zip>plugin-error>extend-shallow": true
-      }
-    },
-    "gulp-zip>plugin-error>ansi-cyan": {
-      "packages": {
-        "fancy-log>ansi-gray>ansi-wrap": true
-      }
-    },
-    "gulp-zip>plugin-error>ansi-red": {
-      "packages": {
-        "fancy-log>ansi-gray>ansi-wrap": true
-      }
-    },
-    "gulp-zip>plugin-error>arr-diff": {
-      "packages": {
-        "gulp-zip>plugin-error>arr-diff>array-slice": true,
-        "gulp>undertaker>arr-flatten": true
+        "gulp-zip>plugin-error>extend-shallow": true,
+        "webpack>micromatch>arr-diff": true
       }
     },
     "gulp-zip>plugin-error>extend-shallow": {
       "packages": {
-        "gulp-zip>plugin-error>extend-shallow>kind-of": true
+        "gulp-zip>plugin-error>extend-shallow>is-extendable": true,
+        "webpack>micromatch>extend-shallow>assign-symbols": true
       }
     },
-    "gulp-zip>plugin-error>extend-shallow>kind-of": {
-      "globals": {
-        "Buffer": true
+    "gulp-zip>plugin-error>extend-shallow>is-extendable": {
+      "packages": {
+        "gulp>gulp-cli>liftoff>is-plain-object": true
       }
     },
     "gulp-zip>through2": {
@@ -4644,8 +4628,26 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
+        "gulp-zip>through2>readable-stream": true
+      }
+    },
+    "gulp-zip>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "@storybook/api>util-deprecate": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "gulp-zip>yazl": {
@@ -5541,7 +5543,7 @@
     },
     "lavamoat>lavamoat-core>merge-deep": {
       "packages": {
-        "gulp-watch>plugin-error>arr-union": true,
+        "gulp-zip>plugin-error>arr-union": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep": true,
         "lavamoat>lavamoat-core>merge-deep>kind-of": true
       }
@@ -7436,7 +7438,7 @@
     },
     "webpack>micromatch>snapdragon>base>cache-base>union-value": {
       "packages": {
-        "gulp-watch>plugin-error>arr-union": true,
+        "gulp-zip>plugin-error>arr-union": true,
         "gulp>gulp-cli>array-sort>get-value": true,
         "webpack>micromatch>extglob>extend-shallow>is-extendable": true,
         "webpack>micromatch>snapdragon>base>cache-base>set-value": true
@@ -7465,7 +7467,7 @@
         "util": true
       },
       "packages": {
-        "gulp-watch>plugin-error>arr-union": true,
+        "gulp-zip>plugin-error>arr-union": true,
         "gulp>gulp-cli>isobject": true,
         "webpack>micromatch>snapdragon>base>class-utils>static-extend": true,
         "webpack>micromatch>snapdragon>define-property": true

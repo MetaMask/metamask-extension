@@ -107,15 +107,6 @@
         "browserify>buffer": true
       }
     },
-    "3box>did-jwt>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "browserify>buffer>ieee754": true
-      }
-    },
     "3box>did-jwt>js-sha3": {
       "globals": {
         "define": true
@@ -4898,9 +4889,11 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
+        "console.warn": true,
+        "fetch": true,
         "open": true,
-        "rlp.encode": true,
-        "setInterval": true
+        "setInterval": true,
+        "txData.type": true
       },
       "packages": {
         "@ethereumjs/common": true,
@@ -4910,6 +4903,7 @@
         "browserify>events": true,
         "eth-lattice-keyring>bn.js": true,
         "eth-lattice-keyring>gridplus-sdk": true,
+        "eth-lattice-keyring>rlp": true,
         "eth-lattice-keyring>secp256k1": true,
         "ethereumjs-util": true
       }
@@ -4924,28 +4918,28 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
-        "console.error": true,
         "console.warn": true,
         "setTimeout": true
       },
       "packages": {
-        "3box>did-jwt>buffer": true,
         "3box>ethers>elliptic": true,
         "@ethereumjs/common": true,
         "@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx": true,
+        "bn.js": true,
+        "browserify>buffer": true,
         "eth-lattice-keyring>gridplus-sdk>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "eth-lattice-keyring>gridplus-sdk>borc": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
         "eth-lattice-keyring>gridplus-sdk>rlp": true,
-        "eth-lattice-keyring>gridplus-sdk>rlp-browser": true,
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
         "ethers>@ethersproject/keccak256>js-sha3": true,
         "ethers>@ethersproject/sha2>hash.js": true,
+        "lodash": true,
         "pubnub>superagent": true
       }
     },
@@ -5009,15 +5003,14 @@
         "TextEncoder": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>rlp-browser": {
-      "packages": {
-        "3box>did-jwt>buffer": true,
-        "browserify>assert": true
-      }
-    },
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
         "3box>ethers>elliptic": true
+      }
+    },
+    "eth-lattice-keyring>rlp": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "eth-lattice-keyring>secp256k1": {
