@@ -128,7 +128,7 @@
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
     "@metamask/rpc-methods": "^0.11.1",
-    "@metamask/slip44": "^2.0.0",
+    "@metamask/slip44": "^2.1.0",
     "@metamask/smart-transactions-controller": "^1.10.0",
     "@metamask/snap-controllers": "^0.11.1",
     "@ngraveio/bc-ur": "^1.1.6",

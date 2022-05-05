@@ -3046,10 +3046,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@metamask/slip44@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-2.0.0.tgz#1b646a1418af341d5ea979c28015a817ff23af33"
-  integrity sha512-eRomm783ti/1b/TlNnlTCUkYRuTaMYkeTAG0z2rt/WyT8UzxY+8+v/kbl9vk5qhDHeclzBrd9gbqLnLU1kh+Ow==
+"@metamask/slip44@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-2.1.0.tgz#f76764ca54afc162fbfe563f1994b79ed4711bba"
+  integrity sha512-wkFDdY4XtpF+XCqbgwhsrLRgEM/bYfIt47927JTQZQ2QxQYRbSZ6u0QygnVjIR1eqMteRGx2jtUUZ+bxYQTo/w==
 
 "@metamask/smart-transactions-controller@^1.10.0":
   version "1.10.0"
