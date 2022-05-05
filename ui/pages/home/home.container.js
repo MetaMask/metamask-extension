@@ -126,7 +126,7 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
-    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
+    announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: metamask.snapErrors,
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,

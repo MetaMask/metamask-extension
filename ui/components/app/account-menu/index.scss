@@ -53,6 +53,12 @@
     &__icon {
       margin-right: 8px;
       display: flex;
+      color: var(--color-icon-default);
+      
+      i {
+        text-align: center;
+        width: 24px;
+      }
     }
 
     &__text {
@@ -122,7 +128,7 @@
     scrollbar-width: auto;
 
     @media screen and (max-width: $break-small) {
-      max-height: 228px;
+      max-height: 156px;
     }
 
     .keyring-label {
@@ -142,6 +148,25 @@
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
+    }
+  }
+
+  &__notifications {
+    position: relative;
+
+    &__count {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      right: 0;
+      bottom: 0;
+      min-width: 12px;
+      min-height: 12px;
+      font-size: 8px;
+      border-radius: 50%;
+      background-color: var(--color-primary-default);
+      color: var(--color-primary-inverse);
     }
   }
 

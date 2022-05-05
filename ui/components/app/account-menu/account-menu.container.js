@@ -13,6 +13,7 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  getUnreadNotificationCount,
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
 
@@ -28,7 +29,9 @@ function mapStateToProps(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const origin = getOriginOfCurrentTab(state);
   const selectedAddress = getSelectedAddress(state);
-
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const unreadNotificationCount = getUnreadNotificationCount(state);
+  ///: END:ONLY_INCLUDE_IN
   return {
     isAccountMenuOpen,
     addressConnectedSubjectMap: getAddressConnectedSubjectMap(state),
@@ -37,6 +40,9 @@ function mapStateToProps(state) {
     keyrings: getMetaMaskKeyrings(state),
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    unreadNotificationCount,
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

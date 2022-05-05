@@ -23,6 +23,7 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getNotifications,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -1006,6 +1007,27 @@ export async function removeSnapError(msgData) {
 export function dismissNotifications(ids) {
   return async (dispatch) => {
     await promisifiedBackground.dismissNotifications(ids);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function deleteExpiredNotifications() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const notifications = getNotifications(state);
+
+    const notificationIdsToDelete = notifications
+      .filter((notification) => {
+        const expirationTime = new Date(Date.now() - 10000);
+
+        return Boolean(
+          notification.readDate &&
+            new Date(notification.readDate) < expirationTime,
+        );
+      })
+      .map(({ id }) => id);
+
+    await promisifiedBackground.dismissNotifications(notificationIdsToDelete);
     await forceUpdateMetamaskState(dispatch);
   };
 }

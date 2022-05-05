@@ -2132,6 +2132,9 @@
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
+  "notifications": {
+    "message": "Notifications"
+  },
   "notifications10ActionText": {
     "message": "Visit in settings",
     "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
