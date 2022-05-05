@@ -2044,6 +2044,7 @@
         "document.head.appendChild": true
       },
       "packages": {
+        "@ethereumjs/tx": true,
         "buffer": true,
         "ethereumjs-tx": true,
         "ethereumjs-util": true,
