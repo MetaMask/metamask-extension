@@ -1883,10 +1883,10 @@ export default class TransactionController extends EventEmitter {
 
   _calculateTransactionsCost(txMeta, approvalTxMeta) {
     let approvalGasCost = '0x0';
-    if (approvalTxMeta && approvalTxMeta.txReceipt) {
+    if (approvalTxMeta?.txReceipt) {
       approvalGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,
-        approvalTxMeta.txReceipt.effectiveGasPrice, // Base fee + priority fee.
+        approvalTxMeta.txReceipt.effectiveGasPrice,
       );
     }
     const tradeGasCost = calcGasTotal(
