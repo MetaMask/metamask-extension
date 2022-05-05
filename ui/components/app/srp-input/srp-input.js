@@ -176,11 +176,9 @@ export default function SrpInput({ onChange, srpText }) {
                 onPaste={(event) => {
                   const newSrp = event.clipboardData.getData('text');
 
-                  event.preventDefault();
                   if (newSrp.trim().match(/\s/u)) {
+                    event.preventDefault();
                     onSrpPaste(newSrp);
-                  } else {
-                    onSrpWordChange(index, newSrp);
                   }
                 }}
               />
