@@ -28,10 +28,16 @@ describe('Advanced Settings', function () {
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        await driver.clickElement('[data-testid="advanced-setting-show-testnet-conversion"] label');
-        await driver.clickElement('.settings-page__header__title-container__close-button');
+        await driver.clickElement(
+          '[data-testid="advanced-setting-show-testnet-conversion"] label',
+        );
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
 
-        const secondaryCurrency = await driver.isElementPresent('[data-testid="eth-overview__secondary-currency"]');
+        const secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
         assert.equal(await secondaryCurrency, true);
       },
     );
@@ -50,7 +56,9 @@ describe('Advanced Settings', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        const secondaryCurrency = await driver.isElementPresent('[data-testid="eth-overview__secondary-currency"]');
+        const secondaryCurrency = await driver.isElementPresent(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
         assert.equal(secondaryCurrency, false);
       },
     );
