@@ -1970,9 +1970,11 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
+        "console.warn": true,
+        "fetch": true,
         "open": true,
-        "rlp.encode": true,
-        "setInterval": true
+        "setInterval": true,
+        "txData.type": true
       },
       "packages": {
         "@ethereumjs/common": true,
@@ -1983,6 +1985,7 @@
         "ethereumjs-util": true,
         "events": true,
         "gridplus-sdk": true,
+        "rlp": true,
         "secp256k1": true
       }
     },
@@ -2341,7 +2344,6 @@
     },
     "gridplus-sdk": {
       "globals": {
-        "console.error": true,
         "console.warn": true,
         "setTimeout": true
       },
@@ -2352,6 +2354,7 @@
         "bech32": true,
         "bignumber.js": true,
         "bitwise": true,
+        "bn.js": true,
         "borc": true,
         "bs58check": true,
         "buffer": true,
@@ -2360,8 +2363,8 @@
         "eth-eip712-util-browser": true,
         "hash.js": true,
         "js-sha3": true,
+        "lodash": true,
         "rlp": true,
-        "rlp-browser": true,
         "secp256k1": true,
         "superagent": true
       }
@@ -4633,12 +4636,6 @@
       },
       "packages": {
         "bn.js": true,
-        "buffer": true
-      }
-    },
-    "rlp-browser": {
-      "packages": {
-        "assert": true,
         "buffer": true
       }
     },
