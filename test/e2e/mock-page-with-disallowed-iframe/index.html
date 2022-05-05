@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Mock E2E Phishing Page</title>
+</head>
+<script type="text/javascript">
+	function setIframeSource() {
+		const urlSearchParams = new URLSearchParams(window.location.search);
+		const params = Object.fromEntries(urlSearchParams.entries());
+	    document.getElementById('frame').src = params.extensionUrl;
+	}
+	window.onload = setIframeSource;
+</script>
+<body>
+	<div>Hello</div>
+	<iframe id="frame" width=900 height=900>
+</body>
+
+</html>

@@ -1,4 +1,3 @@
-/* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
@@ -16,7 +15,7 @@ describe('Phishing Detection', function () {
             tolerance: 2,
             fuzzylist: [],
             whitelist: [],
-            blacklist: ['example.com'],
+            blacklist: ['127.0.0.1'],
           },
         };
       });
@@ -30,23 +29,90 @@ describe('Phishing Detection', function () {
       },
     ],
   };
-  it.skip('should display the MetaMask Phishing Detection page', async function () {
+  it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
+        dapp: true,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.navigate();
-        await driver.openNewPage('http://example.com');
-        await driver.waitForSelector({ text: 'continuing at your own risk' });
+        await driver.openNewPage('http://127.0.0.1:8080');
+        await driver.clickElement({
+          text: 'continuing at your own risk',
+        });
         const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'MetaMask Phishing Detection');
+        assert.equal(await header.getText(), 'E2E Test Dapp');
+      },
+    );
+  });
+
+  it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
+    await withFixtures(
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockPhishingDetection,
+        dapp: true,
+        dappPaths: ['mock-page-with-iframe'],
+        dappOptions: {
+          numberOfDapps: 2,
+        },
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        await driver.openNewPage('http://localhost:8080/');
+
+        const iframe = await driver.findElement('iframe');
+
+        await driver.switchToFrame(iframe);
+        await driver.clickElement({
+          text: 'continuing at your own risk',
+        });
+        const header = await driver.findElement('h1');
+        assert.equal(await header.getText(), 'E2E Test Dapp');
+      },
+    );
+  });
+
+  it('should display the MetaMask Phishing Detection page in an iframe but should NOT take the user to the blocked page if it is not an accessible resource', async function () {
+    await withFixtures(
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockPhishingDetection,
+        dapp: true,
+        dappPaths: ['mock-page-with-disallowed-iframe'],
+        dappOptions: {
+          numberOfDapps: 2,
+        },
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        await driver.openNewPage(
+          `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
+        );
+
+        const iframe = await driver.findElement('iframe');
+
+        await driver.switchToFrame(iframe);
+        await driver.assertElementNotPresent({
+          text: 'continuing at your own risk',
+        });
       },
     );
   });

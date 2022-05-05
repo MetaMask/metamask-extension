@@ -34,6 +34,7 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
+  PHISHING_PAGE_URL: process.env.PHISHING_PAGE_URL,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
@@ -133,6 +134,48 @@ function getSegmentWriteKey({ buildType, environment }) {
   throw new Error(`Invalid build type: '${buildType}'`);
 }
 
+/**
+ * Get the URL for the phishing warning page, if it has been set.
+ *
+ * @param options0
+ * @param options0.testing
+ * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
+ */
+function getPhishingWarningPageUrl({ testing }) {
+  let phishingWarningPageUrl = metamaskrc.PHISHING_PAGE_URL;
+
+  if (!phishingWarningPageUrl) {
+    phishingWarningPageUrl = testing
+      ? 'http://localhost:9999/'
+      : 'https://metamask.github.io/phishing-warning/v1.1.0/';
+  }
+
+  // We add a hash/fragment to the URL dynamically, so we need to ensure it
+  // has a valid pathname to append a hash to.
+  const normalizedUrl = phishingWarningPageUrl.endsWith('/')
+    ? phishingWarningPageUrl
+    : `${phishingWarningPageUrl}/`;
+
+  let phishingWarningPageUrlObject;
+  try {
+    // eslint-disable-next-line no-new
+    phishingWarningPageUrlObject = new URL(normalizedUrl);
+  } catch (error) {
+    throw new Error(
+      `Invalid phishing warning page URL: '${normalizedUrl}'`,
+      error,
+    );
+  }
+  if (phishingWarningPageUrlObject.hash) {
+    // The URL fragment must be set dynamically
+    throw new Error(
+      `URL fragment not allowed in phishing warning page URL: '${normalizedUrl}'`,
+    );
+  }
+
+  return normalizedUrl;
+}
+
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
 );
@@ -216,11 +259,6 @@ function createScriptTasks({
       createTaskForBundleSentry({ devMode, testing }),
     );
 
-    const phishingDetectSubtask = createTask(
-      `${taskPrefix}:phishing-detect`,
-      createTaskForBundlePhishingDetect({ devMode, testing }),
-    );
-
     // task for initiating browser livereload
     const initiateLiveReload = async () => {
       if (devMode) {
@@ -243,7 +281,6 @@ function createScriptTasks({
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
-      phishingDetectSubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
         buildType,
@@ -278,23 +315,6 @@ function createScriptTasks({
     return createNormalBundle({
       browserPlatforms,
       buildType,
-      destFilepath: `${label}.js`,
-      devMode,
-      entryFilepath: `./app/scripts/${label}.js`,
-      ignoredFiles,
-      label,
-      testing,
-      policyOnly,
-      shouldLintFenceFiles,
-      version,
-    });
-  }
-
-  function createTaskForBundlePhishingDetect({ devMode, testing }) {
-    const label = 'phishing-detect';
-    return createNormalBundle({
-      buildType,
-      browserPlatforms,
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
@@ -818,6 +838,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     IN_TEST: testing,
+    PHISHING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},
