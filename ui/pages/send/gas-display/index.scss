@@ -1,0 +1,18 @@
+.gas-display {
+  .transaction-detail-rows {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+    margin: 8px 20px;
+
+    .transaction-detail-item {
+      &:not(:first-child) {
+        border-top: 1px solid var(--color-border-default);
+      }
+    }
+  }
+
+  &__link {
+    text-transform: lowercase;
+  }
+}

@@ -978,6 +978,9 @@
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
   },
+  "deposit": {
+    "message": "Deposit"
+  },
   "depositCrypto": {
     "message": "Deposit $1",
     "description": "$1 represents the crypto symbol to be purchased"
@@ -1755,6 +1758,10 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyBuyOrReceive": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or $4 from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",

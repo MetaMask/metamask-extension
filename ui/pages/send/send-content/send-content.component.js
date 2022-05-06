@@ -12,6 +12,8 @@ import {
 } from '../../../helpers/constants/error-keys';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
+import { hexWEIToDecETH } from '../../../helpers/utils/conversions.util';
+import GasDisplay from '../gas-display/gas-display.component';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
@@ -43,6 +45,18 @@ export default class SendContent extends Component {
     recipient: PropTypes.object,
     acknowledgeRecipientWarning: PropTypes.func,
     recipientWarningAcknowledged: PropTypes.bool,
+    draftTransaction: PropTypes.object,
+    hexMaximumTransactionFee: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
+    hexTransactionAmount: PropTypes.string,
+    hexTransactionTotal: PropTypes.string,
+    nativeCurrency: PropTypes.string,
+    isBuyableChain: PropTypes.bool,
+    chainId: PropTypes.string,
+    showBuyModal: PropTypes.func,
+    showAccountDetails: PropTypes.func,
+    useNonceField: PropTypes.bool,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   render() {
@@ -58,6 +72,18 @@ export default class SendContent extends Component {
       assetError,
       recipient,
       recipientWarningAcknowledged,
+      draftTransaction,
+      hexMaximumTransactionFee,
+      hexMinimumTransactionFee,
+      hexTransactionAmount,
+      hexTransactionTotal,
+      nativeCurrency,
+      useNonceField,
+      useNativeCurrencyAsPrimaryCurrency,
+      isBuyableChain,
+      chainId,
+      showBuyModal,
+      showAccountDetails,
     } = this.props;
 
     let gasError;
@@ -76,12 +102,15 @@ export default class SendContent extends Component {
     const showKnownRecipientWarning =
       recipient.warning === 'knownAddressRecipient';
     const hideAddContactDialog = recipient.warning === 'loading';
+    const title = '';
+    const ethTransactionTotalMaxAmount = Number(
+      hexWEIToDecETH(hexMaximumTransactionFee),
+    );
 
     return (
       <PageContainerContent>
         <div className="send-v2__form">
           {assetError ? this.renderError(assetError) : null}
-          {gasError ? this.renderError(gasError) : null}
           {isEthGasPrice
             ? this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)
             : null}
@@ -97,6 +126,24 @@ export default class SendContent extends Component {
           <SendAmountRow />
           {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
           {showHexData ? <SendHexDataRow /> : null}
+          <GasDisplay
+            draftTransaction={draftTransaction}
+            hexMaximumTransactionFee={hexMaximumTransactionFee}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
+            hexTransactionAmount={hexTransactionAmount}
+            hexTransactionTotal={hexTransactionTotal}
+            primaryTotalTextOverrideMaxAmount={`${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
+            useNonceField={useNonceField}
+            useNativeCurrencyAsPrimaryCurrency={
+              useNativeCurrencyAsPrimaryCurrency
+            }
+            isBuyableChain={isBuyableChain}
+            nativeCurrency={nativeCurrency}
+            chainId={chainId}
+            showBuyModal={showBuyModal}
+            showAccountDetails={showAccountDetails}
+            gasError={gasError}
+          />
         </div>
       </PageContainerContent>
     );

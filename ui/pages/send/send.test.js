@@ -6,6 +6,10 @@ import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
 import { renderWithProvider } from '../../../test/jest';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  renderWithProvider,
+  setBackgroundConnection,
+} from '../../../test/jest';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
