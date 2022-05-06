@@ -1,17 +1,20 @@
 .notifications {
   width: 100%;
   background-color: var(--color-background-default);
-
-  @media screen and (max-width: $break-small) {
-    max-height: 100vh;
-  }
+  position: relative;
 
   &__header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     flex: 1;
-    padding: 10px 20px;
+    padding: 65px 24px 15px 24px;
+    border-bottom: 1px solid var(--color-border-default);
+
+    @media screen and (max-width: $break-small) {
+      border-bottom: none;
+      padding: 10px 20px;
+    }
 
     &__title-container {
       display: flex;
@@ -46,6 +49,8 @@
   &__container {
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
   }
 
   &__item {
