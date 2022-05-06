@@ -275,7 +275,7 @@ export const EVENT_NAMES = {
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
-  TOKENS_IGNORED: 'Tokens Ignored',
+  TOKEN_HIDDEN: 'Token Hidden',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
@@ -312,5 +312,10 @@ export const EVENT = {
       DAPP: 'dapp',
       LIST: 'list',
     },
+  },
+  LOCATION: {
+    TOKEN_DETECTION: 'token_detection',
+    TOKEN_MENU: 'token_menu',
+    TOKEN_DETAILS: 'token_details',
   },
 };

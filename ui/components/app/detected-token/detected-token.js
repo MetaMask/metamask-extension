@@ -72,11 +72,11 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         ({ symbol, address }) => `${symbol} - ${address}`,
       );
       trackEvent({
-        event: EVENT_NAMES.TOKENS_IGNORED,
+        event: EVENT_NAMES.TOKEN_HIDDEN,
         category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           tokens: tokensDetailsList,
-          source: EVENT.SOURCE.TOKEN.DETECTED,
+          location: EVENT.LOCATION.TOKEN_DETECTION,
           token_standard: TOKEN_STANDARDS.ERC20,
           asset_type: ASSET_TYPES.TOKEN,
         },
