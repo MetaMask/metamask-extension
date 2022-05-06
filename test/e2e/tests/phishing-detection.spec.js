@@ -15,7 +15,7 @@ describe('Phishing Detection', function () {
             tolerance: 2,
             fuzzylist: [],
             whitelist: [],
-            blacklist: ['example.com'],
+            blacklist: ['localhost'],
           },
         };
       });
@@ -36,15 +36,20 @@ describe('Phishing Detection', function () {
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
+        dapp: true,
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://example.com');
-        await driver.waitForSelector({ text: 'continuing at your own risk' });
+        await driver.navigate();
+        await driver.openNewPage('http://localhost:8080');
+        const continueLink = await driver.waitForSelector({
+          text: 'continuing at your own risk',
+        });
+        await continueLink.click();
         const header = await driver.findElement('h1');
-        assert.equal(await header.getText(), 'MetaMask Phishing Detection');
+        assert.equal(await header.getText(), 'E2E Test Dapp');
       },
     );
   });
