@@ -425,10 +425,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Αγοράστε ETH με το Wyre"
+    "message": "Αγοράστε $1 με το Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Το Wyre σας επιτρέπει να χρησιμοποιήσετε μια πιστωτική κάρτα για να καταθέσετε ETH απευθείας στον λογαριασμό σας MetaTask."
+    "message": "Το Wyre σας επιτρέπει να χρησιμοποιήσετε μια πιστωτική κάρτα για να καταθέσετε $1 απευθείας στον λογαριασμό σας MetaTask."
   },
   "bytes": {
     "message": "Bytes"

@@ -425,10 +425,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "WyreでETHを購入"
+    "message": "Wyreで $1 を購入"
   },
   "buyWithWyreDescription": {
-    "message": "Wyreを使用すると、デビット カードを使用して、ETHをMetaMaskアカウントに直接デポジットできます。"
+    "message": "Wyreを使用すると、デビット カードを使用して、$1 をMetaMaskアカウントに直接デポジットできます。"
   },
   "bytes": {
     "message": "バイト"

@@ -436,10 +436,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Buy ETH with Wyre"
+    "message": "Buy $1 with Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "No ID or SSN entry required for purchases under $1000 and fast verification for higher limit purchases. Supports debit/credit cards, Apple Pay, & bank transfers in 100+ countries. Tokens deposit into your MetaMask Account."
+    "message": "No ID or SSN entry required for purchases under $ 1000 and fast verification for higher limit purchases. Supports debit/credit cards, Apple Pay, & bank transfers in 100+ countries. Tokens deposit into your MetaMask Account."
   },
   "bytes": {
     "message": "Bytes"
