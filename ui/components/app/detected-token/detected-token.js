@@ -49,8 +49,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
 
   const handleClearTokensSelection = async () => {
     const {
-      selected: selectedTokens,
-      deselected: deSelectedTokens,
+      selected: selectedTokens = [],
+      deselected: deSelectedTokens = [],
     } = sortingBasedOnTokenSelection(tokensListDetected);
 
     selectedTokens.forEach((importedToken) => {
@@ -104,7 +104,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   };
 
   const onImport = async () => {
-    const { selected: selectedTokens } = sortingBasedOnTokenSelection(
+    const { selected: selectedTokens = [] } = sortingBasedOnTokenSelection(
       tokensListDetected,
     );
 
