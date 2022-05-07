@@ -1979,8 +1979,7 @@ export default class MetamaskController extends EventEmitter {
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
-   * @param {string} seedPhrase - The seed phrase, encoded as an array
-   * of UTF-8 bytes.
+   * @param {string} seedPhrase - The seed phrase.
    */
   async createNewVaultAndRestore(password, seedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
