@@ -3,6 +3,7 @@ import {
   getAccountsWithLabels,
   getAddressBookEntry,
   getIsBuyableChain,
+  getNetworkIdentifier,
 } from '../../../selectors';
 import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
@@ -11,6 +12,7 @@ function mapStateToProps(state, ownProps) {
   const to = ownProps.toAddress;
   const isBuyableChain = getIsBuyableChain(state);
   const contact = getAddressBookEntry(state, to);
+  const networkIdentifier = getNetworkIdentifier(state);
   return {
     isBuyableChain,
     contact,
@@ -19,6 +21,7 @@ function mapStateToProps(state, ownProps) {
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),
     to,
+    networkIdentifier,
   };
 }
 

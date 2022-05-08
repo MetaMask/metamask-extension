@@ -8,6 +8,7 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 import {
   getCurrentChainId,
@@ -188,7 +189,7 @@ export default function AwaitingSwap({
       setTrackedQuotesExpiredEvent(true);
       trackEvent({
         event: 'Quotes Timed Out',
-        category: 'swaps',
+        category: EVENT.CATEGORIES.SWAPS,
         sensitiveProperties,
       });
     }
@@ -255,7 +256,7 @@ export default function AwaitingSwap({
           onClick={async () => {
             trackEvent({
               event: 'Make Another Swap',
-              category: 'swaps',
+              category: EVENT.CATEGORIES.SWAPS,
               sensitiveProperties,
             });
             await dispatch(navigateBackToBuildQuote(history));

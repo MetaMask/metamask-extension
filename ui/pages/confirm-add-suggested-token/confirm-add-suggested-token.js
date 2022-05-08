@@ -14,6 +14,7 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 import { TOKEN_STANDARDS } from '../../helpers/constants/common';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 function getTokenName(name, symbol) {
@@ -115,7 +116,7 @@ const ConfirmAddSuggestedToken = () => {
 
         trackEvent({
           event: 'Token Added',
-          category: 'Wallet',
+          category: EVENT.CATEGORIES.WALLET,
           sensitiveProperties: {
             token_symbol: asset.symbol,
             token_contract_address: asset.address,

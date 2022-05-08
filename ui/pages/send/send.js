@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
+  addHistoryEntry,
   getIsUsingMyAccountForRecipientSearch,
   getRecipient,
   getRecipientUserInput,
@@ -17,6 +18,7 @@ import { getCurrentChainId, isCustomPriceExcessive } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { EVENT } from '../../../shared/constants/metametrics';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
@@ -94,18 +96,28 @@ export default function SendTransactionScreen() {
         userInput={userInput}
         className="send__to-row"
         onChange={(address) => dispatch(updateRecipientUserInput(address))}
-        onValidAddressTyped={(address) =>
-          dispatch(updateRecipient({ address, nickname: '' }))
-        }
+        onValidAddressTyped={(address) => {
+          dispatch(
+            addHistoryEntry(`sendFlow - Valid address typed ${address}`),
+          );
+          dispatch(updateRecipient({ address, nickname: '' }));
+        }}
         internalSearch={isUsingMyAccountsForRecipientSearch}
         selectedAddress={recipient.address}
         selectedName={recipient.nickname}
-        onPaste={(text) => updateRecipient({ address: text, nickname: '' })}
+        onPaste={(text) => {
+          dispatch(
+            addHistoryEntry(
+              `sendFlow - User pasted ${text} into address field`,
+            ),
+          );
+          return dispatch(updateRecipient({ address: text, nickname: '' }));
+        }}
         onReset={() => dispatch(resetRecipientInput())}
         scanQrCode={() => {
           trackEvent({
             event: 'Used QR scanner',
-            category: 'Transactions',
+            category: EVENT.CATEGORIES.TRANSACTIONS,
             properties: {
               action: 'Edit Screen',
               legacy_event: true,

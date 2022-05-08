@@ -13,7 +13,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
-import { TOKEN_STANDARDS } from '../../helpers/constants/common';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 const getTokenName = (name, symbol) => {
@@ -38,14 +38,14 @@ const ConfirmImportToken = () => {
     addedTokenValues.forEach((pendingToken) => {
       trackEvent({
         event: 'Token Added',
-        category: 'Wallet',
+        category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: pendingToken.symbol,
           token_contract_address: pendingToken.address,
           token_decimal_precision: pendingToken.decimals,
           unlisted: pendingToken.unlisted,
           source: pendingToken.isCustom ? 'custom' : 'list',
-          token_standard: TOKEN_STANDARDS.ERC20,
+          token_standard: pendingToken.standard,
           asset_type: ASSET_TYPES.TOKEN,
         },
       });

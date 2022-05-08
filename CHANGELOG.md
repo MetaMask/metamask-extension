@@ -6,6 +6,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.0]
+### Added
+- **[FLASK]** Add snap version to details page ([#14110](https://github.com/MetaMask/metamask-extension/pull/14110))
+- **[FLASK]** Add support for searching installed snaps in Settings ([#14419](https://github.com/MetaMask/metamask-extension/pull/14419))
+
+### Changed
+- Disable Swaps on Rinkeby ([#14372](https://github.com/MetaMask/metamask-extension/pull/14372))
+- Swaps: Asset sorting improvements ([#14436](https://github.com/MetaMask/metamask-extension/pull/14436))
+    - In 'Swap from' field: tokens are sorted by user ownership and fiat value
+    - In 'Swap to' field: tokens are sorted by top assets
+- Redesign Networks view in Settings ([#13560](https://github.com/MetaMask/metamask-extension/pull/13560))
+    - Adding network search functionality
+- Show Smart Transaction switch when wrapping/unwrapping ([#14225](https://github.com/MetaMask/metamask-extension/pull/14225))
+
+### Fixed
+- Improving identicon settings accessibility ([#13760](https://github.com/MetaMask/metamask-extension/pull/13760))
+- Enhanced Gas Fee UI: Fix gas values overlapping with labels ([#14392](https://github.com/MetaMask/metamask-extension/pull/14392))
+- Settings search improvements ([#14350](https://github.com/MetaMask/metamask-extension/pull/14350))
+    - Allow ampersands in search input
+    - Fix duplicate entry issue in results
+- Fix text wrapping issue in Settings search tabs ([#14368](https://github.com/MetaMask/metamask-extension/pull/14368))
+- Dark Mode: Fix button styles in dialog actions ([#14361](https://github.com/MetaMask/metamask-extension/pull/14361))
+
+## [10.13.0]
+### Added
+- Add a new fiat onboarding option via MoonPay ([#13934](https://github.com/MetaMask/metamask-extension/pull/13934))
+    - Available for the following networks: Ethereum, BNB Chain, Polygon, Avalanche, Celo
+- Add support for a Dark Mode theme ([#14207](https://github.com/MetaMask/metamask-extension/pull/14207))
+- **[FLASK]** Add native browser notifications for Snaps via `snap_notify` permission ([#13613](https://github.com/MetaMask/metamask-extension/pull/13613))
+- **[FLASK]** Add Snaps settting to search index ([#14100](https://github.com/MetaMask/metamask-extension/pull/14100))
+- **[FLASK]** Display the Snap version during Snap installation ([#13931](https://github.com/MetaMask/metamask-extension/pull/13931))
+
+### Changed
+- Improvements for multi-layer fee UX ([#13547](https://github.com/MetaMask/metamask-extension/pull/13547))
+    - Fix 'Send max' button when on a multi-layer fee network
+    - Show fiat currency estimates alongside ETH estimates on multi-layer fee networks
+    - Display L1+L2 gas fees as a combined total on multi-layer fee networks
+    - Don't allow users to set gas price on Optimism
+- Move Token Detection toggle to Advanced tab. ([#13977](https://github.com/MetaMask/metamask-extension/pull/13977))
+- Don’t show ‘What’s new’ pop up to new users ([#13886](https://github.com/MetaMask/metamask-extension/pull/13886))
+- Improving settings toggle accessibility by allowing label interaction ([#13876](https://github.com/MetaMask/metamask-extension/pull/13876))
+- Updating account and network icons ([#13947](https://github.com/MetaMask/metamask-extension/pull/13947))
+- Add 'Enhanced Gas UI' setting to search index ([#14206](https://github.com/MetaMask/metamask-extension/pull/14206))
+- Add buy modal link to insufficient currency warning of all networks that have a fiat onramp, and update spacing in the warning's copy ([#14019](https://github.com/MetaMask/metamask-extension/pull/14019))
+
+### Fixed
+- Fix issue where editing advanced gas while speeeding up a transaction exits speedup ([#14101](https://github.com/MetaMask/metamask-extension/pull/14101))
+- Fix typo in cancel/speed up messaging ([#14067](https://github.com/MetaMask/metamask-extension/pull/14067))
+- Fix token icon when going from token detail page to Swaps view ([#14062](https://github.com/MetaMask/metamask-extension/pull/14062))
+- Fix issue where the contract address is shown as recipient when calling safe transfer method on erc721 or erc1155 contracts ([#13535](https://github.com/MetaMask/metamask-extension/pull/13535))
+- Ensure accounts still line up in dropdown ([#13986](https://github.com/MetaMask/metamask-extension/pull/13986))
+
 ## [10.12.4]
 ### Fixed
 - Fix MetaMask internal error reporting (#14344)
@@ -52,7 +104,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Harden keyring type check in EthOverview ([#13711](https://github.com/MetaMask/metamask-extension/pull/13711))
 - Update "Forgot Password?" copy  ([#13493](https://github.com/MetaMask/metamask-extension/pull/13493))
 - Confirm transaction page: use method name only for contract transactions ([#13643](https://github.com/MetaMask/metamask-extension/pull/13643))
-- Fix issues
 - **[FLASK]** Fix Snap permission list item shrinkage with short permission names ([#13996](https://github.com/MetaMask/metamask-extension/pull/13996))
 
 ## [10.11.4]
@@ -2857,7 +2908,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...HEAD
+[10.14.0]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.0
+[10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4
 [10.12.3]: https://github.com/MetaMask/metamask-extension/compare/v10.12.2...v10.12.3
 [10.12.2]: https://github.com/MetaMask/metamask-extension/compare/v10.12.1...v10.12.2
