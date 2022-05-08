@@ -941,12 +941,12 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
-        "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
-        "nyc>convert-source-map": true
+        "nyc>convert-source-map": true,
+        "through2": true
       }
     },
     "@lavamoat/lavapack>combine-source-map": {
@@ -998,11 +998,6 @@
         "@storybook/api>util-deprecate": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
-      }
-    },
-    "@lavamoat/lavapack>through2": {
-      "packages": {
-        "@lavamoat/lavapack>readable-stream": true
       }
     },
     "@metamask/jazzicon>color>color-convert": {
@@ -5399,9 +5394,9 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
+        "duplexify": true,
         "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
-        "lavamoat-browserify>duplexify": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
@@ -5430,18 +5425,6 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "lavamoat-browserify>duplexify": {
-      "globals": {
-        "Buffer": true,
-        "process.nextTick": true
-      },
-      "packages": {
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "pumpify>inherits": true
       }
