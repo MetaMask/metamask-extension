@@ -2519,14 +2519,7 @@
     rlp "^2.2.6"
     uuid "^8.3.2"
 
-"@lavamoat/aa@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-3.0.0.tgz#9c4facf161cfb0d69ad290a729856ae0442205ba"
-  integrity sha512-r+p3xMlNq1SunxBnSzmUAsvGBPTf531jdW2xicKyMHQU1+xMebB8LYBgcqSnARDOFkwBV2LUny016M92FpTjtw==
-  dependencies:
-    resolve "^1.20.0"
-
-"@lavamoat/aa@^3.1.0":
+"@lavamoat/aa@^3.0.0", "@lavamoat/aa@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@lavamoat/aa/-/aa-3.1.0.tgz#28df51a17f529a5b04d6a3b6e5a727aefc8e474a"
   integrity sha512-/j5LSZb1hlOksUs2z1FP9WyQjv7LZIq/BqkExzGx2eiDpbdDdANZuCe5bcIZseqW9VrtoTtoggMP0Ob7HrTluA==
