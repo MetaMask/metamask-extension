@@ -1,36 +1,23 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
-import DetectedTokenDetails from './detected-token-details';
+import testData from '../../../../../.storybook/test-data';
+import configureStore from '../../../../store/store';
+import DetectedTokenSelectionPopover from './detected-token-selection-popover';
+
+const store = configureStore(testData);
 
 export default {
-  title: 'Components/App/DetectedToken/DetectedTokenDetails',
+  title: 'Components/App/DetectedToken/DetectedTokenSelectionPopover',
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   id: __filename,
   argTypes: {
-    token: { control: 'object' },
+    selectedTokens: { control: 'array' },
     handleTokenSelection: { control: 'func' },
-    tokensListDetected: { control: 'array' },
+    onImport: { control: 'func' },
+    onIgnoreAll: { control: 'func' },
   },
   args: {
-    token: {
-      address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-      symbol: 'SNX',
-      decimals: 18,
-      iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
-      aggregators: [
-        'aave',
-        'bancor',
-        'cmc',
-        'cryptocom',
-        'coinGecko',
-        'oneInch',
-        'paraswap',
-        'pmm',
-        'synthetix',
-        'zapper',
-        'zerion',
-        'zeroEx',
-      ],
-    },
     tokensListDetected: {
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
         token: {
@@ -74,11 +61,7 @@ export default {
 };
 
 const Template = (args) => {
-  return (
-    <div style={{ width: '320px' }}>
-      <DetectedTokenDetails {...args} />
-    </div>
-  );
+  return <DetectedTokenSelectionPopover {...args} />;
 };
 
 export const DefaultStory = Template.bind({});

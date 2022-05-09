@@ -8,7 +8,7 @@ import Button from '../../../ui/button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
 
-const DetectedTokensLink = ({ className = '', onClick }) => {
+const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
   const t = useI18nContext();
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
@@ -20,7 +20,7 @@ const DetectedTokensLink = ({ className = '', onClick }) => {
       <Button
         type="link"
         className="detected-tokens-link__link"
-        onClick={onClick}
+        onClick={() => setShowDetectedTokens(true)}
       >
         {t('numberOfNewTokensDetected', [detectedTokens.length])}
       </Button>
@@ -29,7 +29,7 @@ const DetectedTokensLink = ({ className = '', onClick }) => {
 };
 
 DetectedTokensLink.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  setShowDetectedTokens: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
 

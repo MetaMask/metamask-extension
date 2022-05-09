@@ -2959,6 +2959,13 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   };
 }
 
+export function setNewTokensImported(newTokensImported) {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED,
+    value: newTokensImported,
+  };
+}
+
 export function setLastActiveTime() {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
