@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 
 describe('Advanced Settings', function () {
   const ganacheOptions = {
@@ -10,6 +10,13 @@ describe('Advanced Settings', function () {
         balance: convertToHexValue(25000000000000000000),
       },
     ],
+  };
+
+  const testNetworks = {
+    ropsten: 'Ropsten Test Network',
+    kovan: 'Kovan Test Network',
+    rinkeby: 'Rinkeby Test Network',
+    goerli: 'Goerli Test Network',
   };
 
   it('should show conversion on test networks when activated', async function () {
@@ -39,45 +46,59 @@ describe('Advanced Settings', function () {
 
         // Ropsten
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({
-          text: 'Ropsten Test Network',
-          tag: 'span',
-        });
+        await driver.clickElement({ text: testNetworks.ropsten, tag: 'span' });
+        await driver.delay(largeDelayMs);
 
         let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, true);
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.ropsten}`,
+        );
 
         // Kovan
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({ text: 'Kovan Test Network', tag: 'span' });
+        await driver.clickElement({ text: testNetworks.kovan, tag: 'span' });
+        await driver.delay(largeDelayMs);
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, true);
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.kovan}`,
+        );
 
         // Rinkeby
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({
-          text: 'Rinkeby Test Network',
-          tag: 'span',
-        });
+        await driver.clickElement({ text: testNetworks.rinkeby, tag: 'span' });
+        await driver.delay(largeDelayMs);
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, true);
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.rinkeby}`,
+        );
 
         // Goerli
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({ text: 'Goerli Test Network', tag: 'span' });
+        await driver.clickElement({ text: testNetworks.goerli, tag: 'span' });
+        await driver.delay(largeDelayMs);
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, true);
+        assert.equal(
+          await secondaryCurrency,
+          true,
+          `Secondary currency is not present in ${testNetworks.goerli}`,
+        );
       },
     );
   });
@@ -109,45 +130,55 @@ describe('Advanced Settings', function () {
 
         // Ropsten
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({
-          text: 'Ropsten Test Network',
-          tag: 'span',
-        });
+        await driver.clickElement({ text: testNetworks.ropsten, tag: 'span' });
 
         let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, false);
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.ropsten}`,
+        );
 
         // Kovan
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({ text: 'Kovan Test Network', tag: 'span' });
+        await driver.clickElement({ text: testNetworks.kovan, tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, false);
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.kovan}`,
+        );
 
         // Rinkeby
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({
-          text: 'Rinkeby Test Network',
-          tag: 'span',
-        });
+        await driver.clickElement({ text: testNetworks.rinkeby, tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, false);
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.rinkeby}`,
+        );
 
         // Goerli
         await driver.clickElement('.app-header__network-component-wrapper div');
-        await driver.clickElement({ text: 'Goerli Test Network', tag: 'span' });
+        await driver.clickElement({ text: testNetworks.goerli, tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(await secondaryCurrency, false);
+        assert.equal(
+          await secondaryCurrency,
+          false,
+          `Secondary currency is present in ${testNetworks.goerli}`,
+        );
       },
     );
   });
