@@ -84,7 +84,7 @@ import {
 } from '../../../shared/constants/swaps';
 import {
   TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  IN_PROGRESS_TRANSACTION_STATUSES,
   SMART_TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
@@ -554,6 +554,20 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
+const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
+  if (transactions?.length <= 0) {
+    return;
+  }
+  for (const transaction of transactions) {
+    if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
+      dispatch(
+        setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_IN_PROGRESS),
+      );
+      break;
+    }
+  }
+};
+
 export const fetchSwapsLivenessAndFeatureFlags = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
@@ -566,17 +580,12 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(fetchSmartTransactionsLiveness());
-        const pendingTransactions = await getTransactions({
+        const transactions = await getTransactions({
           searchCriteria: {
-            status: TRANSACTION_STATUSES.PENDING,
             from: state.metamask?.selectedAddress,
           },
         });
-        if (pendingTransactions?.length > 0) {
-          dispatch(
-            setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_PENDING),
-          );
-        }
+        disableStxIfRegularTxInProgress(dispatch, transactions);
       }
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,

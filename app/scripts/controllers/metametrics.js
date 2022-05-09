@@ -621,7 +621,9 @@ export default class MetaMetricsController {
    */
   _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
     return Object.values(allCollectibles)
-      .flatMap((chainNFTs) => Object.values(chainNFTs))
+      .reduce((result, chainNFTs) => {
+        return result.concat(Object.values(chainNFTs));
+      }, [])
       .flat();
   });
 

@@ -400,7 +400,7 @@ export default class MetamaskController extends EventEmitter {
       name: 'CurrencyRateController',
     });
     this.currencyRateController = new CurrencyRateController({
-      includeUSDRate: true,
+      includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
@@ -1636,6 +1636,9 @@ export default class MetamaskController extends EventEmitter {
         txController,
       ),
       updateTransactionGasFees: txController.updateTransactionGasFees.bind(
+        txController,
+      ),
+      updateTransactionSendFlowHistory: txController.updateTransactionSendFlowHistory.bind(
         txController,
       ),
 
