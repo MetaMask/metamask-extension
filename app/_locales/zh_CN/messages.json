@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "我同意"
   },
-  "aggregatorFeeCost": {
-    "message": "聚集器网络手续费"
-  },
   "alertDisableTooltip": {
     "message": "这个可以在“设置 > 提醒”中进行更改"
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "批准聚合商网络手续费"
-  },
-  "approvalTxGasCost": {
-    "message": "批准交易燃料成本"
   },
   "approve": {
     "message": "批准消费限额"

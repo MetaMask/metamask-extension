@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Я согласен(-на)"
   },
-  "aggregatorFeeCost": {
-    "message": "Комиссия сети агрегатора"
-  },
   "airgapVault": {
     "message": "Хранилище AirGap"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Комиссия сети за одобрение и для агрегатора"
-  },
-  "approvalTxGasCost": {
-    "message": "Стоимость газа для утверждения транзакции"
   },
   "approve": {
     "message": "Одобрить лимит расходов"

@@ -203,9 +203,6 @@
   "affirmAgree": {
     "message": "I Agree"
   },
-  "aggregatorFeeCost": {
-    "message": "Aggregator network fee"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -262,12 +259,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Approval and aggregator network fee"
-  },
-  "approvalTxGasCost": {
-    "message": "Approval Tx Gas Cost"
   },
   "approve": {
     "message": "Approve spend limit"

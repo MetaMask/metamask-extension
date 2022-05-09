@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "मैं सहमत हूं"
   },
-  "aggregatorFeeCost": {
-    "message": "एग्रीगेटर नेटवर्क शुल्क"
-  },
   "airgapVault": {
     "message": "AirGap का वॉल्ट"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Fask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "अनुमोदन और एग्रीगेटर नेटवर्क शुल्क"
-  },
-  "approvalTxGasCost": {
-    "message": "अनुमोदन Tx गैस कीमत"
   },
   "approve": {
     "message": "खर्च सीमा अनुमोदित करें"
