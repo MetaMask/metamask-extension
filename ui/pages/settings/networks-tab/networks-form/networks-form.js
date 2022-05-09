@@ -577,7 +577,7 @@ const NetworksForm = ({
           disabled={viewOnly}
         />
         <FormField
-          error={errors.chainId?.msg || ''}
+          warning={errors.chainId?.msg || ''}
           onChange={setChainId}
           titleText={t('chainId')}
           value={chainId}
