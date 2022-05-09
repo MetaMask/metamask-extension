@@ -1,13 +1,14 @@
 .notifications {
-  width: 100%;
-  background-color: var(--color-background-default);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-default);
 
   &__header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    flex: 1;
+    width: 100%;
     padding: 65px 24px 15px 24px;
     border-bottom: 1px solid var(--color-border-default);
 
@@ -18,7 +19,7 @@
 
     &__title-container {
       display: flex;
-      flex-flow: row nowrap;
+      flex-flow: row;
       align-items: center;
       flex: 0 0 auto;
 
@@ -48,9 +49,13 @@
 
   &__container {
     display: flex;
+    overflow: auto;
     flex-direction: column;
-    overflow-y: auto;
-    height: 100%;
+    flex: 1 1 auto;
+
+    @media screen and (max-width: $break-small) {
+      height: 100%;
+    }
   }
 
   &__item {
@@ -59,6 +64,7 @@
     align-items: center;
     border-bottom: 1px solid var(--color-border-default);
     padding: 16px;
+    cursor: pointer;
 
     &:hover {
       background-color: var(--color-background-alternative);

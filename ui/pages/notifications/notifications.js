@@ -96,6 +96,7 @@ export default function Notifications() {
           Mark all as read
         </Button>
       </div>
+
       <div className="notifications__container">
         {notifications.map((notification, id) => (
           <NotificationItem
