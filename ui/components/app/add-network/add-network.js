@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -78,7 +77,7 @@ const AddNetwork = () => {
 
   return (
     <>
-      {isEmpty(notFrequentRpcNetworks) ? (
+      {Object.keys(notFrequentRpcNetworks).length === 0 ? (
         <Box
           className="add-network__edge-case-box"
           borderRadius={SIZES.MD}
