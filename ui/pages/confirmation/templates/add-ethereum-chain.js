@@ -175,7 +175,43 @@ function getValues(pendingApproval, t, actions) {
           {
             element: 'b',
             key: 'bolded-text',
-            children: `${t('addEthereumChainConfirmationRisks')} `,
+            props: {
+              style: { display: '-webkit-box' },
+            },
+            children: [
+              `${t('addEthereumChainConfirmationRisks')} `,
+              {
+                hide: !originIsMetaMask,
+                element: 'Tooltip',
+                key: 'tooltip-info',
+                props: {
+                  position: 'bottom',
+                  interactive: true,
+                  trigger: 'mouseenter',
+                  html: t('someNetworksMay', [
+                    <a
+                      key="zendesk_page_link"
+                      href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                      rel="noreferrer"
+                      target="_blank"
+                      style={{ color: 'var(--color-primary-default)' }}
+                    >
+                      {t('learnMoreUpperCase')}
+                    </a>,
+                  ]),
+                },
+                children: [
+                  {
+                    element: 'i',
+                    key: 'info-circle',
+                    props: {
+                      className: 'fas fa-info-circle',
+                      style: { marginLeft: '4px' },
+                    },
+                  },
+                ],
+              },
+            ],
           },
           {
             element: 'MetaMaskTranslation',
@@ -194,15 +230,6 @@ function getValues(pendingApproval, t, actions) {
                   },
                 },
               ],
-            },
-          },
-          {
-            element: 'Tooltip',
-            key: 'tooltip',
-            props: {
-              position: 'bottom',
-              title: t('copyToClipboard'),
-              children: <i className="fa fa-copy" />,
             },
           },
         ],

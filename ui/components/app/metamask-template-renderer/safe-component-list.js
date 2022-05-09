@@ -31,4 +31,5 @@ export const safeComponentList = {
   ConfirmationNetworkSwitch,
   UrlIcon,
   Tooltip,
+  i: 'i',
 };

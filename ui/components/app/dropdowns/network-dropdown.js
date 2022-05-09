@@ -130,10 +130,8 @@ class NetworkDropdown extends Component {
           type="secondary"
           onClick={() => {
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-              // global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
               this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             } else {
-              // this.props.history.push(ADD_NETWORK_ROUTE);
               this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             }
             this.props.hideNetworkDropdown();

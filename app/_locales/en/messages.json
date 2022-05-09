@@ -3002,6 +3002,10 @@
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
   },
+  "someNetworksMay": {
+    "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network. $1",
+    "description": "$1 is Learn more link"
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
