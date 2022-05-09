@@ -500,6 +500,7 @@ export const getFeeForSmartTransaction = ({
   chainId,
   currentCurrency,
   conversionRate,
+  USDConversionRate,
   nativeCurrencySymbol,
   feeInWeiDec,
 }) => {
@@ -522,7 +523,7 @@ export const getFeeForSmartTransaction = ({
     feeInUsd = getValueFromWeiHex({
       value: feeInWeiHex,
       toCurrency: USD_CURRENCY_CODE,
-      conversionRate,
+      conversionRate: USDConversionRate,
       numberOfDecimals: 2,
     });
   }
@@ -543,6 +544,7 @@ export function getRenderableNetworkFeesForQuote({
   gasPrice,
   currentCurrency,
   conversionRate,
+  USDConversionRate,
   tradeValue,
   sourceSymbol,
   sourceAmount,
@@ -585,7 +587,7 @@ export function getRenderableNetworkFeesForQuote({
     feeInUsd = getValueFromWeiHex({
       value: totalWeiCost,
       toCurrency: USD_CURRENCY_CODE,
-      conversionRate,
+      conversionRate: USDConversionRate,
       numberOfDecimals: 2,
     });
   }
