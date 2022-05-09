@@ -40,10 +40,7 @@ import {
   CUSTOM_GAS_ESTIMATE,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import {
-  decGWEIToHexWEI,
-  conversionUtil,
-} from '../../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
