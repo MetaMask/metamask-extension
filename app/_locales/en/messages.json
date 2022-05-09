@@ -439,7 +439,7 @@
     "message": "Buy $1 with Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "No ID or SSN entry required for purchases under $ 1000 and fast verification for higher limit purchases. Supports debit/credit cards, Apple Pay, & bank transfers in 100+ countries. Tokens deposit into your MetaMask Account."
+    "message": "Easy onboarding for purchases up to $ 1000. Fast interactive high limit purchase verification. Supports Debit/Credit Card, Apple Pay, Bank Transfers. Available in 100+ countries. Tokens deposit into your MetaMask Account"
   },
   "bytes": {
     "message": "Bytes"
