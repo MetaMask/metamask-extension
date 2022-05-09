@@ -119,7 +119,9 @@ const CancelSpeedupPopover = () => {
             contentText={
               <Box>
                 {t('cancelSpeedUpTransactionTooltip', [
-                  EDIT_GAS_MODES.CANCEL ? t('cancel') : t('speedUp'),
+                  editGasMode === EDIT_GAS_MODES.CANCEL
+                    ? t('cancel')
+                    : t('speedUp'),
                 ])}
                 <div>
                   <a

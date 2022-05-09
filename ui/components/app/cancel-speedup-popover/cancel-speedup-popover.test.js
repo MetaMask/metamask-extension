@@ -15,6 +15,7 @@ import {
   hexWEIToDecETH,
   decGWEIToHexWEI,
 } from '../../../helpers/utils/conversions.util';
+import InfoTooltip from '../../ui/info-tooltip';
 
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
@@ -72,6 +73,8 @@ jest.mock('../../../contexts/transaction-modal', () => ({
   }),
 }));
 
+jest.mock('../../ui/info-tooltip', () => jest.fn(() => null));
+
 const render = (
   props,
   maxFeePerGas = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
@@ -111,6 +114,10 @@ const render = (
 };
 
 describe('CancelSpeedupPopover', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should have ❌Cancel in header if editGasMode is cancel', async () => {
     await act(async () => render());
     expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
@@ -119,6 +126,24 @@ describe('CancelSpeedupPopover', () => {
   it('should have 🚀Speed Up in header if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
     expect(screen.queryByText('🚀Speed Up')).toBeInTheDocument();
+  });
+
+  it('information tooltip should contain the correct text if editGasMode is cancel', async () => {
+    await act(async () => render());
+    expect(
+      InfoTooltip.mock.calls[0][0].contentText.props.children[0],
+    ).toStrictEqual(
+      'To Cancel a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
+    );
+  });
+
+  it('information tooltip should contain the correct text if editGasMode is speedup', async () => {
+    await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
+    expect(
+      InfoTooltip.mock.calls[0][0].contentText.props.children[0],
+    ).toStrictEqual(
+      'To Speed Up a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
+    );
   });
 
   it('should show correct gas values, increased by 10%, when initial initial gas value is above estimated medium', async () => {
