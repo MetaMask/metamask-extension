@@ -86,6 +86,7 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
 export const getPermissionSpecifications = ({
   getAllAccounts,
   getIdentities,
+  getWalletLocale,
   captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
@@ -162,7 +163,7 @@ export const getPermissionSpecifications = ({
         }
       },
     },
-    [PermissionKeys['wallet_getLocale']]: {
+    [PermissionKeys.wallet_getLocale]: {
       permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_getLocale,
 
@@ -172,10 +173,17 @@ export const getPermissionSpecifications = ({
         });
       },
 
-      methodImplementation: async () => {},
+      methodImplementation: async () => {
+        const walletLocale = await getWalletLocale();
+        if (!walletLocale) {
+          throw new Error(
+            'wallet_getLocale error: We couldnt retrieve a valid locale',
+          );
+        }
+        return walletLocale;
+      },
 
-      validator: () => {}
-
+      validator: () => {},
     },
   };
 };
