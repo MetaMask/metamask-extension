@@ -140,6 +140,7 @@ const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
 module.exports = createScriptTasks;
 
 function createScriptTasks({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   ignoredFiles,
@@ -180,6 +181,7 @@ function createScriptTasks({
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
+        applyLavaMoat,
         browserPlatforms,
         buildType,
         devMode,
@@ -246,6 +248,7 @@ function createScriptTasks({
       phishingDetectSubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
+        applyLavaMoat,
         buildType,
         isLavaMoat,
         policyOnly,
@@ -269,6 +272,7 @@ function createScriptTasks({
       testing,
       policyOnly,
       shouldLintFenceFiles,
+      version,
     });
   }
 
@@ -285,6 +289,7 @@ function createScriptTasks({
       testing,
       policyOnly,
       shouldLintFenceFiles,
+      version,
     });
   }
 
@@ -301,6 +306,7 @@ function createScriptTasks({
       testing,
       policyOnly,
       shouldLintFenceFiles,
+      version,
     });
   }
 
@@ -320,6 +326,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         testing,
+        version,
       }),
       createNormalBundle({
         buildType,
@@ -332,12 +339,14 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         testing,
+        version,
       }),
     );
   }
 }
 
 function createFactoredBuild({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   devMode,
@@ -390,7 +399,7 @@ function createFactoredBuild({
       policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
-        `../../lavamoat/browserify/${buildType}/policy-override.json`,
+        `../../lavamoat/browserify/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
@@ -468,21 +477,21 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'notification',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'home',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat,
             });
             break;
           }
@@ -492,7 +501,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: true,
+              applyLavaMoat,
             });
             break;
           }
@@ -502,7 +511,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat: false,
             });
             break;
           }
@@ -532,6 +541,7 @@ function createNormalBundle({
   modulesToExpose,
   shouldLintFenceFiles,
   testing,
+  version,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -543,7 +553,12 @@ function createNormalBundle({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
+    const envVars = getEnvironmentVariables({
+      buildType,
+      devMode,
+      testing,
+      version,
+    });
     setupBundlerDefaults(buildConfiguration, {
       buildType,
       devMode,
@@ -847,11 +862,11 @@ function renderHtmlFile({
   groupSet,
   commonSet,
   browserPlatforms,
-  useLavamoat,
+  applyLavaMoat,
 }) {
-  if (useLavamoat === undefined) {
+  if (applyLavaMoat === undefined) {
     throw new Error(
-      'build/scripts/renderHtmlFile - must specify "useLavamoat" option',
+      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
     );
   }
   const htmlFilePath = `./app/${htmlName}.html`;
@@ -859,7 +874,7 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

@@ -1,4 +1,13 @@
-import { isEqual, merge, omit, omitBy, pickBy } from 'lodash';
+import {
+  isEqual,
+  memoize,
+  merge,
+  omit,
+  omitBy,
+  pickBy,
+  size,
+  sum,
+} from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { generateUUID } from 'pubnub';
@@ -31,6 +40,7 @@ const exceptionsToFilter = {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventFragment} MetaMetricsEventFragment
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsTraits} MetaMetricsTraits
  */
 
 /**
@@ -531,15 +541,36 @@ export default class MetaMetricsController {
     };
   }
 
+  /**
+   * This method generates the MetaMetrics user traits object, omitting any
+   * traits that have not changed since the last invocation of this method.
+   *
+   * @param {object} metamaskState - Full metamask state object.
+   * @returns {MetaMetricsTraits | null} traits that have changed since last update
+   */
   _buildUserTraitsObject(metamaskState) {
+    /** @type {MetaMetricsTraits} */
     const currentTraits = {
+      [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
+        Object.values(metamaskState.addressBook).map(size),
+      ),
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
-        .length,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
+      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+        metamaskState.allCollectibles,
+      ),
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
+        metamaskState.allCollectibles,
+      ).length,
+      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
+      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THEME]: metamaskState.theme || 'default',
     };
 
     if (!this.previousTraits) {
@@ -579,6 +610,49 @@ export default class MetaMetricsController {
       }
       return validTraits;
     }, {});
+  }
+
+  /**
+   * Returns an array of all of the collectibles/NFTs the user
+   * possesses across all networks and accounts.
+   *
+   * @param {Object} allCollectibles
+   * @returns {[]}
+   */
+  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
+    return Object.values(allCollectibles)
+      .reduce((result, chainNFTs) => {
+        return result.concat(Object.values(chainNFTs));
+      }, [])
+      .flat();
+  });
+
+  /**
+   * Returns the number of unique collectible/NFT addresses the user
+   * possesses across all networks and accounts.
+   *
+   * @param {Object} allCollectibles
+   * @returns {number}
+   */
+  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+      (nft) => nft.address,
+    );
+    const uniqueAddresses = new Set(allNFTAddresses);
+    return uniqueAddresses.size;
+  }
+
+  /**
+   * @param {object} metamaskState
+   * @returns number of unique token addresses
+   */
+  _getNumberOfTokens(metamaskState) {
+    return Object.values(metamaskState.allTokens).reduce(
+      (result, accountsByChain) => {
+        return result + sum(Object.values(accountsByChain).map(size));
+      },
+      0,
+    );
   }
 
   /**

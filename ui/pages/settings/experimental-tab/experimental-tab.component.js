@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
-
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { THEME_TYPE } from './experimental-tab.constant';
 
 export default class ExperimentalTab extends PureComponent {
@@ -29,7 +29,10 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('experimental')),
+    getNumberOfSettingsInSection(
+      this.context.t,
+      this.context.t('experimental'),
+    ),
   )
     .fill(undefined)
     .map(() => {
@@ -64,7 +67,7 @@ export default class ExperimentalTab extends PureComponent {
               value={useTokenDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Token Detection',
                   properties: {
                     action: 'Token Detection',
@@ -112,7 +115,7 @@ export default class ExperimentalTab extends PureComponent {
               value={useCollectibleDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Collectible Detection',
                   properties: {
                     action: 'Collectible Detection',
@@ -162,7 +165,7 @@ export default class ExperimentalTab extends PureComponent {
               value={openSeaEnabled}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Enabled/Disable OpenSea',
                   properties: {
                     action: 'Enabled/Disable OpenSea',
@@ -211,7 +214,7 @@ export default class ExperimentalTab extends PureComponent {
               value={eip1559V2Enabled}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Enabled/Disable OpenSea',
                   properties: {
                     action: 'Enabled/Disable OpenSea',
@@ -235,17 +238,32 @@ export default class ExperimentalTab extends PureComponent {
 
     const themesOptions = [
       {
-        name: t('defaultTheme'),
-        value: THEME_TYPE.DEFAULT,
+        name: t('lightTheme'),
+        value: THEME_TYPE.LIGHT,
       },
       {
         name: t('darkTheme'),
         value: THEME_TYPE.DARK,
       },
+      {
+        name: t('osTheme'),
+        value: THEME_TYPE.OS,
+      },
     ];
 
+    const onChange = (newTheme) => {
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.SETTINGS,
+        event: 'Theme Changed',
+        properties: {
+          theme_selected: newTheme,
+        },
+      });
+      setTheme(newTheme);
+    };
+
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">
@@ -258,7 +276,7 @@ export default class ExperimentalTab extends PureComponent {
               id="select-theme"
               options={themesOptions}
               selectedOption={theme}
-              onChange={async (newTheme) => setTheme(newTheme)}
+              onChange={onChange}
             />
           </div>
         </div>

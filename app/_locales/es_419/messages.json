@@ -1319,13 +1319,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
   },
-  "importExistingWalletDescription": {
-    "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importar la cartera existente con la frase secreta de recuperación"
-  },
   "importMyWallet": {
     "message": "Importar Mi cartera"
   },
@@ -2514,9 +2507,6 @@
   "signed": {
     "message": "Firmado"
   },
-  "simulationErrorMessage": {
-    "message": "Se anticipa que esta transacción falle. En caso de intentar ejecutarla, se anticipa que eso sea costoso y a la vez falle, y por lo tanto no se recomienda."
-  },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
@@ -3187,9 +3177,6 @@
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
-  },
-  "tryAnywayOption": {
-    "message": "Lo intentaré de todos modos"
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"

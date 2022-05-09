@@ -6,6 +6,7 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
 import TextField from '../../../../components/ui/text-field';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
@@ -101,7 +102,7 @@ export default class NewAccount extends PureComponent {
       await onSubmit(password);
 
       this.context.trackEvent({
-        category: 'Onboarding',
+        category: EVENT.CATEGORIES.ONBOARDING,
         event: 'Submit Password',
         properties: {
           action: 'Create Password',
@@ -117,7 +118,7 @@ export default class NewAccount extends PureComponent {
 
   toggleTermsCheck = () => {
     this.context.trackEvent({
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       event: 'Check ToS',
       properties: {
         action: 'Create Password',
@@ -153,7 +154,7 @@ export default class NewAccount extends PureComponent {
             onClick={(e) => {
               e.preventDefault();
               this.context.trackEvent({
-                category: 'Onboarding',
+                category: EVENT.CATEGORIES.ONBOARDING,
                 event: 'Go Back from Onboarding Create',
                 properties: {
                   action: 'Create Password',

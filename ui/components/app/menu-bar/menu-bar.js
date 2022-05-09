@@ -6,6 +6,7 @@ import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getOriginOfCurrentTab } from '../../../selectors';
@@ -46,7 +47,7 @@ export default function MenuBar() {
         onClick={() => {
           trackEvent({
             event: 'Opened Account Options',
-            category: 'Navigation',
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               action: 'Home',
               legacy_event: true,

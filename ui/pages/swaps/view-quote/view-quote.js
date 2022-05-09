@@ -43,7 +43,7 @@ import {
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
-  getSwapsRefreshStates,
+  getSwapsNetworkConfig,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
@@ -62,6 +62,7 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getEIP1559V2Enabled,
+  getUSDConversionRate,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
@@ -117,6 +118,7 @@ import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -170,6 +172,7 @@ export default function ViewQuote() {
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
+  const USDConversionRate = useSelector(getUSDConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -208,7 +211,7 @@ export default function ViewQuote() {
   const smartTransactionEstimatedGas = useSelector(
     getSmartTransactionEstimatedGas,
   );
-  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
@@ -359,6 +362,7 @@ export default function ViewQuote() {
       : gasPrice,
     currentCurrency,
     conversionRate,
+    USDConversionRate,
     tradeValue,
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
@@ -374,6 +378,7 @@ export default function ViewQuote() {
     gasPrice: maxFeePerGas || gasPrice,
     currentCurrency,
     conversionRate,
+    USDConversionRate,
     tradeValue,
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
@@ -398,11 +403,13 @@ export default function ViewQuote() {
     const stxEstimatedFeeInWeiDec =
       smartTransactionEstimatedGas.txData.feeEstimate +
       (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
-    const stxMaxFeeInWeiDec = stxEstimatedFeeInWeiDec * 2;
+    const stxMaxFeeInWeiDec =
+      stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
+      USDConversionRate,
       nativeCurrencySymbol,
       feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
@@ -419,6 +426,7 @@ export default function ViewQuote() {
       chainId,
       currentCurrency,
       conversionRate,
+      USDConversionRate,
       nativeCurrencySymbol,
       feeInWeiDec: stxMaxFeeInWeiDec,
     }));
@@ -539,7 +547,7 @@ export default function ViewQuote() {
   const trackAllAvailableQuotesOpened = () => {
     trackEvent({
       event: 'All Available Quotes Opened',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -553,7 +561,7 @@ export default function ViewQuote() {
   const trackQuoteDetailsOpened = () => {
     trackEvent({
       event: 'Quote Details Opened',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -567,7 +575,7 @@ export default function ViewQuote() {
   const trackEditSpendLimitOpened = () => {
     trackEvent({
       event: 'Edit Spend Limit Opened',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         ...eventObjectBase,
         custom_spend_limit_set: originalApproveAmount === approveAmount,
@@ -579,7 +587,7 @@ export default function ViewQuote() {
   const trackBestQuoteReviewedEvent = useCallback(() => {
     trackEvent({
       event: 'Best Quote Reviewed',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         ...eventObjectBase,
         network_fees: feeInFiat,
@@ -589,7 +597,7 @@ export default function ViewQuote() {
   const trackViewQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'View Quote Page Loaded',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         ...eventObjectBase,
         response_time: currentTimestamp - reviewSwapClickedTimestamp,
@@ -834,7 +842,7 @@ export default function ViewQuote() {
         dispatch(
           estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
         );
-      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
+      }, swapsNetworkConfig.stxGetTransactionsRefreshTime);
       dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
     } else if (intervalId) {
       clearInterval(intervalId);
@@ -851,7 +859,7 @@ export default function ViewQuote() {
     unsignedTransaction.gas,
     unsignedTransaction.to,
     chainId,
-    swapsRefreshRates.stxGetTransactionsRefreshTime,
+    swapsNetworkConfig.stxGetTransactionsRefreshTime,
     isSwapButtonDisabled,
   ]);
 
@@ -955,7 +963,7 @@ export default function ViewQuote() {
             <div className="view-quote__countdown-timer-container">
               <CountdownTimer
                 timeStarted={quotesLastFetched}
-                warningTime="0:30"
+                warningTime="0:10"
                 labelKey="swapNewQuoteIn"
               />
             </div>
