@@ -991,9 +991,9 @@ export function enableSnap(snapId) {
   };
 }
 
-export function removeSnap(snap) {
+export function removeSnap(snapId) {
   return async (dispatch) => {
-    await promisifiedBackground.removeSnap(snap);
+    await promisifiedBackground.removeSnap(snapId);
     await forceUpdateMetamaskState(dispatch);
   };
 }

@@ -1731,7 +1731,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
-      removeSnap: this.removeSnap.bind(this),
+      removeSnap: this.snapController.removeSnap.bind(this.snapController),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -4121,23 +4121,4 @@ export default class MetamaskController extends EventEmitter {
     }
     return this.keyringController.setLocked();
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  // SNAPS
-  /**
-   * Removes the specified snap, and all of its associated permissions.
-   * If we didn't revoke the permission to access the snap from all subjects,
-   * they could just reinstall without any confirmation.
-   *
-   * TODO: This should be implemented in `SnapController.removeSnap` via a controller action.
-   *
-   * @param {{ id: string, permissionName: string }} snap - The wrapper object of the snap to remove.
-   */
-  removeSnap(snap) {
-    this.snapController.removeSnap(snap.id);
-    this.permissionController.revokePermissionForAllSubjects(
-      snap.permissionName,
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 }
