@@ -19,6 +19,7 @@ import {
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
+  getNewTokensImported,
 } from '../../selectors';
 
 import {
@@ -35,6 +36,7 @@ import {
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
+  setNewTokensImported,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
@@ -135,6 +137,7 @@ const mapStateToProps = (state) => {
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
+    newTokensImported: getNewTokensImported(state),
   };
 };
 
@@ -173,6 +176,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setNewCollectibleAddedMessage: (message) => {
     dispatch(setNewCollectibleAddedMessage(message));
+  },
+  setNewTokensImported: (newTokens) => {
+    dispatch(setNewTokensImported(newTokens));
   },
 });
 
