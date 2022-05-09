@@ -43,7 +43,7 @@ import {
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
-  getSwapsRefreshStates,
+  getSwapsNetworkConfig,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
@@ -211,7 +211,7 @@ export default function ViewQuote() {
   const smartTransactionEstimatedGas = useSelector(
     getSmartTransactionEstimatedGas,
   );
-  const swapsNetworkConfig = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;

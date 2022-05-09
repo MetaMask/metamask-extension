@@ -12,7 +12,7 @@ import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
-  getSwapsRefreshStates,
+  getSwapsNetworkConfig,
   cancelSwapsSmartTransaction,
 } from '../../../ducks/swaps/swaps';
 import {
@@ -71,7 +71,7 @@ export default function SmartTransactionStatus() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const swapsNetworkConfig = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
