@@ -295,6 +295,5 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'celo',
       showOnlyCurrencies: 'celo',
     },
-    coinbasePayCurrencies: [CELO_SYMBOL],
   },
 };
