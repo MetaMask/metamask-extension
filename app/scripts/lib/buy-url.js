@@ -120,8 +120,7 @@ const createMoonPayUrl = async (walletAddress, chainId) => {
  * @returns String
  */
 const createCoinbasePayUrl = (walletAddress, chainId) => {
-  const { coinbasePayCurrencies, network } = BUYABLE_CHAINS_MAP[chainId];
-  console.log(network);
+  const { coinbasePayCurrencies } = BUYABLE_CHAINS_MAP[chainId];
   const queryParams = new URLSearchParams({
     appId: COINBASEPAY_API_KEY,
     attribution: 'extension',
