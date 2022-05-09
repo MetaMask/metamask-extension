@@ -289,9 +289,7 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.fill('#password', password);
   await driver.fill('#confirm-password', password);
 
-  await driver.clickElement(
-    '[data-testid="create-new-vault__terms-checkbox"]',
-  );
+  await driver.clickElement('[data-testid="create-new-vault__terms-checkbox"]');
 
   await driver.clickElement({ text: 'Import', tag: 'button' });
 
@@ -313,5 +311,5 @@ module.exports = {
   withFixtures,
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
-  completeImportSRPOnboardingFlowWordByWord
+  completeImportSRPOnboardingFlowWordByWord,
 };

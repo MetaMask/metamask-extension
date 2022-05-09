@@ -6,7 +6,7 @@ const {
   regularDelayMs,
   largeDelayMs,
   completeImportSRPOnboardingFlow,
-  completeImportSRPOnboardingFlowWordByWord
+  completeImportSRPOnboardingFlowWordByWord,
 } = require('../helpers');
 
 describe('Metamask Import UI', function () {
@@ -166,8 +166,6 @@ describe('Metamask Import UI', function () {
           '[data-testid="account-options-menu__account-details"]',
         );
         await driver.findVisibleElement('.qr-code__wrapper');
-        // shows a QR code for the account
-        const detailsModal = await driver.findVisibleElement('span .modal');
         // shows the correct account address
         const address = await driver.findElement('.qr-code__address');
 
