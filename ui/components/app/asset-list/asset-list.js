@@ -26,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
@@ -83,7 +84,7 @@ const AssetList = ({ onClickAsset }) => {
           onClickAsset(tokenAddress);
           trackEvent({
             event: 'Clicked Token',
-            category: 'Navigation',
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               action: 'Token Menu',
               legacy_event: true,
@@ -107,7 +108,7 @@ const AssetList = ({ onClickAsset }) => {
             history.push(IMPORT_TOKEN_ROUTE);
             trackEvent({
               event: 'Clicked "Add Token"',
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               properties: {
                 action: 'Token Menu',
                 legacy_event: true,

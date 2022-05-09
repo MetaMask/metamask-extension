@@ -933,13 +933,13 @@ export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
 export const stxErrorTypes = {
   UNAVAILABLE: 'unavailable',
   NOT_ENOUGH_FUNDS: 'not_enough_funds',
-  REGULAR_TX_PENDING: 'regular_tx_pending',
+  REGULAR_TX_IN_PROGRESS: 'regular_tx_pending',
 };
 
 export const getTranslatedStxErrorMessage = (errorType, t) => {
   switch (errorType) {
     case stxErrorTypes.UNAVAILABLE:
-    case stxErrorTypes.REGULAR_TX_PENDING:
+    case stxErrorTypes.REGULAR_TX_IN_PROGRESS:
       return t('stxErrorUnavailable');
     case stxErrorTypes.NOT_ENOUGH_FUNDS:
       return t('stxErrorNotEnoughFunds');

@@ -67,7 +67,7 @@
     @include H7;
 
     grid-area: sub;
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
     margin-top: 4px;
     // all direct descendants should be truncated with ellipses
     // allows flexibility in consuming components to use h3/other tag

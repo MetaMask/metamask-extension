@@ -160,6 +160,10 @@
   "addNetwork": {
     "message": "Add Network"
   },
+  "addNetworkTooltipWarning": {
+    "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
+  },
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
   },
@@ -734,9 +738,6 @@
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
-  "customNetworks": {
-    "message": "Custom networks"
-  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },
@@ -803,9 +804,6 @@
   },
   "decryptRequest": {
     "message": "Decrypt request"
-  },
-  "defaultTheme": {
-    "message": "Default"
   },
   "delete": {
     "message": "Delete"
@@ -1251,6 +1249,10 @@
     "message": "All Flask APIs are experimental. They may be changed or removed without notice, or they might stay on Flask indefinitely without ever being migrated to stable MetaMask. Use them at your own risk.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Make sure to disable your regular MetaMask extension when using Flask.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "I accept the risks",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1441,6 +1443,9 @@
   },
   "hide": {
     "message": "Hide"
+  },
+  "hideFullTransactionDetails": {
+    "message": "Hide full transaction details"
   },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
@@ -1713,6 +1718,9 @@
   },
   "levelArrow": {
     "message": "level arrow"
+  },
+  "lightTheme": {
+    "message": "Light"
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
@@ -2135,7 +2143,7 @@
     "message": "Enable dark mode"
   },
   "notifications12Description": {
-    "message": "Dark Mode will be enabled for new users depending on their system preferences. For existing users, enable Dark Mode manually under Settings -> Experimental."
+    "message": "Dark mode on Extension is finally here! To turn it on, go to Settings -> Experimental and select one of the display options: Light, Dark, System."
   },
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
@@ -2308,9 +2316,6 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
-  "onlyInteractWith": {
-    "message": "Only interact with entities you trust."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2329,6 +2334,9 @@
   },
   "origin": {
     "message": "Origin"
+  },
+  "osTheme": {
+    "message": "System"
   },
   "padlock": {
     "message": "Padlock"
@@ -2431,6 +2439,9 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Popular custom networks"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger Connection Type",
@@ -3941,6 +3952,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
+  },
+  "warning": {
+    "message": "Warning"
   },
   "weak": {
     "message": "Weak"

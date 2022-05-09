@@ -117,6 +117,19 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
+  {
+    title: 'Contract Deployment',
+    category: TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    subtitle: 'metamask.github.io',
+    subtitleContainsOrigin: true,
+    date: 'May 12, 2020',
+    primaryCurrency: '-0 ETH',
+    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
+    recipientAddress: undefined,
+    secondaryCurrency: '-0 ETH',
+    isPending: false,
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;

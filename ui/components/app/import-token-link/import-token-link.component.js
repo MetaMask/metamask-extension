@@ -8,6 +8,7 @@ import Box from '../../ui/box/box';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default function ImportTokenLink({ isMainnet }) {
   const trackEvent = useContext(MetaMetricsContext);
@@ -35,7 +36,7 @@ export default function ImportTokenLink({ isMainnet }) {
           history.push(IMPORT_TOKEN_ROUTE);
           trackEvent({
             event: 'Clicked "Add Token"',
-            category: 'Navigation',
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               action: 'Token Menu',
               legacy_event: true,
