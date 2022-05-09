@@ -693,6 +693,11 @@ export function getIsBuyableMoonPayChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
 }
 
+export function getIsBuyableCoinbasePayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
