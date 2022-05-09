@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Advanced Settings', function () {
   const ganacheOptions = {
@@ -47,7 +47,7 @@ describe('Advanced Settings', function () {
         // Ropsten
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.ropsten, tag: 'span' });
-        await driver.delay(largeDelayMs);
+        await driver.waitForSelector({ text: 'RopstenETH', tag: 'span' });
 
         let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -61,7 +61,7 @@ describe('Advanced Settings', function () {
         // Kovan
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.kovan, tag: 'span' });
-        await driver.delay(largeDelayMs);
+        await driver.waitForSelector({ text: 'KovanETH', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -75,7 +75,7 @@ describe('Advanced Settings', function () {
         // Rinkeby
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.rinkeby, tag: 'span' });
-        await driver.delay(largeDelayMs);
+        await driver.waitForSelector({ text: 'RinkebyETH', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -89,7 +89,7 @@ describe('Advanced Settings', function () {
         // Goerli
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.goerli, tag: 'span' });
-        await driver.delay(largeDelayMs);
+        await driver.waitForSelector({ text: 'GoerliETH', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -131,6 +131,7 @@ describe('Advanced Settings', function () {
         // Ropsten
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.ropsten, tag: 'span' });
+        await driver.waitForSelector({ text: 'RopstenETH', tag: 'span' });
 
         let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -144,6 +145,7 @@ describe('Advanced Settings', function () {
         // Kovan
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.kovan, tag: 'span' });
+        await driver.waitForSelector({ text: 'KovanETH', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -157,6 +159,7 @@ describe('Advanced Settings', function () {
         // Rinkeby
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.rinkeby, tag: 'span' });
+        await driver.waitForSelector({ text: 'RinkebyETH', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -170,6 +173,7 @@ describe('Advanced Settings', function () {
         // Goerli
         await driver.clickElement('.app-header__network-component-wrapper div');
         await driver.clickElement({ text: testNetworks.goerli, tag: 'span' });
+        await driver.waitForSelector({ text: 'GoerliETH', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
