@@ -23,6 +23,7 @@ import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swa
 import {
   hexWEIToDecGWEI,
   decimalToHex,
+  hexWEIToDecETH,
 } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
@@ -1897,29 +1898,10 @@ export default class TransactionController extends EventEmitter {
       .plus(approvalGasCost, 16)
       .toString(16);
     return {
-      approvalGasCostInEth: Number(
-        conversionUtil(approvalGasCost, {
-          fromNumericBase: 'hex',
-          toNumericBase: 'dec',
-          fromDenomination: 'WEI',
-          toDenomination: 'ETH',
-        }),
-      ),
-      tradeGasCostInEth: Number(
-        conversionUtil(tradeGasCost, {
-          fromNumericBase: 'hex',
-          toNumericBase: 'dec',
-          fromDenomination: 'WEI',
-          toDenomination: 'ETH',
-        }),
-      ),
+      approvalGasCostInEth: Number(hexWEIToDecETH(approvalGasCost)),
+      tradeGasCostInEth: Number(hexWEIToDecETH(tradeGasCost)),
       tradeAndApprovalGasCostInEth: Number(
-        conversionUtil(tradeAndApprovalGasCost, {
-          fromNumericBase: 'hex',
-          toNumericBase: 'dec',
-          fromDenomination: 'WEI',
-          toDenomination: 'ETH',
-        }),
+        hexWEIToDecETH(tradeAndApprovalGasCost),
       ),
     };
   }
