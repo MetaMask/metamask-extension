@@ -21,7 +21,7 @@ export default function ConnectHardwarePathSelector({
 
 ConnectHardwarePathSelector.propTypes = {
   className: PropTypes.string,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   options: PropTypes.array,
   selectedOption: PropTypes.string,
 };

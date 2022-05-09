@@ -114,15 +114,6 @@
     }
   }
 
-  &--success {
-    border-color: #c3f4cb;
-    background-color: #eaf8ed;
-
-    .actionable-message__message {
-      color: var(--Black-100);
-    }
-  }
-
   &--danger {
     border: 1px solid var(--color-error-default);
     justify-content: flex-start;
