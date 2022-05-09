@@ -38,12 +38,11 @@ describe('Advanced Settings', function () {
         );
 
         // Ropsten
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Ropsten Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({
+          text: 'Ropsten Test Network',
+          tag: 'span',
+        });
 
         let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -51,12 +50,8 @@ describe('Advanced Settings', function () {
         assert.equal(await secondaryCurrency, true);
 
         // Kovan
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Kovan Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: 'Kovan Test Network', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -64,12 +59,11 @@ describe('Advanced Settings', function () {
         assert.equal(await secondaryCurrency, true);
 
         // Rinkeby
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Rinkeby Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({
+          text: 'Rinkeby Test Network',
+          tag: 'span',
+        });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -77,12 +71,8 @@ describe('Advanced Settings', function () {
         assert.equal(await secondaryCurrency, true);
 
         // Goerli
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Goerli Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: 'Goerli Test Network', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -112,18 +102,17 @@ describe('Advanced Settings', function () {
         await driver.clickElement(
           '[data-testid="advanced-setting-show-testnet-conversion"] label',
         );
-        
+
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
 
         // Ropsten
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Ropsten Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({
+          text: 'Ropsten Test Network',
+          tag: 'span',
+        });
 
         let secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -131,12 +120,8 @@ describe('Advanced Settings', function () {
         assert.equal(await secondaryCurrency, false);
 
         // Kovan
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Kovan Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: 'Kovan Test Network', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -144,12 +129,11 @@ describe('Advanced Settings', function () {
         assert.equal(await secondaryCurrency, false);
 
         // Rinkeby
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Rinkeby Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({
+          text: 'Rinkeby Test Network',
+          tag: 'span',
+        });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
@@ -157,12 +141,8 @@ describe('Advanced Settings', function () {
         assert.equal(await secondaryCurrency, false);
 
         // Goerli
-        await driver.clickElement(
-          '.app-header__network-component-wrapper div',
-        );
-        await driver.clickElement(
-          {text: 'Goerli Test Network', tag: 'span'}
-        )
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: 'Goerli Test Network', tag: 'span' });
 
         secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
