@@ -199,8 +199,8 @@ export function verifyPassword(password) {
 }
 
 export async function verifySeedPhrase() {
-  const encodedSeedPhrase = await promisifiedBackground.verifySeedPhrase();
-  return Buffer.from(encodedSeedPhrase).toString('utf8');
+  const seedPhrase = await promisifiedBackground.verifySeedPhrase();
+  return seedPhrase;
 }
 
 export function requestRevealSeedWords(password) {

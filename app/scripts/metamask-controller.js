@@ -2514,7 +2514,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
-   * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
+   * @returns {Promise<string>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
@@ -2535,7 +2535,7 @@ export default class MetamaskController extends EventEmitter {
 
     try {
       await seedPhraseVerifier.verifyAccounts(accounts, seedPhrase);
-      return Array.from(seedPhrase.values());
+      return seedPhrase;
     } catch (err) {
       log.error(err.message);
       throw err;

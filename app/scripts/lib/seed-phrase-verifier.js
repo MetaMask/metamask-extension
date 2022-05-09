@@ -11,7 +11,7 @@ const seedPhraseVerifier = {
    * - The keyring always creates the accounts in the same sequence.
    *
    * @param {Array} createdAccounts - The accounts to restore
-   * @param {Buffer} seedPhrase - The seed words to verify, encoded as a Buffer
+   * @param {string} seedPhrase - The seed words to verify
    * @returns {Promise<void>}
    */
   async verifyAccounts(createdAccounts, seedPhrase) {
