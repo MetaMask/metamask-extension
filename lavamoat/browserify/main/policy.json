@@ -3482,7 +3482,7 @@
         "@metamask/controllers>isomorphic-fetch": true,
         "@metamask/controllers>multiformats": true,
         "@metamask/controllers>web3-provider-engine": true,
-        "@metamask/snap-controllers>@metamask/controllers>@metamask/metamask-eth-abis": true,
+        "@metamask/metamask-eth-abis": true,
         "@metamask/snap-controllers>nanoid": true,
         "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
