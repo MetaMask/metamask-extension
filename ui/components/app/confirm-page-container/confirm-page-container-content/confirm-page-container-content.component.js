@@ -12,6 +12,7 @@ import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
+import { SnapInsight } from '../flask/snap-insight.component';
 
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
@@ -67,7 +68,12 @@ export default class ConfirmPageContainerContent extends Component {
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
+    const {
+      detailsComponent,
+      dataComponent,
+      dataHexComponent,
+      currentTransaction,
+    } = this.props;
 
     return (
       <Tabs>
@@ -88,6 +94,9 @@ export default class ConfirmPageContainerContent extends Component {
             {dataHexComponent}
           </Tab>
         )}
+        <Tab className="confirm-page-container-content__tab" name="Snap">
+          <SnapInsight transaction={currentTransaction} />
+        </Tab>
       </Tabs>
     );
   }

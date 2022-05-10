@@ -1,0 +1,159 @@
+diff --git a/node_modules/@metamask/snap-controllers/dist/.DS_Store b/node_modules/@metamask/snap-controllers/dist/.DS_Store
+new file mode 100644
+index 0000000..198b0d5
+Binary files /dev/null and b/node_modules/@metamask/snap-controllers/dist/.DS_Store differ
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
+index 5ed0d3b..cb0911f 100644
+--- a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
++++ b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
+@@ -80,13 +80,16 @@ class IframeExecutionService extends AbstractExecutionService_1.AbstractExecutio
+         return new Promise((resolve) => {
+             iframe.addEventListener('load', () => {
+                 if (iframe.contentWindow) {
++                    console.log("Iframe loaded..");
+                     resolve(iframe.contentWindow);
+                 }
+             });
+-            document.body.appendChild(iframe);
++            console.log("Setting iframe src..");
+             iframe.setAttribute('src', uri);
+             iframe.setAttribute('id', jobId);
+             iframe.setAttribute('sandbox', 'allow-scripts');
++            console.log("Creating iframe...");
++            document.body.appendChild(iframe);
+         });
+     }
+ }
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.d.ts
+index ed5e963..df6e6fb 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.d.ts
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.d.ts
+@@ -1 +1,2 @@
+ export declare const LONG_RUNNING_PERMISSION = "endowment:long-running";
++export declare const TX_INSIGHT_PERMISSION = "endowment:tx-insight";
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js
+index 3f4df65..6a4fb1c 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js
+@@ -1,5 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.LONG_RUNNING_PERMISSION = void 0;
++exports.TX_INSIGHT_PERMISSION = exports.LONG_RUNNING_PERMISSION = void 0;
+ exports.LONG_RUNNING_PERMISSION = 'endowment:long-running';
++exports.TX_INSIGHT_PERMISSION = 'endowment:tx-insight';
+ //# sourceMappingURL=constants.js.map
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js.map
+index 8697182..8430420 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js.map
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"constants.js","sourceRoot":"","sources":["../../../src/snaps/endowments/constants.ts"],"names":[],"mappings":";;;AAAa,QAAA,uBAAuB,GAAG,wBAAwB,CAAC"}
+\ No newline at end of file
++{"version":3,"file":"constants.js","sourceRoot":"","sources":["../../../src/snaps/endowments/constants.ts"],"names":[],"mappings":";;;AAAa,QAAA,uBAAuB,GAAG,wBAAwB,CAAC;AACnD,QAAA,qBAAqB,GAAG,sBAAsB,CAAC"}
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts
+index 895eee9..cd795dd 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts
+@@ -17,5 +17,14 @@ export declare const endowmentPermissionBuilders: {
+             allowedCaveats: null;
+         }>;
+     }>;
++    readonly "endowment:tx-insight": Readonly<{
++        readonly targetKey: "endowment:tx-insight";
++        readonly specificationBuilder: import("@metamask/controllers").PermissionSpecificationBuilder<import("@metamask/controllers").PermissionType.Endowment, any, {
++            permissionType: import("@metamask/controllers").PermissionType.Endowment;
++            targetKey: "endowment:tx-insight";
++            endowmentGetter: (_options?: any) => undefined;
++            allowedCaveats: null;
++        }>;
++    }>;
+ };
+ export * from './constants';
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js
+index 6b54438..7fc18af 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js
+@@ -17,9 +17,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.endowmentPermissionBuilders = void 0;
+ const long_running_1 = require("./long-running");
+ const network_access_1 = require("./network-access");
++const tx_insight_1 = require("./tx-insight");
+ exports.endowmentPermissionBuilders = {
+     [network_access_1.networkAccessEndowmentBuilder.targetKey]: network_access_1.networkAccessEndowmentBuilder,
+     [long_running_1.longRunningEndowmentBuilder.targetKey]: long_running_1.longRunningEndowmentBuilder,
++    [tx_insight_1.txInsightEndowmentBuilder.targetKey]: tx_insight_1.txInsightEndowmentBuilder,
+ };
+ __exportStar(require("./constants"), exports);
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map
+index f99f251..5e5eb55 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/snaps/endowments/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;AAAA,iDAA6D;AAC7D,qDAAiE;AAEpD,QAAA,2BAA2B,GAAG;IACzC,CAAC,8CAA6B,CAAC,SAAS,CAAC,EAAE,8CAA6B;IACxE,CAAC,0CAA2B,CAAC,SAAS,CAAC,EAAE,0CAA2B;CAC5D,CAAC;AAEX,8CAA4B"}
+\ No newline at end of file
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/snaps/endowments/index.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;AAAA,iDAA6D;AAC7D,qDAAiE;AACjE,6CAAyD;AAE5C,QAAA,2BAA2B,GAAG;IACzC,CAAC,8CAA6B,CAAC,SAAS,CAAC,EAAE,8CAA6B;IACxE,CAAC,0CAA2B,CAAC,SAAS,CAAC,EAAE,0CAA2B;IACpE,CAAC,sCAAyB,CAAC,SAAS,CAAC,EAAE,sCAAyB;CACxD,CAAC;AAEX,8CAA4B"}
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.d.ts
+new file mode 100644
+index 0000000..9ede22b
+--- /dev/null
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.d.ts
+@@ -0,0 +1,12 @@
++import { PermissionSpecificationBuilder, PermissionType } from '@metamask/controllers';
++declare const permissionName = "endowment:tx-insight";
++export declare const txInsightEndowmentBuilder: Readonly<{
++    readonly targetKey: "endowment:tx-insight";
++    readonly specificationBuilder: PermissionSpecificationBuilder<PermissionType.Endowment, any, {
++        permissionType: PermissionType.Endowment;
++        targetKey: typeof permissionName;
++        endowmentGetter: (_options?: any) => undefined;
++        allowedCaveats: null;
++    }>;
++}>;
++export {};
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.js
+new file mode 100644
+index 0000000..efcc820
+--- /dev/null
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.js
+@@ -0,0 +1,26 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.txInsightEndowmentBuilder = void 0;
++const controllers_1 = require("@metamask/controllers");
++const constants_1 = require("./constants");
++const permissionName = constants_1.TX_INSIGHT_PERMISSION;
++/**
++ * `endowment:tx-insight` returns nothing; it is intended to be used as a flag
++ * by the extension to detect whether the snap has the capability to show information on the tx confirmation screen.
++ *
++ * @param _builderOptions - optional specification builder options.
++ * @returns The specification for the tx-insight endowment.
++ */
++const specificationBuilder = (_builderOptions) => {
++    return {
++        permissionType: controllers_1.PermissionType.Endowment,
++        targetKey: permissionName,
++        allowedCaveats: null,
++        endowmentGetter: (_getterOptions) => undefined,
++    };
++};
++exports.txInsightEndowmentBuilder = Object.freeze({
++    targetKey: permissionName,
++    specificationBuilder,
++});
++//# sourceMappingURL=tx-insight.js.map
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.js.map
+new file mode 100644
+index 0000000..591b226
+--- /dev/null
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/tx-insight.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"tx-insight.js","sourceRoot":"","sources":["../../../src/snaps/endowments/tx-insight.ts"],"names":[],"mappings":";;;AAAA,uDAK+B;AAC/B,2CAAoD;AAEpD,MAAM,cAAc,GAAG,iCAAqB,CAAC;AAS7C;;;;;;GAMG;AACH,MAAM,oBAAoB,GAItB,CAAC,eAAqB,EAAE,EAAE;IAC5B,OAAO;QACL,cAAc,EAAE,4BAAc,CAAC,SAAS;QACxC,SAAS,EAAE,cAAc;QACzB,cAAc,EAAE,IAAI;QACpB,eAAe,EAAE,CAAC,cAAsC,EAAE,EAAE,CAAC,SAAS;KACvE,CAAC;AACJ,CAAC,CAAC;AAEW,QAAA,yBAAyB,GAAG,MAAM,CAAC,MAAM,CAAC;IACrD,SAAS,EAAE,cAAc;IACzB,oBAAoB;CACZ,CAAC,CAAC"}
+\ No newline at end of file

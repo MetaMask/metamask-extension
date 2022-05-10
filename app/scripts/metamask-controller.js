@@ -1756,6 +1756,10 @@ export default class MetamaskController extends EventEmitter {
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
       removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      invokeSnap: (snapId, request) =>
+        this.snapController
+          .getRpcMessageHandler(snapId)
+          .then((handler) => handler('MetaMask', request)),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
