@@ -4,8 +4,9 @@
 // run any task with "yarn build ${taskName}"
 //
 const path = require('path');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 const livereload = require('gulp-livereload');
-const minimist = require('minimist');
 const { sync: globby } = require('globby');
 const { getVersion } = require('../lib/get-version');
 const { BuildType } = require('../lib/build-type');
@@ -181,25 +182,27 @@ function parseArgv() {
     SkipStats: 'skip-stats',
   };
 
-  const argv = minimist(process.argv.slice(2), {
-    boolean: [
-      NamedArgs.ApplyLavaMoat,
-      NamedArgs.LintFenceFiles,
-      NamedArgs.Lockdown,
-      NamedArgs.PolicyOnly,
-      NamedArgs.SkipStats,
-    ],
-    string: [NamedArgs.BuildType, NamedArgs.BuildVersion],
-    default: {
-      [NamedArgs.ApplyLavaMoat]: true,
-      [NamedArgs.BuildType]: BuildType.main,
-      [NamedArgs.BuildVersion]: '0',
-      [NamedArgs.LintFenceFiles]: true,
-      [NamedArgs.Lockdown]: true,
-      [NamedArgs.PolicyOnly]: false,
-      [NamedArgs.SkipStats]: false,
-    },
-  });
+  const params = {
+    'apply-lavamoat': true,
+    'lint-fence-files': true,
+    lockdown: true,
+    'policy-only': false,
+    'skip-stats': false,
+    'build-type': BuildType.main,
+    'build-version': '0',
+  };
+
+  const main = yargs(hideBin(process.argv))
+    .command('dev', 'start dev server')
+    .option('apply-lavamoat', {
+      type: 'boolean',
+      description: 'Apply Lavamoat',
+    })
+    .parse();
+
+  const argv = { ...params, ...main };
+
+  console.log(argv);
 
   if (argv._.length !== 1) {
     throw new Error(
