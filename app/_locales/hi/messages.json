@@ -1165,10 +1165,6 @@
   "externalExtension": {
     "message": "बाहरी विस्तार"
   },
-  "extraApprovalGas": {
-    "message": "+$1 अनुमोदन गैस",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "विफल"
   },

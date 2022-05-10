@@ -665,10 +665,6 @@
   "externalExtension": {
     "message": "External Extension"
   },
-  "extraApprovalGas": {
-    "message": "+$1 na pag-apruba sa gas",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "Hindi matagumpay"
   },

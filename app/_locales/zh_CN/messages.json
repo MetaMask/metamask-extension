@@ -1008,10 +1008,6 @@
   "externalExtension": {
     "message": "外部扩展"
   },
-  "extraApprovalGas": {
-    "message": "+$1 批准燃料",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "失败"
   },

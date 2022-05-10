@@ -1165,10 +1165,6 @@
   "externalExtension": {
     "message": "외부 확장"
   },
-  "extraApprovalGas": {
-    "message": "+$1의 승인 가스",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "실패"
   },

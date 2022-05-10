@@ -1165,10 +1165,6 @@
   "externalExtension": {
     "message": "Extensión externa"
   },
-  "extraApprovalGas": {
-    "message": "+$1 gas por aprobación",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "Con errores"
   },

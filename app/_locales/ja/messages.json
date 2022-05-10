@@ -1165,10 +1165,6 @@
   "externalExtension": {
     "message": "外部拡張機能"
   },
-  "extraApprovalGas": {
-    "message": "+$1承認ガス",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "失敗しました"
   },
