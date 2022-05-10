@@ -16,7 +16,10 @@ export function useInsightSnap(transaction) {
   useEffect(() => {
     async function fetch() {
       const snapId = snapIds[0];
-      const d = await invokeSnap(snapId, { method: INSIGHT_METHOD });
+      const d = await invokeSnap(snapId, {
+        method: INSIGHT_METHOD,
+        params: [transaction],
+      });
       setData(d);
     }
     if (snapIds.length > 0) {
