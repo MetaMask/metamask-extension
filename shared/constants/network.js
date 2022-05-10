@@ -239,8 +239,8 @@ export const BUYABLE_CHAINS_MAP = {
     },
     wyre: {
       srn: 'ethereum',
-      currencyCode: ETH_SYMBOL
-    }
+      currencyCode: ETH_SYMBOL,
+    },
   },
   [ROPSTEN_CHAIN_ID]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[ROPSTEN],
@@ -277,8 +277,8 @@ export const BUYABLE_CHAINS_MAP = {
     },
     wyre: {
       srn: 'matic',
-      currencyCode: MATIC_SYMBOL
-    }
+      currencyCode: MATIC_SYMBOL,
+    },
   },
   [AVALANCHE_CHAIN_ID]: {
     nativeCurrency: AVALANCHE_SYMBOL,
@@ -290,8 +290,8 @@ export const BUYABLE_CHAINS_MAP = {
     },
     wyre: {
       srn: 'avalanche',
-      currencyCode: AVALANCHE_SYMBOL
-    }
+      currencyCode: AVALANCHE_SYMBOL,
+    },
   },
   [FANTOM_CHAIN_ID]: {
     nativeCurrency: FANTOM_SYMBOL,

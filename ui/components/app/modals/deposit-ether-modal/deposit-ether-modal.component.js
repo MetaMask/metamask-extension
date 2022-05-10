@@ -20,7 +20,6 @@ export default class DepositEtherModal extends Component {
   static propTypes = {
     chainId: PropTypes.string.isRequired,
     isTestnet: PropTypes.bool.isRequired,
-    isMainnet: PropTypes.bool.isRequired,
     isBuyableTransakChain: PropTypes.bool.isRequired,
     isBuyableMoonPayChain: PropTypes.bool.isRequired,
     isBuyableWyreChain: PropTypes.bool.isRequired,
@@ -107,7 +106,7 @@ export default class DepositEtherModal extends Component {
       isTestnet,
       isBuyableTransakChain,
       isBuyableMoonPayChain,
-      isBuyableWyreChain
+      isBuyableWyreChain,
     } = this.props;
     const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
@@ -132,7 +131,7 @@ export default class DepositEtherModal extends Component {
         </div>
         <div className="page-container__content">
           <div className="deposit-ether-modal__buy-rows">
-          {this.renderRow({
+            {this.renderRow({
               logo: <LogoWyre className="deposit-ether-modal__logo" />,
               title: t('buyWithWyre', [symbol]),
               text: t('buyWithWyreDescription', [symbol]),

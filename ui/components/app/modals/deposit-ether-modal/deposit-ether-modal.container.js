@@ -12,7 +12,7 @@ import {
   getSelectedAddress,
   getIsBuyableTransakChain,
   getIsBuyableMoonPayChain,
-  getIsBuyableWyreChain
+  getIsBuyableWyreChain,
 } from '../../../../selectors/selectors';
 import DepositEtherModal from './deposit-ether-modal.component';
 
@@ -24,7 +24,7 @@ function mapStateToProps(state) {
     address: getSelectedAddress(state),
     isBuyableTransakChain: getIsBuyableTransakChain(state),
     isBuyableMoonPayChain: getIsBuyableMoonPayChain(state),
-    isBuyableWyreChain: getIsBuyableWyreChain(state)
+    isBuyableWyreChain: getIsBuyableWyreChain(state),
   };
 }
 
