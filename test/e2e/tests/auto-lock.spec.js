@@ -27,11 +27,18 @@ describe('Auto-Lock Timer', function () {
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
-        const sixSecsInMins = '.1';
-        await driver.fill(
+        const sixSecsInMins = '0.1';
+        const autoLockTimerInput = await driver.findElement(
           '[data-testid="advanced-setting-auto-lock"] input',
-          sixSecsInMins,
         );
+        await driver.scrollToElement(autoLockTimerInput);
+        await autoLockTimerInput.fill(10081);
+        await driver.waitForSelector({
+          css: '#autoTimeout-helper-text',
+          text: 'Lock time is too great',
+        });
+        await autoLockTimerInput.fill(sixSecsInMins);
+        await driver.assertElementNotPresent('#autoTimeout-helper-text');
         await driver.clickElement(
           '[data-testid="advanced-setting-auto-lock"] button',
         );
