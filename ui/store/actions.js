@@ -95,11 +95,17 @@ export function createNewVaultAndRestore(password, seedPhrase) {
     dispatch(showLoadingIndication());
     log.debug(`background.createNewVaultAndRestore`);
 
+    // Encode the secret recovery phrase as an array of integers so that it is
+    // serialized as JSON properly.
+    const encodedSeedPhrase = Array.from(
+      Buffer.from(seedPhrase, 'utf8').values(),
+    );
+
     let vault;
     return new Promise((resolve, reject) => {
       background.createNewVaultAndRestore(
         password,
-        seedPhrase,
+        encodedSeedPhrase,
         (err, _vault) => {
           if (err) {
             reject(err);
@@ -199,8 +205,8 @@ export function verifyPassword(password) {
 }
 
 export async function verifySeedPhrase() {
-  const seedPhrase = await promisifiedBackground.verifySeedPhrase();
-  return seedPhrase;
+  const encodedSeedPhrase = await promisifiedBackground.verifySeedPhrase();
+  return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
 
 export function requestRevealSeedWords(password) {
