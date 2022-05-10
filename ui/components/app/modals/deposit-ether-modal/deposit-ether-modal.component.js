@@ -105,7 +105,6 @@ export default class DepositEtherModal extends Component {
       address,
       toFaucet,
       isTestnet,
-      isMainnet,
       isBuyableTransakChain,
       isBuyableMoonPayChain,
       isBuyableWyreChain

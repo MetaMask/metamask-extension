@@ -7,7 +7,6 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
-  MAINNET_NETWORK_ID,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
