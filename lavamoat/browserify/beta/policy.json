@@ -2376,12 +2376,6 @@
         "ethereumjs-wallet>bs58check": true
       }
     },
-<<<<<<< HEAD
-    "ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-=======
     "@keystonehq/bc-ur-registry-eth>hdkey": {
       "packages": {
         "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": true,
@@ -2389,7 +2383,6 @@
         "browserify>crypto-browserify": true,
         "ethereumjs-wallet>bs58check": true,
         "ethereumjs-wallet>safe-buffer": true
->>>>>>> develop
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": {

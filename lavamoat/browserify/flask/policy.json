@@ -2402,12 +2402,6 @@
         "uuid": true
       }
     },
-<<<<<<< HEAD
-    "ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-=======
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring": {
       "packages": {
         "@keystonehq/bc-ur-registry-eth>hdkey": true,
@@ -2416,7 +2410,6 @@
         "browserify>buffer": true,
         "ethereumjs-util": true,
         "uuid": true
->>>>>>> develop
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@keystonehq/base-eth-keyring>@ethereumjs/tx": {
