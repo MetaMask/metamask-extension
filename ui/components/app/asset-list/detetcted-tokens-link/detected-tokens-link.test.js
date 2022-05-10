@@ -10,12 +10,15 @@ import testData from '../../../../../.storybook/test-data';
 import DetectedTokensLink from './detected-tokens-link';
 
 describe('DetectedTokensLink', () => {
-  const setShowDetectedTokensSpy = jest.fn();
-  const args = {
-    setShowDetectedTokens: setShowDetectedTokensSpy,
-  };
+  let setShowDetectedTokensSpy;
+  const args = {};
 
-  it('should render number of tokens detected link', async () => {
+  beforeEach(() => {
+    setShowDetectedTokensSpy = jest.fn();
+    args.setShowDetectedTokens = setShowDetectedTokensSpy;
+  });
+
+  it('should render number of tokens detected link', () => {
     const store = configureStore(testData);
     renderWithProvider(<DetectedTokensLink {...args} />, store);
 

@@ -167,8 +167,8 @@ export default class DetectTokensController {
       }
 
       let tokensWithBalance = [];
-      const tokensDetailsList = [];
       if (process.env.TOKEN_DETECTION_V2) {
+        const eventTokensDetails = [];
         if (result) {
           const nonZeroTokenAddresses = Object.keys(result);
           for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
@@ -180,7 +180,7 @@ export default class DetectTokensController {
               aggregators,
             } = tokenList[nonZeroTokenAddress];
 
-            tokensDetailsList.push(`${symbol} - ${address}`);
+            eventTokensDetails.push(`${symbol} - ${address}`);
 
             tokensWithBalance.push({
               address,
@@ -196,7 +196,7 @@ export default class DetectTokensController {
               event: EVENT_NAMES.TOKEN_DETECTED,
               category: EVENT.CATEGORIES.WALLET,
               properties: {
-                tokens: tokensDetailsList,
+                tokens: eventTokensDetails,
                 token_standard: TOKEN_STANDARDS.ERC20,
                 asset_type: ASSET_TYPES.TOKEN,
               },
