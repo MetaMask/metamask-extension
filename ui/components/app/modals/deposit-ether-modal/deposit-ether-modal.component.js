@@ -133,6 +133,24 @@ export default class DepositEtherModal extends Component {
         </div>
         <div className="page-container__content">
           <div className="deposit-ether-modal__buy-rows">
+          {this.renderRow({
+              logo: <LogoWyre className="deposit-ether-modal__logo" />,
+              title: t('buyWithWyre', [symbol]),
+              text: t('buyWithWyreDescription', [symbol]),
+              buttonLabel: t('continueToWyre'),
+              onButtonClick: () => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: 'Click buy Ether via Wyre',
+                  properties: {
+                    action: 'Deposit Ether',
+                    legacy_event: true,
+                  },
+                });
+                toWyre(address, chainId);
+              },
+              hide: !isBuyableWyreChain,
+            })}
             {this.renderRow({
               logo: <LogoTransak className="deposit-ether-modal__logo" />,
               title: t('buyCryptoWithTransak', [symbol]),
@@ -168,24 +186,6 @@ export default class DepositEtherModal extends Component {
                 toMoonPay(address, chainId);
               },
               hide: !isBuyableMoonPayChain,
-            })}
-            {this.renderRow({
-              logo: <LogoWyre className="deposit-ether-modal__logo" />,
-              title: t('buyWithWyre', [symbol]),
-              text: t('buyWithWyreDescription', [symbol]),
-              buttonLabel: t('continueToWyre'),
-              onButtonClick: () => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.ACCOUNTS,
-                  event: 'Click buy Ether via Wyre',
-                  properties: {
-                    action: 'Deposit Ether',
-                    legacy_event: true,
-                  },
-                });
-                toWyre(address, chainId);
-              },
-              hide: !isBuyableWyreChain,
             })}
             {this.renderRow({
               logo: (
