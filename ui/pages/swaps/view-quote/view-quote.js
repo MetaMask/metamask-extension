@@ -42,7 +42,7 @@ import {
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
-  getSwapsRefreshStates,
+  getSwapsNetworkConfig,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
@@ -61,6 +61,7 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getEIP1559V2Enabled,
+  getUSDConversionRate,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
@@ -165,6 +166,7 @@ export default function ViewQuote() {
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
+  const USDConversionRate = useSelector(getUSDConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -203,7 +205,7 @@ export default function ViewQuote() {
   const smartTransactionEstimatedGas = useSelector(
     getSmartTransactionEstimatedGas,
   );
-  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
@@ -354,6 +356,7 @@ export default function ViewQuote() {
       : gasPrice,
     currentCurrency,
     conversionRate,
+    USDConversionRate,
     tradeValue,
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
@@ -369,6 +372,7 @@ export default function ViewQuote() {
     gasPrice: maxFeePerGas || gasPrice,
     currentCurrency,
     conversionRate,
+    USDConversionRate,
     tradeValue,
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
@@ -392,11 +396,13 @@ export default function ViewQuote() {
     const stxEstimatedFeeInWeiDec =
       smartTransactionEstimatedGas.txData.feeEstimate +
       (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
-    const stxMaxFeeInWeiDec = stxEstimatedFeeInWeiDec * 2;
+    const stxMaxFeeInWeiDec =
+      stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
+      USDConversionRate,
       nativeCurrencySymbol,
       feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
@@ -413,6 +419,7 @@ export default function ViewQuote() {
       chainId,
       currentCurrency,
       conversionRate,
+      USDConversionRate,
       nativeCurrencySymbol,
       feeInWeiDec: stxMaxFeeInWeiDec,
     }));
@@ -781,7 +788,7 @@ export default function ViewQuote() {
         dispatch(
           estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
         );
-      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
+      }, swapsNetworkConfig.stxGetTransactionsRefreshTime);
       dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
     } else if (intervalId) {
       clearInterval(intervalId);
@@ -798,7 +805,7 @@ export default function ViewQuote() {
     unsignedTransaction.gas,
     unsignedTransaction.to,
     chainId,
-    swapsRefreshRates.stxGetTransactionsRefreshTime,
+    swapsNetworkConfig.stxGetTransactionsRefreshTime,
     isSwapButtonDisabled,
   ]);
 

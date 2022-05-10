@@ -190,7 +190,7 @@ function ViewSnap() {
               <SnapRemoveWarning
                 onCancel={() => setIsShowingRemoveWarning(false)}
                 onSubmit={async () => {
-                  await dispatch(removeSnap(snap));
+                  await dispatch(removeSnap(snap.id));
                 }}
                 snapName={snap.manifest.proposedName}
               />

@@ -132,6 +132,8 @@ export default class Home extends PureComponent {
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
+    newTokensImported: PropTypes.string,
+    setNewTokensImported: PropTypes.func.isRequired,
   };
 
   state = {
@@ -267,6 +269,8 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      newTokensImported,
+      setNewTokensImported,
     } = this.props;
     return (
       <MultipleNotifications>
@@ -346,6 +350,38 @@ export default class Home extends PureComponent {
                   className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
                   onClick={() => setNewNetworkAdded('')}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+        {newTokensImported ? (
+          <ActionableMessage
+            type="success"
+            className="home__new-tokens-imported-notification"
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
+                <Box>
+                  <Typography
+                    className="home__new-tokens-imported-notification-title"
+                    variant={TYPOGRAPHY.H6}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('newTokensImportedTitle')}
+                  </Typography>
+                  <Typography
+                    className="home__new-tokens-imported-notification-message"
+                    variant={TYPOGRAPHY.H7}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                  >
+                    {t('newTokensImportedMessage', [newTokensImported])}
+                  </Typography>
+                </Box>
+                <button
+                  className="fas fa-times home__new-tokens-imported-notification-close"
+                  title={t('close')}
+                  onClick={() => setNewTokensImported('')}
                 />
               </Box>
             }
