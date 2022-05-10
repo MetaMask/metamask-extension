@@ -18,7 +18,7 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
 
 export async function getErrorHtml(supportLink, store) {
   let currentLocaleMessages, enLocaleMessages;
-  if (store?.getState()) {
+  if (store?.getState()?.localeMessages?.current) {
     currentLocaleMessages = store.getState().localeMessages.current;
   } else {
     const preferredLocale = await getFirstPreferredLangCode();

@@ -1,6 +1,6 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import { clone } from 'lodash';
+import { clone, memoize } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
@@ -46,7 +46,7 @@ export default function launchMetamaskUi(opts, cb) {
   });
 }
 
-export const setupLocale = async (currentLocale) => {
+const _setupLocale = async (currentLocale) => {
   const currentLocaleMessages = currentLocale
     ? await fetchLocale(currentLocale)
     : {};
@@ -59,6 +59,8 @@ export const setupLocale = async (currentLocale) => {
 
   return { currentLocaleMessages, enLocaleMessages };
 };
+
+export const setupLocale = memoize(_setupLocale);
 
 async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts
