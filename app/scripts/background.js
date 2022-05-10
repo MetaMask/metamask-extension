@@ -366,7 +366,7 @@ function setupController(initState, initLangCode) {
       const portStream = new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
-      controller.setupTrustedCommunication(portStream, remotePort.sender);
+      // controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;

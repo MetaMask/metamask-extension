@@ -19,7 +19,7 @@ class MetaRPCClient {
     this.connectionStream.write(payload);
     this.responseHandled[id] = false;
     setTimeout(() => {
-      if (!this.responseHandled[id]) {
+      if (!this.responseHandled[id] && cb) {
         return cb(new Error('No response from RPC'), null);
       }
 
