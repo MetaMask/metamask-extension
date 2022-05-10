@@ -3435,6 +3435,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/snap-controllers>@metamask/controllers": true,
         "@metamask/controllers": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
@@ -3455,6 +3456,43 @@
         "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true,
         "semver": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers": {
+      "packages": {
+        "@metamask/controllers>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true,
+        "eth-rpc-errors": true,
+        "eth-ens-namehash": true,
+        "eth-sig-util": true,
+        "jsonschema": true,
+        "@metamask/controllers>multiformats": true,
+        "@storybook/api>fast-deep-equal": true,
+        "eth-query": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/snap-controllers>nanoid": true,
+        "immer": true,
+        "web3": true,
+        "single-call-balance-checker-abi": true,
+        "@metamask/metamask-eth-abis": true,
+        "ethereumjs-wallet": true,
+        "eth-keyring-controller": true,
+        "uuid": true,
+        "browserify>events": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "eth-json-rpc-infura": true,
+        "punycode": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "eth-method-registry": true,
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>abort-controller": true,
+        "ethers": true,
+        "deep-freeze-strict": true,
+        "json-rpc-engine": true
       }
     },
     "@metamask/snap-controllers>@metamask/obs-store": {
