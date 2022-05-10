@@ -420,11 +420,12 @@ export async function fetchAggregatorMetadata(chainId) {
 
 export async function fetchTopAssets(chainId) {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
-  const response = await fetchWithCache(
-    topAssetsUrl,
-    { method: 'GET', headers: clientIdHeader },
-    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-  );
+  const response =
+    (await fetchWithCache(
+      topAssetsUrl,
+      { method: 'GET', headers: clientIdHeader },
+      { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+    )) || [];
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
     if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
       return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
