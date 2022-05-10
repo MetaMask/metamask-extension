@@ -3103,33 +3103,6 @@
         "URL": true
       }
     },
-    "@metamask/iframe-execution-environment-service": {
-      "globals": {
-        "clearTimeout": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "document.getElementById": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/iframe-execution-environment-service>json-rpc-middleware-stream": true,
-        "@metamask/iframe-execution-environment-service>nanoid": true,
-        "@metamask/post-message-stream": true,
-        "@metamask/snap-controllers": true,
-        "@metamask/snap-controllers>@metamask/execution-environments": true,
-        "json-rpc-engine": true,
-        "pump": true
-      }
-    },
-    "@metamask/iframe-execution-environment-service>json-rpc-middleware-stream": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
-        "readable-stream": true
-      }
-    },
     "@metamask/iframe-execution-environment-service>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -3458,13 +3431,16 @@
         "console.info": true,
         "console.log": true,
         "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controllers": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/snap-controllers>@metamask/controllers": true,
         "@metamask/snap-controllers>@metamask/execution-environments": true,
         "@metamask/snap-controllers>@metamask/obs-store": true,
         "@metamask/snap-controllers>ajv": true,
@@ -3482,6 +3458,54 @@
         "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true,
         "semver": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/controllers": {
+      "globals": {
+        "Headers": true,
+        "URL": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>abort-controller": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/controllers>multiformats": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "@metamask/snap-controllers>@metamask/controllers>@metamask/metamask-eth-abis": true,
+        "@metamask/snap-controllers>nanoid": true,
+        "@storybook/api>fast-deep-equal": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "deep-freeze-strict": true,
+        "eth-ens-namehash": true,
+        "eth-json-rpc-infura": true,
+        "eth-keyring-controller": true,
+        "eth-method-registry": true,
+        "eth-query": true,
+        "eth-rpc-errors": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "ethereumjs-wallet": true,
+        "ethers": true,
+        "ethjs>ethjs-unit": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "jsonschema": true,
+        "punycode": true,
+        "single-call-balance-checker-abi": true,
+        "uuid": true,
+        "web3": true
       }
     },
     "@metamask/snap-controllers>@metamask/obs-store": {
