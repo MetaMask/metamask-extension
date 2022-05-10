@@ -134,6 +134,17 @@ export const TRANSACTION_STATUSES = {
 };
 
 /**
+ * With this list we can detect if a transaction is still in progress.
+ */
+export const IN_PROGRESS_TRANSACTION_STATUSES = [
+  TRANSACTION_STATUSES.UNAPPROVED,
+  TRANSACTION_STATUSES.APPROVED,
+  TRANSACTION_STATUSES.SIGNED,
+  TRANSACTION_STATUSES.SUBMITTED,
+  TRANSACTION_STATUSES.PENDING,
+];
+
+/**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
  *
@@ -159,6 +170,7 @@ export const TRANSACTION_GROUP_STATUSES = {
  * @typedef {Object} SmartTransactionStatuses
  * @property {'cancelled'} CANCELLED - It can be cancelled for various reasons.
  * @property {'pending'} PENDING - Smart transaction is being processed.
+ * @property {'success'} SUCCESS - Smart transaction was successfully mined.
  */
 
 /**

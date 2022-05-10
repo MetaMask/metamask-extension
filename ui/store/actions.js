@@ -11,6 +11,7 @@ import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
@@ -31,6 +32,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import * as actionConstants from './actionConstants';
@@ -736,6 +738,32 @@ export function updateEditableParams(txId, editableParams) {
   };
 }
 
+/**
+ * Appends new send flow history to a transaction
+ *
+ * @param {string} txId - the id of the transaction to update
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - the new send flow history to append to the
+ *  transaction
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await promisifiedBackground.updateTransactionSendFlowHistory(
+        txId,
+        sendFlowHistory,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
     let updatedTransaction;
@@ -799,25 +827,65 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin, type) {
-  log.debug('background.addUnapprovedTransaction');
-
-  return () => {
-    return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(
+/**
+ * Action to create a new transaction in the controller and route to the
+ * confirmation page. Returns the newly created txMeta in case additional logic
+ * should be applied to the transaction after creation.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
+ *  history of the send flow at time of creation.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function addUnapprovedTransactionAndRouteToConfirmationPage(
+  txParams,
+  type,
+  sendFlowHistory,
+) {
+  return async (dispatch) => {
+    try {
+      log.debug('background.addUnapprovedTransaction');
+      const txMeta = await promisifiedBackground.addUnapprovedTransaction(
         txParams,
-        origin,
+        ORIGIN_METAMASK,
         type,
-        (err, txMeta) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(txMeta);
-        },
+        sendFlowHistory,
       );
-    });
+      dispatch(showConfTxPage());
+      return txMeta;
+    } catch (error) {
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+    }
+    return null;
   };
+}
+
+/**
+ * Wrapper around the promisifedBackground to create a new unapproved
+ * transaction in the background and return the newly created txMeta.
+ * This method does not show errors or route to a confirmation page and is
+ * used primarily for swaps functionality.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export async function addUnapprovedTransaction(txParams, type) {
+  log.debug('background.addUnapprovedTransaction');
+  const txMeta = await promisifiedBackground.addUnapprovedTransaction(
+    txParams,
+    ORIGIN_METAMASK,
+    type,
+  );
+  return txMeta;
 }
 
 export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
@@ -923,9 +991,9 @@ export function enableSnap(snapId) {
   };
 }
 
-export function removeSnap(snap) {
+export function removeSnap(snapId) {
   return async (dispatch) => {
-    await promisifiedBackground.removeSnap(snap);
+    await promisifiedBackground.removeSnap(snapId);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2891,6 +2959,13 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   };
 }
 
+export function setNewTokensImported(newTokensImported) {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED,
+    value: newTokensImported,
+  };
+}
+
 export function setLastActiveTime() {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
@@ -3335,7 +3410,7 @@ export async function setSmartTransactionsOptInStatus(
 ) {
   trackMetaMetricsEvent({
     event: 'STX OptIn',
-    category: 'swaps',
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,

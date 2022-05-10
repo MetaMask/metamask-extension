@@ -12,7 +12,7 @@ import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
-  getSwapsRefreshStates,
+  getSwapsNetworkConfig,
   cancelSwapsSmartTransaction,
 } from '../../../ducks/swaps/swaps';
 import {
@@ -39,6 +39,7 @@ import {
   stopPollingForQuotes,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
@@ -70,7 +71,7 @@ export default function SmartTransactionStatus() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
@@ -88,7 +89,7 @@ export default function SmartTransactionStatus() {
   }
 
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
-    swapsRefreshRates.stxStatusDeadline,
+    swapsNetworkConfig.stxStatusDeadline,
   );
 
   const sensitiveProperties = {
@@ -125,7 +126,7 @@ export default function SmartTransactionStatus() {
   useEffect(() => {
     trackEvent({
       event: 'STX Status Page Loaded',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties,
     });
     // eslint-disable-next-line
@@ -138,13 +139,13 @@ export default function SmartTransactionStatus() {
         const secondsAfterStxSubmission = Math.round(
           (Date.now() - latestSmartTransaction.time) / 1000,
         );
-        if (secondsAfterStxSubmission > swapsRefreshRates.stxStatusDeadline) {
+        if (secondsAfterStxSubmission > swapsNetworkConfig.stxStatusDeadline) {
           setTimeLeftForPendingStxInSec(0);
           clearInterval(intervalId);
           return;
         }
         setTimeLeftForPendingStxInSec(
-          swapsRefreshRates.stxStatusDeadline - secondsAfterStxSubmission,
+          swapsNetworkConfig.stxStatusDeadline - secondsAfterStxSubmission,
         );
       };
       intervalId = setInterval(calculateRemainingTime, 1000);
@@ -157,7 +158,7 @@ export default function SmartTransactionStatus() {
     isSmartTransactionPending,
     latestSmartTransactionUuid,
     latestSmartTransaction.time,
-    swapsRefreshRates.stxStatusDeadline,
+    swapsNetworkConfig.stxStatusDeadline,
   ]);
 
   useEffect(() => {
@@ -237,7 +238,7 @@ export default function SmartTransactionStatus() {
             setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
             trackEvent({
               event: 'Cancel STX',
-              category: 'swaps',
+              category: EVENT.CATEGORIES.SWAPS,
               sensitiveProperties,
             });
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
@@ -357,8 +358,8 @@ export default function SmartTransactionStatus() {
               className="smart-transaction-status__loading-bar"
               style={{
                 width: `${
-                  (100 / swapsRefreshRates.stxStatusDeadline) *
-                  (swapsRefreshRates.stxStatusDeadline -
+                  (100 / swapsNetworkConfig.stxStatusDeadline) *
+                  (swapsNetworkConfig.stxStatusDeadline -
                     timeLeftForPendingStxInSec)
                 }%`,
               }}

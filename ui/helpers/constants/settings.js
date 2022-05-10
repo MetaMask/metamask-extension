@@ -307,6 +307,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('theme'),
+    descriptionMessage: (t) => t('themeDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#theme`,
+    icon: 'fa fa-flask',
+  },
+  {
     // TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('tokenDetection'),
