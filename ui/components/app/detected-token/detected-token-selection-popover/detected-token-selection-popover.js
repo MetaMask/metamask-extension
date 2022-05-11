@@ -34,18 +34,18 @@ const DetectedTokenSelectionPopover = ({
     selectedTokens.length === detectedTokens.length
       ? `All`
       : `(${selectedTokens.length})`;
-  const detectedTokensDetails = detectedTokens.map(
-    ({ address, symbol }) => `${symbol} - ${address}`,
-  );
 
   const onClose = () => {
     setShowDetectedTokens(false);
+    const eventTokensDetails = detectedTokens.map(
+      ({ address, symbol }) => `${symbol} - ${address}`,
+    );
     trackEvent({
       event: EVENT_NAMES.TOKEN_IMPORT_CANCELED,
       category: EVENT.CATEGORIES.WALLET,
       properties: {
         source: EVENT.SOURCE.TOKEN.DETECTED,
-        tokens: detectedTokensDetails,
+        tokens: eventTokensDetails,
       },
     });
   };

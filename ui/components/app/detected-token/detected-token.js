@@ -30,6 +30,7 @@ const sortingBasedOnTokenSelection = (tokensDetected) => {
       .value()
   );
 };
+
 const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -47,27 +48,17 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     setShowDetectedTokenIgnoredPopover,
   ] = useState(false);
 
+  const importSelectedTokens = async (selectedTokens) => {
+    await dispatch(importTokens(selectedTokens));
+    const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+    dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+  };
+
   const handleClearTokensSelection = async () => {
     const {
       selected: selectedTokens = [],
       deselected: deSelectedTokens = [],
     } = sortingBasedOnTokenSelection(tokensListDetected);
-
-    if (deSelectedTokens.length > 0) {
-      const tokensDetailsList = deSelectedTokens.map(
-        ({ symbol, address }) => `${symbol} - ${address}`,
-      );
-      trackEvent({
-        event: EVENT_NAMES.TOKEN_HIDDEN,
-        category: EVENT.CATEGORIES.WALLET,
-        sensitiveProperties: {
-          tokens: tokensDetailsList,
-          location: EVENT.LOCATION.TOKEN_DETECTION,
-          token_standard: TOKEN_STANDARDS.ERC20,
-          asset_type: ASSET_TYPES.TOKEN,
-        },
-      });
-    }
 
     if (deSelectedTokens.length < detectedTokens.length) {
       selectedTokens.forEach((importedToken) => {
@@ -84,13 +75,22 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           },
         });
       });
-      await dispatch(ignoreTokens(deSelectedTokens));
-      await dispatch(importTokens(selectedTokens));
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
-    } else {
-      await dispatch(ignoreTokens(deSelectedTokens));
+      await importSelectedTokens(selectedTokens);
     }
+    const tokensDetailsList = deSelectedTokens.map(
+      ({ symbol, address }) => `${symbol} - ${address}`,
+    );
+    trackEvent({
+      event: EVENT_NAMES.TOKEN_HIDDEN,
+      category: EVENT.CATEGORIES.WALLET,
+      sensitiveProperties: {
+        tokens: tokensDetailsList,
+        location: EVENT.LOCATION.TOKEN_DETECTION,
+        token_standard: TOKEN_STANDARDS.ERC20,
+        asset_type: ASSET_TYPES.TOKEN,
+      },
+    });
+    await dispatch(ignoreTokens(deSelectedTokens));
     setShowDetectedTokens(false);
   };
 
@@ -126,10 +126,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           },
         });
       });
-
-      await dispatch(importTokens(selectedTokens));
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+      await importSelectedTokens(selectedTokens);
       setShowDetectedTokens(false);
     }
   };
