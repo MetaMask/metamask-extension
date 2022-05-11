@@ -1226,6 +1226,26 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapTerminated`,
+      (snapId) => {
+        const approvals = Object.values(
+          this.approvalController.state.pendingApprovals,
+        ).filter(
+          (approval) =>
+            approval.origin === snapId &&
+            approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
+        );
+        for (const approval of approvals) {
+          this.approvalController.reject(
+            approval.id,
+            new Error('Snap was terminated.'),
+          );
+        }
+      },
+    );
+
     ///: END:ONLY_INCLUDE_IN
   }
 
