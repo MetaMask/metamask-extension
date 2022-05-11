@@ -203,6 +203,7 @@
     "react-dom": "^16.12.0",
     "react-idle-timer": "^4.2.5",
     "react-inspector": "^2.3.0",
+    "react-markdown": "^6.0.3",
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.0",
     "react-responsive-carousel": "^3.2.21",
