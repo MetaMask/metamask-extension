@@ -1,0 +1,37 @@
+lazy precompute for faster module initialization
+
+diff --git a/node_modules/secp256k1/lib/js/ecpointg.js b/node_modules/secp256k1/lib/js/ecpointg.js
+index 0144364..09a87c5 100644
+--- a/node_modules/secp256k1/lib/js/ecpointg.js
++++ b/node_modules/secp256k1/lib/js/ecpointg.js
+@@ -8,11 +8,12 @@ function ECPointG () {
+   this.x = BN.fromBuffer(Buffer.from('79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798', 'hex'))
+   this.y = BN.fromBuffer(Buffer.from('483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8', 'hex'))
+   this.inf = false
+-
+-  this._precompute()
++  this.precomputed = undefined
+ }
+ 
+ ECPointG.prototype._precompute = function () {
++  if (this.precomputed !== undefined) return
++
+   var ecpoint = new ECPoint(this.x, this.y)
+ 
+   var dstep = 4
+@@ -34,6 +35,7 @@ ECPointG.prototype._precompute = function () {
+ }
+ 
+ ECPointG.prototype.mul = function (num) {
++  this._precompute()
+   // Algorithm 3.42 Fixed-base NAF windowing method for point multiplication
+   var step = this.precomputed.doubles.step
+   var points = this.precomputed.doubles.points
+@@ -68,6 +70,7 @@ ECPointG.prototype.mul = function (num) {
+ }
+ 
+ ECPointG.prototype.mulAdd = function (k1, p2, k2) {
++  this._precompute()
+   var nafPointsP1 = this.precomputed.naf
+   var nafPointsP2 = p2._getNAFPoints1()
+   var wnd = [nafPointsP1.points, nafPointsP2.points]
