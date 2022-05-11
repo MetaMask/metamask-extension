@@ -59,7 +59,7 @@ export default function SignatureRequestSIWE({
   };
 
   return (
-    <div className="signature-request page-container">
+    <div className="signature-request-siwe page-container">
       <Header
         fromAccount={fromAccount}
         domain={messageData.domain}
