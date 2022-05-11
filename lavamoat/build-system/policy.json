@@ -1,5 +1,11 @@
 {
   "resources": {
+    "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object": {
+      "packages": {
+        "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object>for-in": true,
+        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
+      }
+    },
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -934,12 +940,12 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>lavamoat-core": true,
+        "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true,
         "nyc>convert-source-map": true,
-        "readable-stream": true,
         "through2": true
       }
     },
@@ -975,28 +981,23 @@
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
       }
     },
-    "@lavamoat/lavapack>lavamoat-core": {
+    "@lavamoat/lavapack>readable-stream": {
       "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "module.createRequire": true,
-        "module.createRequireFromPath": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.sep": true
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
       },
       "globals": {
-        "__dirname": true,
-        "console.warn": true,
-        "define": true
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
       },
       "packages": {
-        "brfs>resolve": true,
-        "lavamoat-browserify>merge-deep": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
+        "@storybook/api>util-deprecate": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "@metamask/jazzicon>color>color-convert": {
@@ -1602,10 +1603,10 @@
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
         "browserify>parents": true,
+        "lavamoat-browserify>browser-resolve": true,
         "loose-envify": true,
         "pumpify>inherits": true,
         "readable-stream": true,
-        "watchify>browserify>browser-resolve": true,
         "watchify>defined": true,
         "watchify>xtend": true
       }
@@ -1676,12 +1677,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "browserify>string_decoder>safe-buffer": true
-      }
-    },
-    "browserify>string_decoder>safe-buffer": {
-      "builtin": {
-        "buffer": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "browserify>syntax-error": {
@@ -3171,7 +3167,7 @@
         "gulp-autoprefixer>autoprefixer": true,
         "gulp-autoprefixer>postcss": true,
         "gulp-autoprefixer>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "vinyl-sourcemaps-apply": true
       }
     },
@@ -3289,7 +3285,7 @@
         "gulp-dart-sass>lodash.clonedeep": true,
         "gulp-dart-sass>strip-ansi": true,
         "gulp-dart-sass>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "sass": true,
         "vinyl-sourcemaps-apply": true,
         "vinyl>replace-ext": true
@@ -3589,7 +3585,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss": true,
         "gulp-rtlcss>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "vinyl-sourcemaps-apply": true
       }
     },
@@ -3674,6 +3670,23 @@
       }
     },
     "gulp-rtlcss>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
+    "gulp-sort": {
+      "packages": {
+        "gulp-sort>through2": true
+      }
+    },
+    "gulp-sort>through2": {
       "builtin": {
         "util.inherits": true
       },
@@ -3898,7 +3911,7 @@
         "eslint>strip-ansi": true,
         "fancy-log": true,
         "gulp-stylelint>through2": true,
-        "gulp-watch>plugin-error": true,
+        "gulp-zip>plugin-error": true,
         "source-map": true,
         "stylelint": true
       }
@@ -3953,9 +3966,9 @@
         "gulp-watch>fancy-log": true,
         "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
-        "gulp-watch>plugin-error": true,
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
+        "gulp-zip>plugin-error": true,
         "react>object-assign": true,
         "readable-stream": true,
         "vinyl": true
@@ -4480,28 +4493,6 @@
         "process.platform": true
       }
     },
-    "gulp-watch>plugin-error": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "packages": {
-        "gulp-watch>ansi-colors": true,
-        "gulp-watch>plugin-error>arr-union": true,
-        "gulp-watch>plugin-error>extend-shallow": true,
-        "webpack>micromatch>arr-diff": true
-      }
-    },
-    "gulp-watch>plugin-error>extend-shallow": {
-      "packages": {
-        "gulp-watch>plugin-error>extend-shallow>is-extendable": true,
-        "webpack>micromatch>extend-shallow>assign-symbols": true
-      }
-    },
-    "gulp-watch>plugin-error>extend-shallow>is-extendable": {
-      "packages": {
-        "gulp>gulp-cli>liftoff>is-plain-object": true
-      }
-    },
     "gulp-watch>vinyl-file": {
       "builtin": {
         "path.resolve": true
@@ -4584,6 +4575,7 @@
     },
     "gulp-zip": {
       "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
         "path.join": true
       },
       "packages": {
@@ -4596,10 +4588,14 @@
     },
     "gulp-zip>get-stream": {
       "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
         "stream.PassThrough": true
       },
       "globals": {
         "Buffer.concat": true
+      },
+      "packages": {
+        "pump": true
       }
     },
     "gulp-zip>plugin-error": {
@@ -4607,37 +4603,21 @@
         "util.inherits": true
       },
       "packages": {
-        "gulp-zip>plugin-error>ansi-cyan": true,
-        "gulp-zip>plugin-error>ansi-red": true,
-        "gulp-zip>plugin-error>arr-diff": true,
+        "gulp-watch>ansi-colors": true,
         "gulp-zip>plugin-error>arr-union": true,
-        "gulp-zip>plugin-error>extend-shallow": true
-      }
-    },
-    "gulp-zip>plugin-error>ansi-cyan": {
-      "packages": {
-        "fancy-log>ansi-gray>ansi-wrap": true
-      }
-    },
-    "gulp-zip>plugin-error>ansi-red": {
-      "packages": {
-        "fancy-log>ansi-gray>ansi-wrap": true
-      }
-    },
-    "gulp-zip>plugin-error>arr-diff": {
-      "packages": {
-        "gulp-zip>plugin-error>arr-diff>array-slice": true,
-        "gulp>undertaker>arr-flatten": true
+        "gulp-zip>plugin-error>extend-shallow": true,
+        "webpack>micromatch>arr-diff": true
       }
     },
     "gulp-zip>plugin-error>extend-shallow": {
       "packages": {
-        "gulp-zip>plugin-error>extend-shallow>kind-of": true
+        "gulp-zip>plugin-error>extend-shallow>is-extendable": true,
+        "webpack>micromatch>extend-shallow>assign-symbols": true
       }
     },
-    "gulp-zip>plugin-error>extend-shallow>kind-of": {
-      "globals": {
-        "Buffer": true
+    "gulp-zip>plugin-error>extend-shallow>is-extendable": {
+      "packages": {
+        "gulp>gulp-cli>liftoff>is-plain-object": true
       }
     },
     "gulp-zip>through2": {
@@ -4648,8 +4628,26 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
+        "gulp-zip>through2>readable-stream": true
+      }
+    },
+    "gulp-zip>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "@storybook/api>util-deprecate": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "gulp-zip>yazl": {
@@ -5396,12 +5394,28 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
-        "@lavamoat/lavapack>lavamoat-core": true,
         "duplexify": true,
+        "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
-        "lavamoat>json-stable-stringify": true
+        "lavamoat>@lavamoat/aa": true,
+        "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true
+      }
+    },
+    "lavamoat-browserify>browser-resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "path": true
+      },
+      "globals": {
+        "__dirname": true,
+        "process.platform": true
+      },
+      "packages": {
+        "brfs>resolve": true
       }
     },
     "lavamoat-browserify>concat-stream": {
@@ -5413,70 +5427,6 @@
       "packages": {
         "lavamoat-browserify>readable-stream": true,
         "pumpify>inherits": true
-      }
-    },
-    "lavamoat-browserify>merge-deep": {
-      "packages": {
-        "gulp-watch>plugin-error>arr-union": true,
-        "lavamoat-browserify>merge-deep>clone-deep": true,
-        "lavamoat-browserify>merge-deep>kind-of": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep": {
-      "packages": {
-        "gulp>gulp-cli>liftoff>is-plain-object": true,
-        "lavamoat-browserify>merge-deep>clone-deep>for-own": true,
-        "lavamoat-browserify>merge-deep>clone-deep>kind-of": true,
-        "lavamoat-browserify>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat-browserify>merge-deep>clone-deep>shallow-clone": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>for-own": {
-      "packages": {
-        "gulp>undertaker>object.reduce>for-own>for-in": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>lazy-cache": {
-      "globals": {
-        "process.env.TRAVIS": true,
-        "process.env.UNLAZY": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>shallow-clone": {
-      "packages": {
-        "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>kind-of": true,
-        "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
-        "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>mixin-object": true,
-        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>kind-of": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>lazy-cache": {
-      "globals": {
-        "process.env.UNLAZY": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>mixin-object": {
-      "packages": {
-        "lavamoat-browserify>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
-        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
-      }
-    },
-    "lavamoat-browserify>merge-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -5547,9 +5497,103 @@
         "mocha>supports-color>has-flag": true
       }
     },
+    "lavamoat>@lavamoat/aa": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true
+      },
+      "globals": {
+        "performantResolve": true
+      },
+      "packages": {
+        "brfs>resolve": true
+      }
+    },
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
+      }
+    },
+    "lavamoat>lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.extname": true,
+        "path.join": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
+      },
+      "packages": {
+        "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>merge-deep": true,
+        "lavamoat>lavamoat-tofu": true,
+        "nyc>process-on-spawn>fromentries": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep": {
+      "packages": {
+        "gulp-zip>plugin-error>arr-union": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep": true,
+        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep": {
+      "packages": {
+        "gulp>gulp-cli>liftoff>is-plain-object": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
+      "packages": {
+        "gulp>undertaker>object.reduce>for-own>for-in": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
+      "globals": {
+        "process.env.TRAVIS": true,
+        "process.env.UNLAZY": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
+      "packages": {
+        "3box>ipfs>superstruct>clone-deep>shallow-clone>mixin-object": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
+        "webpack>micromatch>extglob>extend-shallow>is-extendable": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
+      "globals": {
+        "process.env.UNLAZY": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-tofu": {
@@ -7053,20 +7097,6 @@
         "fast-glob>picomatch": true
       }
     },
-    "watchify>browserify>browser-resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "path": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.platform": true
-      },
-      "packages": {
-        "brfs>resolve": true
-      }
-    },
     "watchify>browserify>shasum-object": {
       "builtin": {
         "crypto.createHash": true
@@ -7405,7 +7435,7 @@
     },
     "webpack>micromatch>snapdragon>base>cache-base>union-value": {
       "packages": {
-        "gulp-watch>plugin-error>arr-union": true,
+        "gulp-zip>plugin-error>arr-union": true,
         "gulp>gulp-cli>array-sort>get-value": true,
         "webpack>micromatch>extglob>extend-shallow>is-extendable": true,
         "webpack>micromatch>snapdragon>base>cache-base>set-value": true
@@ -7434,7 +7464,7 @@
         "util": true
       },
       "packages": {
-        "gulp-watch>plugin-error>arr-union": true,
+        "gulp-zip>plugin-error>arr-union": true,
         "gulp>gulp-cli>isobject": true,
         "webpack>micromatch>snapdragon>base>class-utils>static-extend": true,
         "webpack>micromatch>snapdragon>define-property": true

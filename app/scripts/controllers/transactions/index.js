@@ -18,10 +18,12 @@ import {
   getChainType,
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
+import { calcGasTotal } from '../../../../ui/pages/send/send.utils';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
 import {
   hexWEIToDecGWEI,
   decimalToHex,
+  hexWEIToDecETH,
 } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
@@ -647,6 +649,35 @@ export default class TransactionController extends EventEmitter {
     return this._getTransaction(txId);
   }
 
+  /**
+   * append new sendFlowHistory to the transaction with id if the transaction
+   * state is unapproved. Returns the updated transaction.
+   *
+   * @param {string} txId - transaction id
+   * @param {Array<{ entry: string, timestamp: number }>} sendFlowHistory -
+   *  history to add to the sendFlowHistory property of txMeta.
+   * @returns {TransactionMeta} the txMeta of the updated transaction
+   */
+  updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionSendFlowHistory');
+    const txMeta = this._getTransaction(txId);
+
+    // only update what is defined
+    const note = `Update sendFlowHistory for ${txId}`;
+
+    this.txStateManager.updateTransaction(
+      {
+        ...txMeta,
+        sendFlowHistory: [
+          ...(txMeta?.sendFlowHistory ?? []),
+          ...sendFlowHistory,
+        ],
+      },
+      note,
+    );
+    return this._getTransaction(txId);
+  }
+
   // ====================================================================================================================================================
 
   /**
@@ -656,9 +687,15 @@ export default class TransactionController extends EventEmitter {
    * @param txParams
    * @param origin
    * @param transactionType
+   * @param sendFlowHistory
    * @returns {txMeta}
    */
-  async addUnapprovedTransaction(txParams, origin, transactionType) {
+  async addUnapprovedTransaction(
+    txParams,
+    origin,
+    transactionType,
+    sendFlowHistory = [],
+  ) {
     if (
       transactionType !== undefined &&
       !VALID_UNAPPROVED_TRANSACTION_TYPES.includes(transactionType)
@@ -683,6 +720,7 @@ export default class TransactionController extends EventEmitter {
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       origin,
+      sendFlowHistory,
     });
 
     if (origin === ORIGIN_METAMASK) {
@@ -1841,6 +1879,30 @@ export default class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
   }
 
+  _calculateTransactionsCost(txMeta, approvalTxMeta) {
+    let approvalGasCost = '0x0';
+    if (approvalTxMeta?.txReceipt) {
+      approvalGasCost = calcGasTotal(
+        approvalTxMeta.txReceipt.gasUsed,
+        approvalTxMeta.txReceipt.effectiveGasPrice,
+      );
+    }
+    const tradeGasCost = calcGasTotal(
+      txMeta.txReceipt.gasUsed,
+      txMeta.txReceipt.effectiveGasPrice,
+    );
+    const tradeAndApprovalGasCost = new BigNumber(tradeGasCost, 16)
+      .plus(approvalGasCost, 16)
+      .toString(16);
+    return {
+      approvalGasCostInEth: Number(hexWEIToDecETH(approvalGasCost)),
+      tradeGasCostInEth: Number(hexWEIToDecETH(tradeGasCost)),
+      tradeAndApprovalGasCostInEth: Number(
+        hexWEIToDecETH(tradeAndApprovalGasCost),
+      ),
+    };
+  }
+
   _trackSwapsMetrics(txMeta, approvalTxMeta) {
     if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
       if (txMeta.txReceipt.status === '0x0') {
@@ -1875,6 +1937,11 @@ export default class TransactionController extends EventEmitter {
                 .round(2)}%`
             : null;
 
+        const transactionsCost = this._calculateTransactionsCost(
+          txMeta,
+          approvalTxMeta,
+        );
+
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',
           category: EVENT.CATEGORIES.SWAPS,
@@ -1883,6 +1950,10 @@ export default class TransactionController extends EventEmitter {
             token_to_amount_received: tokensReceived,
             quote_vs_executionRatio: quoteVsExecutionRatio,
             estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+            approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+            trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+            trade_and_approval_gas_cost_in_eth:
+              transactionsCost.tradeAndApprovalGasCostInEth,
           },
         });
       }

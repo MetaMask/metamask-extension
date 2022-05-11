@@ -671,7 +671,7 @@ export function getSwapsDefaultToken(state) {
 export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
   const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== 'development' ||
+    process.env.METAMASK_ENVIRONMENT !== 'development' &&
     process.env.METAMASK_ENVIRONMENT !== 'testing';
   return isNotDevelopment
     ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
@@ -749,8 +749,8 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: getIsMainnet(state),
-    10: Boolean(process.env.TOKEN_DETECTION_V2),
-    11: Boolean(process.env.TOKEN_DETECTION_V2),
+    10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
+    11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     12: true,
   };
 }
@@ -969,6 +969,22 @@ export function getIsTokenDetectionSupported(state) {
   ].includes(chainId);
 }
 
+/**
+ * To retrieve the list of tokens detected and saved on the state to detectedToken object.
+ *
+ * @param {*} state
+ * @returns list of token objects
+ */
 export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.detectedTokens;
+}
+
+/**
+ * To fetch the name of the tokens that are imported from tokens found page
+ *
+ * @param {*} state
+ * @returns
+ */
+export function getNewTokensImported(state) {
+  return state.appState.newTokensImported;
 }

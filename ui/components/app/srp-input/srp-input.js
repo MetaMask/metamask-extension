@@ -179,8 +179,6 @@ export default function SrpInput({ onChange, srpText }) {
                   if (newSrp.trim().match(/\s/u)) {
                     event.preventDefault();
                     onSrpPaste(newSrp);
-                  } else {
-                    onSrpWordChange(index, newSrp);
                   }
                 }}
               />

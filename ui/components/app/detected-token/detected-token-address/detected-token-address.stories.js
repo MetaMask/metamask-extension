@@ -6,15 +6,15 @@ export default {
   title: 'Components/App/DetectedToken/DetectedTokenAddress',
   id: __filename,
   argTypes: {
-    address: { control: 'text' },
+    tokenAddress: { control: 'text' },
   },
   args: {
-    address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    tokenAddress: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
   },
 };
 
 const Template = (args) => {
-  return <DetectedTokenAddress address={args.address} />;
+  return <DetectedTokenAddress {...args} />;
 };
 
 export const DefaultStory = Template.bind({});

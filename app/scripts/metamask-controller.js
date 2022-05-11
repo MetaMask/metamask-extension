@@ -46,8 +46,10 @@ import {
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapController } from '@metamask/snap-controllers';
-import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
+import {
+  SnapController,
+  IframeExecutionService,
+} from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -400,7 +402,7 @@ export default class MetamaskController extends EventEmitter {
       name: 'CurrencyRateController',
     });
     this.currencyRateController = new CurrencyRateController({
-      includeUSDRate: true,
+      includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
@@ -637,7 +639,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.4',
+        'https://metamask.github.io/iframe-execution-environment/0.4.5',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -1259,12 +1261,17 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin }) => {
+      getAccounts: async (
+        { origin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
         if (origin === ORIGIN_METAMASK) {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(origin);
+          return await this.getPermittedAccounts(origin, {
+            suppressUnauthorizedError,
+          });
         }
         return []; // changing this is a breaking change
       },
@@ -1652,6 +1659,9 @@ export default class MetamaskController extends EventEmitter {
       updateTransactionGasFees: txController.updateTransactionGasFees.bind(
         txController,
       ),
+      updateTransactionSendFlowHistory: txController.updateTransactionSendFlowHistory.bind(
+        txController,
+      ),
 
       updateSwapApprovalTransaction: txController.updateSwapApprovalTransaction.bind(
         txController,
@@ -1743,7 +1753,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
-      removeSnap: this.removeSnap.bind(this),
+      removeSnap: this.snapController.removeSnap.bind(this.snapController),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -2552,17 +2562,24 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {boolean} [suppressUnauthorizedError] - Suppresses the unauthorized error.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  async getPermittedAccounts(origin) {
+  async getPermittedAccounts(
+    origin,
+    { suppressUnauthorizedError = true } = {},
+  ) {
     try {
       return await this.permissionController.executeRestrictedMethod(
         origin,
         RestrictedMethods.eth_accounts,
       );
     } catch (error) {
-      if (error.code === rpcErrorCodes.provider.unauthorized) {
+      if (
+        suppressUnauthorizedError &&
+        error.code === rpcErrorCodes.provider.unauthorized
+      ) {
         return [];
       }
       throw error;
@@ -4126,23 +4143,4 @@ export default class MetamaskController extends EventEmitter {
     }
     return this.keyringController.setLocked();
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  // SNAPS
-  /**
-   * Removes the specified snap, and all of its associated permissions.
-   * If we didn't revoke the permission to access the snap from all subjects,
-   * they could just reinstall without any confirmation.
-   *
-   * TODO: This should be implemented in `SnapController.removeSnap` via a controller action.
-   *
-   * @param {{ id: string, permissionName: string }} snap - The wrapper object of the snap to remove.
-   */
-  removeSnap(snap) {
-    this.snapController.removeSnap(snap.id);
-    this.permissionController.revokePermissionForAllSubjects(
-      snap.permissionName,
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 }

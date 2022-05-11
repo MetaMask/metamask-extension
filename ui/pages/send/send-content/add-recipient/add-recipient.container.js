@@ -13,6 +13,7 @@ import {
   getIsUsingMyAccountForRecipientSearch,
   getRecipientUserInput,
   getRecipient,
+  addHistoryEntry,
 } from '../../../../ducks/send';
 import {
   getEnsResolution,
@@ -55,6 +56,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    addHistoryEntry: (entry) => dispatch(addHistoryEntry(entry)),
     updateRecipient: ({ address, nickname }) =>
       dispatch(updateRecipient({ address, nickname })),
     updateRecipientUserInput: (newInput) =>
