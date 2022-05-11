@@ -46,8 +46,10 @@ import {
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapController } from '@metamask/snap-controllers';
-import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
+import {
+  SnapController,
+  IframeExecutionService,
+} from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -637,7 +639,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.4',
+        'https://metamask.github.io/iframe-execution-environment/0.4.5',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',

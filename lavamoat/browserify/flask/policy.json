@@ -3103,38 +3103,6 @@
         "URL": true
       }
     },
-    "@metamask/iframe-execution-environment-service": {
-      "globals": {
-        "clearTimeout": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "document.getElementById": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/iframe-execution-environment-service>json-rpc-middleware-stream": true,
-        "@metamask/iframe-execution-environment-service>nanoid": true,
-        "@metamask/post-message-stream": true,
-        "@metamask/snap-controllers": true,
-        "@metamask/snap-controllers>@metamask/execution-environments": true,
-        "json-rpc-engine": true,
-        "pump": true
-      }
-    },
-    "@metamask/iframe-execution-environment-service>json-rpc-middleware-stream": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/iframe-execution-environment-service>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -3458,6 +3426,9 @@
         "console.info": true,
         "console.log": true,
         "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
         "fetch": true,
         "setTimeout": true
       },
