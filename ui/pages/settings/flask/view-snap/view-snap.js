@@ -37,7 +37,7 @@ function ViewSnap() {
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)
     .find((snapState) => {
-      const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
+      const decoded = decodeURIComponent(pathNameTail);
       return snapState.id === decoded;
     });
 
