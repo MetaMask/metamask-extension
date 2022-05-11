@@ -1,5 +1,4 @@
 .siwe-request-header {
-
   display: flex;
   padding: 1rem;
   justify-content: center;
@@ -35,24 +34,24 @@
     display: flex;
     align-items: center;
     margin: 8px auto;
-
   }
 
   .title {
     @include H2;
+
     font-weight: bold;
     margin: 8px auto;
   }
 
   .subtitle {
     @include H5;
-    margin: 8px auto;
 
+    margin: 8px auto;
   }
 
   .bad-domain {
     .typography {
-      color: var(--color-error-default)
+      color: var(--color-error-default);
     }
   }
 
@@ -64,5 +63,4 @@
       }
     }
   }
-
 }

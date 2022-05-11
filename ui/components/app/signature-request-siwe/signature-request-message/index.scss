@@ -25,7 +25,7 @@
 
   &--root {
     flex: 1 100%;
-    padding-bottom:8px;
+    padding-bottom: 8px;
     border-radius: 8px;
     padding: 8px 14px;
     margin: 1rem;
@@ -38,11 +38,13 @@
 
     .label {
       @include H4;
+
       margin: 8px auto;
     }
 
     .value {
       @include H6;
+
       margin: 8px auto;
       white-space: pre-line;
       overflow: hidden;

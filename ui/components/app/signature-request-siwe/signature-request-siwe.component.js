@@ -143,5 +143,4 @@ SignatureRequestSIWE.propTypes = {
    * Handler for sign button
    */
   sign: PropTypes.func.isRequired,
-
 };
