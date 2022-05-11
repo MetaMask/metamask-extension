@@ -2046,6 +2046,7 @@
       "packages": {
         "@ethereumjs/tx": true,
         "buffer": true,
+        "eth-sig-util": true,
         "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "events": true,
