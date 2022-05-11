@@ -280,7 +280,7 @@
     "browser-util-inspect": "^0.2.0",
     "browserify": "^16.5.1",
     "chalk": "^3.0.0",
-    "chromedriver": "^100.0.0",
+    "chromedriver": "^101.0.0",
     "concurrently": "^5.2.0",
     "copy-webpack-plugin": "^6.0.3",
     "cross-spawn": "^7.0.3",
