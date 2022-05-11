@@ -224,11 +224,11 @@ export default class SignatureRequestOriginal extends Component {
               onClick={() => {
                 global.platform.openTab({
                   url:
-                    'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
+                    'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
                 });
               }}
             >
-              {this.context.t('learnMore')}
+              {this.context.t('learnMoreUpperCase')}
             </span>
           ) : null}
         </div>

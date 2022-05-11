@@ -375,7 +375,7 @@ export default class AdvancedTab extends PureComponent {
   renderAutoLockTimeLimit() {
     const { t } = this.context;
     const { lockTimeError } = this.state;
-    const { autoLockTimeLimit, setAutoLockTimeLimit } = this.props;
+    const { setAutoLockTimeLimit } = this.props;
 
     return (
       <div
@@ -396,7 +396,6 @@ export default class AdvancedTab extends PureComponent {
               id="autoTimeout"
               placeholder="5"
               value={this.state.autoLockTimeLimit}
-              defaultValue={autoLockTimeLimit}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth

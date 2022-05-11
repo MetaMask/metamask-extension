@@ -1,5 +1,6 @@
 const { promises: fs } = require('fs');
 const gulp = require('gulp');
+const sort = require('gulp-sort');
 const gulpZip = require('gulp-zip');
 const del = require('del');
 const pify = require('pify');
@@ -45,7 +46,9 @@ function createZipTask(platform, buildType, version) {
         : `metamask-${buildType}-${platform}-${version}`;
     await pump(
       gulp.src(`dist/${platform}/**`),
-      gulpZip(`${path}.zip`),
+      // sort files and set `mtime` to epoch to ensure zip build is deterministic
+      sort(),
+      gulpZip(`${path}.zip`, { modifiedTime: new Date(0) }),
       gulp.dest('builds'),
     );
   };
