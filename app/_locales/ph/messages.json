@@ -91,9 +91,6 @@
   "affirmAgree": {
     "message": "Sang-ayon ako"
   },
-  "aggregatorFeeCost": {
-    "message": "Bayarin sa aggregator network"
-  },
   "alertDisableTooltip": {
     "message": "Mababago ito sa \"Mga Setting > Mga Alerto\""
   },
@@ -140,12 +137,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Bayarin sa pag-apruba at aggregator network"
-  },
-  "approvalTxGasCost": {
-    "message": "Approval Tx Gas Cost"
   },
   "approve": {
     "message": "Aprubahan ang limitasyon sa paggastos"
@@ -673,10 +664,6 @@
   },
   "externalExtension": {
     "message": "External Extension"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 na pag-apruba sa gas",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Hindi matagumpay"
