@@ -4,8 +4,7 @@ import convertMsg from '../../../helpers/utils/format-message-params';
 import ErrorMessage from '../../ui/error-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
-
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import Header from './signature-request-header';
@@ -106,7 +105,7 @@ export default function SignatureRequestSIWE({
             <Checkbox
               id="domainWarning_checkbox"
               checked={agreeToDomainWarning}
-              className="checkbox color-red"
+              className="checkbox checkbox--error"
               onClick={() => setAgreeToDomainWarning((checked) => !checked)}
             />
             <label className="checkbox-label" htmlFor="domainWarning_checkbox">
