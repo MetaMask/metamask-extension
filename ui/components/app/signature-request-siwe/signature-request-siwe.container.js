@@ -1,43 +1,21 @@
 import { connect } from 'react-redux';
-import {
-  accountsWithSendEtherInfoSelector,
-  doesAddressRequireLedgerHidConnection,
-} from '../../../selectors';
-import { isAddressLedger } from '../../../ducks/metamask/metamask';
+import { accountsWithSendEtherInfoSelector } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import SignatureRequest from './signature-request-siwe.component';
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const {
     metamask: { subjectMetadata = {} },
   } = state;
 
-  const { txData } = ownProps;
-  const {
-    msgParams: { from },
-  } = txData;
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    from,
-  );
-  const isLedgerWallet = isAddressLedger(state, from);
-
   return {
     subjectMetadata,
-    isLedgerWallet,
-    hardwareWalletRequiresConnection,
-    // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const {
-    subjectMetadata,
-    allAccounts,
-    isLedgerWallet,
-    hardwareWalletRequiresConnection,
-  } = stateProps;
+  const { subjectMetadata, allAccounts } = stateProps;
   const { signPersonalMessage, cancelPersonalMessage, txData } = ownProps;
 
   const {
@@ -57,8 +35,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     cancel,
     sign,
     subjectMetadata: targetSubjectMetadata,
-    isLedgerWallet,
-    hardwareWalletRequiresConnection,
   };
 }
 

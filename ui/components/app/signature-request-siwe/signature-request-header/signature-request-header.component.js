@@ -24,7 +24,7 @@ export default function SIWERequestHeader({
         headerTitle={t('SIWESiteRequestTitle')}
         headerText={t('SIWESiteRequestSubtitle')}
         siteOrigin={domain}
-        className={!isSIWEDomainValid && 'bad-domain'}
+        className={isSIWEDomainValid ? '' : 'bad-domain'}
         rightIcon={
           !isSIWEDomainValid && (
             <Tooltip

@@ -28,14 +28,9 @@ export default {
         name: { control: 'text' },
       },
     },
-    isLedgerWallet: { control: 'boolean' },
-    clearConfirmTransaction: { action: 'Clean Confirm' },
     cancel: { action: 'Cancel' },
     sign: { action: 'Sign' },
     subjectMetadata: { control: 'object' },
-    hardwareWalletRequiresConnection: {
-      action: 'hardwareWalletRequiresConnection',
-    },
   },
 };
 
