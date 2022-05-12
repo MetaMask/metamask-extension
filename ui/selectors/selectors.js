@@ -376,11 +376,14 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getEnsResolutionByAddress(state, address) {
+  return state.metamask.ensResolutionsByAddress[address] || '';
+}
+
 export function getRecipientEnsName(state) {
   const recipientAddress = getSendTo(state);
   const checksummedAddress = toChecksumHexAddress(recipientAddress);
-  const recipientEns =
-    state.metamask.ensResolutionsByAddress[checksummedAddress] || '';
+  const recipientEns = getEnsResolutionByAddress(state, checksummedAddress);
   return recipientEns;
 }
 
