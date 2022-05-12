@@ -1,5 +1,3 @@
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
 import { SUPPORT_LINK } from '../constants/common';
 import { getErrorHtml } from './error-utils';
 
@@ -26,27 +24,15 @@ const defaultState = {
   },
 };
 
-const middleware = [thunk];
-const mockStore = (state = defaultState) => configureStore(middleware)(state);
-
-jest.mock('../..', () => ({
-  setupLocale: jest.fn(() => {
-    const { localeMessages } = defaultState;
-    return {
-      currentLocaleMessages: localeMessages.current,
-      enLocaleMessages: localeMessages.current,
-    };
-  }),
+jest.mock('./i18n-helper', () => ({
+  fetchLocale: jest.fn((_locale) => defaultState.localeMessages.current),
+  loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
 
 describe('Error utils Tests', () => {
   it('should get error html', async () => {
-    const store = mockStore();
-    const errorHtml = await getErrorHtml(
-      SUPPORT_LINK,
-      store.getState().metamask,
-    );
-    const currentLocale = store.getState().localeMessages.current;
+    const errorHtml = await getErrorHtml(SUPPORT_LINK, defaultState.metamask);
+    const currentLocale = defaultState.localeMessages.current;
     const troubleStartingMessage = currentLocale.troubleStarting.message;
     const restartMetamaskMessage = currentLocale.restartMetamask.message;
     const stillGettingMessageMessage =
