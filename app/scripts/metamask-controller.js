@@ -46,8 +46,10 @@ import {
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapController } from '@metamask/snap-controllers';
-import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
+import {
+  SnapController,
+  IframeExecutionService,
+} from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -637,7 +639,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.4',
+        'https://metamask.github.io/iframe-execution-environment/0.4.5',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -711,6 +713,9 @@ export default class MetamaskController extends EventEmitter {
           network: this.networkController,
           keyringMemStore: this.keyringController.memStore,
           tokenList: this.tokenListController,
+          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
         }))
       : (this.detectTokensController = new DetectTokensController({
           preferences: this.preferencesController,
@@ -1224,6 +1229,26 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapTerminated`,
+      (snapId) => {
+        const approvals = Object.values(
+          this.approvalController.state.pendingApprovals,
+        ).filter(
+          (approval) =>
+            approval.origin === snapId &&
+            approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
+        );
+        for (const approval of approvals) {
+          this.approvalController.reject(
+            approval.id,
+            new Error('Snap was terminated.'),
+          );
+        }
+      },
+    );
+
     ///: END:ONLY_INCLUDE_IN
   }
 

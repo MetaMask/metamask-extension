@@ -178,6 +178,8 @@
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
+ * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
+ * identify the token_detection_enabled trait
  */
 
 /**
@@ -197,6 +199,7 @@ export const TRAITS = {
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
   THEME: 'theme',
+  TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
 };
 
 /**
@@ -222,6 +225,7 @@ export const TRAITS = {
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
  *  enabled?
  * @property {string} [theme] - which theme the user has selected
+ * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -265,10 +269,15 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
-  SIGNATURE_REQUESTED: 'Signature Requested',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  TOKEN_ADDED: 'Token Added',
+  TOKEN_DETECTED: 'Token Detected',
+  TOKEN_HIDDEN: 'Token Hidden',
+  TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
+  TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
 
 export const EVENT = {
@@ -287,5 +296,26 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+  },
+  SOURCE: {
+    SWAPS: {
+      MAIN_VIEW: 'Main View',
+      TOKEN_VIEW: 'Token View',
+    },
+    TRANSACTION: {
+      USER: 'user',
+      DAPP: 'dapp',
+    },
+    TOKEN: {
+      CUSTOM: 'custom',
+      DETECTED: 'detected',
+      DAPP: 'dapp',
+      LIST: 'list',
+    },
+  },
+  LOCATION: {
+    TOKEN_DETECTION: 'token_detection',
+    TOKEN_MENU: 'token_menu',
+    TOKEN_DETAILS: 'token_details',
   },
 };
