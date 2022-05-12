@@ -48,7 +48,6 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
   SnapController,
-  SnapStatusEvent,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
