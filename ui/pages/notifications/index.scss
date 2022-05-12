@@ -56,6 +56,22 @@
     @media screen and (max-width: $break-small) {
       height: 100%;
     }
+
+    &__text {
+      @include H3;
+
+      color: var(--color-text-muted);
+      text-align: center;
+
+      @media screen and (max-width: $break-small) {
+        @include H6;
+      }
+    }
+  }
+
+  .empty {
+    justify-content: center;
+    align-items: center;
   }
 
   &__item {

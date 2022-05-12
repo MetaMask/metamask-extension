@@ -11,16 +11,18 @@ import {
 } from '../../store/actions';
 import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 import Button from '../../components/ui/button';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
 function NotificationItem({ notification, snaps, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
   const history = useHistory();
+  const t = useI18nContext();
 
   const snap = snaps.find(({ id: snapId }) => {
     return snapId === origin;
   });
 
-  const date = new Date(createdDate).toDateString();
+  const date = new Date(createdDate);
 
   const handleNameClick = (e) => {
     e.stopPropagation();
@@ -40,10 +42,15 @@ function NotificationItem({ notification, snaps, onItemClick }) {
       <div className="notifications__item__details">
         <p className="notifications__item__details__message">{message}</p>
         <p className="notifications__item__details__infos">
-          {date} from{' '}
-          <Button type="inline" onClick={handleNameClick}>
-            {snap.tabMessage()}
-          </Button>
+          {t('notificationsInfos', [
+            new Intl.DateTimeFormat('en-US', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            }).format(date),
+            <Button type="inline" onClick={handleNameClick} key="button">
+              {snap.tabMessage()}
+            </Button>,
+          ])}
         </p>
       </div>
     </div>
@@ -53,6 +60,7 @@ function NotificationItem({ notification, snaps, onItemClick }) {
 export default function Notifications() {
   const history = useHistory();
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const notifications = useSelector(getNotifications);
   const snapsRouteObject = useSelector(getSnapsRouteObjects);
 
@@ -85,7 +93,7 @@ export default function Notifications() {
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
           <div className="notifications__header__title-container__title">
-            Notifications
+            {t('notificationsHeader')}
           </div>
         </div>
         <Button
@@ -93,19 +101,29 @@ export default function Notifications() {
           className="notifications__header_button"
           onClick={markAllAsRead}
         >
-          Mark all as read
+          {t('notificationsMarkAllAsRead')}
         </Button>
       </div>
-
-      <div className="notifications__container">
-        {notifications.map((notification, id) => (
-          <NotificationItem
-            notification={notification}
-            snaps={snapsRouteObject}
-            key={id}
-            onItemClick={markAsRead}
-          />
-        ))}
+      <div
+        className={classnames(
+          'notifications__container',
+          notifications.length === 0 && 'empty',
+        )}
+      >
+        {notifications.length > 0 ? (
+          notifications.map((notification, id) => (
+            <NotificationItem
+              notification={notification}
+              snaps={snapsRouteObject}
+              key={id}
+              onItemClick={markAsRead}
+            />
+          ))
+        ) : (
+          <div className="notifications__container__text">
+            {t('notificationsEmptyText')}
+          </div>
+        )}
       </div>
     </div>
   );
