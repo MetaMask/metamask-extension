@@ -184,7 +184,7 @@ export default class SelectHardware extends Component {
       case DEVICE_NAMES.TREZOR:
         return this.renderTrezorTutorialSteps();
       case DEVICE_NAMES.WALLETCONNECT:
-        return this.renderTrezorTutorialSteps(); // todo
+        return this.renderWalletConnectTutorialSteps();
       case DEVICE_NAMES.LATTICE:
         return this.renderLatticeTutorialSteps();
       case DEVICE_NAMES.QR:
@@ -303,6 +303,46 @@ export default class SelectHardware extends Component {
             rel="noopener noreferrer"
             target="_blank"
             key="trezor-support-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderWalletConnectTutorialSteps() {
+    const steps = [
+      {
+        asset: 'plug-in-wallet',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1WalletConnectWallet'),
+        message: this.context.t('step1WalletConnectWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href="https://docs.walletconnect.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="walletconnect-support-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}
           </a>,

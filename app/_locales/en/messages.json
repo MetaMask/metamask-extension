@@ -3056,6 +3056,13 @@
     "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "step1WalletConnectWallet": {
+    "message": "Plug in your device"
+  },
+  "step1WalletConnectWalletMsg": {
+    "message": "Plug in your device and click on continue. Scan the QR code or copy the URL and provide it to the WalletConnect app to enable the connection. For more on using WalletConnect, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step2LedgerWallet": {
     "message": "Plug in Ledger wallet"
   },
