@@ -2,15 +2,27 @@
   &__header {
     border-bottom: 1px solid var(--color-border-default);
 
+    @media screen and (max-width: 575px) {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
     &__back-icon {
       margin-left: -8px;
       margin-right: 4px;
     }
   }
 
+  &__main-container {
+    @media screen and (max-width: 575px) {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  }
+
   &__list-of-networks {
     @media screen and (min-width: $break-large) {
-      width: 50%;
+      width: 75%;
     }
   }
 
@@ -44,6 +56,10 @@
     border-top: 1px solid var(--color-border-muted);
     width: 100%;
     padding-bottom: 8px;
+
+    @media screen and (max-width: 575px) {
+      padding-left: 24px !important;
+    }
 
     & .btn-link {
       display: initial;

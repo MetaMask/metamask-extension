@@ -154,6 +154,7 @@ const AddNetwork = () => {
                 ? [0, 6, 1, 6]
                 : [4, 0, 1, 0]
             }
+            className="add-network__main-container"
           >
             <Typography
               variant={TYPOGRAPHY.H6}
