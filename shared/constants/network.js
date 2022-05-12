@@ -236,6 +236,7 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'eth',
       showOnlyCurrencies: 'eth,usdt,usdc,dai',
     },
+    coinbasePayCurrencies: [ETH_SYMBOL, 'USDC', 'DAI'],
   },
   [ROPSTEN_CHAIN_ID]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[ROPSTEN],
@@ -279,6 +280,7 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'avax_cchain',
       showOnlyCurrencies: 'avax_cchain',
     },
+    coinbasePayCurrencies: [AVALANCHE_SYMBOL],
   },
   [FANTOM_CHAIN_ID]: {
     nativeCurrency: FANTOM_SYMBOL,
