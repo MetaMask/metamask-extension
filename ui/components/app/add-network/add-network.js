@@ -247,7 +247,7 @@ const AddNetwork = () => {
             padding={
               getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
                 ? [2, 0, 2, 6]
-                : [4, 0, 0, 0]
+                : [2, 0, 2, 0]
             }
             className="add-network__footer"
           >
