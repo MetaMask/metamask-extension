@@ -26,8 +26,8 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 start().catch(log.error);
 
 async function start() {
-  async function displayCriticalError(container, err, store) {
-    const html = await getErrorHtml(SUPPORT_LINK, store);
+  async function displayCriticalError(container, err, metamaskState) {
+    const html = await getErrorHtml(SUPPORT_LINK, metamaskState);
 
     container.innerHTML = html;
 
@@ -59,6 +59,7 @@ async function start() {
     const container = document.getElementById('app-content');
     initializeUi(tab, container, connectionStream, (err, store) => {
       if (err) {
+        // if there's an error, store will be = metamaskState
         displayCriticalError(container, err, store);
         return;
       }

@@ -29,10 +29,23 @@ const defaultState = {
 const middleware = [thunk];
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
 
+jest.mock('../..', () => ({
+  setupLocale: jest.fn(() => {
+    const { localeMessages } = defaultState;
+    return {
+      currentLocaleMessages: localeMessages.current,
+      enLocaleMessages: localeMessages.current,
+    };
+  }),
+}));
+
 describe('Error utils Tests', () => {
   it('should get error html', async () => {
     const store = mockStore();
-    const errorHtml = await getErrorHtml(SUPPORT_LINK, store);
+    const errorHtml = await getErrorHtml(
+      SUPPORT_LINK,
+      store.getState().metamask,
+    );
     const currentLocale = store.getState().localeMessages.current;
     const troubleStartingMessage = currentLocale.troubleStarting.message;
     const restartMetamaskMessage = currentLocale.restartMetamask.message;
