@@ -77,7 +77,10 @@ if (inTest || process.env.METAMASK_DEBUG) {
 
 let initialState;
 let initialLangCode;
-const initApp = (remotePort) => initialize(remotePort).catch(log.error);
+const initApp = (remotePort) => {
+  browser.runtime.onConnect.removeListener(initApp);
+  initialize(remotePort).catch(log.error);
+};
 
 if (process.env.ENABLE_MV3) {
   browser.runtime.onConnect.addListener(initApp);
@@ -323,10 +326,8 @@ async function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // connect to other contexts
   //
-  if (process.env.ENABLE_MV3) {
-    browser.runtime.onConnect.removeListener(initApp);
-  }
   browser.runtime.onConnect.addListener(connectRemote);
+
   browser.runtime.onConnectExternal.addListener(connectExternal);
 
   const isClientOpenStatus = () => {
