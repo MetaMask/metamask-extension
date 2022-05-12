@@ -1,65 +1,67 @@
-@import 'signature-request-header/index';
-@import 'signature-request-message/index';
+@import 'signature-request-siwe-header/index';
+@import 'signature-request-siwe-message/index';
 
 .signature-request-siwe {
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
+  flex: 1;
+  height: 100%;
+  width: 100%;
   min-width: 0;
+  background-color: var(--color-background-default);
+  overflow-y: auto;
+  margin-right: auto;
+  margin-left: auto;
 
   @media screen and (min-width: $break-large) {
-    flex: initial;
+    width: 408px;
+    max-height: 82vh;
+    min-height: 570px;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  &__domain-mismatch-warning {
+    padding: 4px 16px;
+  }
+
+  &__page-container-footer {
+    border: none !important;
+  }
+
+  &__popover {
+    &__footer {
+      padding: 0 !important;
+      display: block !important;
+
+      &__warning-footer {
+        border: none !important;
+        display: block !important;
+      }
+    }
+
+    &__checkbox-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      padding: 16px;
+
+      &__checkbox {
+        color: var(--color-error-default) !important;
+
+        &__label {
+          @include H7;
+
+          color: var(--color-text-default);
+          margin-left: 8px;
+          margin-top: 1px;
+          user-select: none;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
-
-
-.domain-mismatch-warning {
-  position: relative;
-  padding: 0.25rem 1rem;
-}
-
-.checkbox-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 16px;
-}
-
-.checkbox {
-  height: 13px;
-  width: 13px;
-  font-size: 16px;
-  color: var(--color-error-default);
-  cursor: pointer;
-
-  &--error {
-    color: var(--color-error-default) !important;
-  }
-}
-
-.checkbox-label {
-  @include H7;
-
-  color: var(--color-text-default);
-  margin-left: 8px;
-  margin-top: 1px;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  cursor: pointer;
-}
-
-
-.no-border {
-  border: none !important;
-}
-
-.popover-footer {
-  padding: inherit !important;
-}
-
-.warning-footer {
-  margin: inherit;
-  width: --webkit-fill-available;
-}
-

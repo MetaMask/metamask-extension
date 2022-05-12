@@ -7,8 +7,8 @@ import Checkbox from '../../ui/check-box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
-import Header from './signature-request-header';
-import Message from './signature-request-message';
+import Header from './signature-request-siwe-header';
+import Message from './signature-request-siwe-message';
 
 export default function SignatureRequestSIWE({
   txData: {
@@ -58,7 +58,7 @@ export default function SignatureRequestSIWE({
   };
 
   return (
-    <div className="signature-request-siwe page-container">
+    <div className="signature-request-siwe">
       <Header
         fromAccount={fromAccount}
         domain={messageData.domain}
@@ -67,14 +67,14 @@ export default function SignatureRequestSIWE({
       />
       <Message data={convertMsg(messageData)} />
       {!isSIWEDomainValid && (
-        <div className="domain-mismatch-warning">
+        <div className="signature-request-siwe__domain-mismatch-warning">
           <ErrorMessage
             errorMessage={t('SIWEDomainInvalid', [messageData.domain])}
           />
         </div>
       )}
       <PageContainerFooter
-        footerClassName="no-border"
+        footerClassName="signature-request-siwe__page-container-footer"
         onCancel={onCancel}
         onSubmit={
           isSIWEDomainValid ? onSign : () => setIsShowingDomainWarning(true)
@@ -87,10 +87,11 @@ export default function SignatureRequestSIWE({
           onClose={() => setIsShowingDomainWarning(false)}
           title={t('SIWEWarningTitle')}
           subtitle={t('SIWEWarningSubtitle')}
-          footerClassName="no-padding"
+          className="signature-request-siwe__popover"
+          footerClassName="signature-request-siwe__popover__footer"
           footer={
             <PageContainerFooter
-              footerClassName="warning-footer no-border"
+              footerClassName="signature-request-siwe__popover__footer__warning-footer"
               onCancel={() => setIsShowingDomainWarning(false)}
               cancelText={t('cancel')}
               cancelButtonType="default"
@@ -101,14 +102,17 @@ export default function SignatureRequestSIWE({
             />
           }
         >
-          <div className="checkbox-wrapper">
+          <div className="signature-request-siwe__popover__checkbox-wrapper">
             <Checkbox
               id="domainWarning_checkbox"
               checked={agreeToDomainWarning}
-              className="checkbox checkbox--error"
+              className="signature-request-siwe__popover__checkbox-wrapper__checkbox checkbox checkbox--error"
               onClick={() => setAgreeToDomainWarning((checked) => !checked)}
             />
-            <label className="checkbox-label" htmlFor="domainWarning_checkbox">
+            <label
+              className="signature-request-siwe__popover__checkbox-wrapper__checkbox__label"
+              htmlFor="domainWarning_checkbox"
+            >
               {t('SIWEWarningBody', [messageData.domain])}
             </label>
           </div>

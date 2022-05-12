@@ -11,8 +11,7 @@ export default function SiteOrigin({
   chip,
   className,
   title,
-  rightIcon = null,
-
+  rightIcon,
 }) {
   return (
     <div className={classnames('site-origin', className)} title={title}>

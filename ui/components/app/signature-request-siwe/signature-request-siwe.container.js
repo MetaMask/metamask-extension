@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { accountsWithSendEtherInfoSelector } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
-import SignatureRequest from './signature-request-siwe.component';
+import SignatureRequest from './signature-request-siwe';
 
 function mapStateToProps(state) {
   const {

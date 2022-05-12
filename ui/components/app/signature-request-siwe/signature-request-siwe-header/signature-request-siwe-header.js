@@ -8,7 +8,7 @@ import { SEVERITIES } from '../../../../helpers/constants/design-system';
 
 import PermissionsConnectHeader from '../../permissions-connect-header';
 
-export default function SIWERequestHeader({
+export default function SignatureRequestSIWEHeader({
   fromAccount,
   domain,
   isSIWEDomainValid,
@@ -17,7 +17,7 @@ export default function SIWERequestHeader({
   const t = useContext(I18nContext);
 
   return (
-    <div className="siwe-request-header">
+    <div className="signature-request-siwe-header">
       <PermissionsConnectHeader
         iconUrl={subjectMetadata.iconUrl}
         iconName={subjectMetadata.name}
@@ -30,24 +30,27 @@ export default function SIWERequestHeader({
             <Tooltip
               position="bottom"
               html={<p>{t('SIWEWarningBody', [domain])}</p>}
-              wrapperClassName="domain-warning__tooltip-wrapper"
-              containerClassName="domain-warning__tooltip-container"
+              wrapperClassName="signature-request-siwe-header__tooltip"
+              containerClassName="signature-request-siwe-header__tooltip__container"
             >
-              <div className="domain-warning__tooltip-container-icon">
-                <InfoIcon severity={SEVERITIES.DANGER} />
-              </div>
+              <InfoIcon severity={SEVERITIES.DANGER} />
             </Tooltip>
           )
         }
       />
-      <div className="siwe-request-header--account">
-        {fromAccount && <AccountListItem account={fromAccount} />}
+      <div className="signature-request-siwe-header__account">
+        {fromAccount && (
+          <AccountListItem
+            account={fromAccount}
+            className="signature-request-siwe-header__account__item"
+          />
+        )}
       </div>
     </div>
   );
 }
 
-SIWERequestHeader.propTypes = {
+SignatureRequestSIWEHeader.propTypes = {
   /**
    * The account that is requesting permissions
    */

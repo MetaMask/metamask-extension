@@ -1,0 +1,39 @@
+.signature-request-siwe-header {
+  display: flex;
+  padding: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  &__tooltip {
+    display: flex;
+
+    &__container {
+      display: flex !important;
+    }
+  }
+
+  &__account {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+
+    &__item.account-list-item {
+      &__top-row {
+        display: flex;
+        align-items: center;
+      }
+
+      &__account-name {
+        @include H5;
+
+        font-weight: 500;
+      }
+
+      &__top-row {
+        margin: 0;
+      }
+    }
+  }
+}

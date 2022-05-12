@@ -1,6 +1,6 @@
 import React from 'react';
 import testData from '../../../../../.storybook/test-data';
-import SignatureRequestHeader from '.';
+import SignatureRequestSIWEHeader from '.';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
 const subjectMetadata = {
@@ -10,7 +10,7 @@ const subjectMetadata = {
 };
 
 export default {
-  title: 'Components/App/SignInWithEthereum/SignatureRequestSIWEHeader',
+  title: 'Components/App/SignatureRequestSIWE/SignatureRequestSIWEHeader',
   id: __filename,
   argTypes: {
     fromAccount: {
@@ -25,7 +25,7 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <SignatureRequestHeader {...args} />;
+export const DefaultStory = (args) => <SignatureRequestSIWEHeader {...args} />;
 
 DefaultStory.storyName = 'Default';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
-import SignatureRequestSIWE from './signature-request-siwe.component';
+import SignatureRequestSIWE from './signature-request-siwe';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
 const subjectMetadata = {
@@ -11,7 +11,7 @@ const subjectMetadata = {
 };
 
 export default {
-  title: 'Components/App/SignInWithEthereum/SignatureRequestSIWE',
+  title: 'Components/App/SignatureRequestSIWE',
   id: __filename,
   component: SignatureRequestSIWE,
   parameters: {
@@ -32,10 +32,6 @@ export default {
     sign: { action: 'Sign' },
     subjectMetadata: { control: 'object' },
   },
-};
-
-export const DefaultStory = (args) => {
-  return <SignatureRequestSIWE {...args} />;
 };
 
 const msgParams = {
@@ -90,6 +86,10 @@ const badMsgParams = {
   },
 };
 
+export const DefaultStory = (args) => {
+  return <SignatureRequestSIWE {...args} />;
+};
+
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
@@ -100,13 +100,9 @@ DefaultStory.args = {
   subjectMetadata,
 };
 
-DefaultStory.storyName = 'Default';
-
 export const BadDomainStory = (args) => {
   return <SignatureRequestSIWE {...args} />;
 };
-
-BadDomainStory.storyName = 'BadDomain';
 
 BadDomainStory.args = {
   txData: {
@@ -115,5 +111,3 @@ BadDomainStory.args = {
   fromAccount: primaryIdentity,
   subjectMetadata,
 };
-
-BadDomainStory.storyName = 'BadDomain';
