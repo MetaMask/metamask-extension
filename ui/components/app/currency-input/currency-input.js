@@ -45,17 +45,10 @@ export default function CurrencyInput({
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
   const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
-
-  const shouldUseFiat = () => {
-    if (hideSecondary) {
-      return false;
-    }
-
-    return Boolean(shouldDisplayFiat);
-  };
+  const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
 
   const getDecimalValue = () => {
-    const decimalValueString = shouldUseFiat()
+    const decimalValueString = shouldUseFiat
       ? getValueFromWeiHex({
           value: hexValue,
           toCurrency: secondaryCurrency,
@@ -80,7 +73,7 @@ export default function CurrencyInput({
   };
 
   const handleChange = (newDecimalValue) => {
-    const hexValueNew = shouldUseFiat()
+    const hexValueNew = shouldUseFiat
       ? getWeiHexFromDecimalValue({
           value: newDecimalValue,
           fromCurrency: secondaryCurrency,
@@ -121,7 +114,7 @@ export default function CurrencyInput({
       );
     }
 
-    if (shouldUseFiat()) {
+    if (shouldUseFiat) {
       // Display ETH
       currency = preferredCurrency || ETH;
       numberOfDecimals = 8;
@@ -153,7 +146,7 @@ export default function CurrencyInput({
         onChange,
         onPreferenceToggle,
       }}
-      suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
+      suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
       onChange={handleChange}
       value={initialDecimalValue}
       actionComponent={
