@@ -94,11 +94,9 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {process.env.TOKEN_DETECTION_V2
-        ? detectedTokens.length > 0 && (
-            <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
-          )
-        : null}
+      {detectedTokens.length > 0 && (
+        <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
+      )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography

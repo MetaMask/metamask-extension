@@ -9,20 +9,17 @@ import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { getIsMainnet, getIsTokenDetectionSupported } from '../../../selectors';
+import { getIsTokenDetectionSupported } from '../../../selectors';
 
 export default function ImportTokenLink() {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
 
-  const isMainnet = useSelector(getIsMainnet);
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
 
   const isTokenDetectionsupported =
-    isMainnet ||
-    (process.env.TOKEN_DETECTION_V2 && isTokenDetectionSupported) ||
-    Boolean(process.env.IN_TEST);
+    isTokenDetectionSupported || Boolean(process.env.IN_TEST);
 
   return (
     <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
