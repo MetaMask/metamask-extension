@@ -1672,7 +1672,7 @@ describe('Send Slice', () => {
         expect(actionResultAfterDebounce[2].payload).toStrictEqual({
           chainId: '',
           tokens: [],
-          useTokenDetection: true,
+          // useTokenDetection: true,
           userInput: newUserRecipientInput,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });

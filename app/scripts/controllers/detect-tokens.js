@@ -129,18 +129,14 @@ export default class DetectTokensController {
         return;
       }
 
-      let tokensWithBalance = [];
+      const tokensWithBalance = [];
       if (result) {
         const eventTokensDetails = [];
         const nonZeroTokenAddresses = Object.keys(result);
         for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
-          const {
-            address,
-            symbol,
-            decimals,
-            iconUrl,
-            aggregators,
-          } = tokenList[nonZeroTokenAddress];
+          const { address, symbol, decimals, iconUrl, aggregators } = tokenList[
+            nonZeroTokenAddress
+          ];
 
           eventTokensDetails.push(`${symbol} - ${address}`);
 
