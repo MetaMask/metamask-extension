@@ -182,6 +182,8 @@ export const getPermissionSpecifications = ({
         }
         return walletLocale;
       },
+
+      validator: () => {},
     },
   };
 };
