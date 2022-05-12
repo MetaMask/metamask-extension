@@ -11266,7 +11266,7 @@ eth-json-rpc-middleware@^8.0.0:
     node-fetch "^2.6.7"
     pify "^3.0.0"
 
-eth-keyring-controller@^6.2.0, eth-keyring-controller@^6.2.1:
+eth-keyring-controller@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.2.1.tgz#61901071fc74059ed37cb5ae93870fdcae6e3781"
   integrity sha512-x2gTM1iHp2Kbvdtd9Eslysw0qzVZiqOzpVB3AU/ni2Xiit+rlcv2H80zYKjrEwlfWFDj4YILD3bOqlnEMmRJOA==

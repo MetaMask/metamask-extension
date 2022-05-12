@@ -156,7 +156,7 @@
     "eth-json-rpc-filters": "^4.2.1",
     "eth-json-rpc-infura": "^5.1.0",
     "eth-json-rpc-middleware": "^8.0.0",
-    "eth-keyring-controller": "^6.2.0",
+    "eth-keyring-controller": "^7.0.2",
     "eth-lattice-keyring": "^0.7.3",
     "eth-method-registry": "^2.0.0",
     "eth-query": "^2.1.2",
