@@ -3766,7 +3766,7 @@ export default class MetamaskController extends EventEmitter {
    * Handle global application lock.
    * Notifies all connections that the extension is locked.
    */
-  async _onLock() {
+  _onLock() {
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.unlockStateChanged,
       params: {
@@ -4125,9 +4125,8 @@ export default class MetamaskController extends EventEmitter {
     const [ledgerKeyring] = this.keyringController.getKeyringsByType(
       KEYRING_TYPES.LEDGER,
     );
-    if (ledgerKeyring?.destroy) {
-      ledgerKeyring.destroy();
-    }
+    ledgerKeyring?.destroy?.();
+
     return this.keyringController.setLocked();
   }
 }
