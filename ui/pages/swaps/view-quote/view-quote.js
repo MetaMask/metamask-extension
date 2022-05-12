@@ -19,7 +19,6 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FeeCard from '../fee-card';
-import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
 import {
   FALLBACK_GAS_MULTIPLIER,
   getQuotes,
@@ -89,16 +88,12 @@ import {
 } from '../../../helpers/utils/token-util';
 import {
   decimalToHex,
-  hexToDecimal,
-  getValueFromWeiHex,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import AdvancedGasFeePopover from '../../../components/app/advanced-gas-fee-popover';
-import EditGasFeePopover from '../../../components/app/edit-gas-fee-popover';
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
@@ -137,7 +132,6 @@ export default function ViewQuote() {
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
-  const [showEditGasPopover, setShowEditGasPopover] = useState(false);
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
 
@@ -391,7 +385,6 @@ export default function ViewQuote() {
     rawEthFee: maxRawEthFee,
     feeInUsd: maxFeeInUsd,
   } = renderableMaxFees;
-  const { nonGasFee } = renderableMaxFees;
   additionalTrackingParams.reg_tx_max_fee_in_usd = Number(maxFeeInUsd);
   additionalTrackingParams.reg_tx_max_fee_in_eth = Number(maxRawEthFee);
 
@@ -678,53 +671,6 @@ export default function ViewQuote() {
     );
   };
 
-  const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0);
-  const approveGasTotal = calcGasTotal(
-    approveGas || '0x0',
-    networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
-  );
-  const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
-    .plus(approveGasTotal, 16)
-    .toString(16);
-  const extraNetworkFeeTotalInEth = getValueFromWeiHex({
-    value: extraNetworkFeeTotalInHexWEI,
-    toDenomination: 'ETH',
-    numberOfDecimals: 4,
-  });
-
-  let extraInfoRowLabel = '';
-  if (approveGas && nonGasFeeIsPositive) {
-    extraInfoRowLabel = t('approvalAndAggregatorTxFeeCost');
-  } else if (approveGas) {
-    extraInfoRowLabel = t('approvalTxGasCost');
-  } else if (nonGasFeeIsPositive) {
-    extraInfoRowLabel = t('aggregatorFeeCost');
-  }
-
-  const onFeeCardMaxRowClick = () => {
-    networkAndAccountSupports1559
-      ? setShowEditGasPopover(true)
-      : dispatch(
-          showModal({
-            name: 'CUSTOMIZE_METASWAP_GAS',
-            value: tradeValue,
-            customGasLimitMessage: approveGas
-              ? t('extraApprovalGas', [hexToDecimal(approveGas)])
-              : '',
-            customTotalSupplement: approveGasTotal,
-            extraInfoRow: extraInfoRowLabel
-              ? {
-                  label: extraInfoRowLabel,
-                  value: `${extraNetworkFeeTotalInEth} ${nativeCurrencySymbol}`,
-                }
-              : null,
-            initialGasPrice: gasPrice,
-            initialGasLimit: maxGasLimit,
-            minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
-          }),
-        );
-  };
-
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
@@ -863,10 +809,6 @@ export default function ViewQuote() {
     isSwapButtonDisabled,
   ]);
 
-  const onCloseEditGasPopover = () => {
-    setShowEditGasPopover(false);
-  };
-
   useEffect(() => {
     // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
@@ -926,25 +868,6 @@ export default function ViewQuote() {
                   smartTransactionsEnabled && smartTransactionsOptInStatus
                 }
               />
-            )}
-
-            {!supportsEIP1559V2 &&
-              showEditGasPopover &&
-              networkAndAccountSupports1559 && (
-                <EditGasPopover
-                  transaction={transaction}
-                  minimumGasLimit={usedGasLimit}
-                  defaultEstimateToUse={GAS_RECOMMENDATIONS.HIGH}
-                  mode={EDIT_GAS_MODES.SWAPS}
-                  confirmButtonText={t('submit')}
-                  onClose={onCloseEditGasPopover}
-                />
-              )}
-            {supportsEIP1559V2 && (
-              <>
-                <EditGasFeePopover />
-                <AdvancedGasFeePopover />
-              </>
             )}
 
             <div
@@ -1008,7 +931,6 @@ export default function ViewQuote() {
                     fee: feeInFiat,
                     maxFee: maxFeeInFiat,
                   }}
-                  onFeeCardMaxRowClick={onFeeCardMaxRowClick}
                   hideTokenApprovalRow={
                     !approveTxParams || (balanceError && !warningHidden)
                   }
