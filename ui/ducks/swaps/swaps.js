@@ -445,13 +445,14 @@ export const getSmartTransactionEstimatedGas = (state) => {
   return state.metamask.smartTransactionsState?.estimatedGas;
 };
 
-export const getSwapsRefreshStates = (state) => {
+export const getSwapsNetworkConfig = (state) => {
   const {
     swapsQuoteRefreshTime,
     swapsQuotePrefetchingRefreshTime,
     swapsStxGetTransactionsRefreshTime,
     swapsStxBatchStatusRefreshTime,
     swapsStxStatusDeadline,
+    swapsStxMaxFeeMultiplier,
   } = state.metamask.swapsState;
   return {
     quoteRefreshTime: swapsQuoteRefreshTime,
@@ -459,6 +460,7 @@ export const getSwapsRefreshStates = (state) => {
     stxGetTransactionsRefreshTime: swapsStxGetTransactionsRefreshTime,
     stxBatchStatusRefreshTime: swapsStxBatchStatusRefreshTime,
     stxStatusDeadline: swapsStxStatusDeadline,
+    stxMaxFeeMultiplier: swapsStxMaxFeeMultiplier,
   };
 };
 
@@ -855,12 +857,12 @@ export const signAndSendSwapsSmartTransaction = ({
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
-    const swapsRefreshStates = getSwapsRefreshStates(state);
+    const swapsNetworkConfig = getSwapsNetworkConfig(state);
     const chainId = getCurrentChainId(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsRefreshStates?.stxBatchStatusRefreshTime,
+        swapsNetworkConfig?.stxBatchStatusRefreshTime,
       ),
     );
 

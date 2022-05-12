@@ -991,9 +991,9 @@ export function enableSnap(snapId) {
   };
 }
 
-export function removeSnap(snap) {
+export function removeSnap(snapId) {
   return async (dispatch) => {
-    await promisifiedBackground.removeSnap(snap);
+    await promisifiedBackground.removeSnap(snapId);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2956,6 +2956,13 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   return {
     type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
     value: newCollectibleAddedMessage,
+  };
+}
+
+export function setNewTokensImported(newTokensImported) {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED,
+    value: newTokensImported,
   };
 }
 

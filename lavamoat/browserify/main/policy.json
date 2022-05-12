@@ -3103,11 +3103,6 @@
         "URL": true
       }
     },
-    "@metamask/iframe-execution-environment-service>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -3431,6 +3426,9 @@
         "console.info": true,
         "console.log": true,
         "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
         "fetch": true,
         "setTimeout": true
       },

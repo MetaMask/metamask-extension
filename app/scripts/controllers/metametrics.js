@@ -571,6 +571,7 @@ export default class MetaMetricsController {
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.THEME]: metamaskState.theme || 'default',
+      [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
     if (!this.previousTraits) {

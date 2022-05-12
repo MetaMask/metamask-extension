@@ -5503,11 +5503,9 @@
         "fs.statSync": true,
         "path.dirname": true,
         "path.join": true,
-        "path.relative": true,
-        "path.resolve": true
+        "path.relative": true
       },
       "globals": {
-        "console.error": true,
         "performantResolve": true
       },
       "packages": {
@@ -5529,10 +5527,9 @@
       },
       "globals": {
         "__dirname": true,
+        "console.error": true,
         "console.warn": true,
-        "define": true,
-        "packages": true,
-        "resources": true
+        "define": true
       },
       "packages": {
         "lavamoat>json-stable-stringify": true,
