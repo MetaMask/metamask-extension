@@ -7,7 +7,7 @@ import { KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
 
 export default function HardwareConnectivityMessage({
   connected = false,
-  onClick = undefined,
+  onClick,
 }) {
   const t = useI18nContext();
 

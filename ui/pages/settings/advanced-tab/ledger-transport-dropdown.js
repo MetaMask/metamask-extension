@@ -84,7 +84,7 @@ export default function LedgerTransportDropdown() {
       <div className="settings-page__content-item">
         <div className="settings-page__content-item-col">
           <Dropdown
-            id="select-ledger-transport-type"
+            id="ledger-transport-dropdown"
             options={transportTypeOptions}
             selectedOption={ledgerTransportType}
             onChange={async (transportType) => {

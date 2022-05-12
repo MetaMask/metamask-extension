@@ -11,6 +11,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
+import { KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
 
 export default function HardwareConnectivityContent({
   deviceName,
@@ -21,7 +22,7 @@ export default function HardwareConnectivityContent({
   const t = useI18nContext();
 
   switch (deviceName) {
-    case 'Ledger':
+    case KEYRING_NAMES.LEDGER:
       return (
         <div className="hardware-connectivity-content">
           <div className="hardware-connectivity-content__close">

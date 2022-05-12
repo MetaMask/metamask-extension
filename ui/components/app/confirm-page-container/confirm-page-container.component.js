@@ -99,8 +99,8 @@ export default class ConfirmPageContainer extends Component {
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
     // Hardware
-    showingHardwareConnectionContents: PropTypes.bool,
-    showingHardwareConnectionAdvancedPopover: PropTypes.bool,
+    showHardwareareConnectionContents: PropTypes.bool,
+    showHardwareareConnectionAdvancedPopover: PropTypes.bool,
     closeHardwareConnectionAdvancedPopover: PropTypes.func,
   };
 
@@ -158,8 +158,8 @@ export default class ConfirmPageContainer extends Component {
       showBuyModal,
       isBuyableChain,
       networkIdentifier,
-      showingHardwareConnectionContents,
-      showingHardwareConnectionAdvancedPopover,
+      showHardwareareConnectionContents,
+      showHardwareareConnectionAdvancedPopover,
       closeHardwareConnectionAdvancedPopover,
     } = this.props;
 
@@ -270,7 +270,7 @@ export default class ConfirmPageContainer extends Component {
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
               hideConfirmPageContainerSummaryAndButtons={
-                showingHardwareConnectionContents
+                showHardwareareConnectionContents
               }
             />
           )}
@@ -341,7 +341,7 @@ export default class ConfirmPageContainer extends Component {
               <AdvancedGasFeePopover />
             </>
           )}
-          {showingHardwareConnectionAdvancedPopover ? (
+          {showHardwareareConnectionAdvancedPopover ? (
             <HardwareConnectivityPopover
               onClose={closeHardwareConnectionAdvancedPopover}
             />
