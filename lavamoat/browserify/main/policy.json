@@ -2750,7 +2750,8 @@
       "globals": {
         "clearInterval": true,
         "setInterval": true,
-        "setTimeout": true
+        "setTimeout": true,
+        "removeEventListener": true
       },
       "packages": {
         "events": true
