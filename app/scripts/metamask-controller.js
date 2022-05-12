@@ -638,7 +638,6 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.workerController = new IframeExecutionService({
-      onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/0.4.5',
       ),
@@ -3378,17 +3377,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  /**
-   * For snaps running in workers.
-   *
-   * @param snapId
-   * @param error
-   */
-  onExecutionEnvironmentError(snapId, error) {
-    this.snapController.stopSnap(snapId, SnapStatusEvent.crash);
-    this.snapController.addSnapError(error);
-  }
-
   /**
    * For snaps running in workers.
    *
