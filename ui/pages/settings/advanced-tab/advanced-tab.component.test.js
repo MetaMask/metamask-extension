@@ -3,11 +3,9 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
+import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 import LedgerTransportDropdown from './ledger-transport-dropdown';
 import AdvancedTab from './advanced-tab.component';
-import {
-  LEDGER_TRANSPORT_TYPES,
-} from '../../../../shared/constants/hardware-wallets';
 
 describe('AdvancedTab Component', () => {
   let component;

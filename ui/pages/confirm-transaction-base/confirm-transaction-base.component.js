@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
-import { KEYRING_NAMES, DEVICE_NAMES } from '../../../shared/constants/hardware-wallets';
+import {
+  KEYRING_NAMES,
+  DEVICE_NAMES,
+} from '../../../shared/constants/hardware-wallets';
 import {
   addHexes,
   hexToDecimal,
@@ -199,7 +202,6 @@ export default class ConfirmTransactionBase extends Component {
         ? false
         : showHardwareareConnectionContents,
     });
-    return;
   }
 
   UNSAFE_componentWillMount() {

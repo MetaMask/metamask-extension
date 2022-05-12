@@ -48,6 +48,8 @@ export default class AdvancedTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
+    useTokenDetection: PropTypes.bool.isRequired,
+    setUseTokenDetection: PropTypes.func.isRequired,
   };
 
   state = {

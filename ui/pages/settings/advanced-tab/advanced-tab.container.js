@@ -52,6 +52,7 @@ export const mapStateToProps = (state) => {
     ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    useTokenDetection,
   };
 };
 
