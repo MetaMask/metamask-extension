@@ -46,7 +46,7 @@ import {
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapController } from '@metamask/snap-controllers';
+import { SnapController, SnapStatusEvent } from '@metamask/snap-controllers';
 import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
 ///: END:ONLY_INCLUDE_IN
 
@@ -3359,7 +3359,7 @@ export default class MetamaskController extends EventEmitter {
    * @param error
    */
   onExecutionEnvironmentError(snapId, error) {
-    this.snapController.stopPlugin(snapId);
+    this.snapController.stopSnap(snapId, SnapStatusEvent.crash);
     this.snapController.addSnapError(error);
   }
 
