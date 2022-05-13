@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
-import LedgerTransportDropdown from '../../settings/advanced-tab/ledger-transport-dropdown';
+import LedgerTransportDropdown from '../../../components/app/ledger-transport-dropdown';
 
 export default function HardwareConnectivityPopover({ onClose }) {
   const t = useI18nContext();

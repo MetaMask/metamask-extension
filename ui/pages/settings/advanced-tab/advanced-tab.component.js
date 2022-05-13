@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import { EVENT } from '../../../../shared/constants/metametrics';
-import LedgerTransportDropdown from './ledger-transport-dropdown';
+import LedgerTransportDropdown from '../../../components/app/ledger-transport-dropdown';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {

@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
 import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
-import LedgerTransportDropdown from './ledger-transport-dropdown';
+import LedgerTransportDropdown from '../../../components/app/ledger-transport-dropdown';
 import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
