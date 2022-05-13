@@ -9,8 +9,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import {
+  ETH_SYMBOL,
   MAINNET_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  TEST_ETH_SYMBOL,
 } from '../../../shared/constants/network';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
@@ -673,8 +675,9 @@ describe('MetaMetricsController', function () {
         },
         allTokens: MOCK_ALL_TOKENS,
         frequentRpcListDetail: [
-          { chainId: MAINNET_CHAIN_ID },
-          { chainId: ROPSTEN_CHAIN_ID },
+          { chainId: MAINNET_CHAIN_ID, ticker: ETH_SYMBOL },
+          { chainId: ROPSTEN_CHAIN_ID, ticker: TEST_ETH_SYMBOL },
+          { chainId: '0xaf' },
         ],
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
@@ -688,7 +691,8 @@ describe('MetaMetricsController', function () {
       assert.deepEqual(traits, {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
-        [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
+        [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID, '0xaf'],
+        [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,

@@ -164,6 +164,9 @@
  *  trait
  * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
  *  we identify the networks_added trait
+ * @property {'networks_without_ticker'} NETWORKS_WITHOUT_TICKER - when user
+ *  modifies networks we identify the networks_without_ticker trait for
+ *  networks without a ticker.
  * @property {'nft_autodetection_enabled'} NFT_AUTODETECTION_ENABLED - when Autodetect NFTs
  * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
@@ -191,6 +194,7 @@ export const TRAITS = {
   ADDRESS_BOOK_ENTRIES: 'address_book_entries',
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   NETWORKS_ADDED: 'networks_added',
+  NETWORKS_WITHOUT_TICKER: 'networks_without_ticker',
   NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
@@ -210,6 +214,9 @@ export const TRAITS = {
  *  type of ledger connection set by user preference.
  * @property {Array<string>} [networks_added] - An array consisting of chainIds
  *  that indicate the networks a user has added to their MetaMask.
+ * @property {Array<string>} [networks_without_ticker] - An array consisting of
+ *  chainIds that indicate the networks added by the user that do not have a
+ *  ticker.
  * @property {number} [nft_autodetection_enabled] - does the user have the
  * use collection/nft detection enabled?
  * @property {number} [number_of_accounts] - A number representing the number
