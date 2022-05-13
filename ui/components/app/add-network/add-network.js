@@ -151,7 +151,7 @@ const AddNetwork = () => {
           <Box
             margin={
               getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                ? [0, 6, 1, 6]
+                ? [0, 0, 1, 0]
                 : [4, 0, 1, 0]
             }
             className="add-network__main-container"
