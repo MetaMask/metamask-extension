@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Dialog from '../../../components/ui/dialog';
-import Button from '../../../components/ui/button';
-import Dropdown from '../../../components/ui/dropdown/dropdown';
+import Dialog from '../../ui/dialog';
+import Button from '../../ui/button';
+import Dropdown from '../../ui/dropdown/dropdown';
 
 import {
   LEDGER_TRANSPORT_TYPES,
