@@ -4,10 +4,10 @@ import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import SiteOrigin from '../../ui/site-origin';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import SiteOrigin from '../../ui/site-origin';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
