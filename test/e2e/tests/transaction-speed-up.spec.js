@@ -4,7 +4,6 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 describe('Speed up transaction', function () {
   it('can speed up a transaction', async function () {
     const ganacheOptions = {
-      blockTime: 30,
       accounts: [
         {
           secretKey:
@@ -14,11 +13,18 @@ describe('Speed up transaction', function () {
       ],
     };
     await withFixtures(
-      { fixtures: 'imported-account', ganacheOptions, title: this.test.title },
-      async ({ driver }) => {
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver, _, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        // Stop the CPU mining operation
+        await ganacheServer.call('miner_stop');
         // Send transaction
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
@@ -52,10 +58,12 @@ describe('Speed up transaction', function () {
           text: '0.000189 ETH',
         });
         await driver.clickElement({ text: 'Save', tag: 'button' });
+        // Force a single block to be mined.
+        await driver.delay(2000);
+        await ganacheServer.call('evm_mine');
         // Verify transaction in activity log
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item',
-          { timeout: 30000 },
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -87,7 +95,6 @@ describe('Speed up transaction', function () {
 
   it('can speed up a transaction - EIP1559', async function () {
     const ganacheOptions = {
-      blockTime: 30,
       hardfork: 'london',
       accounts: [
         {
@@ -98,11 +105,18 @@ describe('Speed up transaction', function () {
       ],
     };
     await withFixtures(
-      { fixtures: 'imported-account', ganacheOptions, title: this.test.title },
-      async ({ driver }) => {
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver, _, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        // Stop the CPU mining operation
+        await ganacheServer.call('miner_stop');
         // Send transaction
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
@@ -133,10 +147,12 @@ describe('Speed up transaction', function () {
           text: '0.00045033 ETH',
         });
         await driver.clickElement({ text: 'Save', tag: 'button' });
+        // Force a single block to be mined.
+        await driver.delay(2000);
+        await ganacheServer.call('evm_mine');
         // Verify transaction in activity log
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item',
-          { timeout: 30000 },
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
