@@ -1158,6 +1158,25 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
   }
+
+  /**
+   * Deletes the specified notifications from state.
+   *
+   * @param {string[]} ids - The notifications ids to delete.
+   */
+  dismissNotifications(ids) {
+    this.notificationController.dismiss(ids);
+  }
+
+  /**
+   * Updates the readDate attribute of the specified notifications.
+   *
+   * @param {string[]} ids - The notifications ids to mark as read.
+   */
+  markNotificationsAsRead(ids) {
+    this.notificationController.markRead(ids);
+  }
+
   ///: END:ONLY_INCLUDE_IN
 
   /**
@@ -4166,26 +4185,4 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.setLocked();
   }
-<<<<<<< HEAD
-=======
-
-  /**
-   * Deletes the specified notifications from state.
-   *
-   * @param {string[]} ids - The notifications ids to delete.
-   */
-  dismissNotifications(ids) {
-    this.notificationController.dismiss(ids);
-  }
-
-  /**
-   * Updates the readDate attribute of the specified notifications.
-   *
-   * @param {string[]} ids - The notifications ids to mark as read.
-   */
-  markNotificationsAsRead(ids) {
-    this.notificationController.markRead(ids);
-  }
-  ///: END:ONLY_INCLUDE_IN
->>>>>>> create selectors and actions
 }
