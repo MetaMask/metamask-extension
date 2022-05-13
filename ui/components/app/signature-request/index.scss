@@ -68,6 +68,8 @@
 
   &__info {
     @include H7;
+    max-width: 90%;
+    padding-bottom: 4px;
   }
 
   &__info--bolded {

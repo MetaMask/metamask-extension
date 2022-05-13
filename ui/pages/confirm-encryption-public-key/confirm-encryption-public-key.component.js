@@ -7,6 +7,7 @@ import Identicon from '../../components/ui/identicon';
 
 import { EVENT } from '../../../shared/constants/metametrics';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import SiteOrigin from '../../components/ui/site-origin';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -118,7 +119,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { t } = this.context;
 
     const targetSubjectMetadata = subjectMetadata[txData.origin];
-    const notice = t('encryptionPublicKeyNotice', [txData.origin]);
+    const notice = t('encryptionPublicKeyNotice');
     const name = targetSubjectMetadata?.hostname || txData.origin;
 
     return (
@@ -138,6 +139,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
               </i>
             )}
             <div className="request-encryption-public-key__notice">
+              <SiteOrigin siteOrigin={txData.origin} />
               {notice}
             </div>
           </section>

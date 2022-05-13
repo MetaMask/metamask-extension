@@ -27,6 +27,7 @@ import NetworkDisplay from '../../components/app/network-display/network-display
 import Callout from '../../components/ui/callout';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
+import SiteOrigin from '../../components/ui/site-origin';
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -208,9 +209,10 @@ export default function ConfirmationPage() {
             name={originMetadata.hostname}
             size={36}
           />
-          <Chip
-            label={stripHttpsScheme(originMetadata.origin)}
-            borderColor={COLORS.BORDER_DEFAULT}
+          <SiteOrigin
+            chip
+            siteOrigin={stripHttpsScheme(originMetadata.origin)}
+            title={stripHttpsScheme(originMetadata.origin)}
           />
         </Box>
         <MetaMaskTemplateRenderer sections={templatedValues.content} />

@@ -7,6 +7,7 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
+import SiteOrigin from '../../ui/site-origin';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -124,7 +125,10 @@ export default class SignatureRequest extends PureComponent {
           <div className="signature-request-content__info--bolded">
             {domain.name}
           </div>
-          <div className="signature-request-content__info">{origin}</div>
+          <SiteOrigin
+            className="signature-request-content__info"
+            siteOrigin={origin}
+          />
           <div className="signature-request-content__info">
             {this.formatWallet(fromAddress)}
           </div>
