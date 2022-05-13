@@ -682,6 +682,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       assert.deepEqual(traits, {
@@ -691,10 +692,12 @@ describe('MetaMetricsController', function () {
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
+        [TRAITS.NUMBER_OF_NFTS]: 4,
         [TRAITS.NUMBER_OF_TOKENS]: 5,
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
+        [TRAITS.TOKEN_DETECTION_ENABLED]: true,
       });
     });
 
@@ -716,6 +719,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -736,6 +740,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -764,6 +769,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -782,6 +788,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       assert.equal(updatedTraits, null);

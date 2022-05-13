@@ -19,7 +19,7 @@
       "type": "0x2"
     },
     "origin": "metamask",
-    "type": "sentEther",
+    "type": "simpleSend",
     "history": [
       {
         "id": 6854191329910881,
@@ -39,7 +39,7 @@
           "type": "0x2"
         },
         "origin": "metamask",
-        "type": "sentEther"
+        "type": "simpleSend"
       },
       [
         {
@@ -95,7 +95,7 @@
       "type": "0x2"
     },
     "origin": "metamask",
-    "type": "sentEther",
+    "type": "simpleSend",
     "history": [
       {
         "id": 6854191329910881,
@@ -115,7 +115,7 @@
           "type": "0x2"
         },
         "origin": "metamask",
-        "type": "sentEther"
+        "type": "simpleSend"
       },
       [
         {
@@ -172,7 +172,7 @@
         "type": "0x2"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "history": [
         {
           "id": 6854191329910881,
@@ -192,7 +192,7 @@
             "type": "0x2"
           },
           "origin": "metamask",
-          "type": "sentEther"
+          "type": "simpleSend"
         },
         [
           {

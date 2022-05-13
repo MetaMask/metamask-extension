@@ -1,4 +1,4 @@
-import { EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
 const USER_PROMPTED_EVENT_NAME_MAP = {
@@ -46,7 +46,7 @@ export default function createRPCMethodTrackingMiddleware({
         const userRejected = res.error?.code === 4001;
         trackEvent({
           event: USER_PROMPTED_EVENT_NAME_MAP[req.method],
-          category: 'inpage_provider',
+          category: EVENT.CATEGORIES.INPAGE_PROVIDER,
           referrer: {
             url: origin,
           },
@@ -62,7 +62,7 @@ export default function createRPCMethodTrackingMiddleware({
       } else if (typeof samplingTimeouts[req.method] === 'undefined') {
         trackEvent({
           event: 'Provider Method Called',
-          category: 'inpage_provider',
+          category: EVENT.CATEGORIES.INPAGE_PROVIDER,
           referrer: {
             url: origin,
           },

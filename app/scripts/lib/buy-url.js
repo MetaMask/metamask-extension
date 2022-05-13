@@ -12,7 +12,11 @@ import {
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { TRANSAK_API_KEY, MOONPAY_API_KEY } from '../constants/on-ramp';
+import {
+  TRANSAK_API_KEY,
+  MOONPAY_API_KEY,
+  COINBASEPAY_API_KEY,
+} from '../constants/on-ramp';
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
@@ -109,6 +113,28 @@ const createMoonPayUrl = async (walletAddress, chainId) => {
 };
 
 /**
+ * Create a Coinbase Pay Checkout URL.
+ *
+ * @param {string} walletAddress - Ethereum destination address
+ * @param {string} chainId - Current chain ID
+ * @returns String
+ */
+const createCoinbasePayUrl = (walletAddress, chainId) => {
+  const { coinbasePayCurrencies } = BUYABLE_CHAINS_MAP[chainId];
+  const queryParams = new URLSearchParams({
+    appId: COINBASEPAY_API_KEY,
+    attribution: 'extension',
+    destinationWallets: JSON.stringify([
+      {
+        address: walletAddress,
+        assets: coinbasePayCurrencies,
+      },
+    ]),
+  });
+  return `https://pay.coinbase.com/buy?${queryParams}`;
+};
+
+/**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
  * @param {Object} opts - Options required to determine the correct url
@@ -132,6 +158,8 @@ export default async function getBuyUrl({ chainId, address, service }) {
       return createTransakUrl(address, chainId);
     case 'moonpay':
       return createMoonPayUrl(address, chainId);
+    case 'coinbase':
+      return createCoinbasePayUrl(address, chainId);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'rinkeby-faucet':

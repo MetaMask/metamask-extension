@@ -6,6 +6,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import Identicon from '../../ui/identicon';
 import AccountListItem from '../account-list-item';
@@ -223,11 +224,11 @@ export default class SignatureRequestOriginal extends Component {
               onClick={() => {
                 global.platform.openTab({
                   url:
-                    'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
+                    'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
                 });
               }}
             >
-              {this.context.t('learnMore')}
+              {this.context.t('learnMoreUpperCase')}
             </span>
           ) : null}
         </div>
@@ -273,7 +274,7 @@ export default class SignatureRequestOriginal extends Component {
           onClick={async (event) => {
             await cancel(event);
             trackEvent({
-              category: 'Transactions',
+              category: EVENT.CATEGORIES.TRANSACTIONS,
               event: 'Cancel',
               properties: {
                 action: 'Sign Request',
@@ -296,7 +297,7 @@ export default class SignatureRequestOriginal extends Component {
           onClick={async (event) => {
             await sign(event);
             trackEvent({
-              category: 'Transactions',
+              category: EVENT.CATEGORIES.TRANSACTIONS,
               event: 'Confirm',
               properties: {
                 action: 'Sign Request',

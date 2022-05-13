@@ -9,6 +9,7 @@ import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
 import Copy from '../../components/ui/icon/copy-icon.component';
 
+import { EVENT } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
@@ -45,7 +46,7 @@ export default class ConfirmDecryptMessage extends Component {
   copyMessage = () => {
     copyToClipboard(this.state.rawMessage);
     this.context.trackEvent({
-      category: 'Messages',
+      category: EVENT.CATEGORIES.MESSAGES,
       event: 'Copy',
       properties: {
         action: 'Decrypt Message Copy',
@@ -263,7 +264,7 @@ export default class ConfirmDecryptMessage extends Component {
           onClick={async (event) => {
             await cancelDecryptMessage(txData, event);
             trackEvent({
-              category: 'Messages',
+              category: EVENT.CATEGORIES.MESSAGES,
               event: 'Cancel',
               properties: {
                 action: 'Decrypt Message Request',
@@ -283,7 +284,7 @@ export default class ConfirmDecryptMessage extends Component {
           onClick={async (event) => {
             await decryptMessage(txData, event);
             trackEvent({
-              category: 'Messages',
+              category: EVENT.CATEGORIES.MESSAGES,
               event: 'Confirm',
               properties: {
                 action: 'Decrypt Message Request',

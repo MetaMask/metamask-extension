@@ -6,6 +6,7 @@ import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
+import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
@@ -71,6 +72,9 @@ const browserPolyfillMock = {
     onInstalled: {
       addListener: () => undefined,
     },
+    onMessageExternal: {
+      addListener: () => undefined,
+    },
     getPlatformInfo: async () => 'mac',
   },
 };
@@ -130,6 +134,10 @@ describe('MetaMaskController', function () {
       .persist()
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
+
+    sandbox.replace(browser, 'runtime', {
+      sendMessage: sandbox.stub().rejects(),
+    });
 
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,

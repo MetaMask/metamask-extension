@@ -25,6 +25,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import ActionableMessage from '../../components/ui/actionable-message';
 import Disclosure from '../../components/ui/disclosure';
+import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -278,7 +279,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'User clicks "Edit" on gas',
       properties: {
         action: 'Confirm Screen',
@@ -737,7 +738,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     this.context.trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Edit Transaction',
       properties: {
         action: 'Confirm Screen',
@@ -944,7 +945,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Confirm: Started',
       properties: {
         action: 'Confirm Screen',

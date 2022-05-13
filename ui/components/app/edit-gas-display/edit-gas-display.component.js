@@ -9,6 +9,7 @@ import {
   GAS_ESTIMATE_TYPES,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -280,7 +281,7 @@ export default function EditGasDisplay({
                 setShowAdvancedForm(!showAdvancedForm);
                 trackEvent({
                   event: 'Clicked "Advanced Options"',
-                  category: 'Transactions',
+                  category: EVENT.CATEGORIES.TRANSACTIONS,
                   properties: {
                     action: 'Edit Screen',
                     legacy_event: true,
