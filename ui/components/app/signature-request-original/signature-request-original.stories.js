@@ -1,4 +1,5 @@
 import React from 'react';
+import { action } from '@storybook/addon-actions';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
@@ -51,7 +52,6 @@ export default {
     },
   },
   argTypes: {
-    txData: { control: 'object' },
     fromAccount: {
       table: {
         address: { control: 'text' },
@@ -61,9 +61,19 @@ export default {
     },
     hardwareWalletRequiresConnection: { control: 'boolean' },
     isLedgerWallet: { control: 'boolean' },
+    nativeCurrency: { control: 'text' },
+    txData: { control: 'object' },
     clearConfirmTransaction: { action: 'Clean Confirm' },
     cancel: { action: 'Cancel' },
     sign: { action: 'Sign' },
+  },
+  args: {
+    fromAccount: MOCK_PRIMARY_IDENTITY,
+    history: {
+      push: action('history.push()'),
+    },
+    mostRecentOverviewPage: '/',
+    nativeCurrency: 'ETH',
   },
 };
 
@@ -80,7 +90,6 @@ DefaultStory.args = {
     msgParams: { ...MOCK_TX_MSG_PARAMS },
     type: MESSAGE_TYPE.PERSONAL_SIGN,
   },
-  fromAccount: MOCK_PRIMARY_IDENTITY,
 };
 
 export const ETHSignStory = Template.bind({});
@@ -92,5 +101,4 @@ ETHSignStory.args = {
     msgParams: { ...MOCK_TX_MSG_PARAMS },
     type: MESSAGE_TYPE.ETH_SIGN,
   },
-  fromAccount: MOCK_PRIMARY_IDENTITY,
 };
