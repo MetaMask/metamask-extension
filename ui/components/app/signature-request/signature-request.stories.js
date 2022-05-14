@@ -23,13 +23,11 @@ export default {
         name: { control: 'text' },
       },
     },
+    hardwareWalletRequiresConnection: { control: 'boolean' },
     isLedgerWallet: { control: 'boolean' },
     clearConfirmTransaction: { action: 'Clean Confirm' },
     cancel: { action: 'Cancel' },
     sign: { action: 'Sign' },
-    hardwareWalletRequiresConnection: {
-      action: 'hardwareWalletRequiresConnection',
-    },
   },
 };
 
