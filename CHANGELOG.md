@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.5]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.4]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.3]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
 ## [10.14.2]
 ### Fixed
 - Make build deterministic (#14610)
@@ -2894,7 +2906,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...HEAD
+[10.14.5]: https://github.com/MetaMask/metamask-extension/compare/v10.14.4...v10.14.5
+[10.14.4]: https://github.com/MetaMask/metamask-extension/compare/v10.14.3...v10.14.4
+[10.14.3]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...v10.14.3
 [10.14.2]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...v10.14.2
 [10.14.1]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.1
 [10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
