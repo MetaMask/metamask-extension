@@ -67,9 +67,11 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => {
+const Template = (args) => {
   return <SignatureRequestOriginal {...args} />;
 };
+
+export const DefaultStory = Template.bind({});
 
 DefaultStory.storyName = 'personal_sign Type';
 
@@ -81,9 +83,7 @@ DefaultStory.args = {
   fromAccount: MOCK_PRIMARY_IDENTITY,
 };
 
-export const ETHSignStory = (args) => {
-  return <SignatureRequestOriginal {...args} />;
-};
+export const ETHSignStory = Template.bind({});
 
 ETHSignStory.storyName = 'eth_sign Type';
 
