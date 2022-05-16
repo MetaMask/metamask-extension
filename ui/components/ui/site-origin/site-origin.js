@@ -12,25 +12,25 @@ export default function SiteOrigin({
   className,
   title,
 }) {
-  return chip ? (
-    <div className={classnames('site-origin__chip', className)}>
-      <Chip
-        label={siteOrigin}
-        maxContent={false}
-        leftIcon={
-          <IconWithFallback
-            icon={iconSrc}
-            name={iconName}
-            size={32}
-            className={className}
-          />
-        }
-      />
+  return (
+    <div className={classnames('site-origin', className)} title={title}>
+      {chip ? (
+        <Chip
+          label={siteOrigin}
+          maxContent={false}
+          leftIcon={
+            <IconWithFallback
+              icon={iconSrc}
+              name={iconName}
+              size={32}
+              className={className}
+            />
+          }
+        />
+      ) : (
+        <span>{siteOrigin}</span>
+      )}
     </div>
-  ) : (
-    <span className={classnames('site-origin', className)} title={title}>
-      {siteOrigin}
-    </span>
   );
 }
 

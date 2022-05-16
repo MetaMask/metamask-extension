@@ -1,32 +1,23 @@
 .site-origin {
-  &__chip {
+  overflow: hidden;
+  max-width: 100%;
+
+  .chip {
     max-width: 100%;
 
-    .chip {
-      max-width: 100%;
-    }
-
-    .chip__left-icon {
+    &__left-icon {
       padding: 4px 0 4px 8px;
-    }
-
-    span {
-      display: inline-block;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-
-      /*rtl:ignore*/
-      direction: rtl;
     }
   }
 
-  display: inline-block;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  span {
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 
-  /*rtl:ignore*/
-  direction: rtl;
-  max-width: 100%;
+    /*rtl:ignore*/
+    direction: rtl;
+    max-width: 100%;
+  }
 }
