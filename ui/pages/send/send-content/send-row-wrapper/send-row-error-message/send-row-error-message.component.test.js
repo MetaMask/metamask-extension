@@ -23,10 +23,26 @@ describe('SendRowErrorMessage Component', () => {
 
     it('should render an error message if the passed errors contain an error of errorType', () => {
       wrapper.setProps({
-        errors: { error1: 'abc', error2: 'def', error3: 'xyz' },
+        errors: { error1: 'abc', error2: 'def', negativeETH: 'negativeETH' },
+        errorType: 'negativeETH',
       });
       expect(wrapper.find('.send-v2__error')).toHaveLength(1);
-      expect(wrapper.find('.send-v2__error').text()).toStrictEqual('xyz_t');
+      expect(wrapper.find('.send-v2__error').text()).toStrictEqual(
+        'negativeETH_t',
+      );
+
+      wrapper.setProps({
+        errors: {
+          error1: 'abc',
+          error2: 'def',
+          invalidHexString: 'invalidHexString',
+        },
+        errorType: 'invalidHexString',
+      });
+      expect(wrapper.find('.send-v2__error')).toHaveLength(1);
+      expect(wrapper.find('.send-v2__error').text()).toStrictEqual(
+        'invalidHexString_t',
+      );
     });
   });
 });

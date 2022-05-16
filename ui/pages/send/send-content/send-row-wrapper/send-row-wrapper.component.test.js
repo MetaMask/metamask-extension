@@ -107,5 +107,43 @@ describe('SendContent Component', () => {
           .text(),
       ).toStrictEqual('Mock Custom Label Content');
     });
+
+    it('should render error row for known error type', () => {
+      wrapper = shallow(
+        <SendRowWrapper errorType="amount" label="Amount" showError>
+          <span>Mock Custom Label Content</span>
+          <span>Mock Form Field</span>
+        </SendRowWrapper>,
+      );
+
+      expect(
+        wrapper.find('.send-v2__form-row > .send-v2__form-label'),
+      ).toHaveLength(1);
+
+      expect(
+        wrapper.find('.send-v2__form-row > .send-v2__form-field-container'),
+      ).toHaveLength(1);
+
+      expect(
+        wrapper.find(
+          '.send-v2__form-row > .send-v2__form-field-container > .send-v2__form-field',
+        ),
+      ).toHaveLength(1);
+
+      let errorWrapper = wrapper.find(SendRowErrorMessage);
+      expect(errorWrapper).toHaveLength(1);
+      expect(errorWrapper.prop('errorType')).toStrictEqual('amount');
+
+      wrapper = shallow(
+        <SendRowWrapper errorType="hexData" label="HexData" showError>
+          <span>Mock Custom Label Content</span>
+          <span>Mock Form Field</span>
+        </SendRowWrapper>,
+      );
+
+      errorWrapper = wrapper.find(SendRowErrorMessage);
+      expect(errorWrapper).toHaveLength(1);
+      expect(errorWrapper.prop('errorType')).toStrictEqual('hexData');
+    });
   });
 });

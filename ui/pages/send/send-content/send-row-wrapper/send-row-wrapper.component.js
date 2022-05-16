@@ -61,8 +61,13 @@ export default class SendRowWrapper extends Component {
   render() {
     const { errorType = '' } = this.props;
 
-    return errorType === 'amount'
-      ? this.renderAmountFormRow()
-      : this.renderFormRow();
+    switch (errorType) {
+      case 'amount':
+        return this.renderAmountFormRow();
+      case 'hexData':
+        return this.renderAmountFormRow();
+      default:
+        return this.renderFormRow();
+    }
   }
 }

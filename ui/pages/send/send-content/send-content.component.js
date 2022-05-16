@@ -13,9 +13,9 @@ import {
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import SendAmountRow from './send-amount-row';
-import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
 import SendGasRow from './send-gas-row';
+import SendHexDataRow from './send-hex-data-row/send-hex-data-row';
 
 export default class SendContent extends Component {
   state = {

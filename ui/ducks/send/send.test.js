@@ -361,7 +361,12 @@ describe('Send Slice', () => {
         );
         const draftTransaction = getTestUUIDTx(result);
 
-        expect(draftTransaction.userInputHexData).toStrictEqual(action.payload);
+        expect(draftTransaction.userInputHexData.input).toStrictEqual(
+          action.payload,
+        );
+        expect(draftTransaction.userInputHexData.error).toStrictEqual(
+          'invalidHexString',
+        );
       });
     });
 
@@ -1384,7 +1389,10 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            userInputHexData: {
+              input: '',
+              error: null,
+            },
           }),
         };
         const store = mockStore(sendState);
@@ -2194,6 +2202,10 @@ describe('Send Slice', () => {
           amount: {},
           gas: {
             gasLimit: GAS_LIMITS.SIMPLE,
+          },
+          userInputHexData: {
+            input: null,
+            error: null,
           },
         }),
       };
@@ -3022,14 +3034,20 @@ describe('Send Slice', () => {
 
       it('has a selector to get the user entered hex data', () => {
         expect(
-          getSendHexData({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
+          getSendHexData({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }).error,
+        ).toBeNull();
+        expect(
+          getSendHexData({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }).input,
         ).toBeNull();
         expect(
           getSendHexData({
             send: getInitialSendStateWithExistingTxState({
-              userInputHexData: '0x0',
+              userInputHexData: {
+                input: '0x0',
+                error: null,
+              },
             }),
-          }),
+          }).input,
         ).toBe('0x0');
       });
 

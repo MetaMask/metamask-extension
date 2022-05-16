@@ -515,6 +515,12 @@
     margin-top: 5px;
   }
 
+  &__error-hex-data {
+    @include H7;
+
+    margin-top: 4px;
+  }
+
   &__warning {
     @include H7;
 

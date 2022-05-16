@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -14,6 +14,7 @@ import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  INVALID_HEX_STRING_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -309,6 +310,14 @@ export const RECIPIENT_SEARCH_MODES = {
  */
 
 /**
+ * @typedef {Object} UserInputHexData
+ * @property {string} [error] - The error state for the hex data field
+ * @property {string} [input] - When a user has enabled custom hex
+ *  data field in advanced options, they can supply data to the field which is
+ *  stored under this key.
+ */
+
+/**
  * An object that describes the intended recipient of a transaction.
  *
  * @typedef {Object} Recipient
@@ -352,9 +361,8 @@ export const RECIPIENT_SEARCH_MODES = {
  *  submission.
  * @property {string} transactionType - Determines type of transaction being
  *  sent, defaulted to 0x0 (legacy).
- * @property {string} [userInputHexData] - When a user has enabled custom hex
- *  data field in advanced options, they can supply data to the field which is
- *  stored under this key.
+ * @property {UserInputHexData} userInputHexData - Store the input and error
+ *  state for the hex data field when enabled in the advanced options.
  */
 
 /**
@@ -391,7 +399,10 @@ export const draftTransactionInitialState = {
   },
   status: SEND_STATUSES.VALID,
   transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-  userInputHexData: null,
+  userInputHexData: {
+    error: null,
+    input: null,
+  },
 };
 
 /**
@@ -519,7 +530,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
               ? send.selectedAccount.balance
               : send.amount.value,
           from: send.selectedAccount.address,
-          data: draftTransaction.userInputHexData,
+          data: draftTransaction.userInputHexData.input,
           type: '0x0',
         },
       });
@@ -537,7 +548,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
         value: draftTransaction.amount.value,
-        data: draftTransaction.userInputHexData,
+        data: draftTransaction.userInputHexData.input,
         isNonStandardEthChain,
         chainId,
         gasLimit: draftTransaction.gas.gasLimit,
@@ -668,7 +679,7 @@ export const initializeSendState = createAsyncThunk(
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
-        data: draftTransaction.userInputHexData,
+        data: draftTransaction.userInputHexData.input,
         isNonStandardEthChain,
         chainId,
       });
@@ -1219,7 +1230,12 @@ const slice = createSlice({
     updateUserInputHexData: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      draftTransaction.userInputHexData = action.payload;
+
+      draftTransaction.userInputHexData.input = action.payload;
+      // validate user input hex data
+      slice.caseReducers.validateUserInputHexData(state);
+      // validate send state
+      slice.caseReducers.validateSendState(state);
     },
     /**
      * Updates the gasIsSetInModal property to true which results in showing
@@ -1372,6 +1388,25 @@ const slice = createSlice({
       slice.caseReducers.validateSendState(state);
     },
     /**
+     * Checks if the hex data is currently valid
+     *
+     * @param {SendStateDraft} state - A writable draft of the send state to be
+     *  updated.
+     * @returns {void}
+     */
+    validateUserInputHexData: (state) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      const isValidHex =
+        isHexString(draftTransaction.userInputHexData.input) ||
+        !draftTransaction.userInputHexData.input;
+      if (isValidHex) {
+        draftTransaction.userInputHexData.error = null;
+      } else {
+        draftTransaction.userInputHexData.error = INVALID_HEX_STRING_ERROR;
+      }
+    },
+    /**
      * Checks if the draftTransaction is currently valid. The following list of
      * cases from the switch statement in this function describe when the
      * transaction is invalid. Please keep this comment updated.
@@ -1379,12 +1414,13 @@ const slice = createSlice({
      * case 1: State is invalid when amount field has an error.
      * case 2: State is invalid when gas field has an error.
      * case 3: State is invalid when asset field has an error.
-     * case 4: State is invalid if asset type is a token and the token details
+     * case 4: State is invalid when userInputHexData field has an error.
+     * case 5: State is invalid if asset type is a token and the token details
      *  are unknown.
-     * case 5: State is invalid if no recipient has been added.
-     * case 6: State is invalid if the send state is uninitialized.
-     * case 7: State is invalid if gas estimates are loading.
-     * case 8: State is invalid if gasLimit is less than the gasLimitMinimum.
+     * case 6: State is invalid if no recipient has been added.
+     * case 7: State is invalid if the send state is uninitialized.
+     * case 8: State is invalid if gas estimates are loading.
+     * case 9: State is invalid if gasLimit is less than the gasLimitMinimum.
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
@@ -1397,6 +1433,7 @@ const slice = createSlice({
         case Boolean(draftTransaction.amount.error):
         case Boolean(draftTransaction.gas.error):
         case Boolean(draftTransaction.asset.error):
+        case Boolean(draftTransaction.userInputHexData.error):
         case draftTransaction.asset.type === ASSET_TYPES.TOKEN &&
           draftTransaction.asset.details === null:
         case state.stage === SEND_STAGES.ADD_RECIPIENT:
@@ -1675,13 +1712,16 @@ export function editExistingTransaction(assetType, transactionId) {
             gasLimit: transaction.txParams.gas,
             gasPrice: transaction.txParams.gasPrice,
           },
-          userInputHexData: transaction.txParams.data,
           recipient: {
             ...draftTransactionInitialState.recipient,
             address: transaction.txParams.to,
             nickname:
               getAddressBookEntryOrAccountName(state, transaction.txParams.to)
                 ?.name ?? '',
+          },
+          userInputHexData: {
+            error: null,
+            input: transaction.txParams.data,
           },
           amount: {
             ...draftTransactionInitialState.amount,
@@ -1725,11 +1765,14 @@ export function editExistingTransaction(assetType, transactionId) {
             gasLimit: transaction.txParams.gas,
             gasPrice: transaction.txParams.gasPrice,
           },
-          userInputHexData: transaction.txParams.data,
           recipient: {
             ...draftTransactionInitialState.recipient,
             address,
             nickname,
+          },
+          userInputHexData: {
+            error: null,
+            input: transaction.txParams.data,
           },
           amount: {
             ...draftTransactionInitialState.amount,
@@ -2595,6 +2638,7 @@ export function getSendErrors(state) {
   return {
     gasFee: getCurrentDraftTransaction(state).gas?.error,
     amount: getCurrentDraftTransaction(state).amount?.error,
+    hexData: getCurrentDraftTransaction(state).userInputHexData?.error,
   };
 }
 

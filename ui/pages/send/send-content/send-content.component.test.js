@@ -5,8 +5,8 @@ import Dialog from '../../../components/ui/dialog';
 import SendContent from './send-content.component';
 
 import SendAmountRow from './send-amount-row/send-amount-row.container';
-import SendHexDataRow from './send-hex-data-row/send-hex-data-row.container';
 import SendAssetRow from './send-asset-row/send-asset-row.container';
+import SendHexDataRow from './send-hex-data-row/send-hex-data-row';
 
 describe('SendContent Component', () => {
   let wrapper;
