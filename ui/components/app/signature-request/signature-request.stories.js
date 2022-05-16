@@ -3,7 +3,7 @@ import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequest from './signature-request.component';
 
-const primaryIdentity = Object.values(testData.metamask.identities)[0];
+const [MOCK_PRIMARY_IDENTITY] = Object.values(testData.metamask.identities);
 
 export default {
   title: 'Components/App/SignatureRequest',
@@ -74,7 +74,5 @@ DefaultStory.args = {
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
   },
-  fromAccount: primaryIdentity,
+  fromAccount: MOCK_PRIMARY_IDENTITY,
 };
-
-DefaultStory.storyName = 'Default';
