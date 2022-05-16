@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -14,6 +14,7 @@ import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  INVALID_HEX_STRING_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -666,6 +667,7 @@ export const initialState = {
       gasPrice: '0x0',
       type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
     },
+    error: null,
   },
   recipient: {
     // Defines which mode to use for searching for matches in the input field
@@ -770,9 +772,16 @@ const slice = createSlice({
      */
     updateUserInputHexData: (state, action) => {
       state.draftTransaction.userInputHexData = action.payload;
+
+      // validate user input hex data
+      slice.caseReducers.validateUserInputHexData(state);
+
       if (state.asset.type === ASSET_TYPES.NATIVE) {
         slice.caseReducers.updateDraftTransaction(state);
       }
+
+      // validate send state
+      slice.caseReducers.validateSendState(state);
     },
     /**
      * Initiates the edit transaction flow by setting the stage to 'EDIT' and
@@ -1215,6 +1224,16 @@ const slice = createSlice({
 
       state.gas.error = insufficientFunds ? INSUFFICIENT_FUNDS_ERROR : null;
     },
+    validateUserInputHexData: (state) => {
+      const isValidHex =
+        isHexString(state.draftTransaction.userInputHexData) ||
+        !state.draftTransaction.userInputHexData;
+      if (isValidHex) {
+        state.draftTransaction.error = null;
+      } else {
+        state.draftTransaction.error = INVALID_HEX_STRING_ERROR;
+      }
+    },
     validateSendState: (state) => {
       switch (true) {
         // 1 + 2. State is invalid when either gas or amount or asset fields have errors
@@ -1228,6 +1247,7 @@ const slice = createSlice({
         case Boolean(state.amount.error):
         case Boolean(state.gas.error):
         case Boolean(state.asset.error):
+        case Boolean(state.draftTransaction.error):
         case state.asset.type === ASSET_TYPES.TOKEN &&
           state.asset.details === null:
         case state.stage === SEND_STAGES.ADD_RECIPIENT:

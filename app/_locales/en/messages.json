@@ -1605,6 +1605,9 @@
   "invalidHexNumberLeadingZeros": {
     "message": "Invalid hexadecimal number. Remove any leading zeros."
   },
+  "invalidHexString": {
+    "message": "Hex Data is an invalid hexadecimal string."
+  },
   "invalidIpfsGateway": {
     "message": "Invalid IPFS Gateway: The value must be a valid URL"
   },
