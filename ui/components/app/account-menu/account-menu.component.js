@@ -350,7 +350,7 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-default)" />}
+          icon={<IconPlus color="var(--color-icon-alternative)" />}
           text={t('createAccount')}
         />
         <AccountMenuItem
@@ -368,7 +368,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconImport
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('importAccount')}
             />
           }
@@ -393,7 +393,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconConnect
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('connectHardwareWallet')}
             />
           }
@@ -406,7 +406,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconSpeechBubbles
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={supportText}
             />
           }
@@ -428,7 +428,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconCog
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('settings')}
             />
           }
