@@ -534,9 +534,9 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -1978,57 +1978,6 @@
         "string.prototype.matchall>es-abstract": true
       }
     },
-    "enzyme>cheerio>dom-serializer": {
-      "packages": {
-        "enzyme>cheerio>entities": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "string_decoder.StringDecoder": true
-      },
-      "packages": {
-        "enzyme>cheerio>entities": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true,
-        "enzyme>cheerio>htmlparser2>domhandler": true,
-        "enzyme>cheerio>htmlparser2>domutils": true,
-        "enzyme>cheerio>htmlparser2>readable-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>domhandler": {
-      "packages": {
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>domutils": {
-      "packages": {
-        "enzyme>cheerio>dom-serializer": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
     "enzyme>has": {
       "packages": {
         "mocha>object.assign>function-bind": true
@@ -2118,10 +2067,10 @@
         "eslint>is-glob": true,
         "eslint>json-stable-stringify-without-jsonify": true,
         "eslint>levn": true,
+        "eslint>minimatch": true,
         "eslint>natural-compare": true,
         "eslint>regexpp": true,
-        "lodash": true,
-        "mocha>minimatch": true
+        "lodash": true
       }
     },
     "eslint-config-prettier": {
@@ -2198,7 +2147,7 @@
         "eslint-plugin-import>read-pkg-up": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "eslint-plugin-react>array-includes": true,
-        "mocha>minimatch": true,
+        "eslint>minimatch": true,
         "typescript": true
       }
     },
@@ -2512,8 +2461,8 @@
         "eslint-plugin-node>eslint-plugin-es": true,
         "eslint-plugin-node>semver": true,
         "eslint>eslint-utils": true,
-        "globby>ignore": true,
-        "mocha>minimatch": true
+        "eslint>minimatch": true,
+        "globby>ignore": true
       }
     },
     "eslint-plugin-node>eslint-plugin-es": {
@@ -2560,8 +2509,8 @@
         "eslint-plugin-react>doctrine": true,
         "eslint-plugin-react>jsx-ast-utils": true,
         "eslint-plugin-react>resolve": true,
+        "eslint>minimatch": true,
         "lavamoat>object.fromentries": true,
-        "mocha>minimatch": true,
         "prop-types": true,
         "string.prototype.matchall": true
       }
@@ -2683,8 +2632,8 @@
         "eslint>ajv": true,
         "eslint>debug": true,
         "eslint>espree": true,
+        "eslint>minimatch": true,
         "eslint>strip-json-comments": true,
-        "mocha>minimatch": true,
         "nyc>js-yaml": true
       }
     },
@@ -2861,6 +2810,17 @@
     "eslint>levn>type-check": {
       "packages": {
         "eslint>levn>prelude-ls": true
+      }
+    },
+    "eslint>minimatch": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "mocha>minimatch>brace-expansion": true
       }
     },
     "eslint>strip-ansi": {
@@ -6395,17 +6355,6 @@
         "fs.accessSync": true
       }
     },
-    "mocha>minimatch": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "mocha>minimatch>brace-expansion": true
-      }
-    },
     "mocha>minimatch>brace-expansion": {
       "packages": {
         "mocha>minimatch>brace-expansion>concat-map": true,
@@ -6489,8 +6438,8 @@
         "process.platform": true
       },
       "packages": {
+        "eslint>minimatch": true,
         "gulp-watch>path-is-absolute": true,
-        "mocha>minimatch": true,
         "nyc>glob>fs.realpath": true,
         "nyc>glob>inflight": true,
         "pump>once": true,
@@ -7464,8 +7413,59 @@
         "__dirname": true
       },
       "packages": {
-        "enzyme>cheerio>htmlparser2": true,
+        "stylelint>postcss-html>htmlparser2": true,
         "stylelint>postcss-syntax": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "string_decoder.StringDecoder": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domhandler": true,
+        "stylelint>postcss-html>htmlparser2>domutils": true,
+        "stylelint>postcss-html>htmlparser2>entities": true,
+        "stylelint>postcss-html>htmlparser2>readable-stream": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>domhandler": {
+      "packages": {
+        "stylelint>postcss-html>htmlparser2>domelementtype": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>domutils": {
+      "packages": {
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": {
+      "packages": {
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>entities": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "@storybook/api>util-deprecate": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "stylelint>postcss-less": {
