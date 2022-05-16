@@ -2245,4 +2245,58 @@ describe('Transaction Controller', function () {
       assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update
     });
   });
+
+  describe('updateEditableParams', function () {
+    let txStateManager;
+
+    beforeEach(function () {
+      txStateManager = txController.txStateManager;
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gasLimit: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: 'simpleSend',
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+    });
+
+    it('updates editible params when type changes', function () {
+      // test update gasFees
+      txController.updateEditableParams('1', {
+        data:
+          '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(
+        result.txParams.data,
+        '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      );
+      assert.equal(result.type, TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
+    });
+
+    it('updates editible params when type does not change', function () {
+      // test update gasFees
+      txController.updateEditableParams('1', {
+        data: '0x123',
+        gasLimit: '0xabc',
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.txParams.data, '0x123');
+      assert.equal(result.txParams.data, '0xabc');
+      assert.equal(result.type, TRANSACTION_TYPES.SIMPLE_SEND);
+    });
+  });
 });
