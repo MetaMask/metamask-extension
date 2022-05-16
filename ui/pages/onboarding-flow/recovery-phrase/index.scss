@@ -1,21 +1,41 @@
 .recovery-phrase {
-  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    max-width: 420px;
+  }
 
   &__tips {
     flex-direction: column;
+    max-width: 420px;
+    margin: 0 auto;
 
     ul {
       list-style: disc;
       margin-left: 20px;
+      margin-bottom: 24px;
     }
   }
 
   &__chips {
     display: grid;
-    grid-template-columns: 190px 190px 190px;
     justify-items: center;
     align-items: center;
     row-gap: 16px;
+
+    @media screen and (max-width: 460px) {
+      grid-template-columns: 198px;
+    }
+
+    @media screen and (min-width: 460px) and (max-width: $break-small) {
+      grid-template-columns: 181px 181px;
+    }
+
+    @media screen and (min-width: $break-large) {
+      grid-template-columns: 166px 166px 166px;
+    }
 
     &--hidden {
       filter: blur(5px);
@@ -24,6 +44,7 @@
 
   &__secret {
     position: relative;
+    width: 100%;
   }
 
   &__secret-blocker {
@@ -62,11 +83,38 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+
+    @media screen and (max-width: $break-small) {
+      margin-inline-start: 40px;
+      margin-inline-end: 40px;
+      margin-bottom: 40px;
+    }
+
+    &__confirm {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      @media screen and (min-width: $break-small) {
+        margin-top: 20px;
+      }
+
+      &--button {
+        align-self: center;
+        width: 100%;
+        max-width: 300px;
+      }
+    }
 
     &--button {
-      width: 50%;
-      padding: 20px;
       align-self: center;
+
+      @media screen and (min-width: $break-large) {
+        max-width: 300px;
+      }
     }
 
     &__copy-and-hide {
@@ -78,6 +126,10 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        @media screen and (min-width: $break-large) {
+          justify-content: space-around;
+        }
       }
 
       &__button {
@@ -98,6 +150,11 @@
 
         &__copy-to-clipboard {
           justify-content: flex-end;
+        }
+
+        @media screen and (max-width: $break-small) {
+          justify-content: center;
+          width: 100%;
         }
 
         svg {
@@ -126,6 +183,14 @@
       border-width: 2px;
       border-radius: 13px;
       height: 32px;
+    }
+  }
+
+  &__confirm {
+    @media screen and (min-width: $break-large) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
   }
 }

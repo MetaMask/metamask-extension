@@ -13,6 +13,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
@@ -1018,6 +1019,96 @@ export function cancelMsg(msgData) {
     dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
+  };
+}
+
+/**
+ * Cancels all of the given messages
+ *
+ * @param {Array<object>} msgDataList - a list of msg data objects
+ * @returns {function(*): Promise<void>}
+ */
+export function cancelMsgs(msgDataList) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const msgIds = msgDataList.map((id) => id);
+      const cancellations = msgDataList.map(
+        ({ id, type }) =>
+          new Promise((resolve, reject) => {
+            switch (type) {
+              case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+                background.cancelTypedMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.PERSONAL_SIGN:
+                background.cancelPersonalMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_DECRYPT:
+                background.cancelDecryptMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
+                background.cancelEncryptionPublicKeyMsg(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_SIGN:
+                background.cancelMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              default:
+                reject(
+                  new Error(
+                    `MetaMask Message Signature: Unknown message type: ${id}`,
+                  ),
+                );
+            }
+          }),
+      );
+
+      await Promise.all(cancellations);
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+
+      msgIds.forEach((id) => {
+        dispatch(completedTx(id));
+      });
+    } catch (err) {
+      log.error(err);
+    } finally {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        closeNotificationPopup();
+      } else {
+        dispatch(hideLoadingIndication());
+      }
+    }
   };
 }
 

@@ -14,7 +14,7 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 import { TOKEN_STANDARDS } from '../../helpers/constants/common';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 function getTokenName(name, symbol) {
@@ -115,14 +115,14 @@ const ConfirmAddSuggestedToken = () => {
         await dispatch(acceptWatchAsset(id));
 
         trackEvent({
-          event: 'Token Added',
+          event: EVENT_NAMES.TOKEN_ADDED,
           category: EVENT.CATEGORIES.WALLET,
           sensitiveProperties: {
             token_symbol: asset.symbol,
             token_contract_address: asset.address,
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
-            source: 'dapp',
+            source: EVENT.SOURCE.TOKEN.DAPP,
             token_standard: TOKEN_STANDARDS.ERC20,
             asset_type: ASSET_TYPES.TOKEN,
           },
