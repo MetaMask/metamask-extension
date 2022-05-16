@@ -534,9 +534,9 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -1132,21 +1132,6 @@
         "globby": true,
         "semver": true,
         "typescript": true
-      }
-    },
-    "addons-linter>probe-image-size>next-tick": {
-      "globals": {
-        "MutationObserver": true,
-        "WebKitMutationObserver": true,
-        "document": true,
-        "process": true,
-        "setImmediate": true,
-        "setTimeout": true
-      }
-    },
-    "addons-linter>upath": {
-      "builtin": {
-        "path": true
       }
     },
     "babelify": {
@@ -1993,57 +1978,6 @@
         "string.prototype.matchall>es-abstract": true
       }
     },
-    "enzyme>cheerio>dom-serializer": {
-      "packages": {
-        "enzyme>cheerio>entities": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "string_decoder.StringDecoder": true
-      },
-      "packages": {
-        "enzyme>cheerio>entities": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true,
-        "enzyme>cheerio>htmlparser2>domhandler": true,
-        "enzyme>cheerio>htmlparser2>domutils": true,
-        "enzyme>cheerio>htmlparser2>readable-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>domhandler": {
-      "packages": {
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>domutils": {
-      "packages": {
-        "enzyme>cheerio>dom-serializer": true,
-        "enzyme>cheerio>htmlparser2>domelementtype": true
-      }
-    },
-    "enzyme>cheerio>htmlparser2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
     "enzyme>has": {
       "packages": {
         "mocha>object.assign>function-bind": true
@@ -2133,10 +2067,10 @@
         "eslint>is-glob": true,
         "eslint>json-stable-stringify-without-jsonify": true,
         "eslint>levn": true,
+        "eslint>minimatch": true,
         "eslint>natural-compare": true,
         "eslint>regexpp": true,
-        "lodash": true,
-        "mocha>minimatch": true
+        "lodash": true
       }
     },
     "eslint-config-prettier": {
@@ -2213,7 +2147,7 @@
         "eslint-plugin-import>read-pkg-up": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "eslint-plugin-react>array-includes": true,
-        "mocha>minimatch": true,
+        "eslint>minimatch": true,
         "typescript": true
       }
     },
@@ -2527,8 +2461,8 @@
         "eslint-plugin-node>eslint-plugin-es": true,
         "eslint-plugin-node>semver": true,
         "eslint>eslint-utils": true,
-        "globby>ignore": true,
-        "mocha>minimatch": true
+        "eslint>minimatch": true,
+        "globby>ignore": true
       }
     },
     "eslint-plugin-node>eslint-plugin-es": {
@@ -2575,8 +2509,8 @@
         "eslint-plugin-react>doctrine": true,
         "eslint-plugin-react>jsx-ast-utils": true,
         "eslint-plugin-react>resolve": true,
+        "eslint>minimatch": true,
         "lavamoat>object.fromentries": true,
-        "mocha>minimatch": true,
         "prop-types": true,
         "string.prototype.matchall": true
       }
@@ -2695,11 +2629,11 @@
         "eslint-plugin-react-hooks": true,
         "eslint>@eslint/eslintrc>globals": true,
         "eslint>@eslint/eslintrc>ignore": true,
-        "eslint>@eslint/eslintrc>strip-json-comments": true,
         "eslint>ajv": true,
         "eslint>debug": true,
         "eslint>espree": true,
-        "mocha>minimatch": true,
+        "eslint>minimatch": true,
+        "eslint>strip-json-comments": true,
         "nyc>js-yaml": true
       }
     },
@@ -2757,24 +2691,24 @@
       },
       "packages": {
         "eslint>eslint-scope>esrecurse": true,
-        "jsdom>escodegen>estraverse": true
+        "eslint>eslint-scope>estraverse": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
       "packages": {
-        "eslint>eslint-scope>esrecurse>estraverse": true
+        "eslint>esquery>estraverse": true
       }
     },
     "eslint>eslint-utils": {
       "packages": {
-        "@babel/eslint-parser>eslint-visitor-keys": true
+        "eslint>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint>espree": {
       "packages": {
-        "@babel/eslint-parser>eslint-visitor-keys": true,
         "eslint>espree>acorn": true,
-        "eslint>espree>acorn-jsx": true
+        "eslint>espree>acorn-jsx": true,
+        "eslint>espree>eslint-visitor-keys": true
       }
     },
     "eslint>espree>acorn": {
@@ -2819,21 +2753,7 @@
       },
       "packages": {
         "eslint>file-entry-cache>flat-cache>flatted": true,
-        "eslint>file-entry-cache>flat-cache>rimraf": true
-      }
-    },
-    "eslint>file-entry-cache>flat-cache>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
+        "nyc>rimraf": true
       }
     },
     "eslint>glob-parent": {
@@ -2890,6 +2810,17 @@
     "eslint>levn>type-check": {
       "packages": {
         "eslint>levn>prelude-ls": true
+      }
+    },
+    "eslint>minimatch": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "mocha>minimatch>brace-expansion": true
       }
     },
     "eslint>strip-ansi": {
@@ -3604,7 +3535,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss>@choojs/findup": true,
         "gulp-rtlcss>rtlcss>postcss": true,
-        "rc>strip-json-comments": true
+        "gulp-rtlcss>rtlcss>strip-json-comments": true
       }
     },
     "gulp-rtlcss>rtlcss>@choojs/findup": {
@@ -3858,10 +3789,10 @@
         "setTimeout": true
       },
       "packages": {
-        "addons-linter>probe-image-size>next-tick": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>is-promise": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>lru-queue": true,
+        "gulp-sourcemaps>debug-fabulous>memoizee>next-tick": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": true,
         "resolve-url-loader>es6-iterator>d": true,
         "resolve-url-loader>es6-iterator>es5-ext": true
@@ -3876,6 +3807,16 @@
     "gulp-sourcemaps>debug-fabulous>memoizee>lru-queue": {
       "packages": {
         "resolve-url-loader>es6-iterator>es5-ext": true
+      }
+    },
+    "gulp-sourcemaps>debug-fabulous>memoizee>next-tick": {
+      "globals": {
+        "MutationObserver": true,
+        "WebKitMutationObserver": true,
+        "document": true,
+        "process": true,
+        "setImmediate": true,
+        "setTimeout": true
       }
     },
     "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": {
@@ -4146,7 +4087,6 @@
         "setTimeout": true
       },
       "packages": {
-        "addons-linter>upath": true,
         "gulp-watch>chokidar>anymatch": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>chokidar>braces": true,
@@ -4155,6 +4095,7 @@
         "gulp-watch>chokidar>is-glob": true,
         "gulp-watch>chokidar>normalize-path": true,
         "gulp-watch>chokidar>readdirp": true,
+        "gulp-watch>chokidar>upath": true,
         "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "pumpify>inherits": true
@@ -4835,6 +4776,11 @@
         "gulp-watch>chokidar>readdirp>micromatch>extglob>extend-shallow>is-extendable": true
       }
     },
+    "gulp-watch>chokidar>upath": {
+      "builtin": {
+        "path": true
+      }
+    },
     "gulp-watch>fancy-log": {
       "globals": {
         "console": true,
@@ -5171,7 +5117,6 @@
         "setTimeout": true
       },
       "packages": {
-        "addons-linter>upath": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>path-is-absolute": true,
@@ -5182,6 +5127,7 @@
         "gulp>glob-watcher>chokidar>is-binary-path": true,
         "gulp>glob-watcher>chokidar>normalize-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,
+        "gulp>glob-watcher>chokidar>upath": true,
         "pumpify>inherits": true
       }
     },
@@ -5645,6 +5591,11 @@
         "fs-extra>graceful-fs": true,
         "gulp>glob-watcher>anymatch>micromatch": true,
         "readable-stream": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>upath": {
+      "builtin": {
+        "path": true
       }
     },
     "gulp>glob-watcher>just-debounce": {
@@ -6404,17 +6355,6 @@
         "fs.accessSync": true
       }
     },
-    "mocha>minimatch": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "mocha>minimatch>brace-expansion": true
-      }
-    },
     "mocha>minimatch>brace-expansion": {
       "packages": {
         "mocha>minimatch>brace-expansion>concat-map": true,
@@ -6498,8 +6438,8 @@
         "process.platform": true
       },
       "packages": {
+        "eslint>minimatch": true,
         "gulp-watch>path-is-absolute": true,
-        "mocha>minimatch": true,
         "nyc>glob>fs.realpath": true,
         "nyc>glob>inflight": true,
         "pump>once": true,
@@ -6552,6 +6492,20 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
+      }
+    },
+    "nyc>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "nyc>signal-exit": {
@@ -7459,8 +7413,59 @@
         "__dirname": true
       },
       "packages": {
-        "enzyme>cheerio>htmlparser2": true,
+        "stylelint>postcss-html>htmlparser2": true,
         "stylelint>postcss-syntax": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "string_decoder.StringDecoder": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domhandler": true,
+        "stylelint>postcss-html>htmlparser2>domutils": true,
+        "stylelint>postcss-html>htmlparser2>entities": true,
+        "stylelint>postcss-html>htmlparser2>readable-stream": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>domhandler": {
+      "packages": {
+        "stylelint>postcss-html>htmlparser2>domelementtype": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>domutils": {
+      "packages": {
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>domutils>dom-serializer": {
+      "packages": {
+        "stylelint>postcss-html>htmlparser2>domelementtype": true,
+        "stylelint>postcss-html>htmlparser2>entities": true
+      }
+    },
+    "stylelint>postcss-html>htmlparser2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "@storybook/api>util-deprecate": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
       }
     },
     "stylelint>postcss-less": {

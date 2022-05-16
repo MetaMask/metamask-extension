@@ -273,7 +273,7 @@
     "@types/react": "^16.9.53",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
-    "addons-linter": "1.14.0",
+    "addons-linter": "^5.2.0",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
     "brfs": "^2.0.2",
