@@ -59,7 +59,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
   },
   [EndowmentPermissions['endowment:long-running']]: {
-    label: (t) => t('permission_longRunining'),
+    label: (t) => t('permission_longRunning'),
     leftIcon: 'fas fa-infinity',
     rightIcon: null,
   },
