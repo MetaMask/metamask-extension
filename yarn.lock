@@ -2935,15 +2935,15 @@
   resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-2.1.0.tgz#c0be8e68445b7b83cf85bcc03a56cdf8e256c973"
   integrity sha512-ADuWlTUkFfN2vXlz81Bg/0BA+XRor+CdK1055p6k7H6BLIPoDKn9SBOFld9haQFuR9cKh/JYHcnlSIv5R4fUEw==
 
-"@metamask/execution-environments@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.13.0.tgz#8504d7666a64cec3597bcbd8d68eb8e0795425ed"
-  integrity sha512-/XhFPK8RBMuK316p7MNGFXyFR4YIW7h2IMGBymHmh2c2ECl4zjSY5HypChvIR06TmNHu97dAiOYgYqKrzn6LAQ==
+"@metamask/execution-environments@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.14.0.tgz#594e2d3671c4e7d07725d4547561cba1fa441354"
+  integrity sha512-M7z/vLMZrtJ1sksUmyh161WDndNVw4PXilAz42WYuuVLz2j4jeUnYNwLml9DamoT9XSPtwiodhyEyikJsGg8JA==
   dependencies:
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/post-message-stream" "^4.0.0"
     "@metamask/providers" "^8.1.1"
-    "@metamask/snap-types" "^0.13.0"
+    "@metamask/snap-types" "^0.14.0"
     eth-rpc-errors "^4.0.3"
     pump "^3.0.0"
     ses "^0.15.15"
@@ -3037,14 +3037,14 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-"@metamask/rpc-methods@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.13.0.tgz#1a450d3b6b96b3fed49e41c824016f925763f1f6"
-  integrity sha512-c+/cJMXZ4J+LrsvxqGewvah4SreKcENGk42iwdpNqp3gUd5XNf1qozOR7heV8CxRjHT0QTTjySkBBVfwZp5akQ==
+"@metamask/rpc-methods@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.14.0.tgz#33554341f2da930c41b681521bf94e385735ae65"
+  integrity sha512-tDqbgSJoyNPkBZ5o5KH5pBRlq1+1zPNNk3cpM478vgm5xmT7HdMwfV2wd2h3XmJRO2/mTu1/5lLgV+3sTYqN3A==
   dependencies:
     "@metamask/controllers" "^29.0.1"
     "@metamask/key-tree" "^4.0.0"
-    "@metamask/snap-controllers" "^0.13.0"
+    "@metamask/snap-controllers" "^0.14.0"
     "@metamask/types" "^1.1.0"
     eth-rpc-errors "^4.0.2"
 
@@ -3071,13 +3071,13 @@
     isomorphic-fetch "^3.0.0"
     lodash "^4.17.21"
 
-"@metamask/snap-controllers@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.13.0.tgz#86a01286ca7bc27c6981238feadf6074e5d793c8"
-  integrity sha512-OSBBLTBillD10qlJhYA2vYRVywyzo2nh6EDlaBoD3OMZMEDPkj7MAgr2XcjbugJ+LFTDW0syQrmbjbnutWmSYg==
+"@metamask/snap-controllers@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.14.0.tgz#deb579c4c9ea69507209abe6901c1da1d1e8c5d1"
+  integrity sha512-DkD+opstaDow4+FRbECthlVKtR+9Np9ASY/OPeRfYt7foMPDAQOaFetFMNblNU5eCfEjgRSbON3VUPCF8pUaLw==
   dependencies:
     "@metamask/controllers" "^29.0.1"
-    "@metamask/execution-environments" "^0.13.0"
+    "@metamask/execution-environments" "^0.14.0"
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^7.0.0"
     "@metamask/post-message-stream" "4.0.0"
@@ -3099,10 +3099,10 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
-"@metamask/snap-types@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.13.0.tgz#d3a461bddda6c6f0dc344e47ae63922605907d95"
-  integrity sha512-67T1rEYovoAjqFyWmDhzpj39rPPEfbdP+lrOvFX4dK3m6Eic/Y98RDMWVuq7qSqUJTorG1oD+CwOLjP61rCI8A==
+"@metamask/snap-types@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.14.0.tgz#efd85f430061a61cbb4c4185256de50518a367fa"
+  integrity sha512-sM661jKNpkM3MeNAoG9oqejh86vqv/0uI9TDuDbu/s9AZciuHPknYwmuYjaXXWxGOkUogfkWSZHHrb0Ge2s8wg==
   dependencies:
     "@metamask/controllers" "^29.0.1"
 
