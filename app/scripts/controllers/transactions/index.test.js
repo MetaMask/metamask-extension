@@ -2295,7 +2295,7 @@ describe('Transaction Controller', function () {
       });
       const result = txStateManager.getTransaction('1');
       assert.equal(result.txParams.data, '0x123');
-      assert.equal(result.txParams.data, '0xabc');
+      assert.equal(result.txParams.gasLimit, '0xabc');
       assert.equal(result.type, TRANSACTION_TYPES.SIMPLE_SEND);
     });
   });
