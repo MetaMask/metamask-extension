@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getUnreadNotificationCount } from '../../../selectors';
+///: END:ONLY_INCLUDE_IN
 
 import * as actions from '../../../store/actions';
 import AppHeader from './app-header.component';

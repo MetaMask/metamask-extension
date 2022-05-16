@@ -13,7 +13,9 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getUnreadNotificationCount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
 
