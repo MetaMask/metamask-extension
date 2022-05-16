@@ -101,6 +101,29 @@
       "globals": {
         "globalThis": true
       }
+    },
+    "yargs": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "util": true,
+        "path": true
+      }
+    },
+    "yargs>y18n": {
+      "builtin": {
+        "fs": true,
+        "util": true,
+        "path": true
+      }
+    },
+    "yargs>yargs-parser": {
+      "builtin": {
+        "util": true,
+        "fs": true,
+        "path": true,
+        "process": true
+      }
     }
   }
 }
