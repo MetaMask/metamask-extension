@@ -2438,6 +2438,10 @@
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_longRunining": {
+    "message": "Run indefinitely.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_unknown": {
     "message": "Unknown permission: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
