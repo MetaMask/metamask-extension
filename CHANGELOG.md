@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.6]
+### Changed
+- Move phishing warning page to external site.
+  - The page shown when a site is blocked has been extracted from the extension and moved to an external site. This site is eagerly cached with a service worker upon extension startup, so it should continue to work even while offline.
+- Make build .zip files reproducible (#14623)
+  - The ordering of files within each .zip file was non-deterministic before this change. We fixed this to comply with Firefox store policies.
+
 ## [10.14.5]
 ### Fixed
 - This release was deployed to fix a configuration issue.
@@ -2906,7 +2913,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...HEAD
+[10.14.6]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...v10.14.6
 [10.14.5]: https://github.com/MetaMask/metamask-extension/compare/v10.14.4...v10.14.5
 [10.14.4]: https://github.com/MetaMask/metamask-extension/compare/v10.14.3...v10.14.4
 [10.14.3]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...v10.14.3
