@@ -2202,7 +2202,7 @@
     },
     "@babel/runtime": {
       "packages": {
-        "addons-linter>regenerator-runtime": true
+        "@storybook/api>regenerator-runtime": true
       }
     },
     "@download/blockies": {
@@ -3993,7 +3993,7 @@
         "@ngraveio/bc-ur>bignumber.js": true,
         "@ngraveio/bc-ur>crc": true,
         "@ngraveio/bc-ur>jsbi": true,
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "pubnub>cbor-sync": true
@@ -4013,12 +4013,6 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
-      }
-    },
-    "@ngraveio/bc-ur>sha.js": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true,
-        "pumpify>inherits": true
       }
     },
     "@popperjs/core": {
@@ -4129,6 +4123,11 @@
         "@sentry/browser>@sentry/utils": true,
         "@sentry/browser>tslib": true,
         "localforage": true
+      }
+    },
+    "@storybook/api>regenerator-runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "@storybook/api>util-deprecate": {
@@ -4450,9 +4449,10 @@
         "setTimeout": true
       }
     },
-    "addons-linter>regenerator-runtime": {
-      "globals": {
-        "regeneratorRuntime": "write"
+    "addons-linter>sha.js": {
+      "packages": {
+        "ethereumjs-wallet>safe-buffer": true,
+        "pumpify>inherits": true
       }
     },
     "analytics-node": {
@@ -4643,7 +4643,7 @@
     },
     "browserify>crypto-browserify>create-hmac": {
       "packages": {
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>create-hash>cipher-base": true,
         "ethereumjs-util>create-hash>ripemd160": true,
@@ -4674,7 +4674,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "browserify>process": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>create-hash>ripemd160": true,
@@ -5556,7 +5556,7 @@
     },
     "ethereumjs-util>create-hash": {
       "packages": {
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "ethereumjs-util>create-hash>cipher-base": true,
         "ethereumjs-util>create-hash>md5.js": true,
         "ethereumjs-util>create-hash>ripemd160": true,
@@ -6233,7 +6233,7 @@
     "ethjs-query>babel-runtime": {
       "packages": {
         "@babel/runtime": true,
-        "addons-linter>regenerator-runtime": true,
+        "@storybook/api>regenerator-runtime": true,
         "ethjs-query>babel-runtime>core-js": true
       }
     },

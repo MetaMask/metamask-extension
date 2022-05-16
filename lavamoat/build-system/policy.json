@@ -1134,21 +1134,6 @@
         "typescript": true
       }
     },
-    "addons-linter>probe-image-size>next-tick": {
-      "globals": {
-        "MutationObserver": true,
-        "WebKitMutationObserver": true,
-        "document": true,
-        "process": true,
-        "setImmediate": true,
-        "setTimeout": true
-      }
-    },
-    "addons-linter>upath": {
-      "builtin": {
-        "path": true
-      }
-    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -2695,10 +2680,10 @@
         "eslint-plugin-react-hooks": true,
         "eslint>@eslint/eslintrc>globals": true,
         "eslint>@eslint/eslintrc>ignore": true,
-        "eslint>@eslint/eslintrc>strip-json-comments": true,
         "eslint>ajv": true,
         "eslint>debug": true,
         "eslint>espree": true,
+        "eslint>strip-json-comments": true,
         "mocha>minimatch": true,
         "nyc>js-yaml": true
       }
@@ -2757,24 +2742,24 @@
       },
       "packages": {
         "eslint>eslint-scope>esrecurse": true,
-        "jsdom>escodegen>estraverse": true
+        "eslint>eslint-scope>estraverse": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
       "packages": {
-        "eslint>eslint-scope>esrecurse>estraverse": true
+        "eslint>esquery>estraverse": true
       }
     },
     "eslint>eslint-utils": {
       "packages": {
-        "@babel/eslint-parser>eslint-visitor-keys": true
+        "eslint>eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint>espree": {
       "packages": {
-        "@babel/eslint-parser>eslint-visitor-keys": true,
         "eslint>espree>acorn": true,
-        "eslint>espree>acorn-jsx": true
+        "eslint>espree>acorn-jsx": true,
+        "eslint>espree>eslint-visitor-keys": true
       }
     },
     "eslint>espree>acorn": {
@@ -2819,21 +2804,7 @@
       },
       "packages": {
         "eslint>file-entry-cache>flat-cache>flatted": true,
-        "eslint>file-entry-cache>flat-cache>rimraf": true
-      }
-    },
-    "eslint>file-entry-cache>flat-cache>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "nyc>glob": true
+        "nyc>rimraf": true
       }
     },
     "eslint>glob-parent": {
@@ -3604,7 +3575,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss>@choojs/findup": true,
         "gulp-rtlcss>rtlcss>postcss": true,
-        "rc>strip-json-comments": true
+        "gulp-rtlcss>rtlcss>strip-json-comments": true
       }
     },
     "gulp-rtlcss>rtlcss>@choojs/findup": {
@@ -3858,10 +3829,10 @@
         "setTimeout": true
       },
       "packages": {
-        "addons-linter>probe-image-size>next-tick": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>is-promise": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>lru-queue": true,
+        "gulp-sourcemaps>debug-fabulous>memoizee>next-tick": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": true,
         "resolve-url-loader>es6-iterator>d": true,
         "resolve-url-loader>es6-iterator>es5-ext": true
@@ -3876,6 +3847,16 @@
     "gulp-sourcemaps>debug-fabulous>memoizee>lru-queue": {
       "packages": {
         "resolve-url-loader>es6-iterator>es5-ext": true
+      }
+    },
+    "gulp-sourcemaps>debug-fabulous>memoizee>next-tick": {
+      "globals": {
+        "MutationObserver": true,
+        "WebKitMutationObserver": true,
+        "document": true,
+        "process": true,
+        "setImmediate": true,
+        "setTimeout": true
       }
     },
     "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": {
@@ -4146,7 +4127,6 @@
         "setTimeout": true
       },
       "packages": {
-        "addons-linter>upath": true,
         "gulp-watch>chokidar>anymatch": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>chokidar>braces": true,
@@ -4155,6 +4135,7 @@
         "gulp-watch>chokidar>is-glob": true,
         "gulp-watch>chokidar>normalize-path": true,
         "gulp-watch>chokidar>readdirp": true,
+        "gulp-watch>chokidar>upath": true,
         "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "pumpify>inherits": true
@@ -4835,6 +4816,11 @@
         "gulp-watch>chokidar>readdirp>micromatch>extglob>extend-shallow>is-extendable": true
       }
     },
+    "gulp-watch>chokidar>upath": {
+      "builtin": {
+        "path": true
+      }
+    },
     "gulp-watch>fancy-log": {
       "globals": {
         "console": true,
@@ -5171,7 +5157,6 @@
         "setTimeout": true
       },
       "packages": {
-        "addons-linter>upath": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>path-is-absolute": true,
@@ -5182,6 +5167,7 @@
         "gulp>glob-watcher>chokidar>is-binary-path": true,
         "gulp>glob-watcher>chokidar>normalize-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,
+        "gulp>glob-watcher>chokidar>upath": true,
         "pumpify>inherits": true
       }
     },
@@ -5645,6 +5631,11 @@
         "fs-extra>graceful-fs": true,
         "gulp>glob-watcher>anymatch>micromatch": true,
         "readable-stream": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>upath": {
+      "builtin": {
+        "path": true
       }
     },
     "gulp>glob-watcher>just-debounce": {
@@ -6552,6 +6543,20 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
+      }
+    },
+    "nyc>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
       }
     },
     "nyc>signal-exit": {
