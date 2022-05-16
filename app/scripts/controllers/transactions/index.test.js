@@ -2273,9 +2273,9 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('updates editible params when type changes', function () {
+    it('updates editible params when type changes', async function () {
       // test update gasFees
-      txController.updateEditableParams('1', {
+      await txController.updateEditableParams('1', {
         data:
           '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
       });
@@ -2287,9 +2287,9 @@ describe('Transaction Controller', function () {
       assert.equal(result.type, TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
     });
 
-    it('updates editible params when type does not change', function () {
+    it('updates editible params when type does not change', async function () {
       // test update gasFees
-      txController.updateEditableParams('1', {
+      await txController.updateEditableParams('1', {
         data: '0x123',
         gasLimit: '0xabc',
       });
