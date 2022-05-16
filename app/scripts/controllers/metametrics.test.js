@@ -9,8 +9,10 @@ import {
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import {
+  ETH_SYMBOL,
   MAINNET_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  TEST_ETH_SYMBOL,
 } from '../../../shared/constants/network';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
@@ -673,8 +675,9 @@ describe('MetaMetricsController', function () {
         },
         allTokens: MOCK_ALL_TOKENS,
         frequentRpcListDetail: [
-          { chainId: MAINNET_CHAIN_ID },
-          { chainId: ROPSTEN_CHAIN_ID },
+          { chainId: MAINNET_CHAIN_ID, ticker: ETH_SYMBOL },
+          { chainId: ROPSTEN_CHAIN_ID, ticker: TEST_ETH_SYMBOL },
+          { chainId: '0xaf' },
         ],
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
@@ -682,12 +685,14 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       assert.deepEqual(traits, {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
-        [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
+        [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID, '0xaf'],
+        [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],
         [TRAITS.NFT_AUTODETECTION_ENABLED]: false,
         [TRAITS.NUMBER_OF_ACCOUNTS]: 2,
         [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: 3,
@@ -696,6 +701,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
+        [TRAITS.TOKEN_DETECTION_ENABLED]: true,
       });
     });
 
@@ -717,6 +723,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -737,6 +744,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: false,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -765,6 +773,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -783,6 +792,7 @@ describe('MetaMetricsController', function () {
         threeBoxSyncingAllowed: false,
         useCollectibleDetection: true,
         theme: 'default',
+        useTokenDetection: true,
       });
 
       assert.equal(updatedTraits, null);

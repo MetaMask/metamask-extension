@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Συμφωνώ"
   },
-  "aggregatorFeeCost": {
-    "message": "Αμοιβή ανταλλακτηρίου"
-  },
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Τέλος έγκρισης και δικτύου ανταλλακτηρίου"
-  },
-  "approvalTxGasCost": {
-    "message": "Έγκριση Tx τέλους συναλλαγής"
   },
   "approve": {
     "message": "Έγκριση"
@@ -1173,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Εξωτερική Επέκταση"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 τέλος συναλλαγής",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Απέτυχε"

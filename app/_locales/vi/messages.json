@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Tôi đồng ý"
   },
-  "aggregatorFeeCost": {
-    "message": "Phí mạng cho trình tổng hợp"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Phí mạng cho trình tổng hợp và việc phê duyệt"
-  },
-  "approvalTxGasCost": {
-    "message": "Chi phí gas cho giao dịch phê duyệt"
   },
   "approve": {
     "message": "Phê duyệt giới hạn chi tiêu"
@@ -1173,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 gas phê duyệt",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Không thành công"

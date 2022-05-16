@@ -240,6 +240,7 @@ export const BUYABLE_CHAINS_MAP = {
       srn: 'ethereum',
       currencyCode: ETH_SYMBOL,
     },
+    coinbasePayCurrencies: [ETH_SYMBOL, 'USDC', 'DAI'],
   },
   [ROPSTEN_CHAIN_ID]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[ROPSTEN],
@@ -291,6 +292,7 @@ export const BUYABLE_CHAINS_MAP = {
       srn: 'avalanche',
       currencyCode: AVALANCHE_SYMBOL,
     },
+    coinbasePayCurrencies: [AVALANCHE_SYMBOL],
   },
   [FANTOM_CHAIN_ID]: {
     nativeCurrency: FANTOM_SYMBOL,

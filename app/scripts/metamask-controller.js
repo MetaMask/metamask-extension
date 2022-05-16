@@ -637,7 +637,6 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.workerController = new IframeExecutionService({
-      onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/0.4.5',
       ),
@@ -713,6 +712,9 @@ export default class MetamaskController extends EventEmitter {
           network: this.networkController,
           keyringMemStore: this.keyringController.memStore,
           tokenList: this.tokenListController,
+          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
         }))
       : (this.detectTokensController = new DetectTokensController({
           preferences: this.preferencesController,
@@ -3378,17 +3380,6 @@ export default class MetamaskController extends EventEmitter {
    * For snaps running in workers.
    *
    * @param snapId
-   * @param error
-   */
-  onExecutionEnvironmentError(snapId, error) {
-    this.snapController.stopPlugin(snapId);
-    this.snapController.addSnapError(error);
-  }
-
-  /**
-   * For snaps running in workers.
-   *
-   * @param snapId
    * @param connectionStream
    */
   setupSnapProvider(snapId, connectionStream) {
@@ -4141,6 +4132,12 @@ export default class MetamaskController extends EventEmitter {
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
+
+    const [ledgerKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.LEDGER,
+    );
+    ledgerKeyring?.destroy?.();
+
     return this.keyringController.setLocked();
   }
 }

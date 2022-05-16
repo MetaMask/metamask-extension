@@ -203,9 +203,6 @@
   "affirmAgree": {
     "message": "I Agree"
   },
-  "aggregatorFeeCost": {
-    "message": "Aggregator network fee"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -262,12 +259,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Approval and aggregator network fee"
-  },
-  "approvalTxGasCost": {
-    "message": "Approval Tx Gas Cost"
   },
   "approve": {
     "message": "Approve spend limit"
@@ -419,6 +410,14 @@
   "buyAsset": {
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Buy $1 with Coinbase Pay",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "You can easily buy or transfer crypto with your Coinbase account.",
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyCryptoWithMoonPay": {
     "message": "Buy $1 with MoonPay",
@@ -625,6 +624,9 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "continueToCoinbasePay": {
+    "message": "Continue to Coinbase Pay"
   },
   "continueToMoonPay": {
     "message": "Continue to MoonPay"
@@ -1184,10 +1186,6 @@
   },
   "externalExtension": {
     "message": "External Extension"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 approval gas",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Failed"

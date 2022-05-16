@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "Concordo"
   },
-  "aggregatorFeeCost": {
-    "message": "Taxa de rede do agregador"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Taxa de aprovação e da rede do agregador"
-  },
-  "approvalTxGasCost": {
-    "message": "Custo em gás da transação de aprovação"
   },
   "approve": {
     "message": "Aprovar limite de gastos"
@@ -1030,10 +1021,6 @@
   },
   "externalExtension": {
     "message": "Extensão externa"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 de gás por aprovação",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Falhou"

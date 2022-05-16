@@ -696,6 +696,9 @@ export function getIsBuyableMoonPayChain(state) {
 export function getIsBuyableWyreChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
+export function getIsBuyableCoinbasePayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
 }
 
 export function getNativeCurrencyImage(state) {
@@ -722,9 +725,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
       tabMessage: () => snap.manifest.proposedName,
       descriptionMessage: () => snap.manifest.description,
       sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
-        unescape(encodeURIComponent(snap.id)),
-      )}`,
+      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
       icon: 'fa fa-flask',
     };
   });
