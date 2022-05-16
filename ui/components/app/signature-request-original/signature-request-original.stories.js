@@ -5,7 +5,7 @@ import testData from '../../../../.storybook/test-data';
 import README from './README.mdx';
 import SignatureRequestOriginal from './signature-request-original.component';
 
-const MOCK_PRIMARY_IDENTITY = Object.values(testData.metamask.identities)[0];
+const [MOCK_PRIMARY_IDENTITY] = Object.values(testData.metamask.identities);
 
 const MOCK_SIGN_DATA = JSON.stringify({
   domain: {
