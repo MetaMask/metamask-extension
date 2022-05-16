@@ -145,6 +145,11 @@ export default class DepositEtherModal extends Component {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.ACCOUNTS,
                   event: 'Click buy Ether via Coinbase Pay',
+                  properties: {
+                    action: 'Deposit Ether',
+                    legacy_event: true,
+                  },
+                });
                 toCoinbasePay(address, chainId);
               },
               hide: !isBuyableCoinbasePayChain,

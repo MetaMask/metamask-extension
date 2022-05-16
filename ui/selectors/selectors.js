@@ -696,6 +696,7 @@ export function getIsBuyableMoonPayChain(state) {
 export function getIsBuyableWyreChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
+}
 export function getIsBuyableCoinbasePayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
