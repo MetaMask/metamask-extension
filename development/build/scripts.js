@@ -137,8 +137,8 @@ function getSegmentWriteKey({ buildType, environment }) {
 /**
  * Get the URL for the phishing warning page, if it has been set.
  *
- * @param options0
- * @param options0.testing
+ * @param {object} options - The phishing warning page options.
+ * @param {boolean} options.testing - Whether this is a test build or not.
  * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
  */
 function getPhishingWarningPageUrl({ testing }) {

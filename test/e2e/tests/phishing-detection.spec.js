@@ -77,6 +77,10 @@ describe('Phishing Detection', function () {
 
         await driver.switchToFrame(iframe);
         await driver.clickElement({
+          text: 'Open this warning in a new tab',
+        });
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await driver.clickElement({
           text: 'continuing at your own risk',
         });
         const header = await driver.findElement('h1');
@@ -110,7 +114,18 @@ describe('Phishing Detection', function () {
         const iframe = await driver.findElement('iframe');
 
         await driver.switchToFrame(iframe);
-        await driver.assertElementNotPresent({
+        await driver.clickElement({
+          text: 'Open this warning in a new tab',
+        });
+        await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+        await driver.clickElement({
+          text: 'continuing at your own risk',
+        });
+
+        // Ensure we're not on the wallet home page
+        await driver.assertElementNotPresent('[data-testid="wallet-balance"]');
+        // Ensure we're still on the warning page, meaning that the navigation failed
+        await driver.findElement({
           text: 'continuing at your own risk',
         });
       },
