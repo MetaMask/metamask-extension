@@ -34,7 +34,7 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
-  PHISHING_PAGE_URL: process.env.PHISHING_PAGE_URL,
+  PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
@@ -142,7 +142,7 @@ function getSegmentWriteKey({ buildType, environment }) {
  * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
  */
 function getPhishingWarningPageUrl({ testing }) {
-  let phishingWarningPageUrl = metamaskrc.PHISHING_PAGE_URL;
+  let phishingWarningPageUrl = metamaskrc.PHISHING_WARNING_PAGE_URL;
 
   if (!phishingWarningPageUrl) {
     phishingWarningPageUrl = testing
@@ -838,7 +838,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     IN_TEST: testing,
-    PHISHING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
+    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},

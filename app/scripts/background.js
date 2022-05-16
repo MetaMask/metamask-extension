@@ -67,7 +67,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
   global.metamaskGetState = localStore.get.bind(localStore);
 }
 
-const phishingPageUrl = new URL(process.env.PHISHING_PAGE_URL);
+const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
@@ -161,7 +161,7 @@ async function loadPhishingWarningPage() {
   let iframe;
   try {
     const extensionStartupPhishingPageUrl = new URL(
-      process.env.PHISHING_PAGE_URL,
+      process.env.PHISHING_WARNING_PAGE_URL,
     );
     // The `extensionStartup` hash signals to the phishing warning page that it should not bother
     // setting up streams for user interaction. Otherwise this page load would cause a console
