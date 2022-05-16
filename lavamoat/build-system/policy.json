@@ -1286,7 +1286,6 @@
         "fs.realpathSync": true,
         "fs.stat": true,
         "fs.statSync": true,
-        "os.homedir": true,
         "path.dirname": true,
         "path.join": true,
         "path.parse": true,
@@ -1294,22 +1293,21 @@
         "path.resolve": true
       },
       "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
         "process.nextTick": true,
         "process.platform": true,
         "process.versions": true
       },
       "packages": {
-        "brfs>resolve>path-parse": true,
-        "depcheck>is-core-module": true
+        "brfs>resolve>is-core-module": true,
+        "brfs>resolve>path-parse": true
+      }
+    },
+    "brfs>resolve>is-core-module": {
+      "globals": {
+        "process.versions": true
+      },
+      "packages": {
+        "enzyme>has": true
       }
     },
     "brfs>resolve>path-parse": {
