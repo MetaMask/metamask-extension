@@ -15,7 +15,7 @@ export default function Chip({
   label,
   labelProps = {},
   leftIcon,
-  leftIconUrl,
+  leftIconUrl = '',
   rightIcon,
   onClick,
   maxContent = true,

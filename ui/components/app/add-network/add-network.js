@@ -103,9 +103,8 @@ const AddNetwork = () => {
                   {t('here')}.
                 </a>,
                 <Button
-                  key="link"
-                  type="link"
-                  className="add-network__edge-case-box__button"
+                  key="button"
+                  type="inline"
                   onClick={(event) => {
                     event.preventDefault();
                     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -116,7 +115,6 @@ const AddNetwork = () => {
                   }}
                 >
                   <Typography
-                    className="add-network__edge-case-box__button"
                     variant={TYPOGRAPHY.H7}
                     color={COLORS.INFO_DEFAULT}
                   >
@@ -134,7 +132,8 @@ const AddNetwork = () => {
               display={DISPLAY.FLEX}
               alignItems={ALIGN_ITEMS.CENTER}
               flexDirection={FLEX_DIRECTION.ROW}
-              margin={[7, 0, 4, -2]}
+              marginTop={7}
+              marginBottom={4}
               paddingBottom={2}
               className="add-network__header"
             >
@@ -201,7 +200,6 @@ const AddNetwork = () => {
                     // Warning for the networks that doesn't use infura.io as the RPC
                     !infuraRegex.test(item.rpcUrl) && (
                       <Tooltip
-                        className="add-network__warning-tooltip"
                         position="top"
                         interactive
                         html={
@@ -222,7 +220,7 @@ const AddNetwork = () => {
                           </Box>
                         }
                         trigger="mouseenter"
-                        theme={theme === THEME_TYPE.DEFAULT ? 'light' : 'dark'}
+                        theme={theme === THEME_TYPE.LIGHT ? 'light' : 'dark'}
                       >
                         <i
                           className="fa fa-exclamation-triangle add-network__warning-icon"

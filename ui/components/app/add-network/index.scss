@@ -3,20 +3,20 @@
     border-bottom: 1px solid var(--color-border-default);
 
     @media screen and (max-width: 575px) {
-      padding-left: 24px;
-      padding-right: 24px;
+      padding-inline-start: 24px;
+      padding-inline-end: 24px;
     }
 
     &__back-icon {
-      margin-left: -8px;
-      margin-right: 4px;
+      margin-inline-start: -8px;
+      margin-inline-end: 4px;
     }
   }
 
   &__main-container {
     @media screen and (max-width: 575px) {
-      padding-left: 24px;
-      padding-right: 24px;
+      padding-inline-start: 24px;
+      padding-inline-end: 24px;
     }
   }
 
@@ -41,15 +41,15 @@
 
   &__add-icon {
     color: var(--color-text-alternative);
-    margin-left: auto;
-    margin-right: 0;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
     cursor: pointer;
   }
 
   &__add-button.button {
     color: var(--color-primary-default);
     font-size: $font-size-h7;
-    margin-left: 24px;
+    margin-inline-start: 24px;
   }
 
   &__footer {
@@ -58,7 +58,7 @@
     padding-bottom: 8px;
 
     @media screen and (max-width: 575px) {
-      padding-left: 24px !important;
+      padding-inline-start: 24px !important;
     }
 
     & .btn-link {
@@ -77,19 +77,12 @@
   }
 
   &__edge-case-box {
-    border: 1px solid var(--brand-colors-grey-grey100);
+    border: 1px solid var(--color-border-muted);
 
     &__link {
       color: var(--color-info-default);
-      display: inline !important;
-      padding: 0 !important;
-    }
-
-    &__button {
-      display: inline !important;
-      padding: 0 !important;
+      display: inline;
+      padding: 0;
     }
   }
 }
-
-

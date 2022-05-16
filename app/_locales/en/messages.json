@@ -4080,7 +4080,8 @@
     "message": "Yes, let's try"
   },
   "youHaveAddedAll": {
-    "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2"
+    "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."
