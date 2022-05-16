@@ -23,7 +23,9 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getNotifications,
+  ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
