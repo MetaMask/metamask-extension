@@ -15,7 +15,7 @@ export default {
     },
   },
   args: {
-    eventKey: 'TRANSACTION_CREATED_EVENT',
+    eventKey: Object.keys(imageHash)[0],
   },
 };
 
