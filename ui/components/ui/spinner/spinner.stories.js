@@ -2,7 +2,7 @@ import React from 'react';
 import Spinner from '.';
 
 export default {
-  title: 'Components/UI/Spinner', // title should follow the folder structure location of the component. Don't use spaces.
+  title: 'Components/UI/Spinner',
   id: __filename,
   argTypes: {
     className: {
