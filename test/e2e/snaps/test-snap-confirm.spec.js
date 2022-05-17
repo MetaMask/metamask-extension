@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Confirm', function () {
   it('can pop up a snap confirm and get its result', async function () {
@@ -29,7 +30,7 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/');
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.fill('.snapId', 'npm:@metamask/test-snap-confirm');
         await driver.clickElement({
           text: 'Connect To Confirm Snap',
