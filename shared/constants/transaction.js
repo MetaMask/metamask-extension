@@ -324,12 +324,27 @@ export const TRANSACTION_EVENTS = {
 };
 
 /**
+ * @typedef {Object} AssetTypes
+ * @property {'NATIVE'} NATIVE - The native asset for the current network, such
+ *  as ETH
+ * @property {'TOKEN'} TOKEN - An ERC20 token.
+ * @property {'COLLECTIBLE'} COLLECTIBLE - An ERC721 or ERC1155 token.
+ * @property {'UNKNOWN'} UNKNOWN - A transaction interacting with a contract
+ *  that isn't a token method interaction will be marked as dealing with an
+ *  unknown asset type.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above asset types
+ *
+ * @typedef {AssetTypes[keyof AssetTypes]} AssetTypesString
+ */
+
+/**
  * The types of assets that a user can send
- * 1. NATIVE - The native asset for the current network, such as ETH
- * 2. TOKEN - An ERC20 token.
- * 3. COLLECTIBLE - An ERC721 or ERC1155 token.
- * 4. UNKNOWN - A transaction interacting with a contract that isn't a token
- *  method interaction will be marked as dealing with an unknown asset type.
+ *
+ * @type {AssetTypes}
  */
 export const ASSET_TYPES = {
   NATIVE: 'NATIVE',
