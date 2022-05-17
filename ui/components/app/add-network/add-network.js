@@ -43,7 +43,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);
-  const theme = useSelector(getTheme);
   const dispatch = useDispatch();
   const history = useHistory();
   const frequentRpcList = useSelector(getFrequentRpcListDetail);
@@ -61,6 +60,16 @@ const AddNetwork = () => {
   );
   const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const [showPopover, setShowPopover] = useState(false);
+  const [theme, setTheme] = useState(useSelector(getTheme));
+
+  if (theme === THEME_TYPE.OS) {
+    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
+      ? THEME_TYPE.DARK
+      : THEME_TYPE.LIGHT;
+
+    setTheme(osTheme);
+  }
+
   useEffect(() => {
     const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations.find(
       (confirmation) => {
@@ -220,7 +229,7 @@ const AddNetwork = () => {
                           </Box>
                         }
                         trigger="mouseenter"
-                        theme={theme === THEME_TYPE.LIGHT ? 'light' : 'dark'}
+                        theme={theme}
                       >
                         <i
                           className="fa fa-exclamation-triangle add-network__warning-icon"
