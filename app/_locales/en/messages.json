@@ -1057,7 +1057,8 @@
     "description": "$1 is a token symbol, e.g. ETH"
   },
   "encryptionPublicKeyNotice": {
-    "message": "would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you."
+    "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
+    "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
     "message": "Request encryption public key"
