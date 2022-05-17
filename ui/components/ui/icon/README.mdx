@@ -1,12 +1,12 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import IconCaretLeft from './icon-caret-left.js';
 import Approve from './approve-icon.component';
 import BuyIcon from './overview-buy-icon.component';
 import CopyIcon from './copy-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
 import Interaction from './interaction-icon.component';
-import PaperAirplane from './paper-airplane-icon';
 import Preloader from './preloader';
 import ReceiveIcon from './receive-icon.component';
 import SendIcon from './send-icon.component';
@@ -21,6 +21,63 @@ import SwapIconComponent from './swap-icon.component';
 A range of SVG icon components
 
 > 💡 A lot of the our icons have different props and are not consistent we will need to work on fixing this.
+
+## Component API
+
+<ArgsTable of={IconCaretLeft} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Size
+
+Use the `size` prop to change the size of the icon it should adhere to an `8px` grid e.g. `16px`, `24px`, `32px`
+
+<Canvas>
+  <Story id="ui-components-ui-icon-icon-stories-js--size" />
+</Canvas>
+
+### Color
+
+Use the `color` prop to change the color of the icon. `color` accepts any css value. Should use the valid design token css variables
+
+<Canvas>
+  <Story id="ui-components-ui-icon-icon-stories-js--color" />
+</Canvas>
+
+### AriaLabel
+
+Use the `ariaLabel` prop with icons intended to be used without text. e.g. back buttons or icons that should provide extra information to screen readers
+
+<Canvas>
+  <Story id="ui-components-ui-icon-icon-stories-js--aria-label" />
+</Canvas>
+
+Will render the html
+
+```html
+<svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  aria-label="back"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+>
+  <path
+    d="m335 113c8 8 8 22 0 30l-113 113 113 113c8 8 8 22 0 30-8 8-22 8-30 0l-128-128c-8-8-8-22 0-30l128-128c8-8 22-8 30 0z"
+  ></path>
+</svg>
+```
+
+### ClassName
+
+Use the `className` prop to add an additional class to the icon. This additional class is recommend to be used with layout of positioning css
+
+# DEPRECATED ICONS
+
+> The icons below use many different prop combinations and should be updated to the above api
 
 ## Approve
 
@@ -117,12 +174,6 @@ A range of SVG icon components
 </Canvas>
 
 <ArgsTable of={SwapIconComponent} />
-
-## PaperAirplane
-
-<Canvas>
-  <Story id="ui-components-ui-icon-icon-stories-js--paper-airplane-story" />
-</Canvas>
 
 ## CopyIcon
 

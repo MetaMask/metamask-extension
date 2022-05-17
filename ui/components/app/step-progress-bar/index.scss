@@ -1,8 +1,10 @@
+$progress-bar-width: calc(100% - 34px); // 100% - (circle size + (circle border size * 2))
+$progress-bar-position-left: calc(-50% + 17px); // -50% + ((circle size / 2) + circle border size)
+
 .progressbar {
   counter-reset: step;
   display: flex;
-  justify-content: space-evenly;
-  width: 500px;
+  justify-content: space-between;
   margin: 0 auto;
 }
 
@@ -11,15 +13,17 @@ ul.two-steps {
 }
 
 .progressbar li {
+  @include H7;
+
   list-style-type: none;
-  width: 25%;
-  float: left;
-  font-size: 12px;
   position: relative;
   text-align: center;
-  text-transform: uppercase;
-  color: #7d7d7d;
+  color: var(--color-text-alternative);
   z-index: 2;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .progressbar li::before {
@@ -28,33 +32,31 @@ ul.two-steps {
   content: counter(step);
   counter-increment: step;
   line-height: 30px;
-  border: 2px solid #d6d9dc;
-  display: block;
+  border: 2px solid var(--color-border-muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin: 0 auto 10px auto;
   border-radius: 50%;
-  background-color: white;
-  z-index: -1;
+  background-color: var(--color-background-default);
 }
 
 .progressbar li::after {
-  width: 100%;
+  width: $progress-bar-width;
   height: 2px;
   content: '';
   position: absolute;
-  background-color: #d6d9dc;
+  background-color: var(--color-background-alternative);
   top: 15px;
-  right: 77px;
-  z-index: -1;
+  left: $progress-bar-position-left;
 
   [dir='rtl'] & {
-    width: 100%;
+    width: $progress-bar-width;
     height: 2px;
     content: '';
     position: absolute;
-    background-color: #d6d9dc;
-    right: 77px;
-    z-index: -1;
+    background-color: var(--color-background-alternative);
   }
 }
 
@@ -67,51 +69,49 @@ ul.two-steps {
 }
 
 .progressbar li.active {
-  color: var(--primary-blue);
+  color: var(--color-primary-default);
 
   [dir='rtl'] & {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
   }
 }
 
 .progressbar li.active::before {
-  border-color: var(--primary-blue);
+  border-color: var(--color-primary-default);
   z-index: 1;
 
   [dir='rtl'] & {
-    border-color: var(--primary-blue);
+    border-color: var(--color-primary-default);
     z-index: 1;
   }
 }
 
-.progressbar li.active + li::after {
-  background-color: var(--primary-blue);
+.progressbar li.complete + li::after {
+  background-color: var(--color-primary-default);
   z-index: -1;
 
   [dir='rtl'] & {
-    background-color: var(--primary-blue);
+    background-color: var(--color-primary-default);
     z-index: -1;
   }
 }
 
 .progressbar li.complete::before {
-  background-color: var(--primary-blue);
-  color: var(--ui-white);
+  background-color: var(--color-primary-default);
+  color: var(--color-primary-inverse);
 
   [dir='rtl'] & {
-    background-color: var(--primary-blue);
-    color: var(--ui-white);
+    background-color: var(--color-primary-default);
+    color: var(--color-primary-inverse);
   }
 }
 
 .progressbar li.two-steps::after {
-  width: 180px;
   height: 2px;
   content: '';
   position: absolute;
-  background-color: #d6d9dc;
+  background-color: var(--color-background-alternative);
   top: 15px;
-  right: 75px;
   z-index: -1;
 
   [dir='rtl'] & {
@@ -119,8 +119,7 @@ ul.two-steps {
     height: 2px;
     content: '';
     position: absolute;
-    background-color: #d6d9dc;
-    right: 75px;
+    background-color: var(--color-background-alternative);
     z-index: -1;
   }
 }

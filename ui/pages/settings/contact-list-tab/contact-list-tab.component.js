@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import EditContact from './edit-contact';
@@ -32,7 +32,7 @@ export default class ContactListTab extends Component {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('contacts')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('contacts')),
   )
     .fill(undefined)
     .map(() => {
@@ -72,7 +72,10 @@ export default class ContactListTab extends Component {
     return (
       <div className="address-book__container">
         <div>
-          <img src="./images/address-book.svg" alt={t('addressBookIcon')} />
+          <i
+            className="fa fa-address-book fa-4x address-book__icon"
+            title={t('addressBookIcon')}
+          />
           <h4 className="address-book__title">{t('buildContactList')}</h4>
           <p className="address-book__sub-title">
             {t('addFriendsAndAddresses')}

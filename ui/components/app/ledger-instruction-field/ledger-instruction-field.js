@@ -35,7 +35,11 @@ import {
 import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 
-const renderInstructionStep = (text, show = true, color = COLORS.PRIMARY3) => {
+const renderInstructionStep = (
+  text,
+  show = true,
+  color = COLORS.TEXT_DEFAULT,
+) => {
   return (
     show && (
       <Typography
@@ -198,7 +202,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               usingWebHID &&
                 webHidConnectedStatus ===
                   WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
-              COLORS.SECONDARY1,
+              COLORS.SECONDARY_DEFAULT,
             )}
           </div>
         </Dialog>

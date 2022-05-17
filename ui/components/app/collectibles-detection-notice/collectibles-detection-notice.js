@@ -20,33 +20,39 @@ export default function CollectiblesDetectionNotice() {
   const history = useHistory();
 
   return (
-    <Box marginBottom={4} className="collectibles-detection-notice">
+    <Box className="collectibles-detection-notice">
       <Dialog type="message" className="collectibles-detection-notice__message">
         <button
           onClick={() => setCollectiblesDetectionNoticeDismissed()}
-          className="collectibles-detection-notice__message__close-button"
+          className="fas fa-times collectibles-detection-notice__message__close-button"
           data-testid="collectibles-detection-notice-close"
         />
         <Box display={DISPLAY.FLEX}>
-          <Box paddingTop={2}>
-            <i style={{ fontSize: '1rem' }} className="fa fa-info-circle" />
+          <Box paddingTop={1}>
+            <i
+              style={{
+                fontSize: '1rem',
+                color: 'var(--color-primary-default)',
+              }}
+              className="fa fa-info-circle"
+            />
           </Box>
-          <Box paddingLeft={4}>
+          <Box paddingLeft={2}>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
-              variant={TYPOGRAPHY.H6}
+              variant={TYPOGRAPHY.H7}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('newNFTsDetected')}
             </Typography>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
-              variant={TYPOGRAPHY.H6}
+              variant={TYPOGRAPHY.H7}
               boxProps={{ marginBottom: 4 }}
             >
-              {t('newNFTsDetectedInfo')}
+              {t('newNFTDetectedMessage')}
             </Typography>
             <Button
               type="link"

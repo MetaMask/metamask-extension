@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { ERC20 } from '../../../helpers/constants/common';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
@@ -16,6 +17,7 @@ const props = {
   tokenAmount: '10',
   origin: 'https://metamask.github.io/test-dapp/',
   tokenSymbol: 'TST',
+  assetStandard: ERC20,
   tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   tokenBalance: '15',
   showCustomizeGasModal: jest.fn(),
@@ -49,7 +51,7 @@ describe('ConfirmApproveContent Component', () => {
       ),
     ).toBeInTheDocument();
     expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
-    expect(queryByText('View full transaction details')).toBeInTheDocument();
+    expect(queryByText('Hide full transaction details')).toBeInTheDocument();
 
     expect(queryByText('Edit Permission')).toBeInTheDocument();
     const editPermission = getByText('Edit Permission');
@@ -71,14 +73,15 @@ describe('ConfirmApproveContent Component', () => {
     fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
 
-    const showHideTxDetails = getByText('View full transaction details');
-    expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved amount:')).not.toBeInTheDocument();
-    expect(queryByText('Granted to:')).not.toBeInTheDocument();
-    fireEvent.click(showHideTxDetails);
+    const showHideTxDetails = getByText('Hide full transaction details');
     expect(getByText('Permission request')).toBeInTheDocument();
     expect(getByText('Approved amount:')).toBeInTheDocument();
     expect(getByText('Granted to:')).toBeInTheDocument();
+    fireEvent.click(showHideTxDetails);
+    expect(getByText('View full transaction details')).toBeInTheDocument();
+    expect(queryByText('Permission request')).not.toBeInTheDocument();
+    expect(queryByText('Approved amount:')).not.toBeInTheDocument();
+    expect(queryByText('Granted to:')).not.toBeInTheDocument();
     expect(getByText('0x9bc5...fef4')).toBeInTheDocument();
   });
 });

@@ -3,7 +3,7 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
-const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
+const VERSION = require('../package.json').version;
 const { getHighlights } = require('./highlights');
 
 start().catch(console.error);
@@ -19,6 +19,8 @@ async function start() {
   console.log('CIRCLE_SHA1', CIRCLE_SHA1);
   const { CIRCLE_BUILD_NUM } = process.env;
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
+  const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
+  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
@@ -27,7 +29,7 @@ async function start() {
 
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
-  const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-42009758-gh.circle-artifacts.com/0`;
+  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
   // build the github comment content
 

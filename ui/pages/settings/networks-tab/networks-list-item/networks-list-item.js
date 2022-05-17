@@ -4,23 +4,28 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
-import { SIZES } from '../../../../helpers/constants/design-system';
-import ColorIndicator from '../../../../components/ui/color-indicator';
+import {
+  NETWORK_TYPE_RPC,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+} from '../../../../../shared/constants/network';
 import LockIcon from '../../../../components/ui/lock-icon';
+import IconCheck from '../../../../components/ui/icon/icon-check';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
+import Identicon from '../../../../components/ui/identicon';
+import UrlIcon from '../../../../components/ui/url-icon';
 
-import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
+import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 
 const NetworksListItem = ({
   network,
   networkIsSelected,
   selectedRpcUrl,
-  networkIndex,
+  setSearchQuery,
+  setSearchedNetworks,
 }) => {
   const t = useI18nContext();
   const history = useHistory();
@@ -44,11 +49,14 @@ const NetworksListItem = ({
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
   const displayNetworkListItemAsSelected =
     listItemNetworkIsSelected || listItemNetworkIsCurrentProvider;
+  const isCurrentRpcTarget =
+    listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType;
+
   const settingsRefs = useRef();
 
   useEffect(() => {
-    handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
-  }, [networkIndex, settingsRefs, t]);
+    handleSettingsRefs(t, t('networks'), settingsRefs);
+  }, [settingsRefs, t]);
 
   return (
     <div
@@ -56,17 +64,46 @@ const NetworksListItem = ({
       key={`settings-network-list-item:${rpcUrl}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
+        setSearchQuery('');
+        setSearchedNetworks([]);
         dispatch(setSelectedSettingsRpcUrl(rpcUrl));
         if (!isFullScreen) {
           history.push(NETWORKS_FORM_ROUTE);
         }
       }}
     >
-      <ColorIndicator
-        color={labelKey}
-        type={ColorIndicator.TYPES.FILLED}
-        size={SIZES.LG}
-      />
+      {isCurrentRpcTarget ? (
+        <IconCheck color="var(--color-success-default)" />
+      ) : (
+        <div className="networks-tab__content__check-icon__transparent">✓</div>
+      )}
+      {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        <Identicon
+          className="networks-tab__content__custom-image"
+          diameter={24}
+          image={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+          imageBorder
+        />
+      ) : (
+        !network.isATestNetwork && (
+          <UrlIcon
+            className="networks-tab__content__icon-with-fallback"
+            fallbackClassName="networks-tab__content__icon-with-fallback"
+            name={label}
+          />
+        )
+      )}
+      {network.isATestNetwork && (
+        <UrlIcon
+          name={label || labelKey}
+          fallbackClassName={classnames(
+            'networks-tab__content__icon-with-fallback',
+            {
+              [`networks-tab__content__icon-with-fallback--color-${labelKey}`]: true,
+            },
+          )}
+        />
+      )}
       <div
         className={classnames('networks-tab__networks-list-name', {
           'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
@@ -77,10 +114,9 @@ const NetworksListItem = ({
       >
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPE_RPC && (
-          <LockIcon width="14px" height="17px" fill="#cdcdcd" />
+          <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
         )}
       </div>
-      <div className="networks-tab__networks-list-arrow" />
     </div>
   );
 };
@@ -89,7 +125,8 @@ NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
-  networkIndex: PropTypes.number,
+  setSearchQuery: PropTypes.func,
+  setSearchedNetworks: PropTypes.func,
 };
 
 export default NetworksListItem;

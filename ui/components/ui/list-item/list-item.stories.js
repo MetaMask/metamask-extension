@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { text } from '@storybook/addon-knobs';
 import Send from '../icon/send-icon.component';
 import Interaction from '../icon/interaction-icon.component';
 import Approve from '../icon/approve-icon.component';
@@ -12,6 +11,29 @@ import ListItem from './list-item.component';
 export default {
   title: 'Components/UI/ListItem',
   id: __filename,
+  argTypes: {
+    title: {
+      control: 'text',
+    },
+    subtitle: {
+      control: 'text',
+    },
+    primaryCurrency: {
+      control: 'text',
+    },
+    secondaryCurrency: {
+      control: 'text',
+    },
+    className: {
+      control: 'text',
+    },
+  },
+  args: {
+    title: 'Send DAI',
+    subtitle: 'Sept 20 · To: 00X4...3058',
+    primaryCurrency: '2 ETH',
+    secondaryCurrency: '70 USD',
+  },
 };
 
 function Currencies({ primary, secondary }) {
@@ -28,77 +50,90 @@ Currencies.propTypes = {
   secondary: PropTypes.string,
 };
 
-const okColor = '#2F80ED';
-const failColor = '#D73A49';
+const okColor = 'var(--color-primary-default)';
+const failColor = 'var(--color-error-default';
 
-export const SendComponent = () => (
+export const SendComponent = (args) => (
   <ListItem
     icon={<Send color={okColor} size={28} />}
-    titleIcon={<Preloader size={16} color="#D73A49" />}
-    title={text('title', 'Send DAI')}
-    className="list-item"
-    subtitle={text('subtitle', 'Sept 20 · To: 00X4...3058')}
+    titleIcon={<Preloader size={16} color={failColor} />}
+    title={args.title}
+    subtitle={args.subtitle}
+    className={args.className}
     rightContent={
       <Currencies
-        primary={text('primaryCurrency', '- 0.0732 DAI')}
-        secondary={text('secondaryCurrency', '- $6.04 USD')}
+        primary={args.primaryCurrency}
+        secondary={args.secondaryCurrency}
       />
     }
   >
     <div style={{ display: 'flex', marginTop: 8 }}>
       <Button type="secondary" style={{ marginRight: 16, maxWidth: 150 }}>
-        {text('button1', 'Speed Up')}
+        {args.secondaryButtonText}
       </Button>
-      <Button style={{ maxWidth: 150 }}>{text('button2', 'Cancel')}</Button>
+      <Button style={{ maxWidth: 150 }}>{args.cancelButtonText}</Button>
     </div>
   </ListItem>
 );
 
-export const PendingComponent = () => (
+SendComponent.argTypes = {
+  secondaryButtonText: {
+    control: 'text',
+    defaultValue: 'Speed Up',
+  },
+  cancelButtonText: {
+    control: 'text',
+    defaultValue: 'Cancel',
+  },
+};
+
+export const PendingComponent = (args) => (
   <ListItem
+    title={args.title}
+    subtitle={args.subtitle}
     icon={<Interaction color={failColor} size={28} />}
-    title={text('title', 'Hatch Turtles')}
-    className="list-item"
+    className={args.className}
     subtitleStatus={
       <span>
-        <span style={{ color: '#F56821' }}>Unapproved</span> ·{' '}
+        <span style={{ color: 'var(--color-warning-default)' }}>
+          Unapproved
+        </span>{' '}
+        ·{' '}
       </span>
     }
-    subtitle={text('subtitle', 'Turtlefarm.com')}
     rightContent={
       <Currencies
-        primary={text('primaryCurrency', '- 0.0732 ETH')}
-        secondary={text('secondaryCurrency', '- $6.00 USD')}
+        primary={args.primaryCurrency}
+        secondary={args.secondaryCurrency}
       />
     }
   />
 );
 
-export const ApproveComponent = () => (
+export const ApproveComponent = (args) => (
   <ListItem
+    title={args.title}
+    subtitle={args.subtitle}
     icon={<Approve color={okColor} size={28} />}
-    title={text('title', 'Approve spend limit')}
-    className="list-item"
-    subtitle={text('subtitle', 'Sept 20 · oxuniverse.com')}
+    className={args.className}
     rightContent={
       <Currencies
-        primary={text('primaryCurrency', '- 0 ETH')}
-        secondary={text('secondaryCurrency', '- $0.00 USD')}
+        primary={args.primaryCurrency}
+        secondary={args.secondaryCurrency}
       />
     }
   />
 );
 
-export const ReceiveComponent = () => (
+export const ReceiveComponent = (args) => (
   <ListItem
+    {...args}
     icon={<Receive color={okColor} size={28} />}
-    title={text('title', 'Hatch Turtles')}
-    className="list-item"
-    subtitle={text('subtitle', 'Sept 20 · From: 00X4...3058')}
+    className={args.className}
     rightContent={
       <Currencies
-        primary={text('primaryCurrency', '7.5 ETH')}
-        secondary={text('secondaryCurrency', '$1,425.00 USD')}
+        primary={args.primaryCurrency}
+        secondary={args.secondaryCurrency}
       />
     }
   />

@@ -10,6 +10,7 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   DEVICE_NAMES,
@@ -253,23 +254,23 @@ class ConnectHardwareForm extends Component {
       description,
     )
       .then((_) => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Accounts',
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: `Connected Account with: ${device}`,
+          properties: {
             action: 'Connected Hardware Wallet',
-            name: `Connected Account with: ${device}`,
+            legacy_event: true,
           },
         });
         history.push(mostRecentOverviewPage);
       })
       .catch((e) => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Accounts',
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: 'Error connecting hardware wallet',
+          properties: {
             action: 'Connected Hardware Wallet',
-            name: 'Error connecting hardware wallet',
-          },
-          customVariables: {
+            legacy_event: true,
             error: e.message,
           },
         });
@@ -414,7 +415,7 @@ const mapDispatchToProps = (dispatch) => {
 
 ConnectHardwareForm.contextTypes = {
   t: PropTypes.func,
-  metricsEvent: PropTypes.func,
+  trackEvent: PropTypes.func,
 };
 
 export default connect(

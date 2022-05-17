@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
 import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
@@ -25,6 +24,7 @@ import {
   TEXT_ALIGN,
   OVERFLOW_WRAP,
 } from '../../helpers/constants/design-system';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();
@@ -34,14 +34,16 @@ export default function TokenDetailsPage() {
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(getUseTokenDetection);
 
-  const tokenAddress = history?.location?.state?.tokenAddress;
+  const { address: tokenAddress } = useParams();
   const tokenMetadata = Object.values(tokenList).find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
   );
+  const aggregators = tokenMetadata?.aggregators?.join(', ');
   const fileName = tokenMetadata?.iconUrl;
-  const imagePath = useTokenDetection
-    ? fileName
-    : `images/contract/${fileName}`;
+  let imagePath = fileName;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    imagePath = useTokenDetection ? fileName : `images/contract/${fileName}`;
+  }
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
@@ -74,7 +76,7 @@ export default function TokenDetailsPage() {
           fontWeight={FONT_WEIGHT.BOLD}
           margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H6}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           className="token-details__title"
         >
           {t('tokenDetails')}
@@ -90,7 +92,7 @@ export default function TokenDetailsPage() {
             fontWeight={FONT_WEIGHT.BOLD}
             margin={[0, 5, 0, 0]}
             variant={TYPOGRAPHY.H4}
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             className="token-details__token-value"
           >
             {tokenBalance || ''}
@@ -106,14 +108,14 @@ export default function TokenDetailsPage() {
         <Typography
           margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H7}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
         >
           {tokenCurrencyBalance || ''}
         </Typography>
         <Typography
           margin={[6, 0, 0, 0]}
           variant={TYPOGRAPHY.H9}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenContractAddress')}
@@ -122,7 +124,7 @@ export default function TokenDetailsPage() {
           <Typography
             variant={TYPOGRAPHY.H7}
             margin={[2, 0, 0, 0]}
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             className="token-details__token-address"
           >
@@ -140,14 +142,14 @@ export default function TokenDetailsPage() {
                 handleCopy(token.address);
               }}
             >
-              <CopyIcon size={11} color="#037DD6" />
+              <CopyIcon size={11} color="var(--color-primary-default)" />
             </Button>
           </Tooltip>
         </Box>
         <Typography
           variant={TYPOGRAPHY.H9}
           margin={[4, 0, 0, 0]}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenDecimalTitle')}
@@ -155,14 +157,14 @@ export default function TokenDetailsPage() {
         <Typography
           variant={TYPOGRAPHY.H7}
           margin={[1, 0, 0, 0]}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
         >
           {token.decimals}
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H9}
           margin={[4, 0, 0, 0]}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('network')}
@@ -170,14 +172,33 @@ export default function TokenDetailsPage() {
         <Typography
           variant={TYPOGRAPHY.H7}
           margin={[1, 0, 0, 0]}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
         >
           {networkType === NETWORK_TYPE_RPC
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
+        {process.env.TOKEN_DETECTION_V2 && aggregators && (
+          <>
+            <Typography
+              variant={TYPOGRAPHY.H9}
+              margin={[4, 0, 0, 0]}
+              color={COLORS.TEXT_ALTERNATIVE}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('tokenList')}
+            </Typography>
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              margin={[1, 0, 0, 0]}
+              color={COLORS.TEXT_DEFAULT}
+            >
+              {`${aggregators}.`}
+            </Typography>
+          </>
+        )}
         <Button
-          type="primary"
+          type="secondary"
           className="token-details__hide-token-button"
           onClick={() => {
             dispatch(
@@ -185,7 +206,7 @@ export default function TokenDetailsPage() {
             );
           }}
         >
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
+          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
             {t('hideToken')}
           </Typography>
         </Button>

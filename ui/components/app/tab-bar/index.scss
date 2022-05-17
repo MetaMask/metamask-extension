@@ -3,13 +3,13 @@
   flex-direction: column;
   justify-content: flex-start;
 
-
   &__tab {
     @include Paragraph;
 
+    color: var(--color-text-default);
     display: flex;
     flex-flow: row nowrap;
-    align-items: baseline;
+    align-items: center;
     min-width: 0;
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -31,14 +31,14 @@
     @media screen and (max-width: $break-small) {
       @include H4;
 
-      border-bottom: 1px solid var(--alto);
+      border-bottom: 1px solid var(--color-border-muted);
       opacity: 1;
     }
 
     &__content {
       padding: 12px 18px;
       display: flex;
-      flex-flow: row wrap;
+      flex: 1 1 auto;
       align-items: center;
       position: relative;
 
@@ -63,10 +63,15 @@
         }
       }
 
-
       &__icon {
-        margin-inline-end: 16px;
         display: flex;
+        justify-content: center;
+        margin-inline-end: 16px;
+        flex: 0 0 18px;
+
+        @media screen and (min-width: $break-large) {
+          flex: 0 0 14px;
+        }
       }
     }
 
@@ -75,15 +80,8 @@
 
       @media screen and (max-width: $break-small) {
         display: block;
-        background-image: url('/images/caret-right.svg');
-        width: 8.27px;
-        height: 13.64px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
         margin-inline-start: auto;
-        margin-top: 16px;
-        margin-inline-end: 16px;
+        margin-inline-end: 8px;
 
         [dir='rtl'] & {
           transform: rotate(180deg);

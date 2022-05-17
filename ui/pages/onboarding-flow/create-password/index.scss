@@ -1,36 +1,50 @@
 .create-password {
+  &__weak {
+    color: var(--color-error-default);
+  }
+
+  &__average {
+    color: var(--color-warning-alternative);
+  }
+
+  &__strong {
+    color: var(--color-success-alternative);
+  }
+
   &__wrapper {
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    max-width: 600px;
-    max-height: 750px;
   }
 
   &__link-text {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 
   &__form {
-    padding: 0 24px;
+    @media screen and (min-width: $break-large) {
+      max-width: 320px;
+    }
 
     &--password-button {
       background-color: transparent;
-    }
-
-    &--submit-button {
-      padding: 20px;
+      color: var(--color-text-default);
     }
 
     &--checkmark {
       i {
-        color: var(--success-1);
+        color: var(--color-success-default);
       }
+    }
+
+    &__terms-label {
+      display: flex;
     }
 
     .form-field__input {
       height: 50px;
+      width: 100%;
     }
   }
 }

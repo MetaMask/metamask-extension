@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
-import abiERC721 from 'human-standard-collectible-abi';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
@@ -44,6 +43,7 @@ import {
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -51,14 +51,16 @@ import {
   estimateGas,
   getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
-  showConfTxPage,
   showLoadingIndication,
-  updateTransaction,
+  updateEditableParams,
+  updateTransactionGasFees,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   isCollectibleOwner,
   getTokenStandardAndDetails,
   showModal,
+  addUnapprovedTransactionAndRouteToConfirmationPage,
+  updateTransactionSendFlowHistory,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -78,7 +80,6 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
-  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -91,6 +92,9 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
+import { sumHexes } from '../../helpers/utils/transactions.util';
+import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
+
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
   ERC20,
@@ -99,9 +103,15 @@ import {
   ETH,
   GWEI,
 } from '../../helpers/constants/common';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_TYPES,
+} from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { getValueFromWeiHex } from '../../helpers/utils/confirm-tx.util';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -164,18 +174,6 @@ export const GAS_INPUT_MODES = {
 };
 
 /**
- * The types of assets that a user can send
- * 1. NATIVE - The native asset for the current network, such as ETH
- * 2. TOKEN - An ERC20 token.
- * 2. COLLECTIBLE - An ERC721 or ERC1155 token.
- */
-export const ASSET_TYPES = {
-  NATIVE: 'NATIVE',
-  TOKEN: 'TOKEN',
-  COLLECTIBLE: 'COLLECTIBLE',
-};
-
-/**
  * The modes that the amount field can be set by
  * 1. INPUT - the user provides the amount by typing in the field
  * 2. MAX - The user selects the MAX button and amount is calculated based on
@@ -200,6 +198,7 @@ async function estimateGasLimitForSend({
   data,
   isNonStandardEthChain,
   chainId,
+  gasLimit,
   ...options
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
@@ -321,12 +320,14 @@ async function estimateGasLimitForSend({
       error.message.includes('Transaction execution error.') ||
       error.message.includes(
         'gas required exceeds allowance or always failing transaction',
-      );
+      ) ||
+      (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
+        error.message.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
-        paramsForGasEstimate.gas,
+        paramsForGasEstimate?.gas ?? gasLimit,
         blockGasLimit,
-        1.5,
+        bufferMultiplier,
       );
       return addHexPrefix(estimateWithBuffer);
     }
@@ -370,9 +371,29 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const state = thunkApi.getState();
     const { send, metamask } = state;
     const unapprovedTxs = getUnapprovedTxs(state);
+    const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[send.draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+
+    let layer1GasTotal;
+    if (isMultiLayerFeeNetwork) {
+      layer1GasTotal = await fetchEstimatedL1Fee(global.eth, {
+        txParams: {
+          gasPrice: send.gas.gasPrice,
+          gas: send.gas.gasLimit,
+          to: send.recipient.address?.toLowerCase(),
+          value:
+            send.amount.mode === 'MAX'
+              ? send.account.balance
+              : send.amount.value,
+          from: send.account.address,
+          data: send.draftTransaction.userInputHexData,
+          type: '0x0',
+        },
+      });
+    }
+
     if (
       send.stage !== SEND_STAGES.EDIT ||
       !transaction.dappSuggestedGasFees?.gas ||
@@ -388,10 +409,12 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         data: send.draftTransaction.userInputHexData,
         isNonStandardEthChain,
         chainId,
+        gasLimit: send.gas.gasLimit,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
         gasLimit,
+        layer1GasTotal,
       };
     }
     return null;
@@ -659,12 +682,23 @@ export const initialState = {
     // Warning to display on the address field
     warning: null,
   },
+  multiLayerFees: {
+    // Layer 1 gas fee total on multi-layer fee networks
+    layer1GasTotal: '0x0',
+  },
+  history: [],
 };
 
 const slice = createSlice({
   name,
   initialState,
   reducers: {
+    addHistoryEntry: (state, action) => {
+      state.history.push({
+        entry: action.payload,
+        timestamp: Date.now(),
+      });
+    },
     /**
      * update current amount.value in state and run post update validation of
      * the amount field and the send state. Recomputes the draftTransaction
@@ -705,9 +739,13 @@ const slice = createSlice({
           multiplierBase: 10,
         });
       } else {
+        const _gasTotal = sumHexes(
+          state.gas.gasTotal || '0x0',
+          state.multiLayerFees?.layer1GasTotal || '0x0',
+        );
         amount = subtractCurrencies(
           addHexPrefix(state.asset.balance),
-          addHexPrefix(state.gas.gasTotal),
+          addHexPrefix(_gasTotal),
           {
             toNumericBase: 'hex',
             aBase: 16,
@@ -888,6 +926,21 @@ const slice = createSlice({
       }
       // Record the latest gasPriceEstimate for future comparisons
       state.gas.gasPriceEstimate = addHexPrefix(gasPriceEstimate);
+    },
+    /**
+     * sets the layer 1 fees total (for a multi-layer fee network)
+     *
+     * @param state
+     * @param action
+     */
+    updateLayer1Fees: (state, action) => {
+      state.multiLayerFees.layer1GasTotal = action.payload;
+      if (
+        state.amount.mode === AMOUNT_MODES.MAX &&
+        state.asset.type === ASSET_TYPES.NATIVE
+      ) {
+        slice.caseReducers.updateAmountToMax(state);
+      }
     },
     /**
      * sets the amount mode to the provided value as long as it is one of the
@@ -1327,6 +1380,11 @@ const slice = createSlice({
             payload: action.payload.gasLimit,
           });
         }
+        if (action.payload?.layer1GasTotal) {
+          slice.caseReducers.updateLayer1Fees(state, {
+            payload: action.payload.layer1GasTotal,
+          });
+        }
       })
       .addCase(computeEstimatedGasLimit.rejected, (state) => {
         // If gas estimation fails, we should set the loading state to false,
@@ -1353,9 +1411,10 @@ const {
   updateGasLimit,
   validateRecipientUserInput,
   updateRecipientSearchMode,
+  addHistoryEntry,
 } = actions;
 
-export { useDefaultGas, useCustomGas, updateGasLimit };
+export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
 
 // Action Creators
 
@@ -1372,6 +1431,9 @@ export { useDefaultGas, useCustomGas, updateGasLimit };
  */
 export function updateGasPrice(gasPrice) {
   return (dispatch) => {
+    dispatch(
+      addHistoryEntry(`sendFlow - user set legacy gasPrice to ${gasPrice}`),
+    );
     dispatch(
       actions.updateGasFees({
         gasPrice,
@@ -1403,8 +1465,36 @@ export function resetSendState() {
  */
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
-    await dispatch(actions.updateSendAmount(amount));
     const state = getState();
+    let logAmount = amount;
+    if (state[name].asset.type === ASSET_TYPES.TOKEN) {
+      const multiplier = Math.pow(
+        10,
+        Number(state[name].asset.details?.decimals || 0),
+      );
+      const decimalValueString = conversionUtil(addHexPrefix(amount), {
+        fromNumericBase: 'hex',
+        toNumericBase: 'dec',
+        toCurrency: state[name].asset.details?.symbol,
+        conversionRate: multiplier,
+        invertConversionRate: true,
+      });
+
+      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
+        state[name].asset.details?.symbol
+      }`;
+    } else {
+      const ethValue = getValueFromWeiHex({
+        value: amount,
+        toCurrency: ETH,
+        numberOfDecimals: 8,
+      });
+      logAmount = `${ethValue} ${ETH}`;
+    }
+    await dispatch(
+      addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
+    );
+    await dispatch(actions.updateSendAmount(amount));
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
@@ -1433,6 +1523,19 @@ export function updateSendAmount(amount) {
  */
 export function updateSendAsset({ type, details }) {
   return async (dispatch, getState) => {
+    dispatch(addHistoryEntry(`sendFlow - user set asset type to ${type}`));
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user set asset symbol to ${details?.symbol ?? 'undefined'}`,
+      ),
+    );
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user set asset address to ${
+          details?.address ?? 'undefined'
+        }`,
+      ),
+    );
     const state = getState();
     let { balance, error } = state.send.asset;
     const userAddress = state.send.account.address ?? getSelectedAddress(state);
@@ -1531,6 +1634,11 @@ export function updateSendAsset({ type, details }) {
  * it only applicable for use within action creators.
  */
 const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
+  dispatch(
+    addHistoryEntry(
+      `sendFlow - user typed ${payload.userInput} into recipient input field`,
+    ),
+  );
   dispatch(validateRecipientUserInput(payload));
 }, 300);
 
@@ -1551,6 +1659,7 @@ export function updateRecipientUserInput(userInput) {
     const useTokenDetection = getUseTokenDetection(state);
     const tokenAddressList = Object.keys(getTokenList(state));
     debouncedValidateRecipientUserInput(dispatch, {
+      userInput,
       chainId,
       tokens,
       useTokenDetection,
@@ -1561,12 +1670,22 @@ export function updateRecipientUserInput(userInput) {
 
 export function useContactListForRecipientSearch() {
   return (dispatch) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user selected back to all on recipient screen`,
+      ),
+    );
     dispatch(updateRecipientSearchMode(RECIPIENT_SEARCH_MODES.CONTACT_LIST));
   };
 }
 
 export function useMyAccountsForRecipientSearch() {
   return (dispatch) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user selected transfer to my accounts on recipient screen`,
+      ),
+    );
     dispatch(updateRecipientSearchMode(RECIPIENT_SEARCH_MODES.MY_ACCOUNTS));
   };
 }
@@ -1589,6 +1708,8 @@ export function useMyAccountsForRecipientSearch() {
  */
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
+    // Do not addHistoryEntry here as this is called from a number of places
+    // each with significance to the user and transaction history.
     const state = getState();
     const nicknameFromAddressBookEntryOrAccountName =
       getAddressBookEntryOrAccountName(state, address) ?? '';
@@ -1607,6 +1728,7 @@ export function updateRecipient({ address, nickname }) {
  */
 export function resetRecipientInput() {
   return async (dispatch) => {
+    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetEnsResolution());
@@ -1626,6 +1748,9 @@ export function resetRecipientInput() {
  */
 export function updateSendHexData(hexData) {
   return async (dispatch, getState) => {
+    await dispatch(
+      addHistoryEntry(`sendFlow - user added custom hexData ${hexData}`),
+    );
     await dispatch(actions.updateUserInputHexData(hexData));
     const state = getState();
     if (state.send.asset.type === ASSET_TYPES.NATIVE) {
@@ -1646,9 +1771,11 @@ export function toggleSendMaxMode() {
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
       await dispatch(actions.updateSendAmount('0x0'));
+      await dispatch(addHistoryEntry(`sendFlow - user toggled max mode off`));
     } else {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
       await dispatch(actions.updateAmountToMax());
+      await dispatch(addHistoryEntry(`sendFlow - user toggled max mode on`));
     }
     await dispatch(computeEstimatedGasLimit());
   };
@@ -1669,9 +1796,6 @@ export function signTransaction() {
       asset,
       stage,
       draftTransaction: { id, txParams },
-      recipient: { address },
-      amount: { value },
-      account: { address: selectedAddress },
       eip1559support,
     } = state[name];
     if (stage === SEND_STAGES.EDIT) {
@@ -1700,64 +1824,36 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
-      dispatch(updateTransaction(editingTx));
-    } else if (asset.type === ASSET_TYPES.TOKEN) {
-      // When sending a token transaction we have to the token.transfer method
-      // on the token contract to construct the transaction. This results in
-      // the proper transaction data and properties being set and a new
-      // transaction being added to background state. Once the new transaction
-      // is added to state a subsequent confirmation will be queued.
-      try {
-        const token = global.eth.contract(abi).at(asset.details.address);
-        token.transfer(address, value, {
-          ...txParams,
-          to: undefined,
-          data: undefined,
-        });
-        dispatch(showConfTxPage());
-        dispatch(hideLoadingIndication());
-      } catch (error) {
-        dispatch(hideLoadingIndication());
-        dispatch(displayWarning(error.message));
-      }
-    } else if (asset.type === ASSET_TYPES.COLLECTIBLE) {
-      // When sending a collectible transaction we have to use the collectible.transferFrom method
-      // on the collectible contract to construct the transaction. This results in
-      // the proper transaction data and properties being set and a new
-      // transaction being added to background state. Once the new transaction
-      // is added to state a subsequent confirmation will be queued.
-      try {
-        const collectibleContract = global.eth
-          .contract(abiERC721)
-          .at(asset.details.address);
-
-        collectibleContract.transferFrom(
-          selectedAddress,
-          address,
-          asset.details.tokenId,
-          {
-            ...txParams,
-            to: undefined,
-            data: undefined,
-          },
-        );
-
-        dispatch(showConfTxPage());
-        dispatch(hideLoadingIndication());
-      } catch (error) {
-        dispatch(hideLoadingIndication());
-        dispatch(displayWarning(error.message));
-      }
+      await dispatch(
+        addHistoryEntry(
+          `sendFlow - user clicked next and transaction should be updated in controller`,
+        ),
+      );
+      await dispatch(updateTransactionSendFlowHistory(id, state[name].history));
+      dispatch(updateEditableParams(id, editingTx.txParams));
+      dispatch(updateTransactionGasFees(id, editingTx.txParams));
     } else {
-      // When sending a native asset we use the ethQuery.sendTransaction method
-      // which will result in the transaction being added to background state
-      // and a subsequent confirmation will be queued.
-      global.ethQuery.sendTransaction(txParams, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-        }
-      });
-      dispatch(showConfTxPage());
+      let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+
+      if (asset.type !== ASSET_TYPES.NATIVE) {
+        transactionType =
+          asset.type === ASSET_TYPES.COLLECTIBLE
+            ? TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
+            : TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER;
+      }
+      await dispatch(
+        addHistoryEntry(
+          `sendFlow - user clicked next and transaction should be added to controller`,
+        ),
+      );
+
+      dispatch(
+        addUnapprovedTransactionAndRouteToConfirmationPage(
+          txParams,
+          transactionType,
+          state[name].history,
+        ),
+      );
     }
   };
 }
@@ -1770,6 +1866,11 @@ export function editTransaction(
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    await dispatch(
+      addHistoryEntry(
+        `sendFlow - user clicked edit on transaction with id ${transactionId}`,
+      ),
+    );
     const unapprovedTransactions = getUnapprovedTxs(state);
     const transaction = unapprovedTransactions[transactionId];
     const { txParams } = transaction;

@@ -1,6 +1,6 @@
 .app-header {
   align-items: center;
-  background: var(--Grey-000);
+  background: var(--color-background-alternative);
   position: relative;
   z-index: $header-z-index;
   display: flex;
@@ -16,17 +16,6 @@
   @media screen and (min-width: $break-large) {
     height: 75px;
     justify-content: center;
-
-    &--back-drop {
-      &::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 32px;
-        background: var(--Grey-000);
-        bottom: -32px;
-      }
-    }
   }
 
   &__metafox-logo {
@@ -96,12 +85,5 @@
     flex: 1 0 auto;
     width: 0;
     justify-content: flex-end;
-  }
-
-  &__network-down-arrow {
-    background-image: url(/images/icons/caret-down.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
   }
 }

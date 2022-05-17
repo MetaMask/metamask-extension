@@ -38,7 +38,7 @@ export default class PreferencesController {
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: Boolean(process.env.TOKEN_DETECTION_V2),
       useCollectibleDetection: false,
       openSeaEnabled: false,
       advancedGasFee: null,
@@ -68,6 +68,7 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
+      theme: 'light',
       ...opts.initState,
     };
 
@@ -167,6 +168,15 @@ export default class PreferencesController {
    */
   setEIP1559V2Enabled(val) {
     this.store.updateState({ eip1559V2Enabled: val });
+  }
+
+  /**
+   * Setter for the `theme` property
+   *
+   * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
+   */
+  setTheme(val) {
+    this.store.updateState({ theme: val });
   }
 
   /**

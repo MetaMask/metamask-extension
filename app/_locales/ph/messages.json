@@ -79,12 +79,6 @@
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminumungkahing Token"
   },
-  "addToAddressBook": {
-    "message": "Idagdag sa address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "hal. John D."
-  },
   "addToken": {
     "message": "Magdagdag ng Token"
   },
@@ -96,9 +90,6 @@
   },
   "affirmAgree": {
     "message": "Sang-ayon ako"
-  },
-  "aggregatorFeeCost": {
-    "message": "Bayarin sa aggregator network"
   },
   "alertDisableTooltip": {
     "message": "Mababago ito sa \"Mga Setting > Mga Alerto\""
@@ -146,12 +137,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Bayarin sa pag-apruba at aggregator network"
-  },
-  "approvalTxGasCost": {
-    "message": "Approval Tx Gas Cost"
   },
   "approve": {
     "message": "Aprubahan ang limitasyon sa paggastos"
@@ -615,9 +600,6 @@
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
   },
-  "enterAnAlias": {
-    "message": "Maglagay ng alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
   },
@@ -682,10 +664,6 @@
   },
   "externalExtension": {
     "message": "External Extension"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 na pag-apruba sa gas",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Hindi matagumpay"
@@ -1545,12 +1523,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Bago magsimula, panoorin ang maikling video na ito para matuto tungkol sa recovery phrase at kung paano panatilihing ligtas ang iyong wallet."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "I-paste ang Secret Recovery Phrase mula sa clipboard"
-  },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
@@ -1629,9 +1601,6 @@
   },
   "showPrivateKeys": {
     "message": "Ipakita ang Mga Private Key"
-  },
-  "showSeedPhrase": {
-    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "sigRequest": {
     "message": "Request ng Signature"

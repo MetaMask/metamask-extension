@@ -18,6 +18,7 @@ class ChromeDriver {
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
+    args.push('--log-level=3');
     const options = new chrome.Options().addArguments(args);
     options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
@@ -69,7 +70,7 @@ class ChromeDriver {
       for (let i = 0; i < extensions.length; i++) {
         const extension = extensions[i].shadowRoot
         const name = extension.querySelector('#name').textContent
-        if (name === "${extensionName}") {
+        if (name.startsWith("${extensionName}")) {
           return extensions[i].getAttribute("id")
         }
       }

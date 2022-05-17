@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import CollectibleDetails from '../../components/app/collectible-details/collectible-details';
 import { getCollectibles, getTokens } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';

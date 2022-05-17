@@ -13,12 +13,13 @@ import {
   unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
-  getSortedNotificationsToShow,
+  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
+  getNewTokensImported,
 } from '../../selectors';
 
 import {
@@ -35,6 +36,7 @@ import {
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
+  setNewTokensImported,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
@@ -66,6 +68,8 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     swapsState,
     dismissSeedBackUpReminder,
+    firstTimeFlowType,
+    completedOnboarding,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -112,6 +116,8 @@ const mapStateToProps = (state) => {
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
+    firstTimeFlowType,
+    completedOnboarding,
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
@@ -120,7 +126,7 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
-    notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: metamask.snapErrors,
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
@@ -131,6 +137,7 @@ const mapStateToProps = (state) => {
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
+    newTokensImported: getNewTokensImported(state),
   };
 };
 
@@ -169,6 +176,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setNewCollectibleAddedMessage: (message) => {
     dispatch(setNewCollectibleAddedMessage(message));
+  },
+  setNewTokensImported: (newTokens) => {
+    dispatch(setNewTokensImported(newTokens));
   },
 });
 

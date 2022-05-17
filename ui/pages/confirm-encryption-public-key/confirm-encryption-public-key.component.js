@@ -5,12 +5,13 @@ import AccountListItem from '../../components/app/account-list-item';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 
+import { EVENT } from '../../../shared/constants/metametrics';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func.isRequired,
   };
 
   static propTypes = {
@@ -154,7 +155,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    const { t, metricsEvent } = this.context;
+    const { t, trackEvent } = this.context;
 
     return (
       <div className="request-encryption-public-key__footer">
@@ -164,11 +165,12 @@ export default class ConfirmEncryptionPublicKey extends Component {
           className="request-encryption-public-key__footer__cancel-button"
           onClick={async (event) => {
             await cancelEncryptionPublicKey(txData, event);
-            metricsEvent({
-              eventOpts: {
-                category: 'Messages',
+            trackEvent({
+              category: EVENT.CATEGORIES.MESSAGES,
+              event: 'Cancel',
+              properties: {
                 action: 'Encryption public key Request',
-                name: 'Cancel',
+                legacy_event: true,
               },
             });
             clearConfirmTransaction();
@@ -183,11 +185,12 @@ export default class ConfirmEncryptionPublicKey extends Component {
           className="request-encryption-public-key__footer__sign-button"
           onClick={async (event) => {
             await encryptionPublicKey(txData, event);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Messages',
+            this.context.trackEvent({
+              category: EVENT.CATEGORIES.MESSAGES,
+              event: 'Confirm',
+              properties: {
                 action: 'Encryption public key Request',
-                name: 'Confirm',
+                legacy_event: true,
               },
             });
             clearConfirmTransaction();

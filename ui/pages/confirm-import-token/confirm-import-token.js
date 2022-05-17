@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -9,10 +9,13 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
-import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { addTokens, clearPendingTokens } from '../../store/actions';
+import { TOKEN_STANDARDS } from '../../helpers/constants/common';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 const getTokenName = (name, symbol) => {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -22,23 +25,10 @@ const ConfirmImportToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const pendingTokens = useSelector(getPendingTokens);
-
-  const [addedToken, setAddedToken] = useState({});
-
-  const trackTokenAddedEvent = useNewMetricEvent({
-    event: 'Token Added',
-    category: 'Wallet',
-    sensitiveProperties: {
-      token_symbol: addedToken.symbol,
-      token_contract_address: addedToken.address,
-      token_decimal_precision: addedToken.decimals,
-      unlisted: addedToken.unlisted,
-      source: addedToken.isCustom ? 'custom' : 'list',
-    },
-  });
 
   const handleAddTokens = useCallback(async () => {
     await dispatch(addTokens(pendingTokens));
@@ -47,8 +37,23 @@ const ConfirmImportToken = () => {
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
     addedTokenValues.forEach((pendingToken) => {
-      setAddedToken({ ...pendingToken });
+      trackEvent({
+        event: EVENT_NAMES.TOKEN_ADDED,
+        category: EVENT.CATEGORIES.WALLET,
+        sensitiveProperties: {
+          token_symbol: pendingToken.symbol,
+          token_contract_address: pendingToken.address,
+          token_decimal_precision: pendingToken.decimals,
+          unlisted: pendingToken.unlisted,
+          source: pendingToken.isCustom
+            ? EVENT.SOURCE.TOKEN.CUSTOM
+            : EVENT.SOURCE.TOKEN.LIST,
+          token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
+        },
+      });
     });
+
     dispatch(clearPendingTokens());
 
     if (firstTokenAddress) {
@@ -56,13 +61,7 @@ const ConfirmImportToken = () => {
     } else {
       history.push(mostRecentOverviewPage);
     }
-  }, [dispatch, history, mostRecentOverviewPage, pendingTokens]);
-
-  useEffect(() => {
-    if (Object.keys(addedToken).length) {
-      trackTokenAddedEvent();
-    }
-  }, [addedToken, trackTokenAddedEvent]);
+  }, [dispatch, history, mostRecentOverviewPage, pendingTokens, trackEvent]);
 
   useEffect(() => {
     if (Object.keys(pendingTokens).length === 0) {
@@ -121,7 +120,10 @@ const ConfirmImportToken = () => {
             type="secondary"
             large
             className="page-container__footer-button"
-            onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
+            onClick={() => {
+              dispatch(clearPendingTokens());
+              history.push(IMPORT_TOKEN_ROUTE);
+            }}
           >
             {t('back')}
           </Button>

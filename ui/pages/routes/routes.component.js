@@ -69,6 +69,8 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { SEND_STAGES } from '../../ducks/send';
+import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -94,6 +96,8 @@ export default class Routes extends Component {
     prepareToLeaveSwaps: PropTypes.func,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
+    theme: PropTypes.string,
+    sendStage: PropTypes.string,
   };
 
   static contextTypes = {
@@ -101,12 +105,33 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
+  handleOsTheme() {
+    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
+      ? THEME_TYPE.DARK
+      : THEME_TYPE.LIGHT;
+
+    document.documentElement.setAttribute('data-theme', osTheme);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { theme } = this.props;
+
+    if (theme !== prevProps.theme) {
+      if (theme === THEME_TYPE.OS) {
+        this.handleOsTheme();
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    }
+  }
+
   UNSAFE_componentWillMount() {
     const {
       currentCurrency,
       pageChanged,
       setCurrentCurrencyToUSD,
       history,
+      theme,
     } = this.props;
     if (!currentCurrency) {
       setCurrentCurrencyToUSD();
@@ -117,6 +142,11 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
+    if (theme === THEME_TYPE.OS) {
+      this.handleOsTheme();
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
   }
 
   renderRoutes() {
@@ -155,7 +185,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={TOKEN_DETAILS}
+          path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
           exact
         />
@@ -226,6 +256,10 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
+  }
+
+  onEditTransactionPage() {
+    return this.props.sendStage === SEND_STAGES.EDIT;
   }
 
   onSwapsPage() {
@@ -318,7 +352,6 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
-
     return (
       <div
         className={classnames('app', {
@@ -344,6 +377,7 @@ export default class Routes extends Component {
             onClick={this.onAppHeaderClick}
             disabled={
               this.onConfirmPage() ||
+              this.onEditTransactionPage() ||
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
             }
           />

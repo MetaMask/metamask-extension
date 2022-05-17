@@ -14,7 +14,6 @@ import {
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
-import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -26,14 +25,12 @@ import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
  * @param options0.featureSecondary
  * @param options0.onChange
  * @param options0.onPreferenceToggle
- * @param options0.primaryNumberOfDecimals
  */
 export default function CurrencyInput({
   hexValue,
   featureSecondary,
   onChange,
   onPreferenceToggle,
-  primaryNumberOfDecimals = 8,
 }) {
   const t = useContext(I18nContext);
 
@@ -67,10 +64,7 @@ export default function CurrencyInput({
       : getValueFromWeiHex({
           value: hexValue,
           toCurrency: ETH,
-          numberOfDecimals:
-            primaryNumberOfDecimals <= MAX_DECIMAL
-              ? primaryNumberOfDecimals
-              : MAX_DECIMAL,
+          numberOfDecimals: 8,
         });
 
     return Number(decimalValueString) || 0;
@@ -87,7 +81,7 @@ export default function CurrencyInput({
   }, [hexValue]);
 
   const swap = async () => {
-    await onPreferenceToggle(!featureSecondary);
+    await onPreferenceToggle();
     setSwapped(!isSwapped);
   };
 
@@ -133,10 +127,7 @@ export default function CurrencyInput({
     if (shouldUseFiat()) {
       // Display ETH
       currency = preferredCurrency || ETH;
-      numberOfDecimals =
-        primaryNumberOfDecimals <= MAX_DECIMAL
-          ? primaryNumberOfDecimals
-          : MAX_DECIMAL;
+      numberOfDecimals = 8;
     } else {
       // Display Fiat
       currency = secondaryCurrency;
@@ -152,6 +143,7 @@ export default function CurrencyInput({
       />
     );
   };
+
   return (
     <UnitInput
       {...{
@@ -168,7 +160,9 @@ export default function CurrencyInput({
       onChange={handleChange}
       value={decimalValue}
       actionComponent={
-        <div className="currency-input__swap-component" onClick={swap} />
+        <button className="currency-input__swap-component" onClick={swap}>
+          <i className="fa fa-retweet fa-lg" />
+        </button>
       }
     >
       {renderConversionComponent()}
@@ -181,5 +175,4 @@ CurrencyInput.propTypes = {
   featureSecondary: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
-  primaryNumberOfDecimals: PropTypes.number,
 };

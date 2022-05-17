@@ -12,6 +12,7 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
@@ -19,7 +20,6 @@ import TransactionDecoding from '../transaction-decoding';
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
     trackEvent: PropTypes.func,
   };
 
@@ -63,12 +63,13 @@ export default class TransactionListItemDetails extends PureComponent {
     );
 
     this.context.trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Clicked Block Explorer Link',
       properties: {
         link_type: 'Transaction Block Explorer',
         action: 'Transaction Details',
         block_explorer_domain: getURLHostName(blockExplorerLink),
+        legacy_event: true,
       },
     });
 
@@ -94,11 +95,12 @@ export default class TransactionListItemDetails extends PureComponent {
     const { primaryTransaction: transaction } = transactionGroup;
     const { hash } = transaction;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Navigation',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.NAVIGATION,
+      event: 'Copied Transaction ID',
+      properties: {
         action: 'Activity Log',
-        name: 'Copied Transaction ID',
+        legacy_event: true,
       },
     });
 
@@ -225,20 +227,22 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.NAVIGATION,
+                    event: 'Copied "To" Address',
+                    properties: {
                       action: 'Activity Log',
-                      name: 'Copied "To" Address',
+                      legacy_event: true,
                     },
                   });
                 }}
                 onSenderClick={() => {
-                  this.context.metricsEvent({
-                    eventOpts: {
-                      category: 'Navigation',
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.NAVIGATION,
+                    event: 'Copied "From" Address',
+                    properties: {
                       action: 'Activity Log',
-                      name: 'Copied "From" Address',
+                      legacy_event: true,
                     },
                   });
                 }}

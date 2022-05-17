@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
@@ -20,6 +19,8 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import GasDetailsItemTitle from '../../../components/app/gas-details-item/gas-details-item-title';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -28,7 +29,6 @@ export default function FeeCard({
   primaryFee,
   secondaryFee,
   hideTokenApprovalRow,
-  onFeeCardMaxRowClick,
   tokenApprovalSourceTokenSymbol,
   onTokenApprovalClick,
   metaMaskFee,
@@ -60,11 +60,7 @@ export default function FeeCard({
         throw new Error('This network is not supported for token swaps');
     }
   };
-
-  const gasFeesLearnMoreLinkClickedEvent = useNewMetricEvent({
-    category: 'Swaps',
-    event: 'Clicked "Gas Fees: Learn More" Link',
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const tokenApprovalTextComponent = (
     <span key="fee-card-approve-symbol" className="fee-card__bold">
@@ -105,7 +101,10 @@ export default function FeeCard({
                             <a
                               className="fee-card__link"
                               onClick={() => {
-                                gasFeesLearnMoreLinkClickedEvent();
+                                trackEvent({
+                                  event: 'Clicked "Gas Fees: Learn More" Link',
+                                  category: EVENT.CATEGORIES.SWAPS,
+                                });
                                 global.platform.openTab({
                                   url: GAS_FEES_LEARN_MORE_URL,
                                 });
@@ -133,22 +132,12 @@ export default function FeeCard({
                     <Typography
                       tag="span"
                       fontWeight={FONT_WEIGHT.BOLD}
-                      color={COLORS.UI4}
+                      color={COLORS.TEXT_ALTERNATIVE}
                       variant={TYPOGRAPHY.H7}
                     >
                       {t('maxFee')}
                     </Typography>
                     {`: ${secondaryFee.maxFee}`}
-                    {!supportsEIP1559V2 &&
-                      (!smartTransactionsEnabled ||
-                        !smartTransactionsOptInStatus) && (
-                        <span
-                          className="fee-card__edit-link"
-                          onClick={() => onFeeCardMaxRowClick()}
-                        >
-                          {t('edit')}
-                        </span>
-                      )}
                   </>
                 )
               }
@@ -213,7 +202,6 @@ FeeCard.propTypes = {
     fee: PropTypes.string.isRequired,
     maxFee: PropTypes.string.isRequired,
   }),
-  onFeeCardMaxRowClick: PropTypes.func.isRequired,
   hideTokenApprovalRow: PropTypes.bool.isRequired,
   tokenApprovalSourceTokenSymbol: PropTypes.string,
   onTokenApprovalClick: PropTypes.func,

@@ -1,11 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  tinyDelayMs,
-  regularDelayMs,
-  largeDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
@@ -46,35 +40,27 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
-
         await driver.clickElement({ text: 'Edit', tag: 'button' });
 
         const [gasLimitInput, gasPriceInput] = await driver.findElements(
           'input[type="number"]',
         );
-
         await gasPriceInput.fill('8');
-        await driver.delay(tinyDelayMs);
-
         await gasLimitInput.fill('100000');
-        await driver.delay(largeDelayMs);
-
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
-        const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
-        );
-        const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '0.0008');
-
-        const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '2.2008');
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          text: '0.0008 ETH',
+        });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          text: '2.2008 ETH',
+        });
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
@@ -136,54 +122,34 @@ describe('Editing Confirm Transaction', function () {
         // open gas fee popover
         await driver.clickElement({ text: 'Edit', tag: 'button' });
 
-        // show gas limit
-        await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-        await driver.delay(largeDelayMs);
-
         // enter max fee
-        const maxBaseFee = await driver.findElement(
-          '[data-testid="base-fee-input"]',
-        );
-        await maxBaseFee.clear();
-        await maxBaseFee.sendKeys('8');
-        await driver.delay(regularDelayMs);
+        await driver.fill('[data-testid="base-fee-input"]', '8');
 
         // enter priority fee
-        const priorityFee = await driver.findElement(
-          '[data-testid="priority-fee-input"]',
-        );
-        await priorityFee.clear();
-        await priorityFee.sendKeys('8');
-        await driver.delay(regularDelayMs);
+        await driver.fill('[data-testid="priority-fee-input"]', '8');
 
         // edit gas limit
-        const gasLimit = await driver.findElement(
-          '[data-testid="gas-limit-input"]',
-        );
-        await gasLimit.clear();
-        await gasLimit.sendKeys('100000');
-        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
+        await driver.fill('[data-testid="gas-limit-input"]', '100000');
 
         // save default values
         await driver.clickElement('input[type="checkbox"]');
-        await driver.delay(regularDelayMs);
 
         // Submit gas fee changes
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
-        const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
-        );
-        const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '0.0008');
-
-        const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '2.2008');
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          text: '0.0008 ETH',
+        });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          text: '2.2008 ETH',
+        });
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {

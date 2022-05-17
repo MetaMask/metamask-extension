@@ -244,6 +244,7 @@ export const createSwapsMockStore = () => {
             fetchTime: 1354,
             aggregator: 'TEST_AGG_2',
             aggType: 'AGG',
+            isBestQuote: true,
             slippage: 2,
             sourceTokenInfo: {
               address: '0x6b175474e89094c44da98b954eedeac495271d0f',

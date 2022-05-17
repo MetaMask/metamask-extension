@@ -33,10 +33,10 @@ const STATUSES = {
 };
 
 const STATUS_COLORS = {
-  [STATUSES.INSTALLING]: COLORS.ALERT1,
-  [STATUSES.RUNNING]: COLORS.SUCCESS1,
-  [STATUSES.STOPPED]: COLORS.UI4,
-  [STATUSES.CRASHED]: COLORS.ERROR1,
+  [STATUSES.INSTALLING]: COLORS.WARNING_DEFAULT,
+  [STATUSES.RUNNING]: COLORS.SUCCESS_DEFAULT,
+  [STATUSES.STOPPED]: COLORS.ICON_MUTED,
+  [STATUSES.CRASHED]: COLORS.ERROR_DEFAULT,
 };
 
 const SnapSettingsCard = ({
@@ -81,7 +81,7 @@ const SnapSettingsCard = ({
             marginTop: 0,
             marginBottom: 0,
           }}
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           variant={TYPOGRAPHY.H4}
           fontWeight={FONT_WEIGHT.BOLD}
           className="snap-settings-card__title"
@@ -101,7 +101,7 @@ const SnapSettingsCard = ({
       </Box>
       <Typography
         variant={TYPOGRAPHY.Paragraph}
-        color={COLORS.UI4}
+        color={COLORS.TEXT_ALTERNATIVE}
         fontWeight={FONT_WEIGHT.NORMAL}
         className="snap-settings-card__body"
         boxProps={{
@@ -141,10 +141,10 @@ const SnapSettingsCard = ({
                 }
                 label={status}
                 labelProps={{
-                  color: COLORS.UI4,
+                  color: COLORS.TEXT_ALTERNATIVE,
                   margin: [0, 1],
                 }}
-                backgroundColor={COLORS.UI1}
+                backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
                 className="snap-settings-card__chip"
                 {...chipProps}
               />
@@ -158,7 +158,7 @@ const SnapSettingsCard = ({
                 boxProps={{
                   margin: [0, 0],
                 }}
-                color={COLORS.UI3}
+                color={COLORS.TEXT_MUTED}
                 variant={TYPOGRAPHY.H8}
                 fontWeight={FONT_WEIGHT.NORMAL}
                 tag="span"
@@ -173,14 +173,14 @@ const SnapSettingsCard = ({
                   paddingLeft: 2,
                   margin: [0, 0],
                 }}
-                color={COLORS.UI4}
+                color={COLORS.TEXT_MUTED}
                 variant={TYPOGRAPHY.H7}
                 fontWeight={FONT_WEIGHT.NORMAL}
                 align={TEXT_ALIGN.CENTER}
                 tag="span"
                 className="snap-settings-card__version"
               >
-                v {version}
+                {t('shorthandVersion', [version])}
               </Typography>
             </>
           )}

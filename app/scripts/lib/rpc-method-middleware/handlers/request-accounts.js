@@ -72,7 +72,7 @@ async function requestEthereumAccountsHandler(
     // lock state when they were received.
     try {
       locks.add(origin);
-      await getUnlockPromise();
+      await getUnlockPromise(true);
       res.result = await getAccounts();
       end();
     } catch (error) {

@@ -1,11 +1,12 @@
 @import 'components/confirmation-footer/confirmation-footer';
+@import 'components/confirmation-network-switch/index';
 @import 'templates/flask/snap-confirm/index';
 
 .confirmation-page {
   width: 100%;
   height: 100%;
   position: relative;
-  background: white;
+  background: var(--color-background-default);
   display: grid;
   flex-direction: column;
   grid-template-columns: 1fr;
@@ -16,7 +17,7 @@
     'footer';
 
   a {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 
   &__content {
@@ -32,19 +33,19 @@
     @include H7;
 
     grid-area: navigation;
-    background-color: var(--Grey-000);
-    border-bottom: 1px solid var(--geyser);
+    background-color: var(--color-background-alternative);
+    border-bottom: 1px solid var(--color-border-muted);
     padding: 6px 16px 5px 16px;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     display: grid;
     grid-template-columns: 1fr minmax(0, auto) minmax(0, auto);
     align-items: center;
   }
 
   &__navigation-button {
-    background-color: white;
+    background-color: var(--color-background-default);
     border-radius: 100px;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     font-size: $font-size-h6;
     height: 20px;
     width: 20px;
@@ -52,8 +53,8 @@
 
     &:disabled {
       cursor: not-allowed;
-      background-color: var(--Grey-100);
-      color: var(--Grey-300);
+      background-color: var(--color-background-alternative);
+      color: var(--color-text-muted);
     }
   }
 

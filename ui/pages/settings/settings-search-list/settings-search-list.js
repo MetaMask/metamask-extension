@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 import { I18nContext } from '../../../contexts/i18n';
+import IconCaretRight from '../../../components/ui/icon/icon-caret-right';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
   const t = useContext(I18nContext);
@@ -12,43 +13,49 @@ export default function SettingsSearchList({ results, onClickSetting }) {
   return (
     <div className="settings-page__header__search__list">
       {results.slice(0, 5).map((result) => {
-        const { image, tab, section, id } = result;
+        const { icon, tabMessage, sectionMessage, route } = result;
         return (
-          Boolean(image || tab || section) && (
-            <div key={`settings_${id}`}>
+          Boolean(icon || tabMessage || sectionMessage) && (
+            <div key={`settings_${route}`}>
               <div
                 className="settings-page__header__search__list__item"
                 onClick={() => onClickSetting(result)}
               >
-                <img
-                  className="settings-page__header__search__list__item__icon"
-                  src={`./images/${image}`}
+                <i
+                  className={classnames(
+                    'settings-page__header__search__list__item__icon',
+                    icon,
+                  )}
                 />
 
                 <span
-                  id={`menu-tab_${id}`}
+                  id={`menu-tab_${route}`}
                   className={classnames(
                     'settings-page__header__search__list__item__tab',
                     {
                       'settings-page__header__search__list__item__tab-multiple-lines':
-                        tab === t('securityAndPrivacy'),
+                        tabMessage(t) === t('securityAndPrivacy'),
                     },
                   )}
                 >
-                  {tab}
+                  {tabMessage(t)}
                 </span>
-                <div className="settings-page__header__search__list__item__caret" />
+                <IconCaretRight
+                  size={16}
+                  className="settings-page__header__search__list__item__caret"
+                />
                 <span
-                  id={`menu-section_${id}`}
+                  id={`menu-section_${route}`}
                   className={classnames(
                     'settings-page__header__search__list__item__section',
                     {
                       'settings-page__header__search__list__item__section-multiple-lines':
-                        tab === t('securityAndPrivacy') || tab === t('alerts'),
+                        tabMessage(t) === t('securityAndPrivacy') ||
+                        tabMessage(t) === t('alerts'),
                     },
                   )}
                 >
-                  {section}
+                  {sectionMessage(t)}
                 </span>
               </div>
             </div>

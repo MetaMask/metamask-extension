@@ -31,7 +31,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
     <Popover centerTitle title={t('recoveryPhraseReminderTitle')}>
       <Box padding={[0, 4, 6, 4]} className="recovery-phrase-reminder">
         <Typography
-          color={COLORS.BLACK}
+          color={COLORS.TEXT_DEFAULT}
           align={TEXT_ALIGN.CENTER}
           variant={TYPOGRAPHY.Paragraph}
           boxProps={{ marginTop: 0, marginBottom: 4 }}
@@ -43,7 +43,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
             <li>
               <Typography
                 tag="span"
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
               >
                 {t('recoveryPhraseReminderItemOne')}

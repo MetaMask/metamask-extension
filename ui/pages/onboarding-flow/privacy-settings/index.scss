@@ -4,6 +4,14 @@
   justify-content: center;
   align-items: center;
 
+  @media screen and (max-width: $break-small) {
+    margin-bottom: 24px;
+  }
+
+  @media screen and (min-width: $break-large) {
+    margin-bottom: 40px;
+  }
+
   &__header {
     display: flex;
     justify-content: center;
@@ -21,12 +29,17 @@
     max-width: 620px;
     margin-bottom: 20px;
 
+    @media screen and (min-width: $break-large) {
+      margin-inline-start: 48px;
+      margin-inline-end: 48px;
+    }
+
     a {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
 
       &:hover {
         cursor: pointer;
-        color: var(--Blue-300);
+        color: var(--color-primary-default);
       }
     }
   }
