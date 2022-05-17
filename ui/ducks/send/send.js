@@ -1466,6 +1466,7 @@ export function resetSendState() {
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
     const state = getState();
+    const { metamask } = state;
     let logAmount = amount;
     if (state[name].asset.type === ASSET_TYPES.TOKEN) {
       const multiplier = Math.pow(
@@ -1489,7 +1490,7 @@ export function updateSendAmount(amount) {
         toCurrency: ETH,
         numberOfDecimals: 8,
       });
-      logAmount = `${ethValue} ${ETH}`;
+      logAmount = `${ethValue} ${metamask?.provider?.ticker || ETH}`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
