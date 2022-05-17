@@ -1,4 +1,5 @@
 .unlock-page {
+  color: var(--color-text-default);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -6,14 +7,13 @@
   width: 357px;
   padding: 30px;
   font-weight: 400;
-  color: var(--color-text-default);
 
   &__container {
-    background: var(--color-background-default);
     display: flex;
     align-self: stretch;
     justify-content: center;
     flex: 1 0 auto;
+    background: var(--color-background-default);
   }
 
   &__mascot-container {

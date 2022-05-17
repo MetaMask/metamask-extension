@@ -154,25 +154,23 @@ export default function CreatePassword({
     <div className="create-password__wrapper">
       {secretRecoveryPhrase &&
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
-        <TwoStepProgressBar stage={twoStepStages.PASSWORD_CREATE} />
+        <TwoStepProgressBar
+          stage={twoStepStages.PASSWORD_CREATE}
+          marginBottom={4}
+        />
       ) : (
-        <ThreeStepProgressBar stage={threeStepStages.PASSWORD_CREATE} />
+        <ThreeStepProgressBar
+          stage={threeStepStages.PASSWORD_CREATE}
+          marginBottom={4}
+        />
       )}
       <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
-      <Typography
-        variant={TYPOGRAPHY.H4}
-        align={TEXT_ALIGN.CENTER}
-        boxProps={{ margin: 5 }}
-      >
+      <Typography variant={TYPOGRAPHY.H4} align={TEXT_ALIGN.CENTER}>
         {t('passwordSetupDetails')}
       </Typography>
-      <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        marginTop={3}
-        padding={[0, 12]}
-      >
+      <Box justifyContent={JUSTIFY_CONTENT.CENTER} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
             dataTestId="create-password-new"
@@ -247,6 +245,7 @@ export default function CreatePassword({
                 : 'create-password-wallet'
             }
             type="primary"
+            large
             className="create-password__form--submit-button"
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
