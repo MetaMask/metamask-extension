@@ -30,11 +30,7 @@ export default class SendHexDataRow extends Component {
 
   onInput = (event) => {
     const isValidHex = isHexString(event.target.value) || !event.target.value;
-    if (isValidHex) {
-      this.setState({ shouldShowError: false });
-    } else {
-      this.setState({ shouldShowError: true });
-    }
+    this.setState({ shouldShowError: !isValidHex });
     const { updateSendHexData } = this.props;
     const data = event.target.value.replace(/\n/gu, '') || null;
     updateSendHexData(data);
