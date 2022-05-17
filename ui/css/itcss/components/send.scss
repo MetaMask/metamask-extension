@@ -443,7 +443,7 @@
   &__send-arrow-icon {
     @include H4;
 
-    color: var(--color-secondary-default);
+    color: var(--color-warning-default);
     transform: rotate(-45deg);
     position: absolute;
     top: -2px;
@@ -529,7 +529,7 @@
     @include H7;
 
     left: 8px;
-    color: var(--color-secondary-default);
+    color: var(--color-warning-default);
   }
 
   &__error-border {
