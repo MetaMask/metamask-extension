@@ -194,7 +194,7 @@ export default class SelectHardware extends Component {
     steps.push({
       asset: 'plug-in-wallet',
       dimensions: { width: '225px', height: '75px' },
-      title: this.context.t('step2LedgerWallet'),
+      title: this.context.t('step2LedgerWallet'), 
       message: this.context.t('step2LedgerWalletMsg', [
         <a
           className="hw-connect__msg-link"
@@ -213,6 +213,22 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://shop.ledger.com/?r=17c4991a03fa", "_blank")
+            }
+          >
+           Buy Now
+          </Button>
+          <Button
+            className="hw-connect__external-btn"
+            type="secondary"
+            onClick={() => window.open("https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true", "_blank")
+            }
+          >
+           Tutorial
+          </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -253,6 +269,22 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://gridplus.io/?afmc=7p", "_blank")
+            }
+          >
+           Buy Now
+          </Button>
+          <Button
+            className="hw-connect__external-btn"
+            type="secondary"
+            onClick={() => window.open("https://docs.gridplus.io/setup/metamask", "_blank")
+            }
+          >
+           Tutorial
+          </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -293,6 +325,22 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009", "_blank")
+            }
+          >
+           Buy Now
+          </Button>
+          <Button
+            className="hw-connect__external-btn"
+            type="secondary"
+            onClick={() => window.open("https://wiki.trezor.io/Apps:MetaMask", "_blank")
+            }
+          >
+           Tutorial
+          </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -318,53 +366,50 @@ export default class SelectHardware extends Component {
       {
         message: (
           <>
-            <a
-              className="hw-connect__msg-link"
-              href="https://keyst.one"
-              rel="noopener noreferrer"
-              target="_blank"
-              key="keystone-support-link"
-            >
-              {this.context.t('keystone')}
-            </a>
-            <a
-              className="hw-connect__msg-link"
-              href="https://keyst.one/mm"
-              rel="noopener noreferrer"
-              target="_blank"
-              key="keystone-tutorial-link"
-            >
-              {this.context.t('keystoneTutorial')}
-            </a>
+            <p className="hw-connect__QR-subtitle">Keystone</p>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9", "_blank")
+            }>
+              Buy Now
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => window.open("https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone", "_blank")
+              }>
+              Tutorial
+            </Button>
           </>
         ),
       },
       {
         message: (
           <>
-            <a
-              className="hw-connect__msg-link"
-              href="https://airgap.it/metamask"
-              rel="noopener noreferrer"
-              target="_blank"
-              key="airgap-vault-support-link"
-            >
-              {this.context.t('airgapVault')}
-            </a>
-            <a
-              className="hw-connect__msg-link"
-              href="https://support.airgap.it/guides/metamask"
-              rel="noopener noreferrer"
-              target="_blank"
-              key="airgap-vault-tutorial-link"
-            >
-              {this.context.t('airgapVaultTutorial')}
-            </a>
+            <p className="hw-connect__QR-subtitle">AirGap Vault</p>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://airgap.it/", "_blank")
+            }>
+              Download Now
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => window.open("https://support.airgap.it/guides/metamask/", "_blank")
+              }>
+              Tutorial
+            </Button>
           </>
         ),
       },
       {
         message: this.context.t('QRHardwareWalletSteps2Description'),
+      },
+      {
+        message: this.context.t('QRHardwareWalletSteps3Description'),
       },
       {
         asset: 'qrcode-wallet-demo',

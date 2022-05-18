@@ -36,13 +36,16 @@
     "message": "Scan QR Code"
   },
   "QRHardwareWalletSteps1Description": {
-    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
+    "message": "You can choose from a list of official QR-code supporting partners below."
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "QR-based HW Wallet"
+    "message": "Connect your QR hardware wallet"
   },
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (Coming Soon)"
+  },
+  "QRHardwareWalletSteps3Description": {
+    "message": "CoolWallet (Coming Soon)"
   },
   "about": {
     "message": "About"
@@ -1400,7 +1403,7 @@
     "message": "GWEI"
   },
   "happyToSeeYou": {
-    "message": "We’re happy to see you."
+    "message": "We’re happy to see you.."
   },
   "hardware": {
     "message": "Hardware"
@@ -3051,10 +3054,10 @@
     "message": "Not connected"
   },
   "step1LatticeWallet": {
-    "message": "Make sure your Lattice1 is ready to connect"
+    "message": "Connect your Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready. For more on using hardware wallets, $1",
+    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -3065,17 +3068,17 @@
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
   "step1TrezorWallet": {
-    "message": "Plug in Trezor wallet"
+    "message": "Connect your Trezor"
   },
   "step1TrezorWalletMsg": {
-    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "message": "Plug your Trezor directly into your computer and unlock it. Make sure you use the correct passphrase.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
-    "message": "Plug in Ledger wallet"
+    "message": "Connect your Ledger"
   },
   "step2LedgerWalletMsg": {
-    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
+    "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "storePhrase": {
