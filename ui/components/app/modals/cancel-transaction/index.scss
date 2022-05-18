@@ -1,4 +1,4 @@
-@import 'cancel-transaction-gas-fee/index';
+@import "cancel-transaction-gas-fee/index";
 
 .cancel-transaction {
   &__title {
@@ -8,7 +8,7 @@
   }
 
   &__description {
-    @include H6;
+    @include h6;
 
     text-align: center;
   }

@@ -16,7 +16,7 @@
     align-items: flex-start;
     justify-content: center;
 
-    @include H6;
+    @include h6;
 
     color: var(--color-text-alternative);
   }
@@ -31,7 +31,6 @@
     // needed for the token icon and the span margins
     max-width: calc(50% - 13px);
   }
-
 
   &__source-row-value {
     margin-right: 5px;

@@ -6,7 +6,7 @@
   align-items: center;
 
   &__label {
-    @include H7;
+    @include h7;
 
     font-weight: 500;
     color: var(--color-text-alternative);
@@ -20,7 +20,7 @@
   }
 
   &__primary {
-    @include H3;
+    @include h3;
 
     justify-content: flex-end;
   }
@@ -31,7 +31,7 @@
   }
 
   &__header-text {
-    @include H7;
+    @include h7;
 
     text-transform: uppercase;
     margin-bottom: 6px;
@@ -43,7 +43,7 @@
     }
 
     &--total {
-      @include H8;
+      @include h8;
     }
   }
 
@@ -53,7 +53,7 @@
 
   .custom-nonce-input {
     input {
-      @include Paragraph;
+      @include paragraph;
 
       width: 90px;
     }

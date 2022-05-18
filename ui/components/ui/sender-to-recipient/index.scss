@@ -51,7 +51,7 @@
         align-items: center;
         justify-content: center;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }
@@ -73,24 +73,24 @@
       }
 
       &__name {
-        @include H7;
+        @include h7;
 
         padding-left: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir='rtl'] & {
-          /*rtl:ignore*/
+        [dir="rtl"] & {
+          /* rtl:ignore */
           direction: ltr;
 
-          /*rtl:ignore*/
+          /* rtl:ignore */
           text-align: right;
 
           span {
             display: block;
 
-            /*rtl:ignore*/
+            /* rtl:ignore */
             direction: rtl;
           }
         }
@@ -107,7 +107,7 @@
         justify-content: center;
         flex: 1;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
         padding: 6px;
         background: var(--color-background-default);
         cursor: pointer;
@@ -123,23 +123,23 @@
       }
 
       &__name {
-        @include H9;
+        @include h9;
 
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir='rtl'] & {
-          /*rtl:ignore*/
+        [dir="rtl"] & {
+          /* rtl:ignore */
           direction: ltr;
 
-          /*rtl:ignore*/
+          /* rtl:ignore */
           text-align: right;
 
           span {
             display: block;
 
-            /*rtl:ignore*/
+            /* rtl:ignore */
             direction: rtl;
           }
         }
@@ -150,7 +150,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }
@@ -179,24 +179,24 @@
       }
 
       &__name {
-        @include H8;
+        @include h8;
 
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         margin-inline-start: 8px;
 
-        [dir='rtl'] & {
-          /*rtl:ignore*/
+        [dir="rtl"] & {
+          /* rtl:ignore */
           direction: ltr;
 
-          /*rtl:ignore*/
+          /* rtl:ignore */
           text-align: right;
 
           span {
             display: block;
 
-            /*rtl:ignore*/
+            /* rtl:ignore */
             direction: rtl;
           }
         }
@@ -207,7 +207,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }

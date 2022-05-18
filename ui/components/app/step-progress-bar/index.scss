@@ -37,7 +37,7 @@ ul.two-steps {
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin: 0 auto 10px auto;
+  margin: 0 auto 10px;
   border-radius: 50%;
   background-color: var(--color-background-default);
 }
@@ -45,16 +45,16 @@ ul.two-steps {
 .progressbar li::after {
   width: $progress-bar-width;
   height: 2px;
-  content: '';
+  content: "";
   position: absolute;
   background-color: var(--color-background-alternative);
   top: 15px;
   left: $progress-bar-position-left;
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     width: $progress-bar-width;
     height: 2px;
-    content: '';
+    content: "";
     position: absolute;
     background-color: var(--color-background-alternative);
   }
@@ -63,7 +63,7 @@ ul.two-steps {
 .progressbar li:first-child::after {
   content: none;
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     content: none;
   }
 }
@@ -71,7 +71,7 @@ ul.two-steps {
 .progressbar li.active {
   color: var(--color-primary-default);
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     color: var(--color-primary-default);
   }
 }
@@ -80,7 +80,7 @@ ul.two-steps {
   border-color: var(--color-primary-default);
   z-index: 1;
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     border-color: var(--color-primary-default);
     z-index: 1;
   }
@@ -90,7 +90,7 @@ ul.two-steps {
   background-color: var(--color-primary-default);
   z-index: -1;
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     background-color: var(--color-primary-default);
     z-index: -1;
   }
@@ -100,7 +100,7 @@ ul.two-steps {
   background-color: var(--color-primary-default);
   color: var(--color-primary-inverse);
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     background-color: var(--color-primary-default);
     color: var(--color-primary-inverse);
   }
@@ -108,16 +108,16 @@ ul.two-steps {
 
 .progressbar li.two-steps::after {
   height: 2px;
-  content: '';
+  content: "";
   position: absolute;
   background-color: var(--color-background-alternative);
   top: 15px;
   z-index: -1;
 
-  [dir='rtl'] & {
+  [dir="rtl"] & {
     width: 180px;
     height: 2px;
-    content: '';
+    content: "";
     position: absolute;
     background-color: var(--color-background-alternative);
     z-index: -1;

@@ -1,5 +1,5 @@
-@import 'confirm-page-container-warning/index';
-@import 'confirm-page-container-summary/index';
+@import "confirm-page-container-warning/index";
+@import "confirm-page-container-summary/index";
 
 .confirm-page-container-content {
   overflow-y: auto;
@@ -13,7 +13,7 @@
   }
 
   &__error-container {
-    padding: 0 16px 16px 16px;
+    padding: 0 16px 16px;
   }
 
   &__details {
@@ -31,7 +31,7 @@
   }
 
   &__data-box {
-    @include H7;
+    @include h7;
 
     background-color: var(--color-background-alternative);
     padding: 12px;
@@ -39,7 +39,7 @@
     overflow-y: auto;
 
     &-label {
-      @include H7;
+      @include h7;
 
       text-transform: uppercase;
       padding: 8px 0 12px;
@@ -69,7 +69,7 @@
   }
 
   &__function-type {
-    @include H6;
+    @include h6;
 
     font-weight: 500;
     text-transform: capitalize;
@@ -78,7 +78,7 @@
   }
 
   &__tab {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
     text-transform: uppercase;

@@ -1,6 +1,6 @@
 .export-private-key-modal {
   &__body-title {
-    @include H4;
+    @include h4;
 
     margin-top: 16px;
     margin-bottom: 16px;
@@ -9,12 +9,12 @@
   &__divider {
     width: 100%;
     height: 1px;
-    margin: 19px 0 8px 0;
+    margin: 19px 0 8px;
     background-color: var(--color-border-default);
   }
 
   &__account-name {
-    @include H4;
+    @include h4;
 
     margin-top: 9px;
   }
@@ -26,7 +26,7 @@
 
   &__password-label,
   &__password--error {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
     margin-bottom: 10px;
@@ -38,7 +38,7 @@
   }
 
   &__password-input {
-    @include Paragraph;
+    @include paragraph;
 
     padding: 10px 0 13px 17px;
     width: 291px;
@@ -46,14 +46,14 @@
     background: var(--color-background-default);
     color: var(--color-text-default);
     border: 1px solid var(--color-border-default);
-  }
 
-  &__password::-webkit-input-placeholder {
-    color: var(--color-text-muted);
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
   }
 
   &__password--warning {
-    @include H7;
+    @include h7;
 
     border-radius: 8px;
     background-color: var(--color-error-muted);
@@ -66,7 +66,7 @@
   }
 
   &__private-key-display {
-    @include Paragraph;
+    @include paragraph;
 
     height: 80px;
     width: 291px;
@@ -106,4 +106,3 @@
     text-overflow: ellipsis;
   }
 }
-

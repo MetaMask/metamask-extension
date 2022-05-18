@@ -12,7 +12,7 @@
   }
 
   &__origin {
-    @include H6;
+    @include h6;
   }
 
   &__action-row {
@@ -21,7 +21,7 @@
   }
 
   &__action {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
     padding: 3px 8px;
@@ -70,7 +70,7 @@
   }
 
   &__title-text {
-    @include H1;
+    @include h1;
 
     white-space: nowrap;
     overflow: hidden;
@@ -78,7 +78,7 @@
   }
 
   &__title-text-long {
-    @include H3;
+    @include h3;
 
     white-space: nowrap;
     overflow: hidden;
@@ -86,7 +86,7 @@
   }
 
   &__subtitle {
-    @include H5;
+    @include h5;
 
     color: var(--color-text-alternative);
     white-space: nowrap;

@@ -7,7 +7,7 @@
   }
 
   &__account-name {
-    @include Paragraph;
+    @include paragraph;
 
     margin-left: 8px;
   }

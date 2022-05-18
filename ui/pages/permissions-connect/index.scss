@@ -1,6 +1,6 @@
-@import 'choose-account/index';
-@import 'flask/snap-install/index';
-@import 'redirect/index';
+@import "choose-account/index";
+@import "flask/snap-install/index";
+@import "redirect/index";
 
 .permissions-connect {
   width: 100%;
@@ -20,12 +20,12 @@
   &__top-bar {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 16px 16px 0 16px;
+    padding: 16px 16px 0;
     align-items: center;
   }
 
   &__back {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-default);
     font-weight: bold;
@@ -37,7 +37,7 @@
   }
 
   &__page-count {
-    @include H7;
+    @include h7;
 
     color: var(--color-icon-default);
     grid-column: 2;

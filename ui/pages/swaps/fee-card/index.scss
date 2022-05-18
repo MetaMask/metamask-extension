@@ -1,7 +1,7 @@
 .fee-card {
   width: 100%;
 
-  @include H7;
+  @include h7;
 
   .transaction-detail-rows {
     margin-top: 8px;
@@ -20,7 +20,7 @@
   }
 
   &__savings-text {
-    @include H6;
+    @include h6;
 
     font-weight: bold;
     color: var(--color-primary-default);
@@ -33,7 +33,7 @@
   }
 
   &__quote-link-text {
-    @include H7;
+    @include h7;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -159,7 +159,7 @@
 
   &__total-box {
     border-top: 1px solid var(--color-border-muted);
-    padding: 12px 16px 16px 16px;
+    padding: 12px 16px 16px;
   }
 
   &__total-row {
@@ -181,10 +181,6 @@
   &__row-header-secondary,
   &__row-header-secondary--bold {
     color: var(--color-text-alternative);
-  }
-
-  &__row-header-secondary,
-  &__row-header-secondary--bold {
     margin-right: 12px;
   }
 

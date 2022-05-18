@@ -18,17 +18,17 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0 1px 5px rgb(0 0 0 / 25%));
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 35%;
       top: 25%;
     }
   }
 
-  [dir='rtl'] &__arrow {
+  [dir="rtl"] &__arrow {
     transform: rotate(180deg);
   }
 

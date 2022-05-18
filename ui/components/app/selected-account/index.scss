@@ -10,7 +10,7 @@
   }
 
   &__name {
-    @include H5;
+    @include h5;
 
     width: 100%;
     font-weight: 500;
@@ -23,7 +23,7 @@
   }
 
   &__address {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
     display: flex;

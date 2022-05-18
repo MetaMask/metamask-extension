@@ -56,11 +56,11 @@
     }
 
     &__text {
-      @include Paragraph;
+      @include paragraph;
     }
 
     &__subtext {
-      @include H7;
+      @include h7;
 
       padding: 5px 0 0 30px;
     }
@@ -98,7 +98,7 @@
   }
 
   & &__lock-button {
-    @include H7;
+    @include h7;
 
     padding: 3.5px 5px;
     width: 59px;
@@ -126,7 +126,7 @@
     }
 
     .keyring-label {
-      @include H9;
+      @include h9;
 
       z-index: 1;
       border-radius: 10px;
@@ -145,7 +145,7 @@
   }
 
   &__no-accounts {
-    @include H6;
+    @include h6;
 
     padding: 16px 14px;
   }
@@ -168,7 +168,7 @@
 
     &:hover {
       .remove-account-icon::after {
-        content: '\00D7';
+        content: "\00D7";
         font-size: 25px;
         color: var(--color-text-default);
         cursor: pointer;
@@ -196,7 +196,7 @@
   }
 
   &__name {
-    @include H4;
+    @include h4;
 
     color: var(--color-text-default);
     text-overflow: ellipsis;
@@ -206,13 +206,13 @@
   }
 
   &__balance {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-alternative);
   }
 
   &__action {
-    @include Paragraph;
+    @include paragraph;
 
     cursor: pointer;
   }

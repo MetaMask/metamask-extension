@@ -5,7 +5,7 @@
   align-items: center;
 
   &__text {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
     display: flex;

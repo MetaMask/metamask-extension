@@ -8,7 +8,6 @@
     }
   }
 
-
   @media screen and (max-width: $break-small) {
     &--border {
       .swaps-footer__custom-page-container-footer-class {
@@ -36,7 +35,7 @@
   }
 
   &__bottom-text {
-    @include H7;
+    @include h7;
 
     color: var(--color-primary-default);
     margin-bottom: 16px;

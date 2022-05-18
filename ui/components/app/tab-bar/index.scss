@@ -4,7 +4,7 @@
   justify-content: flex-start;
 
   &__tab {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-default);
     display: flex;
@@ -29,7 +29,7 @@
     }
 
     @media screen and (max-width: $break-small) {
-      @include H4;
+      @include h4;
 
       border-bottom: 1px solid var(--color-border-muted);
       opacity: 1;
@@ -43,10 +43,10 @@
       position: relative;
 
       &__title {
-        @include H4;
+        @include h4;
 
         @media screen and (min-width: $break-large) {
-          @include H6;
+          @include h6;
         }
       }
 
@@ -54,7 +54,7 @@
         display: none;
 
         @media screen and (max-width: $break-small) {
-          @include H6;
+          @include h6;
 
           display: block;
           font-weight: 300;
@@ -83,7 +83,7 @@
         margin-inline-start: auto;
         margin-inline-end: 8px;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }

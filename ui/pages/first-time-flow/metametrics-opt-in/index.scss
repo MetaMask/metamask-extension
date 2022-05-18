@@ -25,7 +25,7 @@
   }
 
   &__title {
-    @include H1;
+    @include h1;
 
     position: relative;
     margin-top: 20px;
@@ -40,7 +40,7 @@
   }
 
   &__description {
-    @include Paragraph;
+    @include paragraph;
 
     margin-top: 12px;
   }
@@ -48,11 +48,6 @@
   &__committments {
     display: flex;
     flex-direction: column;
-  }
-
-  &__content {
-    overflow-y: scroll;
-    flex: 1;
   }
 
   &__row {
@@ -97,6 +92,7 @@
   }
 
   &__content {
+    flex: 1;
     overflow-y: auto;
   }
 

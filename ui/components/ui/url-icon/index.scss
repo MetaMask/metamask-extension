@@ -6,13 +6,7 @@
   background-color: var(--color-background-default);
   box-shadow: 0 2px 4px 0 rgba($black, 0.24);
   flex: 0 0 auto;
-  -moz-animation: fadein 1s;
-
-  /* Firefox */
-  -webkit-animation: fadein 1s;
-
-  /* Safari and Chrome */
-  -o-animation: fadein 1s;
+  animation: fadein 1s;
 
   &__fallback {
     width: 24px;

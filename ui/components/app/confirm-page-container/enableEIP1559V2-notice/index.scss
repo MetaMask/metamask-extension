@@ -11,7 +11,7 @@
 
     &::after {
       position: absolute;
-      content: '\00D7';
+      content: "\00D7";
       font-size: 29px;
       font-weight: 200;
       color: var(--color-text-default);
@@ -23,7 +23,7 @@
   }
 
   a.enableEIP1559V2-notice__link {
-    @include H7;
+    @include h7;
 
     padding: 0;
     justify-content: flex-start;

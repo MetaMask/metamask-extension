@@ -12,7 +12,6 @@
   }
 }
 
-
 @media screen and (min-width: 1281px) {
   .first-view-main {
     width: 62vw;
@@ -22,9 +21,24 @@
 .import-account {
   display: flex;
   flex-flow: column nowrap;
-  margin: 60px 0 30px 0;
+  margin: 60px 0 30px;
   position: relative;
   max-width: initial;
+
+  &__back-button {
+    @include paragraph;
+
+    margin-bottom: 18px;
+    color: var(--color-text-default);
+    position: absolute;
+    top: -25px;
+  }
+
+  &__link {
+    display: inline;
+    padding: 0;
+    font-size: inherit;
+  }
 }
 
 @media only screen and (max-width: $break-small) {
@@ -56,23 +70,6 @@
   }
 }
 
-.import-account {
-  &__back-button {
-    @include Paragraph;
-
-    margin-bottom: 18px;
-    color: var(--color-text-default);
-    position: absolute;
-    top: -25px;
-  }
-
-  &__link {
-    display: inline;
-    padding: 0;
-    font-size: inherit;
-  }
-}
-
 .reveal-seed {
   &__content {
     padding: 20px;
@@ -85,7 +82,7 @@
   }
 
   &__error {
-    @include H6;
+    @include h6;
 
     color: var(--color-error-default);
     padding-top: 5px;

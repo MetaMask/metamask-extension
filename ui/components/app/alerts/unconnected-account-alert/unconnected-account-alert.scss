@@ -25,7 +25,7 @@
   }
 
   &__error {
-    @include H6;
+    @include h6;
 
     margin-bottom: 16px;
     padding: 16px;
@@ -47,7 +47,7 @@
   }
 
   &__checkbox-label {
-    @include H7;
+    @include h7;
 
     display: flex;
     margin-top: auto;

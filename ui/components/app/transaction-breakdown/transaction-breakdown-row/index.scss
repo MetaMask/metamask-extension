@@ -1,5 +1,5 @@
 .transaction-breakdown-row {
-  @include H7;
+  @include h7;
 
   color: var(--color-text-alternative);
   display: flex;
@@ -7,7 +7,7 @@
   padding: 8px 0;
 
   &--with-bottom-border {
-    border-bottom: 1px solid var(---color-border-muted);
+    border-bottom: 1px solid var(--color-border-muted);
   }
 
   &__title {

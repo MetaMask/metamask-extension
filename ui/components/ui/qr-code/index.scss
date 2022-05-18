@@ -5,14 +5,14 @@
   align-items: center;
 
   &__message-container > div:first-child {
-    @include Paragraph;
+    @include paragraph;
 
     margin-top: 18px;
     color: var(--color-text-muted);
   }
 
   &__message {
-    @include H7;
+    @include h7;
 
     color: var(--color-warning-default);
   }
@@ -36,14 +36,14 @@
     &:hover {
       cursor: pointer;
 
-      .qr-code__copy-icon__svg {
+      svg {
         fill: var(--color-primary-default);
       }
     }
   }
 
   &__address {
-    @include H7;
+    @include h7;
 
     background-color: var(--color-background-alternative);
     width: 76%;

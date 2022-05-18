@@ -8,7 +8,7 @@
     margin: 0 !important;
 
     input {
-      @include H4;
+      @include h4;
 
       padding-top: 6px;
     }
@@ -24,12 +24,12 @@
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       /* display: none; <- Crashes Chrome on hover */
-      -webkit-appearance: none;
+      appearance: none;
       margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
     }
 
-    input[type=number] {
-      -moz-appearance: textfield; /* Firefox */
+    input[type="number"] {
+      appearance: textfield; /* Firefox */
     }
   }
 
@@ -40,7 +40,7 @@
   }
 
   &__left-value {
-    @include H7;
+    @include h7;
 
     position: absolute;
     right: 16px;

@@ -5,7 +5,7 @@
   padding-right: 16px;
 
   &__detail-header {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
     margin-bottom: 2px;
@@ -13,7 +13,7 @@
   }
 
   &__detail-content {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
 
@@ -67,7 +67,7 @@
   }
 
   .view-quote__conversion-rate-token-label {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
     font-weight: bold;
@@ -89,7 +89,7 @@
   }
 
   &__font-small {
-    @include H7;
+    @include h7;
   }
 
   &__bold {

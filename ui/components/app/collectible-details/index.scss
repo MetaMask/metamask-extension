@@ -58,7 +58,7 @@ $spacer-break-small: 16px;
   }
 
   &__contract-copy-button {
-    @include H6;
+    @include h6;
 
     width: 80px;
     display: flex;

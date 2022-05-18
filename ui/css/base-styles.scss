@@ -1,7 +1,6 @@
-
-
 * {
   box-sizing: border-box;
+  font-family: $font-family;
 }
 
 html,
@@ -95,33 +94,7 @@ input.form-control {
   border-radius: 3px;
   width: 100%;
 
-  &::-webkit-input-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &::-moz-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &:-ms-input-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
-  &:-moz-placeholder {
-    font-weight: 100;
-    color: var(--color-text-muted);
-  }
-
   &--error {
     border: 1px solid var(--color-error-default);
   }
 }
-
-/** Default Typography on base elements **/
-* {
-  font-family: $font-family;
-}
-

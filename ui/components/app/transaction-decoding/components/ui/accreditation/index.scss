@@ -15,10 +15,9 @@
   }
 
   &__link.btn-link {
-    @include H7;
+    @include h7;
 
     display: inherit;
     padding: 0 4px;
   }
 }
-

@@ -5,9 +5,8 @@
   $self: &;
 
   &__status {
-    @include Paragraph;
+    @include paragraph;
 
-    display: flex;
     align-items: center;
     text-transform: uppercase;
     display: grid;

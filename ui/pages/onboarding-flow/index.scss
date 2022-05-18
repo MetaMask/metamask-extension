@@ -1,13 +1,13 @@
-@import 'recovery-phrase/index';
-@import 'onboarding-app-header/index';
-@import 'secure-your-wallet/index';
-@import 'privacy-settings/index';
-@import 'create-password/index';
-@import 'creation-successful/index';
-@import 'welcome/index';
-@import 'import-srp/index';
-@import 'pin-extension/index';
-@import 'metametrics/index';
+@import "recovery-phrase/index";
+@import "onboarding-app-header/index";
+@import "secure-your-wallet/index";
+@import "privacy-settings/index";
+@import "create-password/index";
+@import "creation-successful/index";
+@import "welcome/index";
+@import "import-srp/index";
+@import "pin-extension/index";
+@import "metametrics/index";
 
 .onboarding-flow {
   background-color: var(--color-background-default);

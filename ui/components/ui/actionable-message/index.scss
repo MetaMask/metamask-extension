@@ -21,7 +21,7 @@
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     border-radius: 8px;
     top: 0;
@@ -30,7 +30,6 @@
     left: 0;
     background: var(--color-info-muted);
   }
-
 
   &--with-icon {
     padding-inline-start: 32px;
@@ -51,7 +50,7 @@
     left: 8px;
   }
 
-  @include H7;
+  @include h7;
 
   &__message {
     color: var(--color-text-default);
@@ -175,7 +174,7 @@
       justify-content: center;
       align-items: center;
 
-      @include H8;
+      @include h8;
     }
   }
 }

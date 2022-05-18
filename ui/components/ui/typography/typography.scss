@@ -2,7 +2,7 @@
 @use "sass:map";
 
 .typography {
-  @include design-system.Paragraph;
+  @include design-system.paragraph;
 
   & b,
   & strong {

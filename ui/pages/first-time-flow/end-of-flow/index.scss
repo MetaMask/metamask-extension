@@ -13,14 +13,14 @@
 
   &__text-1,
   &__text-3 {
-    @include Paragraph;
+    @include paragraph;
 
     font-weight: normal;
     margin-top: 18px;
   }
 
   &__text-2 {
-    @include Paragraph;
+    @include paragraph;
 
     font-weight: bold;
     margin-top: 26px;
@@ -31,7 +31,7 @@
     margin-bottom: 2px;
 
     @media screen and (max-width: $break-small) {
-      @include H6;
+      @include h6;
 
       margin-bottom: 16px;
     }

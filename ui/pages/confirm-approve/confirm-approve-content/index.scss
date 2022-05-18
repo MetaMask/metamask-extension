@@ -6,7 +6,7 @@
   font-style: normal;
 
   &__warning {
-    padding: 0 24px 16px 24px;
+    padding: 0 24px 16px;
   }
 
   &__icon-display-content {
@@ -14,7 +14,7 @@
     height: 51px;
     width: 65%;
     margin-top: 16px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     border: 1px solid var(--color-border-default);
     box-sizing: border-box;
     border-radius: 100px;
@@ -46,7 +46,7 @@
   &__address-display-content {
     display: flex;
     height: 27px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     background-color: var(--color-background-alternative);
     border-radius: 100px;
     align-items: center;
@@ -95,7 +95,7 @@
   }
 
   &__title {
-    @include H3;
+    @include h3;
 
     width: 100%;
     display: flex;
@@ -107,7 +107,7 @@
   }
 
   &__description {
-    @include H6;
+    @include h6;
 
     margin-top: 16px;
     margin-bottom: 16px;
@@ -127,13 +127,13 @@
     padding-right: 24px;
 
     &__bold-text {
-      @include H6;
+      @include h6;
 
       font-weight: bold;
     }
 
     &__thin-text {
-      @include H7;
+      @include h7;
 
       color: var(--color-text-alternative);
     }
@@ -161,7 +161,7 @@
 
     &__title,
     &__title-value {
-      @include H6;
+      @include h6;
 
       font-weight: bold;
     }
@@ -247,7 +247,7 @@
     }
 
     &__primary-fee {
-      @include H4;
+      @include h4;
 
       font-weight: bold;
       color: var(--color-text-default);
@@ -255,7 +255,7 @@
 
     &__secondary-fee,
     &__labelled-fee {
-      @include H6;
+      @include h6;
 
       font-weight: normal;
       color: var(--color-text-muted);
@@ -299,23 +299,20 @@
   &__edit-submission-button-container {
     display: flex;
     flex-flow: row;
-    padding-top: 15px;
-    padding-bottom: 30px;
     border-bottom: 1px solid var(--color-border-muted);
     width: 100%;
     justify-content: center;
-    padding-left: 24px;
-    padding-right: 24px;
+    padding: 15px 24px 30px;
   }
 
   &__large-text {
-    @include H4;
+    @include h4;
 
     color: var(--color-text-default);
   }
 
   &__medium-link-text {
-    @include H6;
+    @include h6;
 
     font-weight: 500;
     color: var(--color-primary-default);
@@ -323,7 +320,7 @@
 
   &__medium-text,
   &__label {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
   }
@@ -336,7 +333,7 @@
   &__small-text,
   &__small-blue-text,
   &__info-row {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
   }
@@ -392,7 +389,7 @@
     height: 49px;
     margin-top: 5px;
     margin-bottom: 6px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     border: 1px solid var(--color-border-muted);
     box-sizing: border-box;
     border-radius: 6px;
@@ -409,7 +406,7 @@
   }
 
   & &__custom-nonce-edit {
-    @include H7;
+    @include h7;
 
     width: auto;
   }

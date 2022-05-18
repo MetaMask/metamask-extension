@@ -1,8 +1,8 @@
-@import 'token-list-placeholder/index';
+@import "token-list-placeholder/index";
 
 .token-list {
   &__title {
-    @include H7;
+    @include h7;
   }
 
   &__tokens-container {
@@ -59,7 +59,7 @@
   }
 
   &__token-name {
-    /*rtl:ignore*/
+    /* rtl:ignore */
     direction: ltr;
     overflow: hidden;
     text-overflow: ellipsis;

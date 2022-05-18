@@ -1,9 +1,10 @@
-@import 'tab/index';
+@import "tab/index";
 
 .tabs {
   flex-grow: 1;
+
   // Just for Firefox — https://github.com/MetaMask/metamask-extension/issues/8700
-  -moz-transform: translateZ(0);
+  transform: translateZ(0);
 
   &__list {
     display: flex;

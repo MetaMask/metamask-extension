@@ -11,7 +11,7 @@
   }
 
   &__body-header {
-    @include H3;
+    @include h3;
 
     text-align: center;
     margin-top: 65px;
@@ -57,7 +57,7 @@
   }
 
   &__button-text-big {
-    @include H4;
+    @include h4;
 
     color: var(--color-text-default);
     margin-top: 12px;
@@ -65,7 +65,7 @@
   }
 
   &__button-text-small {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-alternative);
     margin-top: 10px;

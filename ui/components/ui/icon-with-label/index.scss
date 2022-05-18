@@ -3,7 +3,7 @@
   align-items: center;
 
   &__label {
-    @include H8;
+    @include h8;
 
     margin-left: 4px;
     color: var(--color-text-alternative);

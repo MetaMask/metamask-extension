@@ -2,22 +2,22 @@
   &__container {
     display: grid;
     grid-template-areas:
-      'title dropdown'
-      'paste-tip paste-tip'
-      'input input'
-      'error error'
-      'too-many-words-error too-many-words-error';
+      "title dropdown"
+      "paste-tip paste-tip"
+      "input input"
+      "error error"
+      "too-many-words-error too-many-words-error";
   }
 
   @media (max-width: 767px) {
     &__container {
       grid-template-areas:
-        'title'
-        'dropdown'
-        'paste-tip'
-        'input'
-        'error'
-        'too-many-words-error';
+        "title"
+        "dropdown"
+        "paste-tip"
+        "input"
+        "error"
+        "too-many-words-error";
     }
   }
 

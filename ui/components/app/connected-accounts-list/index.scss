@@ -8,14 +8,14 @@
   }
 
   &__account-name {
-    @include H6;
+    @include h6;
 
     display: inline;
     font-weight: bold;
   }
 
   %account-status-typography {
-    @include H7;
+    @include h7;
 
     padding-top: 4px;
   }

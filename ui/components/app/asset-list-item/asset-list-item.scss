@@ -38,7 +38,7 @@
   }
 
   .list-item__subheading {
-    @include H6;
+    @include h6;
 
     margin-top: 6px;
   }
@@ -49,7 +49,7 @@
   }
 
   & &__send-token-button {
-    @include H6;
+    @include h6;
 
     display: none;
     text-transform: uppercase;

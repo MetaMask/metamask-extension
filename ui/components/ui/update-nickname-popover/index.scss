@@ -1,8 +1,6 @@
-
 .update-nickname {
   &__wrapper {
     height: 620px;
-    width: 360px;
     border-radius: 10px;
     max-height: 100vh;
     width: auto;
@@ -24,7 +22,7 @@
   }
 
   &__content {
-    padding: 0 20px 20px 20px;
+    padding: 0 20px 20px;
     position: relative;
 
     &__indenticon {

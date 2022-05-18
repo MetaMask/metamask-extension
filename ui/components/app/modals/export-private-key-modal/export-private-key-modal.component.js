@@ -70,6 +70,7 @@ export default class ExportPrivateKeyModal extends Component {
       return (
         <input
           type="password"
+          placeholder={this.context.t('password')}
           className="export-private-key-modal__password-input"
           onChange={(event) => this.setState({ password: event.target.value })}
         />

@@ -1,8 +1,7 @@
 .alerts-tab {
   &__body {
-    @include H6;
+    @include h6;
 
-    display: grid;
     grid-template-columns: 8fr 30px max-content;
     grid-template-rows: 1fr 1fr;
     align-items: center;

@@ -7,7 +7,7 @@
   padding-right: 20px;
 
   &__primary-currency {
-    @include H4;
+    @include h4;
 
     height: 20.5px;
     margin-bottom: 7.5px;
@@ -25,7 +25,7 @@
 
   .button-group__button,
   .button-group__button--active {
-    @include H7;
+    @include h7;
 
     height: 130px;
     max-width: 108px;
@@ -75,11 +75,11 @@
   }
 
   &__button-fiat-price {
-    @include H6;
+    @include h6;
   }
 
   &__button-label {
-    @include Paragraph;
+    @include paragraph;
   }
 
   &__label {
@@ -89,22 +89,22 @@
   }
 
   &__primary-currency {
-    @include H7;
+    @include h7;
 
     padding-bottom: 2px;
 
     @media screen and (max-width: $break-small) {
-      @include H8;
+      @include h8;
     }
   }
 
   &__secondary-currency {
-    @include H7;
+    @include h7;
 
     padding-bottom: 2px;
 
     @media screen and (max-width: $break-small) {
-      @include H8;
+      @include h8;
     }
   }
 
@@ -152,28 +152,28 @@
   width: 95%;
 
   &__button-fiat-price {
-    @include H6;
+    @include h6;
   }
 
   &__button-label {
-    @include Paragraph;
+    @include paragraph;
   }
 
   &__label {
-    @include H8;
+    @include h8;
 
     font-weight: 500;
     text-transform: capitalize;
   }
 
   &__primary-currency {
-    @include H7;
+    @include h7;
 
     margin-top: 3px;
   }
 
   &__secondary-currency {
-    @include H7;
+    @include h7;
   }
 
   &__loading-container {
@@ -181,7 +181,7 @@
   }
 
   &__time-estimate {
-    @include H7;
+    @include h7;
 
     font-weight: 500;
     margin-top: 4px;
@@ -190,12 +190,11 @@
 
   .button-group__button,
   .button-group__button--active {
-    height: 78px;
     background: var(--color-background-default);
     color: var(--color-text-default);
     width: 108px;
     height: 97px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 15.2%);
     border-radius: 6px;
     border: none;
 

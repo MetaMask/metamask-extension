@@ -1,6 +1,6 @@
 .transaction-confirmed {
   &__title {
-    @include H3;
+    @include h3;
 
     font-weight: 500;
     padding: 16px 0;
@@ -8,7 +8,7 @@
   }
 
   &__description {
-    @include H6;
+    @include h6;
 
     text-align: center;
   }

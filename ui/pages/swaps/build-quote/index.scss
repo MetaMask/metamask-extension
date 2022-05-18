@@ -14,10 +14,6 @@
     padding-right: 24px;
   }
 
-  &__content {
-    display: flex;
-  }
-
   &__dropdown-swap-to-header {
     display: flex;
     justify-content: space-between;
@@ -39,7 +35,7 @@
 
   &__title,
   &__input-label {
-    @include H5;
+    @include h5;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -66,14 +62,14 @@
   }
 
   &__max-button {
-    @include H7;
+    @include h7;
 
     color: var(--color-primary-default);
     cursor: pointer;
   }
 
   &__balance-message {
-    @include H7;
+    @include h7;
 
     width: 100%;
     color: var(--color-text-muted);
@@ -110,7 +106,7 @@
   &__open-dropdown,
   &__open-to-dropdown {
     max-height: 330px;
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 14px rgb(0 0 0 / 18%);
     position: absolute;
     width: 100%;
   }
@@ -147,7 +143,7 @@
   }
 
   &__token-message {
-    @include H7;
+    @include h7;
 
     width: 100%;
     color: var(--color-text-alternative);

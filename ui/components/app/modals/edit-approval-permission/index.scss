@@ -22,7 +22,7 @@
   }
 
   &__title {
-    @include H4;
+    @include h4;
 
     font-weight: bold;
   }
@@ -33,7 +33,7 @@
 
     &__account,
     &__balance {
-      @include H6;
+      @include h6;
 
       font-weight: normal;
       color: var(--color-text-default);
@@ -59,14 +59,14 @@
     padding: 24px;
 
     &__title {
-      @include H6;
+      @include h6;
 
       font-weight: bold;
       color: var(--color-text-default);
     }
 
     &__description {
-      @include H7;
+      @include h7;
 
       font-weight: normal;
       color: var(--color-text-alternative);
@@ -79,10 +79,6 @@
       margin-top: 20px;
     }
 
-    &__radio-button {
-      width: 18px;
-    }
-
     &__option-text {
       display: flex;
       flex-direction: column;
@@ -90,7 +86,7 @@
 
     &__option-label,
     &__option-label--selected {
-      @include H6;
+      @include h6;
 
       font-weight: normal;
       color: var(--color-text-alternative);
@@ -101,7 +97,7 @@
     }
 
     &__option-description {
-      @include H7;
+      @include h7;
 
       color: var(--color-text-alternative);
       margin-top: 8px;
@@ -109,7 +105,7 @@
     }
 
     &__option-value {
-      @include H4;
+      @include h4;
 
       color: var(--color-text-default);
     }

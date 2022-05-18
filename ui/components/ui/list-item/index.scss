@@ -5,7 +5,7 @@
   background: var(--color-background-default);
   padding: 24px 16px;
 
-  @include Paragraph;
+  @include paragraph;
 
   border-top: 1px solid var(--color-border-muted);
   border-bottom: 1px solid var(--color-border-muted);
@@ -13,9 +13,9 @@
   display: grid;
   grid-template-columns: 0fr repeat(11, 1fr);
   grid-template-areas:
-    'icon head     head     head     head     head     head     head     right right right right'
-    'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
-    '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
+    "icon head     head     head     head     head     head     head     right right right right"
+    "icon sub      sub      sub      sub      sub      sub      sub      right right right right"
+    ".    actions  actions  actions  actions  actions  actions  actions  right right right right";
   align-items: start;
   cursor: pointer;
 
@@ -38,7 +38,7 @@
   }
 
   &__heading {
-    @include H5;
+    @include h5;
 
     grid-area: head;
     position: relative;
@@ -64,11 +64,12 @@
   }
 
   &__subheading {
-    @include H7;
+    @include h7;
 
     grid-area: sub;
     color: var(--color-text-alternative);
     margin-top: 4px;
+
     // all direct descendants should be truncated with ellipses
     // allows flexibility in consuming components to use h3/other tag
     > * {
@@ -83,7 +84,7 @@
   }
 
   &__mid-content {
-    @include H7;
+    @include h7;
 
     grid-area: mid;
     color: var(--color-text-muted);
@@ -105,17 +106,17 @@
 
   @media (min-width: $break-large) {
     grid-template-areas:
-      'icon head     head     head     head     mid mid mid mid right right right'
-      'icon sub      sub      sub      sub      mid mid mid mid right right right'
-      '.    actions  actions  actions  actions  mid mid mid mid right right right';
+      "icon head     head     head     head     mid mid mid mid right right right"
+      "icon sub      sub      sub      sub      mid mid mid mid right right right"
+      ".    actions  actions  actions  actions  mid mid mid mid right right right";
   }
 }
 
 .list-item--single-content-row {
-  grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
+  grid-template-areas: "icon head     head     head     head     head     head     head     right right right right";
   align-items: center;
 
   @media (min-width: $break-large) {
-    grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
+    grid-template-areas: "icon head     head     head     head     mid mid mid mid right right right";
   }
 }

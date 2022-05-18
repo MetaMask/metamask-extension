@@ -1,5 +1,5 @@
-@import './advanced-tab-content/index';
-@import './basic-tab-content/index';
+@import "./advanced-tab-content/index";
+@import "./basic-tab-content/index";
 
 .gas-modal-page-container {
   .page-container {
@@ -31,7 +31,7 @@
     }
 
     &__header-close-text {
-      @include H6;
+      @include h6;
 
       color: var(--color-primary-default);
       position: absolute;
@@ -44,7 +44,7 @@
     }
 
     &__title {
-      @include H5;
+      @include h5;
 
       color: var(--color-text-default);
       font-weight: 500;
@@ -58,17 +58,14 @@
       display: none;
     }
 
-    &__tab {
-      margin-right: 0;
-    }
-
     &__tabs {
       margin-top: 0;
     }
 
     &__tab {
-      @include H6;
+      @include h6;
 
+      margin-right: 0;
       width: 100%;
 
       &:last-of-type {
@@ -95,10 +92,9 @@
     height: 219px;
   }
 
-
   &__info-row,
   &__info-row--fade {
-    @include H7;
+    @include h7;
 
     width: 100%;
     background: var(--color-background-alternative);
@@ -122,20 +118,20 @@
 
     &__total-info {
       &__label {
-        @include Paragraph;
+        @include paragraph;
 
         @media screen and (max-width: $break-small) {
-          @include H6;
+          @include h6;
         }
       }
 
       &__value {
-        @include Paragraph;
+        @include paragraph;
 
         font-weight: bold;
 
         @media screen and (max-width: $break-small) {
-          @include H6;
+          @include h6;
         }
       }
     }
@@ -143,11 +139,11 @@
     &__transaction-info,
     &__send-info {
       &__label {
-        @include H7;
+        @include h7;
       }
 
       &__value {
-        @include H6;
+        @include h6;
       }
     }
   }

@@ -8,16 +8,16 @@
     z-index: 2;
   }
 
-  input[type=range] {
-    -webkit-appearance: none !important;
+  input[type="range"] {
+    appearance: none !important;
   }
 
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none !important;
     height: 34px;
     width: 34px;
     background-color: var(--color-primary-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 8%);
     border-radius: 50%;
     position: relative;
     z-index: 10;
@@ -45,7 +45,7 @@
   }
 
   &__labels {
-    @include H7;
+    @include h7;
 
     display: flex;
     justify-content: space-between;

@@ -7,7 +7,7 @@
   border-radius: 8px;
 
   &__title {
-    @include H3;
+    @include h3;
 
     font-weight: 500;
     padding: 16px 0;
@@ -35,14 +35,14 @@
   }
 
   &__status {
-    @include H6;
+    @include h6;
 
     text-align: center;
     padding: 15px;
   }
 
   &__image {
-    @include H3;
+    @include h3;
 
     font-weight: 500;
     padding: 16px 0 0;
@@ -50,7 +50,7 @@
   }
 
   &__error {
-    @include Paragraph;
+    @include paragraph;
 
     text-align: center;
     padding: 15px;
@@ -74,7 +74,7 @@
   }
 
   &__close::after {
-    content: '\00D7';
+    content: "\00D7";
     font-size: 35px;
     color: var(--color-icon-default);
     position: absolute;
@@ -84,4 +84,3 @@
     font-weight: 300;
   }
 }
-

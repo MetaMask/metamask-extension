@@ -12,7 +12,7 @@
   }
 
   &__input {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
     background-color: var(--color-background-default);
@@ -38,7 +38,7 @@
   }
 
   &__error {
-    @include H7;
+    @include h7;
 
     left: 8px;
     color: var(--color-error-default);

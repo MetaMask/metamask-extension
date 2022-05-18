@@ -17,7 +17,7 @@
   }
 
   &__header {
-    @include H3;
+    @include h3;
 
     margin-bottom: 22px;
     margin-top: 50px;
@@ -28,7 +28,7 @@
     text-align: center;
 
     p {
-      @include Paragraph;
+      @include paragraph;
 
       text-align: start;
       margin-bottom: 22px;

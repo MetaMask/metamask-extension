@@ -1,5 +1,5 @@
 .connected-accounts-permissions {
-  @include H7;
+  @include h7;
 
   display: flex;
   flex-direction: column;
@@ -14,7 +14,7 @@
   }
 
   &__header {
-    @include H6;
+    @include h6;
 
     display: flex;
     flex-direction: row;

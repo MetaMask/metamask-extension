@@ -1,5 +1,5 @@
 .currency-display {
-  @include Paragraph;
+  @include paragraph;
 
   height: 54px;
   border: 1px solid var(--color-border-default);
@@ -14,7 +14,7 @@
   }
 
   &__input {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-muted);
     border: none;
@@ -22,7 +22,7 @@
   }
 
   &__primary-currency {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-muted);
     font-weight: 400;
@@ -34,7 +34,7 @@
 
   &__converted-value,
   &__converted-currency {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-muted);
   }
@@ -46,18 +46,16 @@
     max-width: 100%;
 
     input[type="number"] {
-      -moz-appearance: textfield;
+      appearance: textfield;
     }
 
     input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      appearance: none;
       display: none;
     }
 
     input[type="number"]:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      appearance: none;
       display: none;
     }
   }
@@ -69,14 +67,12 @@
 
   .react-numeric-input {
     input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      appearance: none;
       display: none;
     }
 
     input[type="number"]:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      appearance: none;
       display: none;
     }
   }

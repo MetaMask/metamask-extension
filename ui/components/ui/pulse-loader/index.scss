@@ -13,21 +13,18 @@
   }
 
   &__loading-dot-one {
-    -webkit-animation: loading-dot 0.75s 0.12s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
     animation: loading-dot 0.75s 0.12s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
   }
 
   &__loading-dot-two {
-    -webkit-animation: loading-dot 0.75s 0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
     animation: loading-dot 0.75s 0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
   }
 
   &__loading-dot-three {
-    -webkit-animation: loading-dot 0.75s 0.36s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
     animation: loading-dot 0.75s 0.36s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
   }
 
-  @-webkit-keyframes loading-dot {
+  @keyframes loading-dot {
     0% {
       transform: scale(1);
       opacity: 1;

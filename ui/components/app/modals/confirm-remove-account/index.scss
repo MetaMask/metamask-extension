@@ -1,6 +1,6 @@
 .confirm-remove-account {
   &__description {
-    @include H6;
+    @include h6;
 
     text-align: center;
   }
@@ -20,7 +20,7 @@
 
     &__name,
     &__address {
-      @include H6;
+      @include h6;
 
       margin-right: 10px;
     }
@@ -33,7 +33,7 @@
     }
 
     &__label {
-      @include H8;
+      @include h8;
 
       display: block;
       color: var(--color-text-muted);

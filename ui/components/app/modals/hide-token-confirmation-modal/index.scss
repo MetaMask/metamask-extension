@@ -2,7 +2,7 @@
   min-height: 250.72px;
   border-radius: 4px;
   background-color: var(--color-background-default);
-  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 7px 0 rgb(0 0 0 / 50%);
 
   &__container {
     padding: 24px 27px 21px;
@@ -16,7 +16,7 @@
   }
 
   &__symbol {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-alternative);
     text-align: center;
@@ -24,7 +24,7 @@
   }
 
   &__title {
-    @include H3;
+    @include h3;
 
     height: 30px;
     width: 271.28px;
@@ -34,7 +34,7 @@
   }
 
   &__copy {
-    @include Paragraph;
+    @include paragraph;
 
     min-height: 41px;
     width: 318px;

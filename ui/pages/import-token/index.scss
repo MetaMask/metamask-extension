@@ -1,4 +1,4 @@
-@import 'token-list/index';
+@import "token-list/index";
 
 .import-token {
   $self: &;
@@ -6,13 +6,13 @@
   &__custom-token-form {
     padding: 8px 16px 16px;
 
-    input[type='number']::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+    input[type="number"]::-webkit-inner-spin-button {
+      appearance: none;
       display: none;
     }
 
-    input[type='number']:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      appearance: none;
       display: none;
     }
     & #{$self}__decimal-warning {
@@ -21,7 +21,7 @@
   }
 
   &__search-token {
-    padding: 16px 16px 16px 16px;
+    padding: 16px;
   }
 
   &__token-list {
@@ -48,7 +48,7 @@
   }
 
   &__link {
-    @include H7;
+    @include h7;
 
     display: inline;
     color: var(--color-primary-default);

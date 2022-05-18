@@ -19,7 +19,7 @@
   }
 
   &__header-text {
-    @include H6;
+    @include h6;
 
     margin-right: 6px;
     color: var(--color-primary-default);
@@ -42,7 +42,7 @@
   }
 
   &__prefix-text {
-    @include H6;
+    @include h6;
 
     margin-right: 4px;
     color: var(--color-text-default);
@@ -50,7 +50,7 @@
   }
 
   &__error-text {
-    @include H7;
+    @include h7;
 
     color: var(--color-error-default);
     margin-top: 8px;
@@ -80,42 +80,21 @@
       color: var(--color-primary-inverse);
       font-weight: inherit;
 
-      &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color: var(--color-primary-inverse);
-      }
-
-      &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+      &::placeholder { /* Mozilla Firefox 19+ */
         color: var(--color-primary-inverse);
         opacity: 1;
-      }
-
-      &::-moz-placeholder { /* Mozilla Firefox 19+ */
-        color: var(--color-primary-inverse);
-        opacity: 1;
-      }
-
-      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color: var(--color-primary-inverse);
-      }
-
-      &::-ms-input-placeholder { /* Microsoft Edge */
-        color: var(--color-primary-inverse);
-      }
-
-      &::placeholder { /* Most modern browsers support this now. */
-        color: var(--color-primary-inverse);
       }
     }
 
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       /* display: none; <- Crashes Chrome on hover */
-      -webkit-appearance: none;
+      appearance: none;
       margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
     }
 
-    input[type=number] {
-      -moz-appearance: textfield;
+    input[type="number"] {
+      appearance: textfield;
     }
 
     &--danger {

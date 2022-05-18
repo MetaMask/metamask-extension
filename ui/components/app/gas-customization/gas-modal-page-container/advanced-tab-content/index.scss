@@ -3,11 +3,6 @@
   flex-flow: column;
 
   &__transaction-data-summary {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-
-  &__transaction-data-summary {
     display: flex;
     flex-flow: column;
     color: var(--color-text-alternative);
@@ -17,7 +12,7 @@
 
     &__titles,
     &__container {
-      @include H7;
+      @include h7;
 
       display: flex;
       flex-flow: row;
@@ -26,38 +21,38 @@
     }
 
     &__container {
-      @include Paragraph;
+      @include paragraph;
 
       margin-top: 0;
     }
 
     &__fee {
-      @include Paragraph;
+      @include paragraph;
 
       color: var(--color-text-alternative);
     }
 
     &__time-remaining {
-      @include Paragraph;
+      @include paragraph;
 
-      /*rtl:ignore*/
+      /* rtl:ignore */
       direction: ltr;
       color: var(--color-text-alternative);
 
       .minutes-num,
       .seconds-num {
-        @include Paragraph;
+        @include paragraph;
       }
 
       .seconds-num {
-        @include Paragraph;
+        @include paragraph;
 
         margin-left: 7px;
       }
 
       .minutes-label,
       .seconds-label {
-        @include Paragraph;
+        @include paragraph;
       }
     }
   }
@@ -71,14 +66,14 @@
     position: relative;
 
     &__title {
-      @include H7;
+      @include h7;
 
       color: var(--color-text-alternative);
       margin-left: 22px;
     }
 
     &__speed-buttons {
-      @include H8;
+      @include h8;
 
       position: absolute;
       bottom: 13px;
@@ -104,9 +99,6 @@
     display: flex;
     flex-flow: row;
     justify-content: space-between;
-    margin-left: 20px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin: 10px 10px 20px 20px;
   }
 }

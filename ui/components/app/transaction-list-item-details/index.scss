@@ -84,7 +84,7 @@
 
   & &__header-button {
     &-rounded-button {
-      @include H8;
+      @include h8;
 
       padding: 8px;
       min-width: 75px;
@@ -126,9 +126,8 @@
 
   &__transaction-breakdown {
     flex: 1;
-    margin-right: 8px;
     min-width: 0;
-    margin: 0 0 8px 0;
+    margin: 0 0 8px;
   }
 
   &__transaction-activity-log {

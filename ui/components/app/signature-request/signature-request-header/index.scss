@@ -1,5 +1,5 @@
 .signature-request-header {
-  @include H7;
+  @include h7;
 
   display: flex;
   padding: 1rem;
@@ -18,16 +18,13 @@
       &__top-row {
         display: flex;
         align-items: center;
+        margin: 0;
       }
 
       &__account-name {
-        @include H7;
+        @include h7;
 
         font-weight: 500;
-      }
-
-      &__top-row {
-        margin: 0;
       }
     }
   }

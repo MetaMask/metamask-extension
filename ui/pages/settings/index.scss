@@ -1,10 +1,10 @@
-@import 'info-tab/index';
-@import 'alerts-tab/alerts-tab';
-@import 'networks-tab/index';
-@import 'settings-tab/index';
-@import 'contact-list-tab/index';
-@import 'flask/snaps-list-tab/index';
-@import 'flask/view-snap/index';
+@import "info-tab/index";
+@import "alerts-tab/alerts-tab";
+@import "networks-tab/index";
+@import "settings-tab/index";
+@import "contact-list-tab/index";
+@import "flask/snaps-list-tab/index";
+@import "flask/view-snap/index";
 
 .settings-page {
   position: relative;
@@ -13,7 +13,7 @@
   flex-flow: column nowrap;
 
   &__header {
-    padding: 8px 24px 8px 24px;
+    padding: 8px 24px;
     position: relative;
 
     @media screen and (max-width: $break-small) {
@@ -31,14 +31,14 @@
       }
 
       &__close-button::after {
-        content: '\00D7';
+        content: "\00D7";
         font-size: 40px;
         color: var(--color-icon-default);
         cursor: pointer;
       }
 
       &__title {
-        @include H3;
+        @include h3;
 
         flex: 1 0 auto;
 
@@ -70,7 +70,7 @@
       &__list {
         background: var(--color-background-default);
         box-sizing: border-box;
-        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+        box-shadow: 0 0 14px rgb(0 0 0 / 18%);
         border-radius: 6px;
         position: absolute;
         width: 100%;
@@ -103,7 +103,7 @@
           &__tab,
           &__section,
           &__no-matching {
-            @include H6;
+            @include h6;
 
             color: var(--color-icon-default);
           }
@@ -115,13 +115,13 @@
           }
 
           &__caret {
-            [dir='rtl'] & {
+            [dir="rtl"] & {
               transform: rotate(180deg);
             }
           }
 
           &__link {
-            @include H6;
+            @include h6;
 
             display: inline;
             color: var(--color-primary-default);
@@ -134,7 +134,7 @@
 
   &__subheader,
   &__subheader--link {
-    @include H4;
+    @include h4;
 
     padding: 16px 4px;
     border-bottom: 1px solid var(--color-border-muted);
@@ -179,10 +179,10 @@
   }
 
   &__sub-header-text {
-    @include H4;
+    @include h4;
 
     @media screen and (max-width: $break-small) {
-      @include H5;
+      @include h5;
 
       width: 100%;
     }
@@ -196,7 +196,7 @@
       margin-right: 8px;
       cursor: pointer;
 
-      [dir='rtl'] & {
+      [dir="rtl"] & {
         margin: 0 0 0 8px;
         transform: rotate(180deg);
       }
@@ -254,7 +254,7 @@
     padding: 10px 0 20px;
 
     &--parent {
-      padding: 10px 0 10px;
+      padding: 10px 0;
     }
 
     &--dependent {
@@ -316,7 +316,7 @@
     }
 
     &__description {
-      @include H6;
+      @include h6;
 
       margin-top: 8px;
       margin-bottom: 12px;
@@ -329,7 +329,7 @@
   }
 
   &__content-description {
-    @include H6;
+    @include h6;
 
     color: var(--color-icon-default);
     padding-top: 5px;
@@ -360,7 +360,7 @@
   }
 
   &__address-book-button {
-    @include H5;
+    @include h5;
 
     padding: 0;
   }
@@ -370,7 +370,7 @@
   }
 
   &__inline-link {
-    @include H6;
+    @include h6;
 
     display: initial;
     padding: 0;
@@ -395,10 +395,10 @@
   }
 
   .toggle-button {
-    /*rtl:ignore*/
+    /* rtl:ignore */
     direction: ltr;
 
-    [dir='rtl'] & {
+    [dir="rtl"] & {
       justify-content: flex-end;
     }
   }

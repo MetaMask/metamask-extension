@@ -4,7 +4,7 @@
   }
 
   &__overview {
-    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    box-shadow: 0 3px 4px rgb(135 134 134 / 16%);
   }
 }
 
@@ -17,7 +17,7 @@
 }
 
 .asset-breadcrumb {
-  @include H6;
+  @include h6;
 
   color: var(--color-text-default);
   background-color: inherit;

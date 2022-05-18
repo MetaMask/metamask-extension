@@ -10,7 +10,7 @@ module.exports = {
     '/notices',
     '/test',
   ],
-
+  extends: ['stylelint-config-standard-scss'],
   rules: {
     // stylelint-config-standard
 
@@ -85,6 +85,7 @@ module.exports = {
     'media-query-list-comma-newline-after': 'always-multi-line',
     'media-query-list-comma-space-after': 'always-single-line',
     'media-query-list-comma-space-before': 'never',
+    'no-descending-specificity': null,
     'no-eol-whitespace': true,
     'no-missing-end-of-source-newline': true,
     'number-leading-zero': 'always',
@@ -100,12 +101,15 @@ module.exports = {
     'selector-attribute-brackets-space-inside': 'never',
     'selector-attribute-operator-space-after': 'never',
     'selector-attribute-operator-space-before': 'never',
+    'selector-class-pattern':
+      '^(?:(?:o|c|u|t|s|is|has|_|js|qa)-)?[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:\\[.+\\])?$', // BEM naming convention
     'selector-combinator-space-after': 'always',
     'selector-combinator-space-before': 'always',
     'selector-descendant-combinator-no-non-space': true,
     'selector-list-comma-newline-after': 'always',
     'selector-list-comma-space-before': 'never',
     'selector-max-empty-lines': 0,
+    'selector-no-vendor-prefix': true,
     'selector-pseudo-class-case': 'lower',
     'selector-pseudo-class-parentheses-space-inside': 'never',
     'selector-pseudo-element-case': 'lower',

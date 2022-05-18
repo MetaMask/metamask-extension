@@ -8,7 +8,7 @@
   color: var(--color-text-alternative);
 
   &__close::after {
-    content: '\00D7';
+    content: "\00D7";
     font-size: 29px;
     font-weight: 200;
     color: var(--color-icon-default);
@@ -19,6 +19,6 @@
   }
 
   &__description {
-    @include H7;
+    @include h7;
   }
 }

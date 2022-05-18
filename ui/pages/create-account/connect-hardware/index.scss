@@ -10,14 +10,14 @@
 
   &__header {
     &__title {
-      @include H3;
+      @include h3;
 
       margin-top: 5px;
       margin-bottom: 15px;
     }
 
     &__msg {
-      @include H6;
+      @include h6;
 
       color: var(--color-text-muted);
       margin-top: 10px;
@@ -73,7 +73,7 @@
   }
 
   &__hdPath {
-    @include H6;
+    @include h6;
 
     display: flex;
     flex-direction: row;
@@ -93,14 +93,14 @@
   }
 
   &__title {
-    @include H4;
+    @include h4;
 
     padding-top: 10px;
     font-weight: 400;
   }
 
   &__unlock-title {
-    @include H3;
+    @include h3;
 
     padding-top: 10px;
     font-weight: 400;
@@ -108,14 +108,14 @@
   }
 
   &__msg {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-muted);
     margin-top: 10px;
     margin-bottom: 15px;
 
     &-link {
-      @include H6;
+      @include h6;
 
       text-align: center;
       color: var(--color-primary-default);
@@ -149,7 +149,7 @@
   }
 
   &__title {
-    @include H5;
+    @include h5;
 
     margin-bottom: 23px;
     align-self: flex-start;
@@ -160,7 +160,7 @@
   }
 
   &__device {
-    @include Paragraph;
+    @include paragraph;
 
     margin-bottom: 23px;
     align-self: flex-end;
@@ -169,7 +169,7 @@
   }
 
   &__item {
-    @include Paragraph;
+    @include paragraph;
 
     flex-direction: row;
     display: flex;
@@ -228,7 +228,7 @@
   margin-top: 10px;
 
   &__button {
-    @include H6;
+    @include h6;
 
     background: var(--color-background-default);
     height: 19px;
@@ -284,7 +284,7 @@
   padding: 22px;
 
   a {
-    @include H6;
+    @include h6;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -292,7 +292,7 @@
 }
 
 .switch-ledger-path-popover__content {
-  padding: 0 24px 48px 24px;
+  padding: 0 24px 48px;
 }
 
 .switch-ledger-path-popover__footer {

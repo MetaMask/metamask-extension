@@ -54,7 +54,7 @@
   }
 
   &__primary-balance {
-    @include H2;
+    @include h2;
 
     color: var(--color-text-default);
     width: 100%;
@@ -71,13 +71,13 @@
   }
 
   &__cached-secondary-balance {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-secondary-muted);
   }
 
   &__secondary-balance {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-alternative);
   }
@@ -115,7 +115,7 @@
   }
 
   &__primary-balance {
-    @include H2;
+    @include h2;
 
     color: var(--color-text-default);
     width: 100%;
@@ -123,7 +123,7 @@
   }
 
   &__secondary-balance {
-    @include H5;
+    @include h5;
 
     color: var(--color-text-alternative);
   }

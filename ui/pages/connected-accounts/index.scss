@@ -2,7 +2,7 @@
   &__footer {
     a,
     a:hover {
-      @include H6;
+      @include h6;
 
       color: var(--color-primary-default);
       cursor: pointer;

@@ -1,4 +1,4 @@
-@import './send-content/send-gas-row/send-gas-row';
+@import "./send-content/send-gas-row/send-gas-row";
 
 .send {
   &__header {
@@ -7,16 +7,16 @@
     justify-content: center;
     background-color: var(--color-background-alternative);
     border-bottom: none;
-    padding: 14px 0 3px 0;
+    padding: 14px 0 3px;
 
     .page-container__title {
-      @include H4;
+      @include h4;
 
       text-align: center;
     }
 
     .page-container__header-close-text {
-      @include H5;
+      @include h5;
 
       position: absolute;
       right: 1rem;
@@ -53,7 +53,7 @@
       overflow-y: auto;
 
       &__link {
-        @include Paragraph;
+        @include paragraph;
 
         @extend %row-nowrap;
 
@@ -70,7 +70,7 @@
         display: block;
         margin-right: 8px;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }
@@ -80,7 +80,7 @@
       @extend %col-nowrap;
 
       &__load-more {
-        @include H7;
+        @include h7;
 
         padding: 0.5rem;
         text-align: center;
@@ -94,7 +94,7 @@
     }
 
     &__group-label {
-      @include H8;
+      @include h8;
 
       background-color: var(--color-background-alternative);
       color: var(--color-text-alternative);
@@ -114,6 +114,8 @@
       align-items: center;
       border-bottom: 1px solid var(--color-border-muted);
       cursor: pointer;
+      border: 2px solid var(--color-primary-default);
+      border-radius: 8px;
 
       &:hover {
         background-color: rgba($alto, 0.2);
@@ -132,7 +134,7 @@
       }
 
       &__title {
-        @include H6;
+        @include h6;
 
         max-width: 20em;
         text-overflow: ellipsis;
@@ -142,15 +144,10 @@
       }
 
       &__subtitle {
-        @include H8;
+        @include h8;
 
         color: var(--color-text-muted);
       }
-    }
-
-    &__group-item--selected {
-      border: 2px solid var(--color-primary-default);
-      border-radius: 8px;
     }
   }
 }
@@ -179,7 +176,7 @@
     }
 
     &__input {
-      @include H6;
+      @include h6;
 
       flex: 1 1 auto;
       width: 0;
@@ -211,7 +208,7 @@
         &__input {
           @extend %col-nowrap;
 
-          @include H7;
+          @include h7;
 
           color: var(--color-primary-default);
         }
@@ -221,7 +218,7 @@
 
   &__selected-input {
     &__title {
-      @include H6;
+      @include h6;
 
       @extend %ellipsify;
 
@@ -230,7 +227,7 @@
     }
 
     &__subtitle {
-      @include H7;
+      @include h7;
 
       color: var(--color-icon-default);
       margin-top: 0.25rem;

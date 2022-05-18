@@ -17,7 +17,7 @@
     position: relative;
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;
@@ -54,7 +54,7 @@
   }
 
   &__activity-text {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternate);
     cursor: pointer;
@@ -74,7 +74,7 @@
   }
 
   &__action-link {
-    @include H7;
+    @include h7;
 
     cursor: pointer;
     color: var(--color-primary-default);

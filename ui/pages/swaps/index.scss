@@ -1,20 +1,20 @@
-@import 'awaiting-swap/index';
-@import 'awaiting-signatures/index';
-@import 'smart-transaction-status/index';
-@import 'build-quote/index';
-@import 'countdown-timer/index';
-@import 'dropdown-input-pair/index';
-@import 'dropdown-search-list/index';
-@import 'exchange-rate-display/index';
-@import 'fee-card/index';
-@import 'loading-swaps-quotes/index';
-@import 'main-quote-summary/index';
-@import 'searchable-item-list/index';
-@import 'select-quote-popover/index';
-@import 'slippage-buttons/index';
-@import 'swaps-footer/index';
-@import 'view-quote/index';
-@import 'import-token/index';
+@import "awaiting-swap/index";
+@import "awaiting-signatures/index";
+@import "smart-transaction-status/index";
+@import "build-quote/index";
+@import "countdown-timer/index";
+@import "dropdown-input-pair/index";
+@import "dropdown-search-list/index";
+@import "exchange-rate-display/index";
+@import "fee-card/index";
+@import "loading-swaps-quotes/index";
+@import "main-quote-summary/index";
+@import "searchable-item-list/index";
+@import "select-quote-popover/index";
+@import "slippage-buttons/index";
+@import "swaps-footer/index";
+@import "view-quote/index";
+@import "import-token/index";
 
 .swaps {
   display: flex;
@@ -48,7 +48,7 @@
       width: 460px;
       background: var(--color-background-default);
       border: 1px solid var(--color-border-muted);
-      box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+      box-shadow: 0 0 7px 0 rgb(0 0 0 / 8%);
       border-radius: 8px;
       height: 620px;
     }
@@ -74,7 +74,7 @@
   }
 
   &__title {
-    @include H5;
+    @include h5;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -103,7 +103,7 @@
   }
 
   &__header-cancel {
-    @include H7;
+    @include h7;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -113,7 +113,7 @@
   }
 
   &__header-edit {
-    @include H7;
+    @include h7;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -129,7 +129,7 @@
 
     &::after {
       position: absolute;
-      content: '\00D7';
+      content: "\00D7";
       font-size: 29px;
       font-weight: 200;
       color: var(--color-text-default);

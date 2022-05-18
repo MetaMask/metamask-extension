@@ -1,7 +1,7 @@
 .callout {
   $self: &;
 
-  @include H7;
+  @include h7;
 
   padding: 16px;
   display: grid;

@@ -18,7 +18,7 @@
   }
 
   &__address {
-    @include H4;
+    @include h4;
 
     font-weight: bold;
     display: flex;
@@ -28,7 +28,7 @@
   }
 
   &__public-address {
-    @include H7;
+    @include h7;
 
     display: flex;
     flex-direction: row;
@@ -45,21 +45,21 @@
     }
 
     &__constant {
-      @include H8;
+      @include h8;
 
       color: var(--color-text-alternative);
     }
   }
 
   &__view-on-block-explorer {
-    @include H7;
+    @include h7;
 
     color: var(--color-primary-default);
     margin-top: 12px;
   }
 
   &__etherscan-link {
-    @include H7;
+    @include h7;
 
     padding: 0;
   }

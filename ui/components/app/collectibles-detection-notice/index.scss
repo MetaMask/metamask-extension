@@ -1,9 +1,9 @@
 .collectibles-detection-notice {
-  margin: 16px 16px 0 16px;
+  margin: 16px 16px 0;
 
   &__message {
     position: relative;
-    padding: 0.75rem 0.75rem 1rem 0.75rem !important;
+    padding: 0.75rem 0.75rem 1rem !important;
 
     & &__close-button {
       color: var(--color-icon-default);
@@ -13,13 +13,15 @@
       right: 8px;
     }
 
-    a.collectibles-detection-notice__message__link {
-      @include H7;
+    &__link {
+      &.btn {
+        @include h7;
 
-      width: 100%;
-      padding: 0;
-      justify-content: flex-start;
-      font-weight: bold;
+        width: 100%;
+        padding: 0;
+        justify-content: flex-start;
+        font-weight: bold;
+      }
     }
   }
 }

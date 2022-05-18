@@ -1,5 +1,5 @@
 .unit-input {
-  @include Paragraph;
+  @include paragraph;
 
   display: flex;
   flex-flow: row nowrap;
@@ -13,18 +13,16 @@
   position: relative;
 
   input[type="number"] {
-    -moz-appearance: textfield;
+    appearance: textfield;
   }
 
   input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     display: none;
   }
 
   input[type="number"]:hover::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     display: none;
   }
 
@@ -35,7 +33,7 @@
   }
 
   &__input {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-default);
     background: transparent;
@@ -53,7 +51,7 @@
   }
 
   &__suffix {
-    @include Paragraph;
+    @include paragraph;
 
     margin-left: 3px;
   }

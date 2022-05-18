@@ -1,6 +1,6 @@
-@import 'signature-request-footer/index';
-@import 'signature-request-header/index';
-@import 'signature-request-message/index';
+@import "signature-request-footer/index";
+@import "signature-request-header/index";
+@import "signature-request-message/index";
 
 .signature-request {
   display: flex;
@@ -32,7 +32,7 @@
   min-height: min-content;
 
   &__title {
-    @include H5;
+    @include h5;
 
     font-weight: 500;
   }
@@ -53,7 +53,7 @@
     border-radius: 50%;
     border: 1px solid var(--color-background-default);
     position: absolute;
-    box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
+    box-shadow: 0 2px 2px 0.5px rgb(0 0 0 / 19%);
   }
 
   &__identicon-initial {
@@ -63,26 +63,24 @@
     font-size: 60px;
     color: var(--color-background-default);
     z-index: 1;
-    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
+    text-shadow: 0 4px 6px rgb(0 0 0 / 42.2%);
   }
 
   &__info {
-    @include H7;
+    @include h7;
   }
 
   &__info--bolded {
-    @include Paragraph;
+    @include paragraph;
 
     font-weight: 500;
   }
 
   p {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-muted);
   }
-
-  .identicon {}
 }
 
 .signature-request-footer {

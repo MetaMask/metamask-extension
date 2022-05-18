@@ -22,7 +22,7 @@
 
 .account-options-menu {
   &__explorer-origin {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
   }

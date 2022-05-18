@@ -3,7 +3,7 @@
  */
 
 .button {
-  @include H6;
+  @include h6;
 
   font-weight: 500;
   padding: 0.75rem 1rem;
@@ -160,7 +160,7 @@
 }
 
 .btn-link {
-  @include H4;
+  @include h4;
 
   color: var(--color-primary-default);
   cursor: pointer;
@@ -194,7 +194,7 @@
 .btn-raised {
   color: var(--color-primary-default);
   background-color: var(--color-background-default);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
   padding: 6px;
   height: initial;
   min-height: initial;
@@ -214,7 +214,7 @@ input[type="submit"][disabled] {
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
 
   &:hover {
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgb(0 0 0 / 10%);
   }
 
   &.btn-secondary {

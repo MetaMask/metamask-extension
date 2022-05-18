@@ -23,11 +23,11 @@
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
   &__main-view &__tabs {
     border: none;
-    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    box-shadow: 0 3px 4px rgb(135 134 134 / 16%);
   }
 
   &__main-view &__tab {
-    @include H6;
+    @include h6;
 
     flex-grow: 1;
     color: var(--color-icon-default);
@@ -46,7 +46,7 @@
     display: flex;
     flex-direction: column;
 
-    @include H6;
+    @include h6;
 
     padding-left: 24px;
     padding-right: 24px;
@@ -58,6 +58,15 @@
       &:last-child {
         margin-bottom: 0;
       }
+    }
+  }
+
+  &__support {
+    padding: 10px 0 20px;
+    text-align: center;
+
+    a {
+      color: var(--color-primary-default);
     }
   }
 
@@ -83,7 +92,7 @@
     }
 
     .popover-footer {
-      @include H6;
+      @include h6;
 
       border-top: 0;
       justify-content: space-between;
@@ -116,7 +125,7 @@
     position: absolute;
     top: 73px;
     opacity: 1;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 9999px rgb(0 0 0 / 20%);
     background: none;
   }
 
@@ -125,20 +134,8 @@
     width: 100%;
   }
 
-  &__support {
-    padding: 10px 0 20px 0;
-    text-align: center;
-
-    a {
-      color: var(--color-primary-default);
-    }
-  }
-
   &__new-network-notification {
     margin-bottom: 50px;
-  }
-
-  &__new-network-notification {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -194,7 +191,7 @@
     }
 
     &-icon {
-      @include H3;
+      @include h3;
 
       margin-inline-end: 12px;
       padding-top: 12px;

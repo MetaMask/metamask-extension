@@ -61,7 +61,7 @@
   }
 
   &__subheader {
-    @include H4;
+    @include h4;
 
     padding: 16px 4px;
     border-bottom: 1px solid var(--color-border-default);
@@ -76,7 +76,7 @@
   }
 
   &__sub-header-text {
-    @include H4;
+    @include h4;
 
     color: var(--color-text-muted);
     margin-right: 10px;
@@ -165,7 +165,7 @@
       }
 
       @media screen and (max-width: $break-small) {
-        padding: 0 24px 0 24px;
+        padding: 0 24px;
       }
     }
 
@@ -246,7 +246,7 @@
   }
 
   &__networks-list-name {
-    @include Paragraph;
+    @include paragraph;
 
     margin-left: 11px;
     color: var(--color-text-alternative);

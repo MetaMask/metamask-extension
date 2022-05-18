@@ -24,7 +24,7 @@
   }
 
   &__select-label {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-muted);
   }
@@ -43,7 +43,7 @@
   }
 
   &__instruction {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-muted);
     align-self: flex-start;
@@ -61,7 +61,7 @@
   }
 
   &__input-password {
-    @include Paragraph;
+    @include paragraph;
 
     height: 54px;
     width: 315px;

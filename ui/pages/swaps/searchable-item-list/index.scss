@@ -4,6 +4,8 @@
   position: relative;
 
   &__search {
+    z-index: 1001;
+
     > div {
       border: none;
       border-bottom: 1px solid var(--color-border-muted);
@@ -12,25 +14,10 @@
       font-size: 12px;
 
       input {
-        @include H6;
+        @include h6;
 
         color: var(--color-text-default);
         line-height: 100%;
-
-        &::-webkit-input-placeholder {
-          color: var(--color-text-muted);
-          opacity: 1;
-        }
-
-        &:-moz-placeholder {
-          color: var(--color-text-muted);
-          opacity: 1;
-        }
-
-        &::-moz-placeholder {
-          color: var(--color-text-muted);
-          opacity: 1;
-        }
 
         &::placeholder {
           color: var(--color-text-muted);
@@ -44,6 +31,8 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    z-index: 1002;
+    background: var(--color-background-default);
   }
 
   &__item {
@@ -106,7 +95,7 @@
     }
 
     .btn-primary {
-      @include H7;
+      @include h7;
 
       width: auto;
       padding: 7px 11px;
@@ -123,7 +112,7 @@
     align-items: center;
     min-width: 0;
 
-    @include H6;
+    @include h6;
 
     line-height: 100%;
     font-weight: bold;
@@ -132,7 +121,7 @@
   }
 
   &__item-name {
-    /*rtl:ignore*/
+    /* rtl:ignore */
     direction: ltr;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -144,9 +133,6 @@
     justify-content: space-between;
     max-width: 237px;
     flex: 1;
-    -moz-animation: fadein 1s;
-    -webkit-animation: fadein 1s;
-    -o-animation: fadein 1s;
   }
 
   &__item-labels {
@@ -167,7 +153,7 @@
 
   &__secondary-label,
   &__right-primary-label {
-    @include H7;
+    @include h7;
 
     line-height: 100%;
     color: var(--color-text-alternative);
@@ -182,7 +168,7 @@
   }
 
   &__right-secondary-label {
-    @include H7;
+    @include h7;
 
     line-height: 100%;
     color: var(--color-text-alternative);
@@ -190,15 +176,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-  }
-
-  &__list-container {
-    z-index: 1002;
-    background: var(--color-background-default);
-  }
-
-  &__search {
-    z-index: 1001;
   }
 
   &__item--highlighted {

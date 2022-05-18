@@ -6,6 +6,33 @@
   }
 }
 
+.menu-icon-circle,
+.menu-icon-circle--active {
+  background: none;
+  border-radius: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid transparent;
+  margin: 0 4px;
+}
+
+.menu-icon-circle--active {
+  border: 1px solid var(--color-border-default);
+  background: var(--color-background-default);
+}
+
+.menu-icon-circle div,
+.menu-icon-circle--active div {
+  height: 12px;
+  width: 12px;
+  border-radius: 17px;
+}
+
+.menu-icon-circle--active div {
+  opacity: 1;
+}
+
 .network-component.pointer {
   border: 1px solid var(--color-border-muted);
   border-radius: 82px;
@@ -14,27 +41,27 @@
   display: flex;
 
   &.ethereum-network .menu-icon-circle div {
-    background-color: rgba(3, 135, 137, 0.7) !important;
+    background-color: rgb(3 135 137 / 70%) !important;
   }
 
   &.ropsten-test-network .menu-icon-circle div {
-    background-color: rgba(233, 21, 80, 0.7) !important;
+    background-color: rgb(233 21 80 / 70%) !important;
   }
 
   &.kovan-test-network .menu-icon-circle div {
-    background-color: rgba(105, 4, 150, 0.7) !important;
+    background-color: rgb(105 4 150 / 70%) !important;
   }
 
   &.rinkeby-test-network .menu-icon-circle div {
-    background-color: rgba(235, 179, 63, 0.7) !important;
+    background-color: rgb(235 179 63 / 70%) !important;
   }
 
   &.goerli-test-network .menu-icon-circle div {
-    background-color: rgba(48, 153, 242, 0.7) !important;
+    background-color: rgb(48 153 242 / 70%) !important;
   }
 
   &.localhost-network .menu-icon-circle div {
-    background-color: rgba(3, 135, 137, 0.7) !important;
+    background-color: rgb(3 135 137 / 70%) !important;
   }
 }
 
@@ -89,33 +116,6 @@
   width: 24px;
 }
 
-.menu-icon-circle,
-.menu-icon-circle--active {
-  background: none;
-  border-radius: 22px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid transparent;
-  margin: 0 4px;
-}
-
-.menu-icon-circle--active {
-  border: 1px solid var(--color-border-default);
-  background: var(--color-background-default);
-}
-
-.menu-icon-circle div,
-.menu-icon-circle--active div {
-  height: 12px;
-  width: 12px;
-  border-radius: 17px;
-}
-
-.menu-icon-circle--active div {
-  opacity: 1;
-}
-
 .network-dropdown-header {
   display: flex;
   flex-direction: column;
@@ -137,7 +137,7 @@
 }
 
 .network-dropdown-title {
-  @include H4;
+  @include h4;
 
   height: 25px;
   width: 120px;
@@ -146,7 +146,7 @@
 }
 
 .network-dropdown-content {
-  @include H6;
+  @include h6;
 
   min-height: 36px;
   width: 265px;

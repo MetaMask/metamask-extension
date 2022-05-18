@@ -1,4 +1,4 @@
-@import 'quote-details/index';
+@import "quote-details/index";
 
 .select-quote-popover {
   &__button {
@@ -55,7 +55,7 @@
   }
 
   &__column-headers {
-    @include H8;
+    @include h8;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -69,7 +69,7 @@
   }
 
   &__row {
-    @include H6;
+    @include h6;
 
     cursor: pointer;
     color: var(--color-text-default);
@@ -98,7 +98,7 @@
     &--selected {
       color: var(--color-primary-inverse);
       background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
-      box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
+      box-shadow: 0 10px 39px rgb(3 125 214 / 15%);
       border-radius: 8px;
       height: 64px;
 
@@ -203,7 +203,6 @@
       margin-bottom: 2px;
     }
   }
-
 
   &__receiving-symbol {
     color: var(--color-text-alternative);

@@ -5,7 +5,6 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 10px;
       border-radius: 10px;
       background: var(--color-icon-muted);
     }
@@ -15,7 +14,7 @@
     position: absolute;
     width: 328px;
     max-height: 94vh;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 30px rgb(0 0 0 / 25%);
     border-radius: 10px;
     background: var(--color-background-default);
   }
@@ -28,7 +27,7 @@
       align-items: center;
       justify-content: space-between;
 
-      @include H4;
+      @include h4;
 
       font-weight: bold;
       padding-bottom: 8px;
@@ -49,7 +48,7 @@
     }
 
     &__subtitle {
-      @include H6;
+      @include h6;
     }
 
     &__button {
@@ -104,6 +103,6 @@
     background: var(--color-background-default);
     position: absolute;
     transform: rotate(45deg);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 30px rgb(0 0 0 / 25%);
   }
 }

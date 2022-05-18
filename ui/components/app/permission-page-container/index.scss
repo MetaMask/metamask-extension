@@ -24,7 +24,7 @@
   }
 
   &__title {
-    @include H4;
+    @include h4;
 
     text-align: center;
     margin-top: 32px;
@@ -58,7 +58,7 @@
       align-items: center;
 
       label {
-        @include H6;
+        @include h6;
 
         margin-left: 16px;
         color: var(--color-text-default);
@@ -78,7 +78,7 @@
   }
 
   &__permissions-header {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
   }

@@ -20,7 +20,7 @@
   }
 
   &__secret-words {
-    @include H4;
+    @include h4;
 
     width: 310px;
     text-align: center;
@@ -46,7 +46,7 @@
   }
 
   &__reveal-button {
-    @include H7;
+    @include h7;
 
     color: var(--color-overlay-inverse);
     font-weight: 500;

@@ -5,11 +5,8 @@
 
   &__select {
     appearance: none;
-    // TODO: remove these after getting autoprefixer working in Storybook
-    -moz-appearance: none;
-    -webkit-appearance: none;
 
-    @include H6;
+    @include h6;
 
     color: var(--color-text-default);
     border: 1px solid var(--color-border-default);
@@ -18,7 +15,7 @@
     padding: 8px 40px 8px 16px;
     width: 100%;
 
-    [dir='rtl'] & {
+    [dir="rtl"] & {
       padding: 8px 16px 8px 40px;
     }
   }
@@ -30,7 +27,7 @@
     transform: translateY(-50%);
     pointer-events: none;
 
-    [dir='rtl'] & {
+    [dir="rtl"] & {
       left: 16px;
     }
   }

@@ -1,6 +1,7 @@
 // Variables
 $circle-radius: 14px;
 $circle-diameter: $circle-radius * 2;
+
 // Circumference ~ (2*PI*R). We reduced the number a little to create a snappier interaction
 $circle-circumference: 82;
 $circle-stroke-width: 2px;
@@ -26,7 +27,7 @@ $circle-stroke-width: 2px;
   }
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -36,24 +37,36 @@ $circle-stroke-width: 2px;
   }
 }
 
+%hold-to-reveal-button-absolute-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+%hold-to-reveal-button-icon {
+  height: $circle-diameter;
+  width: $circle-diameter;
+}
+
+%hold-to-reveal-circle-shared {
+  fill: transparent;
+  stroke-width: $circle-stroke-width;
+}
+
 .hold-to-reveal-button {
   // Shared styles
   &__absolute-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    @extend %hold-to-reveal-button-absolute-fill;
   }
 
   &__icon {
-    height: $circle-diameter;
-    width: $circle-diameter;
+    @extend %hold-to-reveal-button-icon;
   }
 
   &__circle-shared {
-    fill: transparent;
-    stroke-width: $circle-stroke-width;
+    @extend %hold-to-reveal-circle-shared;
   }
 
   // Class styles
@@ -76,18 +89,14 @@ $circle-stroke-width: 2px;
     }
   }
 
-  &__absolute-fill {
-    @extend .hold-to-reveal-button__absolute-fill;
-  }
-
   &__icon-container {
-    @extend .hold-to-reveal-button__icon;
+    @extend %hold-to-reveal-button-icon;
 
     position: relative;
   }
 
   &__main-icon-show {
-    animation: 0.4s fadeIn 1.2s forwards;
+    animation: 0.4s fade-in 1.2s forwards;
   }
 
   &__invisible {
@@ -95,19 +104,19 @@ $circle-stroke-width: 2px;
   }
 
   &__circle-svg {
-    @extend .hold-to-reveal-button__icon;
+    @extend %hold-to-reveal-button-icon;
 
     transform: rotate(-90deg);
   }
 
   &__circle-background {
-    @extend .hold-to-reveal-button__circle-shared;
+    @extend %hold-to-reveal-circle-shared;
 
     stroke: var(--primary-3);
   }
 
   &__circle-foreground {
-    @extend .hold-to-reveal-button__circle-shared;
+    @extend %hold-to-reveal-circle-shared;
 
     stroke: var(--ui-white);
     stroke-dasharray: $circle-circumference;
@@ -116,7 +125,7 @@ $circle-stroke-width: 2px;
   }
 
   &__lock-icon-container {
-    @extend .hold-to-reveal-button__absolute-fill;
+    @extend %hold-to-reveal-button-absolute-fill;
 
     transition: 0.3s opacity;
     opacity: 1;
@@ -148,7 +157,7 @@ $circle-stroke-width: 2px;
   }
 
   &__unlock-icon-container {
-    @extend .hold-to-reveal-button__absolute-fill;
+    @extend %hold-to-reveal-button-absolute-fill;
 
     display: flex;
     align-items: center;

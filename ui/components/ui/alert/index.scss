@@ -4,7 +4,7 @@
   background-color: var(--color-primary-default);
 
   .msg {
-    @include H7;
+    @include h7;
 
     width: 100%;
     display: block;
@@ -14,7 +14,7 @@
 }
 
 .global-alert.hidden {
-  animation: alertHidden 0.5s ease forwards;
+  animation: alert-hidden 0.5s ease forwards;
 }
 
 .global-alert.visible {
@@ -41,7 +41,7 @@
   }
 }
 
-@keyframes alertHidden {
+@keyframes alert-hidden {
   0% {
     top: 0;
     opacity: 1;

@@ -88,11 +88,11 @@
       }
 
       &__title {
-        @include H4;
+        @include h4;
       }
 
       &__text {
-        @include H6;
+        @include h6;
 
         margin-top: 7px;
       }

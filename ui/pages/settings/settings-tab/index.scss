@@ -12,20 +12,6 @@
     width: 25%;
   }
 
-  &__button--red {
-    border-color: lighten($monzo, 10%);
-    color: var(--color-error-default);
-
-    &:active {
-      background: lighten($monzo, 55%);
-      border-color: var(--color-error-default);
-    }
-
-    &:hover {
-      border-color: var(--color-error-default);
-    }
-  }
-
   &__radio-buttons {
     display: flex;
     align-items: center;

@@ -1,6 +1,6 @@
 .reject-transactions {
   &__description {
-    @include Paragraph;
+    @include paragraph;
 
     text-align: center;
   }

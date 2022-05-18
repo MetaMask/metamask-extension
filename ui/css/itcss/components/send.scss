@@ -15,7 +15,7 @@
 
 .send-screen-card {
   background-color: var(--color-background-default);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 8%);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -39,7 +39,7 @@
 }
 
 .send-screen input {
-  @include H7;
+  @include h7;
 
   width: 100%;
 }
@@ -49,7 +49,7 @@
   width: 70px;
   height: 70px;
   border: 1px solid var(--color-border-muted);
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
   position: absolute;
   top: -35px;
   z-index: 25;
@@ -71,7 +71,7 @@
   }
 
   .large-input {
-    @include Paragraph;
+    @include paragraph;
 
     border: 1px solid var(--color-border-default);
     border-radius: 4px;
@@ -93,7 +93,7 @@
     }
 
     .send-screen-input-wrapper__error-message {
-      @include H7;
+      @include h7;
 
       display: block;
       position: absolute;
@@ -104,7 +104,7 @@
   }
 
   .send-screen-input-wrapper__error-message {
-    @include H7;
+    @include h7;
 
     display: block;
     position: absolute;
@@ -119,7 +119,7 @@
 }
 
 .send-screen-gas-input {
-  @include Paragraph;
+  @include paragraph;
 
   width: 100%;
   height: 41px;
@@ -160,7 +160,7 @@
 }
 
 .send-screen-gas-input-customize {
-  @include H7;
+  @include h7;
 
   color: var(--color-primary-default);
   cursor: pointer;
@@ -176,7 +176,7 @@
 }
 
 .customize-gas-tooltip-container {
-  @include Paragraph;
+  @include paragraph;
 
   position: absolute;
   bottom: 50px;
@@ -203,13 +203,13 @@
   box-shadow: 2px 2px 2px var(--color-border-muted);
 }
 
-.customize-gas-tooltip-container input[type='number']::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+.customize-gas-tooltip-container input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
   display: none;
 }
 
-.customize-gas-tooltip-container input[type='number']:hover::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+.customize-gas-tooltip-container input[type="number"]:hover::-webkit-inner-spin-button {
+  appearance: none;
   display: none;
 }
 
@@ -223,7 +223,7 @@
 }
 
 .gas-tooltip-label {
-  @include Paragraph;
+  @include paragraph;
 
   color: var(--color-text-alternative);
 }
@@ -242,7 +242,7 @@
 }
 
 .customize-gas-input {
-  @include Paragraph;
+  @include paragraph;
 
   width: 178px;
   height: 28px;
@@ -256,7 +256,7 @@
 }
 
 .gas-tooltip-input-detail {
-  @include H7;
+  @include h7;
 
   position: absolute;
   top: 4px;
@@ -265,7 +265,7 @@
 }
 
 .gas-tooltip-input-arrows {
-  @include H6;
+  @include h6;
 
   position: absolute;
   top: 0;
@@ -294,13 +294,13 @@
 
 .send-screen {
   &__title {
-    @include H4;
+    @include h4;
 
     color: var(--color-text-alternative);
   }
 
   &__subtitle {
-    @include H6;
+    @include h6;
 
     margin: 10px 0 20px;
   }
@@ -326,7 +326,7 @@
     width: 498px;
     height: 605px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 8%);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -355,7 +355,7 @@
   }
 
   &__title {
-    @include H4;
+    @include h4;
 
     color: var(--color-text-alternative);
   }
@@ -363,14 +363,14 @@
   &__description,
   &__balance-text,
   &__token-symbol {
-    @include H6;
+    @include h6;
 
     margin-top: 10px;
     text-align: center;
   }
 
   &__token-balance {
-    @include H1;
+    @include h1;
 
     margin-top: 13px;
 
@@ -406,7 +406,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 8%);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -441,7 +441,7 @@
   }
 
   &__send-arrow-icon {
-    @include H4;
+    @include h4;
 
     color: var(--color-secondary-default);
     transform: rotate(-45deg);
@@ -498,7 +498,7 @@
   }
 
   &__title {
-    @include H3;
+    @include h3;
 
     color: var(--color-text-alternative);
     text-align: center;
@@ -506,7 +506,7 @@
   }
 
   &__copy {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-alternative);
     text-align: center;
@@ -515,7 +515,7 @@
   }
 
   &__error {
-    @include H7;
+    @include h7;
 
     left: 8px;
     color: var(--color-error-default);
@@ -526,7 +526,7 @@
   }
 
   &__warning {
-    @include H7;
+    @include h7;
 
     left: 8px;
     color: var(--color-secondary-default);
@@ -592,7 +592,7 @@
   }
 
   &__form-label {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-alternative);
     width: 95px;
@@ -601,7 +601,7 @@
 
   &__from-dropdown,
   &__asset-dropdown {
-    @include H7;
+    @include h7;
 
     width: 100%;
     border: 1px solid var(--color-border-muted);
@@ -627,7 +627,7 @@
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
       background-color: var(--color-background-default);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: 0 3px 6px 0 rgb(0 0 0 / 11%);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -647,7 +647,7 @@
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
-      padding: 8px 8px;
+      padding: 8px;
     }
 
     &__caret {
@@ -683,7 +683,7 @@
     }
 
     &__symbol {
-      @include Paragraph;
+      @include paragraph;
 
       margin-bottom: 2px;
       overflow: hidden;
@@ -692,7 +692,7 @@
     }
 
     &__name {
-      @include H7;
+      @include h7;
 
       display: flex;
       flex-flow: row nowrap;
@@ -715,7 +715,7 @@
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
       background-color: var(--color-background-default);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: 0 3px 6px 0 rgb(0 0 0 / 11%);
       top: 65px;
       left: 0;
       box-sizing: content-box;
@@ -723,6 +723,7 @@
       margin-top: 0;
       padding: 4px 0;
 
+      /* stylelint-disable-next-line selector-class-pattern */
       .send-v2__asset-dropdown__asset {
         padding: 8px;
       }
@@ -738,6 +739,7 @@
         z-index: 2050;
       }
 
+      /* stylelint-disable-next-line selector-class-pattern */
       .send-v2__asset-dropdown__asset {
         height: 100%;
 
@@ -748,7 +750,7 @@
     }
 
     &__input {
-      @include Paragraph;
+      @include paragraph;
 
       z-index: 1025;
       position: relative;
@@ -765,7 +767,7 @@
   &__memo-text-area,
   &__hex-data {
     &__input {
-      @include Paragraph;
+      @include paragraph;
 
       z-index: 1025;
       position: relative;
@@ -780,7 +782,7 @@
   }
 
   &__amount-max {
-    @include H7;
+    @include h7;
 
     position: relative;
     display: inline-block;
@@ -826,7 +828,7 @@
   }
 
   &__sliders-icon-container {
-    @include Paragraph;
+    @include paragraph;
 
     display: flex;
     align-items: center;
@@ -874,7 +876,7 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 14%);
     display: flex;
     flex-flow: column;
 
@@ -884,7 +886,7 @@
     }
 
     &__header {
-      @include H3;
+      @include h3;
 
       height: 52px;
       border-bottom: 1px solid var(--color-border-muted);
@@ -902,7 +904,7 @@
     }
 
     &__close::after {
-      content: '\00D7';
+      content: "\00D7";
       font-size: 1.8em;
       color: var(--color-icon-default);
       cursor: pointer;
@@ -926,7 +928,7 @@
     }
 
     &__footer {
-      @include H3;
+      @include h3;
 
       height: 75px;
       border-top: 1px solid var(--color-border-muted);
@@ -958,7 +960,7 @@
     }
 
     &__revert {
-      @include Paragraph;
+      @include paragraph;
 
       color: var(--color-text-muted);
       margin-left: 21.25px;
@@ -977,7 +979,7 @@
     }
 
     &__error-message {
-      @include H7;
+      @include h7;
 
       display: block;
       position: absolute;
@@ -1001,7 +1003,7 @@
     padding-left: 20px;
 
     &__title {
-      @include H4;
+      @include h4;
 
       height: 26px;
       color: var(--color-text-alternative);
@@ -1009,7 +1011,7 @@
     }
 
     &__copy {
-      @include Paragraph;
+      @include paragraph;
 
       height: 38px;
       width: 314px;
@@ -1030,7 +1032,7 @@
     }
 
     .gas-tooltip-input-arrows {
-      @include H4;
+      @include h4;
 
       width: 32px;
       height: 54px;
@@ -1052,20 +1054,20 @@
       justify-content: center;
     }
 
-    input[type='number']::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+    input[type="number"]::-webkit-inner-spin-button {
+      appearance: none;
       display: none;
     }
 
-    input[type='number']:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      appearance: none;
       display: none;
     }
   }
 }
 
 .advanced-gas-options-btn {
-  @include H6;
+  @include h6;
 
   display: flex;
   justify-content: flex-end;
@@ -1075,7 +1077,7 @@
 }
 
 .sliders-icon-container {
-  @include Paragraph;
+  @include paragraph;
 
   display: flex;
   align-items: center;
@@ -1092,7 +1094,7 @@
 }
 
 .gas-fee-reset {
-  @include H6;
+  @include h6;
 
   display: flex;
   align-items: center;

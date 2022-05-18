@@ -15,7 +15,7 @@
   }
 
   &__quote-counter {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-alternative);
     margin-top: 3px;
@@ -26,7 +26,7 @@
   }
 
   &__quote-name-check {
-    @include H4;
+    @include h4;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -44,25 +44,22 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    -webkit-animation: spin 38s linear infinite;
-    -moz-animation: spin 38s linear infinite;
     animation: spin 38s linear infinite;
 
-    @-moz-keyframes spin {
+    @keyframes spin {
       100% {
-        -moz-transform: rotate(360deg);
-      }
-    }
-
-    @-webkit-keyframes spin {
-      100% {
-        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
       }
     }
 
     @keyframes spin {
       100% {
-        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      100% {
         transform: rotate(360deg);
       }
     }
@@ -71,8 +68,6 @@
   &__background-2 {
     width: 182.8px;
     height: 195.39px;
-    -webkit-animation: spin 42s linear infinite;
-    -moz-animation: spin 42s linear infinite;
     animation: spin 42s linear infinite;
   }
 
@@ -100,9 +95,6 @@
   &__loading-bar {
     height: 3px;
     background: var(--color-primary-default);
-    -webkit-transition: width 0.5s linear;
-    -moz-transition: width 0.5s linear;
-    -o-transition: width 0.5s linear;
     transition: width 0.5s linear;
   }
 }

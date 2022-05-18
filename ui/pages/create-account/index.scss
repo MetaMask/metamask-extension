@@ -1,10 +1,10 @@
-@import 'connect-hardware/index';
-@import 'import-account/index';
+@import "connect-hardware/index";
+@import "import-account/index";
 
 .new-account {
   width: 375px;
   background-color: var(--color-background-default);
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 7px 0 rgb(0 0 0 / 8%);
   z-index: 25;
   height: unset;
   overflow: auto;
@@ -25,7 +25,7 @@
   }
 
   &__title {
-    @include H2;
+    @include h2;
 
     color: var(--color-text-alternative);
     font-weight: 500;
@@ -39,7 +39,7 @@
     margin-top: 10px;
 
     &__tab {
-      @include H4;
+      @include h4;
 
       height: 54px;
       padding: 15px 10px;
@@ -62,7 +62,6 @@
   }
 }
 
-
 .new-account-create-form {
   display: flex;
   flex-flow: column;
@@ -70,14 +69,14 @@
   padding: 30px;
 
   &__input-label {
-    @include Paragraph;
+    @include paragraph;
 
     color: var(--color-text-alternative);
     align-self: flex-start;
   }
 
   &__input {
-    @include Paragraph;
+    @include paragraph;
 
     height: 54px;
     width: 315.84px;
@@ -94,7 +93,7 @@
   }
 
   &__error {
-    @include H7;
+    @include h7;
 
     left: 8px;
     color: var(--color-error-default);

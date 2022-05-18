@@ -11,7 +11,7 @@
     width: 47.5%;
 
     &__label {
-      @include H7;
+      @include h7;
 
       color: var(--color-text-alternative);
       display: flex;
@@ -19,7 +19,7 @@
       align-items: center;
 
       @media screen and (max-width: $break-small) {
-        @include H8;
+        @include h8;
       }
 
       .fa-info-circle {
@@ -33,13 +33,13 @@
     }
 
     &__error-text {
-      @include H7;
+      @include h7;
 
       color: var(--color-error-default);
     }
 
     &__warning-text {
-      @include H7;
+      @include h7;
 
       color: var(--color-secondary-default);
     }
@@ -49,8 +49,8 @@
     }
 
     &__input {
-      /*rtl:ignore*/
-      @include Paragraph;
+      /* rtl:ignore */
+      @include paragraph;
 
       direction: ltr;
       border: 1px solid var(--color-border-muted);
@@ -73,12 +73,12 @@
     }
 
     &__input-arrows {
-      @include H6;
+      @include h6;
 
       position: absolute;
       top: 7px;
 
-      /*rtl:ignore*/
+      /* rtl:ignore */
       right: 0;
       width: 17px;
       height: 24px;
@@ -125,20 +125,16 @@
     }
 
     input[type="number"] {
-      -webkit-appearance: textfield;
-      -moz-appearance: textfield;
       appearance: textfield;
     }
 
     input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      appearance: none;
       display: none;
     }
 
     input[type="number"]:hover::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      appearance: none;
       display: none;
     }
 
@@ -150,7 +146,7 @@
     }
 
     &__custom-text {
-      @include H7;
+      @include h7;
     }
   }
 }

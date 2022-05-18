@@ -1,5 +1,5 @@
 .exchange-rate-display {
-  @include H6;
+  @include h6;
 
   display: flex;
   align-items: flex-end;
@@ -25,25 +25,19 @@
   }
 
   &__switch-arrows-rotate {
-    -webkit-animation-name: rotate-toggle;
-    -webkit-animation-duration: 1s;
-    -webkit-transition: all 500ms cubic-bezier(0.86, 0, 0.07, 1);
-    -moz-transition: all 500ms cubic-bezier(0.86, 0, 0.07, 1);
-    -o-transition: all 500ms cubic-bezier(0.86, 0, 0.07, 1);
+    animation-name: rotate-toggle;
+    animation-duration: 1s;
     transition: all 500ms cubic-bezier(0.86, 0, 0.07, 1);
-    -webkit-transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
-    -moz-transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
-    -o-transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
     transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
   }
 
-  @-webkit-keyframes rotate-toggle {
+  @keyframes rotate-toggle {
     0% {
-      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
     }
 
     100% {
-      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg);
     }
   }
 }

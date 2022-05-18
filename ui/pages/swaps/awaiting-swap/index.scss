@@ -30,13 +30,13 @@
   }
 
   &__header {
-    @include H3;
+    @include h3;
 
     color: var(--color-text-default);
   }
 
   &__main-description {
-    @include H6;
+    @include h6;
 
     color: var(--color-text-alternative);
     margin-top: 16px;
@@ -44,7 +44,7 @@
   }
 
   &__time-estimate {
-    @include H7;
+    @include h7;
 
     color: var(--color-text-default);
     margin-top: 20px;
@@ -72,11 +72,11 @@
   }
 
   &__support-link {
-    @include H6;
+    @include h6;
   }
 
   &__view-on-etherscan {
-    @include H7;
+    @include h7;
 
     transition: opacity 1s ease-in-out;
   }

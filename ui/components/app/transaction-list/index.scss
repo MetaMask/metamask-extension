@@ -10,7 +10,7 @@
   }
 
   &__header {
-    @include H6;
+    @include h6;
 
     flex: 0 0 auto;
     color: var(--color-text-muted);

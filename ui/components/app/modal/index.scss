@@ -1,4 +1,4 @@
-@import 'modal-content/index';
+@import "modal-content/index";
 
 .modal-container {
   width: 100%;
@@ -33,7 +33,7 @@
   }
 
   &__header-close::after {
-    content: '\00D7';
+    content: "\00D7";
     font-size: 40px;
     color: var(--color-icon-default);
     position: absolute;
