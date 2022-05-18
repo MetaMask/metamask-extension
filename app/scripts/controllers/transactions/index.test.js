@@ -25,7 +25,7 @@ import {
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
-import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
+import { METAMASK_CONTROLLER_EVENTS } from '../constants/events.js';
 import { TOKEN_STANDARDS } from '../../../../ui/helpers/constants/common';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionController from '.';

@@ -32,9 +32,8 @@ import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
-import MetamaskController, {
-  METAMASK_CONTROLLER_EVENTS,
-} from './metamask-controller';
+import MetamaskController from './metamask-controller';
+import { METAMASK_CONTROLLER_EVENTS } from './constants/events.js';
 import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';

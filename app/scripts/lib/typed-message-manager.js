@@ -6,7 +6,7 @@ import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util';
 import log from 'loglevel';
 import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { METAMASK_CONTROLLER_EVENTS } from '../constants/events.js';
 import createId from '../../../shared/modules/random-id';
 import { EVENT } from '../../../shared/constants/metametrics';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';

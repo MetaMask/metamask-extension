@@ -32,7 +32,7 @@ import {
   TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
-import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
+import { METAMASK_CONTROLLER_EVENTS } from '../../constants/events.js';
 import {
   GAS_LIMITS,
   GAS_ESTIMATE_TYPES,

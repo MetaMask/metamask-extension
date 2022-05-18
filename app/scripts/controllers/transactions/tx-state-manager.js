@@ -4,7 +4,7 @@ import log from 'loglevel';
 import { keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
-import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
+import { METAMASK_CONTROLLER_EVENTS } from '../../constants/events.js';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {

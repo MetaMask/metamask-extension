@@ -4,7 +4,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { EVENT } from '../../../shared/constants/metametrics';
-import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { METAMASK_CONTROLLER_EVENTS } from '../constants/events.js';
 import createId from '../../../shared/modules/random-id';
 
 /**
