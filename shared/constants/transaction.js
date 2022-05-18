@@ -49,23 +49,23 @@ import { MESSAGE_TYPE } from './app';
  */
 export const TRANSACTION_TYPES = {
   CANCEL: 'cancel',
-  RETRY: 'retry',
-  TOKEN_METHOD_TRANSFER: 'transfer',
-  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
-  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
-  TOKEN_METHOD_APPROVE: 'approve',
-  INCOMING: 'incoming',
-  SIMPLE_SEND: 'simpleSend',
   CONTRACT_INTERACTION: 'contractInteraction',
   DEPLOY_CONTRACT: 'contractDeployment',
-  SWAP: 'swap',
-  SWAP_APPROVAL: 'swapApproval',
-  SMART: 'smart',
-  SIGN: MESSAGE_TYPE.ETH_SIGN,
-  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
   ETH_DECRYPT: MESSAGE_TYPE.ETH_DECRYPT,
   ETH_GET_ENCRYPTION_PUBLIC_KEY: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+  INCOMING: 'incoming',
+  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
+  RETRY: 'retry',
+  SIGN: MESSAGE_TYPE.ETH_SIGN,
+  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  SIMPLE_SEND: 'simpleSend',
+  SMART: 'smart',
+  SWAP: 'swap',
+  SWAP_APPROVAL: 'swapApproval',
+  TOKEN_METHOD_APPROVE: 'approve',
+  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
+  TOKEN_METHOD_TRANSFER: 'transfer',
+  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
 };
 
 /**
@@ -214,10 +214,10 @@ export const SMART_TRANSACTION_STATUSES = {
  * @type {TransactionGroupCategories}
  */
 export const TRANSACTION_GROUP_CATEGORIES = {
-  SEND: 'send',
-  RECEIVE: 'receive',
-  INTERACTION: 'interaction',
   APPROVAL: 'approval',
+  INTERACTION: 'interaction',
+  RECEIVE: 'receive',
+  SEND: 'send',
   SIGNATURE_REQUEST: 'signature-request',
   SWAP: 'swap',
 };
