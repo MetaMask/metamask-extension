@@ -35,7 +35,7 @@ export default class TokenInput extends PureComponent {
       symbol: PropTypes.string,
     }).isRequired,
     tokenExchangeRates: PropTypes.object,
-    tokens: PropTypes.array,
+    tokens: PropTypes.array.isRequired,
   };
 
   constructor(props) {
