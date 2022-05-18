@@ -68,19 +68,17 @@ const AssetList = ({ onClickAsset }) => {
 
   return (
     <>
-      {selectedAccountBalance ? (
-        <AssetListItem
-          onClick={() => onClickAsset(nativeCurrency)}
-          data-testid="wallet-balance"
-          primary={
-            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
-          }
-          tokenSymbol={primaryCurrencyProperties.suffix}
-          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-          tokenImage={primaryTokenImage}
-          identiconBorder
-        />
-      ) : null}
+      <AssetListItem
+        onClick={() => onClickAsset(nativeCurrency)}
+        data-testid="wallet-balance"
+        primary={
+          primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+        }
+        tokenSymbol={primaryCurrencyProperties.suffix}
+        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+        tokenImage={primaryTokenImage}
+        identiconBorder
+      />
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);

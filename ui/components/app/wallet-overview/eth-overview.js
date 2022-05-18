@@ -32,6 +32,7 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import Spinner from '../../ui/spinner';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -70,7 +71,12 @@ const EthOverview = ({ className }) => {
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
-              ) : null}
+              ) : (
+                <Spinner
+                  color="var(--color-secondary-default)"
+                  className="loading-overlay__spinner"
+                />
+              )}
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
@@ -163,13 +169,7 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={
-        balance ? (
-          <Identicon diameter={32} image={primaryTokenImage} imageBorder />
-        ) : (
-          <></>
-        )
-      }
+      icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
     />
   );
 };
