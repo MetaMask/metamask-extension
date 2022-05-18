@@ -21,6 +21,7 @@ export const PermissionNamespaces = Object.freeze({
 
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
+  'endowment:long-running': 'endowment:long-running',
 });
 
 // Methods / permissions in external packages that we are temporarily excluding.
