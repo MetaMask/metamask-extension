@@ -30,8 +30,8 @@ const createWyrePurchaseUrl = async (walletAddress, chainId) => {
   const { wyre = {}} = BUYABLE_CHAINS_MAP[chainId];
   const { srn, currencyCode } = wyre;
  
-  const chainNumber = parseInt(chainId, 16);
-  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${chainNumber}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}`;
+  const networkId = parseInt(chainId, 16);
+  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${networkId}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}`;
   const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=${srn}:${walletAddress}&destCurrency=${currencyCode}&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
