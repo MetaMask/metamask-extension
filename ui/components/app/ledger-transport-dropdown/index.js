@@ -71,7 +71,7 @@ export default function LedgerTransportDropdown() {
             <Button
               key="ledger-connection-settings-learn-more"
               type="link"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              href="https://metamask.zendesk.com/hc/en-us/articles/4408552261275-Hardware-Wallet-Hub"
               target="_blank"
               rel="noopener noreferrer"
               className="settings-page__inline-link"
