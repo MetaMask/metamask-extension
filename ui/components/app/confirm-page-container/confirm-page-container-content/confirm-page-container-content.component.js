@@ -55,7 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     hideConfirmPageContainerSummaryAndButtons: PropTypes.bool.isRequired,
-    showHardwareareConnectionContents: PropTypes.bool,
+    showHardwareConnectionContents: PropTypes.bool,
   };
 
   renderContent() {
@@ -130,7 +130,7 @@ export default class ConfirmPageContainerContent extends Component {
       transactionType,
       isBuyableChain,
       hideConfirmPageContainerSummaryAndButtons,
-      showHardwareareConnectionContents,
+      showHardwareConnectionContents,
     } = this.props;
 
     const { t } = this.context;
@@ -150,7 +150,7 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {showHardwareareConnectionContents ? null : (
+        {showHardwareConnectionContents ? null : (
           <ConfirmPageContainerSummary
             className={classnames({
               'confirm-page-container-summary--border':

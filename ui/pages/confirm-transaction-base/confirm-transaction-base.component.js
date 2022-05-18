@@ -166,8 +166,8 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
-    showHardwareareConnectionContents: false,
-    showHardwareareConnectionAdvancedPopover: false,
+    showHardwareConnectionContents: false,
+    showHardwareConnectionAdvancedPopover: false,
     pollingIntervalId: null,
     hardwareIsReady: false,
   };
@@ -176,8 +176,8 @@ export default class ConfirmTransactionBase extends Component {
     const { fromAddress } = this.props;
     const {
       pollingIntervalId,
-      showHardwareareConnectionContents,
-      showHardwareareConnectionAdvancedPopover,
+      showHardwareConnectionContents,
+      showHardwareConnectionAdvancedPopover,
     } = this.state;
 
     // Don't set off multiple calls to checkDeviceReady
@@ -195,12 +195,12 @@ export default class ConfirmTransactionBase extends Component {
     this.setState({
       hardwareIsReady,
       pollingIntervalId: null,
-      showHardwareareConnectionAdvancedPopover: hardwareIsReady
+      showHardwareConnectionAdvancedPopover: hardwareIsReady
         ? false
-        : showHardwareareConnectionAdvancedPopover,
-      showHardwareareConnectionContents: hardwareIsReady
+        : showHardwareConnectionAdvancedPopover,
+      showHardwareConnectionContents: hardwareIsReady
         ? false
-        : showHardwareareConnectionContents,
+        : showHardwareConnectionContents,
     });
   }
 
@@ -398,7 +398,7 @@ export default class ConfirmTransactionBase extends Component {
       isBuyableChain,
       connectHardwareWallet,
     } = this.props;
-    const { showHardwareareConnectionContents, hardwareIsReady } = this.state;
+    const { showHardwareConnectionContents, hardwareIsReady } = this.state;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
 
@@ -647,7 +647,7 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
-    if (showHardwareareConnectionContents) {
+    if (showHardwareConnectionContents) {
       return (
         <div className="confirm-page-container-content__details">
           <HardwareConnectivityContent
@@ -655,18 +655,18 @@ export default class ConfirmTransactionBase extends Component {
             onConnectClick={async () => {
               await connectHardwareWallet(DEVICE_NAMES.LEDGER);
               this.setState({
-                showHardwareareConnectionAdvancedPopover: false,
-                showHardwareareConnectionContents: false,
+                showHardwareConnectionAdvancedPopover: false,
+                showHardwareConnectionContents: false,
                 hardwareIsReady: true,
               });
             }}
             onAdvancedClick={() => {
-              this.setState({ showHardwareareConnectionAdvancedPopover: true });
+              this.setState({ showHardwareConnectionAdvancedPopover: true });
             }}
             onClose={() => {
               this.setState({
-                showHardwareareConnectionAdvancedPopover: false,
-                showHardwareareConnectionContents: false,
+                showHardwareConnectionAdvancedPopover: false,
+                showHardwareConnectionContents: false,
               });
             }}
           />
@@ -737,7 +737,7 @@ export default class ConfirmTransactionBase extends Component {
             connected={hardwareIsReady}
             onClick={(e) => {
               e?.preventDefault?.();
-              this.setState({ showHardwareareConnectionContents: true });
+              this.setState({ showHardwareConnectionContents: true });
             }}
           />
         ) : null}
@@ -965,10 +965,10 @@ export default class ConfirmTransactionBase extends Component {
 
   renderTitleComponent() {
     const { title, hexTransactionAmount } = this.props;
-    const { showHardwareareConnectionContents } = this.state;
+    const { showHardwareConnectionContents } = this.state;
 
     // Title string passed in by props takes priority
-    if (title || showHardwareareConnectionContents) {
+    if (title || showHardwareConnectionContents) {
       return null;
     }
 
@@ -985,9 +985,9 @@ export default class ConfirmTransactionBase extends Component {
 
   renderSubtitleComponent() {
     const { subtitleComponent, hexTransactionAmount } = this.props;
-    const { showHardwareareConnectionContents } = this.state;
+    const { showHardwareConnectionContents } = this.state;
 
-    if (showHardwareareConnectionContents) {
+    if (showHardwareConnectionContents) {
       return null;
     }
 
@@ -1131,8 +1131,8 @@ export default class ConfirmTransactionBase extends Component {
       ethGasPriceWarning,
       editingGas,
       userAcknowledgedGasMissing,
-      showHardwareareConnectionContents,
-      showHardwareareConnectionAdvancedPopover,
+      showHardwareConnectionContents,
+      showHardwareConnectionAdvancedPopover,
     } = this.state;
 
     const { name } = methodData;
@@ -1222,12 +1222,12 @@ export default class ConfirmTransactionBase extends Component {
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
-          showHardwareareConnectionContents={showHardwareareConnectionContents}
-          showHardwareareConnectionAdvancedPopover={
-            showHardwareareConnectionAdvancedPopover
+          showHardwareConnectionContents={showHardwareConnectionContents}
+          showHardwareConnectionAdvancedPopover={
+            showHardwareConnectionAdvancedPopover
           }
           closeHardwareConnectionAdvancedPopover={() =>
-            this.setState({ showHardwareareConnectionAdvancedPopover: false })
+            this.setState({ showHardwareConnectionAdvancedPopover: false })
           }
         />
       </TransactionModalContextProvider>
