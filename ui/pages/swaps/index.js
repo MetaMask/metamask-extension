@@ -233,6 +233,9 @@ export default function Swap() {
 
   // eslint-disable-next-line
   useEffect(() => {
+    if (!isSwapsChain) {
+      return undefined;
+    }
     fetchTokens(chainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
@@ -250,7 +253,7 @@ export default function Swap() {
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-  }, [dispatch, chainId, networkAndAccountSupports1559]);
+  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
