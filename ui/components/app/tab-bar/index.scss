@@ -14,7 +14,7 @@
     flex: 0 0 auto;
     box-sizing: border-box;
     opacity: 0.5;
-    transition: opacity 200ms ease-in-out;
+    transition: color 200ms ease-in-out;
     background-color: unset;
     text-align: start;
 
@@ -68,6 +68,7 @@
         justify-content: center;
         margin-inline-end: 16px;
         flex: 0 0 18px;
+        color: var(--color-icon-alternative);
 
         @media screen and (min-width: $break-large) {
           flex: 0 0 14px;
