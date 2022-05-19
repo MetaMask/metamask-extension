@@ -20,6 +20,10 @@
     @media screen and (min-width: $break-large) {
       height: 620px;
     }
+
+    &__reject {
+      padding-bottom: 20px;
+    }
   }
 
   &__typed-container {

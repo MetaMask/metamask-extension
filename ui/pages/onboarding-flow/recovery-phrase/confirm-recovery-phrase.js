@@ -54,8 +54,11 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   };
 
   return (
-    <div>
-      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_CONFIRM} />
+    <div className="recovery-phrase__confirm">
+      <ThreeStepProgressBar
+        stage={threeStepStages.RECOVERY_PHRASE_CONFIRM}
+        marginBottom={4}
+      />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}
@@ -81,11 +84,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         inputValue={phraseElements}
         indicesToCheck={indicesToCheck}
       />
-      <div className="recovery-phrase__footer">
+      <div className="recovery-phrase__footer__confirm">
         <Button
           data-testid="recovery-phrase-confirm"
           type="primary"
-          className="recovery-phrase__footer--button"
+          large
+          className="recovery-phrase__footer__confirm--button"
           onClick={() => {
             history.push(ONBOARDING_COMPLETION_ROUTE);
           }}

@@ -1696,4 +1696,58 @@ describe('Actions', () => {
       expect(expectedAction.value.id).toStrictEqual(txId);
     });
   });
+
+  describe('#cancelMsgs', () => {
+    it('creates COMPLETED_TX with the cancelled messages IDs', async () => {
+      const store = mockStore();
+
+      const cancelTypedMessageStub = sinon.stub().callsFake((_, cb) => cb());
+
+      const cancelPersonalMessageStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        cancelTypedMessage: cancelTypedMessageStub,
+        cancelPersonalMessage: cancelPersonalMessageStub,
+        getState: sinon.stub().callsFake((cb) =>
+          cb(null, {
+            currentLocale: 'test',
+            selectedAddress: '0xFirstAddress',
+            provider: {
+              chainId: '0x1',
+            },
+            accounts: {
+              '0xFirstAddress': {
+                balance: '0x0',
+              },
+            },
+            cachedBalances: {
+              '0x1': {
+                '0xFirstAddress': '0x0',
+              },
+            },
+          }),
+        ),
+      });
+
+      const msgsList = [
+        { id: 7648683973086304, status: 'unapproved', type: 'personal_sign' },
+        {
+          id: 7648683973086303,
+          status: 'unapproved',
+          type: 'eth_signTypedData',
+        },
+      ];
+
+      actions._setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.cancelMsgs(msgsList));
+      const resultantActions = store.getActions();
+      const expectedActions = resultantActions.filter(
+        (action) => action.type === 'COMPLETED_TX',
+      );
+
+      expect(expectedActions[0].value.id).toStrictEqual(msgsList[0]);
+      expect(expectedActions[1].value.id).toStrictEqual(msgsList[1]);
+    });
+  });
 });
