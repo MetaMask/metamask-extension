@@ -19,11 +19,7 @@ export default function SiteOrigin({
           label={siteOrigin}
           maxContent={false}
           leftIcon={
-            <IconWithFallback
-              icon={iconSrc}
-              name={iconName}
-              size={32}
-            />
+            <IconWithFallback icon={iconSrc} name={iconName} size={32} />
           }
         />
       ) : (
@@ -34,7 +30,7 @@ export default function SiteOrigin({
 }
 
 SiteOrigin.propTypes = {
-/**
+  /**
    * The origin of the site generally the URL
    */
   siteOrigin: PropTypes.string.isRequired,
