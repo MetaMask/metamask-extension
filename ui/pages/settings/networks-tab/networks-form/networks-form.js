@@ -436,12 +436,12 @@ const NetworksForm = ({
       const rpcUrlError = validateRPCUrl(rpcUrl);
       setErrors({
         ...errors,
-        chainId: chainIdError,
         blockExplorerUrl: blockExplorerError,
         rpcUrl: rpcUrlError,
       });
       setWarnings({
         ...warnings,
+        chainId: chainIdError,
         ticker: tickerWarning,
       });
     }
@@ -577,7 +577,7 @@ const NetworksForm = ({
           disabled={viewOnly}
         />
         <FormField
-          error={errors.chainId?.msg || ''}
+          warning={warnings.chainId?.msg || ''}
           onChange={setChainId}
           titleText={t('chainId')}
           value={chainId}
