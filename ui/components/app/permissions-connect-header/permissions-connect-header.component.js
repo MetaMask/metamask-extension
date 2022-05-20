@@ -44,14 +44,20 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   renderHeaderIcon() {
-    const { iconUrl, iconName, siteOrigin, isSnapInstall } = this.props;
+    const {
+      iconUrl,
+      iconName,
+      siteOrigin,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      isSnapInstall,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (isSnapInstall) {
       return null;
     }
     ///: END:ONLY_INCLUDE_IN
-
 
     return (
       <div className="permissions-connect-header__icon">
@@ -85,10 +91,7 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          isSnapInstall &&
-          <SnapsAuthorshipPill
-            snapId={siteOrigin}
-          />
+          isSnapInstall && <SnapsAuthorshipPill snapId={siteOrigin} />
           ///: END:ONLY_INCLUDE_IN
         }
         {

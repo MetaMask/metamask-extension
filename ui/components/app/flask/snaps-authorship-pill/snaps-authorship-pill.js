@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { getSnapPrefix } from '@metamask/snap-controllers';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
@@ -8,13 +9,14 @@ import {
   COLORS,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
-import { getSnapPrefix } from '@metamask/snap-controllers';
 
 const SnapsAuthorshipPill = ({ snapId, className }) => {
   const snapPrefix = getSnapPrefix(snapId);
-  const packageName = snapId.replace(snapPrefix, "");
+  const packageName = snapId.replace(snapPrefix, '');
   const isNPM = snapPrefix === 'npm:';
-  const url = isNPM ? `https://www.npmjs.com/package/${packageName}` : packageName;
+  const url = isNPM
+    ? `https://www.npmjs.com/package/${packageName}`
+    : packageName;
   const icon = isNPM ? 'fab fa-npm' : 'fas fa-desktop';
   return (
     <a

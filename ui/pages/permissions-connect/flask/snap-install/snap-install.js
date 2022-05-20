@@ -67,7 +67,7 @@ export default function SnapInstall({
           headerTitle={t('snapInstall')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={targetSubjectMetadata.origin}
-          isSnapInstall={true}
+          isSnapInstall
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
