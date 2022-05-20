@@ -2202,7 +2202,7 @@
     },
     "@babel/runtime": {
       "packages": {
-        "addons-linter>regenerator-runtime": true
+        "@storybook/api>regenerator-runtime": true
       }
     },
     "@download/blockies": {
@@ -2961,7 +2961,8 @@
         "console.log": true,
         "document.createElement": true,
         "document.head.appendChild": true,
-        "fetch": true
+        "fetch": true,
+        "removeEventListener": true
       },
       "packages": {
         "@ethereumjs/tx": true,
@@ -3224,25 +3225,47 @@
     },
     "@metamask/rpc-methods>@metamask/key-tree": {
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>bip39": true,
-        "@metamask/rpc-methods>@metamask/key-tree>secp256k1": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
+        "browserify>buffer": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>bip39": {
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
       "packages": {
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>pbkdf2": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>randombytes": true
+        "browserify>browser-resolve": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>secp256k1": {
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true,
+        "setTimeout": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
       "packages": {
-        "3box>ethers>elliptic": true
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
+      "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3287,6 +3310,7 @@
         "@metamask/controllers>multiformats": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>ethereumjs-wallet": true,
         "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": true,
@@ -3296,7 +3320,6 @@
         "deep-freeze-strict": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
-        "eth-keyring-controller": true,
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
@@ -3310,6 +3333,61 @@
         "single-call-balance-checker-abi": true,
         "uuid": true,
         "web3": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>bip39": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>eth-hd-keyring": true,
+        "browserify>events": true,
+        "eth-keyring-controller>browser-passworder": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-keyring-controller>obs-store": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "loglevel": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>bip39": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>bip39>unorm": true,
+        "browserify>crypto-browserify>pbkdf2": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>bip39>unorm": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>eth-hd-keyring": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>bip39": true,
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-sig-util": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet": {
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet>uuid": true,
+        "@truffle/codec>utf8": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-util": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-wallet>aes-js": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethers>@ethersproject/json-wallets>scrypt-js": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controllers>eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>eth-method-registry": {
@@ -3643,7 +3721,7 @@
         "@ngraveio/bc-ur>bignumber.js": true,
         "@ngraveio/bc-ur>crc": true,
         "@ngraveio/bc-ur>jsbi": true,
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "pubnub>cbor-sync": true
@@ -3663,12 +3741,6 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
-      }
-    },
-    "@ngraveio/bc-ur>sha.js": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true,
-        "pumpify>inherits": true
       }
     },
     "@popperjs/core": {
@@ -3779,6 +3851,11 @@
         "@sentry/browser>@sentry/utils": true,
         "@sentry/browser>tslib": true,
         "localforage": true
+      }
+    },
+    "@storybook/api>regenerator-runtime": {
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "@storybook/api>util-deprecate": {
@@ -4100,9 +4177,10 @@
         "setTimeout": true
       }
     },
-    "addons-linter>regenerator-runtime": {
-      "globals": {
-        "regeneratorRuntime": "write"
+    "addons-linter>sha.js": {
+      "packages": {
+        "ethereumjs-wallet>safe-buffer": true,
+        "pumpify>inherits": true
       }
     },
     "analytics-node": {
@@ -4293,7 +4371,7 @@
     },
     "browserify>crypto-browserify>create-hmac": {
       "packages": {
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>create-hash>cipher-base": true,
         "ethereumjs-util>create-hash>ripemd160": true,
@@ -4324,7 +4402,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "browserify>process": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>create-hash>ripemd160": true,
@@ -4776,31 +4854,49 @@
       "packages": {
         "browserify>buffer": true,
         "browserify>events": true,
-        "eth-keyring-controller>bip39": true,
+        "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "eth-keyring-controller>browser-passworder": true,
-        "eth-keyring-controller>eth-hd-keyring": true,
         "eth-keyring-controller>eth-simple-keyring": true,
         "eth-keyring-controller>obs-store": true,
-        "eth-sig-util": true,
-        "ethereumjs-util": true,
-        "loglevel": true
+        "eth-sig-util": true
       }
     },
-    "eth-keyring-controller>bip39": {
-      "globals": {
-        "console.log": true
-      },
+    "eth-keyring-controller>@metamask/bip39": {
       "packages": {
+        "browserify>buffer": true,
         "browserify>crypto-browserify>pbkdf2": true,
-        "eth-keyring-controller>bip39>unorm": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "ethereumjs-wallet>randombytes": true
       }
     },
-    "eth-keyring-controller>bip39>unorm": {
+    "eth-keyring-controller>@metamask/eth-hd-keyring": {
+      "packages": {
+        "browserify>buffer": true,
+        "eth-keyring-controller>@metamask/bip39": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet": true,
+        "eth-keyring-controller>eth-simple-keyring": true,
+        "eth-trezor-keyring>@metamask/eth-sig-util": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet": {
+      "packages": {
+        "@truffle/codec>utf8": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>uuid": true,
+        "ethereumjs-util": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-wallet>aes-js": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethers>@ethersproject/json-wallets>scrypt-js": true
+      }
+    },
+    "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>uuid": {
       "globals": {
-        "define": true
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "eth-keyring-controller>browser-passworder": {
@@ -4816,35 +4912,6 @@
       "globals": {
         "atob": true,
         "btoa": true
-      }
-    },
-    "eth-keyring-controller>eth-hd-keyring": {
-      "packages": {
-        "browserify>buffer": true,
-        "eth-keyring-controller>bip39": true,
-        "eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet": true,
-        "eth-keyring-controller>eth-simple-keyring": true,
-        "eth-sig-util": true
-      }
-    },
-    "eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet": {
-      "packages": {
-        "@truffle/codec>utf8": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet>uuid": true,
-        "ethereumjs-util": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true
-      }
-    },
-    "eth-keyring-controller>eth-hd-keyring>ethereumjs-wallet>uuid": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
       }
     },
     "eth-keyring-controller>eth-simple-keyring": {
@@ -5217,7 +5284,7 @@
     },
     "ethereumjs-util>create-hash": {
       "packages": {
-        "@ngraveio/bc-ur>sha.js": true,
+        "addons-linter>sha.js": true,
         "ethereumjs-util>create-hash>cipher-base": true,
         "ethereumjs-util>create-hash>md5.js": true,
         "ethereumjs-util>create-hash>ripemd160": true,
@@ -5894,7 +5961,7 @@
     "ethjs-query>babel-runtime": {
       "packages": {
         "@babel/runtime": true,
-        "addons-linter>regenerator-runtime": true,
+        "@storybook/api>regenerator-runtime": true,
         "ethjs-query>babel-runtime>core-js": true
       }
     },
