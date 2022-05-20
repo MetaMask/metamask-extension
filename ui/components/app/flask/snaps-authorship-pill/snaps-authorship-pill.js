@@ -8,8 +8,14 @@ import {
   COLORS,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { getSnapPrefix } from '@metamask/snap-controllers';
 
-const SnapsAuthorshipPill = ({ packageName, className, url }) => {
+const SnapsAuthorshipPill = ({ snapId, className }) => {
+  const snapPrefix = getSnapPrefix(snapId);
+  const packageName = snapId.replace(snapPrefix, "");
+  const isNPM = snapPrefix === 'npm:';
+  const url = isNPM ? `https://www.npmjs.com/package/${packageName}` : packageName;
+  const icon = isNPM ? 'fab fa-npm' : 'fas fa-desktop';
   return (
     <a
       href={url}
@@ -20,7 +26,7 @@ const SnapsAuthorshipPill = ({ packageName, className, url }) => {
       <Chip
         leftIcon={
           <Box paddingLeft={2}>
-            <i className="fab fa-npm fa-lg snaps-authorship-icon" />
+            <i className={`${icon} fa-lg snaps-authorship-icon`} />
           </Box>
         }
         backgroundColor={COLORS.BACKGROUND_DEFAULT}
@@ -40,17 +46,13 @@ const SnapsAuthorshipPill = ({ packageName, className, url }) => {
 
 SnapsAuthorshipPill.propTypes = {
   /**
-   * NPM package name of the snap
+   * The id of the snap
    */
-  packageName: PropTypes.string,
+  snapId: PropTypes.string,
   /**
    * The className of the SnapsAuthorshipPill
    */
   className: PropTypes.string,
-  /**
-   * The url of the snap's package
-   */
-  url: PropTypes.string,
 };
 
 export default SnapsAuthorshipPill;

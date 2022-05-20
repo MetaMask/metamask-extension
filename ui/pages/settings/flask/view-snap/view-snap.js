@@ -88,8 +88,7 @@ function ViewSnap() {
           <Box className="view-snap__pill-toggle-container">
             <Box className="view-snap__pill-container" paddingLeft={2}>
               <SnapsAuthorshipPill
-                packageName={snap.id}
-                url={authorshipPillUrl}
+                snapId={snap.id}
               />
             </Box>
             <Box paddingLeft={4} className="view-snap__toggle-container">
