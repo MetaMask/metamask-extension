@@ -217,15 +217,18 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveSpendLimit', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (
-    type === TRANSACTION_TYPES.DEPLOY_CONTRACT ||
-    type === TRANSACTION_TYPES.CONTRACT_INTERACTION
-  ) {
+  } else if (type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
     category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
       (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
       transactionTypeTitle;
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+  } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
+    // @todo Should perhaps be a separate group?
+    category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
+    title = getTransactionTypeTitle(t, type);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TRANSACTION_TYPES.INCOMING) {
@@ -235,7 +238,8 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
     type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+    type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendSpecifiedTokens', [

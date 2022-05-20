@@ -21,6 +21,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -180,7 +181,7 @@ export default class AdvancedTab extends PureComponent {
               onClick={(event) => {
                 event.preventDefault();
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Reset Account',
                   properties: {
                     action: 'Reset Account',
@@ -374,7 +375,7 @@ export default class AdvancedTab extends PureComponent {
   renderAutoLockTimeLimit() {
     const { t } = this.context;
     const { lockTimeError } = this.state;
-    const { autoLockTimeLimit, setAutoLockTimeLimit } = this.props;
+    const { setAutoLockTimeLimit } = this.props;
 
     return (
       <div
@@ -395,7 +396,6 @@ export default class AdvancedTab extends PureComponent {
               id="autoTimeout"
               placeholder="5"
               value={this.state.autoLockTimeLimit}
-              defaultValue={autoLockTimeLimit}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth
@@ -698,7 +698,7 @@ export default class AdvancedTab extends PureComponent {
               value={useTokenDetection}
               onToggle={(value) => {
                 this.context.trackEvent({
-                  category: 'Settings',
+                  category: EVENT.CATEGORIES.SETTINGS,
                   event: 'Token Detection',
                   properties: {
                     action: 'Token Detection',

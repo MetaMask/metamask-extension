@@ -83,6 +83,7 @@ import {
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -246,7 +247,7 @@ export default function Swap() {
   const trackExitedSwapsEvent = () => {
     trackEvent({
       event: 'Exited Swaps',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
         token_from_amount: fetchParams?.value,
@@ -307,7 +308,7 @@ export default function Swap() {
   const trackErrorStxEvent = useCallback(() => {
     trackEvent({
       event: 'Error Smart Transactions',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
         token_from_amount: fetchParams?.value,
@@ -357,8 +358,8 @@ export default function Swap() {
 
   const isStxNotEnoughFundsError =
     currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
-  const isStxRegularTxPendingError =
-    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_PENDING;
+  const isRegularTxInProgressError =
+    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_IN_PROGRESS;
 
   return (
     <div className="swaps">
@@ -422,7 +423,7 @@ export default function Swap() {
                       {t('stxUnavailable')}
                     </div>
                     <div>
-                      {isStxRegularTxPendingError
+                      {isRegularTxInProgressError
                         ? t('stxFallbackPendingTx')
                         : t('stxFallbackUnavailable')}
                     </div>

@@ -17,6 +17,8 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
+import { EVENT } from '../../../../shared/constants/metametrics';
+
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const firstTimeFlowTypeNameMap = {
@@ -45,7 +47,7 @@ export default function OnboardingMetametrics() {
       if (!participateInMetaMetrics) {
         trackEvent(
           {
-            category: 'Onboarding',
+            category: EVENT.CATEGORIES.ONBOARDING,
             event: 'Metrics Opt In',
             properties: {
               action: 'Metrics Option',
@@ -60,7 +62,7 @@ export default function OnboardingMetametrics() {
       }
       trackEvent(
         {
-          category: 'Onboarding',
+          category: EVENT.CATEGORIES.ONBOARDING,
           event: firstTimeSelectionMetaMetricsName,
           properties: {
             action: 'Import or Create',
@@ -85,7 +87,7 @@ export default function OnboardingMetametrics() {
       if (!participateInMetaMetrics) {
         trackEvent(
           {
-            category: 'Onboarding',
+            category: EVENT.CATEGORIES.ONBOARDING,
             event: 'Metrics Opt Out',
             properties: {
               action: 'Metrics Option',
@@ -112,7 +114,10 @@ export default function OnboardingMetametrics() {
       >
         {t('metametricsTitle')}
       </Typography>
-      <Typography align={TEXT_ALIGN.CENTER}>
+      <Typography
+        className="onboarding-metametrics__desc"
+        align={TEXT_ALIGN.CENTER}
+      >
         {t('metametricsOptInDescription2')}
       </Typography>
       <ul>

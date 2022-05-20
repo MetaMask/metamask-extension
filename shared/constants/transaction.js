@@ -9,6 +9,10 @@ import { MESSAGE_TYPE } from './app';
  * @property {'transferfrom'} TOKEN_METHOD_TRANSFER_FROM - A token transaction
  *  transferring tokens from an account that the sender has an allowance of.
  *  For more information on allowances, see the approve type.
+ * @property {'safetransferfrom'} TOKEN_METHOD_SAFE_TRANSFER_FROM - A token transaction
+ *  transferring tokens from an account that the sender has an allowance of.
+ *  The method is prefixed with safe because when calling this method the contract checks
+ *  to ensure that the receiver is an address capable of handling with the token being sent.
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
@@ -134,6 +138,17 @@ export const TRANSACTION_STATUSES = {
 };
 
 /**
+ * With this list we can detect if a transaction is still in progress.
+ */
+export const IN_PROGRESS_TRANSACTION_STATUSES = [
+  TRANSACTION_STATUSES.UNAPPROVED,
+  TRANSACTION_STATUSES.APPROVED,
+  TRANSACTION_STATUSES.SIGNED,
+  TRANSACTION_STATUSES.SUBMITTED,
+  TRANSACTION_STATUSES.PENDING,
+];
+
+/**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
  *
@@ -159,6 +174,7 @@ export const TRANSACTION_GROUP_STATUSES = {
  * @typedef {Object} SmartTransactionStatuses
  * @property {'cancelled'} CANCELLED - It can be cancelled for various reasons.
  * @property {'pending'} PENDING - Smart transaction is being processed.
+ * @property {'success'} SUCCESS - Smart transaction was successfully mined.
  */
 
 /**

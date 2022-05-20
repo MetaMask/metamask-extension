@@ -5,6 +5,7 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
@@ -197,7 +198,7 @@ export default class AccountMenu extends Component {
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
             this.context.trackEvent({
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               event: 'Switched Account',
               properties: {
                 action: 'Main Menu',
@@ -340,7 +341,7 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               event: 'Clicked Create Account',
               properties: {
                 action: 'Main Menu',
@@ -356,7 +357,7 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               event: 'Clicked Import Account',
               properties: {
                 action: 'Main Menu',
@@ -377,7 +378,7 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             trackEvent({
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               event: 'Clicked Connect Hardware',
               properties: {
                 action: 'Main Menu',
@@ -417,7 +418,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             history.push(SETTINGS_ROUTE);
             this.context.trackEvent({
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               event: 'Opened Settings',
               properties: {
                 action: 'Main Menu',

@@ -10,6 +10,8 @@ import {
   ROPSTEN,
   ROPSTEN_CHAIN_ID,
   getRpcUrl,
+  ETH_SYMBOL,
+  TEST_NETWORK_TICKER_MAP,
 } from '../../../../shared/constants/network';
 
 const defaultNetworksData = [
@@ -19,7 +21,7 @@ const defaultNetworksData = [
     providerType: MAINNET,
     rpcUrl: getRpcUrl({ network: MAINNET, excludeProjectId: true }),
     chainId: MAINNET_CHAIN_ID,
-    ticker: 'ETH',
+    ticker: ETH_SYMBOL,
     blockExplorerUrl: 'https://etherscan.io',
   },
   {
@@ -28,7 +30,7 @@ const defaultNetworksData = [
     providerType: ROPSTEN,
     rpcUrl: getRpcUrl({ network: ROPSTEN, excludeProjectId: true }),
     chainId: ROPSTEN_CHAIN_ID,
-    ticker: 'ETH',
+    ticker: TEST_NETWORK_TICKER_MAP[ROPSTEN],
     blockExplorerUrl: 'https://ropsten.etherscan.io',
   },
   {
@@ -37,7 +39,7 @@ const defaultNetworksData = [
     providerType: RINKEBY,
     rpcUrl: getRpcUrl({ network: RINKEBY, excludeProjectId: true }),
     chainId: RINKEBY_CHAIN_ID,
-    ticker: 'ETH',
+    ticker: TEST_NETWORK_TICKER_MAP[RINKEBY],
     blockExplorerUrl: 'https://rinkeby.etherscan.io',
   },
   {
@@ -46,7 +48,7 @@ const defaultNetworksData = [
     providerType: GOERLI,
     rpcUrl: getRpcUrl({ network: GOERLI, excludeProjectId: true }),
     chainId: GOERLI_CHAIN_ID,
-    ticker: 'ETH',
+    ticker: TEST_NETWORK_TICKER_MAP[GOERLI],
     blockExplorerUrl: 'https://goerli.etherscan.io',
   },
   {
@@ -55,7 +57,7 @@ const defaultNetworksData = [
     providerType: KOVAN,
     rpcUrl: getRpcUrl({ network: KOVAN, excludeProjectId: true }),
     chainId: KOVAN_CHAIN_ID,
-    ticker: 'ETH',
+    ticker: TEST_NETWORK_TICKER_MAP[KOVAN],
     blockExplorerUrl: 'https://kovan.etherscan.io',
   },
 ];

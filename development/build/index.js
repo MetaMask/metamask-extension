@@ -51,11 +51,13 @@ require('eslint-plugin-node');
 require('eslint-plugin-prettier');
 require('eslint-plugin-react');
 require('eslint-plugin-react-hooks');
+require('eslint-plugin-jest');
 
 defineAndRunBuildTasks();
 
 function defineAndRunBuildTasks() {
   const {
+    applyLavaMoat,
     buildType,
     entryTask,
     isLavaMoat,
@@ -88,6 +90,7 @@ function defineAndRunBuildTasks() {
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
+    applyLavaMoat,
     browserPlatforms,
     buildType,
     ignoredFiles,
@@ -169,6 +172,7 @@ function defineAndRunBuildTasks() {
 
 function parseArgv() {
   const NamedArgs = {
+    ApplyLavaMoat: 'apply-lavamoat',
     BuildType: 'build-type',
     BuildVersion: 'build-version',
     LintFenceFiles: 'lint-fence-files',
@@ -179,6 +183,7 @@ function parseArgv() {
 
   const argv = minimist(process.argv.slice(2), {
     boolean: [
+      NamedArgs.ApplyLavaMoat,
       NamedArgs.LintFenceFiles,
       NamedArgs.Lockdown,
       NamedArgs.PolicyOnly,
@@ -186,6 +191,7 @@ function parseArgv() {
     ],
     string: [NamedArgs.BuildType, NamedArgs.BuildVersion],
     default: {
+      [NamedArgs.ApplyLavaMoat]: true,
       [NamedArgs.BuildType]: BuildType.main,
       [NamedArgs.BuildVersion]: '0',
       [NamedArgs.LintFenceFiles]: true,
@@ -231,8 +237,11 @@ function parseArgv() {
   const version = getVersion(buildType, buildVersion);
 
   return {
+    // Should we apply LavaMoat to the build output?
+    applyLavaMoat: argv[NamedArgs.ApplyLavaMoat],
     buildType,
     entryTask,
+    // Is this process running in lavamoat-node?
     isLavaMoat: process.argv[0].includes('lavamoat'),
     policyOnly,
     shouldIncludeLockdown: argv[NamedArgs.Lockdown],

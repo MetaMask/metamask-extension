@@ -38,7 +38,7 @@ import { attemptLedgerTransportCreation } from '../../../store/actions';
 const renderInstructionStep = (
   text,
   show = true,
-  color = COLORS.PRIMARY_DEFAULT,
+  color = COLORS.TEXT_DEFAULT,
 ) => {
   return (
     show && (

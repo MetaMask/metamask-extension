@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import ActionableMessage from '../../ui/actionable-message';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography';
 import {
@@ -10,10 +10,17 @@ import {
   COLORS,
   DISPLAY,
   FLEX_DIRECTION,
+  FONT_WEIGHT,
   TYPOGRAPHY,
+  JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import IconCaretLeft from '../../ui/icon/icon-caret-left';
+import Tooltip from '../../ui/tooltip';
+import IconWithFallback from '../../ui/icon-with-fallback';
+import IconBorder from '../../ui/icon-border';
+import { getTheme } from '../../../selectors';
+import { THEME_TYPE } from '../../../pages/settings/experimental-tab/experimental-tab.constant';
 
 const AddNetwork = ({
   onBackClick,
@@ -22,10 +29,13 @@ const AddNetwork = ({
   featuredRPCS,
 }) => {
   const t = useContext(I18nContext);
+  const theme = useSelector(getTheme);
+
+  const infuraRegex = /infura.io/u;
 
   const nets = featuredRPCS
     .sort((a, b) => (a.ticker > b.ticker ? 1 : -1))
-    .slice(0, 5);
+    .slice(0, 8);
 
   return (
     <Box>
@@ -63,28 +73,73 @@ const AddNetwork = ({
           color={COLORS.TEXT_MUTED}
           margin={[4, 0, 3, 0]}
         >
-          {t('customNetworks')}
+          {t('popularCustomNetworks')}
         </Typography>
         {nets.map((item, index) => (
           <Box
             key={index}
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             marginBottom={6}
           >
-            <img
-              className="add-network__token-image"
-              src={item?.rpcPrefs?.imageUrl}
-              alt={t('logo', [item.ticker])}
-            />
-            <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
-              {item.ticker}
-            </Typography>
-            <i
-              className="fa fa-plus add-network__add-icon"
-              onClick={onAddNetworkClick}
-              title={`${t('add')} ${item.ticker}`}
-            />
+            <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+              <IconBorder size={24}>
+                <IconWithFallback
+                  icon={item.rpcPrefs.imageUrl}
+                  name={item.nickname}
+                  size={24}
+                />
+              </IconBorder>
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.TEXT_DEFAULT}
+                fontWeight={FONT_WEIGHT.BOLD}
+                boxProps={{ marginLeft: 2 }}
+              >
+                {item.nickname}
+              </Typography>
+            </Box>
+            <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+              {
+                // Warning for the networks that doesn't use infura.io as the RPC
+                !infuraRegex.test(item.rpcUrl) && (
+                  <Tooltip
+                    className="add-network__warning-tooltip"
+                    position="top"
+                    interactive
+                    html={
+                      <Box margin={3} className="add-network__warning-tooltip">
+                        {t('addNetworkTooltipWarning', [
+                          <a
+                            key="zendesk_page_link"
+                            href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>,
+                        ])}
+                      </Box>
+                    }
+                    trigger="mouseenter"
+                    theme={theme === THEME_TYPE.DEFAULT ? 'light' : 'dark'}
+                  >
+                    <i
+                      className="fa fa-exclamation-triangle add-network__warning-icon"
+                      title={t('warning')}
+                    />
+                  </Tooltip>
+                )
+              }
+              <Button
+                type="inline"
+                className="add-network__add-button"
+                onClick={onAddNetworkClick}
+              >
+                {t('add')}
+              </Button>
+            </Box>
           </Box>
         ))}
       </Box>
@@ -98,25 +153,6 @@ const AddNetwork = ({
             {t('addANetworkManually')}
           </Typography>
         </Button>
-        <ActionableMessage
-          type="warning"
-          message={
-            <>
-              {t('onlyInteractWith')}
-              <a
-                href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
-                target="_blank"
-                className="add-network__footer__link"
-                rel="noreferrer"
-              >
-                {t('endOfFlowMessage9')}
-              </a>
-            </>
-          }
-          iconFillColor="var(--color-warning-default)"
-          useIcon
-          withRightButton
-        />
       </Box>
     </Box>
   );
