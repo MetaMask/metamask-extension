@@ -2428,7 +2428,7 @@
   },
   "permission_getLocale": {
     "message": "Get user locale from wallet.",
-    "description": "The description for the `wallet_getLocale` permission"
+    "description": "The description for the `wallet_getLocale`permission"
   },
   "permission_longRunning": {
     "message": "Run indefinitely.",
