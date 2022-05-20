@@ -86,7 +86,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     const tokenData = parseStandardTokenTransactionData(transactionData);
     assetStandard = standard;
     assetAddress = tokenAddress;
-    tokenSymbol = symbol;
+    tokenSymbol = symbol ?? '';
     tokenImage = image;
     toAddress = getTokenAddressParam(tokenData);
     if (assetStandard === ERC721 || assetStandard === ERC1155) {
