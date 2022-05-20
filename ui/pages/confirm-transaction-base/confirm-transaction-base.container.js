@@ -43,6 +43,7 @@ import {
   updateGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
+  getLedgerTransportType,
 } from '../../ducks/metamask/metamask';
 
 import {
@@ -52,7 +53,10 @@ import {
 } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
-import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
+import {
+  getGasLoadingAnimationIsShowing,
+  getLedgerWebHidConnectedStatus,
+} from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -210,6 +214,9 @@ const mapStateToProps = (state, ownProps) => {
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
+  const webHidConnectedStatus = getLedgerWebHidConnectedStatus(state);
+  const ledgerTransportType = getLedgerTransportType(state);
+
   return {
     balance,
     fromAddress,
@@ -255,13 +262,16 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    showLedgerSteps: fromAddressIsLedger && getPlatform() !== PLATFORM_FIREFOX,
     nativeCurrency,
-    hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
     eip1559V2Enabled,
     isBuyableChain,
+    showHardwareConnectivity:
+      fromAddressIsLedger && getPlatform() !== PLATFORM_FIREFOX,
+    hardwareWalletRequiresConnection,
+    webHidConnectedStatus,
+    ledgerTransportType,
   };
 };
 

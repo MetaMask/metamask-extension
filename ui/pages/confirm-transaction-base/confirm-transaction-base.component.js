@@ -6,7 +6,11 @@ import { isBalanceSufficient } from '../send/send.utils';
 import {
   KEYRING_NAMES,
   DEVICE_NAMES,
+  LEDGER_USB_VENDOR_ID,
+  LEDGER_TRANSPORT_TYPES,
+  WEBHID_CONNECTED_STATUSES,
 } from '../../../shared/constants/hardware-wallets';
+
 import {
   addHexes,
   hexToDecimal,
@@ -66,9 +70,12 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
-import HardwareConnectivityMessage from './hardware-connectivity/hardware-connectivity-message';
 
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import TransactionAlerts from './transaction-alerts';
+
+import HardwareConnectivityMessage from './hardware-connectivity/hardware-connectivity-message';
 import HardwareConnectivityContent from './hardware-connectivity/hardware-connectivity-content';
 
 const HARDWARE_CHECK_INTERVAL = 2000;
@@ -148,7 +155,7 @@ export default class ConfirmTransactionBase extends Component {
     baseFeePerGas: PropTypes.string,
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
-    showLedgerSteps: PropTypes.bool.isRequired,
+    showHardwareConnectivity: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -157,6 +164,8 @@ export default class ConfirmTransactionBase extends Component {
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    webHidConnectedStatus: PropTypes.string.isRequired,
+    ledgerTransportType: PropTypes.string.isRequired,
   };
 
   state = {
@@ -205,9 +214,9 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { showLedgerSteps } = this.props;
+    const { showHardwareConnectivity } = this.props;
 
-    if (!showLedgerSteps) {
+    if (!showHardwareConnectivity) {
       return;
     }
 
@@ -390,17 +399,22 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       isMainnet,
-      showLedgerSteps,
+      showHardwareConnectivity,
       supportsEIP1559,
       isMultiLayerFeeNetwork,
       nativeCurrency,
       showBuyModal,
       isBuyableChain,
       connectHardwareWallet,
+      webHidConnectedStatus,
+      ledgerTransportType,
     } = this.props;
-    const { showHardwareConnectionContents, hardwareIsReady } = this.state;
+    const {
+      showHardwareConnectionContents,
+      hardwareIsReady,
+      userAcknowledgedGasMissing,
+    } = this.state;
     const { t } = this.context;
-    const { userAcknowledgedGasMissing } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
@@ -732,12 +746,32 @@ export default class ConfirmTransactionBase extends Component {
           ]}
         />
         {nonceField}
-        {showLedgerSteps ? (
+        {showHardwareConnectivity ? (
           <HardwareConnectivityMessage
             connected={hardwareIsReady}
-            onClick={(e) => {
+            actionLabel={t('hardwareWalletConnectivityNotConnectedConversion')}
+            onClick={async (e) => {
               e?.preventDefault?.();
-              this.setState({ showHardwareConnectionContents: true });
+
+              // Check to see if the user has a paired and unlocked Ledger
+              if (
+                ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+                webHidConnectedStatus !== WEBHID_CONNECTED_STATUSES.CONNECTED
+              ) {
+                const devices = await window.navigator.hid.getDevices();
+                const webHidIsConnected = devices.some(
+                  (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+                );
+
+                if (
+                  webHidIsConnected ||
+                  getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP
+                ) {
+                  this.setState({ showHardwareConnectionContents: true });
+                } else {
+                  global.platform.openExtensionInBrowser(null, null, true);
+                }
+              }
             }}
           />
         ) : null}

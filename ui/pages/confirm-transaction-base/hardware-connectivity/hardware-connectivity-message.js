@@ -7,6 +7,7 @@ import { KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
 
 export default function HardwareConnectivityMessage({
   connected = false,
+  actionLabel,
   onClick,
 }) {
   const t = useI18nContext();
@@ -20,7 +21,7 @@ export default function HardwareConnectivityMessage({
           connected
             ? null
             : {
-                label: t('hardwareWalletConnectivityNotConnectedConversion'),
+                label: actionLabel,
                 onClick,
               }
         }
@@ -47,4 +48,5 @@ export default function HardwareConnectivityMessage({
 HardwareConnectivityMessage.propTypes = {
   connected: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
+  actionLabel: PropTypes.string.isRequired,
 };
