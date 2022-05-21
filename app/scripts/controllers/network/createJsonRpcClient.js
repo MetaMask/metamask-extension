@@ -9,9 +9,23 @@ import {
 } from 'eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
+import { calculateAverageBlockTimeInMs } from './calculateAverageBlockTime';
 
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
+
+const getChainOpts = async (rpcUrl) => {
+  try {
+    const averageBlockTimeInMs = await calculateAverageBlockTimeInMs(rpcUrl);
+
+    return {
+      pollingInterval: averageBlockTimeInMs * 0.75,
+    };
+  } catch {
+    return {};
+  }
+};
+
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 };
@@ -19,18 +33,24 @@ const getTestMiddlewares = () => {
 export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
-  const blockTracker = new PollingBlockTracker({
-    ...blockTrackerOpts,
-    provider: blockProvider,
-  });
 
   const networkMiddleware = mergeMiddleware([
     ...getTestMiddlewares(),
     createChainIdMiddleware(chainId),
-    createBlockRefRewriteMiddleware({ blockTracker }),
-    createBlockCacheMiddleware({ blockTracker }),
-    createInflightCacheMiddleware(),
-    createBlockTrackerInspectorMiddleware({ blockTracker }),
+    createAsyncMiddleware(async () => {
+      const blockTracker = new PollingBlockTracker({
+        ...(await getChainOpts(rpcUrl)),
+        ...blockTrackerOpts,
+        provider: blockProvider,
+      });
+
+      return mergeMiddleware([
+        createBlockRefRewriteMiddleware({ blockTracker }),
+        createBlockCacheMiddleware({ blockTracker }),
+        createInflightCacheMiddleware(),
+        createBlockTrackerInspectorMiddleware({ blockTracker }),
+      ])
+    }),
     fetchMiddleware,
   ]);
 
