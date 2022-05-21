@@ -176,7 +176,7 @@ MainQuoteSummary.propTypes = {
   sourceIconUrl: PropTypes.string,
 
   /**
-   * the location of the destination token icon file.
+   * The location of the destination token icon file.
    */
   destinationIconUrl: PropTypes.string,
 };
