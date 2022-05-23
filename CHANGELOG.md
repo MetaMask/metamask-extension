@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.7]
+### Changed
+- Make JavaScript bundles more reproducible between environments.
+  - The bundles no longer include absolute paths to each module included.
+
 ## [10.14.6]
 ### Changed
 - Move phishing warning page to external site.
@@ -2913,7 +2918,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...HEAD
+[10.14.7]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...v10.14.7
 [10.14.6]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...v10.14.6
 [10.14.5]: https://github.com/MetaMask/metamask-extension/compare/v10.14.4...v10.14.5
 [10.14.4]: https://github.com/MetaMask/metamask-extension/compare/v10.14.3...v10.14.4
