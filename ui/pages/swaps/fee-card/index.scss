@@ -159,7 +159,7 @@
 
   &__total-box {
     border-top: 1px solid var(--color-border-muted);
-    padding: 12px 16px 16px 16px;
+    padding: 12px 16px 16px;
   }
 
   &__total-row {
@@ -180,15 +180,7 @@
 
   &__row-header-secondary,
   &__row-header-secondary--bold {
-<<<<<<< HEAD
-    color: var(--Grey-500);
-=======
     color: var(--color-text-alternative);
-  }
-
-  &__row-header-secondary,
-  &__row-header-secondary--bold {
->>>>>>> develop
     margin-right: 12px;
   }
 

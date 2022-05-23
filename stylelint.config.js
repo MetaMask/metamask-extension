@@ -35,7 +35,20 @@ module.exports = {
 
     // stylelint-config-standard-scss overrides
     // See current list: <https://github.com/stylelint-scss/stylelint-config-standard-scss/blob/main/index.js>
-    'scss/at-mixin-pattern': null,
+    'scss/at-mixin-pattern': [
+      '^(-?[A-Za-z][a-z0-9]*)(-[a-z0-9]+)*(__[a-z][a-z0-9]*(-[a-z0-9]+)*)?$',
+      {
+        message:
+          'Expected mixin to follow BEM naming conventions (see https://en.bem.info/methodology/naming-convention/)',
+      },
+    ],
+    'scss/percent-placeholder-pattern': [
+      '^(-?[a-z][a-z0-9]*)(-[a-z0-9]+)*(__[a-z][a-z0-9]*(-[a-z0-9]+)*)?$',
+      {
+        message:
+          'Expected placeholder to follow BEM naming conventions (see https://en.bem.info/methodology/naming-convention/)',
+      },
+    ],
 
     // Other rules
     'no-unknown-animations': true,

@@ -1,6 +1,7 @@
 // Variables
 $circle-radius: 14px;
 $circle-diameter: $circle-radius * 2;
+
 // Circumference ~ (2*PI*R). We reduced the number a little to create a snappier interaction
 $circle-circumference: 82;
 $circle-stroke-width: 2px;
@@ -36,8 +37,7 @@ $circle-stroke-width: 2px;
   }
 }
 
-.hold-to-reveal-button {
-  // Shared styles
+%hold-to-reveal-button {
   &__absolute-fill {
     position: absolute;
     top: 0;
@@ -55,8 +55,13 @@ $circle-stroke-width: 2px;
     fill: transparent;
     stroke-width: $circle-stroke-width;
   }
+}
 
-  // Class styles
+.hold-to-reveal-button {
+  &__absolute-fill {
+    @extend %hold-to-reveal-button__absolute-fill;
+  }
+
   &__button-hold {
     padding: 6px 13px 6px 9px !important;
     transform: scale(1) !important;
@@ -76,12 +81,8 @@ $circle-stroke-width: 2px;
     }
   }
 
-  &__absolute-fill {
-    @extend .hold-to-reveal-button__absolute-fill;
-  }
-
   &__icon-container {
-    @extend .hold-to-reveal-button__icon;
+    @extend %hold-to-reveal-button__icon;
 
     position: relative;
   }
@@ -95,19 +96,19 @@ $circle-stroke-width: 2px;
   }
 
   &__circle-svg {
-    @extend .hold-to-reveal-button__icon;
+    @extend %hold-to-reveal-button__icon;
 
     transform: rotate(-90deg);
   }
 
   &__circle-background {
-    @extend .hold-to-reveal-button__circle-shared;
+    @extend %hold-to-reveal-button__circle-shared;
 
     stroke: var(--primary-3);
   }
 
   &__circle-foreground {
-    @extend .hold-to-reveal-button__circle-shared;
+    @extend %hold-to-reveal-button__circle-shared;
 
     stroke: var(--ui-white);
     stroke-dasharray: $circle-circumference;
@@ -116,7 +117,7 @@ $circle-stroke-width: 2px;
   }
 
   &__lock-icon-container {
-    @extend .hold-to-reveal-button__absolute-fill;
+    @extend %hold-to-reveal-button__absolute-fill;
 
     transition: 0.3s opacity;
     opacity: 1;
@@ -148,7 +149,7 @@ $circle-stroke-width: 2px;
   }
 
   &__unlock-icon-container {
-    @extend .hold-to-reveal-button__absolute-fill;
+    @extend %hold-to-reveal-button__absolute-fill;
 
     display: flex;
     align-items: center;

@@ -14,7 +14,7 @@
     height: 51px;
     width: 65%;
     margin-top: 16px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     border: 1px solid var(--color-border-default);
     box-sizing: border-box;
     border-radius: 100px;
@@ -46,13 +46,8 @@
   &__address-display-content {
     display: flex;
     height: 27px;
-<<<<<<< HEAD
     padding: 12px 12px 14px;
-    background-color: var(--ui-1);
-=======
-    padding: 12px 12px 14px 12px;
     background-color: var(--color-background-alternative);
->>>>>>> develop
     border-radius: 100px;
     align-items: center;
     justify-content: center;
@@ -397,13 +392,8 @@
     height: 49px;
     margin-top: 5px;
     margin-bottom: 6px;
-<<<<<<< HEAD
     padding: 12px 12px 14px;
-    border: 1px solid #bbc0c5;
-=======
-    padding: 12px 12px 14px 12px;
     border: 1px solid var(--color-border-muted);
->>>>>>> develop
     box-sizing: border-box;
     border-radius: 6px;
     align-items: center;
