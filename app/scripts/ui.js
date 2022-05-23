@@ -37,6 +37,17 @@ async function start() {
   const activeTab = await queryCurrentActiveTab(windowType);
   initializeUiWithTab(activeTab);
 
+  if (process.env.ENABLE_MV3) {
+    extensionPort.onMessage.addListener((message) => {
+      if (
+        document.getElementById('app-loader') &&
+        message?.name === 'CONNECTION_READY'
+      ) {
+        initializeUiWithTab(activeTab);
+      }
+    });
+  }
+
   function displayCriticalError(container, err) {
     container.innerHTML =
       '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>';

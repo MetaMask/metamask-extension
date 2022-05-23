@@ -45,6 +45,14 @@ import { getPlatform } from './lib/util';
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
+const metamaskInternalProcessHash = {
+  [ENVIRONMENT_TYPE_POPUP]: true,
+  [ENVIRONMENT_TYPE_NOTIFICATION]: true,
+  [ENVIRONMENT_TYPE_FULLSCREEN]: true,
+};
+
+const metamaskBlockedPorts = ['trezor-connect'];
+
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
@@ -67,8 +75,20 @@ if (inTest || process.env.METAMASK_DEBUG) {
   global.metamaskGetState = localStore.get.bind(localStore);
 }
 
-// initialization flow
-initialize().catch(log.error);
+let initialState;
+let initialLangCode;
+const initApp = (remotePort) => initialize(remotePort).catch(log.error);
+
+if (process.env.ENABLE_MV3) {
+  browser.runtime.onConnect.addListener(initApp);
+  (async () => {
+    initialState = await loadStateFromPersistence();
+    initialLangCode = await getFirstPreferredLangCode();
+  })();
+} else {
+  // initialization flow
+  initialize().catch(log.error);
+}
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -128,12 +148,17 @@ initialize().catch(log.error);
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
-  const initState = await loadStateFromPersistence();
-  const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode);
+async function initialize(remotePort) {
+  if (!initialState) {
+    initialState = await loadStateFromPersistence();
+  }
+  if (!initialLangCode) {
+    initialLangCode = await getFirstPreferredLangCode();
+  }
+  await setupController(initialState, initialLangCode, remotePort);
   log.info('MetaMask initialization complete.');
 }
 
@@ -205,9 +230,10 @@ async function loadStateFromPersistence() {
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
  */
-function setupController(initState, initLangCode) {
+function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // MetaMask Controller
   //
@@ -291,19 +317,18 @@ function setupController(initState, initLangCode) {
     }
   }
 
+  if (process.env.ENABLE_MV3 && remoteSourcePort) {
+    connectRemote(remoteSourcePort);
+  }
+
   //
   // connect to other contexts
   //
+  if (process.env.ENABLE_MV3) {
+    browser.runtime.onConnect.removeListener(initApp);
+  }
   browser.runtime.onConnect.addListener(connectRemote);
   browser.runtime.onConnectExternal.addListener(connectExternal);
-
-  const metamaskInternalProcessHash = {
-    [ENVIRONMENT_TYPE_POPUP]: true,
-    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
-    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-  };
-
-  const metamaskBlockedPorts = ['trezor-connect'];
 
   const isClientOpenStatus = () => {
     return (
@@ -367,6 +392,10 @@ function setupController(initState, initLangCode) {
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      if (process.env.ENABLE_MV3) {
+        remotePort.postMessage({ name: 'CONNECTION_READY' });
+      }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
@@ -480,8 +509,13 @@ function setupController(initState, initLangCode) {
     if (count) {
       label = String(count);
     }
-    browser.browserAction.setBadgeText({ text: label });
-    browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    if (process.env.ENABLE_MV3) {
+      browser.action.setBadgeText({ text: label });
+      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    } else {
+      browser.browserAction.setBadgeText({ text: label });
+      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    }
   }
 
   function getUnapprovedTransactionCount() {
