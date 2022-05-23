@@ -144,7 +144,7 @@ MainQuoteSummary.propTypes = {
   sourceDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
   /**
-   * The ticker symbol for the source token
+   * The ticker symbol for the source token.
    */   
   sourceSymbol: PropTypes.string.isRequired,
 
