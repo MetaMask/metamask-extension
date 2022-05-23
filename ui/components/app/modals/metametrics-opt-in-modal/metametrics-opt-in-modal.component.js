@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MetaFoxLogo from '../../../ui/metafox-logo';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {
@@ -10,12 +11,12 @@ export default class MetaMetricsOptInModal extends Component {
   };
 
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
   render() {
-    const { metricsEvent, t } = this.context;
+    const { trackEvent, t } = this.context;
     const { setParticipateInMetaMetrics, hideModal } = this.props;
 
     return (
@@ -108,16 +109,17 @@ export default class MetaMetricsOptInModal extends Component {
             <PageContainerFooter
               onCancel={() => {
                 setParticipateInMetaMetrics(false).then(() => {
-                  metricsEvent(
+                  trackEvent(
                     {
-                      eventOpts: {
-                        category: 'Onboarding',
+                      category: EVENT.CATEGORIES.ONBOARDING,
+                      event: 'Metrics Opt Out',
+                      properties: {
                         action: 'Metrics Option',
-                        name: 'Metrics Opt Out',
+                        legacy_event: true,
                       },
-                      isOptIn: true,
                     },
                     {
+                      isOptIn: true,
                       excludeMetaMetricsId: true,
                     },
                   );
@@ -128,14 +130,19 @@ export default class MetaMetricsOptInModal extends Component {
               hideCancel={false}
               onSubmit={() => {
                 setParticipateInMetaMetrics(true).then(() => {
-                  metricsEvent({
-                    eventOpts: {
-                      category: 'Onboarding',
-                      action: 'Metrics Option',
-                      name: 'Metrics Opt In',
+                  trackEvent(
+                    {
+                      category: EVENT.CATEGORIES.ONBOARDING,
+                      event: 'Metrics Opt In',
+                      properties: {
+                        action: 'Metrics Option',
+                        legacy_event: true,
+                      },
                     },
-                    isOptIn: true,
-                  });
+                    {
+                      isOptIn: true,
+                    },
+                  );
                   hideModal();
                 });
               }}

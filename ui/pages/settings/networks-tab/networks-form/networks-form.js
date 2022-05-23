@@ -436,12 +436,12 @@ const NetworksForm = ({
       const rpcUrlError = validateRPCUrl(rpcUrl);
       setErrors({
         ...errors,
-        chainId: chainIdError,
         blockExplorerUrl: blockExplorerError,
         rpcUrl: rpcUrlError,
       });
       setWarnings({
         ...warnings,
+        chainId: chainIdError,
         ticker: tickerWarning,
       });
     }
@@ -549,7 +549,7 @@ const NetworksForm = ({
         <ActionableMessage
           type="warning"
           message={t('onlyAddTrustedNetworks')}
-          iconFillColor="#f8c000"
+          iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
         />
@@ -577,7 +577,7 @@ const NetworksForm = ({
           disabled={viewOnly}
         />
         <FormField
-          error={errors.chainId?.msg || ''}
+          warning={warnings.chainId?.msg || ''}
           onChange={setChainId}
           titleText={t('chainId')}
           value={chainId}

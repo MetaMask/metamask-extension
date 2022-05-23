@@ -8,6 +8,7 @@ import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**
@@ -192,11 +193,13 @@ export default class TypedMessageManager extends EventEmitter {
           data.primaryType in data.types,
           `Primary type of "${data.primaryType}" has no type definition.`,
         );
-        assert.equal(
-          validation.errors.length,
-          0,
-          'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
-        );
+        if (validation.errors.length !== 0) {
+          throw ethErrors.rpc.invalidParams({
+            message:
+              'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
+            data: validation.errors.map((v) => v.message.toString()),
+          });
+        }
         let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);
@@ -301,7 +304,7 @@ export default class TypedMessageManager extends EventEmitter {
       const msg = this.getMsg(msgId);
       this.metricsEvent({
         event: reason,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           action: 'Sign Request',
           version: msg.msgParams.version,

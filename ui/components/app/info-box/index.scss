@@ -1,17 +1,17 @@
 .info-box {
   border-radius: 4px;
-  background-color: var(--alabaster);
+  background-color: var(--color-background-alternative);
   position: relative;
   padding: 16px;
   display: flex;
   flex-flow: column;
-  color: var(--mid-gray);
+  color: var(--color-text-alternative);
 
   &__close::after {
     content: '\00D7';
     font-size: 29px;
     font-weight: 200;
-    color: var(--dusty-gray);
+    color: var(--color-icon-default);
     position: absolute;
     right: 12px;
     top: 0;

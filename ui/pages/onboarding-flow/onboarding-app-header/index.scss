@@ -1,6 +1,6 @@
 .onboarding-app-header {
   align-items: center;
-  background: var(--white);
+  background: var(--color-background-default);
   position: relative;
   z-index: $header-z-index;
   display: flex;
@@ -9,7 +9,7 @@
   flex: 0 0 auto;
 
   @media screen and (max-width: $break-small) {
-    padding: 1rem;
+    padding: 16px;
     z-index: $mobile-header-z-index;
   }
 

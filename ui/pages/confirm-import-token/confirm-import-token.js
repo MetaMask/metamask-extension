@@ -9,10 +9,13 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
+import { TOKEN_STANDARDS } from '../../helpers/constants/common';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 
 const getTokenName = (name, symbol) => {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -22,7 +25,7 @@ const ConfirmImportToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const trackEvent = useContext(NewMetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const pendingTokens = useSelector(getPendingTokens);
@@ -35,14 +38,18 @@ const ConfirmImportToken = () => {
 
     addedTokenValues.forEach((pendingToken) => {
       trackEvent({
-        event: 'Token Added',
-        category: 'Wallet',
+        event: EVENT_NAMES.TOKEN_ADDED,
+        category: EVENT.CATEGORIES.WALLET,
         sensitiveProperties: {
           token_symbol: pendingToken.symbol,
           token_contract_address: pendingToken.address,
           token_decimal_precision: pendingToken.decimals,
           unlisted: pendingToken.unlisted,
-          source: pendingToken.isCustom ? 'custom' : 'list',
+          source: pendingToken.isCustom
+            ? EVENT.SOURCE.TOKEN.CUSTOM
+            : EVENT.SOURCE.TOKEN.LIST,
+          token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
         },
       });
     });
@@ -113,7 +120,10 @@ const ConfirmImportToken = () => {
             type="secondary"
             large
             className="page-container__footer-button"
-            onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
+            onClick={() => {
+              dispatch(clearPendingTokens());
+              history.push(IMPORT_TOKEN_ROUTE);
+            }}
           >
             {t('back')}
           </Button>

@@ -2,12 +2,12 @@
   &__form {
     display: flex;
     flex-direction: column;
-    width: 360px;
   }
 
-  &__srp-section {
+  &__create-password {
     display: flex;
     flex-direction: column;
+    width: 360px;
   }
 
   &__terms {
@@ -20,7 +20,7 @@
   }
 
   &__terms-link {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
   }
 
   &__submit-button#{&}__submit-button {

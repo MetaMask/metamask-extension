@@ -78,6 +78,7 @@ describe('Add account', function () {
 
         const detailsModal = await driver.findVisibleElement('span .modal');
         // get the public address for the "second account"
+        await driver.waitForSelector('.qr-code__address');
         const secondAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
@@ -103,6 +104,7 @@ describe('Add account', function () {
         const secondDetailsModal = await driver.findVisibleElement(
           'span .modal',
         );
+        await driver.waitForSelector('.qr-code__address');
         const thirdAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
@@ -129,11 +131,10 @@ describe('Add account', function () {
         await restoreSeedLink.click();
         await driver.delay(regularDelayMs);
 
-        await driver.fill(
-          'input[placeholder="Enter your Secret Recovery Phrase"]',
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
           testSeedPhrase,
         );
-        await driver.delay(regularDelayMs);
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
@@ -159,6 +160,7 @@ describe('Add account', function () {
           'span .modal',
         );
         // get the public address for the "second account"
+        await driver.waitForSelector('.qr-code__address');
         const recreatedSecondAccountAddress = await driver.findElement(
           '.qr-code__address',
         );
@@ -185,6 +187,7 @@ describe('Add account', function () {
         );
 
         // get the public address for the "third account"
+        await driver.waitForSelector('.qr-code__address');
         const recreatedThirdAccountAddress = await driver.findElement(
           '.qr-code__address',
         );

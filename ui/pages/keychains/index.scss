@@ -85,7 +85,7 @@
   &__error {
     @include H6;
 
-    color: var(--crimson);
+    color: var(--color-error-default);
     padding-top: 5px;
   }
 }

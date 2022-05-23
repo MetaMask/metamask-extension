@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -16,7 +16,8 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
@@ -35,16 +36,7 @@ export default function TokenAsset({ token }) {
     selectedAddress,
     rpcPrefs,
   );
-
-  const blockExplorerLinkClickedEvent = useNewMetricEvent({
-    category: 'Navigation',
-    event: 'Clicked Block Explorer Link',
-    properties: {
-      link_type: 'Token Tracker',
-      action: 'Token Options',
-      block_explorer_domain: getURLHostName(tokenTrackerLink),
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   return (
     <>
@@ -61,7 +53,15 @@ export default function TokenAsset({ token }) {
             }
             isEthNetwork={!rpcPrefs.blockExplorerUrl}
             onClickBlockExplorer={() => {
-              blockExplorerLinkClickedEvent();
+              trackEvent({
+                event: 'Clicked Block Explorer Link',
+                category: EVENT.CATEGORIES.NAVIGATION,
+                properties: {
+                  link_type: 'Token Tracker',
+                  action: 'Token Options',
+                  block_explorer_domain: getURLHostName(tokenTrackerLink),
+                },
+              });
               global.platform.openTab({ url: tokenTrackerLink });
             }}
             onViewAccountDetails={() => {

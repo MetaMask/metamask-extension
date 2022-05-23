@@ -35,7 +35,11 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TYPOGRAPHY.H2}
+          fontWeight={FONT_WEIGHT.BOLD}
+          className="recovery-phrase__header"
+        >
           {t('seedPhraseWriteDownHeader')}
         </Typography>
       </Box>
@@ -49,7 +53,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         </Typography>
       </Box>
       <Box
-        justifyContent={JUSTIFY_CONTENT.SPACE_EVENLY}
         textAlign={TEXT_ALIGN.LEFT}
         marginBottom={4}
         className="recovery-phrase__tips"
@@ -89,7 +92,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 icon={
                   <i
                     className={`far fa-eye${hiddenPhrase ? '' : '-slash'}`}
-                    color="#3098DC"
+                    color="var(--color-primary-default)"
                   />
                 }
                 className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__hide-seed"
@@ -103,7 +106,11 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 onClick={() => {
                   handleCopy(secretRecoveryPhrase);
                 }}
-                icon={copied ? null : <Copy size={20} color="#3098DC" />}
+                icon={
+                  copied ? null : (
+                    <Copy size={20} color="var(--color-primary-default)" />
+                  )
+                }
                 className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__copy-to-clipboard"
                 type="link"
               >

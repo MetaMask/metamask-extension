@@ -132,6 +132,7 @@ describe('Import Token', () => {
         customToken: {
           address: tokenAddress,
           decimals: Number(tokenPrecision),
+          standard: 'ERC20',
           symbol: tokenSymbol,
         },
         selectedTokens: {},

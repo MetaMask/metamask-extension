@@ -69,6 +69,8 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { SEND_STAGES } from '../../ducks/send';
+import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -95,6 +97,7 @@ export default class Routes extends Component {
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
+    sendStage: PropTypes.string,
   };
 
   static contextTypes = {
@@ -102,10 +105,21 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
+  handleOsTheme() {
+    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
+      ? THEME_TYPE.DARK
+      : THEME_TYPE.LIGHT;
+
+    document.documentElement.setAttribute('data-theme', osTheme);
+  }
+
   componentDidUpdate(prevProps) {
-    if (process.env.DARK_MODE_V1) {
-      const { theme } = this.props;
-      if (theme !== prevProps.theme) {
+    const { theme } = this.props;
+
+    if (theme !== prevProps.theme) {
+      if (theme === THEME_TYPE.OS) {
+        this.handleOsTheme();
+      } else {
         document.documentElement.setAttribute('data-theme', theme);
       }
     }
@@ -128,7 +142,9 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    if (process.env.DARK_MODE_V1 && theme) {
+    if (theme === THEME_TYPE.OS) {
+      this.handleOsTheme();
+    } else {
       document.documentElement.setAttribute('data-theme', theme);
     }
   }
@@ -242,6 +258,10 @@ export default class Routes extends Component {
     );
   }
 
+  onEditTransactionPage() {
+    return this.props.sendStage === SEND_STAGES.EDIT;
+  }
+
   onSwapsPage() {
     const { location } = this.props;
     return Boolean(
@@ -327,7 +347,6 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
-      theme,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -339,7 +358,6 @@ export default class Routes extends Component {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
-          [`theme-${theme}`]: process.env.DARK_MODE_V1 && theme,
         })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
@@ -359,6 +377,7 @@ export default class Routes extends Component {
             onClick={this.onAppHeaderClick}
             disabled={
               this.onConfirmPage() ||
+              this.onEditTransactionPage() ||
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
             }
           />

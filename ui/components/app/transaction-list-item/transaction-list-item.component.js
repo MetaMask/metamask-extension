@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatus from '../transaction-status/transaction-status.component';
 import TransactionIcon from '../transaction-icon';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
@@ -31,13 +32,14 @@ import {
   getEIP1559V2Enabled,
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import SiteOrigin from '../../ui/site-origin';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -60,26 +62,19 @@ function TransactionListItemInner({
     primaryTransaction: { err, status },
   } = transactionGroup;
 
-  const speedUpMetricsEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Activity Log',
-      name: 'Clicked "Speed Up"',
-    },
-  });
-
-  const cancelMetricsEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Activity Log',
-      name: 'Clicked "Cancel"',
-    },
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const retryTransaction = useCallback(
     async (event) => {
       event.stopPropagation();
-      speedUpMetricsEvent();
+      trackEvent({
+        event: 'Clicked "Speed Up"',
+        category: EVENT.CATEGORIES.NAVIGATION,
+        properties: {
+          action: 'Activity Log',
+          legacy_event: true,
+        },
+      });
       if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.SPEED_UP);
         openModal('cancelSpeedUpTransaction');
@@ -87,13 +82,20 @@ function TransactionListItemInner({
         setShowRetryEditGasPopover(true);
       }
     },
-    [openModal, setEditGasMode, speedUpMetricsEvent, supportsEIP1559V2],
+    [openModal, setEditGasMode, trackEvent, supportsEIP1559V2],
   );
 
   const cancelTransaction = useCallback(
     (event) => {
       event.stopPropagation();
-      cancelMetricsEvent();
+      trackEvent({
+        event: 'Clicked "Cancel"',
+        category: EVENT.CATEGORIES.NAVIGATION,
+        properties: {
+          action: 'Activity Log',
+          legacy_event: true,
+        },
+      });
       if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.CANCEL);
         openModal('cancelSpeedUpTransaction');
@@ -101,7 +103,7 @@ function TransactionListItemInner({
         setShowCancelEditGasPopover(true);
       }
     },
-    [cancelMetricsEvent, openModal, setEditGasMode, supportsEIP1559V2],
+    [trackEvent, openModal, setEditGasMode, supportsEIP1559V2],
   );
 
   const shouldShowSpeedUp = useShouldShowSpeedUp(
@@ -190,16 +192,13 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
             />
-            <span
-              className={
-                subtitleContainsOrigin
-                  ? 'transaction-list-item__origin'
-                  : 'transaction-list-item__address'
-              }
-              title={subtitle}
-            >
-              {subtitle}
-            </span>
+            {subtitleContainsOrigin ? (
+              <SiteOrigin siteOrigin={subtitle} />
+            ) : (
+              <span className="transaction-list-item__address" title={subtitle}>
+                {subtitle}
+              </span>
+            )}
           </h3>
         }
         rightContent={

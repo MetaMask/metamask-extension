@@ -55,6 +55,7 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
+const USD_CURRENCY_CODE = 'usd';
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
@@ -499,6 +500,7 @@ export const getFeeForSmartTransaction = ({
   chainId,
   currentCurrency,
   conversionRate,
+  USDConversionRate,
   nativeCurrencySymbol,
   feeInWeiDec,
 }) => {
@@ -514,12 +516,25 @@ export const getFeeForSmartTransaction = ({
     conversionRate,
     numberOfDecimals: 2,
   });
+  let feeInUsd;
+  if (currentCurrency === USD_CURRENCY_CODE) {
+    feeInUsd = rawNetworkFees;
+  } else {
+    feeInUsd = getValueFromWeiHex({
+      value: feeInWeiHex,
+      toCurrency: USD_CURRENCY_CODE,
+      conversionRate: USDConversionRate,
+      numberOfDecimals: 2,
+    });
+  }
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
   return {
+    feeInUsd,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
+    rawEthFee: ethFee,
   };
 };
 
@@ -529,6 +544,7 @@ export function getRenderableNetworkFeesForQuote({
   gasPrice,
   currentCurrency,
   conversionRate,
+  USDConversionRate,
   tradeValue,
   sourceSymbol,
   sourceAmount,
@@ -564,11 +580,24 @@ export function getRenderableNetworkFeesForQuote({
   });
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
 
+  let feeInUsd;
+  if (currentCurrency === USD_CURRENCY_CODE) {
+    feeInUsd = rawNetworkFees;
+  } else {
+    feeInUsd = getValueFromWeiHex({
+      value: totalWeiCost,
+      toCurrency: USD_CURRENCY_CODE,
+      conversionRate: USDConversionRate,
+      numberOfDecimals: 2,
+    });
+  }
+
   const chainCurrencySymbolToUse =
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {
     rawNetworkFees,
+    feeInUsd,
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
     feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
@@ -903,18 +932,22 @@ export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
-export const stxErrorTypes = ['unavailable', 'not_enough_funds'];
-
-const smartTransactionsErrorMap = {
-  unavailable: 'Smart Transactions are temporarily unavailable.',
-  not_enough_funds: 'Not enough funds for a smart transaction.',
+export const stxErrorTypes = {
+  UNAVAILABLE: 'unavailable',
+  NOT_ENOUGH_FUNDS: 'not_enough_funds',
+  REGULAR_TX_IN_PROGRESS: 'regular_tx_pending',
 };
 
-export const smartTransactionsErrorMessages = (errorType) => {
-  return (
-    smartTransactionsErrorMap[errorType] ||
-    smartTransactionsErrorMap.unavailable
-  );
+export const getTranslatedStxErrorMessage = (errorType, t) => {
+  switch (errorType) {
+    case stxErrorTypes.UNAVAILABLE:
+    case stxErrorTypes.REGULAR_TX_IN_PROGRESS:
+      return t('stxErrorUnavailable');
+    case stxErrorTypes.NOT_ENOUGH_FUNDS:
+      return t('stxErrorNotEnoughFunds');
+    default:
+      return t('stxErrorUnavailable');
+  }
 };
 
 export const parseSmartTransactionsError = (errorMessage) => {

@@ -14,6 +14,7 @@ import {
   setIpfsGateway,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
+  setUseTokenDetection,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
@@ -32,11 +33,12 @@ export const mapStateToProps = (state) => {
     ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    useTokenDetection,
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
-    autoLockTimeLimit,
+    autoLockTimeLimit = 0,
   } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
@@ -55,6 +57,7 @@ export const mapStateToProps = (state) => {
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
+    useTokenDetection,
   };
 };
 
@@ -92,6 +95,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setUseTokenDetection: (value) => {
+      return dispatch(setUseTokenDetection(value));
     },
   };
 };

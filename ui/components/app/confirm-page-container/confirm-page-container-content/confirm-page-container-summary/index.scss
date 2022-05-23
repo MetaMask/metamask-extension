@@ -1,6 +1,6 @@
 .confirm-page-container-summary {
   padding: 16px 24px;
-  background-color: #f9fafa;
+  background-color: var(--color-background-alternative);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -23,9 +23,9 @@
   &__action {
     @include H7;
 
-    color: var(--oslo-gray);
+    color: var(--color-text-alternative);
     padding: 3px 8px;
-    border: 1px solid var(--oslo-gray);
+    border: 1px solid var(--color-border-default);
     border-radius: 4px;
     display: inline-flex;
     align-items: center;
@@ -51,12 +51,12 @@
       border: none;
       padding: 0;
       margin-inline-end: 4px;
-      color: var(--primary-1);
+      color: var(--color-primary-default);
     }
   }
 
   &__nonce {
-    color: var(--oslo-gray);
+    color: var(--color-text-alternative);
   }
 
   &__title {
@@ -88,13 +88,13 @@
   &__subtitle {
     @include H5;
 
-    color: var(--oslo-gray);
+    color: var(--color-text-alternative);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &--border {
-    border-bottom: 1px solid var(--geyser);
+    border-bottom: 1px solid var(--color-border-muted);
   }
 }

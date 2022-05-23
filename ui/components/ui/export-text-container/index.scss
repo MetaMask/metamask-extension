@@ -3,7 +3,7 @@
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  border: 1px solid var(--alto);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
   font-weight: 400;
 
@@ -13,7 +13,7 @@
     justify-content: center;
     padding: 20px;
     border-radius: 4px;
-    background: var(--alabaster);
+    background: var(--color-background-default);
   }
 
   &__text {
@@ -21,14 +21,14 @@
 
     resize: none;
     border: none;
-    background: var(--alabaster);
+    background: var(--color-background-default);
     text-align: center;
   }
 
   &__buttons-container {
     display: flex;
     flex-direction: row;
-    border-top: 1px solid var(--alto);
+    border-top: 1px solid var(--color-border-default);
     width: 100%;
   }
 
@@ -41,10 +41,10 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
 
     &--copy {
-      border-right: 1px solid var(--alto);
+      border-right: 1px solid var(--color-border-default);
     }
   }
 

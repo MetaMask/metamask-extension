@@ -6,13 +6,17 @@ import {
   decimalToHex,
   decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util';
-import { addTenPercentAndRound } from '../../helpers/utils/gas';
+import {
+  addTenPercentAndRound,
+  editGasModeIsSpeedUpOrCancel,
+} from '../../helpers/utils/gas';
 import {
   createCancelTransaction,
   createSpeedUpTransaction,
   updateCustomSwapsEIP1559GasParams,
+  updatePreviousGasParams,
   updateSwapsUserFeeLevel,
-  updateTransaction as updateTransactionFn,
+  updateTransactionGasFees,
 } from '../../store/actions';
 
 export const useTransactionFunctions = ({
@@ -23,6 +27,7 @@ export const useTransactionFunctions = ({
   gasLimit: gasLimitValue,
   maxPriorityFeePerGas: maxPriorityFeePerGasValue,
   transaction,
+  setRetryTxMeta,
 }) => {
   const dispatch = useDispatch();
 
@@ -49,7 +54,7 @@ export const useTransactionFunctions = ({
   }, [editGasMode, transaction?.previousGas, transaction?.txParams]);
 
   const updateTransaction = useCallback(
-    ({
+    async ({
       estimateUsed,
       gasLimit,
       maxFeePerGas,
@@ -86,8 +91,21 @@ export const useTransactionFunctions = ({
           updateSwapsUserFeeLevel(estimateUsed || PRIORITY_LEVELS.CUSTOM),
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
+      } else if (editGasModeIsSpeedUpOrCancel(editGasMode)) {
+        setRetryTxMeta(updatedTxMeta);
       } else {
-        dispatch(updateTransactionFn(updatedTxMeta));
+        newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
+        newGasSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
+
+        if (txMeta && txMeta.previousGas) {
+          await dispatch(
+            updatePreviousGasParams(updatedTxMeta.id, txMeta.previousGas),
+          );
+        }
+
+        await dispatch(
+          updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
+        );
       }
     },
     [
@@ -98,6 +116,7 @@ export const useTransactionFunctions = ({
       getTxMeta,
       maxPriorityFeePerGasValue,
       transaction,
+      setRetryTxMeta,
     ],
   );
 

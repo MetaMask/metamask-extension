@@ -31,6 +31,7 @@
 @import 'edit-gas-fee-popover/edit-gas-tooltip/index';
 @import 'flask/experimental-area/index';
 @import 'flask/snap-install-warning/index';
+@import 'flask/snap-remove-warning/index';
 @import 'flask/snap-settings-card/index';
 @import 'flask/snaps-authorship-pill/index';
 @import 'gas-customization/gas-modal-page-container/index';
@@ -39,11 +40,13 @@
 @import 'gas-details-item/index';
 @import 'gas-details-item/gas-details-item-title/index';
 @import 'gas-timing/index';
+@import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
 @import 'info-box/index';
 @import 'menu-bar/index';
 @import 'modal/index';
 @import 'modals/index';
+@import 'multilayer-fee-message/index';
 @import 'multiple-notifications/index';
 @import 'network-display/index';
 @import 'permission-page-container/index';
@@ -60,6 +63,7 @@
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';
 @import 'transaction-activity-log/index';
+@import 'transaction-activity-log/transaction-activity-log-icon/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-detail/index';
 @import 'transaction-detail-item/index';
@@ -81,3 +85,10 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
+@import 'asset-list/detetcted-tokens-link/index';
+@import 'detected-token/detected-token-address/index';
+@import 'detected-token/detected-token-aggregators/index';
+@import 'detected-token/detected-token-values/index';
+@import 'detected-token/detected-token-details/index';
+@import 'detected-token/detected-token-ignored-popover/index';
+@import 'detected-token/detected-token-selection-popover/index';

@@ -38,7 +38,7 @@ export default class PreferencesController {
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: Boolean(process.env.TOKEN_DETECTION_V2),
       useCollectibleDetection: false,
       openSeaEnabled: false,
       advancedGasFee: null,
@@ -68,7 +68,7 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
-      theme: 'default',
+      theme: 'light',
       ...opts.initState,
     };
 

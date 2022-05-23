@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Pridať navrhované tokeny"
   },
-  "addToAddressBook": {
-    "message": "Pridať do adresára"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "napr. Ján D."
-  },
   "addToken": {
     "message": "Přidat token"
   },
@@ -333,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
-  },
-  "enterAnAlias": {
-    "message": "Zadať alias"
   },
   "enterPassword": {
     "message": "Zadejte heslo"
@@ -778,9 +769,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Každé slovo oddeľte jednou medzerou"
   },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"

@@ -1,6 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import {
+  COLORS,
   JUSTIFY_CONTENT,
   SEVERITIES,
   TYPOGRAPHY,
@@ -34,9 +34,10 @@ function getValues(pendingApproval, t, actions) {
         props: {
           variant: TYPOGRAPHY.H3,
           align: 'center',
-          fontWeight: 'bold',
+          fontWeight: 'normal',
           boxProps: {
-            margin: [0, 0, 4],
+            margin: [0, 0, 2],
+            padding: [0, 4, 0, 4],
           },
         },
       },
@@ -46,9 +47,10 @@ function getValues(pendingApproval, t, actions) {
         children: t('switchEthereumChainConfirmationDescription'),
         props: {
           variant: TYPOGRAPHY.H7,
+          color: COLORS.TEXT_ALTERNATIVE,
           align: 'center',
           boxProps: {
-            margin: [0, 0, 4],
+            padding: [0, 4, 0, 4],
           },
         },
       },
@@ -59,14 +61,12 @@ function getValues(pendingApproval, t, actions) {
           justifyContent: JUSTIFY_CONTENT.CENTER,
         },
         children: {
-          element: 'NetworkDisplay',
+          element: 'ConfirmationNetworkSwitch',
           key: 'network-being-switched',
           props: {
-            colored: false,
-            outline: true,
-            targetNetwork: {
-              type: pendingApproval.requestData.type || NETWORK_TYPE_RPC,
-              nickname: pendingApproval.requestData.nickname,
+            newNetwork: {
+              chainId: pendingApproval.requestData.chainId,
+              name: pendingApproval.requestData.nickname,
             },
           },
         },
@@ -83,7 +83,7 @@ function getValues(pendingApproval, t, actions) {
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest(),
+        ethErrors.provider.userRejectedRequest().serialize(),
       ),
     networkDisplay: true,
   };

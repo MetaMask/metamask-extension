@@ -143,12 +143,6 @@
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },
-  "addToAddressBook": {
-    "message": "Agregar a la libreta de direcciones"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ej., John D."
-  },
   "addToken": {
     "message": "Agregar token"
   },
@@ -184,9 +178,6 @@
   },
   "affirmAgree": {
     "message": "Acepto"
-  },
-  "aggregatorFeeCost": {
-    "message": "Cuota de red de agregador"
   },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
@@ -238,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Cuota de red de agregador y aprobación"
-  },
-  "approvalTxGasCost": {
-    "message": "Costo de gas por transacción de aprobación"
   },
   "approve": {
     "message": "Aprobar límite de gastos"
@@ -982,9 +967,6 @@
   "ensUnknownError": {
     "message": "Error al buscar ENS."
   },
-  "enterAnAlias": {
-    "message": "Escribir un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Escribir límite máximo de gastos"
   },
@@ -1055,10 +1037,6 @@
   },
   "externalExtension": {
     "message": "Extensión externa"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 de gas por aprobación",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Con errores"
@@ -1328,13 +1306,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
   },
-  "importExistingWalletDescription": {
-    "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importar la cartera existente con la frase secreta de recuperación"
-  },
   "importMyWallet": {
     "message": "Importar Mi cartera"
   },
@@ -1462,9 +1433,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
   },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"
@@ -1798,9 +1766,6 @@
   },
   "newNFTsDetected": {
     "message": "¡Nuevo! Detección NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Permitir que MetaMask detecte automáticamente NFT de Opensea y los muestre en su cartera MetaMask."
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -2392,12 +2357,6 @@
   "seedPhraseIntroTitleCopy": {
     "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo proteger su cartera."
   },
-  "seedPhrasePlaceholder": {
-    "message": "Separar cada palabra con un solo espacio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Pegar la frase secreta de recuperación desde el Portapapeles"
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -2511,9 +2470,6 @@
   "showRecommendations": {
     "message": "Mostrar recomendaciones"
   },
-  "showSeedPhrase": {
-    "message": "Mostrar frase secreta de recuperación"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de prueba"
   },
@@ -2537,9 +2493,6 @@
   },
   "signed": {
     "message": "Firmado"
-  },
-  "simulationErrorMessage": {
-    "message": "Se anticipa que esta transacción falle. En caso de intentar ejecutarla, se anticipa que eso sea costoso y a la vez falle, y por lo tanto no se recomienda."
   },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
@@ -3211,9 +3164,6 @@
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"
-  },
-  "tryAnywayOption": {
-    "message": "Lo intentaré de todos modos"
   },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"

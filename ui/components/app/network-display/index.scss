@@ -13,34 +13,6 @@
     cursor: not-allowed;
   }
 
-  &--colored {
-    background-color: color.adjust(rgb(125, 128, 130), $lightness: 45%);
-  }
-
-  &--mainnet {
-    background-color: color.adjust($blue-lagoon, $lightness: 68%);
-  }
-
-  &--ropsten {
-    background-color: color.adjust($crimson, $lightness: 45%);
-  }
-
-  &--kovan {
-    background-color: color.adjust($purple, $lightness: 65%);
-  }
-
-  &--rinkeby {
-    background-color: color.adjust($tulip-tree, $lightness: 35%);
-  }
-
-  &--goerli {
-    background-color: color.adjust($dodger-blue, $lightness: 35%);
-  }
-
-  &--localhost {
-    background-color: color.adjust($blue-lagoon, $lightness: 68%);
-  }
-
   &.chip {
     margin: 0;
     max-width: 100%;

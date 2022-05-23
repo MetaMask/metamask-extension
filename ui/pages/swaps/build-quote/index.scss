@@ -38,7 +38,7 @@
     @include H5;
 
     font-weight: bold;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     margin-top: 3px;
   }
 
@@ -53,17 +53,18 @@
   }
 
   &__swap-arrows {
+    display: flex;
     flex: 0 0 auto;
-    height: 16px;
-    width: 12px;
+    height: 24px;
     cursor: pointer;
     background: unset;
+    color: var(--color-icon-muted);
   }
 
   &__max-button {
     @include H7;
 
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
@@ -71,7 +72,7 @@
     @include H7;
 
     width: 100%;
-    color: var(--Grey-500);
+    color: var(--color-text-muted);
     margin-top: 4px;
     display: flex;
     flex-flow: column;
@@ -80,17 +81,17 @@
     &--error {
       div:first-of-type {
         font-weight: bold;
-        color: var(--Black-100);
+        color: var(--color-text-default);
       }
 
       .build-quote__form-error:first-of-type {
         font-weight: bold;
-        color: var(--Red-500);
+        color: var(--color-error-default);
       }
 
       div:last-of-type {
         font-weight: normal;
-        color: var(--Grey-500);
+        color: var(--color-text-alternative);
       }
     }
   }
@@ -124,6 +125,13 @@
         }
       }
     }
+
+    &__input {
+      div {
+        border: 1px solid var(--color-border-default);
+        border-left: 0;
+      }
+    }
   }
 
   &__open-to-dropdown {
@@ -138,7 +146,7 @@
     @include H7;
 
     width: 100%;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
     margin-top: 4px;
 
     .info-tooltip {
@@ -147,7 +155,7 @@
   }
 
   &__token-etherscan-link {
-    color: var(--Blue-500);
+    color: var(--color-primary-default);
     cursor: pointer;
   }
 
@@ -186,7 +194,7 @@
     }
 
     a {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
       cursor: pointer;
     }
   }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
-import { ASSET_TYPES } from '../../../../ducks/send';
+import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
 import AmountMaxButton from './amount-max-button';
 
 export default class SendAmountRow extends Component {

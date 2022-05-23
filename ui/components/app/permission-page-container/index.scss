@@ -23,14 +23,6 @@
     }
   }
 
-  &__header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    border-bottom: 1px solid var(--geyser);
-    padding: 9px;
-  }
-
   &__title {
     @include H4;
 
@@ -43,16 +35,17 @@
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    color: #7c808e;
+    color: var(--color-text-default);
     padding-left: 24px;
     padding-right: 24px;
 
     a,
     a:hover {
-      color: var(--dodger-blue);
+      color: var(--color-primary-default);
     }
 
     &__requested {
+      width: 100%;
       text-align: left;
     }
 
@@ -68,7 +61,7 @@
         @include H6;
 
         margin-left: 16px;
-        color: var(--Black-100);
+        color: var(--color-text-default);
       }
     }
   }
@@ -87,10 +80,11 @@
   &__permissions-header {
     @include H6;
 
-    color: #6a737d;
+    color: var(--color-text-default);
   }
 
   &__permissions-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 38px;

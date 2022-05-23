@@ -1,4 +1,7 @@
 import React, { useState, useContext } from 'react';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { useSelector } from 'react-redux';
+///: END:ONLY_INCLUDE_IN
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -6,6 +9,9 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { getSnapsRouteObjects } from '../../../selectors';
+///: END:ONLY_INCLUDE_IN
 
 export default function SettingsSearch({
   onSearch,
@@ -15,9 +21,15 @@ export default function SettingsSearch({
   const t = useContext(I18nContext);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchIconColor, setSearchIconColor] = useState('#9b9b9b');
+  const [searchIconColor, setSearchIconColor] = useState(
+    'var(--color-icon-muted)',
+  );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const snaps = useSelector(getSnapsRouteObjects);
+  settingsRoutesListArray.push(...snaps);
+  ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
     threshold: 0.2,
@@ -25,28 +37,33 @@ export default function SettingsSearch({
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
-    keys: ['tab', 'section', 'description'],
+    keys: ['tabMessage', 'sectionMessage', 'descriptionMessage'],
+    getFn: (routeObject, path) => routeObject[path](t),
   });
 
-  // eslint-disable-next-line no-shadow
-  const handleSearch = (searchQuery) => {
-    setSearchQuery(searchQuery);
-    if (searchQuery === '') {
-      setSearchIconColor('#9b9b9b');
+  const handleSearch = (_searchQuery) => {
+    const sanitizedSearchQuery = _searchQuery.replace(
+      /[^A-z0-9\s&]|[\\]/gu,
+      '',
+    );
+    setSearchQuery(sanitizedSearchQuery);
+    if (sanitizedSearchQuery === '') {
+      setSearchIconColor('var(--color-icon-muted)');
     } else {
-      setSearchIconColor('#24292E');
+      setSearchIconColor('var(--color-icon-default)');
     }
-    const fuseSearchResult = settingsSearchFuse.search(searchQuery);
+
+    const fuseSearchResult = settingsSearchFuse.search(sanitizedSearchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
       return (
-        routes.tab &&
-        searchQuery &&
-        isEqualCaseInsensitive(routes.tab, searchQuery)
+        routes.tabMessage &&
+        sanitizedSearchQuery &&
+        isEqualCaseInsensitive(routes.tab, sanitizedSearchQuery)
       );
     });
 
     const results = [...addressSearchResult, ...fuseSearchResult];
-    onSearch({ searchQuery, results });
+    onSearch({ searchQuery: sanitizedSearchQuery, results });
   };
 
   const renderStartAdornment = () => {
@@ -67,12 +84,9 @@ export default function SettingsSearch({
             onClick={() => handleSearch('')}
             style={{ cursor: 'pointer' }}
           >
-            <img
-              className="imageclose"
-              src="images/close-gray.svg"
-              width="17"
-              height="17"
-              alt=""
+            <i
+              className="fa fa-times"
+              style={{ color: 'var(--color-icon-default)' }}
             />
           </InputAdornment>
         )}
@@ -91,7 +105,6 @@ export default function SettingsSearch({
       fullWidth
       autoFocus
       autoComplete="off"
-      style={{ backgroundColor: '#fff' }}
       startAdornment={renderStartAdornment()}
       endAdornment={renderEndAdornment()}
     />

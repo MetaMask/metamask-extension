@@ -202,11 +202,10 @@ describe('MetaMask', function () {
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 
-      await driver.fill(
-        'input[placeholder="Enter your Secret Recovery Phrase"]',
+      await driver.pasteIntoField(
+        '[data-testid="import-srp__srp-word-0"]',
         testSeedPhrase,
       );
-      await driver.delay(regularDelayMs);
 
       await driver.fill('#password', 'correct horse battery staple');
       await driver.fill('#confirm-password', 'correct horse battery staple');
@@ -279,6 +278,7 @@ describe('MetaMask', function () {
       await gasPriceInput.fill('20');
       await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
       await driver.delay(regularDelayMs);
@@ -394,6 +394,7 @@ describe('MetaMask', function () {
       await gasPriceInput.fill('100');
       await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
     });
 
     it('submits the transaction', async function () {
@@ -470,6 +471,7 @@ describe('MetaMask', function () {
       await gasPriceInput.fill('10');
       await driver.delay(veryLargeDelayMs);
       await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
       await driver.findElement({ tag: 'span', text: '0.0006' });
     });
 
@@ -553,11 +555,6 @@ describe('MetaMask', function () {
     });
 
     it('displays the token approval data', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__view-full-tx-button',
-      );
-      await driver.delay(regularDelayMs);
-
       const functionType = await driver.findElement(
         '.confirm-approve-content__data .confirm-approve-content__small-text',
       );
@@ -596,6 +593,7 @@ describe('MetaMask', function () {
       await driver.delay(veryLargeDelayMs);
 
       await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
@@ -620,6 +618,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.delay(veryLargeDelayMs);
 
       // wait for permission modal to be removed from DOM.
       await permissionModal.waitForElementState('hidden');
@@ -746,11 +745,6 @@ describe('MetaMask', function () {
     });
 
     it('shows the correct recipient', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__view-full-tx-button',
-      );
-      await driver.delay(regularDelayMs);
-
       const permissionInfo = await driver.findElements(
         '.confirm-approve-content__medium-text',
       );

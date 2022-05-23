@@ -44,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "הוסף/י אסימונים מוצעים"
   },
-  "addToAddressBook": {
-    "message": "הוסף לפנקס הכתובות"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "למשל ג'ון ד'"
-  },
   "addToken": {
     "message": "הוסף/י אסימון"
   },
@@ -339,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
-  },
-  "enterAnAlias": {
-    "message": "יש להזין כינוי"
   },
   "enterPassword": {
     "message": "יש להזין ססמה"
@@ -809,9 +800,6 @@
   },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "הפרד/י בין המילים ברווח אחד"
   },
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"

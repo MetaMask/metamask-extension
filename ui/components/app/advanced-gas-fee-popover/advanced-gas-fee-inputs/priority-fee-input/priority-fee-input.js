@@ -19,7 +19,6 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import { renderFeeRange } from '../utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
   if (value <= 0) {
@@ -117,9 +116,9 @@ const PriorityFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={renderFeeRange(latestPriorityFeeRange)}
-        historical={renderFeeRange(historicalPriorityFeeRange)}
-        feeTrend={priorityFeeTrend}
+        latest={latestPriorityFeeRange}
+        historical={historicalPriorityFeeRange}
+        trend={priorityFeeTrend}
       />
     </Box>
   );

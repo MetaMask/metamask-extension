@@ -9,6 +9,7 @@ import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { DEVICE_NAMES } from '../../../../shared/constants/hardware-wallets';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 class AccountList extends Component {
   state = {
@@ -136,7 +137,7 @@ class AccountList extends Component {
                     rpcPrefs,
                   );
                   this.context.trackEvent({
-                    category: 'Account',
+                    category: EVENT.CATEGORIES.ACCOUNTS,
                     event: 'Clicked Block Explorer Link',
                     properties: {
                       actions: 'Hardware Connect',
@@ -152,7 +153,10 @@ class AccountList extends Component {
                 rel="noopener noreferrer"
                 title={this.context.t('etherscanView')}
               >
-                <img src="images/popout.svg" alt="" />
+                <i
+                  className="fa fa-share-square"
+                  style={{ color: 'var(--color-icon-default)' }}
+                />
               </a>
             </div>
           );

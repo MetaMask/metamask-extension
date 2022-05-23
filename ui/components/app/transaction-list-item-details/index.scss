@@ -16,7 +16,7 @@
   &__sender-to-recipient-header {
     display: flex;
     font-size: 14px;
-    color: var(--Black-100);
+    color: var(--color-text-default);
     font-weight: bold;
     padding-bottom: 7px;
 
@@ -34,7 +34,7 @@
 
     & > div:first-child {
       font-size: 14px;
-      color: var(--Black-100);
+      color: var(--color-text-default);
       font-weight: bold;
     }
 
@@ -86,7 +86,8 @@
     &-rounded-button {
       @include H8;
 
-      padding: 0 16px;
+      padding: 8px;
+      min-width: 75px;
       margin-right: 8px;
     }
 

@@ -9,6 +9,10 @@ import { MESSAGE_TYPE } from './app';
  * @property {'transferfrom'} TOKEN_METHOD_TRANSFER_FROM - A token transaction
  *  transferring tokens from an account that the sender has an allowance of.
  *  For more information on allowances, see the approve type.
+ * @property {'safetransferfrom'} TOKEN_METHOD_SAFE_TRANSFER_FROM - A token transaction
+ *  transferring tokens from an account that the sender has an allowance of.
+ *  The method is prefixed with safe because when calling this method the contract checks
+ *  to ensure that the receiver is an address capable of handling with the token being sent.
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
@@ -48,6 +52,7 @@ export const TRANSACTION_TYPES = {
   RETRY: 'retry',
   TOKEN_METHOD_TRANSFER: 'transfer',
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
   TOKEN_METHOD_APPROVE: 'approve',
   INCOMING: 'incoming',
   SIMPLE_SEND: 'simpleSend',
@@ -133,6 +138,17 @@ export const TRANSACTION_STATUSES = {
 };
 
 /**
+ * With this list we can detect if a transaction is still in progress.
+ */
+export const IN_PROGRESS_TRANSACTION_STATUSES = [
+  TRANSACTION_STATUSES.UNAPPROVED,
+  TRANSACTION_STATUSES.APPROVED,
+  TRANSACTION_STATUSES.SIGNED,
+  TRANSACTION_STATUSES.SUBMITTED,
+  TRANSACTION_STATUSES.PENDING,
+];
+
+/**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
  *
@@ -158,6 +174,7 @@ export const TRANSACTION_GROUP_STATUSES = {
  * @typedef {Object} SmartTransactionStatuses
  * @property {'cancelled'} CANCELLED - It can be cancelled for various reasons.
  * @property {'pending'} PENDING - Smart transaction is being processed.
+ * @property {'success'} SUCCESS - Smart transaction was successfully mined.
  */
 
 /**
@@ -304,4 +321,19 @@ export const TRANSACTION_EVENTS = {
   FINALIZED: 'Transaction Finalized',
   REJECTED: 'Transaction Rejected',
   SUBMITTED: 'Transaction Submitted',
+};
+
+/**
+ * The types of assets that a user can send
+ * 1. NATIVE - The native asset for the current network, such as ETH
+ * 2. TOKEN - An ERC20 token.
+ * 3. COLLECTIBLE - An ERC721 or ERC1155 token.
+ * 4. UNKNOWN - A transaction interacting with a contract that isn't a token
+ *  method interaction will be marked as dealing with an unknown asset type.
+ */
+export const ASSET_TYPES = {
+  NATIVE: 'NATIVE',
+  TOKEN: 'TOKEN',
+  COLLECTIBLE: 'COLLECTIBLE',
+  UNKNOWN: 'UNKNOWN',
 };
