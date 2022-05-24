@@ -6,8 +6,9 @@ import buildUnserializedTransaction from './buildUnserializedTransaction';
 // The code in this file is largely drawn from https://community.optimism.io/docs/developers/l2/new-fees.html#for-frontend-and-wallet-developers
 
 function buildOVMGasPriceOracleContract(eth) {
-  const OVMGasPriceOracle = getContractFactory('OVM_GasPriceOracle')
-    .attach(predeploys.OVM_GasPriceOracle);
+  const OVMGasPriceOracle = getContractFactory('OVM_GasPriceOracle').attach(
+    predeploys.OVM_GasPriceOracle,
+  );
   const abi = JSON.parse(
     OVMGasPriceOracle.interface.format(ethers.utils.FormatTypes.json),
   );
