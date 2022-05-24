@@ -13,7 +13,7 @@ import IconCaretLeft from '../../components/ui/icon/icon-caret-left';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-function NotificationItem({ notification, snaps, onItemClick }) {
+export function NotificationItem({ notification, snaps, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
   const history = useHistory();
   const t = useI18nContext();

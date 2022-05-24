@@ -244,4 +244,19 @@ describe('Selectors', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
   });
+  it('#getNotifications', () => {
+    const notifications = selectors.getNotifications(mockState);
+
+    expect(notifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+      mockState.metamask.notifications.test2,
+    ]);
+  });
+  it('#getUnreadNotificationCount', () => {
+    const unreadNotificationCount = selectors.getUnreadNotificationCount(
+      mockState,
+    );
+
+    expect(unreadNotificationCount).toStrictEqual(1);
+  });
 });

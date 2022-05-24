@@ -1028,9 +1028,10 @@ export function deleteExpiredNotifications() {
         );
       })
       .map(({ id }) => id);
-
-    await promisifiedBackground.dismissNotifications(notificationIdsToDelete);
-    await forceUpdateMetamaskState(dispatch);
+    if (notificationIdsToDelete.length) {
+      await promisifiedBackground.dismissNotifications(notificationIdsToDelete);
+      await forceUpdateMetamaskState(dispatch);
+    }
   };
 }
 
