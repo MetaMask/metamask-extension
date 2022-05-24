@@ -61,11 +61,9 @@ export const DefaultStory = (args) => {
         padding: '24px',
       }}
     >
-      <MainQuoteSummary 
-        {...args}
-      />
+      <MainQuoteSummary {...args} />
     </div>
   );
 };
 
-DefaultStory.storyName = 'MainQuoteSummary';
+DefaultStory.storyName = 'Default';
