@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { getSnapPrefix } from '@metamask/snap-controllers';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
@@ -10,8 +9,11 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 
+const snapIdPrefixes = ['npm:', 'local:'];
+
 const SnapsAuthorshipPill = ({ snapId, className }) => {
-  const snapPrefix = getSnapPrefix(snapId);
+  // @todo Use getSnapPrefix from snaps-skunkworks when possible
+  const snapPrefix = snapIdPrefixes.find((prefix) => snapId.startsWith(prefix));
   const packageName = snapId.replace(snapPrefix, '');
   const isNPM = snapPrefix === 'npm:';
   const url = isNPM
