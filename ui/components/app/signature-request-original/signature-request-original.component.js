@@ -13,6 +13,7 @@ import AccountListItem from '../account-list-item';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
+import SiteOrigin from '../../ui/site-origin';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -148,9 +149,10 @@ export default class SignatureRequestOriginal extends Component {
             size={24}
           />
         ) : null}
-        <div className="request-signature__origin">
-          {txData.msgParams.origin}
-        </div>
+        <SiteOrigin
+          className="request-signature__origin"
+          siteOrigin={txData.msgParams.origin}
+        />
       </div>
     );
   };
