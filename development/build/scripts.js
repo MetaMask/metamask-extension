@@ -346,7 +346,7 @@ function createScriptTasks({
   }
 }
 
-function bundleMV3AppInitialiser({
+async function bundleMV3AppInitialiser({
   jsBundles,
   browserPlatforms,
   buildType,
@@ -366,7 +366,7 @@ function bundleMV3AppInitialiser({
     '',
   );
 
-  createNormalBundle({
+  await createNormalBundle({
     browserPlatforms: mv3BrowserPlatforms,
     buildType,
     destFilepath: 'app-init.js',
@@ -377,15 +377,15 @@ function bundleMV3AppInitialiser({
     testing,
     policyOnly,
     shouldLintFenceFiles,
-  })().then(() => {
-    mv3BrowserPlatforms.forEach((browser) => {
-      const appInitFile = `./dist/${browser}/app-init.js`;
-      const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-      const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-      writeFileSync(appInitFile, fileOutput);
-    });
-    console.log(`Bundle end: service worker app-init.js`);
+  })();
+
+  mv3BrowserPlatforms.forEach((browser) => {
+    const appInitFile = `./dist/${browser}/app-init.js`;
+    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+    const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    writeFileSync(appInitFile, fileOutput);
   });
+  console.log(`Bundle end: service worker app-init.js`);
 }
 
 function createFactoredBuild({
@@ -500,7 +500,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', () => {
+    events.on('bundleDone', async () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -551,7 +551,7 @@ function createFactoredBuild({
                 ...commonSet.values(),
                 ...groupSet.values(),
               ].map((label) => `./${label}.js`);
-              bundleMV3AppInitialiser({
+              await bundleMV3AppInitialiser({
                 jsBundles,
                 browserPlatforms,
                 buildType,

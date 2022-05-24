@@ -77,7 +77,10 @@ if (inTest || process.env.METAMASK_DEBUG) {
 
 let initialState;
 let initialLangCode;
-const initApp = (remotePort) => initialize(remotePort).catch(log.error);
+const initApp = async (remotePort) => {
+  await setupController(initialState, initialLangCode, remotePort);
+  log.info('MetaMask initialization complete.');
+};
 
 if (process.env.ENABLE_MV3) {
   browser.runtime.onConnect.addListener(initApp);
@@ -148,17 +151,12 @@ if (process.env.ENABLE_MV3) {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
- * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize(remotePort) {
-  if (!initialState) {
-    initialState = await loadStateFromPersistence();
-  }
-  if (!initialLangCode) {
-    initialLangCode = await getFirstPreferredLangCode();
-  }
-  await setupController(initialState, initialLangCode, remotePort);
+async function initialize() {
+  const initState = await loadStateFromPersistence();
+  const initLangCode = await getFirstPreferredLangCode();
+  await setupController(initState, initLangCode);
   log.info('MetaMask initialization complete.');
 }
 

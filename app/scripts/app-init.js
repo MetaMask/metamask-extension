@@ -31,6 +31,7 @@ function importAllScripts() {
   }
 
   const fileList = [
+    // The list of files is injected at build time by replacing comment below with comma separated strings of file names
     /** FILE NAMES */
   ];
 
