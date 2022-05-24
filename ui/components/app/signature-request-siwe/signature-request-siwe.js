@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import convertMsg from '../../../helpers/utils/format-message-params';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import ErrorMessage from '../../ui/error-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
+import formatMessageParams from './format-message-params';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -32,11 +33,10 @@ export default function SignatureRequestSIWE({
   const onSign = (event) => {
     sign(event);
     trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Confirm',
       properties: {
         action: 'SIWE Request',
-        legacy_event: true,
         type,
         version,
       },
@@ -46,11 +46,10 @@ export default function SignatureRequestSIWE({
   const onCancel = (event) => {
     cancel(event);
     trackEvent({
-      category: 'Transactions',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Cancel',
       properties: {
         action: 'SIWE Request',
-        legacy_event: true,
         type,
         version,
       },
@@ -65,7 +64,7 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={subjectMetadata}
       />
-      <Message data={convertMsg(messageData)} />
+      <Message data={formatMessageParams(messageData)} />
       {!isSIWEDomainValid && (
         <div className="signature-request-siwe__domain-mismatch-warning">
           <ErrorMessage

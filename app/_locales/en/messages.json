@@ -45,7 +45,7 @@
     "message": "Ngrave (Coming Soon)"
   },
   "SIWEDomainInvalid": {
-    "message": "The website you are attempting to sign-in to ($1) does not match the domain in the sign-in request. Proceed with caution."
+    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution."
   },
   "SIWESiteRequestSubtitle": {
     "message": "This site is requesting to sign in with"
