@@ -165,6 +165,35 @@ export const getPermissionSpecifications = ({
   };
 };
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export const getExtraPermissionSpecifications = () =>
+  // {
+  //   // functions you need to use in the permission go here
+  // },
+  {
+    return {
+      [PermissionKeys.snap_manageAccounts]: {
+        permissionType: PermissionType.RestrictedMethod,
+        targetKey: PermissionKeys.snap_manageAccounts,
+        allowedCaveats: null,
+
+        // factory: (permissionOptions, requestData) => {
+        //   // optional factory function for the permission goes here
+        // },
+
+        methodImplementation: async (_args) => {
+          // method implementation goes here
+          return null;
+        },
+
+        // validator: (permission, _origin, _target) => {
+        //   // optional validator goes here
+        // },
+      },
+    };
+  };
+///: END:ONLY_INCLUDE_IN
+
 /**
  * Validates the accounts associated with a caveat. In essence, ensures that
  * the accounts value is an array of non-empty strings, and that each string

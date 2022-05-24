@@ -142,6 +142,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  getExtraPermissionSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -616,6 +617,7 @@ export default class MetamaskController extends EventEmitter {
         }),
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
+        ...getExtraPermissionSpecifications(),
         ///: END:ONLY_INCLUDE_IN
       },
       unrestrictedMethods,
