@@ -17,7 +17,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
   const url = isNPM
     ? `https://www.npmjs.com/package/${packageName}`
     : packageName;
-  const icon = isNPM ? 'fab fa-npm' : 'fas fa-desktop';
+  const icon = isNPM ? 'fab fa-npm fa-lg' : 'fas fa-code';
   return (
     <a
       href={url}
@@ -28,7 +28,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
       <Chip
         leftIcon={
           <Box paddingLeft={2}>
-            <i className={`${icon} fa-lg snaps-authorship-icon`} />
+            <i className={`${icon} snaps-authorship-icon`} />
           </Box>
         }
         backgroundColor={COLORS.BACKGROUND_DEFAULT}
