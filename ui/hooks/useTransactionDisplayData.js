@@ -238,13 +238,17 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
     type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
-    type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendSpecifiedTokens', [
       token?.symbol || collectible?.name || t('token'),
     ]);
+    recipientAddress = getTokenAddressParam(tokenData);
+    subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM) {
+    category = TRANSACTION_GROUP_CATEGORIES.SEND;
+    title = t('safeTransferFrom');
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
