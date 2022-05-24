@@ -39,15 +39,15 @@ import { useCurrentAsset } from './useCurrentAsset';
 
 /**
  * @typedef {Object} TransactionDisplayData
- * @property {string} title - primary description of the transaction
- * @property {string} subtitle - supporting text describing the transaction
- * @property {bool} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
- * @property {string} category - the transaction category
+ * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
- * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
- * @property {string} status - the status of the transaction
- * @property {string} senderAddress - the Ethereum address of the sender
  * @property {string} recipientAddress - the Ethereum address of the recipient
+ * @property {string} senderAddress - the Ethereum address of the sender
+ * @property {string} status - the status of the transaction
+ * @property {string} subtitle - the supporting text describing the transaction
+ * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
+ * @property {string} title - the primary title of the tx that will be displayed in the activity list
+ * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
  */
 
 /**
@@ -149,9 +149,8 @@ export function useTransactionDisplayData(transactionGroup) {
   // used to display fiat amount of tx. initialized to either tokenFiatAmount or undefined
   // but can later be modified if dealing with a swap
   let secondaryDisplayValue = isTokenCategory ? tokenFiatAmount : undefined;
-  // The transaction group category that will be used for rendering the icon in the activity list
+
   let category;
-  // The primary title of the Tx that will be displayed in the activity list
   let title;
 
   const {
