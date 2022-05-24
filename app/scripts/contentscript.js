@@ -42,6 +42,7 @@ function injectScript(content) {
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
+    // Inline scripts do not work in MV3 due to more strict security policy
     if (process.env.ENABLE_MV3) {
       scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
     } else {

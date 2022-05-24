@@ -36,12 +36,13 @@ async function start() {
 
   const activeTab = await queryCurrentActiveTab(windowType);
 
+  /**
+   * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
+   * Code below ensures that UI is rendered only after background is ready.
+   */
   if (process.env.ENABLE_MV3) {
     extensionPort.onMessage.addListener((message) => {
-      if (
-        document.getElementById('app-loader') &&
-        message?.name === 'CONNECTION_READY'
-      ) {
+      if (message?.name === 'CONNECTION_READY') {
         initializeUiWithTab(activeTab);
       }
     });

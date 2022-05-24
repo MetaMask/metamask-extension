@@ -75,6 +75,10 @@ if (inTest || process.env.METAMASK_DEBUG) {
   global.metamaskGetState = localStore.get.bind(localStore);
 }
 
+/**
+ * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
+ * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ */
 let initialState;
 let initialLangCode;
 const initApp = async (remotePort) => {
@@ -317,14 +321,12 @@ function setupController(initState, initLangCode, remoteSourcePort) {
 
   if (process.env.ENABLE_MV3 && remoteSourcePort) {
     connectRemote(remoteSourcePort);
+    browser.runtime.onConnect.removeListener(initApp);
   }
 
   //
   // connect to other contexts
   //
-  if (process.env.ENABLE_MV3) {
-    browser.runtime.onConnect.removeListener(initApp);
-  }
   browser.runtime.onConnect.addListener(connectRemote);
   browser.runtime.onConnectExternal.addListener(connectExternal);
 
@@ -392,6 +394,9 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
       if (process.env.ENABLE_MV3) {
+        // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
+        // This ensures that UI is initialised only after background is ready
+        // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
         remotePort.postMessage({ name: 'CONNECTION_READY' });
       }
 
@@ -507,6 +512,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     if (count) {
       label = String(count);
     }
+    // browserAction has been replaced by action in MV3
     if (process.env.ENABLE_MV3) {
       browser.action.setBadgeText({ text: label });
       browser.action.setBadgeBackgroundColor({ color: '#037DD6' });

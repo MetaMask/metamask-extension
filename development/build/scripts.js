@@ -346,6 +346,8 @@ function createScriptTasks({
   }
 }
 
+// Function generates app-init.js for browsers chrome, brave and opera.
+// It dynamically injects list of files generated in the build.
 async function bundleMV3AppInitialiser({
   jsBundles,
   browserPlatforms,
@@ -893,7 +895,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
-    ENABLE_MV3: metamaskrc.ENABLE_MV3 === '1',
+    ENABLE_MV3: process.env.ENABLE_MV3,
   };
 }
 
