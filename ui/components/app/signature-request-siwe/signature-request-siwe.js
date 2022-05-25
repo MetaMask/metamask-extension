@@ -64,7 +64,7 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={subjectMetadata}
       />
-      <Message data={formatMessageParams(messageData)} />
+      <Message data={formatMessageParams(messageData, t)} />
       {!isSIWEDomainValid && (
         <div className="signature-request-siwe__domain-mismatch-warning">
           <ErrorMessage

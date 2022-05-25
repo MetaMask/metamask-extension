@@ -3,9 +3,10 @@
  * and generates an array of label-value pairs
  *
  * @param {Object} parsedMessage - A parsed SIWE message with message contents
+ * @param {Function} t - i18n function
  * @returns {Array} An array of label-value pairs with the type of the value as the label
  */
-export const formatParams = (parsedMessage) => {
+export const formatParams = (parsedMessage, t) => {
   try {
     const output = [];
 
@@ -24,49 +25,49 @@ export const formatParams = (parsedMessage) => {
 
     if (statement) {
       output.push({
-        label: 'Message:',
+        label: t('SIWEMessageLabel'),
         value: statement,
       });
     }
 
     if (uri) {
       output.push({
-        label: 'URI:',
+        label: t('SIWEURILabel'),
         value: uri,
       });
     }
 
     if (version) {
       output.push({
-        label: 'Version:',
+        label: t('SIWEVersionLabel'),
         value: version,
       });
     }
 
     if (chainId) {
       output.push({
-        label: 'Chain ID:',
+        label: t('SIWEChainIDLabel'),
         value: chainId,
       });
     }
 
     if (nonce) {
       output.push({
-        label: 'Nonce:',
+        label: t('SIWENonceLabel'),
         value: nonce,
       });
     }
 
     if (issuedAt) {
       output.push({
-        label: 'Issued at:',
+        label: t('SIWEIssuedAtLabel'),
         value: issuedAt,
       });
     }
 
     if (expirationTime) {
       output.push({
-        label: 'Expires At:',
+        label: t('SIWEExpirationTimeLabel'),
         value: expirationTime,
       });
     }
@@ -74,7 +75,7 @@ export const formatParams = (parsedMessage) => {
     // not in design
     if (notBefore) {
       output.push({
-        label: 'Not Before:',
+        label: t('SIWENotBeforeLabel'),
         value: notBefore,
       });
     }
@@ -82,14 +83,14 @@ export const formatParams = (parsedMessage) => {
     // not in design
     if (requestId) {
       output.push({
-        label: 'Request ID',
+        label: t('SIWERequestIdLabel'),
         value: requestId,
       });
     }
 
     if (resources && resources.length > 0) {
       output.push({
-        label: `Resources: ${resources.length}`,
+        label: t('SIWEResourcesLabel', [resources.length]),
         value: resources
           .reduce((previous, resource) => `${previous}${resource}\n`, '')
           .trim(),

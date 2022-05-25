@@ -62,6 +62,36 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
+  "SIWEMessageLabel": {
+    "message": "Message:"
+  },
+  "SIWEURILabel": {
+    "message": "URI:"
+  },
+  "SIWEVersionLabel": {
+    "message": "Version:"
+  },
+  "SIWEChainIDLabel": {
+    "message": "Chain ID:"
+  },
+  "SIWENonceLabel": {
+    "message": "Nonce:"
+  },
+  "SIWEIssuedAtLabel": {
+    "message": "Issued At:"
+  },
+  "SIWEExpirationTimeLabel": {
+    "message": "Expires At:"
+  },
+  "SIWENotBeforeLabel": {
+    "message": "Not Before:"
+  },
+  "SIWERequestIDLabel": {
+    "message": "Request ID:"
+  },
+  "SIWEResourcesLabel": {
+    "message": "Resources: $1"
+  },
   "about": {
     "message": "About"
   },
