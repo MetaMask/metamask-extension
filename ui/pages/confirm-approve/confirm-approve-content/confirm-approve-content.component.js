@@ -435,6 +435,63 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
+  getTitleTokenDescription(tokenId, assetName, tokenAddress, rpcPrefs) {
+    let titleTokenDescription = t('unknownToken');
+    if (rpcPrefs?.blockExplorerUrl) {
+      const unknownTokenBlockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+      const unknownTokenLink = (
+        <a
+          href={unknownTokenBlockExplorerLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="confirm-approve-content__unknown-asset"
+        >
+          {t('unknownToken')}
+        </a>
+      );
+      titleTokenDescription = unknownTokenLink;
+    }
+
+    if (assetStandard === ERC20) {
+      titleTokenDescription = tokenSymbol;
+    } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+      if (assetName || tokenSymbol) {
+        const tokenIdWrapped = `(#${tokenId})`;
+        titleTokenDescription = `${assetName ?? tokenSymbol} ${
+          tokenId ? tokenIdWrapped : null
+        }`;
+      } else {
+        const unknownNFTBlockExplorerLink = getTokenTrackerLink(
+          tokenAddress,
+          chainId,
+          null,
+          {
+            blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+          },
+        );
+        const unknownNFTLink = (
+          <a
+            href={unknownNFTBlockExplorerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="confirm-approve-content__unknown-asset"
+          >
+            {t('unknownNFT')}
+          </a>
+        );
+        titleTokenDescription = unknownNFTLink;
+      }
+    }
+
+    return titleTokenDescription;
+  }
   render() {
     const { t } = this.context;
     const {
@@ -463,30 +520,13 @@ export default class ConfirmApproveContent extends Component {
     } = this.props;
     const { showFullTxDetails } = this.state;
 
-    let titleTokenDescription = t('unknownToken');
-    if (assetStandard === ERC20) {
-      titleTokenDescription = tokenSymbol;
-    } else if (
-      (assetStandard === ERC721 || assetStandard === ERC1155) &&
-      tokenId
-    ) {
-      if (assetName || tokenSymbol) {
-        titleTokenDescription = `${assetName ?? tokenSymbol} (#${tokenId})`;
-      }
-    } else {
-      const unknownNFTBlockExplorerLink = getTokenTrackerLink(
-        tokenAddress,
-        chainId,
-        null,
-        {
-          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-        },
-      );
-      const unknownNFTLink = (
-        <a href={unknownNFTBlockExplorerLink}>{t('unknownNFT')}</a>
-      );
-    }
-    
+    let titleTokenDescription = this.getTitleTokenDescription(
+      tokenId,
+      assetName,
+      tokenAddress,
+      rpcPrefs,
+    );
+
     return (
       <div
         className={classnames('confirm-approve-content', {
@@ -580,7 +620,9 @@ export default class ConfirmApproveContent extends Component {
                   : getAccountLink(
                       toAddress,
                       chainId,
-                      { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+                      {
+                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                      },
                       null,
                     );
                 global.platform.openTab({
