@@ -24,49 +24,49 @@ export const formatParams = (parsedMessage, t) => {
 
   if (statement) {
     output.push({
-      label: t('SIWEMessageLabel'),
+      label: t('SIWELabelMessage'),
       value: statement,
     });
   }
 
   if (uri) {
     output.push({
-      label: t('SIWEURILabel'),
+      label: t('SIWELabelURI'),
       value: uri,
     });
   }
 
   if (version) {
     output.push({
-      label: t('SIWEVersionLabel'),
+      label: t('SIWELabelVersion'),
       value: version,
     });
   }
 
   if (chainId) {
     output.push({
-      label: t('SIWEChainIDLabel'),
+      label: t('SIWELabelChainID'),
       value: chainId,
     });
   }
 
   if (nonce) {
     output.push({
-      label: t('SIWENonceLabel'),
+      label: t('SIWELabelNonce'),
       value: nonce,
     });
   }
 
   if (issuedAt) {
     output.push({
-      label: t('SIWEIssuedAtLabel'),
+      label: t('SIWELabelIssuedAt'),
       value: issuedAt,
     });
   }
 
   if (expirationTime) {
     output.push({
-      label: t('SIWEExpirationTimeLabel'),
+      label: t('SIWELabelExpirationTime'),
       value: expirationTime,
     });
   }
@@ -74,7 +74,7 @@ export const formatParams = (parsedMessage, t) => {
   // not in design
   if (notBefore) {
     output.push({
-      label: t('SIWENotBeforeLabel'),
+      label: t('SIWELabelNotBefore'),
       value: notBefore,
     });
   }
@@ -82,14 +82,14 @@ export const formatParams = (parsedMessage, t) => {
   // not in design
   if (requestId) {
     output.push({
-      label: t('SIWERequestIdLabel'),
+      label: t('SIWELabelRequestId'),
       value: requestId,
     });
   }
 
   if (resources && resources.length > 0) {
     output.push({
-      label: t('SIWEResourcesLabel', [resources.length]),
+      label: t('SIWELabelResources', [resources.length]),
       value: resources
         .reduce((previous, resource) => `${previous}${resource}\n`, '')
         .trim(),
