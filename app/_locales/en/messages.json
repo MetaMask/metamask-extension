@@ -1858,12 +1858,6 @@
   "metametricsCommitmentsNeverCollect": {
     "message": "Never collect keys, addresses, transactions, balances, hashes, or any personal information"
   },
-  "unknownNFT": {
-    "message": "Unknown NFT"
-  },
-  "unknownToken": {
-    "message": "Unknown Token"
-  },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 collect your full IP address",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
@@ -3835,11 +3829,17 @@
   "unknownCameraErrorTitle": {
     "message": "Ooops! Something went wrong...."
   },
+  "unknownNFT": {
+    "message": "Unknown NFT $1"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
+  },
+  "unknownToken": {
+    "message": "Unknown Token"
   },
   "unlimited": {
     "message": "Unlimited"

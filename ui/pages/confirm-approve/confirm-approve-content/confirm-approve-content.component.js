@@ -435,7 +435,17 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
-  getTitleTokenDescription(tokenId, assetName, tokenAddress, rpcPrefs) {
+  getTitleTokenDescription() {
+    const {
+      tokenId,
+      assetName,
+      tokenAddress,
+      rpcPrefs,
+      chainId,
+      assetStandard,
+      tokenSymbol,
+    } = this.props;
+    const { t } = this.context;
     let titleTokenDescription = t('unknownToken');
     if (rpcPrefs?.blockExplorerUrl) {
       const unknownTokenBlockExplorerLink = getTokenTrackerLink(
@@ -446,6 +456,7 @@ export default class ConfirmApproveContent extends Component {
           blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
         },
       );
+
       const unknownTokenLink = (
         <a
           href={unknownTokenBlockExplorerLink}
@@ -462,11 +473,9 @@ export default class ConfirmApproveContent extends Component {
     if (assetStandard === ERC20) {
       titleTokenDescription = tokenSymbol;
     } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+      const tokenIdWrapped = tokenId ? `(#${tokenId})` : null;
       if (assetName || tokenSymbol) {
-        const tokenIdWrapped = `(#${tokenId})`;
-        titleTokenDescription = `${assetName ?? tokenSymbol} ${
-          tokenId ? tokenIdWrapped : null
-        }`;
+        titleTokenDescription = `${assetName ?? tokenSymbol} ${tokenIdWrapped}`;
       } else {
         const unknownNFTBlockExplorerLink = getTokenTrackerLink(
           tokenAddress,
@@ -483,7 +492,7 @@ export default class ConfirmApproveContent extends Component {
             rel="noopener noreferrer"
             className="confirm-approve-content__unknown-asset"
           >
-            {t('unknownNFT')}
+            {t('unknownNFT', [tokenIdWrapped])}
           </a>
         );
         titleTokenDescription = unknownNFTLink;
@@ -492,6 +501,7 @@ export default class ConfirmApproveContent extends Component {
 
     return titleTokenDescription;
   }
+
   render() {
     const { t } = this.context;
     const {
@@ -514,18 +524,10 @@ export default class ConfirmApproveContent extends Component {
       rpcPrefs,
       isContract,
       assetStandard,
-      tokenId,
-      assetName,
-      tokenAddress,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
-    let titleTokenDescription = this.getTitleTokenDescription(
-      tokenId,
-      assetName,
-      tokenAddress,
-      rpcPrefs,
-    );
+    const titleTokenDescription = this.getTitleTokenDescription();
 
     return (
       <div
