@@ -440,16 +440,6 @@
     background-color: var(--color-background-default);
   }
 
-  &__send-arrow-icon {
-    @include H4;
-
-    color: var(--color-secondary-default);
-    transform: rotate(-45deg);
-    position: absolute;
-    top: -2px;
-    left: 0;
-  }
-
   &__arrow-background {
     background-color: var(--color-background-default);
     height: 14px;
@@ -529,7 +519,7 @@
     @include H7;
 
     left: 8px;
-    color: var(--color-secondary-default);
+    color: var(--color-warning-default);
   }
 
   &__error-border {
@@ -651,7 +641,7 @@
     }
 
     &__caret {
-      color: var(--color-text-muted);
+      color: var(--color-icon-default);
       padding: 0 10px;
     }
 

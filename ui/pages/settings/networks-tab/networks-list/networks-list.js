@@ -67,7 +67,7 @@ const NetworksList = ({
         <Typography
           variant={TYPOGRAPHY.H6}
           margin={[6, 0, 0, 9]}
-          color={COLORS.TEXT_MUTED}
+          color={COLORS.TEXT_ALTERNATIVE}
           className="networks-tab__networks-list__label"
         >
           {t('testNetworks')}
