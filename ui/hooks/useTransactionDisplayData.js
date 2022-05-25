@@ -82,7 +82,7 @@ const signatureTypes = [
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
  *
- * @param {TransactionGroup} transactionGroup - group of transactions of the same nounce
+ * @param {TransactionGroup} transactionGroup - group of transactions of the same nonce
  * @returns {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {
