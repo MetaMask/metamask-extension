@@ -82,15 +82,15 @@ const NewNetworkInfo = () => {
       >
         <Typography
           variant={TYPOGRAPHY.H4}
-          color={COLORS.BLACK}
-          fontWeight={FONT_WEIGHT[700]}
+          color={COLORS.TEXT_DEFAULT}
+          fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
         >
           {t('switchedTo')}
         </Typography>
         <Chip
           className="new-network-info__token-box"
-          backgroundColor={COLORS.UI1}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
           maxContent={false}
           label={
             currentProvider.type === NETWORK_TYPE_RPC
@@ -98,7 +98,7 @@ const NewNetworkInfo = () => {
               : t(currentProvider.type)
           }
           labelProps={{
-            color: COLORS.BLACK,
+            color: COLORS.TEXT_DEFAULT,
           }}
           leftIcon={
             primaryTokenImage ? (
@@ -110,8 +110,8 @@ const NewNetworkInfo = () => {
         />
         <Typography
           variant={TYPOGRAPHY.H7}
-          color={COLORS.BLACK}
-          fontWeight={FONT_WEIGHT[700]}
+          color={COLORS.TEXT_DEFAULT}
+          fontWeight={FONT_WEIGHT.BOLD}
           align={TEXT_ALIGN.CENTER}
           margin={[8, 0, 0, 0]}
         >
@@ -126,12 +126,12 @@ const NewNetworkInfo = () => {
               paddingBottom={2}
               className="new-network-info__bullet-paragraph"
             >
-              <Box marginRight={4} color={COLORS.BLACK}>
+              <Box marginRight={4} color={COLORS.TEXT_DEFAULT}>
                 &bull;
               </Box>
               <Typography
                 variant={TYPOGRAPHY.H7}
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
                 key="nativeTokenInfo"
               >
@@ -139,7 +139,7 @@ const NewNetworkInfo = () => {
                   <Typography
                     variant={TYPOGRAPHY.H7}
                     boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                    fontWeight={FONT_WEIGHT[700]}
+                    fontWeight={FONT_WEIGHT.BOLD}
                     key="ticker"
                   >
                     {currentProvider.ticker}
@@ -159,12 +159,12 @@ const NewNetworkInfo = () => {
                 : null
             }
           >
-            <Box marginRight={4} color={COLORS.BLACK}>
+            <Box marginRight={4} color={COLORS.TEXT_DEFAULT}>
               &bull;
             </Box>
             <Typography
               variant={TYPOGRAPHY.H7}
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               className="new-network-info__bullet-paragraph__text"
             >
@@ -176,7 +176,7 @@ const NewNetworkInfo = () => {
               >
                 <Typography
                   variant={TYPOGRAPHY.H7}
-                  color={COLORS.PRIMARY1}
+                  color={COLORS.INFO_DEFAULT}
                   boxProps={{ display: DISPLAY.INLINE_BLOCK }}
                 >
                   {t('learnMoreUpperCase')}
@@ -191,13 +191,13 @@ const NewNetworkInfo = () => {
               marginBottom={2}
               paddingBottom={2}
             >
-              <Box marginRight={4} color={COLORS.BLACK}>
+              <Box marginRight={4} color={COLORS.TEXT_DEFAULT}>
                 &bull;
               </Box>
               <Box>
                 <Typography
                   variant={TYPOGRAPHY.H7}
-                  color={COLORS.BLACK}
+                  color={COLORS.TEXT_DEFAULT}
                   className="new-network-info__token-show-up"
                 >
                   {t('tokenShowUp')}{' '}
@@ -208,7 +208,7 @@ const NewNetworkInfo = () => {
                   >
                     <Typography
                       variant={TYPOGRAPHY.H7}
-                      color={COLORS.PRIMARY1}
+                      color={COLORS.INFO_DEFAULT}
                       className="new-network-info__manually-add-tokens"
                     >
                       {t('clickToManuallyAdd')}

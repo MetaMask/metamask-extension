@@ -13,7 +13,7 @@
 
     .fa-question-circle,
     .popover-header__button {
-      color: var(--ui-4);
+      color: var(--color-icon-default);
     }
   }
 
@@ -24,7 +24,7 @@
   }
 
   &__bullet-paragraph {
-    border-bottom: 1px solid var(--ui-2);
+    border-bottom: 1px solid var(--color-border-default);
   }
 
   &__token-show-up {
