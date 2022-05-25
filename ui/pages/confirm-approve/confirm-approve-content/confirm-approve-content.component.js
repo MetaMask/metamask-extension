@@ -185,6 +185,11 @@ export default class ConfirmApproveContent extends Component {
     const { t } = this.context;
     const { origin, toAddress, isContract, assetName, tokenId } = this.props;
 
+    let titleTokenDescription = t('unknownNFT');
+    if (tokenId) {
+      titleTokenDescription = `${assetName ?? t('unknownNFT')} (#${tokenId})`;
+    }
+
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
       : addressSummary(toAddress);
@@ -198,7 +203,7 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
-            {`${assetName} #${tokenId}`}
+            {titleTokenDescription}
           </div>
         </div>
         <div className="flex-row">
@@ -454,9 +459,34 @@ export default class ConfirmApproveContent extends Component {
       assetStandard,
       tokenId,
       assetName,
+      tokenAddress,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
+    let titleTokenDescription = t('unknownToken');
+    if (assetStandard === ERC20) {
+      titleTokenDescription = tokenSymbol;
+    } else if (
+      (assetStandard === ERC721 || assetStandard === ERC1155) &&
+      tokenId
+    ) {
+      if (assetName || tokenSymbol) {
+        titleTokenDescription = `${assetName ?? tokenSymbol} (#${tokenId})`;
+      }
+    } else {
+      const unknownNFTBlockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+      const unknownNFTLink = (
+        <a href={unknownNFTBlockExplorerLink}>{t('unknownNFT')}</a>
+      );
+    }
+    
     return (
       <div
         className={classnames('confirm-approve-content', {
@@ -496,11 +526,7 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {t('allowSpendToken', [
-            assetStandard === ERC20
-              ? tokenSymbol
-              : `${assetName} (#${tokenId})`,
-          ])}
+          {t('allowSpendToken', [titleTokenDescription])}
         </div>
         <div className="confirm-approve-content__description">
           {t('trustSiteApprovePermission', [

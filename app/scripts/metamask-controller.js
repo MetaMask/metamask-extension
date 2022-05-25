@@ -302,7 +302,7 @@ export default class MetamaskController extends EventEmitter {
       initState.CollectiblesController,
     );
 
-    this.collectiblesController.setApiKey(process.env.OPENSEA_KEY);
+    this.collectiblesController.setApiKey('38fd11fa977640a9be1c01cdc6f43785');
 
     process.env.COLLECTIBLES_V1 &&
       (this.collectibleDetectionController = new CollectibleDetectionController(
@@ -315,7 +315,7 @@ export default class MetamaskController extends EventEmitter {
           onNetworkStateChange: this.networkController.store.subscribe.bind(
             this.networkController.store,
           ),
-          getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
+          getOpenSeaApiKey: () => '38fd11fa977640a9be1c01cdc6f43785',
           getBalancesInSingleCall: this.assetsContractController.getBalancesInSingleCall.bind(
             this.assetsContractController,
           ),

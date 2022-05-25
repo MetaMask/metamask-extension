@@ -52,6 +52,7 @@ export default function ConfirmApprove({
   tokenId,
   userAddress,
   toAddress,
+  tokenAddress,
   transaction,
   ethTransactionTotal,
   fiatTransactionTotal,
@@ -173,6 +174,7 @@ export default function ConfirmApprove({
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}
+              tokenAddress={tokenAddress}
               showCustomizeGasModal={approveTransaction}
               showEditApprovalPermissionModal={({
                 /* eslint-disable no-shadow */
