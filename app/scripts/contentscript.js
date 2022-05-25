@@ -6,6 +6,8 @@ import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
+
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
@@ -43,7 +45,7 @@ function injectScript(content) {
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
     // Inline scripts do not work in MV3 due to more strict security policy
-    if (process.env.ENABLE_MV3) {
+    if (isManifestV3()) {
       scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
     } else {
       scriptTag.textContent = content;

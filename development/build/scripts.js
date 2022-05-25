@@ -43,7 +43,6 @@ const metamaskrc = require('rc')('metamask', {
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
-  ENABLE_MV3: process.env.ENABLE_MV3,
 });
 
 const { streamFlatMap } = require('../stream-flat-map.js');
@@ -895,7 +894,6 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
-    ENABLE_MV3: process.env.ENABLE_MV3,
   };
 }
 

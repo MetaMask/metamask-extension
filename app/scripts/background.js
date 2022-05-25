@@ -23,6 +23,7 @@ import {
   REJECT_NOTFICIATION_CLOSE,
   REJECT_NOTFICIATION_CLOSE_SIG,
 } from '../../shared/constants/metametrics';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -86,7 +87,7 @@ const initApp = async (remotePort) => {
   log.info('MetaMask initialization complete.');
 };
 
-if (process.env.ENABLE_MV3) {
+if (isManifestV3()) {
   browser.runtime.onConnect.addListener(initApp);
   (async () => {
     initialState = await loadStateFromPersistence();
@@ -319,7 +320,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     }
   }
 
-  if (process.env.ENABLE_MV3 && remoteSourcePort) {
+  if (isManifestV3() && remoteSourcePort) {
     connectRemote(remoteSourcePort);
     browser.runtime.onConnect.removeListener(initApp);
   }
@@ -393,7 +394,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (process.env.ENABLE_MV3) {
+      if (isManifestV3()) {
         // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
@@ -513,7 +514,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       label = String(count);
     }
     // browserAction has been replaced by action in MV3
-    if (process.env.ENABLE_MV3) {
+    if (isManifestV3()) {
       browser.action.setBadgeText({ text: label });
       browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
     } else {
