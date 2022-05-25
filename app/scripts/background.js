@@ -80,20 +80,15 @@ if (inTest || process.env.METAMASK_DEBUG) {
  * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
  * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
  */
-let initialState;
-let initialLangCode;
+
 const initApp = async (remotePort) => {
   browser.runtime.onConnect.removeListener(initApp);
-  await setupController(initialState, initialLangCode, remotePort);
+  await initialize(remotePort);
   log.info('MetaMask initialization complete.');
 };
 
 if (isManifestV3()) {
   browser.runtime.onConnect.addListener(initApp);
-  (async () => {
-    initialState = await loadStateFromPersistence();
-    initialLangCode = await getFirstPreferredLangCode();
-  })();
 } else {
   // initialization flow
   initialize().catch(log.error);
@@ -157,12 +152,13 @@ if (isManifestV3()) {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
+async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode);
+  await setupController(initState, initLangCode, remotePort);
   log.info('MetaMask initialization complete.');
 }
 
