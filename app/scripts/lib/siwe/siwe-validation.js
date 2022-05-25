@@ -13,10 +13,11 @@ const msgHexToText = (hex) => {
 
 const detectSIWE = (msgParams) => {
   try {
-    const { data, origin = null } = msgParams;
+    const { data, from, origin = null } = msgParams;
     const message = msgHexToText(data);
     const messageData = new ParsedMessage(message);
     let isSIWEDomainValid = false;
+    const isMatchingAddress = from === messageData.address;
 
     if (origin) {
       const { host } = new URL(origin);
@@ -26,6 +27,7 @@ const detectSIWE = (msgParams) => {
     return {
       isSIWEMessage: true,
       isSIWEDomainValid,
+      isMatchingAddress,
       messageData,
     };
   } catch (error) {
@@ -33,6 +35,7 @@ const detectSIWE = (msgParams) => {
     return {
       isSIWEMessage: false,
       isSIWEDomainValid: false,
+      isMatchingAddress: false,
       messageData: null,
     };
   }

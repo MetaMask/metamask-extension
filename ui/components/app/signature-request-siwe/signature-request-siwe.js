@@ -15,7 +15,7 @@ export default function SignatureRequestSIWE({
   txData: {
     msgParams: {
       version,
-      siwe: { isSIWEDomainValid, messageData },
+      siwe: { isSIWEDomainValid, isMatchingAddress, messageData },
     },
     type,
   },
@@ -56,6 +56,46 @@ export default function SignatureRequestSIWE({
     });
   };
 
+  const generateSIWEWarning = () => {
+    let showError = false;
+    let errorMessage = '';
+    let confirmErrorMessage = '';
+
+    if (!isSIWEDomainValid) {
+      showError = true;
+      errorMessage += `${t('SIWEDomainInvalid', [messageData.domain])} `;
+      confirmErrorMessage += `${t('SIWEDomainWarningBody', [
+        messageData.domain,
+      ])} `;
+    }
+
+    if (!isMatchingAddress) {
+      showError = true;
+      errorMessage += `${t('SIWEAddressInvalid', [
+        messageData.address,
+        fromAccount.address,
+      ])} `;
+      confirmErrorMessage += `${t('SIWEAddressInvalid', [
+        messageData.address,
+        fromAccount.address,
+      ])} `;
+    }
+
+    return {
+      showError,
+      errorMessage: errorMessage.trim(),
+      confirmErrorMessage: confirmErrorMessage.trim(),
+    };
+  };
+
+  const {
+    showError,
+    errorMessage,
+    confirmErrorMessage,
+  } = generateSIWEWarning();
+
+  console.log(showError, errorMessage, confirmErrorMessage);
+
   return (
     <div className="signature-request-siwe">
       <Header
@@ -65,19 +105,15 @@ export default function SignatureRequestSIWE({
         subjectMetadata={subjectMetadata}
       />
       <Message data={formatMessageParams(messageData, t)} />
-      {!isSIWEDomainValid && (
+      {showError && (
         <div className="signature-request-siwe__domain-mismatch-warning">
-          <ErrorMessage
-            errorMessage={t('SIWEDomainInvalid', [messageData.domain])}
-          />
+          <ErrorMessage errorMessage={errorMessage} />
         </div>
       )}
       <PageContainerFooter
         footerClassName="signature-request-siwe__page-container-footer"
         onCancel={onCancel}
-        onSubmit={
-          isSIWEDomainValid ? onSign : () => setIsShowingDomainWarning(true)
-        }
+        onSubmit={showError ? () => setIsShowingDomainWarning(true) : onSign}
         cancelText={t('cancel')}
         submitText={t('signin')}
       />
@@ -112,7 +148,7 @@ export default function SignatureRequestSIWE({
               className="signature-request-siwe__popover__checkbox-wrapper__checkbox__label"
               htmlFor="domainWarning_checkbox"
             >
-              {t('SIWEWarningBody', [messageData.domain])}
+              {confirmErrorMessage}
             </label>
           </div>
         </Popover>

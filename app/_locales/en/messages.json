@@ -44,17 +44,20 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (Coming Soon)"
   },
+  "SIWEAddressInvalid": {
+    "message": "The address in the sign-in request does not match the address of the account you are using to sign. Proceed with caution."
+  },
   "SIWEDomainInvalid": {
     "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution."
+  },
+  "SIWEDomainWarningBody": {
+    "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack."
   },
   "SIWESiteRequestSubtitle": {
     "message": "This site is requesting to sign in with"
   },
   "SIWESiteRequestTitle": {
     "message": "Sign-in request"
-  },
-  "SIWEWarningBody": {
-    "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack."
   },
   "SIWEWarningSubtitle": {
     "message": "To confirm you understand, check:"
