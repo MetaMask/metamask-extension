@@ -58,6 +58,10 @@ const signatureTypes = [
 ];
 
 /**
+ * @typedef {(import('../../selectors/transactions').TransactionGroup} TransactionGroup
+ */
+
+/**
  * @typedef {Object} TransactionDisplayData
  * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
@@ -78,7 +82,7 @@ const signatureTypes = [
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
  *
- * @param {Object} transactionGroup - group of transactions
+ * @param {TransactionGroup} transactionGroup - group of transactions of the same nounce
  * @returns {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {
