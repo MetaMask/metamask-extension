@@ -83,6 +83,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
 let initialState;
 let initialLangCode;
 const initApp = async (remotePort) => {
+  browser.runtime.onConnect.removeListener(initApp);
   await setupController(initialState, initialLangCode, remotePort);
   log.info('MetaMask initialization complete.');
 };
@@ -325,7 +326,6 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   //
   if (isManifestV3() && remoteSourcePort) {
     connectRemote(remoteSourcePort);
-    browser.runtime.onConnect.removeListener(initApp);
   }
 
   browser.runtime.onConnect.addListener(connectRemote);
