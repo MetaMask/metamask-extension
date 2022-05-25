@@ -47,7 +47,7 @@ const NewNetworkInfo = () => {
     setFirstTimeUsedNetwork(currentProvider.chainId);
   };
 
-  const updateTokenDetectionSupportStatus = async () => {
+  const getIsTokenDetectionSupported = async () => {
     const fetchedTokenData = await fetchWithCache(
       `${TOKEN_API_METASWAP_CODEFI_URL}${currentProvider.chainId}`,
     );
@@ -60,7 +60,7 @@ const NewNetworkInfo = () => {
   };
 
   const checkTokenDetection = async () => {
-    const fetchedData = await updateTokenDetectionSupportStatus();
+    const fetchedData = await getIsTokenDetectionSupported();
 
     setTokenDetectionSupported(fetchedData);
   };
