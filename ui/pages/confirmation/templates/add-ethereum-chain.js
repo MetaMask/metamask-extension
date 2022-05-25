@@ -71,9 +71,8 @@ const INVALID_CHAIN = {
 
 async function getAlerts(pendingApproval) {
   const alerts = [];
-  const safeChainsList = await fetchWithCache(
-    'https://chainid.network/chains.json',
-  );
+  const safeChainsList =
+    (await fetchWithCache('https://chainid.network/chains.json')) || [];
   const matchedChain = safeChainsList.find(
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),

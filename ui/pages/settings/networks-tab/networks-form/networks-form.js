@@ -328,15 +328,14 @@ const NetworksForm = ({
       }
 
       try {
-        safeChainsList = await fetchWithCache(
-          'https://chainid.network/chains.json',
-        );
+        safeChainsList =
+          (await fetchWithCache('https://chainid.network/chains.json')) || [];
       } catch (err) {
         log.warn('Failed to fetch the chainList from chainid.network', err);
         providerError = err;
       }
 
-      if (providerError || !Array.isArray(safeChainsList)) {
+      if (providerError) {
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {

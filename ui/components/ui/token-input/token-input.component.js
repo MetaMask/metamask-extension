@@ -11,6 +11,7 @@ import {
 
 import { ETH } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted
@@ -34,6 +35,7 @@ export default class TokenInput extends PureComponent {
       symbol: PropTypes.string,
     }).isRequired,
     tokenExchangeRates: PropTypes.object,
+    tokens: PropTypes.array.isRequired,
   };
 
   constructor(props) {
@@ -108,10 +110,15 @@ export default class TokenInput extends PureComponent {
       currentCurrency,
       hideConversion,
       token,
+      tokens,
     } = this.props;
     const { decimalValue } = this.state;
 
-    const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0;
+    const existingToken = tokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, token.address),
+    );
+
+    const tokenExchangeRate = tokenExchangeRates?.[existingToken.address] || 0;
     let currency, numberOfDecimals;
 
     if (hideConversion) {

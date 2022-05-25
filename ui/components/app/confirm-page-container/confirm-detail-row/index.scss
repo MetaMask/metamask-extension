@@ -26,7 +26,7 @@
   }
 
   &__secondary {
-    color: var(--color-icon-default);
+    color: var(--color-text-alternative);
     justify-content: flex-end;
   }
 
@@ -35,7 +35,7 @@
 
     text-transform: uppercase;
     margin-bottom: 6px;
-    color: var(--color-icon-default);
+    color: var(--color-text-default);
 
     &--edit {
       color: var(--color-primary-default);

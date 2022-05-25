@@ -6,7 +6,7 @@ const LOGO_HEIGHT = 30;
 const TEXT_COLOR = 'var(--color-text-default)';
 const FLASK_PILL_BACKGROUND = 'var(--color-overlay-alternative)';
 const FLASK_PILL_TEXT = 'var(--color-overlay-inverse)';
-const BETA_PILL_BACKGROUND = 'var(--color-secondary-default)';
+const BETA_PILL_BACKGROUND = 'var(--color-warning-default)';
 const BETA_PIL_TEXT = 'var(--color-secondary-inverse)';
 
 export default function MetaFoxHorizontalLogo({ className }) {
