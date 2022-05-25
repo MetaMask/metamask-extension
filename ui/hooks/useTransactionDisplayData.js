@@ -93,10 +93,10 @@ export function useTransactionDisplayData(transactionGroup) {
   const knownTokens = useSelector(getTokens);
   const knownCollectibles = useSelector(getCollectibles);
   const t = useI18nContext();
+
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
   const { type } = initialTransaction;
-
   const { from: senderAddress, to } = initialTransaction.txParams || {};
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
@@ -110,8 +110,9 @@ export function useTransactionDisplayData(transactionGroup) {
   const isSubmitted = displayedStatusKey === TRANSACTION_STATUSES.SUBMITTED;
 
   const primaryValue = primaryTransaction.txParams?.value;
-  let prefix = '-';
   const date = formatDateWithYearContext(initialTransaction.time);
+
+  let prefix = '-';
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
