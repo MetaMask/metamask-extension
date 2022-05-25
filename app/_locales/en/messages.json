@@ -3829,6 +3829,9 @@
   "unknownCameraErrorTitle": {
     "message": "Ooops! Something went wrong...."
   },
+  "unknownNft": {
+    "message": "NFT $1"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },

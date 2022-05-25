@@ -183,7 +183,9 @@ export default class ConfirmApproveContent extends Component {
 
   renderERC721OrERC1155PermissionContent() {
     const { t } = this.context;
-    const { origin, toAddress, isContract, assetName, tokenId } = this.props;
+    const { origin, toAddress, isContract } = this.props;
+
+    const titleTokenDescription = this.getTitleTokenDescription();
 
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
@@ -198,7 +200,7 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
-            {`${assetName} #${tokenId}`}
+            {titleTokenDescription}
           </div>
         </div>
         <div className="flex-row">
@@ -430,6 +432,73 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
+  getTitleTokenDescription() {
+    const {
+      tokenId,
+      assetName,
+      tokenAddress,
+      rpcPrefs,
+      chainId,
+      assetStandard,
+      tokenSymbol,
+    } = this.props;
+    const { t } = this.context;
+    let titleTokenDescription = t('token');
+    if (rpcPrefs?.blockExplorerUrl) {
+      const unknownTokenBlockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+
+      const unknownTokenLink = (
+        <a
+          href={unknownTokenBlockExplorerLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="confirm-approve-content__unknown-asset"
+        >
+          {t('token')}
+        </a>
+      );
+      titleTokenDescription = unknownTokenLink;
+    }
+
+    if (assetStandard === ERC20) {
+      titleTokenDescription = tokenSymbol;
+    } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+      const tokenIdWrapped = tokenId ? `(#${tokenId})` : null;
+      if (assetName || tokenSymbol) {
+        titleTokenDescription = `${assetName ?? tokenSymbol} ${tokenIdWrapped}`;
+      } else {
+        const unknownNFTBlockExplorerLink = getTokenTrackerLink(
+          tokenAddress,
+          chainId,
+          null,
+          {
+            blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+          },
+        );
+        const unknownNFTLink = (
+          <a
+            href={unknownNFTBlockExplorerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="confirm-approve-content__unknown-asset"
+          >
+            {t('unknownNFT', [tokenIdWrapped])}
+          </a>
+        );
+        titleTokenDescription = unknownNFTLink;
+      }
+    }
+
+    return titleTokenDescription;
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -452,10 +521,10 @@ export default class ConfirmApproveContent extends Component {
       rpcPrefs,
       isContract,
       assetStandard,
-      tokenId,
-      assetName,
     } = this.props;
     const { showFullTxDetails } = this.state;
+
+    const titleTokenDescription = this.getTitleTokenDescription();
 
     return (
       <div
@@ -496,11 +565,7 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {t('allowSpendToken', [
-            assetStandard === ERC20
-              ? tokenSymbol
-              : `${assetName} (#${tokenId})`,
-          ])}
+          {t('allowSpendToken', [titleTokenDescription])}
         </div>
         <div className="confirm-approve-content__description">
           {t('trustSiteApprovePermission', [
@@ -554,7 +619,9 @@ export default class ConfirmApproveContent extends Component {
                   : getAccountLink(
                       toAddress,
                       chainId,
-                      { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+                      {
+                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                      },
                       null,
                     );
                 global.platform.openTab({
