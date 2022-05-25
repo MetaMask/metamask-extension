@@ -27,7 +27,11 @@ import {
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
-import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
+import {
+  computeEstimatedGasLimit,
+  initializeSendState,
+  resetSendState,
+} from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -1442,6 +1446,11 @@ export function updateMetamaskState(newState) {
         type: actionConstants.CHAIN_CHANGED,
         payload: newProvider.chainId,
       });
+      // We dispatch this action to ensure that the send state stays up to date
+      // after the chain changes. This async thunk will fail gracefully in the
+      // event that we are not yet on the send flow with a draftTransaction in
+      // progress.
+      dispatch(initializeSendState({ chainHasChanged: true }));
     }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,

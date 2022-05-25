@@ -45,7 +45,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
-import { updateSendAsset } from '../../../ducks/send';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
@@ -119,7 +119,7 @@ export default function CollectibleDetails({ collectible }) {
 
   const onSend = async () => {
     await dispatch(
-      updateSendAsset({
+      startNewDraftTransaction({
         type: ASSET_TYPES.COLLECTIBLE,
         details: collectible,
       }),
