@@ -183,12 +183,9 @@ export default class ConfirmApproveContent extends Component {
 
   renderERC721OrERC1155PermissionContent() {
     const { t } = this.context;
-    const { origin, toAddress, isContract, assetName, tokenId } = this.props;
+    const { origin, toAddress, isContract } = this.props;
 
-    let titleTokenDescription = t('unknownNFT');
-    if (tokenId) {
-      titleTokenDescription = `${assetName ?? t('unknownNFT')} (#${tokenId})`;
-    }
+    const titleTokenDescription = this.getTitleTokenDescription();
 
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
