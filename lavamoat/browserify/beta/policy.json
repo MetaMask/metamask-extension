@@ -3223,6 +3223,7 @@
       "packages": {
         "@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers": true,
         "eth-rpc-errors": true
       }
@@ -3270,6 +3271,11 @@
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/utils": {
+      "packages": {
+        "@storybook/api>fast-deep-equal": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3334,6 +3340,7 @@
         "@metamask/controllers": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers>@metamask/execution-environments": true,
         "@metamask/snap-controllers>@metamask/obs-store": true,
         "@metamask/snap-controllers>ajv": true,
