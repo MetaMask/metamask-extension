@@ -372,7 +372,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const { send, metamask } = state;
     const unapprovedTxs = getUnapprovedTxs(state);
     const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-    const transaction = unapprovedTxs[send.draftTransaction.id];
+    const transaction = unapprovedTxs[send.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
 
@@ -388,7 +388,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
               ? send.account.balance
               : send.amount.value,
           from: send.account.address,
-          data: send.draftTransaction.userInputHexData,
+          data: send.userInputHexData,
           type: '0x0',
         },
       });
@@ -406,7 +406,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         sendToken: send.asset.details,
         to: send.recipient.address?.toLowerCase(),
         value: send.amount.value,
-        data: send.draftTransaction.userInputHexData,
+        data: send.userInputHexData,
         isNonStandardEthChain,
         chainId,
         gasLimit: send.gas.gasLimit,
@@ -463,7 +463,7 @@ export const initializeSendState = createAsyncThunk(
     const chainId = getCurrentChainId(state);
     const eip1559support = checkNetworkAndAccountSupports1559(state);
     const {
-      send: { asset, stage, recipient, amount, draftTransaction },
+      send: { asset, stage, recipient, amount, userInputHexData },
       metamask,
     } = state;
 
@@ -473,7 +473,7 @@ export const initializeSendState = createAsyncThunk(
     // send page), the fromAddress is always the address from the txParams.
     const fromAddress =
       stage === SEND_STAGES.EDIT
-        ? draftTransaction.txParams.from
+        ? state.send.account.address
         : metamask.selectedAddress;
     // We need the account's balance which is calculated from cachedBalances in
     // the getMetaMaskAccounts selector. getTargetAccount consumes this
@@ -532,7 +532,7 @@ export const initializeSendState = createAsyncThunk(
         sendToken: asset.details,
         to: recipient.address.toLowerCase(),
         value: amount.value,
-        data: draftTransaction.userInputHexData,
+        data: userInputHexData,
         isNonStandardEthChain,
         chainId,
       });
@@ -586,6 +586,7 @@ export const initializeSendState = createAsyncThunk(
 );
 
 export const initialState = {
+  id: null,
   // which stage of the send flow is the user on
   stage: SEND_STAGES.INACTIVE,
   // status of the send slice, either VALID or INVALID
@@ -601,6 +602,7 @@ export const initialState = {
     // balance of the from account
     balance: '0x0',
   },
+  userInputHexData: null,
   gas: {
     // indicate whether the gas estimate is loading
     isGasEstimateLoading: true,
@@ -647,26 +649,6 @@ export const initialState = {
     // error to display when there is an issue with the asset
     error: null,
   },
-  draftTransaction: {
-    // The metamask internal id of the transaction. Only populated in the EDIT
-    // stage.
-    id: null,
-    // The hex encoded data provided by the user who has enabled hex data field
-    // in advanced settings
-    userInputHexData: null,
-    // The txParams that should be submitted to the network once this
-    // transaction is confirmed. This object is computed on every write to the
-    // slice of fields that would result in the txParams changing
-    txParams: {
-      to: '',
-      from: '',
-      data: undefined,
-      value: '0x0',
-      gas: '0x0',
-      gasPrice: '0x0',
-      type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-    },
-  },
   recipient: {
     // Defines which mode to use for searching for matches in the input field
     mode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
@@ -689,6 +671,86 @@ export const initialState = {
   history: [],
 };
 
+/**
+ * Generates a txParams from the send state
+ *
+ * @param {Object} state - the Send slice state
+ * @returns {import(
+ *  '../../../shared/constants/transaction'
+ * ).TxParams} A txParams object that can be used to create a transaction or
+ *  update an existing transaction.
+ */
+function generateTransactionParams(state) {
+  const txParams = {
+    from: state.account.address,
+    // gasLimit always needs to be set regardless of the asset being sent
+    // or the type of transaction.
+    gas: state.gas.gasLimit,
+  };
+  switch (state.asset.type) {
+    case ASSET_TYPES.TOKEN:
+      // When sending a token the to address is the contract address of
+      // the token being sent. The value is set to '0x0' and the data
+      // is generated from the recipient address, token being sent and
+      // amount.
+      txParams.to = state.asset.details.address;
+      txParams.value = '0x0';
+      txParams.data = generateERC20TransferData({
+        toAddress: state.recipient.address,
+        amount: state.amount.value,
+        sendToken: state.asset.details,
+      });
+      break;
+    case ASSET_TYPES.COLLECTIBLE:
+      // When sending a token the to address is the contract address of
+      // the token being sent. The value is set to '0x0' and the data
+      // is generated from the recipient address, token being sent and
+      // amount.
+      txParams.to = state.asset.details.address;
+      txParams.value = '0x0';
+      txParams.data = generateERC721TransferData({
+        toAddress: state.recipient.address,
+        fromAddress: state.account.address,
+        tokenId: state.asset.details.tokenId,
+      });
+      break;
+    case ASSET_TYPES.NATIVE:
+    default:
+      // When sending native currency the to and value fields use the
+      // recipient and amount values and the data key is either null or
+      // populated with the user input provided in hex field.
+      txParams.to = state.recipient.address;
+      txParams.value = state.amount.value;
+      txParams.data = state.userInputHexData ?? undefined;
+  }
+
+  // We need to make sure that we only include the right gas fee fields
+  // based on the type of transaction the network supports. We will also set
+  // the type param here.
+  if (state.eip1559support) {
+    txParams.type = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+
+    txParams.maxFeePerGas = state.gas.maxFeePerGas;
+    txParams.maxPriorityFeePerGas = state.gas.maxPriorityFeePerGas;
+
+    if (!txParams.maxFeePerGas || txParams.maxFeePerGas === '0x0') {
+      txParams.maxFeePerGas = state.gas.gasPrice;
+    }
+
+    if (
+      !txParams.maxPriorityFeePerGas ||
+      txParams.maxPriorityFeePerGas === '0x0'
+    ) {
+      txParams.maxPriorityFeePerGas = txParams.maxFeePerGas;
+    }
+  } else {
+    txParams.gasPrice = state.gas.gasPrice;
+    txParams.type = TRANSACTION_ENVELOPE_TYPES.LEGACY;
+  }
+
+  return txParams;
+}
+
 const slice = createSlice({
   name,
   initialState,
@@ -701,7 +763,7 @@ const slice = createSlice({
     },
     /**
      * update current amount.value in state and run post update validation of
-     * the amount field and the send state. Recomputes the draftTransaction
+     * the amount field and the send state.
      *
      * @param state
      * @param action
@@ -723,7 +785,7 @@ const slice = createSlice({
     /**
      * computes the maximum amount of asset that can be sent and then calls
      * the updateSendAmount action above with the computed value, which will
-     * revalidate the field and form and recomputes the draftTransaction
+     * revalidate the field and form.
      *
      * @param state
      */
@@ -756,29 +818,20 @@ const slice = createSlice({
       slice.caseReducers.updateSendAmount(state, {
         payload: amount,
       });
-      // draftTransaction update happens in updateSendAmount
     },
     /**
-     * updates the draftTransaction.userInputHexData state key and then
-     * recomputes the draftTransaction if the user is currently sending the
-     * native asset. When sending ERC20 assets, this is unnecessary because the
-     * hex data used in the transaction will be that for interacting with the
-     * ERC20 contract
+     * updates the userInputHexData state key
      *
      * @param state
      * @param action
      */
     updateUserInputHexData: (state, action) => {
-      state.draftTransaction.userInputHexData = action.payload;
-      if (state.asset.type === ASSET_TYPES.NATIVE) {
-        slice.caseReducers.updateDraftTransaction(state);
-      }
+      state.userInputHexData = action.payload;
     },
     /**
      * Initiates the edit transaction flow by setting the stage to 'EDIT' and
      * then pulling the details of the previously submitted transaction from
-     * the action payload. It also computes a new draftTransaction that will be
-     * used when updating the transaction in the provider
+     * the action payload.
      *
      * @param state
      * @param action
@@ -793,10 +846,9 @@ const slice = createSlice({
       state.asset.error = null;
       state.recipient.address = action.payload.address;
       state.recipient.nickname = action.payload.nickname;
-      state.draftTransaction.id = action.payload.id;
-      state.draftTransaction.txParams.from = action.payload.from;
-      state.draftTransaction.userInputHexData = action.payload.data;
-      slice.caseReducers.updateDraftTransaction(state);
+      state.id = action.payload.id;
+      state.account.address = action.payload.from;
+      state.userInputHexData = action.payload.data;
     },
     /**
      * gasTotal is computed based on gasPrice and gasLimit and set in state
@@ -999,107 +1051,15 @@ const slice = createSlice({
         // to the ADD_RECIPIENT stage.
         state.stage = SEND_STAGES.ADD_RECIPIENT;
       } else {
-        // if and address is provided and an id exists on the draft transaction,
+        // if an address is provided and an id exists on the draft transaction,
         // we progress to the EDIT stage, otherwise we progress to the DRAFT
         // stage. We also reset the search mode for recipient search.
-        state.stage =
-          state.draftTransaction.id === null
-            ? SEND_STAGES.DRAFT
-            : SEND_STAGES.EDIT;
+        state.stage = state.id === null ? SEND_STAGES.DRAFT : SEND_STAGES.EDIT;
         state.recipient.mode = RECIPIENT_SEARCH_MODES.CONTACT_LIST;
       }
 
       // validate send state
       slice.caseReducers.validateSendState(state);
-    },
-    updateDraftTransaction: (state) => {
-      // We keep a copy of txParams in state that could be submitted to the
-      // network if the form state is valid.
-      if (state.status === SEND_STATUSES.VALID) {
-        // We don't/shouldn't modify the from address when editing an
-        // existing transaction.
-        if (state.stage !== SEND_STAGES.EDIT) {
-          state.draftTransaction.txParams.from = state.account.address;
-        }
-
-        // gasLimit always needs to be set regardless of the asset being sent
-        // or the type of transaction.
-        state.draftTransaction.txParams.gas = state.gas.gasLimit;
-        switch (state.asset.type) {
-          case ASSET_TYPES.TOKEN:
-            // When sending a token the to address is the contract address of
-            // the token being sent. The value is set to '0x0' and the data
-            // is generated from the recipient address, token being sent and
-            // amount.
-            state.draftTransaction.txParams.to = state.asset.details.address;
-            state.draftTransaction.txParams.value = '0x0';
-            state.draftTransaction.txParams.data = generateERC20TransferData({
-              toAddress: state.recipient.address,
-              amount: state.amount.value,
-              sendToken: state.asset.details,
-            });
-            break;
-          case ASSET_TYPES.COLLECTIBLE:
-            // When sending a token the to address is the contract address of
-            // the token being sent. The value is set to '0x0' and the data
-            // is generated from the recipient address, token being sent and
-            // amount.
-            state.draftTransaction.txParams.to = state.asset.details.address;
-            state.draftTransaction.txParams.value = '0x0';
-            state.draftTransaction.txParams.data = generateERC721TransferData({
-              toAddress: state.recipient.address,
-              fromAddress: state.account.address,
-              tokenId: state.asset.details.tokenId,
-            });
-            break;
-          case ASSET_TYPES.NATIVE:
-          default:
-            // When sending native currency the to and value fields use the
-            // recipient and amount values and the data key is either null or
-            // populated with the user input provided in hex field.
-            state.draftTransaction.txParams.to = state.recipient.address;
-            state.draftTransaction.txParams.value = state.amount.value;
-            state.draftTransaction.txParams.data =
-              state.draftTransaction.userInputHexData ?? undefined;
-        }
-
-        // We need to make sure that we only include the right gas fee fields
-        // based on the type of transaction the network supports. We will also set
-        // the type param here. We must delete the opposite fields to avoid
-        // stale data in txParams.
-        if (state.eip1559support) {
-          state.draftTransaction.txParams.type =
-            TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
-
-          state.draftTransaction.txParams.maxFeePerGas = state.gas.maxFeePerGas;
-          state.draftTransaction.txParams.maxPriorityFeePerGas =
-            state.gas.maxPriorityFeePerGas;
-
-          if (
-            !state.draftTransaction.txParams.maxFeePerGas ||
-            state.draftTransaction.txParams.maxFeePerGas === '0x0'
-          ) {
-            state.draftTransaction.txParams.maxFeePerGas = state.gas.gasPrice;
-          }
-
-          if (
-            !state.draftTransaction.txParams.maxPriorityFeePerGas ||
-            state.draftTransaction.txParams.maxPriorityFeePerGas === '0x0'
-          ) {
-            state.draftTransaction.txParams.maxPriorityFeePerGas =
-              state.draftTransaction.txParams.maxFeePerGas;
-          }
-
-          delete state.draftTransaction.txParams.gasPrice;
-        } else {
-          delete state.draftTransaction.txParams.maxFeePerGas;
-          delete state.draftTransaction.txParams.maxPriorityFeePerGas;
-
-          state.draftTransaction.txParams.gasPrice = state.gas.gasPrice;
-          state.draftTransaction.txParams.type =
-            TRANSACTION_ENVELOPE_TYPES.LEGACY;
-        }
-      }
     },
     useDefaultGas: (state) => {
       // Show the default gas price/limit fields in the send page
@@ -1240,8 +1200,6 @@ const slice = createSlice({
           break;
         default:
           state.status = SEND_STATUSES.VALID;
-          // Recompute the draftTransaction object
-          slice.caseReducers.updateDraftTransaction(state);
       }
     },
   },
@@ -1793,12 +1751,8 @@ export function toggleSendMaxMode() {
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
-    const {
-      asset,
-      stage,
-      draftTransaction: { id, txParams },
-      eip1559support,
-    } = state[name];
+    const { id, asset, stage, eip1559support } = state[name];
+    const txParams = generateTransactionParams(state[name]);
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
@@ -2052,11 +2006,11 @@ export function getSendMaxModeState(state) {
 }
 
 export function getSendHexData(state) {
-  return state[name].draftTransaction.userInputHexData;
+  return state[name].userInputHexData;
 }
 
 export function getDraftTransactionID(state) {
-  return state[name].draftTransaction.id;
+  return state[name].id;
 }
 
 export function sendAmountIsInError(state) {
