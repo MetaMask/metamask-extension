@@ -2803,9 +2803,9 @@
     randombytes "^2.0.1"
 
 "@metamask/contract-metadata@^1.31.0", "@metamask/contract-metadata@^1.33.0":
-  version "1.33.0"
-  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.33.0.tgz#3f0501d5c6d9119ce09c1edb075fc0a8fed7d09c"
-  integrity sha512-sWfzsUe59UH2Y1A7czRjhPmYrWlg4UQDOUPdf+lY7kbXwYrlF/ZUvhQYajdgJVchv2yDzr+cFhWF7DmNb5NyTQ==
+  version "1.34.0"
+  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.34.0.tgz#3e6930d7c19b0cfaae859396e6b399275906ac4b"
+  integrity sha512-OAHJpVgmxl+cKbKAJgYfKEpT0w7OzHftrWLW+RPCe7WbZCOUZBly+DJz/qRlSyLlBV8rcVR30ftSX8xbxa30Pg==
 
 "@metamask/controllers@^27.1.1":
   version "27.1.1"
