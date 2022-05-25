@@ -38,6 +38,26 @@ import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 
 /**
+ *  There are seven types of transaction entries that are currently differentiated in the design:
+ *  1. Signature request
+ *  2. Send (sendEth sendTokens)
+ *  3. Deposit
+ *  4. Site interaction
+ *  5. Approval
+ *  6. Swap
+ *  7. Swap Approval
+ */
+const signatureTypes = [
+  null,
+  undefined,
+  TRANSACTION_TYPES.SIGN,
+  TRANSACTION_TYPES.PERSONAL_SIGN,
+  TRANSACTION_TYPES.SIGN_TYPED_DATA,
+  TRANSACTION_TYPES.ETH_DECRYPT,
+  TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+];
+
+/**
  * @typedef {Object} TransactionDisplayData
  * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
@@ -159,25 +179,6 @@ export function useTransactionDisplayData(transactionGroup) {
     swapTokenFiatAmount,
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
-
-  // There are seven types of transaction entries that are currently differentiated in the design
-  // 1. Signature request
-  // 2. Send (sendEth sendTokens)
-  // 3. Deposit
-  // 4. Site interaction
-  // 5. Approval
-  // 6. Swap
-  // 7. Swap Approval
-
-  const signatureTypes = [
-    null,
-    undefined,
-    TRANSACTION_TYPES.SIGN,
-    TRANSACTION_TYPES.PERSONAL_SIGN,
-    TRANSACTION_TYPES.SIGN_TYPED_DATA,
-    TRANSACTION_TYPES.ETH_DECRYPT,
-    TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY,
-  ];
 
   if (signatureTypes.includes(type)) {
     category = TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
