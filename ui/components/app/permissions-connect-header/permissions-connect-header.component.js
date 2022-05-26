@@ -41,11 +41,11 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   renderHeaderIcon() {
-<<<<<<< HEAD
     const {
       iconUrl,
       iconName,
       siteOrigin,
+      rightIcon,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       isSnapInstall,
       ///: END:ONLY_INCLUDE_IN
@@ -56,9 +56,6 @@ export default class PermissionsConnectHeader extends Component {
       return null;
     }
     ///: END:ONLY_INCLUDE_IN
-=======
-    const { iconUrl, iconName, siteOrigin, rightIcon } = this.props;
->>>>>>> 3280aca91 (domain warning updates)
 
     return (
       <div className="permissions-connect-header__icon">

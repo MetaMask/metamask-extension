@@ -16,8 +16,8 @@ const detectSIWE = (msgParams) => {
     const { data, from, origin = null } = msgParams;
     const message = msgHexToText(data);
     const messageData = new ParsedMessage(message);
-    let isSIWEDomainValid = false;
     const isMatchingAddress = from === messageData.address;
+    let isSIWEDomainValid = false;
 
     if (origin) {
       const { host } = new URL(origin);
