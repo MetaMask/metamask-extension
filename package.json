@@ -114,7 +114,7 @@
     "@keystonehq/bc-ur-registry-eth": "^0.6.8",
     "@keystonehq/metamask-airgapped-keyring": "0.2.1",
     "@material-ui/core": "^4.11.0",
-    "@metamask/contract-metadata": "^1.31.0",
+    "@metamask/contract-metadata": "1.35.0",
     "@metamask/controllers": "^29.0.1",
     "@metamask/design-tokens": "^1.6.5",
     "@metamask/eth-ledger-bridge-keyring": "^0.12.0",

@@ -2802,7 +2802,12 @@
     pbkdf2 "^3.0.9"
     randombytes "^2.0.1"
 
-"@metamask/contract-metadata@^1.31.0", "@metamask/contract-metadata@^1.33.0":
+"@metamask/contract-metadata@1.35.0":
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.35.0.tgz#2bf2b8f2b6fdbd5132f0bcfa594b6c02dc71c42e"
+  integrity sha512-zfZKwLFOVrQS8vTFoeoNCG9JhqmK4oyembGiGVVpUAYD9BHVZnd9WpicGoUC07ROXLEyQuAK9AJZNBtqwwzfEQ==
+
+"@metamask/contract-metadata@^1.33.0":
   version "1.33.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.33.0.tgz#3f0501d5c6d9119ce09c1edb075fc0a8fed7d09c"
   integrity sha512-sWfzsUe59UH2Y1A7czRjhPmYrWlg4UQDOUPdf+lY7kbXwYrlF/ZUvhQYajdgJVchv2yDzr+cFhWF7DmNb5NyTQ==
