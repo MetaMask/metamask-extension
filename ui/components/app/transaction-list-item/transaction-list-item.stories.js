@@ -150,7 +150,7 @@ Retry.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.RETRY],
   },
-  'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.CONFIRMED,
+  'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.PENDING,
 };
 
 Sign.storyName = 'eth_sign';
