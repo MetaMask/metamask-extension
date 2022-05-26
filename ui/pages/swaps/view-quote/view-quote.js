@@ -47,8 +47,8 @@ import {
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
-  estimateSwapsSmartTransactionsGas,
-  getSmartTransactionEstimatedGas,
+  fetchSwapsSmartTransactionFees,
+  getSmartTransactionFees,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -202,9 +202,7 @@ export default function ViewQuote() {
       (currentSmartTransactionsError !== 'not_enough_funds' ||
         currentSmartTransactionsErrorMessageDismissed)
     );
-  const smartTransactionEstimatedGas = useSelector(
-    getSmartTransactionEstimatedGas,
-  );
+  const smartTransactionFees = useSelector(getSmartTransactionFees);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const unsignedTransaction = usedQuote.trade;
 
@@ -308,7 +306,7 @@ export default function ViewQuote() {
       chainId,
       smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
-        smartTransactionEstimatedGas?.txData,
+        smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
     );
   }, [
@@ -321,7 +319,7 @@ export default function ViewQuote() {
     approveGas,
     memoizedTokenConversionRates,
     chainId,
-    smartTransactionEstimatedGas?.txData,
+    smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
     smartTransactionsOptInStatus,
@@ -391,11 +389,11 @@ export default function ViewQuote() {
   if (
     currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
-    smartTransactionEstimatedGas?.txData
+    smartTransactionFees?.tradeTxFees
   ) {
     const stxEstimatedFeeInWeiDec =
-      smartTransactionEstimatedGas.txData.feeEstimate +
-      (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
+      smartTransactionFees?.tradeTxFees.feeEstimate +
+      (smartTransactionFees?.approvalTxFees?.feeEstimate || 0);
     const stxMaxFeeInWeiDec =
       stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
@@ -409,7 +407,7 @@ export default function ViewQuote() {
     additionalTrackingParams.stx_fee_in_usd = Number(feeInUsd);
     additionalTrackingParams.stx_fee_in_eth = Number(rawEthFee);
     additionalTrackingParams.estimated_gas =
-      smartTransactionEstimatedGas.txData.gasLimit;
+      smartTransactionFees?.tradeTxFees.gasLimit;
     ({
       feeInFiat: maxFeeInFiat,
       feeInEth: maxFeeInEth,
@@ -785,11 +783,11 @@ export default function ViewQuote() {
         chainId,
       };
       intervalId = setInterval(() => {
-        dispatch(
-          estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
-        );
+        if (!swapsSTXLoading) {
+          dispatch(fetchSwapsSmartTransactionFees(unsignedTx, approveTxParams));
+        }
       }, swapsNetworkConfig.stxGetTransactionsRefreshTime);
-      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
+      dispatch(fetchSwapsSmartTransactionFees(unsignedTx, approveTxParams));
     } else if (intervalId) {
       clearInterval(intervalId);
     }
@@ -908,14 +906,14 @@ export default function ViewQuote() {
             />
             {currentSmartTransactionsEnabled &&
               smartTransactionsOptInStatus &&
-              !smartTransactionEstimatedGas?.txData && (
+              !smartTransactionFees?.tradeTxFees && (
                 <Box marginTop={0} marginBottom={10}>
                   <PulseLoader />
                 </Box>
               )}
             {(!currentSmartTransactionsEnabled ||
               !smartTransactionsOptInStatus ||
-              smartTransactionEstimatedGas?.txData) && (
+              smartTransactionFees?.tradeTxFees) && (
               <div
                 className={classnames('view-quote__fee-card-container', {
                   'view-quote__fee-card-container--three-rows':
@@ -963,7 +961,7 @@ export default function ViewQuote() {
                 if (
                   currentSmartTransactionsEnabled &&
                   smartTransactionsOptInStatus &&
-                  smartTransactionEstimatedGas?.txData
+                  smartTransactionFees?.tradeTxFees
                 ) {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
