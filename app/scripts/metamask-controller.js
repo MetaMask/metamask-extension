@@ -664,7 +664,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.snapController = new SnapController({
-      endowmentPermissionNames: Object.values(EndowmentPermissions),
+      environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
       ),
@@ -1817,9 +1817,6 @@ export default class MetamaskController extends EventEmitter {
         smartTransactionsController,
       ),
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
-        smartTransactionsController,
-      ),
-      estimateSmartTransactionsGas: smartTransactionsController.estimateGas.bind(
         smartTransactionsController,
       ),
       submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(

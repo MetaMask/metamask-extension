@@ -30,7 +30,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
             title={description}
             wrapperClassName="alerts-tab__description"
           >
-            <i className="fa fa-info-circle" />
+            <i className="fa fa-info-circle alerts-tab__description__icon" />
           </Tooltip>
           <ToggleButton
             offLabel={t('off')}

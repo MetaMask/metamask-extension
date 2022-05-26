@@ -68,6 +68,7 @@
         justify-content: center;
         margin-inline-end: 16px;
         flex: 0 0 18px;
+        color: var(--color-icon-alternative);
 
         @media screen and (min-width: $break-large) {
           flex: 0 0 14px;

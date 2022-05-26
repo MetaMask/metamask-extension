@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap manageState', function () {
   it('can pop up manageState snap and do update get and clear', async function () {
@@ -29,7 +30,7 @@ describe('Test Snap manageState', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/0.2.0/');
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.fill('.snapId3', 'npm:@metamask/test-snap-managestate');
         await driver.clickElement({
           text: 'Connect manageState Snap',

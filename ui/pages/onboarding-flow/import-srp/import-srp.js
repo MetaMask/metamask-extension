@@ -25,7 +25,10 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
 
   return (
     <div className="import-srp">
-      <TwoStepProgressBar stage={twoStepStages.RECOVERY_PHRASE_CONFIRM} />
+      <TwoStepProgressBar
+        stage={twoStepStages.RECOVERY_PHRASE_CONFIRM}
+        marginBottom={4}
+      />
       <div className="import-srp__header">
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
           {t('accessYourWalletWithSRP')}
@@ -53,10 +56,10 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             srpText={t('typeYourSRP')}
           />
           <Button
+            className="import-srp__confirm-button"
             type="primary"
             data-testid="import-srp-confirm"
             large
-            className="import-srp__confirm-button"
             onClick={() => {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
