@@ -54,3 +54,22 @@ To opt in to MetaMetrics;
 You can inspect the requests in the `Network` tab of your browser's Developer Tools (background.html)
 by filtering for `POST` requests to `/v1/batch`. The full url will be `http://localhost:9090/v1/batch`
 or `https://api.segment.io/v1/batch` respectively.
+
+## Sentry
+
+### Debugging in Sentry
+
+To debug in a production Sentry environment:
+
+- Create a free account on [Sentry](https://sentry.io/)
+- Create a New Sentry Organization
+- Create a New Project
+- Copy the `Public Key` and `Project ID` from the Client Keys section under your projects Settings
+-   Add/replace the `SENTRY_DSN` and `SENTRY_DSN_DEV` variables in `.metamaskrc`
+    ```
+    SENTRY_DSN_DEV=https://{SENTRY_PUBLIC_KEY}@sentry.io/{SENTRY_PROJECT_ID}
+    SENTRY_DSN=https://{SENTRY_PUBLIC_KEY}@sentry.io/{SENTRY_PROJECT_ID}
+    ```
+-   Build the project to the `./dist/` folder with `yarn dist`
+
+Unhandled exceptions thrown whilst using the extension will be displayed in Sentry's Issues page.
