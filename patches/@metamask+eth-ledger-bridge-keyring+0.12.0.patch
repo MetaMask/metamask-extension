@@ -1,0 +1,15 @@
+diff --git a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
+index ea14839..dddc22a 100644
+--- a/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
++++ b/node_modules/@metamask/eth-ledger-bridge-keyring/index.js
+@@ -37,7 +37,9 @@ class LedgerBridgeKeyring extends EventEmitter {
+     this.deserialize(opts)
+ 
+     this.iframeLoaded = false
+-    this._setupIframe()
++    if (globalThis.document) {
++      this._setupIframe()
++    }
+ 
+     this.currentMessageId = 0
+     this.messageCallbacks = {}
