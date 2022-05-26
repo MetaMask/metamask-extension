@@ -11,6 +11,7 @@
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
     "start": "yarn build:dev dev --apply-lavamoat=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
+    "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
     "dist": "yarn build prod",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
