@@ -25,7 +25,6 @@ import { getEnvironmentType } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const container = document.getElementById('app-content');
-start().catch(log.error);
 
 /*
  * As long as UI is open it will keep sending messages to service worker
@@ -38,6 +37,8 @@ if (isManifestV3()) {
     browser.runtime.sendMessage({ name: 'UI_OPEN' });
   }, 1000);
 }
+
+start().catch(log.error);
 
 async function start() {
   async function displayCriticalError(err, metamaskState) {
@@ -73,16 +74,6 @@ async function start() {
    * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
    * Code below ensures that UI is rendered only after background is ready.
    */
-  if (isManifestV3()) {
-    extensionPort.onMessage.addListener((message) => {
-      if (message?.name === 'CONNECTION_READY') {
-        initializeUiWithTab(activeTab);
-      }
-    });
-  } else {
-    initializeUiWithTab(activeTab);
-  }
-
   if (isManifestV3()) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
@@ -124,8 +115,8 @@ async function start() {
         displayCriticalError(err, store);
         return;
       }
-
       isUIInitialised = true;
+
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
 
