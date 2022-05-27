@@ -137,10 +137,10 @@
     "message": "El teu navegador no és suportat..."
   },
   "buyWithWyre": {
-    "message": "Compra ETH amb Wyre"
+    "message": "Compra $1 amb Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar ETH directe al teu compte MetaMask."
+    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar $1 directe al teu compte MetaMask."
   },
   "cancel": {
     "message": "Cancel·la"

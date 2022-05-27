@@ -137,10 +137,10 @@
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
   "buyWithWyre": {
-    "message": "Wyre দিয়ে ETH ক্রয় করুন"
+    "message": "Wyre দিয়ে $1 ক্রয় করুন"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre আপনার MetaMask অ্যাকাউন্টে সরাসরি ETH জমা করতে আপনাকে একটি ক্রেডিট কার্ড ব্যবহার করতে দেয়।"
+    "message": "Wyre আপনার MetaMask অ্যাকাউন্টে সরাসরি $1 জমা করতে আপনাকে একটি ক্রেডিট কার্ড ব্যবহার করতে দেয়।"
   },
   "bytes": {
     "message": "বাইটস"

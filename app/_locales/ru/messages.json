@@ -416,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Купить ETH с помощью Wyre"
+    "message": "Купить $1 с помощью Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre позволяет использовать дебетовую карту для внесения ETH прямо на ваш счет MetaMask."
+    "message": "Wyre позволяет использовать дебетовую карту для внесения $1 прямо на ваш счет MetaMask."
   },
   "bytes": {
     "message": "Байты"
