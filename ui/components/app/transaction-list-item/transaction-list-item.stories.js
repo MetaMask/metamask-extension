@@ -45,9 +45,11 @@ export default {
     'transactionGroup.hasCancelled': { control: 'boolean' },
     'transactionGroup.hasRetried': { control: 'boolean' },
     'transactionGroup.primaryTransaction.status': {
-      options: Object.values(TRANSACTION_STATUSES).slice(
-        TRANSACTION_STATUSES.SIGNED,
-      ),
+      options: Object.values(TRANSACTION_STATUSES)
+        .filter((status) => {
+          return status !== TRANSACTION_STATUSES.SIGNED;
+        })
+        .sort(),
       control: { type: 'select' },
     },
     'transactionGroup.primaryTransaction': { control: 'object' },
