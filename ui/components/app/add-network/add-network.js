@@ -152,7 +152,7 @@ const AddNetwork = () => {
                 className="add-network__header__back-icon"
               />
               <Typography variant={TYPOGRAPHY.H3} color={COLORS.TEXT_DEFAULT}>
-                {t('addNetwork')}
+                {t('addANetwork')}
               </Typography>
             </Box>
           )}
@@ -188,23 +188,30 @@ const AddNetwork = () => {
                 className="add-network__list-of-networks"
               >
                 <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-                  <IconBorder size={24}>
-                    <IconWithFallback
-                      icon={item.rpcPrefs.imageUrl}
-                      name={item.nickname}
-                      size={24}
-                    />
-                  </IconBorder>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    color={COLORS.TEXT_DEFAULT}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                    boxProps={{ marginLeft: 2 }}
-                  >
-                    {item.nickname}
-                  </Typography>
+                  <Box>
+                    <IconBorder size={24}>
+                      <IconWithFallback
+                        icon={item.rpcPrefs.imageUrl}
+                        name={item.nickname}
+                        size={24}
+                      />
+                    </IconBorder>
+                  </Box>
+                  <Box marginLeft={2}>
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      color={COLORS.TEXT_DEFAULT}
+                      fontWeight={FONT_WEIGHT.BOLD}
+                    >
+                      {item.nickname}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+                <Box
+                  display={DISPLAY.FLEX}
+                  alignItems={ALIGN_ITEMS.CENTER}
+                  marginLeft={1}
+                >
                   {
                     // Warning for the networks that doesn't use infura.io as the RPC
                     !infuraRegex.test(item.rpcUrl) && (
