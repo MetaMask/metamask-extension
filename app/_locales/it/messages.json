@@ -189,10 +189,10 @@
     "message": "Compra"
   },
   "buyWithWyre": {
-    "message": "Compra ETH con Wyre"
+    "message": "Compra $1 con Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ti consente di usare la carta di credito per depositare ETH direttamente nel tuo account MetaMask."
+    "message": "Wyre ti consente di usare la carta di credito per depositare $1 direttamente nel tuo account MetaMask."
   },
   "canToggleInSettings": {
     "message": "Puoi riabilitare questa notifica in Impostazioni -> Avvisi."

@@ -3512,36 +3512,16 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
-export function fetchSmartTransactionFees(unsignedTransaction) {
-  return async (dispatch) => {
-    try {
-      return await promisifiedBackground.fetchSmartTransactionFees(
-        unsignedTransaction,
-      );
-    } catch (e) {
-      log.error(e);
-      if (e.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(e.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
-        });
-      }
-      throw e;
-    }
-  };
-}
-
-export function estimateSmartTransactionsGas(
+export function fetchSmartTransactionFees(
   unsignedTransaction,
   approveTxParams,
 ) {
-  if (approveTxParams) {
-    approveTxParams.value = '0x0';
-  }
   return async (dispatch) => {
+    if (approveTxParams) {
+      approveTxParams.value = '0x0';
+    }
     try {
-      await promisifiedBackground.estimateSmartTransactionsGas(
+      return await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
         approveTxParams,
       );

@@ -363,10 +363,10 @@
     "message": "Comprar"
   },
   "buyWithWyre": {
-    "message": "Comprar ETH com Wyre"
+    "message": "Comprar $1 com Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar ETH diretamente na sua conta da MetaMask."
+    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
   },
   "bytes": {
     "message": "Bytes"
