@@ -2006,6 +2006,7 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
+
       await dispatch(
         addHistoryEntry(
           `sendFlow - user clicked next and transaction should be updated in controller`,

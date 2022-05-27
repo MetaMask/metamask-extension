@@ -2245,4 +2245,125 @@ describe('Transaction Controller', function () {
       assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update
     });
   });
+
+  describe('updateEditableParams', function () {
+    let txStateManager;
+
+    beforeEach(function () {
+      txStateManager = txController.txStateManager;
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gas: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: 'simpleSend',
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+    });
+
+    it('updates editible params when type changes from simple send to token transfer', async function () {
+      // test update gasFees
+      await txController.updateEditableParams('1', {
+        data:
+          '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(
+        result.txParams.data,
+        '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      );
+      assert.equal(result.type, TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
+    });
+
+    it('updates editible params when type changes from token transfer to simple send', async function () {
+      // test update gasFees
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gas: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+          data:
+            '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+      await txController.updateEditableParams('2', {
+        data: '0x',
+      });
+      const result = txStateManager.getTransaction('2');
+      assert.equal(result.txParams.data, '0x');
+      assert.equal(result.type, TRANSACTION_TYPES.SIMPLE_SEND);
+    });
+
+    it('updates editible params when type changes from simpleSend to contract interaction', async function () {
+      // test update gasFees
+      txStateManager.addTransaction({
+        id: '3',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gas: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+      providerResultStub.eth_getCode = '0x5';
+      await txController.updateEditableParams('3', {
+        data: '0x123',
+      });
+      const result = txStateManager.getTransaction('3');
+      assert.equal(result.txParams.data, '0x123');
+      assert.equal(result.type, TRANSACTION_TYPES.CONTRACT_INTERACTION);
+    });
+
+    it('updates editible params when type does not change', async function () {
+      // test update gasFees
+      await txController.updateEditableParams('1', {
+        data: '0x123',
+        gas: '0xabc',
+        from: VALID_ADDRESS_TWO,
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.txParams.data, '0x123');
+      assert.equal(result.txParams.gas, '0xabc');
+      assert.equal(result.txParams.from, VALID_ADDRESS_TWO);
+      assert.equal(result.txParams.to, VALID_ADDRESS);
+      assert.equal(result.txParams.gasPrice, '0x002');
+      assert.equal(result.type, TRANSACTION_TYPES.SIMPLE_SEND);
+    });
+  });
 });
