@@ -41,7 +41,6 @@ const baseStore = {
   },
   history: { mostRecentOverviewPage: 'activity' },
   metamask: {
-    ensResolutionsByAddress: {},
     gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
     gasFeeEstimates: {
       low: '0',

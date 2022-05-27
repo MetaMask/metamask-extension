@@ -44,6 +44,7 @@ import {
   getTokenList,
   getAddressBookEntryOrAccountName,
   getIsMultiLayerFeeNetwork,
+  getEnsResolutionByAddress,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -91,6 +92,7 @@ import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
   isValidHexAddress,
+  toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { sumHexes } from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
@@ -2260,6 +2262,19 @@ export function getRecipientUserInput(state) {
 }
 
 export function getRecipient(state) {
+  const checksummedAddress = toChecksumHexAddress(
+    state[name].recipient.address,
+  );
+  if (
+    state[name].recipient.nickname === '' &&
+    state.metamask.ensResolutionsByAddress
+  ) {
+    const recipient = {
+      ...state[name].recipient,
+      nickname: getEnsResolutionByAddress(state, checksummedAddress),
+    };
+    return recipient;
+  }
   return state[name].recipient;
 }
 

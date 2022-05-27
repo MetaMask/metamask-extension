@@ -46,7 +46,6 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import { getSendTo } from '../ducks/send';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
@@ -378,13 +377,6 @@ export function getAddressBook(state) {
 
 export function getEnsResolutionByAddress(state, address) {
   return state.metamask.ensResolutionsByAddress[address] || '';
-}
-
-export function getRecipientEnsName(state) {
-  const recipientAddress = getSendTo(state);
-  const checksummedAddress = toChecksumHexAddress(recipientAddress);
-  const recipientEns = getEnsResolutionByAddress(state, checksummedAddress);
-  return recipientEns;
 }
 
 export function getAddressBookEntry(state, address) {
