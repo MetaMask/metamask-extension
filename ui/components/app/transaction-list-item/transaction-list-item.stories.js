@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import {
   TRANSACTION_STATUSES,
@@ -17,39 +16,34 @@ import TransactionListItem from '.';
  */
 const getMockTransactionGroup = (args) => {
   const status = args['transactionGroup.primaryTransaction.status'];
-  const primaryTransaction = {
+  const tx = {
     ...args['transactionGroup.primaryTransaction'],
     status,
   };
 
-  let initialTransaction;
-  let transactions;
-  let hasCancelled = false;
-
-  if (
-    primaryTransaction.type === TRANSACTION_TYPES.CANCEL ||
-    primaryTransaction.type === TRANSACTION_TYPES.RETRY
-  ) {
-    initialTransaction =
-      MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SIMPLE_SEND];
-    hasCancelled = true;
-    transactions = [initialTransaction, primaryTransaction];
-  }
-
   return {
-    hasCancelled,
-    hasRetried: false,
+    hasCancelled: args.hasCancelled,
+    hasRetried: args.hasRetried,
     nonce: '0x1',
-    initialTransaction: initialTransaction || primaryTransaction,
-    primaryTransaction,
-    transactions: transactions || [primaryTransaction],
+    initialTransaction: tx,
+    primaryTransaction: tx,
+    transactions: [tx],
   };
 };
 
+/**
+ * Transaction List Item Storybook Page
+ *
+ * Each page displays a different Transaction Type (TRANSACTION_TYPES)
+ * except TRANSACTION_TYPES.CANCEL and TRANSACTION_TYPES.RETRY as these two types
+ * are never initialTransactions
+ */
 export default {
   title: 'Components/App/TransactionListItem',
   id: __filename,
   argTypes: {
+    'transactionGroup.hasCancelled': { control: 'boolean' },
+    'transactionGroup.hasRetried': { control: 'boolean' },
     'transactionGroup.primaryTransaction.status': {
       options: Object.values(TRANSACTION_STATUSES).slice(
         TRANSACTION_STATUSES.SIGNED,
@@ -59,6 +53,8 @@ export default {
     'transactionGroup.primaryTransaction': { control: 'object' },
   },
   args: {
+    'transactionGroup.hasCancelled': false,
+    'transactionGroup.hasRetried': false,
     'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.PENDING,
   },
 };
@@ -68,14 +64,12 @@ const Template = (args) => {
   return <TransactionListItem transactionGroup={transactionGroup} />;
 };
 
-export const Cancel = Template.bind({});
 export const ContractInteraction = Template.bind({});
 export const DeployContract = Template.bind({});
 export const EthDecrypt = Template.bind({});
 export const EthGetEncryptionPublicKey = Template.bind({});
 export const Incoming = Template.bind({});
 export const PersonalSign = Template.bind({});
-export const Retry = Template.bind({});
 export const Sign = Template.bind({});
 export const SignTypeData = Template.bind({});
 export const SimpleSend = Template.bind({});
@@ -86,17 +80,6 @@ export const TokenMethodApprove = Template.bind({});
 export const TokenMethodSafeTransferFrom = Template.bind({});
 export const TokenMethodTransfer = Template.bind({});
 export const TokenMethodTransferFrom = Template.bind({});
-
-Cancel.storyName = 'cancel';
-Cancel.argTypes = {
-  'transactionGroup.primaryTransaction.status': { control: { disable: true } },
-};
-Cancel.args = {
-  'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.CANCEL],
-  },
-  'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.CONFIRMED,
-};
 
 ContractInteraction.storyName = 'contractInteraction';
 ContractInteraction.args = {
@@ -140,17 +123,6 @@ PersonalSign.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.PERSONAL_SIGN],
   },
-};
-
-Retry.storyName = 'retry';
-Retry.argTypes = {
-  'transactionGroup.primaryTransaction.status': { control: { disable: true } },
-};
-Retry.args = {
-  'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.RETRY],
-  },
-  'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.PENDING,
 };
 
 Sign.storyName = 'eth_sign';
