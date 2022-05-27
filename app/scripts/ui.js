@@ -95,6 +95,9 @@ async function start() {
     const disconnectListener = () => {
       extensionPort.onMessage.removeListener(messageListener);
       extensionPort.onDisconnect.removeListener(disconnectListener);
+      // message below will try to activate service worker
+      // in MV3 is likely that reason of stream closing is service worker going in-active
+      browser.runtime.sendMessage({ name: 'UI_OPEN' });
 
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
