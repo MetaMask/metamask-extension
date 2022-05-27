@@ -386,6 +386,21 @@ async function bundleMV3AppInitialiser({
     const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
     writeFileSync(appInitFile, fileOutput);
   });
+
+  let prevChromeFileContent;
+  watch('./dist/chrome/app-init.js', () => {
+    const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
+    if (chromeFileContent !== prevChromeFileContent) {
+      mv3BrowserPlatforms.forEach((browser) => {
+        const appInitFile = `./dist/${browser}/app-init.js`;
+        const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+        const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+        writeFileSync(appInitFile, fileOutput);
+      });
+    }
+    prevChromeFileContent = chromeFileContent;
+  });
+
   console.log(`Bundle end: service worker app-init.js`);
 }
 
