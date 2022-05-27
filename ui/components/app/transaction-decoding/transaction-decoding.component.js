@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import inspect from 'browser-util-inspect';
-import { forAddress } from '@truffle/decoder';
 import { useSelector } from 'react-redux';
-import * as Codec from '@truffle/codec';
+import { forAddress } from '@truffle/decoder/dist/decoders.js';
+import { ResultInspector } from '@truffle/codec/dist/lib/format/utils/inspect.js';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
@@ -166,7 +166,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           default:
             return (
               <pre className="sol-item solidity-raw">
-                {inspect(new Codec.Format.Utils.Inspect.ResultInspector(value))}
+                {inspect(new ResultInspector(value))}
               </pre>
             );
         }
