@@ -65,5 +65,6 @@ chrome.runtime.onMessage.addListener((_1, _2, sendResponse) => {
   if (!self.scriptLoaded) {
     importAllScripts();
   }
+  // Response below if not required but there is an error if message listener does not send response.
   sendResponse({ name: 'SERVICE_WORKER_ACTIVATION' });
 });
