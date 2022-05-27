@@ -49,7 +49,7 @@ export default function OnboardingPinExtension() {
             {t('onboardingPinExtensionDescription3')}
           </Typography>
           <img
-            src="/images/onboarding-pin-browser.svg"
+            src="/images/onboarding/pin/onboarding-pin-browser.svg"
             width="799"
             height="320"
             alt=""
