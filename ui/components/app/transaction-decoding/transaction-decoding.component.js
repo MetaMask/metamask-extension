@@ -202,7 +202,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     if (loading) {
       return (
         <div className="tx-insight-loading">
-          <Spinner color="var(--color-secondary-default)" />
+          <Spinner color="var(--color-warning-default)" />
         </div>
       );
     }

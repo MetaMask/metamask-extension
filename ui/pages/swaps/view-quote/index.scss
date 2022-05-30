@@ -96,12 +96,12 @@
 
       &.high {
         .actionable-message {
-          border-color: var(--color-warning-default);
-          background: var(--color-warning-muted);
+          border-color: var(--color-error-default);
+          background: var(--color-error-muted);
 
           button {
-            background: var(--color-warning-default);
-            color: var(--color-warning-inverse);
+            background: var(--color-error-default);
+            color: var(--color-error-inverse);
           }
         }
       }

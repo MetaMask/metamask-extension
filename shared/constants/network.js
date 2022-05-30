@@ -244,6 +244,11 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'eth',
       showOnlyCurrencies: 'eth,usdt,usdc,dai',
     },
+    wyre: {
+      srn: 'ethereum',
+      currencyCode: ETH_SYMBOL,
+    },
+    coinbasePayCurrencies: [ETH_SYMBOL, 'USDC', 'DAI'],
   },
   [ROPSTEN_CHAIN_ID]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[ROPSTEN],
@@ -278,6 +283,10 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'matic_polygon',
       showOnlyCurrencies: 'matic_polygon,usdc_polygon',
     },
+    wyre: {
+      srn: 'matic',
+      currencyCode: MATIC_SYMBOL,
+    },
   },
   [AVALANCHE_CHAIN_ID]: {
     nativeCurrency: AVALANCHE_SYMBOL,
@@ -287,6 +296,11 @@ export const BUYABLE_CHAINS_MAP = {
       defaultCurrencyCode: 'avax_cchain',
       showOnlyCurrencies: 'avax_cchain',
     },
+    wyre: {
+      srn: 'avalanche',
+      currencyCode: AVALANCHE_SYMBOL,
+    },
+    coinbasePayCurrencies: [AVALANCHE_SYMBOL],
   },
   [FANTOM_CHAIN_ID]: {
     nativeCurrency: FANTOM_SYMBOL,

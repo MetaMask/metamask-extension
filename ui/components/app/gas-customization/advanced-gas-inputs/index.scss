@@ -23,7 +23,7 @@
       }
 
       .fa-info-circle {
-        color: var(--color-icon-default);
+        color: var(--color-icon-alternative);
         cursor: pointer;
       }
 
@@ -41,7 +41,7 @@
     &__warning-text {
       @include H7;
 
-      color: var(--color-secondary-default);
+      color: var(--color-warning-default);
     }
 
     &__input-wrapper {

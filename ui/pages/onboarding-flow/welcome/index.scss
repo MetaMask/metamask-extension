@@ -1,8 +1,6 @@
 @import "./react-gallery/carousel.min.css";
 
 .onboarding-welcome {
-  width: 600px;
-
   .control-dots .dot {
     background: var(--color-icon-muted);
     box-shadow: none;
@@ -16,6 +14,10 @@
   .carousel.carousel-slider .control-arrow {
     opacity: 1;
     color: var(--color-icon-default);
+
+    @media screen and (min-width: $break-large) {
+      padding: 40px;
+    }
   }
 
   .carousel .control-next.control-arrow::before {
@@ -42,7 +44,7 @@
   }
 
   &__buttons {
-    max-width: 50%;
+    max-width: 300px;
     margin: 40px auto 0 auto;
 
     li {

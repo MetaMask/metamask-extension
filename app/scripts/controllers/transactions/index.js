@@ -445,7 +445,7 @@ export default class TransactionController extends EventEmitter {
    * @param {string} editableParams.gasPrice
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
-  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
+  async updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
     this._throwErrorIfNotUnapprovedTx(txId, 'updateEditableParams');
 
     const editableParams = {
@@ -461,7 +461,20 @@ export default class TransactionController extends EventEmitter {
 
     // only update what is defined
     editableParams.txParams = pickBy(editableParams.txParams);
+
+    // update transaction type in case it has changes
+    const transactionBeforeEdit = this._getTransaction(txId);
+    const { type } = await determineTransactionType(
+      {
+        ...transactionBeforeEdit.txParams,
+        ...editableParams.txParams,
+      },
+      this.query,
+    );
+    editableParams.type = type;
+
     const note = `Update Editable Params for ${txId}`;
+
     this._updateTransaction(txId, editableParams, note);
     return this._getTransaction(txId);
   }
@@ -2040,6 +2053,10 @@ export default class TransactionController extends EventEmitter {
       gasParams.estimate_used = estimateUsed;
     }
 
+    if (extraParams?.gas_used) {
+      gasParams.gas_used = extraParams.gas_used;
+    }
+
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
 
     let eip1559Version = '0';
@@ -2070,8 +2087,8 @@ export default class TransactionController extends EventEmitter {
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       first_seen: time,
       gas_limit: gasLimit,
-      ...gasParamsInGwei,
       ...extraParams,
+      ...gasParamsInGwei,
     };
 
     return { properties, sensitiveProperties };

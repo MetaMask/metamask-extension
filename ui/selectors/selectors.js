@@ -470,6 +470,24 @@ export function getTotalUnapprovedCount(state) {
   );
 }
 
+export function getTotalUnapprovedMessagesCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -693,6 +711,15 @@ export function getIsBuyableMoonPayChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
 }
 
+export function getIsBuyableWyreChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
+}
+export function getIsBuyableCoinbasePayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -717,9 +744,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
       tabMessage: () => snap.manifest.proposedName,
       descriptionMessage: () => snap.manifest.description,
       sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
-        unescape(encodeURIComponent(snap.id)),
-      )}`,
+      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
       icon: 'fa fa-flask',
     };
   });
