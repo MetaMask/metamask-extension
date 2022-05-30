@@ -151,7 +151,7 @@ const AddNetwork = () => {
                 onClick={() => history.push(NETWORKS_ROUTE)}
                 className="add-network__header__back-icon"
               />
-              <Typography variant={TYPOGRAPHY.H3} color={COLORS.TEXT_DEFAULT}>
+              <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_DEFAULT}>
                 {t('addANetwork')}
               </Typography>
             </Box>
