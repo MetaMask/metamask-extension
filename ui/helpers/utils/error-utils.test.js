@@ -1,7 +1,7 @@
 import { SUPPORT_LINK } from '../constants/common';
 import { getErrorHtml } from './error-utils';
 
-const defaultState = {
+const mockStore = {
   localeMessages: {
     current: {
       troubleStarting: {
@@ -25,14 +25,14 @@ const defaultState = {
 };
 
 jest.mock('./i18n-helper', () => ({
-  fetchLocale: jest.fn((_locale) => defaultState.localeMessages.current),
+  fetchLocale: jest.fn((_locale) => mockStore.localeMessages.current),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
 
 describe('Error utils Tests', () => {
   it('should get error html', async () => {
-    const errorHtml = await getErrorHtml(SUPPORT_LINK, defaultState.metamask);
-    const currentLocale = defaultState.localeMessages.current;
+    const errorHtml = await getErrorHtml(SUPPORT_LINK, mockStore.metamask);
+    const currentLocale = mockStore.localeMessages.current;
     const troubleStartingMessage = currentLocale.troubleStarting.message;
     const restartMetamaskMessage = currentLocale.restartMetamask.message;
     const stillGettingMessageMessage =
