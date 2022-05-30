@@ -16983,9 +16983,9 @@ lavamoat-tofu@^5.1.3:
     "@babel/traverse" "^7.10.1"
 
 lavamoat-tofu@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-6.0.1.tgz#df3a1d09021790d5a4ccc1039751e9b3c2df85f6"
-  integrity sha512-QotLOiEcGBlWBJPYSZKDRRFchpwN9s3Ra8DDTuxJ57dGTBKOvvvfA+BpAjH/w1JcEhFkl5Wkc57Hl1oVzE8D2A==
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-6.0.2.tgz#eed3031e31fac37b36eb42a7bad9ec7ef824ea34"
+  integrity sha512-za9lWVdB5hk1Clt77Sfb81x425sOi9nnZvJcsCfhQaojNJSn8B/3MQR9D7HmmNw4jJE+4B0ILqZoz/MNaABEYg==
   dependencies:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"

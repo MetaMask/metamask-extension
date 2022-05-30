@@ -3216,10 +3216,6 @@
       }
     },
     "@metamask/rpc-methods": {
-      "globals": {
-        "caveats": true,
-        "params": true
-      },
       "packages": {
         "@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
@@ -3324,17 +3320,11 @@
         "console.info": true,
         "console.log": true,
         "console.warn": true,
-        "dist": true,
         "document.body.appendChild": true,
         "document.createElement": true,
         "document.getElementById": true,
         "fetch": true,
-        "location": true,
-        "npm": true,
-        "remove": true,
-        "setTimeout": true,
-        "tarball": true,
-        "versions": true
+        "setTimeout": true
       },
       "packages": {
         "@metamask/controllers": true,
