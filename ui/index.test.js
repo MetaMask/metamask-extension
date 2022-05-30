@@ -6,7 +6,7 @@ const enMessages = {
       'MetaMask had trouble starting. This error could be intermittent, so try restarting the extension.',
   },
   restartMetamask: {
-    message: 'Restart Metamask',
+    message: 'Restart MetaMask',
   },
   stillGettingMessage: {
     message: 'Still getting this message?',

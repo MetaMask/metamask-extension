@@ -2653,7 +2653,7 @@
     "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
   },
   "restartMetamask": {
-    "message": "Restart Metamask"
+    "message": "Restart MetaMask"
   },
   "restore": {
     "message": "Restore"
