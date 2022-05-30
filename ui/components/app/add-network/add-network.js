@@ -47,7 +47,9 @@ const AddNetwork = () => {
   const history = useHistory();
   const frequentRpcList = useSelector(getFrequentRpcListDetail);
 
-  const frequentRpcListChainIds = frequentRpcList.map((net) => net.chainId);
+  const frequentRpcListChainIds = Object.values(frequentRpcList).map(
+    (net) => net.chainId,
+  );
 
   const infuraRegex = /infura.io/u;
 
@@ -71,7 +73,7 @@ const AddNetwork = () => {
   }
 
   useEffect(() => {
-    const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations.find(
+    const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations?.find(
       (confirmation) => {
         return (
           confirmation.origin === 'metamask' &&
