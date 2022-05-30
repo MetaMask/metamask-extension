@@ -20,6 +20,7 @@ class MetaRPCClient {
     this.responseHandled[id] = false;
     setTimeout(() => {
       if (!this.responseHandled[id] && cb) {
+        delete this.responseHandled[id];
         return cb(new Error('No response from RPC'), null);
       }
 
