@@ -39,6 +39,7 @@ import {
 import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -1020,7 +1021,9 @@ export function deleteExpiredNotifications() {
 
     const notificationIdsToDelete = notifications
       .filter((notification) => {
-        const expirationTime = new Date(Date.now() - 10000);
+        const expirationTime = new Date(
+          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
+        );
 
         return Boolean(
           notification.readDate &&
