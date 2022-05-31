@@ -14,3 +14,11 @@
 .snaps-authorship-icon {
   color: var(--color-icon-default);
 }
+
+.snaps-authorship-version {
+  border-radius: 100px;
+}
+
+.snaps-authorship-version > span {
+  vertical-align: middle;
+}

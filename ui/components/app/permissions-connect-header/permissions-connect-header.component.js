@@ -96,24 +96,8 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          isSnapInstall && <SnapsAuthorshipPill snapId={siteOrigin} />
-          ///: END:ONLY_INCLUDE_IN
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          snapVersion && (
-            <Typography
-              boxProps={{
-                margin: [2, 0],
-              }}
-              color={COLORS.TEXT_MUTED}
-              variant={TYPOGRAPHY.H7}
-              align={TEXT_ALIGN.CENTER}
-              tag="span"
-              className="version"
-            >
-              {t('shorthandVersion', [snapVersion])}
-            </Typography>
+          isSnapInstall && (
+            <SnapsAuthorshipPill snapId={siteOrigin} version={snapVersion} />
           )
           ///: END:ONLY_INCLUDE_IN
         }
