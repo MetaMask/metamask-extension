@@ -74,9 +74,11 @@ export default class PageContainer extends PureComponent {
     children = children.filter(Boolean);
     const { activeTabIndex } = this.state;
 
-    return children[activeTabIndex]
-      ? children[activeTabIndex].props.children
-      : children.props.children;
+    if (Array.isArray(children)) {
+      children = children[activeTabIndex] || children[0];
+    }
+
+    return children.props.children;
   }
 
   renderContent() {
