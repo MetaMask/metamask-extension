@@ -3089,9 +3089,6 @@
   "stxPendingOptimizingGas": {
     "message": "गैस ऑप्टिमाइज़ कर रहा है..."
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "स्वैप को निजी तौर पर सबमिट कर रहा है..."
-  },
   "stxSubDescription": {
     "message": "* स्मार्ट लेनदेन आपके लेनदेन को निजी तौर पर, अनेक बार जमा करने का प्रयास करेंगे। यदि सभी प्रयास विफल हो जाते हैं, तो लेनदेन को सार्वजनिक रूप से प्रसारित किया जाएगा ताकि यह सुनिश्चित हो सके कि आपका स्वैप सफलतापूर्वक पूरा हो।"
   },
@@ -3179,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "स्वैप पूरा होगा <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करें"

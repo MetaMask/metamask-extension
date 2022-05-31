@@ -3089,9 +3089,6 @@
   "stxPendingOptimizingGas": {
     "message": "Optimisation des gas fees..."
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Soumission privée du swap..."
-  },
   "stxSubDescription": {
     "message": "* Avec les transactions intelligentes, votre transaction sera soumise plusieurs fois en privé. Si toutes les tentatives échouent, la transaction sera diffusée publiquement pour s’assurer de la réussite de votre swap."
   },
@@ -3179,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Aucun jeton disponible correspondant à $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Swap terminé dans <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirmez avec votre portefeuille matériel"

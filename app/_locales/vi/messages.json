@@ -3089,9 +3089,6 @@
   "stxPendingOptimizingGas": {
     "message": "Đang tối ưu gas..."
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Đang gửi yêu cầu Hoán đổi riêng tư..."
-  },
   "stxSubDescription": {
     "message": "* Giao dịch thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần theo cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
   },
@@ -3179,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Không có token nào khớp với $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Hoán đổi xong sau <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Xác nhận ví cứng của bạn"

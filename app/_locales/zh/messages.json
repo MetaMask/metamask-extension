@@ -3095,9 +3095,6 @@
   "stxPendingOptimizingGas": {
     "message": "正在优化燃料......"
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "正在隐秘提交交换......"
-  },
   "stxSubDescription": {
     "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },
@@ -3185,10 +3182,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "没有与 $1 匹配的代币",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "交换将在此时间內完成<",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"

@@ -3089,9 +3089,6 @@
   "stxPendingOptimizingGas": {
     "message": "ガス代を最適化中..."
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "スワップを非公開で送信中..."
-  },
   "stxSubDescription": {
     "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },
@@ -3179,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1と一致するトークンがありません",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "スワップ完了まで <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"

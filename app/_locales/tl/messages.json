@@ -3089,9 +3089,6 @@
   "stxPendingOptimizingGas": {
     "message": "Pinapahusay ang gas..."
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Pribadong isinusumite ang Pagpapalit..."
-  },
   "stxSubDescription": {
     "message": "* Susubukan ng mga Smart Transaction na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Pagpapalit ay naging matagupay."
   },
@@ -3179,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Walang available na token na tumutugma sa $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Kumpleto na ang pagpapalit sa <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin gamit ang iyong hardware wallet"

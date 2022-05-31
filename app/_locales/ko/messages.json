@@ -3089,9 +3089,6 @@
   "stxPendingOptimizingGas": {
     "message": "가스비 최적화 중..."
   },
-  "stxPendingPrivatelySubmitting": {
-    "message": "스왑을 비공개로 제출하는 중..."
-  },
   "stxSubDescription": {
     "message": "*스마트 거래는 비공개로 거래를 제출하기 위해 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 거래는 공개적으로 브로드캐스트될 것입니다."
   },
@@ -3179,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "스왑 완료까지 남은 시간:",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인합니다."

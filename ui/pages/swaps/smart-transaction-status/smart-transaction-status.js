@@ -174,10 +174,16 @@ export default function SmartTransactionStatus() {
   let subDescription;
   let icon;
   if (isSmartTransactionPending) {
-    if (timeLeftForPendingStxInSec < 120) {
+    if (
+      timeLeftForPendingStxInSec <
+      swapsNetworkConfig.stxStatusDeadline - 60
+    ) {
       headerText = t('stxPendingFinalizing');
-    } else if (timeLeftForPendingStxInSec < 150) {
-      headerText = t('stxPendingPrivatelySubmitting');
+    } else if (
+      timeLeftForPendingStxInSec <
+      swapsNetworkConfig.stxStatusDeadline - 30
+    ) {
+      headerText = t('stxPendingPrivatelySubmittingSwap');
     } else if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
     }
@@ -332,7 +338,7 @@ export default function SmartTransactionStatus() {
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginLeft: 1 }}
             >
-              {`${t('swapCompleteIn')} `}
+              {`${t('stxSwapCompleteIn')} `}
             </Typography>
             <Typography
               color={COLORS.TEXT_ALTERNATIVE}
