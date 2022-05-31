@@ -14,7 +14,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getUnreadNotificationCount,
+  getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
@@ -32,7 +32,7 @@ function mapStateToProps(state) {
   const origin = getOriginOfCurrentTab(state);
   const selectedAddress = getSelectedAddress(state);
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const unreadNotificationCount = getUnreadNotificationCount(state);
+  const unreadNotificationsCount = getUnreadNotificationsCount(state);
   ///: END:ONLY_INCLUDE_IN
   return {
     isAccountMenuOpen,
@@ -43,7 +43,7 @@ function mapStateToProps(state) {
     accounts,
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    unreadNotificationCount,
+    unreadNotificationsCount,
     ///: END:ONLY_INCLUDE_IN
   };
 }

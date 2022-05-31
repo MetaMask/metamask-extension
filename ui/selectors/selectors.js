@@ -790,15 +790,9 @@ export function getUnreadNotifications(state) {
   return unreadNotificationCount;
 }
 
-export const getUnreadNotificationCount = createSelector(
+export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
-  (notifications) => {
-    const unreadNotificationCount = notifications.filter(
-      (notification) => notification.readDate === null,
-    ).length;
-
-    return unreadNotificationCount;
-  },
+  (notifications) => notifications.length,
 );
 ///: END:ONLY_INCLUDE_IN
 

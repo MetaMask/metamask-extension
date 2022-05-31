@@ -88,7 +88,7 @@ export default class AccountMenu extends Component {
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    unreadNotificationCount: PropTypes.number,
+    unreadNotificationsCount: PropTypes.number,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -300,7 +300,7 @@ export default class AccountMenu extends Component {
       lockMetamask,
       history,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      unreadNotificationCount,
+      unreadNotificationsCount,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
@@ -423,9 +423,9 @@ export default class AccountMenu extends Component {
                     className="fa fa-bell fa-xl"
                     color="var(--color-icon-default)"
                   />
-                  {unreadNotificationCount > 0 && (
+                  {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
-                      {unreadNotificationCount}
+                      {unreadNotificationsCount}
                     </div>
                   )}
                 </div>

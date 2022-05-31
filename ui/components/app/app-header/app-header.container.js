@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getUnreadNotificationCount } from '../../../selectors';
+import { getUnreadNotificationsCount } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IN
 
 import * as actions from '../../../store/actions';
@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   const { selectedAddress, isUnlocked, isAccountMenuOpen } = metamask;
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const unreadNotificationCount = getUnreadNotificationCount(state);
+  const unreadNotificationsCount = getUnreadNotificationsCount(state);
   ///: END:ONLY_INCLUDE_IN
 
   return {
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     isUnlocked,
     isAccountMenuOpen,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    unreadNotificationCount,
+    unreadNotificationsCount,
     ///: END:ONLY_INCLUDE_IN
   };
 };

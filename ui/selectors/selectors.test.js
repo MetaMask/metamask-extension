@@ -252,8 +252,8 @@ describe('Selectors', () => {
       mockState.metamask.notifications.test2,
     ]);
   });
-  it('#getUnreadNotificationCount', () => {
-    const unreadNotificationCount = selectors.getUnreadNotificationCount(
+  it('#getUnreadNotificationsCount', () => {
+    const unreadNotificationCount = selectors.getUnreadNotificationsCount(
       mockState,
     );
 
