@@ -7,24 +7,32 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
-  MAINNET_NETWORK_ID,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { TRANSAK_API_KEY, MOONPAY_API_KEY } from '../constants/on-ramp';
+import {
+  TRANSAK_API_KEY,
+  MOONPAY_API_KEY,
+  COINBASEPAY_API_KEY,
+} from '../constants/on-ramp';
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 /**
  * Create a Wyre purchase URL.
  *
- * @param {string} address - Ethereum destination address
+ * @param {string} walletAddress - Ethereum destination address
+ * @param {string} chainId - Current chain ID
  * @returns String
  */
-const createWyrePurchaseUrl = async (address) => {
-  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${MAINNET_NETWORK_ID}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${address}`;
-  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
+const createWyrePurchaseUrl = async (walletAddress, chainId) => {
+  const { wyre = {} } = BUYABLE_CHAINS_MAP[chainId];
+  const { srn, currencyCode } = wyre;
+
+  const networkId = parseInt(chainId, 16);
+  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${networkId}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${walletAddress}`;
+  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=${srn}:${walletAddress}&destCurrency=${currencyCode}&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
@@ -109,6 +117,28 @@ const createMoonPayUrl = async (walletAddress, chainId) => {
 };
 
 /**
+ * Create a Coinbase Pay Checkout URL.
+ *
+ * @param {string} walletAddress - Ethereum destination address
+ * @param {string} chainId - Current chain ID
+ * @returns String
+ */
+const createCoinbasePayUrl = (walletAddress, chainId) => {
+  const { coinbasePayCurrencies } = BUYABLE_CHAINS_MAP[chainId];
+  const queryParams = new URLSearchParams({
+    appId: COINBASEPAY_API_KEY,
+    attribution: 'extension',
+    destinationWallets: JSON.stringify([
+      {
+        address: walletAddress,
+        assets: coinbasePayCurrencies,
+      },
+    ]),
+  });
+  return `https://pay.coinbase.com/buy?${queryParams}`;
+};
+
+/**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
  * @param {Object} opts - Options required to determine the correct url
@@ -127,11 +157,13 @@ export default async function getBuyUrl({ chainId, address, service }) {
 
   switch (service) {
     case 'wyre':
-      return await createWyrePurchaseUrl(address);
+      return await createWyrePurchaseUrl(address, chainId);
     case 'transak':
       return createTransakUrl(address, chainId);
     case 'moonpay':
       return createMoonPayUrl(address, chainId);
+    case 'coinbase':
+      return createCoinbasePayUrl(address, chainId);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'rinkeby-faucet':

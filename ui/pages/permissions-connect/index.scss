@@ -27,7 +27,7 @@
   &__back {
     @include H7;
 
-    color: var(--color-text-default);
+    color: var(--color-icon-default);
     font-weight: bold;
     cursor: pointer;
 
@@ -39,7 +39,7 @@
   &__page-count {
     @include H7;
 
-    color: var(--color-icon-default);
+    color: var(--color-text-default);
     grid-column: 2;
     justify-self: end;
     font-weight: bold;

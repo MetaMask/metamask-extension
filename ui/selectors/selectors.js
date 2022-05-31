@@ -470,6 +470,24 @@ export function getTotalUnapprovedCount(state) {
   );
 }
 
+export function getTotalUnapprovedMessagesCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -671,7 +689,7 @@ export function getSwapsDefaultToken(state) {
 export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
   const isNotDevelopment =
-    process.env.METAMASK_ENVIRONMENT !== 'development' ||
+    process.env.METAMASK_ENVIRONMENT !== 'development' &&
     process.env.METAMASK_ENVIRONMENT !== 'testing';
   return isNotDevelopment
     ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
@@ -691,6 +709,15 @@ export function getIsBuyableTransakChain(state) {
 export function getIsBuyableMoonPayChain(state) {
   const chainId = getCurrentChainId(state);
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
+}
+
+export function getIsBuyableWyreChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
+}
+export function getIsBuyableCoinbasePayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
 }
 
 export function getNativeCurrencyImage(state) {
@@ -717,9 +744,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
       tabMessage: () => snap.manifest.proposedName,
       descriptionMessage: () => snap.manifest.description,
       sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
-        unescape(encodeURIComponent(snap.id)),
-      )}`,
+      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
       icon: 'fa fa-flask',
     };
   });
@@ -749,8 +774,8 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: getIsMainnet(state),
-    10: Boolean(process.env.TOKEN_DETECTION_V2),
-    11: Boolean(process.env.TOKEN_DETECTION_V2),
+    10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
+    11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     12: true,
   };
 }
@@ -969,6 +994,22 @@ export function getIsTokenDetectionSupported(state) {
   ].includes(chainId);
 }
 
+/**
+ * To retrieve the list of tokens detected and saved on the state to detectedToken object.
+ *
+ * @param {*} state
+ * @returns list of token objects
+ */
 export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.detectedTokens;
+}
+
+/**
+ * To fetch the name of the tokens that are imported from tokens found page
+ *
+ * @param {*} state
+ * @returns
+ */
+export function getNewTokensImported(state) {
+  return state.appState.newTokensImported;
 }

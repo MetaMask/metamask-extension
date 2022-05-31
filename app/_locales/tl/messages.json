@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Sang-ayon Ako"
   },
-  "aggregatorFeeCost": {
-    "message": "Bayarin sa aggregator network"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Bayarin sa pag-apruba at aggregator network"
-  },
-  "approvalTxGasCost": {
-    "message": "Pag-apruba Tx Halaga ng Gas"
   },
   "approve": {
     "message": "Aprubahan ang limitasyon sa paggastos"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Bumili ng ETH gamit ang Wyre"
+    "message": "Bumili ng $1 gamit ang Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Nagbibigay-daan sa iyo ang Wyre na gumamit ng debit card para mag-deposit ng ETH sa mismong MetaMask account mo."
+    "message": "Nagbibigay-daan sa iyo ang Wyre na gumamit ng debit card para mag-deposit ng $1 sa mismong MetaMask account mo."
   },
   "bytes": {
     "message": "Bytes"
@@ -1173,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "External Extension"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 na pag-apruba sa gas",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Hindi matagumpay"

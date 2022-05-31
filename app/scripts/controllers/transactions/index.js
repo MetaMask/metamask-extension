@@ -18,10 +18,12 @@ import {
   getChainType,
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
+import { calcGasTotal } from '../../../../ui/pages/send/send.utils';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
 import {
   hexWEIToDecGWEI,
   decimalToHex,
+  hexWEIToDecETH,
 } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
@@ -443,7 +445,7 @@ export default class TransactionController extends EventEmitter {
    * @param {string} editableParams.gasPrice
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
-  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
+  async updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
     this._throwErrorIfNotUnapprovedTx(txId, 'updateEditableParams');
 
     const editableParams = {
@@ -459,7 +461,20 @@ export default class TransactionController extends EventEmitter {
 
     // only update what is defined
     editableParams.txParams = pickBy(editableParams.txParams);
+
+    // update transaction type in case it has changes
+    const transactionBeforeEdit = this._getTransaction(txId);
+    const { type } = await determineTransactionType(
+      {
+        ...transactionBeforeEdit.txParams,
+        ...editableParams.txParams,
+      },
+      this.query,
+    );
+    editableParams.type = type;
+
     const note = `Update Editable Params for ${txId}`;
+
     this._updateTransaction(txId, editableParams, note);
     return this._getTransaction(txId);
   }
@@ -1877,6 +1892,30 @@ export default class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
   }
 
+  _calculateTransactionsCost(txMeta, approvalTxMeta) {
+    let approvalGasCost = '0x0';
+    if (approvalTxMeta?.txReceipt) {
+      approvalGasCost = calcGasTotal(
+        approvalTxMeta.txReceipt.gasUsed,
+        approvalTxMeta.txReceipt.effectiveGasPrice,
+      );
+    }
+    const tradeGasCost = calcGasTotal(
+      txMeta.txReceipt.gasUsed,
+      txMeta.txReceipt.effectiveGasPrice,
+    );
+    const tradeAndApprovalGasCost = new BigNumber(tradeGasCost, 16)
+      .plus(approvalGasCost, 16)
+      .toString(16);
+    return {
+      approvalGasCostInEth: Number(hexWEIToDecETH(approvalGasCost)),
+      tradeGasCostInEth: Number(hexWEIToDecETH(tradeGasCost)),
+      tradeAndApprovalGasCostInEth: Number(
+        hexWEIToDecETH(tradeAndApprovalGasCost),
+      ),
+    };
+  }
+
   _trackSwapsMetrics(txMeta, approvalTxMeta) {
     if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
       if (txMeta.txReceipt.status === '0x0') {
@@ -1911,6 +1950,11 @@ export default class TransactionController extends EventEmitter {
                 .round(2)}%`
             : null;
 
+        const transactionsCost = this._calculateTransactionsCost(
+          txMeta,
+          approvalTxMeta,
+        );
+
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',
           category: EVENT.CATEGORIES.SWAPS,
@@ -1919,6 +1963,10 @@ export default class TransactionController extends EventEmitter {
             token_to_amount_received: tokensReceived,
             quote_vs_executionRatio: quoteVsExecutionRatio,
             estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
+            approval_gas_cost_in_eth: transactionsCost.approvalGasCostInEth,
+            trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
+            trade_and_approval_gas_cost_in_eth:
+              transactionsCost.tradeAndApprovalGasCostInEth,
           },
         });
       }
@@ -2005,6 +2053,10 @@ export default class TransactionController extends EventEmitter {
       gasParams.estimate_used = estimateUsed;
     }
 
+    if (extraParams?.gas_used) {
+      gasParams.gas_used = extraParams.gas_used;
+    }
+
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
 
     let eip1559Version = '0';
@@ -2035,8 +2087,8 @@ export default class TransactionController extends EventEmitter {
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       first_seen: time,
       gas_limit: gasLimit,
-      ...gasParamsInGwei,
       ...extraParams,
+      ...gasParamsInGwei,
     };
 
     return { properties, sensitiveProperties };

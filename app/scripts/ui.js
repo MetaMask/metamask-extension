@@ -16,6 +16,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
@@ -35,7 +36,20 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
 
   const activeTab = await queryCurrentActiveTab(windowType);
-  initializeUiWithTab(activeTab);
+
+  /**
+   * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
+   * Code below ensures that UI is rendered only after background is ready.
+   */
+  if (isManifestV3()) {
+    extensionPort.onMessage.addListener((message) => {
+      if (message?.name === 'CONNECTION_READY') {
+        initializeUiWithTab(activeTab);
+      }
+    });
+  } else {
+    initializeUiWithTab(activeTab);
+  }
 
   function displayCriticalError(container, err) {
     container.innerHTML =

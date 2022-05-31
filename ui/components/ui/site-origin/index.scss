@@ -1,12 +1,13 @@
 .site-origin {
+  overflow: hidden;
   max-width: 100%;
 
   .chip {
     max-width: 100%;
-  }
 
-  .chip__left-icon {
-    padding: 4px 0 4px 8px;
+    &__left-icon {
+      padding: 4px 0 4px 8px;
+    }
   }
 
   span {
@@ -17,5 +18,6 @@
 
     /*rtl:ignore*/
     direction: rtl;
+    max-width: 100%;
   }
 }
