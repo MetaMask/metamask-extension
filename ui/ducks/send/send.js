@@ -2265,17 +2265,10 @@ export function getRecipient(state) {
   const checksummedAddress = toChecksumHexAddress(
     state[name].recipient.address,
   );
-  if (
-    state[name].recipient.nickname === '' &&
-    state.metamask.ensResolutionsByAddress
-  ) {
-    const recipient = {
-      ...state[name].recipient,
-      nickname: getEnsResolutionByAddress(state, checksummedAddress),
-    };
-    return recipient;
+  return {
+    ...state[name].recipient,
+    nickname: state[name].recipient.nickname || getEnsResolutionByAddress(state, checksummedAddress),
   }
-  return state[name].recipient;
 }
 
 // Overall validity and stage selectors
