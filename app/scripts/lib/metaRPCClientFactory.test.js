@@ -133,14 +133,19 @@ describe('metaRPCClientFactory', () => {
   });
 
   it('should be able to handle no message within TIMEOUT secs', async () => {
+    jest.useFakeTimers();
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
-    metaRPCClient.foo('bad', (error, _) => {
-      expect(error.message).toStrictEqual('No response from RPC');
-    });
 
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+    const errorPromise = new Promise((_resolve, reject) =>
+      metaRPCClient.foo('bad', (error, _) => {
+        reject(error);
+      }),
+    );
 
-    await delay(11000);
-  }, 20000);
+    jest.runOnlyPendingTimers();
+    await expect(errorPromise).rejects.toThrow('No response from RPC');
+
+    jest.useRealTimers();
+  });
 });
