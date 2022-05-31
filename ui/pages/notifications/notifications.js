@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getNotifications, getSnapsRouteObjects } from '../../selectors';
+import { formatDate } from '../../helpers/utils/util';
+import {
+  getNotifications,
+  getSnapsRouteObjects,
+  getUnreadNotifications,
+} from '../../selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   deleteExpiredNotifications,
@@ -21,8 +26,6 @@ export function NotificationItem({ notification, snaps, onItemClick }) {
   const snap = snaps.find(({ id: snapId }) => {
     return snapId === origin;
   });
-
-  const date = new Date(createdDate);
 
   const handleNameClick = (e) => {
     e.stopPropagation();
@@ -43,10 +46,7 @@ export function NotificationItem({ notification, snaps, onItemClick }) {
         <p className="notifications__item__details__message">{message}</p>
         <p className="notifications__item__details__infos">
           {t('notificationsInfos', [
-            new Intl.DateTimeFormat('en-US', {
-              dateStyle: 'medium',
-              timeStyle: 'short',
-            }).format(date),
+            formatDate(createdDate, "LLLL d',' yyyy 'at' t"),
             <Button type="inline" onClick={handleNameClick} key="button">
               {snap.tabMessage()}
             </Button>,
@@ -63,11 +63,10 @@ export default function Notifications() {
   const t = useI18nContext();
   const notifications = useSelector(getNotifications);
   const snapsRouteObject = useSelector(getSnapsRouteObjects);
+  const unreadNotifications = useSelector(getUnreadNotifications);
 
   const markAllAsRead = () => {
-    const unreadNotificationIds = notifications
-      .filter(({ readDate }) => readDate === null)
-      .map(({ id }) => id);
+    const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
 
     dispatch(markNotificationsAsRead(unreadNotificationIds));
   };

@@ -84,9 +84,9 @@ describe('NotificationItem', () => {
       snaps: [
         {
           id: 'test',
-          tabMessage: () => 'test',
-          descriptionMessage: () => 'test',
-          sectionMessage: () => 'test',
+          tabMessage: () => 'test snap name',
+          descriptionMessage: () => 'test description',
+          sectionMessage: () => 'test section Message',
           route: '/test',
           icon: 'test',
         },

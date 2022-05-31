@@ -763,8 +763,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
 /**
  * Notifications are managed by the notification controller and referenced by
  * `state.metamask.notifications`. This function returns a list of notifications
- * the can be shown to the user. This list includes all notifications that do not
- * have a null value in `readDate`
+ * the can be shown to the user.
  *
  * The returned notifications are sorted by date.
  *
@@ -781,15 +780,26 @@ export function getNotifications(state) {
   return notificationsSortedByDate;
 }
 
-export function getUnreadNotificationCount(state) {
+export function getUnreadNotifications(state) {
   const notifications = getNotifications(state);
 
   const unreadNotificationCount = notifications.filter(
     (notification) => notification.readDate === null,
-  ).length;
+  );
 
   return unreadNotificationCount;
 }
+
+export const getUnreadNotificationCount = createSelector(
+  getUnreadNotifications,
+  (notifications) => {
+    const unreadNotificationCount = notifications.filter(
+      (notification) => notification.readDate === null,
+    ).length;
+
+    return unreadNotificationCount;
+  },
+);
 ///: END:ONLY_INCLUDE_IN
 
 /**

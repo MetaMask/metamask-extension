@@ -259,4 +259,12 @@ describe('Selectors', () => {
 
     expect(unreadNotificationCount).toStrictEqual(1);
   });
+
+  it('#getUnreadNotifications', () => {
+    const unreadNotifications = selectors.getUnreadNotifications(mockState);
+
+    expect(unreadNotifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+    ]);
+  });
 });
