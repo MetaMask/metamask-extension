@@ -158,19 +158,26 @@ Smart.args = {
 Swap.storyName = 'swap';
 Swap.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SWAP_APPROVAL],
+    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SWAP],
   },
 };
 
 SwapApproval.storyName = 'swapApproval';
 SwapApproval.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_APPROVE],
+    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.SWAP_APPROVAL],
   },
 };
 
 TokenMethodApprove.storyName = 'approve';
 TokenMethodApprove.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_APPROVE],
+  },
+};
+
+TokenMethodSafeTransferFrom.storyName = 'safetransferfrom';
+TokenMethodSafeTransferFrom.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[
       TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
@@ -178,17 +185,10 @@ TokenMethodApprove.args = {
   },
 };
 
-TokenMethodSafeTransferFrom.storyName = 'safetransferfrom';
-TokenMethodSafeTransferFrom.args = {
-  'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER],
-  },
-};
-
 TokenMethodTransfer.storyName = 'transfer';
 TokenMethodTransfer.args = {
   'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM],
+    ...MOCK_TRANSACTION_BY_TYPE[TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER],
   },
 };
 
