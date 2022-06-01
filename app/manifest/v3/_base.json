@@ -47,6 +47,12 @@
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
+  "host_permissions": [
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://lattice.gridplus.io/*",
+    "*://*.eth/"
+  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -63,12 +69,8 @@
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://lattice.gridplus.io/*",
     "activeTab",
     "webRequest",
-    "*://*.eth/",
     "notifications"
   ],
   "short_name": "__MSG_appName__",
