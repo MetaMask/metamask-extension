@@ -302,15 +302,12 @@ export default class TransactionStateManager extends EventEmitter {
    *
    * @param {Object} txMeta - the txMeta to update
    * @param {string} [note] - a note about the update for history
-   * @param {string} shouldNormalize - this variable is used to turn off call to normalizeAndValidateTxParams
    */
-  updateTransaction(txMeta, note, shouldNormalize = true) {
+  updateTransaction(txMeta, note) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
       try {
-        txMeta.txParams =
-          shouldNormalize &&
-          normalizeAndValidateTxParams(txMeta.txParams, false);
+        txMeta.txParams = normalizeAndValidateTxParams(txMeta.txParams, false);
       } catch (error) {
         if (txMeta.warning.message === ERROR_SUBMITTING) {
           this.setTxStatusFailed(txMeta.id, error);
@@ -658,15 +655,9 @@ export default class TransactionStateManager extends EventEmitter {
 
     txMeta.status = status;
     try {
-      // we should not call normalizeAndValidateTxParams if we're failing the transaction.
-      let shouldNormalize = true;
-      if (status === TRANSACTION_STATUSES.FAILED) {
-        shouldNormalize = false;
-      }
-      this.updateTransaction(
+      this._updateTransactionHistory(
         txMeta,
         `txStateManager: setting status to ${status}`,
-        shouldNormalize,
       );
       this.emit(`${txMeta.id}:${status}`, txId);
       this.emit(`tx:status-update`, txId, status);

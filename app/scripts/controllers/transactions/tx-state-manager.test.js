@@ -971,18 +971,14 @@ describe('TransactionStateManager', function () {
         'Invalid transaction envelope type: specified type "0x0" but including maxFeePerGas and maxPriorityFeePerGas requires type: "0x2"',
       );
 
-      // history[2] should contain 2 entries
-      assert.equal(result.history[2].length, 2);
+      assert.equal(result.history[2].length, 1);
       assert.equal(
         result.history[2][0].note,
         'txStateManager: setting status to failed',
       );
       assert.equal(result.history[2][0].op, 'replace');
-      assert.equal(result.history[2][0].path, '/txParams');
-
-      assert.equal(result.history[2][1].op, 'replace');
-      assert.equal(result.history[2][1].path, '/status');
-      assert.equal(result.history[2][1].value, 'failed');
+      assert.equal(result.history[2][0].path, '/status');
+      assert.equal(result.history[2][0].value, 'failed');
     });
 
     it('should set transaction status to failed', function () {
@@ -1020,19 +1016,14 @@ describe('TransactionStateManager', function () {
         result.history[1][0].value.message,
         'Testing tx status failed with arbitrary error',
       );
-
-      // history[2] should contain 2 entries
-      assert.equal(result.history[2].length, 2);
+      assert.equal(result.history[2].length, 1);
       assert.equal(
         result.history[2][0].note,
         'txStateManager: setting status to failed',
       );
       assert.equal(result.history[2][0].op, 'replace');
-      assert.equal(result.history[2][0].path, '/txParams');
-
-      assert.equal(result.history[2][1].op, 'replace');
-      assert.equal(result.history[2][1].path, '/status');
-      assert.equal(result.history[2][1].value, 'failed');
+      assert.equal(result.history[2][0].path, '/status');
+      assert.equal(result.history[2][0].value, 'failed');
     });
   });
 
