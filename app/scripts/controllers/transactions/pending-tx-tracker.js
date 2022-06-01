@@ -2,6 +2,7 @@ import EventEmitter from 'safe-event-emitter';
 import log from 'loglevel';
 import EthQuery from 'ethjs-query';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { ERROR_SUBMITTING } from './tx-state-manager';
 
 /**
  * Event emitter utility class for tracking the transactions as they
@@ -106,7 +107,7 @@ export default class PendingTransactionTracker extends EventEmitter {
         // encountered real error - transition to error state
         txMeta.warning = {
           error: errorMessage,
-          message: 'There was an error when resubmitting this transaction.',
+          message: ERROR_SUBMITTING,
         };
         this.emit('tx:warning', txMeta, err);
       }
