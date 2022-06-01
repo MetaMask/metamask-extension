@@ -15,7 +15,7 @@ import {
   ethErrors,
 } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
-import { stripHexPrefix } from 'ethereumjs-util';
+import { bnToHex, stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -53,6 +53,7 @@ import {
 } from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import { BN } from 'bn.js';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -3895,7 +3896,7 @@ export default class MetamaskController extends EventEmitter {
     const pendingNonce = nonceDetails.params.highestSuggested;
 
     releaseLock();
-    return pendingNonce;
+    return bnToHex(new BN(pendingNonce));
   }
 
   /**
