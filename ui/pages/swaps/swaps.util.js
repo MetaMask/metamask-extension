@@ -758,6 +758,12 @@ export function getSwapsTokensReceivedFromTxMeta(
       return null;
     }
 
+    if (txMeta.swapMetaData && txMeta.preTxBalance === txMeta.postTxBalance) {
+      // If preTxBalance and postTxBalance are equal, postTxBalance hasn't been updated on time
+      // because of the RPC provider delay, so we return an estimated receiving amount instead.
+      return txMeta.swapMetaData.token_to_amount;
+    }
+
     let approvalTxGasCost = '0x0';
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
       approvalTxGasCost = calcGasTotal(
