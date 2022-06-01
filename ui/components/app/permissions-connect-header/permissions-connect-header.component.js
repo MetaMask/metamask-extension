@@ -76,9 +76,6 @@ export default class PermissionsConnectHeader extends Component {
       isSnapInstall,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    const { t } = this.context;
-    ///: END:ONLY_INCLUDE_IN
     return (
       <Box
         className="permissions-connect-header"
