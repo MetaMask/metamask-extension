@@ -131,7 +131,7 @@ const expectedResults = [
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
-    title: 'Send Token',
+    title: 'Safe Transfer From',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xe7d...dd98',
     subtitleContainsOrigin: true,

@@ -363,10 +363,10 @@
     "message": "购买"
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 ETH"
+    "message": "使用 Wyre 购买 $1"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 ETH 存入您的 MetaMask 账户。"
+    "message": "您可以通过 Wyre 使用信用卡将 $1 存入您的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"

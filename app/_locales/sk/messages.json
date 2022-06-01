@@ -131,10 +131,10 @@
     "message": "Váš prehliadač nie je podporovaný..."
   },
   "buyWithWyre": {
-    "message": "Kúpte ETH s Wyre"
+    "message": "Kúpte $1 s Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu ETH priamo na váš účet MetaMask."
+    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu $1 priamo na váš účet MetaMask."
   },
   "bytes": {
     "message": "Bajty"
