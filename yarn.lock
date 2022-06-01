@@ -2889,10 +2889,10 @@
     ethereumjs-util "^7.0.9"
     ethereumjs-wallet "^1.0.1"
 
-"@metamask/eth-ledger-bridge-keyring@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.12.0.tgz#d3986e0dbbfeab713f4e0338bf4e5c74a2265bdd"
-  integrity sha512-kceBQc/wKCAdChZeI1P0Fs0FS15WtiD2Q87MqmfuJYpOriWRx/RmjKZoa6EJe2vy20KurlZRcKIiU8nFQ0e/ag==
+"@metamask/eth-ledger-bridge-keyring@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.13.0.tgz#586b705d92339d08650f9eef42ab2388c4dd2675"
+  integrity sha512-Xtze0Itc2Z6hLOlCaUjmuRlG97vtx6bPcWHcV1TWWOAKwLgatymUvBB3LTVIjJ/vxo8vysxp3sDf0jlGGlo7OA==
   dependencies:
     "@ethereumjs/tx" "^3.2.0"
     eth-sig-util "^2.0.0"
