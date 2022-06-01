@@ -11,33 +11,33 @@ export default {
       page: README,
     },
   },
-  argTypes: { 
+  argTypes: {
     sourceValue: {
-      control: 'text'
+      control: 'text',
     },
     sourceDecimals: {
-      control: 'number'
+      control: 'number',
     },
     sourceSymbol: {
-      control: 'text'
+      control: 'text',
     },
     destinationValue: {
-      control: 'text'
+      control: 'text',
     },
     destinationDecimals: {
-      control: 'number'
+      control: 'number',
     },
     destinationSymbol: {
-      control: 'text'      
+      control: 'text',
     },
     sourceIconUrl: {
-      control: 'text'       
+      control: 'text',
     },
     destinationIconUrl: {
-      control: 'text'           
-    }
+      control: 'text',
+    },
   },
-  args:{
+  args: {
     sourceValue: '2000000000000000000',
     sourceDecimals: 18,
     sourceSymbol: 'ETH',
@@ -45,13 +45,11 @@ export default {
     destinationDecimals: 18,
     destinationSymbol: 'ABC',
     sourceIconUrl: '.storybook/images/metamark.svg',
-    destinationIconUrl: '.storybook/images/sai.svg'
-
-  }
+    destinationIconUrl: '.storybook/images/sai.svg',
+  },
 };
 
 export const DefaultStory = (args) => {
-  
   return (
     <div
       style={{

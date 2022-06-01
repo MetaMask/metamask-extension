@@ -130,9 +130,9 @@ export default function MainQuoteSummary({
 
 MainQuoteSummary.propTypes = {
   /**
-   * The amount that will be sent in the smallest denomination. 
+   * The amount that will be sent in the smallest denomination.
    * For example, wei is the smallest denomination for ether.
-   */  
+   */
   sourceValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
@@ -140,12 +140,12 @@ MainQuoteSummary.propTypes = {
 
   /**
    * Maximum number of decimal places for the source token.
-   */   
+   */
   sourceDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
   /**
    * The ticker symbol for the source token.
-   */   
+   */
   sourceSymbol: PropTypes.string.isRequired,
 
   /**
@@ -159,7 +159,7 @@ MainQuoteSummary.propTypes = {
 
   /**
    * Maximum number of decimal places for the destination token.
-   */  
+   */
   destinationDecimals: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -167,12 +167,12 @@ MainQuoteSummary.propTypes = {
 
   /**
    * The ticker symbol for the destination token.
-   */   
+   */
   destinationSymbol: PropTypes.string.isRequired,
 
   /**
    * The location of the source token icon file.
-   */  
+   */
   sourceIconUrl: PropTypes.string,
 
   /**
