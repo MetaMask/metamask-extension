@@ -2132,6 +2132,9 @@
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
+  "notifications": {
+    "message": "Notifications"
+  },
   "notifications10ActionText": {
     "message": "Visit in settings",
     "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
@@ -2251,6 +2254,19 @@
   },
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
+  },
+  "notificationsEmptyText": {
+    "message": "Nothing to see here."
+  },
+  "notificationsHeader": {
+    "message": "Notifications"
+  },
+  "notificationsInfos": {
+    "message": "$1 from $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Mark all as read"
   },
   "numberOfNewTokensDetected": {
     "message": "$1 new tokens found in this account",
