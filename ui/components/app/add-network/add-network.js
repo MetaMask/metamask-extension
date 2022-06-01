@@ -15,7 +15,6 @@ import {
   SIZES,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
-import IconCaretLeft from '../../ui/icon/icon-caret-left';
 import Tooltip from '../../ui/tooltip';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import IconBorder from '../../ui/icon-border';
@@ -35,10 +34,7 @@ import { requestUserApproval } from '../../../store/actions';
 import Popover from '../../ui/popover';
 import ConfirmationPage from '../../../pages/confirmation/confirmation';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
-import {
-  ADD_NETWORK_ROUTE,
-  NETWORKS_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 const AddNetwork = () => {
@@ -137,7 +133,7 @@ const AddNetwork = () => {
           </Box>
         </Box>
       ) : (
-        <Box>
+        <Box className="add-network__networks-container">
           {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && (
             <Box
               display={DISPLAY.FLEX}
@@ -148,11 +144,10 @@ const AddNetwork = () => {
               paddingBottom={2}
               className="add-network__header"
             >
-              <IconCaretLeft
-                aria-label={t('back')}
-                onClick={() => history.push(NETWORKS_ROUTE)}
-                className="add-network__header__back-icon"
-              />
+              <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_MUTED}>
+                {t('networks')}
+              </Typography>
+              <span className="add-network__header__subtitle">{'  >  '}</span>
               <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_DEFAULT}>
                 {t('addANetwork')}
               </Typography>

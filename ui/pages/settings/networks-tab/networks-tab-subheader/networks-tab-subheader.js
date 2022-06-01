@@ -11,8 +11,12 @@ const NetworksFormSubheader = ({ addNewNetwork }) => {
   return addNewNetwork ? (
     <div className="networks-tab__subheader">
       <span className="networks-tab__sub-header-text">{t('networks')}</span>
+      <span className="networks-tab__sub-header-text">{'  >  '}</span>
+      <div className="networks-tab__sub-header-text">{t('addANetwork')}</div>
       <span>{'  >  '}</span>
-      <div className="networks-tab__subheader--break">{t('addANetwork')}</div>
+      <div className="networks-tab__subheader--break">
+        {t('addANetworkManually')}
+      </div>
     </div>
   ) : (
     <div className="settings-page__sub-header">

@@ -1,4 +1,12 @@
 .add-network {
+  &__networks-container {
+    padding-inline-end: 24px;
+
+    @media screen and (max-width: $break-small) {
+      padding: 0;
+    }
+  }
+
   &__header {
     border-bottom: 1px solid var(--color-border-default);
 
@@ -7,9 +15,9 @@
       padding-inline-end: 24px;
     }
 
-    &__back-icon {
-      margin-inline-start: -8px;
-      margin-inline-end: 4px;
+    &__subtitle {
+      margin-inline-start: 10px;
+      margin-inline-end: 10px;
     }
   }
 
