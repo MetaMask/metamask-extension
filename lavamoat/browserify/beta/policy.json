@@ -3216,13 +3216,10 @@
       }
     },
     "@metamask/rpc-methods": {
-      "globals": {
-        "caveats": true,
-        "params": true
-      },
       "packages": {
         "@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers": true,
         "eth-rpc-errors": true
       }
@@ -3272,6 +3269,11 @@
         "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
       }
     },
+    "@metamask/rpc-methods>@metamask/utils": {
+      "packages": {
+        "@storybook/api>fast-deep-equal": true
+      }
+    },
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -3318,22 +3320,17 @@
         "console.info": true,
         "console.log": true,
         "console.warn": true,
-        "dist": true,
         "document.body.appendChild": true,
         "document.createElement": true,
         "document.getElementById": true,
         "fetch": true,
-        "location": true,
-        "npm": true,
-        "remove": true,
-        "setTimeout": true,
-        "tarball": true,
-        "versions": true
+        "setTimeout": true
       },
       "packages": {
         "@metamask/controllers": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers>@metamask/execution-environments": true,
         "@metamask/snap-controllers>@metamask/obs-store": true,
         "@metamask/snap-controllers>ajv": true,
