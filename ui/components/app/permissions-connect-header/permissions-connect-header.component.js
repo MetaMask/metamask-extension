@@ -5,15 +5,9 @@ import Box from '../../ui/box';
 import {
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  COLORS,
-  TYPOGRAPHY,
-  TEXT_ALIGN,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
-import Typography from '../../ui/typography';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
