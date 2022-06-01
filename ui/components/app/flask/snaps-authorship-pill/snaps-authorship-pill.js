@@ -41,8 +41,8 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
             <Box
               className="snaps-authorship-version"
               backgroundColor={COLORS.PRIMARY_DEFAULT}
-              paddingLeft={1}
-              paddingRight={1}
+              paddingLeft={2}
+              paddingRight={2}
             >
               <Typography
                 color={COLORS.PRIMARY_INVERSE}
