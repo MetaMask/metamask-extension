@@ -163,7 +163,7 @@
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
     "eth-trezor-keyring": "^0.10.0",
-    "eth-walletconnect-keyring": "file:../eth-walletconnect-keyring",
+    "eth-walletconnect-keyring": "0.1.0",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
