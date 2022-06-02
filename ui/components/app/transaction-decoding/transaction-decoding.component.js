@@ -239,6 +239,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 }
 
 TransactionDecoding.propTypes = {
-  to: PropTypes.string.isRequired,
+  to: PropTypes.string,
   inputData: PropTypes.string.isRequired,
 };
