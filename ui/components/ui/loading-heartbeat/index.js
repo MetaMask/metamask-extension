@@ -24,20 +24,18 @@ export default function LoadingHeartBeat({
     return null;
   }
 
-  return (<div>nippity do da</div>);
-
-  // return (
-  //   <div
-  //     className={classNames('loading-heartbeat', {
-  //       [LOADING_CLASS]: active,
-  //     })}
-  //     onClick={(e) => {
-  //       e.preventDefault();
-  //       e.stopPropagation();
-  //     }}
-  //     style={{ backgroundColor }}
-  //   ></div>
-  // );
+  return (
+    <div
+      className={classNames('loading-heartbeat', {
+        [LOADING_CLASS]: active,
+      })}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      style={{ backgroundColor }}
+    ></div>
+  );
 }
 
 LoadingHeartBeat.propTypes = {
