@@ -19,6 +19,7 @@ const getMockTransactionGroup = (args) => {
   const tx = {
     ...args['transactionGroup.primaryTransaction'],
     status,
+    submittedTime: args['transactionGroup.primaryTransaction.submittedTime'],
   };
 
   return {
@@ -53,6 +54,7 @@ export default {
         .sort(),
       control: { type: 'select' },
     },
+    'transactionGroup.primaryTransaction.submittedTime': { control: 'number' },
     'transactionGroup.primaryTransaction': { control: 'object' },
   },
   args: {
@@ -60,12 +62,18 @@ export default {
     'transactionGroup.hasCancelled': false,
     'transactionGroup.hasRetried': false,
     'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.PENDING,
+    'transactionGroup.primaryTransaction.submittedTime': 19999999999999,
   },
 };
 
 const Template = (args) => {
   const transactionGroup = getMockTransactionGroup(args);
-  return <TransactionListItem transactionGroup={transactionGroup} />;
+  return (
+    <TransactionListItem
+      transactionGroup={transactionGroup}
+      isEarliestNonce={args.isEarliestNonce}
+    />
+  );
 };
 
 export const ContractInteraction = Template.bind({});
