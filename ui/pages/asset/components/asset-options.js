@@ -21,9 +21,6 @@ const AssetOptions = ({
   );
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
 
-  if (props.onRemove === undefined) { props.onRemove = noop; }
-  if (props.onViewTokenDetails === undefined) { props.onViewTokenDetails = noop; }
-
   return (
     <>
       <button
