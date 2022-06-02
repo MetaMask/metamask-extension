@@ -42,6 +42,7 @@ export default {
   title: 'Components/App/TransactionListItem',
   id: __filename,
   argTypes: {
+    isEarliestNonce: { control: 'boolean' },
     'transactionGroup.hasCancelled': { control: 'boolean' },
     'transactionGroup.hasRetried': { control: 'boolean' },
     'transactionGroup.primaryTransaction.status': {
@@ -55,6 +56,7 @@ export default {
     'transactionGroup.primaryTransaction': { control: 'object' },
   },
   args: {
+    isEarliestNonce: true,
     'transactionGroup.hasCancelled': false,
     'transactionGroup.hasRetried': false,
     'transactionGroup.primaryTransaction.status': TRANSACTION_STATUSES.PENDING,
