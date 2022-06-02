@@ -2364,7 +2364,7 @@
       "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
         "eslint-plugin-import>tsconfig-paths>strip-bom": true,
-        "minimist": true
+        "rc>minimist": true
       }
     },
     "eslint-plugin-import>tsconfig-paths>json5": {
@@ -5856,9 +5856,9 @@
         "process.platform": true
       },
       "packages": {
-        "minimist": true,
         "rc>deep-extend": true,
         "rc>ini": true,
+        "rc>minimist": true,
         "rc>strip-json-comments": true
       }
     },
@@ -7618,11 +7618,81 @@
         "enzyme>rst-selector-parser>nearley>randexp>ret": true
       }
     },
+    "yargs": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "Error": true,
+        "console": true,
+        "process": true
+      },
+      "packages": {
+        "yargs>cliui": true,
+        "yargs>escalade": true,
+        "yargs>get-caller-file": true,
+        "yargs>require-directory": true,
+        "yargs>string-width": true,
+        "yargs>y18n": true,
+        "yargs>yargs-parser": true
+      }
+    },
+    "yargs>cliui": {
+      "packages": {
+        "eslint>strip-ansi": true,
+        "yargs>cliui>wrap-ansi": true,
+        "yargs>string-width": true
+      }
+    },
+    "yargs>cliui>wrap-ansi": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "eslint>strip-ansi": true,
+        "yargs>string-width": true
+      }
+    },
+    "yargs>escalade": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.resolve": true
+      }
+    },
+    "yargs>require-directory": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
     "yargs>string-width": {
       "packages": {
         "eslint>strip-ansi": true,
         "yargs>string-width>emoji-regex": true,
         "yargs>string-width>is-fullwidth-code-point": true
+      }
+    },
+    "yargs>y18n": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "util": true
+      }
+    },
+    "yargs>yargs-parser": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "process": true
       }
     }
   }
