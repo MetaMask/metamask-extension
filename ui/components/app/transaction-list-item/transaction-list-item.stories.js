@@ -22,8 +22,8 @@ const getMockTransactionGroup = (args) => {
   };
 
   return {
-    hasCancelled: args.hasCancelled,
-    hasRetried: args.hasRetried,
+    hasCancelled: args['transactionGroup.hasCancelled'],
+    hasRetried: args['transactionGroup.hasRetried'],
     nonce: '0x1',
     initialTransaction: tx,
     primaryTransaction: tx,
