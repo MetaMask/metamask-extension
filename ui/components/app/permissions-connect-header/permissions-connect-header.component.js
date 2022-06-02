@@ -31,8 +31,8 @@ export default class PermissionsConnectHeader extends Component {
     boxProps: PropTypes.shape({ ...Box.propTypes }),
     headerText: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    npmPackageName: PropTypes.string,
     snapVersion: PropTypes.string,
+    isSnapInstall: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -44,11 +44,29 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   renderHeaderIcon() {
-    const { iconUrl, iconName, siteOrigin } = this.props;
+    const {
+      iconUrl,
+      iconName,
+      siteOrigin,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      isSnapInstall,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    if (isSnapInstall) {
+      return null;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteOrigin siteOrigin={siteOrigin} iconSrc={iconUrl} name={iconName} />
+        <SiteOrigin
+          chip
+          siteOrigin={siteOrigin}
+          iconSrc={iconUrl}
+          name={iconName}
+        />
       </div>
     );
   }
@@ -59,12 +77,12 @@ export default class PermissionsConnectHeader extends Component {
       headerTitle,
       headerText,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      npmPackageName,
+      siteOrigin,
       snapVersion,
+      isSnapInstall,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    const npmPackageUrl = `https://www.npmjs.com/package/${npmPackageName}`;
     const { t } = this.context;
     ///: END:ONLY_INCLUDE_IN
     return (
@@ -78,12 +96,7 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          npmPackageName ? (
-            <SnapsAuthorshipPill
-              packageName={npmPackageName}
-              url={npmPackageUrl}
-            />
-          ) : null
+          isSnapInstall && <SnapsAuthorshipPill snapId={siteOrigin} />
           ///: END:ONLY_INCLUDE_IN
         }
         {

@@ -23,6 +23,9 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getNotifications,
+  ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -36,6 +39,9 @@ import {
 import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+///: END:ONLY_INCLUDE_IN
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -1001,6 +1007,44 @@ export function removeSnap(snapId) {
 
 export async function removeSnapError(msgData) {
   return promisifiedBackground.removeSnapError(msgData);
+}
+
+export function dismissNotifications(ids) {
+  return async (dispatch) => {
+    await promisifiedBackground.dismissNotifications(ids);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function deleteExpiredNotifications() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const notifications = getNotifications(state);
+
+    const notificationIdsToDelete = notifications
+      .filter((notification) => {
+        const expirationTime = new Date(
+          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
+        );
+
+        return Boolean(
+          notification.readDate &&
+            new Date(notification.readDate) < expirationTime,
+        );
+      })
+      .map(({ id }) => id);
+    if (notificationIdsToDelete.length) {
+      await promisifiedBackground.dismissNotifications(notificationIdsToDelete);
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+export function markNotificationsAsRead(ids) {
+  return async (dispatch) => {
+    await promisifiedBackground.markNotificationsAsRead(ids);
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 ///: END:ONLY_INCLUDE_IN
 
@@ -3512,36 +3556,16 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
-export function fetchSmartTransactionFees(unsignedTransaction) {
-  return async (dispatch) => {
-    try {
-      return await promisifiedBackground.fetchSmartTransactionFees(
-        unsignedTransaction,
-      );
-    } catch (e) {
-      log.error(e);
-      if (e.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(e.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
-        });
-      }
-      throw e;
-    }
-  };
-}
-
-export function estimateSmartTransactionsGas(
+export function fetchSmartTransactionFees(
   unsignedTransaction,
   approveTxParams,
 ) {
-  if (approveTxParams) {
-    approveTxParams.value = '0x0';
-  }
   return async (dispatch) => {
+    if (approveTxParams) {
+      approveTxParams.value = '0x0';
+    }
     try {
-      await promisifiedBackground.estimateSmartTransactionsGas(
+      return await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
         approveTxParams,
       );
