@@ -123,10 +123,6 @@
       "usePhishDetect": true,
       "useStaticTokenList": false
     },
-    "TokenListController": {
-      "tokenList": {},
-      "tokensChainsCache": {}
-    },
     "TokensController": {
       "allTokens": {
         "0x539": {

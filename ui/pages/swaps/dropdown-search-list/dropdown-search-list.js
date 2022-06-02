@@ -28,7 +28,7 @@ import {
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function DropdownSearchList({
   searchListClassName,

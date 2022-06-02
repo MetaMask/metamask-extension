@@ -25,6 +25,7 @@ import {
   removePermissionsFor,
 } from '../../../../store/actions';
 import { getSnaps, getSubjectsWithPermission } from '../../../../selectors';
+import { formatDate } from '../../../../helpers/utils/util';
 
 function ViewSnap() {
   const t = useI18nContext();
@@ -71,6 +72,10 @@ function ViewSnap() {
   if (!snap) {
     return null;
   }
+
+  const versionHistory = snap.versionHistory ?? [];
+  const [firstInstall] = versionHistory;
+
   return (
     <div className="view-snap">
       <div className="settings-page__content-row">
@@ -100,6 +105,25 @@ function ViewSnap() {
             </Box>
           </Box>
         </div>
+        <Box
+          className="view-snap__install-details"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          padding={2}
+        >
+          {firstInstall && (
+            <Typography variant={TYPOGRAPHY.H8}>
+              {t('snapAdded', [
+                formatDate(firstInstall.date, 'MMMM d, y'),
+                firstInstall.origin,
+              ])}
+            </Typography>
+          )}
+          <Typography className="view-snap__version" variant={TYPOGRAPHY.H7}>
+            {t('shorthandVersion', [snap.version])}
+          </Typography>
+        </Box>
         <Box
           className="view-snap__content-container"
           width={FRACTIONS.SEVEN_TWELFTHS}

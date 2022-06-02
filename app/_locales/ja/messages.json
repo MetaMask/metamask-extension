@@ -1270,13 +1270,6 @@
   "importAccountSeedPhrase": {
     "message": "シークレットリカバリーフレーズを使用してウォレットをインポート"
   },
-  "importExistingWalletDescription": {
-    "message": "ウォレットの作成時に提供されたシークレットリカバリーフレーズ (シードフレーズ) を入力してください。$1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "シークレットリカバリーフレーズで既存のウォレットをインポート"
-  },
   "importMyWallet": {
     "message": "ウォレットをインポート"
   },
@@ -1737,9 +1730,6 @@
   },
   "newNFTsDetected": {
     "message": "新機能! NFT検出"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMaskがOpenseからNFTを自動的に検出し、MetaMaskウォレットに表示できるようにします。"
   },
   "newNetworkAdded": {
     "message": "「$1」が追加されました!"

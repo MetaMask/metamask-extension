@@ -1303,13 +1303,6 @@
   "importAccountSeedPhrase": {
     "message": "Importe uma carteira com a Frase de Recuperação Secreta"
   },
-  "importExistingWalletDescription": {
-    "message": "Digite sua Frase de Recuperação Secreta (ou seja, a frase seed) que lhe foi dada quando você criou a sua carteira. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importar carteira existente com Frase de Recuperação Secreta"
-  },
   "importMyWallet": {
     "message": "Importar minha carteira"
   },
@@ -1770,9 +1763,6 @@
   },
   "newNFTsDetected": {
     "message": "Novidade! Detecção de NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Autorize que a MetaMask detecte NFTs automaticamente do Opensea e os exiba na sua carteira MetaMask."
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"

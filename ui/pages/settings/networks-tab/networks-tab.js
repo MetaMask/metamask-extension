@@ -16,7 +16,10 @@ import {
   getNetworksTabSelectedRpcUrl,
   getProvider,
 } from '../../../selectors';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import {
+  NETWORK_TYPE_RPC,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
@@ -25,6 +28,7 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
+  isATestNetwork: TEST_CHAINS.includes(network.chainId),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
@@ -50,6 +54,7 @@ const NetworksTab = ({ addNewNetwork }) => {
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
+      isATestNetwork: TEST_CHAINS.includes(rpc.chainId),
     };
   });
 
