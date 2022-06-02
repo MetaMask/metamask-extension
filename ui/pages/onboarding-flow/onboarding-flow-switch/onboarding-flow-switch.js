@@ -31,7 +31,7 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
-  if (seedPhraseBackedUp !== null) {
+  if (seedPhraseBackedUp) {
     return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
 

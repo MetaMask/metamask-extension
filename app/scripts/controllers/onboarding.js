@@ -27,7 +27,7 @@ export default class OnboardingController {
       onboardingTabs: {},
     };
     const initState = {
-      seedPhraseBackedUp: null,
+      seedPhraseBackedUp: false,
       firstTimeFlowType: null,
       completedOnboarding: false,
       ...opts.initState,

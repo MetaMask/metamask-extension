@@ -15,7 +15,7 @@ describe('FirstTimeFlowSwitch', () => {
       completedOnboarding: null,
       isInitialized: null,
       isUnlocked: null,
-      seedPhraseBackedUp: null,
+      seedPhraseBackedUp: false,
     };
     const wrapper = mountWithRouter(
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
@@ -76,7 +76,7 @@ describe('FirstTimeFlowSwitch', () => {
     const props = {
       completedOnboarding: false,
       isUnlocked: true,
-      seedPhraseBackedUp: null,
+      seedPhraseBackedUp: false,
     };
 
     const wrapper = mountWithRouter(
@@ -93,7 +93,7 @@ describe('FirstTimeFlowSwitch', () => {
       completedOnboarding: false,
       isUnlocked: false,
       isInitialized: false,
-      seedPhraseBackedUp: null,
+      seedPhraseBackedUp: false,
     };
 
     const wrapper = mountWithRouter(
@@ -112,7 +112,7 @@ describe('FirstTimeFlowSwitch', () => {
       completedOnboarding: false,
       isUnlocked: false,
       isInitialized: true,
-      seedPhraseBackedUp: null,
+      seedPhraseBackedUp: false,
     };
 
     const wrapper = mountWithRouter(
