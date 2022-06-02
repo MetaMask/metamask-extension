@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 
+const noop = () => {};
+
 const AssetOptions = ({
   onRemove,
   onClickBlockExplorer,
@@ -18,6 +20,9 @@ const AssetOptions = ({
     null,
   );
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
+
+  if (props.onRemove === undefined) { props.onRemove = noop; }
+  if (props.onViewTokenDetails === undefined) { props.onViewTokenDetails = noop; }
 
   return (
     <>
@@ -88,11 +93,23 @@ const AssetOptions = ({
 AssetOptions.propTypes = {
   isEthNetwork: PropTypes.bool,
   isNativeAsset: PropTypes.bool,
-  onRemove: PropTypes.func.isRequired,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
-  onViewTokenDetails: PropTypes.func.isRequired,
-  tokenSymbol: PropTypes.string,
+  onRemove: (props, propName, componentName) => {
+    if (props.isNativeAsset === false && typeof(onRemove) !== "function") {
+      throw new Error("When isNativeAsset is true, onRemove is a required prop");
+    }
+  },
+  onViewTokenDetails: (props, propName, componentName) => {
+    if (props.isNativeAsset === false && typeof(onViewTokenDetails) !== "function") {
+      throw new Error("When isNativeAsset is true, onViewTokenDetails is a required prop");
+    }
+  },
+  tokenSymbol: (props, propName, componentName) => {
+    if (props.isNativeAsset === false && typeof(tokenSymbol) !== "string") {
+      throw new Error("When isNativeAsset is true, tokenSymbol is a required prop");
+    }
+  }
 };
 
 export default AssetOptions;

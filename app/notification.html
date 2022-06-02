@@ -1,31 +1,42 @@
 <!doctype html>
-<html>
+<html data-theme="dark">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <title>MetaMask Notification</title>
-    <style>
-      #app-content {
-        display: flex;
-        flex-flow: column;
-      }
-
-      #loading__logo {
-        width: 10rem;
-        height: 10rem;
-        align-self: center;
-        margin: 10rem 0 0 0;
-      }
-
-      #loading__spinner {
-        width: 2rem;
-        height: 2rem;
-        align-self: center;
-        margin-top: 1rem;
-      }
-    </style>
     <link rel="stylesheet" type="text/css" href="./index.css" title="ltr">
     <link rel="stylesheet" type="text/css" href="./index-rtl.css" title="rtl" disabled>
+    <style>
+     @media (prefers-color-scheme: dark) {
+       #app-content {
+         display: flex;
+         flex-flow: column;
+         background-color: var(--brand-colors-grey-grey800) !important;
+       }
+     }
+
+     @media (prefers-color-scheme: light) {
+       #app-content {
+         display: flex;
+         flex-flow: column;
+         background-color: var(--color-background-default) !important;
+       }
+     }
+
+     #loading__logo {
+       width: 10rem;
+       height: 10rem;
+       align-self: center;
+       margin: 10rem 0 0 0;
+     }
+
+     #loading__spinner {
+       width: 2rem;
+       height: 2rem;
+       align-self: center;
+       margin-top: 1rem;
+     }
+    </style>
   </head>
   <body class="notification">
     <div id="app-content">
