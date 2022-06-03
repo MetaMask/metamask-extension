@@ -631,7 +631,7 @@
     "message": "Vertragsinteraktion"
   },
   "convertTokenToNFTDescription": {
-    "message": "Wir haben festgestellt, dass dieses Asset eine NFT ist. Metamask hat jetzt volle native Unterstützung für NFTs. Möchten Sie es aus Ihrer Tokenliste entfernen und als NFT hinzufügen?"
+    "message": "Wir haben festgestellt, dass dieses Asset eine NFT ist. MetaMask hat jetzt volle native Unterstützung für NFTs. Möchten Sie es aus Ihrer Tokenliste entfernen und als NFT hinzufügen?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Wir haben festgestellt, dass dieses Asset als NFT hinzugefügt wurde. Möchten Sie es aus Ihrer Token-Liste entfernen?"

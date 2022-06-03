@@ -2088,7 +2088,7 @@ export default class MetamaskController extends EventEmitter {
 
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block Metamask login due to
+      // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
       const transportPreference = this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
@@ -2260,7 +2260,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    // Optimistically called to not block Metamask login due to
+    // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
 
