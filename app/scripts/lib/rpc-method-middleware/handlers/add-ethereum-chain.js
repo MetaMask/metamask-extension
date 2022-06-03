@@ -2,6 +2,7 @@ import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -249,7 +250,7 @@ async function addEthereumChainHandler(
 
     sendMetrics({
       event: 'Custom Network Added',
-      category: 'Network',
+      category: EVENT.CATEGORIES.NETWORK,
       referrer: {
         url: origin,
       },
@@ -264,7 +265,7 @@ async function addEthereumChainHandler(
         network: firstValidRPCUrl,
         symbol: ticker,
         block_explorer_url: firstValidBlockExplorerUrl,
-        source: 'dapp',
+        source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
     });
 

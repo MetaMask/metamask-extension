@@ -1,4 +1,13 @@
-import { isEqual, merge, omit, omitBy, pickBy, size, sum } from 'lodash';
+import {
+  isEqual,
+  memoize,
+  merge,
+  omit,
+  omitBy,
+  pickBy,
+  size,
+  sum,
+} from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { generateUUID } from 'pubnub';
@@ -540,9 +549,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    /**
-     * @type {MetaMetricsTraits}
-     */
+    /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
         Object.values(metamaskState.addressBook).map(size),
@@ -551,16 +558,29 @@ export default class MetaMetricsController {
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
+      [TRAITS.NETWORKS_WITHOUT_TICKER]: metamaskState.frequentRpcListDetail.reduce(
+        (networkList, currentNetwork) => {
+          if (!currentNetwork.ticker) {
+            networkList.push(currentNetwork.chainId);
+          }
+          return networkList;
+        },
+        [],
+      ),
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
-      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getNumberOfNFtCollection(
-        metamaskState,
+      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+        metamaskState.allCollectibles,
       ),
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
+        metamaskState.allCollectibles,
+      ).length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.THEME]: metamaskState.theme || 'default',
+      [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
     if (!this.previousTraits) {
@@ -603,22 +623,33 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Returns an array of all of the collectibles/NFTs the user
+   * possesses across all networks and accounts.
    *
-   * @param {object} metamaskState
-   * @returns number of unique collectible addresses
+   * @param {Object} allCollectibles
+   * @returns {[]}
    */
-  _getNumberOfNFtCollection(metamaskState) {
-    const { allCollectibles } = metamaskState;
-    if (!allCollectibles) {
-      return 0;
-    }
+  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
+    return Object.values(allCollectibles)
+      .reduce((result, chainNFTs) => {
+        return result.concat(Object.values(chainNFTs));
+      }, [])
+      .flat();
+  });
 
-    const allAddresses = Object.values(allCollectibles)
-      .flatMap((chainCollectibles) => Object.values(chainCollectibles))
-      .flat()
-      .map((collectible) => collectible.address);
-    const unique = [...new Set(allAddresses)];
-    return unique.length;
+  /**
+   * Returns the number of unique collectible/NFT addresses the user
+   * possesses across all networks and accounts.
+   *
+   * @param {Object} allCollectibles
+   * @returns {number}
+   */
+  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+      (nft) => nft.address,
+    );
+    const uniqueAddresses = new Set(allNFTAddresses);
+    return uniqueAddresses.size;
   }
 
   /**

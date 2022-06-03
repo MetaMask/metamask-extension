@@ -183,6 +183,7 @@ const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
 module.exports = createScriptTasks;
 
 function createScriptTasks({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   ignoredFiles,
@@ -223,6 +224,7 @@ function createScriptTasks({
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
+        applyLavaMoat,
         browserPlatforms,
         buildType,
         devMode,
@@ -283,6 +285,7 @@ function createScriptTasks({
       installSentrySubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
+        applyLavaMoat,
         buildType,
         isLavaMoat,
         policyOnly,
@@ -362,7 +365,52 @@ function createScriptTasks({
   }
 }
 
+// Function generates app-init.js for browsers chrome, brave and opera.
+// It dynamically injects list of files generated in the build.
+async function bundleMV3AppInitialiser({
+  jsBundles,
+  browserPlatforms,
+  buildType,
+  devMode,
+  ignoredFiles,
+  testing,
+  policyOnly,
+  shouldLintFenceFiles,
+}) {
+  const label = 'app-init';
+  // TODO: remove this filter for firefox once MV3 is supported in it
+  const mv3BrowserPlatforms = browserPlatforms.filter(
+    (platform) => platform !== 'firefox',
+  );
+  const fileList = jsBundles.reduce(
+    (result, file) => `${result}'${file}',\n    `,
+    '',
+  );
+
+  await createNormalBundle({
+    browserPlatforms: mv3BrowserPlatforms,
+    buildType,
+    destFilepath: 'app-init.js',
+    devMode,
+    entryFilepath: './app/scripts/app-init.js',
+    ignoredFiles,
+    label,
+    testing,
+    policyOnly,
+    shouldLintFenceFiles,
+  })();
+
+  mv3BrowserPlatforms.forEach((browser) => {
+    const appInitFile = `./dist/${browser}/app-init.js`;
+    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+    const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    writeFileSync(appInitFile, fileOutput);
+  });
+  console.log(`Bundle end: service worker app-init.js`);
+}
+
 function createFactoredBuild({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   devMode,
@@ -415,7 +463,7 @@ function createFactoredBuild({
       policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
-        `../../lavamoat/browserify/${buildType}/policy-override.json`,
+        `../../lavamoat/browserify/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
@@ -473,7 +521,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', () => {
+    events.on('bundleDone', async () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -493,21 +541,21 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'notification',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'home',
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat,
             });
             break;
           }
@@ -517,8 +565,24 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: true,
+              applyLavaMoat,
             });
+            if (process.env.ENABLE_MV3) {
+              const jsBundles = [
+                ...commonSet.values(),
+                ...groupSet.values(),
+              ].map((label) => `./${label}.js`);
+              await bundleMV3AppInitialiser({
+                jsBundles,
+                browserPlatforms,
+                buildType,
+                devMode,
+                ignoredFiles,
+                testing,
+                policyOnly,
+                shouldLintFenceFiles,
+              });
+            }
             break;
           }
           case 'content-script': {
@@ -527,7 +591,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              applyLavaMoat: false,
             });
             break;
           }
@@ -879,11 +943,11 @@ function renderHtmlFile({
   groupSet,
   commonSet,
   browserPlatforms,
-  useLavamoat,
+  applyLavaMoat,
 }) {
-  if (useLavamoat === undefined) {
+  if (applyLavaMoat === undefined) {
     throw new Error(
-      'build/scripts/renderHtmlFile - must specify "useLavamoat" option',
+      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
     );
   }
   const htmlFilePath = `./app/${htmlName}.html`;
@@ -891,7 +955,7 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

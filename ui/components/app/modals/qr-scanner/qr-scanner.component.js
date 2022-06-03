@@ -251,7 +251,7 @@ export default class QrScanner extends Component {
               }}
             />
             {ready === READY_STATE.READY ? null : (
-              <Spinner color="var(--color-secondary-default)" />
+              <Spinner color="var(--color-warning-default)" />
             )}
           </div>
         </div>

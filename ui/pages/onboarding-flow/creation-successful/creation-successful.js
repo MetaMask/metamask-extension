@@ -8,6 +8,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TYPOGRAPHY,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,6 +18,7 @@ import {
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default function CreationSuccessful() {
   const firstTimeFlowTypeNameMap = {
@@ -34,7 +36,7 @@ export default function CreationSuccessful() {
     await dispatch(setCompletedOnboarding());
     trackEvent({
       event: firstTimeFlowTypeNameMap[firstTimeFlowType],
-      category: 'Onboarding',
+      category: EVENT.CATEGORIES.ONBOARDING,
       properties: {
         action: 'Onboarding Complete',
         legacy_event: true,
@@ -44,7 +46,7 @@ export default function CreationSuccessful() {
   };
   return (
     <div className="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER} margin={6}>
+      <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
           variant={TYPOGRAPHY.H2}
@@ -57,7 +59,13 @@ export default function CreationSuccessful() {
           {t('walletCreationSuccessDetail')}
         </Typography>
       </Box>
-      <Typography variant={TYPOGRAPHY.H4}>{t('remember')}</Typography>
+      <Typography
+        variant={TYPOGRAPHY.H4}
+        boxProps={{ align: ALIGN_ITEMS.LEFT }}
+        marginLeft={12}
+      >
+        {t('remember')}
+      </Typography>
       <ul>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>

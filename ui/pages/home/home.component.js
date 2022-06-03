@@ -114,7 +114,7 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    notificationsToShow: PropTypes.bool.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
@@ -132,6 +132,8 @@ export default class Home extends PureComponent {
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
+    newTokensImported: PropTypes.string,
+    setNewTokensImported: PropTypes.func.isRequired,
   };
 
   state = {
@@ -267,6 +269,8 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      newTokensImported,
+      setNewTokensImported,
     } = this.props;
     return (
       <MultipleNotifications>
@@ -281,14 +285,14 @@ export default class Home extends PureComponent {
                     descriptionText={
                       <>
                         <Typography
-                          color={COLORS.TEXT_MUTED}
+                          color={COLORS.TEXT_ALTERNATIVE}
                           variant={TYPOGRAPHY.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Typography>
                         <Typography
-                          color={COLORS.TEXT_MUTED}
+                          color={COLORS.TEXT_ALTERNATIVE}
                           variant={TYPOGRAPHY.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
@@ -346,6 +350,38 @@ export default class Home extends PureComponent {
                   className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
                   onClick={() => setNewNetworkAdded('')}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+        {newTokensImported ? (
+          <ActionableMessage
+            type="success"
+            className="home__new-tokens-imported-notification"
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
+                <Box>
+                  <Typography
+                    className="home__new-tokens-imported-notification-title"
+                    variant={TYPOGRAPHY.H6}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('newTokensImportedTitle')}
+                  </Typography>
+                  <Typography
+                    className="home__new-tokens-imported-notification-message"
+                    variant={TYPOGRAPHY.H7}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                  >
+                    {t('newTokensImportedMessage', [newTokensImported])}
+                  </Typography>
+                </Box>
+                <button
+                  className="fas fa-times home__new-tokens-imported-notification-close"
+                  title={t('close')}
+                  onClick={() => setNewTokensImported('')}
                 />
               </Box>
             }
@@ -489,7 +525,7 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      notificationsToShow,
+      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
       seedPhraseBackedUp,
@@ -507,9 +543,8 @@ export default class Home extends PureComponent {
     const showWhatsNew =
       ((completedOnboarding && firstTimeFlowType === 'import') ||
         !completedOnboarding) &&
-      notificationsToShow &&
+      announcementsToShow &&
       showWhatsNewPopup;
-
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />

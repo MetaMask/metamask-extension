@@ -164,12 +164,16 @@
  *  trait
  * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
  *  we identify the networks_added trait
+ * @property {'networks_without_ticker'} NETWORKS_WITHOUT_TICKER - when user
+ *  modifies networks we identify the networks_without_ticker trait for
+ *  networks without a ticker.
  * @property {'nft_autodetection_enabled'} NFT_AUTODETECTION_ENABLED - when Autodetect NFTs
  * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
  *  change, we identify the new number_of_accounts trait
  * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
  *  trait for number of unique NFT addresses
+ * @property {'number_of_nfts'} NUMBER_OF_NFTS - user trait for number of all NFT addresses
  * @property {'number_of_tokens'} NUMBER_OF_TOKENS - when the number of tokens change, we
  * identify the new number_of_tokens trait
  * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
@@ -177,6 +181,8 @@
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
+ * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
+ * identify the token_detection_enabled trait
  */
 
 /**
@@ -188,13 +194,16 @@ export const TRAITS = {
   ADDRESS_BOOK_ENTRIES: 'address_book_entries',
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   NETWORKS_ADDED: 'networks_added',
+  NETWORKS_WITHOUT_TICKER: 'networks_without_ticker',
   NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  NUMBER_OF_NFTS: 'number_of_nfts',
   NUMBER_OF_TOKENS: 'number_of_tokens',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
   THEME: 'theme',
+  TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
 };
 
 /**
@@ -205,12 +214,17 @@ export const TRAITS = {
  *  type of ledger connection set by user preference.
  * @property {Array<string>} [networks_added] - An array consisting of chainIds
  *  that indicate the networks a user has added to their MetaMask.
+ * @property {Array<string>} [networks_without_ticker] - An array consisting of
+ *  chainIds that indicate the networks added by the user that do not have a
+ *  ticker.
  * @property {number} [nft_autodetection_enabled] - does the user have the
  * use collection/nft detection enabled?
  * @property {number} [number_of_accounts] - A number representing the number
  *  of identities(accounts) added to the user's MetaMask.
  * @property {number} [number_of_nft_collections] - A number representing the
  *  amount of different NFT collections the user possesses an NFT from.
+ * @property {number} [number_of_nfts] - A number representing the
+ *  amount of all NFTs the user possesses across all networks and accounts.
  * @property {number} [number_of_tokens] - The total number of token contracts
  *  the user has across all networks and accounts.
  * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
@@ -218,6 +232,7 @@ export const TRAITS = {
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
  *  enabled?
  * @property {string} [theme] - which theme the user has selected
+ * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -256,9 +271,58 @@ export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTFICIATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
 
+/**
+ * EVENTS
+ */
+
 export const EVENT_NAMES = {
-  SIGNATURE_REQUESTED: 'Signature Requested',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  TOKEN_ADDED: 'Token Added',
+  TOKEN_DETECTED: 'Token Detected',
+  TOKEN_HIDDEN: 'Token Hidden',
+  TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
+  TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
+};
+
+export const EVENT = {
+  CATEGORIES: {
+    ACCOUNTS: 'Accounts',
+    AUTH: 'Auth',
+    BACKGROUND: 'Background',
+    INPAGE_PROVIDER: 'inpage_provider',
+    MESSAGES: 'Messages',
+    NAVIGATION: 'Navigation',
+    NETWORK: 'Network',
+    ONBOARDING: 'Onboarding',
+    RETENTION: 'Retention',
+    SETTINGS: 'Settings',
+    SNAPS: 'Snaps',
+    SWAPS: 'Swaps',
+    TRANSACTIONS: 'Transactions',
+    WALLET: 'Wallet',
+  },
+  SOURCE: {
+    SWAPS: {
+      MAIN_VIEW: 'Main View',
+      TOKEN_VIEW: 'Token View',
+    },
+    TRANSACTION: {
+      USER: 'user',
+      DAPP: 'dapp',
+    },
+    TOKEN: {
+      CUSTOM: 'custom',
+      DETECTED: 'detected',
+      DAPP: 'dapp',
+      LIST: 'list',
+    },
+  },
+  LOCATION: {
+    TOKEN_DETECTION: 'token_detection',
+    TOKEN_MENU: 'token_menu',
+    TOKEN_DETAILS: 'token_details',
+  },
 };

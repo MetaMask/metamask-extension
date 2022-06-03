@@ -137,10 +137,10 @@
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
   },
   "buyWithWyre": {
-    "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
+    "message": "Wyre ನೊಂದಿಗೆ $1 ಖರೀದಿಸಿ"
   },
   "buyWithWyreDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ ETH ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
+    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ $1 ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
   },
   "bytes": {
     "message": "ಬೈಟ್‌ಗಳು"

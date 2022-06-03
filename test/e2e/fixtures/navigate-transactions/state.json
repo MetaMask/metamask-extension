@@ -52,6 +52,9 @@
         },
         "8": {
           "isShown": true
+        },
+        "12": {
+          "isShown": true
         }
       }
     },
@@ -383,6 +386,35 @@
             "value": "0x29a2241af62c0000"
           },
           "type": "sentEther"
+        }
+      }
+    },
+    "PermissionsController": {
+      "permissionsRequests": [],
+      "permissionsDescriptions": {},
+      "domains": {
+        "http://127.0.0.1:8080": {
+          "permissions": [
+            {
+              "@context": ["https://github.com/MetaMask/rpc-cap"],
+              "parentCapability": "eth_accounts",
+              "id": "f55a1c15-ea48-4088-968e-63be474d42fa",
+              "date": 1594348332268,
+              "invoker": "http://127.0.0.1:8080",
+              "caveats": [
+                {
+                  "type": "limitResponseLength",
+                  "value": 1,
+                  "name": "primaryAccountOnly"
+                },
+                {
+                  "type": "filterResponse",
+                  "value": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"],
+                  "name": "exposedAccounts"
+                }
+              ]
+            }
+          ]
         }
       }
     },

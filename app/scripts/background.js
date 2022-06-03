@@ -23,6 +23,7 @@ import {
   REJECT_NOTFICIATION_CLOSE,
   REJECT_NOTFICIATION_CLOSE_SIG,
 } from '../../shared/constants/metametrics';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -44,6 +45,14 @@ import { getPlatform } from './lib/util';
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
+
+const metamaskInternalProcessHash = {
+  [ENVIRONMENT_TYPE_POPUP]: true,
+  [ENVIRONMENT_TYPE_NOTIFICATION]: true,
+  [ENVIRONMENT_TYPE_FULLSCREEN]: true,
+};
+
+const metamaskBlockedPorts = ['trezor-connect'];
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
@@ -73,8 +82,23 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-// initialization flow
-initialize().catch(log.error);
+/**
+ * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
+ * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ */
+
+const initApp = async (remotePort) => {
+  browser.runtime.onConnect.removeListener(initApp);
+  await initialize(remotePort);
+  log.info('MetaMask initialization complete.');
+};
+
+if (isManifestV3()) {
+  browser.runtime.onConnect.addListener(initApp);
+} else {
+  // initialization flow
+  initialize().catch(log.error);
+}
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -134,12 +158,13 @@ initialize().catch(log.error);
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
+async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode);
+  await setupController(initState, initLangCode, remotePort);
   await loadPhishingWarningPage();
   log.info('MetaMask initialization complete.');
 }
@@ -278,9 +303,10 @@ async function loadStateFromPersistence() {
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
  */
-function setupController(initState, initLangCode) {
+function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // MetaMask Controller
   //
@@ -367,16 +393,12 @@ function setupController(initState, initLangCode) {
   //
   // connect to other contexts
   //
+  if (isManifestV3() && remoteSourcePort) {
+    connectRemote(remoteSourcePort);
+  }
+
   browser.runtime.onConnect.addListener(connectRemote);
   browser.runtime.onConnectExternal.addListener(connectExternal);
-
-  const metamaskInternalProcessHash = {
-    [ENVIRONMENT_TYPE_POPUP]: true,
-    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
-    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-  };
-
-  const metamaskBlockedPorts = ['trezor-connect'];
 
   const isClientOpenStatus = () => {
     return (
@@ -444,6 +466,13 @@ function setupController(initState, initLangCode) {
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      if (isManifestV3()) {
+        // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
+        // This ensures that UI is initialised only after background is ready
+        // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
+        remotePort.postMessage({ name: 'CONNECTION_READY' });
+      }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
@@ -566,8 +595,14 @@ function setupController(initState, initLangCode) {
     if (count) {
       label = String(count);
     }
-    browser.browserAction.setBadgeText({ text: label });
-    browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    // browserAction has been replaced by action in MV3
+    if (isManifestV3()) {
+      browser.action.setBadgeText({ text: label });
+      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    } else {
+      browser.browserAction.setBadgeText({ text: label });
+      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    }
   }
 
   function getUnapprovedTransactionCount() {

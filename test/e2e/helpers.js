@@ -267,6 +267,47 @@ const completeImportSRPOnboardingFlow = async (
   }
 };
 
+const completeImportSRPOnboardingFlowWordByWord = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  // clicks the continue button on the welcome screen
+  await driver.findElement('.welcome-page__header');
+  await driver.clickElement({
+    text: enLocaleMessages.getStarted.message,
+    tag: 'button',
+  });
+
+  // clicks the "Import Wallet" option
+  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
+
+  // clicks the "No thanks" option on the metametrics opt-in screen
+  await driver.clickElement('.btn-secondary');
+
+  const words = seedPhrase.split(' ');
+  for (const word of words) {
+    await driver.pasteIntoField(
+      `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
+      word,
+    );
+  }
+
+  await driver.fill('#password', password);
+  await driver.fill('#confirm-password', password);
+
+  await driver.clickElement('[data-testid="create-new-vault__terms-checkbox"]');
+
+  await driver.clickElement({ text: 'Import', tag: 'button' });
+
+  // clicks through the success screen
+  await driver.findElement({ text: 'Congratulations', tag: 'div' });
+  await driver.clickElement({
+    text: enLocaleMessages.endOfFlowMessage10.message,
+    tag: 'button',
+  });
+};
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -277,4 +318,5 @@ module.exports = {
   withFixtures,
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
+  completeImportSRPOnboardingFlowWordByWord,
 };
