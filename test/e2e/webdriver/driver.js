@@ -304,6 +304,10 @@ class Driver {
     await this.driver.switchTo().window(handle);
   }
 
+  async switchToFrame(element) {
+    await this.driver.switchTo().frame(element);
+  }
+
   async getAllWindowHandles() {
     return await this.driver.getAllWindowHandles();
   }

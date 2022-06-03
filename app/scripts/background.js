@@ -67,6 +67,12 @@ if (inTest || process.env.METAMASK_DEBUG) {
   global.metamaskGetState = localStore.get.bind(localStore);
 }
 
+const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
+const ONE_SECOND_IN_MILLISECONDS = 1_000;
+// Timeout for initializing phishing warning page.
+const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
+
 // initialization flow
 initialize().catch(log.error);
 
@@ -134,7 +140,74 @@ async function initialize() {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode);
+  await loadPhishingWarningPage();
   log.info('MetaMask initialization complete.');
+}
+
+/**
+ * An error thrown if the phishing warning page takes too long to load.
+ */
+class PhishingWarningPageTimeoutError extends Error {
+  constructor() {
+    super('Timeout failed');
+  }
+}
+
+/**
+ * Load the phishing warning page temporarily to ensure the service
+ * worker has been registered, so that the warning page works offline.
+ */
+async function loadPhishingWarningPage() {
+  let iframe;
+  try {
+    const extensionStartupPhishingPageUrl = new URL(
+      process.env.PHISHING_WARNING_PAGE_URL,
+    );
+    // The `extensionStartup` hash signals to the phishing warning page that it should not bother
+    // setting up streams for user interaction. Otherwise this page load would cause a console
+    // error.
+    extensionStartupPhishingPageUrl.hash = '#extensionStartup';
+
+    iframe = window.document.createElement('iframe');
+    iframe.setAttribute('src', extensionStartupPhishingPageUrl.href);
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+
+    // Create "deferred Promise" to allow passing resolve/reject to event handlers
+    let deferredResolve;
+    let deferredReject;
+    const loadComplete = new Promise((resolve, reject) => {
+      deferredResolve = resolve;
+      deferredReject = reject;
+    });
+
+    // The load event is emitted once loading has completed, even if the loading failed.
+    // If loading failed we can't do anything about it, so we don't need to check.
+    iframe.addEventListener('load', deferredResolve);
+
+    // This step initiates the page loading.
+    window.document.body.appendChild(iframe);
+
+    // This timeout ensures that this iframe gets cleaned up in a reasonable
+    // timeframe, and ensures that the "initialization complete" message
+    // doesn't get delayed too long.
+    setTimeout(
+      () => deferredReject(new PhishingWarningPageTimeoutError()),
+      PHISHING_WARNING_PAGE_TIMEOUT,
+    );
+    await loadComplete;
+  } catch (error) {
+    if (error instanceof PhishingWarningPageTimeoutError) {
+      console.warn(
+        'Phishing warning page timeout; page not guaraneteed to work offline.',
+      );
+    } else {
+      console.error('Failed to initialize phishing warning page', error);
+    }
+  } finally {
+    if (iframe) {
+      iframe.remove();
+    }
+  }
 }
 
 //
@@ -362,6 +435,10 @@ function setupController(initState, initLangCode) {
         remotePort.sender.origin === `chrome-extension://${browser.runtime.id}`;
     }
 
+    const senderUrl = remotePort.sender?.url
+      ? new URL(remotePort.sender.url)
+      : null;
+
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort);
       // communication with popup
@@ -406,6 +483,15 @@ function setupController(initState, initLangCode) {
           );
         });
       }
+    } else if (
+      senderUrl &&
+      senderUrl.origin === phishingPageUrl.origin &&
+      senderUrl.pathname === phishingPageUrl.pathname
+    ) {
+      const portStream = new PortStream(remotePort);
+      controller.setupPhishingCommunication({
+        connectionStream: portStream,
+      });
     } else {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id;
