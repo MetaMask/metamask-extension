@@ -27,7 +27,7 @@ const getEnvironmentTypeMemo = memoize((url) => {
   const parsedUrl = new URL(url);
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP;
-  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
+  } else if (['/home.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;

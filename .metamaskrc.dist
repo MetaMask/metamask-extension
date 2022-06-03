@@ -6,3 +6,6 @@ ONBOARDING_V2=
 SWAPS_USE_DEV_APIS=
 COLLECTIBLES_V1=
 TOKEN_DETECTION_V2=
+
+; Set this to test changes to the phishing warning page.
+PHISHING_WARNING_PAGE_URL=

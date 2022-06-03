@@ -155,6 +155,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
 
+// stream channels
+const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+
 export default class MetamaskController extends EventEmitter {
   /**
    * @param {Object} opts
@@ -1503,7 +1506,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
@@ -2088,7 +2090,7 @@ export default class MetamaskController extends EventEmitter {
 
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block Metamask login due to
+      // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
       const transportPreference = this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
@@ -2260,7 +2262,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    // Optimistically called to not block Metamask login due to
+    // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
 
@@ -3306,6 +3308,33 @@ export default class MetamaskController extends EventEmitter {
       mux.createStream('provider'),
       sender,
       SUBJECT_TYPES.INTERNAL,
+    );
+  }
+
+  /**
+   * Used to create a multiplexed stream for connecting to the phishing warning page.
+   *
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   */
+  setupPhishingCommunication({ connectionStream }) {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
+    if (!usePhishDetect) {
+      return;
+    }
+
+    // setup multiplexing
+    const mux = setupMultiplex(connectionStream);
+    const phishingStream = mux.createStream(PHISHING_SAFELIST);
+
+    // set up postStream transport
+    phishingStream.on(
+      'data',
+      createMetaRPCHandler(
+        { safelistPhishingDomain: this.safelistPhishingDomain.bind(this) },
+        phishingStream,
+      ),
     );
   }
 
