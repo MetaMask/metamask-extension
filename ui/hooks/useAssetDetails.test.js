@@ -186,7 +186,7 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: undefined,
+      tokenId,
       tokenImage: image,
       tokenSymbol: '',
       tokenValue: undefined,

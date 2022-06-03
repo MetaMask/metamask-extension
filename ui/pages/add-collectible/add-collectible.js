@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { util } from '@metamask/controllers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-
 import {
   DISPLAY,
   FONT_WEIGHT,
@@ -55,9 +54,7 @@ export default function AddCollectible() {
 
   const handleAddCollectible = async () => {
     try {
-      await dispatch(
-        addCollectibleVerifyOwnership(address, tokenId.toString()),
-      );
+      await dispatch(addCollectibleVerifyOwnership(address, tokenId));
     } catch (error) {
       const { message } = error;
       dispatch(setNewCollectibleAddedMessage(message));
@@ -170,7 +167,6 @@ export default function AddCollectible() {
                 setCollectibleAddFailed(false);
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
-              numeric
             />
           </Box>
         </Box>

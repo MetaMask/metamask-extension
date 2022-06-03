@@ -52,6 +52,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import CollectibleDefaultImage from '../collectible-default-image';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -176,7 +177,11 @@ export default function CollectibleDetails({ collectible }) {
             justifyContent={JUSTIFY_CONTENT.CENTER}
             className="collectible-details__card"
           >
-            <img className="collectible-details__image" src={image} />
+            {image ? (
+              <img className="collectible-details__image" src={image} />
+            ) : (
+              <CollectibleDefaultImage name={name} tokenId={tokenId} />
+            )}
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}

@@ -156,6 +156,10 @@ export function getTokenValue(tokenParams = []) {
   return valueData && valueData.value;
 }
 
+function getERC1155TokenId(tokenData = {}) {
+  return tokenData?.args?.[2]?.toString();
+}
+
 /**
  * Get the token balance converted to fiat and optionally formatted for display
  *
@@ -228,7 +232,8 @@ export async function getAssetDetails(
     throw new Error('Unable to detect valid token data');
   }
 
-  const tokenId = getTokenValueParam(tokenData);
+  const tokenId = getTokenValueParam(tokenData) ?? getERC1155TokenId(tokenData);
+
   let tokenDetails;
   try {
     tokenDetails = await getTokenStandardAndDetails(
@@ -256,7 +261,7 @@ export async function getAssetDetails(
       }
     }
     // else if not a collectible already in state or standard === ERC20 just return tokenDetails as it contains all required data
-    return tokenDetails;
+    return { tokenId, ...tokenDetails };
   }
 
   return {};
