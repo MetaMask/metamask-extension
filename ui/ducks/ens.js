@@ -82,6 +82,8 @@ const slice = createSlice({
         if (isValidDomainName(address) && isConfusing(address)) {
           state.warning = CONFUSING_ENS_ERROR;
         }
+      } else {
+        state.error = ENS_NO_ADDRESS_FOR_NAME;
       }
     },
     enableEnsLookup: (state, action) => {
