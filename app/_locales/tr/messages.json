@@ -631,7 +631,7 @@
     "message": "Sözleşme Etkileşimi"
   },
   "convertTokenToNFTDescription": {
-    "message": "Bu varlığın bir NFT olduğunu tespit ettik. Metamask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenden çıkarmak ve bir NFT olarak eklemek ister misin?"
+    "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenden çıkarmak ve bir NFT olarak eklemek ister misin?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Bu varlığın bir NFT olarak eklendiğini tespit ettik. Token listenden çıkarmak ister misin?"
