@@ -47,5 +47,9 @@
       height: 100%;
       cursor: pointer;
     }
+
+    &__icon-chevron {
+      color: var(--color-icon-default);
+    }
   }
 }
