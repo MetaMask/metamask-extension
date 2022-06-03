@@ -16,6 +16,7 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
+import { coinTypeToProtocolName } from '../../../../helpers/utils/util';
 
 export default function SnapInstall({
   request,
@@ -37,15 +38,19 @@ export default function SnapInstall({
     approveSnapInstall,
   ]);
 
-  const shouldShowWarning = useMemo(
-    () =>
-      Boolean(
-        request.permissions &&
-          Object.keys(request.permissions).find((v) =>
-            v.startsWith('snap_getBip44Entropy_'),
-          ),
-      ),
-    [request.permissions],
+  const findBip44EntropyPermission =
+    request.permissions &&
+    Object.keys(request.permissions).find((v) =>
+      v.startsWith('snap_getBip44Entropy_'),
+    );
+
+  const shouldShowWarning = useMemo(() => Boolean(findBip44EntropyPermission), [
+    findBip44EntropyPermission,
+  ]);
+
+  const coinType = useMemo(
+    () => findBip44EntropyPermission?.split('_').slice(-1),
+    [findBip44EntropyPermission],
   );
 
   return (
@@ -128,7 +133,17 @@ export default function SnapInstall({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          snapName={targetSubjectMetadata.name}
+          warnings={[
+            {
+              id: 'key-access',
+              message: t('snapInstallWarningKeyAccess', [
+                targetSubjectMetadata.name,
+
+                coinTypeToProtocolName(coinType) ||
+                  `${coinType} (Unrecognized protocol)`,
+              ]),
+            },
+          ]}
         />
       )}
     </Box>
