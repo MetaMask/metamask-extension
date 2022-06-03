@@ -1087,17 +1087,7 @@
         "ansi-wrap": true
       }
     },
-    "ansi-cyan": {
-      "packages": {
-        "ansi-wrap": true
-      }
-    },
     "ansi-gray": {
-      "packages": {
-        "ansi-wrap": true
-      }
-    },
-    "ansi-red": {
       "packages": {
         "ansi-wrap": true
       }
@@ -1130,8 +1120,7 @@
     },
     "arr-diff": {
       "packages": {
-        "arr-flatten": true,
-        "array-slice": true
+        "arr-flatten": true
       }
     },
     "arr-filter": {
@@ -2273,8 +2262,7 @@
     "extend-shallow": {
       "packages": {
         "assign-symbols": true,
-        "is-extendable": true,
-        "kind-of": true
+        "is-extendable": true
       }
     },
     "extglob": {
@@ -2540,10 +2528,14 @@
     },
     "get-stream": {
       "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
         "stream.PassThrough": true
       },
       "globals": {
         "Buffer.concat": true
+      },
+      "packages": {
+        "pump": true
       }
     },
     "glob": {
@@ -2796,6 +2788,11 @@
         "vinyl-sourcemaps-apply": true
       }
     },
+    "gulp-sort": {
+      "packages": {
+        "through2": true
+      }
+    },
     "gulp-sourcemaps": {
       "builtin": {
         "path.dirname": true,
@@ -2874,6 +2871,7 @@
     },
     "gulp-zip": {
       "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
         "path.join": true
       },
       "packages": {
@@ -3864,8 +3862,6 @@
       },
       "packages": {
         "ansi-colors": true,
-        "ansi-cyan": true,
-        "ansi-red": true,
         "arr-diff": true,
         "arr-union": true,
         "extend-shallow": true
