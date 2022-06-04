@@ -1,5 +1,5 @@
 diff --git a/node_modules/common-shakeify/index.js b/node_modules/common-shakeify/index.js
-index 1e86067..a5640e6 100644
+index 1e86067..c4fcee3 100644
 --- a/node_modules/common-shakeify/index.js
 +++ b/node_modules/common-shakeify/index.js
 @@ -1,5 +1,13 @@
@@ -17,3 +17,12 @@ index 1e86067..a5640e6 100644
  const Analyzer = require('@goto-bus-stop/common-shake').Analyzer
  const transformAst = require('transform-ast')
  const wrapComment = require('wrap-comment')
+@@ -82,7 +90,7 @@ function createStream (opts) {
+     let ast
+     const string = transformAst(source, {
+       locations: true,
+-      ecmaVersion: 9,
++      // ecmaVersion: 9,
+       inputFilename: row.file
+     }, (node) => {
+       if (node.type === 'Program') ast = node

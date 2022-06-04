@@ -697,11 +697,16 @@ function setupBundlerDefaults(
     transform: [
       // Remove code that should be excluded from builds of the current type
       createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
-      // Transpile top-level code
+      // Transpile top-level code (will be run first, before common-shake)
       [
         babelify,
         // Run TypeScript files through Babel
         { extensions },
+      ],
+      // run babelify on all files (will be run last, after common-shake)
+      [
+        babelify,
+        { global: true }
       ],
       // Inline `fs.readFileSync` files
       brfs,
