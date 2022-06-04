@@ -1,23 +1,62 @@
 diff --git a/node_modules/common-shakeify/index.js b/node_modules/common-shakeify/index.js
-index 1e86067..c4fcee3 100644
+index 1e86067..6a7a835 100644
 --- a/node_modules/common-shakeify/index.js
 +++ b/node_modules/common-shakeify/index.js
-@@ -1,5 +1,13 @@
- 'use strict'
--const relative = require('path').relative
-+const _relative = require('path').relative
-+const relative = (...args) => {
-+  // console.warn('relative', args)
-+  try {
-+    return _relative(...args)
-+  } catch (err) {
-+    return `relative-failed:args=${args}`
-+  }
-+}
- const Analyzer = require('@goto-bus-stop/common-shake').Analyzer
- const transformAst = require('transform-ast')
- const wrapComment = require('wrap-comment')
-@@ -82,7 +90,7 @@ function createStream (opts) {
+@@ -11,13 +11,15 @@ module.exports = function commonShake (b, opts) {
+     throw new Error('common-shakeify: must be used as a plugin, not a transform')
+   }
+ 
++  const rows = new Map()
+   const basedir = b._options.basedir || process.cwd()
+   const seen = {}
+   opts = Object.assign({
+     verbose: false,
+     onExportDelete (path, name) {
+       if (opts.verbose || opts.v) {
+-        console.warn('common-shake: removed', `\`${name}\``, 'in', relative(basedir, path))
++        const file = rows.get(path).file
++        console.warn('common-shake: removed', `\`${name}\``, 'in', relative(basedir, file))
+       }
+     },
+     onModuleBailout (resource, reasons) {
+@@ -27,7 +29,8 @@ module.exports = function commonShake (b, opts) {
+           seen[resource.resource + reason.reason] = true
+           const loc = reason.loc.start
+           const source = reason.source || resource.resource
+-          console.warn('common-shake: bailed out: ', reason.reason, 'in', `${relative(basedir, source)}:${loc.line}:${loc.column}`)
++          const file = rows.get(source).file
++          console.warn('common-shake: bailed out: ', reason.reason, 'in', `${relative(basedir, file)}:${loc.line}:${loc.column}`)
+         })
+       }
+     },
+@@ -35,7 +38,8 @@ module.exports = function commonShake (b, opts) {
+       if (opts.verbose || opts.v) {
+         reasons.forEach((reason) => {
+           const loc = reason.loc.start
+-          console.warn('common-shake: GLOBAL BAILOUT:', reason.reason, 'in', `${relative(basedir, reason.source)}:${loc.line}:${loc.column}`)
++          const file = rows.get(reason.source).file
++          console.warn('common-shake: GLOBAL BAILOUT:', reason.reason, 'in', `${relative(basedir, file)}:${loc.line}:${loc.column}`)
+         })
+       }
+     }
+@@ -47,14 +51,13 @@ module.exports = function commonShake (b, opts) {
+   addHooks()
+   b.on('reset', addHooks)
+   function addHooks () {
+-    b.pipeline.get('label').unshift(createStream(opts))
++    b.pipeline.get('label').unshift(createStream(opts, rows))
+   }
+ }
+ 
+-function createStream (opts) {
++function createStream (opts, rows) {
+   const analyzer = new Analyzer()
+ 
+-  const rows = new Map()
+   const strings = new Map()
+   const duplicates = new Map()
+ 
+@@ -82,11 +85,12 @@ function createStream (opts) {
      let ast
      const string = transformAst(source, {
        locations: true,
@@ -26,3 +65,19 @@ index 1e86067..c4fcee3 100644
        inputFilename: row.file
      }, (node) => {
        if (node.type === 'Program') ast = node
+     })
++
+     analyzer.run(ast, index)
+ 
+     const deps = opts.fullPaths ? row.deps : row.indexDeps
+@@ -107,7 +111,9 @@ function createStream (opts) {
+   }
+ 
+   function onend (next) {
+-    if (!analyzer.isSuccess()) {
++    // ignore global bailouts
++    // if (!analyzer.isSuccess()) {
++    if (false) {
+       opts.onGlobalBailout(analyzer.bailouts)
+ 
+       rows.forEach((row) => {
