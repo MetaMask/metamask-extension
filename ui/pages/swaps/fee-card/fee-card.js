@@ -7,6 +7,7 @@ import {
   BSC_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   POLYGON_CHAIN_ID,
+  CANDLE_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   AVALANCHE_CHAIN_ID,
 } from '../../../../shared/constants/network';
@@ -50,6 +51,8 @@ export default function FeeCard({
         return t('networkNameBSC');
       case POLYGON_CHAIN_ID:
         return t('networkNamePolygon');
+      case CANDLE_CHAIN_ID,:
+        return t('networkNameCandle');
       case LOCALHOST_CHAIN_ID:
         return t('networkNameTestnet');
       case RINKEBY_CHAIN_ID:

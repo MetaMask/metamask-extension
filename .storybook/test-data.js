@@ -109,6 +109,16 @@ const state = {
       rpcUrl: "https://polygon-rpc.com",
       ticker: "MATIC",
     },
+    {
+      blockExplorerUrl: "https://candleexplorer.com",
+      chainId: "0x216",
+      iconColor: 'var(--localhost)',
+      isATestNetwork: false,
+      label: "Candle",
+      providerType: "rpc",
+      rpcUrl: "https://rpc.cndlchain.com",
+      ticker: "CNDL",
+    },
   ],
   metamask: {
     tokenList: {

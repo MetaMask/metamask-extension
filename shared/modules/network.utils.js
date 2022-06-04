@@ -2,6 +2,7 @@ import {
   MAX_SAFE_CHAIN_ID,
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
+  CANDLE_CHAIN_ID,
   AVALANCHE_CHAIN_ID,
   MAINNET_CHAIN_ID,
 } from '../constants/network';
@@ -46,6 +47,7 @@ export function isTokenDetectionEnabledForNetwork(chainId) {
     case MAINNET_CHAIN_ID:
     case BSC_CHAIN_ID:
     case POLYGON_CHAIN_ID:
+    case CANDLE_CHAIN_ID:
     case AVALANCHE_CHAIN_ID:
       return true;
     default:

@@ -1935,6 +1935,9 @@
   "networkNamePolygon": {
     "message": "Polygon"
   },
+  "networkNameCandle": {
+    "message": "Candle"
+  },
   "networkNameRinkeby": {
     "message": "Rinkeby"
   },

@@ -77,6 +77,11 @@ export const createFeatureFlagsResponse = () => {
       extension_active: true,
       fallback_to_v1: false,
     },
+    candle: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: false,
+    },
   };
 };
 

@@ -1932,6 +1932,9 @@
   "networkNamePolygon": {
     "message": "Πολύγωνο"
   },
+  "networkNameCandle": {
+    "message": "Candle"
+  },
   "networkNameRinkeby": {
     "message": "Rinkeby"
   },

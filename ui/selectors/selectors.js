@@ -18,6 +18,8 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  CANDLE_CHAIN_ID,
+  CANDLE_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -1016,6 +1018,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return BSC_DISPLAY_NAME;
     case POLYGON_CHAIN_ID:
       return POLYGON_DISPLAY_NAME;
+    case CANDLE_CHAIN_ID:
+      return CANDLE_DISPLAY_NAME;
     case AVALANCHE_CHAIN_ID:
       return AVALANCHE_DISPLAY_NAME;
     default:
@@ -1035,6 +1039,7 @@ export function getIsTokenDetectionSupported(state) {
     MAINNET_CHAIN_ID,
     BSC_CHAIN_ID,
     POLYGON_CHAIN_ID,
+    CANDLE_CHAIN_ID,
     AVALANCHE_CHAIN_ID,
   ].includes(chainId);
 }

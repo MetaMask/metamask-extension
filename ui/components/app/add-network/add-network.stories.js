@@ -7,6 +7,7 @@ const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 const AVALANCHE_IMAGE_URL = './images/avax-token.png';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
+const CNDL_TOKEN_IMAGE_URL = './images/cndl-token.png';
 
 export default {
   title: 'Components/APP/AddNetwork',
@@ -95,6 +96,16 @@ export default {
         rpcPrefs: {
           blockExplorerUrl: 'https://polygonscan.com/',
           imageUrl: MATIC_TOKEN_IMAGE_URL,
+        },
+      },
+      {
+        chainId: '534',
+        nickname: 'Candle Mainnet',
+        rpcUrl: 'https://rpc.cndlchain.com',
+        ticker: 'CNDL',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://candleexplorer.com/',
+          imageUrl: CNDL_TOKEN_IMAGE_URL,
         },
       },
       {
