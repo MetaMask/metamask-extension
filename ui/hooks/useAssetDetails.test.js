@@ -3,9 +3,9 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
-import { useAssetDetails } from './useAssetDetails';
 import * as tokenUtils from '../helpers/utils/token-util';
 import { ERC20, ERC721 } from '../helpers/constants/common';
+import { useAssetDetails } from './useAssetDetails';
 
 // jest.mock('react-redux', () => {
 //     const actual = jest.requireActual('react-redux');
@@ -44,7 +44,6 @@ const renderUseAssetDetails = ({
 describe('useAssetDetails', () => {
   let getAssetDetailsStub;
   beforeEach(() => {
-    jest.useFakeTimers();
     getAssetDetailsStub = jest
       .spyOn(tokenUtils, 'getAssetDetails')
       .mockImplementation(() => Promise.resolve({}));
@@ -55,11 +54,13 @@ describe('useAssetDetails', () => {
 
     const transactionData = `0xa9059cbb000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000016345785d8a0000`;
 
-    const { result } = await renderUseAssetDetails({
+    const { result, waitForNextUpdate } = renderUseAssetDetails({
       tokenAddress,
       userAddress: '0x111',
       transactionData,
     });
+
+    await waitForNextUpdate;
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
@@ -91,11 +92,13 @@ describe('useAssetDetails', () => {
       }),
     );
 
-    const { result } = await renderUseAssetDetails({
+    const { result, waitForNextUpdate } = renderUseAssetDetails({
       tokenAddress,
       userAddress,
       transactionData,
     });
+
+    await waitForNextUpdate;
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
@@ -128,10 +131,12 @@ describe('useAssetDetails', () => {
       }),
     );
 
-    const { result } = await renderUseAssetDetails({
+    const { result, waitForNextUpdate } = renderUseAssetDetails({
       tokenAddress,
       transactionData,
     });
+
+    await waitForNextUpdate;
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
