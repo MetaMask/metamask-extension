@@ -338,7 +338,7 @@
     "message": "Panimula"
   },
   "betaMetamaskDescription": {
-    "message": "Ang Metamask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
+    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "betaMetamaskDescriptionExplanation": {
     "message": "Gamitin ang bersyong ito para subukan ang mga paparating na feature bago ilabas ang mga ito. Ang iyong paggamit at feedback ay nakakatulong sa amin na bumuo ng posibleng pinakamahusay na bersyon ng MetaMask. Ang paggamit mo ng MetaMask Beta ay napapailalim sa aming karaniwang $1 gayundin sa aming $2. Bilang Beta, maaaring tumaas ang panganib ng mga bug. Sa pagpapatuloy, tinatanggap at kinikilala mo ang mga panganib na ito, gayundin ang mga panganib na makikita sa aming Mga Tuntunin at Mga Tuntunin ng Beta.",
@@ -631,7 +631,7 @@
     "message": "Interaksyon ng Kontrata"
   },
   "convertTokenToNFTDescription": {
-    "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang Metamask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
+    "message": "Natukoy namin na ang asset na ito ay isang NFT. Ang MetaMask ay mayroon na ngayong ganap na native support para sa mga NFT. Gusto mo bang alisin ito sa iyong listahan ng token at idagdag ito bilang isang NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Napansin namin na naidagdag ang asset na ito bilang NFT. Gusto mo ba itong alisin mula sa listahan ng iyong token?"
@@ -3933,7 +3933,7 @@
     "message": "Magsimula na tayo"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "Ang Metamask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
+    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsNew": {
     "message": "Ano'ng bago",
