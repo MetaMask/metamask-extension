@@ -3047,7 +3047,7 @@
   },
   "snapInstallWarningKeyAccess": {
     "message": "Anda memberikan akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
-    "description": "The parameter is the name of the snap"
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "Snap ini meminta izin berikut:"

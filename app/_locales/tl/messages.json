@@ -3047,7 +3047,7 @@
   },
   "snapInstallWarningKeyAccess": {
     "message": "Ipinagkakaloob mo ang key access sa snap \"$1\". Hindi ito maaaring bawiin at ipinagkakaloob sa \"$1\" ang kontrol sa iyong mga account at mga asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
-    "description": "The parameter is the name of the snap"
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "Hinihiling ng snap na ito ang mga sumusunod na pahintulot:"

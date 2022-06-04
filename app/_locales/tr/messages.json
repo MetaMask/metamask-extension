@@ -3047,7 +3047,7 @@
   },
   "snapInstallWarningKeyAccess": {
     "message": "\"$1\" snap'ine anahtar erişimi veriyorsun. Bu geri alınamaz ve hesapların ve varlıkların üzerinde \"1$\" kontrol sağlar. Devam etmeden önce \"$1\" öğesine güvendiğinden emin ol.",
-    "description": "The parameter is the name of the snap"
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "Bu ek, aşağıdaki izinleri istiyor:"
