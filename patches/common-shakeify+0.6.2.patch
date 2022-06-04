@@ -1,0 +1,19 @@
+diff --git a/node_modules/common-shakeify/index.js b/node_modules/common-shakeify/index.js
+index 1e86067..a5640e6 100644
+--- a/node_modules/common-shakeify/index.js
++++ b/node_modules/common-shakeify/index.js
+@@ -1,5 +1,13 @@
+ 'use strict'
+-const relative = require('path').relative
++const _relative = require('path').relative
++const relative = (...args) => {
++  // console.warn('relative', args)
++  try {
++    return _relative(...args)
++  } catch (err) {
++    return `relative-failed:args=${args}`
++  }
++}
+ const Analyzer = require('@goto-bus-stop/common-shake').Analyzer
+ const transformAst = require('transform-ast')
+ const wrapComment = require('wrap-comment')
