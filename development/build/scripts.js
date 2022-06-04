@@ -24,6 +24,7 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
+const commonShake = require('common-shakeify')
 
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -704,6 +705,12 @@ function setupBundlerDefaults(
       ],
       // Inline `fs.readFileSync` files
       brfs,
+    ],
+    plugin: [
+      [
+        commonShake,
+        { verbose: true },
+      ],
     ],
     // Look for TypeScript files when walking the dependency tree
     extensions,
