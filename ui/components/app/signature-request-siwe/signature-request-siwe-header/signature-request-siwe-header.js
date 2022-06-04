@@ -29,7 +29,7 @@ export default function SignatureRequestSIWEHeader({
           !isSIWEDomainValid && (
             <Tooltip
               position="bottom"
-              html={<p>{t('SIWEWarningBody', [domain])}</p>}
+              html={<p>{t('SIWEDomainWarningBody', [domain])}</p>}
               wrapperClassName="signature-request-siwe-header__tooltip"
               containerClassName="signature-request-siwe-header__tooltip__container"
             >
