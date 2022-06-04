@@ -2892,7 +2892,7 @@
   },
   "snapInstallWarningKeyAccess": {
     "message": "Παρέχετε βασική πρόσβαση στο snap \"$1\". Αυτή η ενέργεια είναι μη αναστρέψιμη και παραχωρεί στο \"$1\" τον έλεγχο των λογαριασμών και των περιουσιακών σας στοιχείων. Βεβαιωθείτε ότι εμπιστεύεστε το \"$1\" πριν συνεχίσετε.",
-    "description": "The parameter is the name of the snap"
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "Αυτό το snap αιτείται τις παρακάτω άδειες:"

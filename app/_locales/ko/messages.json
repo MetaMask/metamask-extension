@@ -2892,7 +2892,7 @@
   },
   "snapInstallWarningKeyAccess": {
     "message": "'$1' 스냅 이용에 필요한 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
-    "description": "The parameter is the name of the snap"
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "이 스냅이 다음 권한을 요청하고 있습니다."

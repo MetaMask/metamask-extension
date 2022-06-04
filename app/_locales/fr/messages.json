@@ -2892,7 +2892,7 @@
   },
   "snapInstallWarningKeyAccess": {
     "message": "Vous accordez un accès de clé au snap « $1 ». Cette action est irrévocable et accorde à « $1 » le contrôle de vos comptes et actifs. Vérifiez que vous pouvez faire confiance à « $1 » avant de continuer.",
-    "description": "The parameter is the name of the snap"
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "Ce snap demande les autorisations suivantes :"
