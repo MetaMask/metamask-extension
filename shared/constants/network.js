@@ -305,6 +305,11 @@ export const BUYABLE_CHAINS_MAP = {
     network: 'fantom',
     transakCurrencies: [FANTOM_SYMBOL],
   },
+  [CANDLE_CHAIN_ID]: {
+    nativeCurrency: CANDLE_SYMBOL,
+    network: 'candle',
+    transakCurrencies: [CANDLE_SYMBOL],
+  },
   [CELO_CHAIN_ID]: {
     nativeCurrency: CELO_SYMBOL,
     network: 'celo',
