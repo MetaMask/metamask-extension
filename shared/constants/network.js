@@ -28,6 +28,7 @@ export const POLYGON_CHAIN_ID = '0x89';
 export const AVALANCHE_CHAIN_ID = '0xa86a';
 export const FANTOM_CHAIN_ID = '0xfa';
 export const CELO_CHAIN_ID = '0xa4ec';
+export const CANDLE_CHAIN_ID = '0x216';
 
 /**
  * The largest possible chain ID we can handle.
@@ -44,6 +45,7 @@ export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
 export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
+export const CANDLE_DISPLAY_NAME = 'Candle';
 
 const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({ network, excludeProjectId = false }) =>
@@ -64,12 +66,14 @@ export const MATIC_SYMBOL = 'MATIC';
 export const AVALANCHE_SYMBOL = 'AVAX';
 export const FANTOM_SYMBOL = 'FTM';
 export const CELO_SYMBOL = 'CELO';
+export const CANDLE_SYMBOL = 'CNDL';
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
+export const CNDL_TOKEN_IMAGE_URL = './images/cndl-token.png';
 
 export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
 
@@ -166,6 +170,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [AVALANCHE_CHAIN_ID]: AVAX_TOKEN_IMAGE_URL,
   [BSC_CHAIN_ID]: BNB_TOKEN_IMAGE_URL,
   [POLYGON_CHAIN_ID]: MATIC_TOKEN_IMAGE_URL,
+  [CANDLE_CHAIN_ID]: CNDL_TOKEN_IMAGE_URL,
 };
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
@@ -181,6 +186,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [BNB_SYMBOL]: BNB_TOKEN_IMAGE_URL,
   [MATIC_SYMBOL]: MATIC_TOKEN_IMAGE_URL,
   [AVALANCHE_SYMBOL]: AVAX_TOKEN_IMAGE_URL,
+  [CNDL_SYMBOL]: CNDL_TOKEN_IMAGE_URL,
 };
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
