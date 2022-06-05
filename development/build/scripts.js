@@ -796,7 +796,19 @@ function setupMinification(buildConfiguration) {
             },
             ...minifyOpts,
           };
-          const res = await terser.minify(input, opts);
+          let res
+          try {
+            res = await terser.minify(input, opts);
+          } catch (err) {
+            const { codeFrameColumns } = require('@babel/code-frame')
+            // codeFrameColumns
+            const location = { start: { line: err.line, column: err.col } };
+            const result = codeFrameColumns(file.contents.toString(), location, {
+              highlightCode: true,
+            })
+            console.log(result)
+            throw err
+          }
           file.contents = Buffer.from(res.code);
           applySourceMap(file, res.map);
           return file;

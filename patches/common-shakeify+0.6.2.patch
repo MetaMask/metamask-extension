@@ -1,8 +1,8 @@
 diff --git a/node_modules/common-shakeify/index.js b/node_modules/common-shakeify/index.js
-index 1e86067..6a7a835 100644
+index 1e86067..851d5ce 100644
 --- a/node_modules/common-shakeify/index.js
 +++ b/node_modules/common-shakeify/index.js
-@@ -11,13 +11,15 @@ module.exports = function commonShake (b, opts) {
+@@ -11,12 +11,14 @@ module.exports = function commonShake (b, opts) {
      throw new Error('common-shakeify: must be used as a plugin, not a transform')
    }
  
@@ -13,12 +13,10 @@ index 1e86067..6a7a835 100644
      verbose: false,
      onExportDelete (path, name) {
        if (opts.verbose || opts.v) {
--        console.warn('common-shake: removed', `\`${name}\``, 'in', relative(basedir, path))
-+        const file = rows.get(path).file
-+        console.warn('common-shake: removed', `\`${name}\``, 'in', relative(basedir, file))
++        console.log('onExportsDelete', path)
+         console.warn('common-shake: removed', `\`${name}\``, 'in', relative(basedir, path))
        }
      },
-     onModuleBailout (resource, reasons) {
 @@ -27,7 +29,8 @@ module.exports = function commonShake (b, opts) {
            seen[resource.resource + reason.reason] = true
            const loc = reason.loc.start
@@ -81,3 +79,12 @@ index 1e86067..6a7a835 100644
        opts.onGlobalBailout(analyzer.bailouts)
  
        rows.forEach((row) => {
+@@ -201,7 +207,7 @@ function createStream (opts) {
+       // eg in `exports.a = [0]` the `[0]` could continue a previous statement if that
+       // did not have a semicolon. By putting `void ` in front we force a new statement.
+       else if (node.parent.type === 'ExpressionStatement') {
+-        prefix += 'void '
++        prefix += 'void 0, '
+       }
+ 
+       // Acorn silently strips parens, and node.right.start might be after one
