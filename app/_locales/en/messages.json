@@ -3944,7 +3944,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "Visit our web site"
+    "message": "Visit our website"
   },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
