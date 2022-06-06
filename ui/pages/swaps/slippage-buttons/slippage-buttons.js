@@ -42,7 +42,7 @@ export default function SlippageButtons({
   const [activeButtonIndex, setActiveButtonIndex] = useState(() => {
     if (currentSlippage === 3) {
       return 1; // 3% slippage.
-    } else if (currentSlippage === 2) {
+    } else if (currentSlippage === DEFAULT_SLIPPAGE) {
       return 0; // 2% slippage.
     } else if (typeof currentSlippage === 'number') {
       return 2; // Custom slippage.
