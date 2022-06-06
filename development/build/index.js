@@ -202,7 +202,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
         .option('build-version', {
           default: 0,
           description:
-            'The build version. This is set only for non-main build types. The build version is used in the "prerelease" segment of the extension version, e.g. `[major].[minor].[patch]-[build-type].[build-version]``',
+            'The build version. This is set only for non-main build types. The build version is used in the "prerelease" segment of the extension version, e.g. `[major].[minor].[patch]-[build-type].[build-version]`',
           type: 'number',
         })
         .option('lint-fence-files', {
