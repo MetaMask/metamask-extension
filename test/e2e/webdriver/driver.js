@@ -117,6 +117,10 @@ class Driver {
     );
   }
 
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
+  }
+
   async fill(rawLocator, input) {
     const element = await this.findElement(rawLocator);
     await element.fill(input);

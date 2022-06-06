@@ -124,6 +124,10 @@ describe('Phishing Detection', function () {
 
         // Ensure we're not on the wallet home page
         await driver.assertElementNotPresent('[data-testid="wallet-balance"]');
+
+        // Check that the user has been directed to the appropriate warning screen
+        const currentUrl = await driver.getCurrentUrl();
+        assert.equal(currentUrl, 'chrome-extension://invalid/');
       },
     );
   });
