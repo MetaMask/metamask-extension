@@ -114,7 +114,7 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    notificationsToShow: PropTypes.bool.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
@@ -525,7 +525,7 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      notificationsToShow,
+      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
       seedPhraseBackedUp,
@@ -543,9 +543,8 @@ export default class Home extends PureComponent {
     const showWhatsNew =
       ((completedOnboarding && firstTimeFlowType === 'import') ||
         !completedOnboarding) &&
-      notificationsToShow &&
+      announcementsToShow &&
       showWhatsNewPopup;
-
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
