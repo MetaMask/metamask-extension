@@ -181,15 +181,35 @@ export const getExtraPermissionSpecifications = (
         //   // optional factory function for the permission goes here
         // },
 
-        methodImplementation: async (_args) => {
-          console.log("manageAccounts methodImpl running with", _args);
-          // method implementation goes here
+        methodImplementation: async (args) => {
+          const { context, params } = args;
+          const { origin } = context;
+          console.log("manageAccounts methodImpl running with", origin, args);
+          const methodAction = params[0];
+          switch (methodAction) {
+            case "add":
+              const keypair = params[1];
+              // Expecting a tuple of hex encoded public key
+              // and some arbitrary private data
+              const [publicKey, privateData] = keypair;
+              console.log("TODO: add an account to the keyring for the snap");
+              break;
+            case "get":
+              const publicKey = params[1];
+              console.log("TODO: get the private data from the keyring for the snap");
+              break;
+            default:
+              // TODO: return this error to the client!
+              throw new Error("invalid snap_manageAccounts action");
+          }
           return null;
         },
 
-        // validator: (permission, _origin, _target) => {
-        //   // optional validator goes here
-        // },
+        validator: (permission, _origin, _target) => {
+          console.log("validator running with", permission);
+          console.log("validator running with", _origin);
+          console.log("validator running with", _target);
+        },
       },
     };
   };
