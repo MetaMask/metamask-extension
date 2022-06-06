@@ -195,7 +195,7 @@ export const getExtraPermissionSpecifications = (
               console.log("TODO: add an account to the keyring for the snap");
               break;
             case "get":
-              const publicKey = params[1];
+              //const publicKey = params[1];
               console.log("TODO: get the private data from the keyring for the snap");
               break;
             default:
@@ -205,11 +205,8 @@ export const getExtraPermissionSpecifications = (
           return null;
         },
 
-        validator: (permission, _origin, _target) => {
-          console.log("validator running with", permission);
-          console.log("validator running with", _origin);
-          console.log("validator running with", _target);
-        },
+        //validator: (permission, _origin, _target) => {
+        //},
       },
     };
   };

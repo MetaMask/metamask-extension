@@ -51,6 +51,8 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snap-controllers';
+
+import SnapKeyring from 'snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -562,6 +564,11 @@ export default class MetamaskController extends EventEmitter {
       LatticeKeyring,
       QRHardwareKeyring,
     ];
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    additionalKeyrings.push(SnapKeyring);
+    ///: END:ONLY_INCLUDE_IN
+
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
