@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "スマートトランザクションが利用できなくても、トークンのスワップは可能です。"
   },
-  "stxPendingFinalizing": {
-    "message": "最終処理中..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "ガス代を最適化中..."
-  },
   "stxSubDescription": {
     "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },

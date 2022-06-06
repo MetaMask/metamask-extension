@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Akıllı İşlemler kullanılamazken bile token'larını değiştirebilirsin."
   },
-  "stxPendingFinalizing": {
-    "message": "Sonuçlandırılıyor..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Gas optimize ediliyor..."
-  },
   "stxSubDescription": {
     "message": "* Akıllı İşlemler, işlemini birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Takas'ının başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
   },

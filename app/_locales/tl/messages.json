@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Maaari mo parin papalitan ang iyong mga token kahit na hindi available ang mga Smart Transaction."
   },
-  "stxPendingFinalizing": {
-    "message": "Isinasapinal..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Pinapahusay ang gas..."
-  },
   "stxSubDescription": {
     "message": "* Susubukan ng mga Smart Transaction na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Pagpapalit ay naging matagupay."
   },

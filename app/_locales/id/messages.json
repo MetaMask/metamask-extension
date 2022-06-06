@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Anda masih bisa menukar token meskipun Transaksi Pintar tidak tersedia."
   },
-  "stxPendingFinalizing": {
-    "message": "Menyelesaikan..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Mengoptimalkan gas..."
-  },
   "stxSubDescription": {
     "message": "* Transaksi Pintar akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Pertukaran telah berhasil dilakukan."
   },

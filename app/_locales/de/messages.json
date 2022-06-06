@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Sie können Ihre Token immer noch tauschen, selbst während intelligente Transaktionen nicht verfügbar sind."
   },
-  "stxPendingFinalizing": {
-    "message": "Wird finalisiert ..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Gas wird optimiert ..."
-  },
   "stxSubDescription": {
     "message": "* Intelligente Transaktionen versuchen mehrmals, Ihre Transaktion privat zu übermitteln. Wenn alle Versuche fehlschlagen, wird die Transaktion öffentlich übertragen, um sicherzustellen, dass Ihr Swap erfolgreich durchgeführt wird."
   },

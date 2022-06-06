@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Vous pouvez toujours faire un swap de tokens, même si les transactions intelligentes ne sont pas disponibles."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalisation..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Optimisation des gas fees..."
-  },
   "stxSubDescription": {
     "message": "* Avec les transactions intelligentes, votre transaction sera soumise plusieurs fois en privé. Si toutes les tentatives échouent, la transaction sera diffusée publiquement pour s’assurer de la réussite de votre swap."
   },

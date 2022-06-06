@@ -3083,12 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Bạn vẫn có thể hoán đổi token ngay cả khi Giao dịch thông minh không khả dụng."
   },
-  "stxPendingFinalizing": {
-    "message": "Đang hoàn thành..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Đang tối ưu gas..."
-  },
   "stxSubDescription": {
     "message": "* Giao dịch thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần theo cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
   },

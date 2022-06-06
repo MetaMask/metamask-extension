@@ -3161,14 +3161,11 @@
   "stxFallbackUnavailable": {
     "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalizing..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Optimizing gas..."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Publicly submitting your Swap..."
   },
   "stxSubDescription": {
     "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."

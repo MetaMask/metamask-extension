@@ -3089,12 +3089,6 @@
   "stxFallbackUnavailable": {
     "message": "即使智能交易不可用，您仍然可以交换代币。"
   },
-  "stxPendingFinalizing": {
-    "message": "最终确定中..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "正在优化燃料......"
-  },
   "stxSubDescription": {
     "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },

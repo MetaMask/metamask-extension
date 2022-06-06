@@ -169,23 +169,15 @@ export default function SmartTransactionStatus() {
     }, 1000); // Stop polling for quotes after 1s.
   }, [dispatch]);
 
-  let headerText = t('stxPendingOptimizingGas');
+  let headerText = t('stxPendingPrivatelySubmittingSwap');
   let description;
   let subDescription;
   let icon;
   if (isSmartTransactionPending) {
-    if (
-      timeLeftForPendingStxInSec <
-      swapsNetworkConfig.stxStatusDeadline - 60
-    ) {
-      headerText = t('stxPendingFinalizing');
-    } else if (
-      timeLeftForPendingStxInSec <
-      swapsNetworkConfig.stxStatusDeadline - 30
-    ) {
-      headerText = t('stxPendingPrivatelySubmittingSwap');
-    } else if (cancelSwapLinkClicked) {
+    if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
+    } else if (latestSmartTransaction?.statusMetadata?.cancellationFeeWei > 0) {
+      headerText = t('stxPendingPubliclySubmittingSwap');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
