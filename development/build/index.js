@@ -253,11 +253,8 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     task,
   } = argv;
 
-  let shouldLintFenceFiles = lintFenceFiles;
-  if (shouldLintFenceFiles === undefined) {
-    // Manually default this to `false` for dev builds only.
-    shouldLintFenceFiles = !/dev/iu.test(task);
-  }
+  // Manually default this to `false` for dev builds only.
+  const shouldLintFenceFiles = lintFenceFiles ?? !/dev/iu.test(task)
 
   const version = getVersion(buildType, buildVersion);
 
