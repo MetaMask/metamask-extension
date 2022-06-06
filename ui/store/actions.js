@@ -44,7 +44,6 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 ///: END:ONLY_INCLUDE_IN
 import * as actionConstants from './actionConstants';
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
-import * as actionConstants from './actionConstants';
 
 let background = null;
 let promisifiedBackground = null;
