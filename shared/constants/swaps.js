@@ -206,3 +206,5 @@ export const TOKEN_BUCKET_PRIORITY = {
   OWNED: 'owned',
   TOP: 'top',
 };
+
+export const DEFAULT_SLIPPAGE = 2;

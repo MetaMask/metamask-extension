@@ -80,6 +80,7 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
+  DEFAULT_SLIPPAGE,
 } from '../../../shared/constants/swaps';
 import {
   TRANSACTION_TYPES,
@@ -108,7 +109,7 @@ const initialState = {
   fromTokenInputValue: '',
   fromTokenError: null,
   isFeatureFlagLoaded: false,
-  maxSlippage: 3,
+  maxSlippage: DEFAULT_SLIPPAGE,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
