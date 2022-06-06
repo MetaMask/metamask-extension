@@ -168,7 +168,7 @@ export const getPermissionSpecifications = ({
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export const getExtraPermissionSpecifications = (
   {
-   // functions you need to use in the permission go here
+    getSnapKeyring,
   }) =>
   {
     return {
@@ -184,7 +184,9 @@ export const getExtraPermissionSpecifications = (
         methodImplementation: async (args) => {
           const { context, params } = args;
           const { origin } = context;
-          console.log("manageAccounts methodImpl running with", origin, args);
+          const keyring = await getSnapKeyring();
+          console.log("manageAccounts methodImpl running with", args);
+          console.log("manageAccounts methodImpl running with", keyring);
           const methodAction = params[0];
           switch (methodAction) {
             case "add":

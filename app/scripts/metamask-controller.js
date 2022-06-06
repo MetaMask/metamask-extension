@@ -566,7 +566,9 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    console.log("Got SnapKeyring", SnapKeyring);
     additionalKeyrings.push(SnapKeyring);
+    console.log("additionalKeyrings", additionalKeyrings);
     ///: END:ONLY_INCLUDE_IN
 
     this.keyringController = new KeyringController({
@@ -628,7 +630,9 @@ export default class MetamaskController extends EventEmitter {
         }),
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
-        ...getExtraPermissionSpecifications({}),
+        ...getExtraPermissionSpecifications({
+          getSnapKeyring: this.getSnapKeyring.bind(this)
+        }),
         ///: END:ONLY_INCLUDE_IN
       },
       unrestrictedMethods,
@@ -1110,6 +1114,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  /**
+   * Initialize the snap keyring if it is not present.
+   */
+  async getSnapKeyring() {
+    console.log("getSnapKeyring", SnapKeyring);
+    if (!this.snapKeyring) {
+      this.snapKeyring = await this.keyringController
+        .addNewKeyring('Snap Keyring');
+    }
+    return this.snapKeyring;
+  }
+
   /**
    * Constructor helper for getting Snap permission specifications.
    */

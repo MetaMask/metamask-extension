@@ -24573,10 +24573,10 @@ snake-case@^2.1.0:
   dependencies:
     no-case "^2.2.0"
 
-snap-keyring@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/snap-keyring/-/snap-keyring-0.0.1.tgz#7a4a49401078e7ff77287a96b252dc6ead0887f4"
-  integrity sha512-4gQJ/jBdI10j+DRu+y3PVzu0MloN0GwM7w8UoAuVteuDrblS8fo+DhRkctYgPwfsysTalZDrJGV22XNm7K9e6g==
+snap-keyring@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/snap-keyring/-/snap-keyring-0.0.8.tgz#76cd35ac1506b415f10e848f2ac45555c4cd263e"
+  integrity sha512-P35TN5OPW1n1OVYBV+lBLuvKep4WAkdq4v5Tr1wiOM6N8tr6cmXaS8OT+X1GGbcC4Bj5rx1ZqHzasdNKgbULBg==
   dependencies:
     "@metamask/eth-sig-util" "^4.0.1"
     "@metamask/utils" "^2.0.0"
