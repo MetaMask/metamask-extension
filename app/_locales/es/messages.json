@@ -631,7 +631,7 @@
     "message": "Interacción con el contrato"
   },
   "convertTokenToNFTDescription": {
-    "message": "Hemos detectado que este activo es un NFT. Metamask ahora tiene soporte nativo completo para NFTs. ¿Quieres eliminarlo de tu lista de tokens y añadirlo como un NFT?"
+    "message": "Hemos detectado que este activo es un NFT. MetaMask ahora tiene soporte nativo completo para NFTs. ¿Quieres eliminarlo de tu lista de tokens y añadirlo como un NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Hemos detectado que este recurso se ha agregado como NFT. ¿Quiere eliminarlo de su lista de tokens?"

@@ -34,13 +34,6 @@ describe('app utils', () => {
       expect(environmentType).toStrictEqual(ENVIRONMENT_TYPE_FULLSCREEN);
     });
 
-    it('should return fullscreen type for phishing.html', () => {
-      const environmentType = getEnvironmentType(
-        'http://extension-id/phishing.html',
-      );
-      expect(environmentType).toStrictEqual(ENVIRONMENT_TYPE_FULLSCREEN);
-    });
-
     it('should return background type', () => {
       const environmentType = getEnvironmentType(
         'http://extension-id/_generated_background_page.html',
