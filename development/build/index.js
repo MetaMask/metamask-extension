@@ -240,6 +240,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
           return true;
         }),
     )
+    // TODO: Enable `.strict()` after this issue is resolved: https://github.com/LavaMoat/LavaMoat/issues/344
     .help('help');
 
   const {
