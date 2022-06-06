@@ -34,6 +34,9 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import Notifications from '../notifications';
+///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -59,6 +62,9 @@ import {
   ONBOARDING_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
   TOKEN_DETAILS,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 
 import {
@@ -175,6 +181,11 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}

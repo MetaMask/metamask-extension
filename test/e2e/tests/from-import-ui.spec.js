@@ -9,7 +9,7 @@ const {
   completeImportSRPOnboardingFlowWordByWord,
 } = require('../helpers');
 
-describe('Metamask Import UI', function () {
+describe('MetaMask Import UI', function () {
   it('Importing wallet using Secret Recovery Phrase', async function () {
     const ganacheOptions = {
       accounts: [

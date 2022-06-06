@@ -42,6 +42,7 @@ import {
   SubjectMetadataController,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
+  NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
@@ -153,6 +154,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to @metamask/controllers and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
+
+// stream channels
+const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -682,6 +686,13 @@ export default class MetamaskController extends EventEmitter {
       messenger: snapControllerMessenger,
     });
 
+    this.notificationController = new NotificationController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NotificationController',
+      }),
+      state: initState.NotificationController,
+    });
+
     this.rateLimitController = new RateLimitController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'RateLimitController',
@@ -698,6 +709,15 @@ export default class MetamaskController extends EventEmitter {
             originMetadata?.name ?? origin,
             message,
           );
+          return null;
+        },
+        showInAppNotification: (origin, message) => {
+          this.controllerMessenger.call(
+            'NotificationController:show',
+            origin,
+            message,
+          );
+
           return null;
         },
       },
@@ -1001,6 +1021,7 @@ export default class MetamaskController extends EventEmitter {
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
+      NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
     });
 
@@ -1041,6 +1062,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
@@ -1116,11 +1138,19 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
-        showNotification: (origin, args) =>
+        showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
             'RateLimitController:call',
             origin,
             'showNativeNotification',
+            origin,
+            args.message,
+          ),
+        showInAppNotification: (origin, args) =>
+          this.controllerMessenger.call(
+            'RateLimitController:call',
+            origin,
+            'showInAppNotification',
             origin,
             args.message,
           ),
@@ -1131,6 +1161,25 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
   }
+
+  /**
+   * Deletes the specified notifications from state.
+   *
+   * @param {string[]} ids - The notifications ids to delete.
+   */
+  dismissNotifications(ids) {
+    this.notificationController.dismiss(ids);
+  }
+
+  /**
+   * Updates the readDate attribute of the specified notifications.
+   *
+   * @param {string[]} ids - The notifications ids to mark as read.
+   */
+  markNotificationsAsRead(ids) {
+    this.notificationController.markRead(ids);
+  }
+
   ///: END:ONLY_INCLUDE_IN
 
   /**
@@ -1457,7 +1506,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
@@ -1756,6 +1804,8 @@ export default class MetamaskController extends EventEmitter {
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
       removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      dismissNotifications: this.dismissNotifications.bind(this),
+      markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -2040,7 +2090,7 @@ export default class MetamaskController extends EventEmitter {
 
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block Metamask login due to
+      // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
       const transportPreference = this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
@@ -2212,7 +2262,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    // Optimistically called to not block Metamask login due to
+    // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
 
@@ -3258,6 +3308,33 @@ export default class MetamaskController extends EventEmitter {
       mux.createStream('provider'),
       sender,
       SUBJECT_TYPES.INTERNAL,
+    );
+  }
+
+  /**
+   * Used to create a multiplexed stream for connecting to the phishing warning page.
+   *
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   */
+  setupPhishingCommunication({ connectionStream }) {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
+    if (!usePhishDetect) {
+      return;
+    }
+
+    // setup multiplexing
+    const mux = setupMultiplex(connectionStream);
+    const phishingStream = mux.createStream(PHISHING_SAFELIST);
+
+    // set up postStream transport
+    phishingStream.on(
+      'data',
+      createMetaRPCHandler(
+        { safelistPhishingDomain: this.safelistPhishingDomain.bind(this) },
+        phishingStream,
+      ),
     );
   }
 
