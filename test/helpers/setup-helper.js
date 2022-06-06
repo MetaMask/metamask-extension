@@ -6,6 +6,8 @@ import { JSDOM } from 'jsdom';
 
 process.env.IN_TEST = true;
 
+global.chrome = { runtime: { id: 'testid' } };
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 
@@ -68,6 +70,10 @@ Object.assign(window, { fetch, Headers, Request, Response });
 window.localStorage = {
   removeItem: () => null,
 };
+
+// used for native dark/light mode detection
+window.matchMedia = () => true;
+
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;
 
@@ -78,4 +84,12 @@ if (!window.crypto) {
 if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
+}
+
+// Used to test `clearClipboard` function
+if (!window.navigator.clipboard) {
+  window.navigator.clipboard = {};
+}
+if (!window.navigator.clipboard.writeText) {
+  window.navigator.clipboard.writeText = () => undefined;
 }

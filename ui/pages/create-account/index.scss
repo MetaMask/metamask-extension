@@ -3,7 +3,7 @@
 
 .new-account {
   width: 375px;
-  background-color: #fff;
+  background-color: var(--color-background-default);
   box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   z-index: 25;
   height: unset;
@@ -21,13 +21,13 @@
   &__header {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid var(--geyser);
+    border-bottom: 1px solid var(--color-border-muted);
   }
 
   &__title {
     @include H2;
 
-    color: var(--tundora);
+    color: var(--color-text-alternative);
     font-weight: 500;
     margin-top: 22px;
     margin-left: 29px;
@@ -43,19 +43,19 @@
 
       height: 54px;
       padding: 15px 10px;
-      color: var(--dusty-gray);
+      color: var(--color-text-muted);
       text-align: center;
       cursor: pointer;
     }
 
     &__tab:hover {
-      color: var(--black);
+      color: var(--color-text-default);
       border-bottom: none;
     }
 
     &__selected {
-      color: var(--primary-blue);
-      border-bottom: 3px solid var(--primary-blue);
+      color: var(--color-primary-default);
+      border-bottom: 3px solid var(--color-primary-default);
       cursor: initial;
       pointer-events: none;
     }
@@ -72,7 +72,7 @@
   &__input-label {
     @include Paragraph;
 
-    color: var(--scorpion);
+    color: var(--color-text-alternative);
     align-self: flex-start;
   }
 
@@ -81,15 +81,15 @@
 
     height: 54px;
     width: 315.84px;
-    border: 1px solid var(--geyser);
+    border: 1px solid var(--color-border-muted);
     border-radius: 4px;
-    background-color: var(--white);
-    color: var(--scorpion);
+    background-color: var(--color-background-default);
+    color: var(--color-text-muted);
     margin-top: 15px;
     padding: 0 20px;
 
     &__error {
-      border: 1px solid var(--error-3);
+      border: 1px solid var(--color-error-alternative);
     }
   }
 
@@ -97,7 +97,7 @@
     @include H7;
 
     left: 8px;
-    color: var(--red);
+    color: var(--color-error-default);
   }
 
   &__error-amount {

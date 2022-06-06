@@ -31,12 +31,14 @@ export function mountWithRouter(component, store = {}, pathname = '/') {
       router,
       t: (str) => str,
       metricsEvent: () => undefined,
+      trackEvent: () => undefined,
       store,
     },
     childContextTypes: {
       router: PropTypes.object,
       t: PropTypes.func,
       metricsEvent: PropTypes.func,
+      trackEvent: PropTypes.func,
       store: PropTypes.object,
     },
   });
@@ -88,6 +90,20 @@ export function renderWithProvider(component, store) {
     ) : (
       <LegacyI18nProvider>{children}</LegacyI18nProvider>
     );
+
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+
+  return render(component, { wrapper: Wrapper });
+}
+
+export function renderWithLocalization(component) {
+  const Wrapper = ({ children }) => (
+    <I18nProvider currentLocale="en" current={en} en={en}>
+      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+    </I18nProvider>
+  );
 
   Wrapper.propTypes = {
     children: PropTypes.node,

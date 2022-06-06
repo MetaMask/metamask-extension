@@ -9,7 +9,7 @@
     @include H7;
 
     font-weight: 500;
-    color: var(--scorpion);
+    color: var(--color-text-alternative);
     text-transform: uppercase;
   }
 
@@ -26,7 +26,7 @@
   }
 
   &__secondary {
-    color: var(--oslo-gray);
+    color: var(--color-text-alternative);
     justify-content: flex-end;
   }
 
@@ -35,10 +35,10 @@
 
     text-transform: uppercase;
     margin-bottom: 6px;
-    color: var(--scorpion);
+    color: var(--color-text-default);
 
     &--edit {
-      color: var(--primary-blue);
+      color: var(--color-primary-default);
       cursor: pointer;
     }
 

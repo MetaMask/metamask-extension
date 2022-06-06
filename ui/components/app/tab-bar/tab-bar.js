@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import IconCaretRight from '../../ui/icon/icon-caret-right';
+
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
 
   return (
     <div className="tab-bar">
-      {tabs.map(({ key, content, description }) => (
+      {tabs.map(({ key, content, icon }) => (
         <button
           key={key}
           className={classnames('tab-bar__tab pointer', {
@@ -16,12 +18,10 @@ const TabBar = (props) => {
           onClick={() => onSelect(key)}
         >
           <div className="tab-bar__tab__content">
+            <div className="tab-bar__tab__content__icon">{icon}</div>
             <div className="tab-bar__tab__content__title">{content}</div>
-            <div className="tab-bar__tab__content__description">
-              {description}
-            </div>
           </div>
-          <div className="tab-bar__tab__caret" />
+          <IconCaretRight className="tab-bar__tab__caret" />
         </button>
       ))}
     </div>

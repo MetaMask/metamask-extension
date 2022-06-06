@@ -1,20 +1,20 @@
 module.exports = {
   collectCoverageFrom: [
-    '<rootDir>/app/scripts/controllers/permissions/*.js',
+    '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/shared/**/*.js',
     '<rootDir>/ui/**/*.js',
   ],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
-  coverageReporters: ['html', 'text-summary'],
+  coverageReporters: ['html', 'text-summary', 'json-summary'],
   coverageThreshold: {
     global: {
-      branches: 35,
-      functions: 37,
-      lines: 43,
-      statements: 43,
+      branches: 44,
+      functions: 42,
+      lines: 48,
+      statements: 48,
     },
-    './app/scripts/controllers/permissions/*.js': {
+    './app/scripts/controllers/permissions/**/*.js': {
       branches: 100,
       functions: 100,
       lines: 100,
@@ -33,7 +33,7 @@ module.exports = {
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
-    '<rootDir>/app/scripts/controllers/permissions/*.test.js',
+    '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
   ],
   testTimeout: 2500,
   transform: {

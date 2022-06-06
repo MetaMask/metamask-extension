@@ -64,8 +64,8 @@ describe('ViewQuote', () => {
       getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
+    expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
-    expect(getByText('Edit')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 
@@ -88,9 +88,8 @@ describe('ViewQuote', () => {
       getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('0.01044 ETH')).toBeInTheDocument();
+    expect(getByText('0.00008 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
-    expect(getByText('Edit')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 });

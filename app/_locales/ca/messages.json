@@ -8,9 +8,6 @@
   "about": {
     "message": "Informació"
   },
-  "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Afegir Fitxes Suggerides"
   },
-  "addToAddressBook": {
-    "message": "Afegir al llibre d'adreces"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "p. ex. John D."
-  },
   "addToken": {
     "message": "Afegir Fitxa"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Opcions Avançades"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "amount": {
     "message": "Quantitat"
@@ -145,17 +133,14 @@
     "message": "Veure compte a $1 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Fer servir els Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
   },
   "buyWithWyre": {
-    "message": "Compra ETH amb Wyre"
+    "message": "Compra $1 amb Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar ETH directe al teu compte MetaMask."
+    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar $1 directe al teu compte MetaMask."
   },
   "cancel": {
     "message": "Cancel·la"
@@ -292,12 +277,6 @@
   "details": {
     "message": "Detalls"
   },
-  "directDepositEther": {
-    "message": "Diposita Ether directament"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
-  },
   "done": {
     "message": "Fet"
   },
@@ -351,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
-  },
-  "enterAnAlias": {
-    "message": "Introdueix Àlies"
   },
   "enterPassword": {
     "message": "Introdueix contrasenya"
@@ -415,9 +391,6 @@
   },
   "gasUsed": {
     "message": "Gas utilitzat"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
   },
   "getEther": {
     "message": "Aconsegueix Ether"
@@ -586,9 +559,6 @@
   },
   "networkName": {
     "message": "Nom de la xarxa"
-  },
-  "networkSettingsDescription": {
-    "message": "Afegeix i edita xarxes RPC a mida"
   },
   "networks": {
     "message": "Xarxes"
@@ -764,9 +734,6 @@
   "restore": {
     "message": "Restaura"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
   },
@@ -818,12 +785,6 @@
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
-  "securitySettingsDescription": {
-    "message": "Configuració de privacitat i frase de recuperació del moneder"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separa cada paraula amb un únic espai"
-  },
   "seedPhraseReq": {
     "message": "Les frases de recuperació tenen 12 paraules"
   },
@@ -853,9 +814,6 @@
   },
   "sendTokens": {
     "message": "Enviar Fitxes"
-  },
-  "separateEachWord": {
-    "message": "Separa cada paraula amb un sol espai"
   },
   "settings": {
     "message": "Configuració"

@@ -2,9 +2,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
-  },
   "acceleratingATransaction": {
     "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas, mas magiging malaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
   },
@@ -82,12 +79,6 @@
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminumungkahing Token"
   },
-  "addToAddressBook": {
-    "message": "Idagdag sa address book"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "hal. John D."
-  },
   "addToken": {
     "message": "Magdagdag ng Token"
   },
@@ -97,14 +88,8 @@
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
   },
-  "advancedSettingsDescription": {
-    "message": "I-access ang mga pang-developer na feature, i-download ang Mga Log ng Status, I-reset ang Account, i-set up ang mga testnet at custom na RPC"
-  },
   "affirmAgree": {
     "message": "Sang-ayon ako"
-  },
-  "aggregatorFeeCost": {
-    "message": "Bayarin sa aggregator network"
   },
   "alertDisableTooltip": {
     "message": "Mababago ito sa \"Mga Setting > Mga Alerto\""
@@ -123,9 +108,6 @@
   },
   "alerts": {
     "message": "Mga Alerto"
-  },
-  "alertsSettingsDescription": {
-    "message": "I-enable o i-disable ang bawat alerto"
   },
   "allowExternalExtensionTo": {
     "message": "Payagan ang external extension na ito na:"
@@ -155,12 +137,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Bayarin sa pag-apruba at aggregator network"
-  },
-  "approvalTxGasCost": {
-    "message": "Approval Tx Gas Cost"
   },
   "approve": {
     "message": "Aprubahan ang limitasyon sa paggastos"
@@ -242,9 +218,6 @@
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gumamit ng Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
@@ -255,10 +228,10 @@
     "message": "Bumili"
   },
   "buyWithWyre": {
-    "message": "Bumili ng ETH gamit ang Wyre"
+    "message": "Bumili ng $1 gamit ang Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Binibigyang-daan ka ng Wyre na gumamit ng debit card para mag-deposit ng ETH sa mismong MetaMask account mo."
+    "message": "Binibigyang-daan ka ng Wyre na gumamit ng debit card para mag-deposit ng $1 sa mismong MetaMask account mo."
   },
   "bytes": {
     "message": "Bytes"
@@ -400,9 +373,6 @@
   "contacts": {
     "message": "Mga Contact"
   },
-  "contactsSettingsDescription": {
-    "message": "Magdagdag, mag-edit, mag-alis, at mamahala ng iyong mga contact"
-  },
   "continue": {
     "message": "Magpatuloy"
   },
@@ -522,12 +492,6 @@
   "details": {
     "message": "Mga Detalye"
   },
-  "directDepositEther": {
-    "message": "Direktang Mag-deposit ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang ilang Ether, ang pinakamabilis na paraan para makakuha ng Ether sa bago mong wallet ay sa pamamagitan ng direktang pag-deposit."
-  },
   "disconnect": {
     "message": "Idiskonekta"
   },
@@ -636,9 +600,6 @@
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
   },
-  "enterAnAlias": {
-    "message": "Maglagay ng alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
   },
@@ -686,10 +647,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Ibinibigay ang backup na presyo ng gas dahil hindi available ang pangunahing serbisyo sa pagtatantya ng gas sa ngayon."
   },
-  "eth_accounts": {
-    "message": "Tingnan ang mga address ng iyong mga pinapayagang account (kinakailangan)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Pampublikong Address ng Ethereum"
   },
@@ -707,10 +664,6 @@
   },
   "externalExtension": {
     "message": "External Extension"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 na pag-apruba sa gas",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Hindi matagumpay"
@@ -802,9 +755,6 @@
   "general": {
     "message": "Pangkalahatan"
   },
-  "generalSettingsDescription": {
-    "message": "Conversion ng currency, pangunahing currency, wika, blockies identicon"
-  },
   "getEther": {
     "message": "Kunin ang Ether"
   },
@@ -870,18 +820,11 @@
   "importAccount": {
     "message": "Mag-import ng Account"
   },
-  "importAccountLinkText": {
-    "message": "i-import gamit ang Secret Recovery Phrase"
-  },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
   },
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang Secret Recovery Phrase"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importTokenQuestion": {
     "message": "Mag-import ng token?"
@@ -1148,9 +1091,6 @@
   "networkSettingsChainIdDescription": {
     "message": "Ginagamit ang chain ID sa paglagda ng mga transaksyon. Dapat itong tumugma sa chain ID na ibinalik ng network. Puwede kang maglagay ng decimal o '0x'-prefixed hexadecimal number, pero ipapakita namin ang numero sa decimal."
   },
-  "networkSettingsDescription": {
-    "message": "Magdagdag at mag-edit ng mga custom na RPC network"
-  },
   "networkURL": {
     "message": "URL ng Network"
   },
@@ -1345,6 +1285,10 @@
   "pending": {
     "message": "Nakabinbin"
   },
+  "permission_ethereumAccounts": {
+    "message": "Tingnan ang mga address ng iyong mga pinapayagang account (kinakailangan)",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Mga Pahintulot"
   },
@@ -1473,9 +1417,6 @@
   "restore": {
     "message": "I-restore"
   },
-  "restoreAccountWithSeed": {
-    "message": "I-restore ang iyong Account gamit ang Secret Recovery Phrase"
-  },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
     "description": "$1 is the date at which the data was backed up"
@@ -1546,9 +1487,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "securitySettingsDescription": {
-    "message": "Mga setting ng privacy at Secret Recovery Phrase ng wallet"
-  },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Isulat ito at itabi sa maraming tagong lugar."
   },
@@ -1584,12 +1522,6 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Bago magsimula, panoorin ang maikling video na ito para matuto tungkol sa recovery phrase at kung paano panatilihing ligtas ang iyong wallet."
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "I-paste ang Secret Recovery Phrase mula sa clipboard"
   },
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
@@ -1637,9 +1569,6 @@
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
   },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
   "settings": {
     "message": "Mga Setting"
   },
@@ -1672,9 +1601,6 @@
   },
   "showPrivateKeys": {
     "message": "Ipakita ang Mga Private Key"
-  },
-  "showSeedPhrase": {
-    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "sigRequest": {
     "message": "Request ng Signature"
@@ -1913,10 +1839,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong Pag-swap kung lalampas ang slippage sa iyong setting na \"tolerance ng slippage.\""
-  },
-  "swapQuoteNofN": {
-    "message": "Quote $1 ng $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Pinagkunan ng quote"
@@ -2293,9 +2215,6 @@
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng hardware wallet"
-  },
-  "walletSeedRestore": {
-    "message": "Recovery Phrase ng Wallet Secret"
   },
   "web3ShimUsageNotification": {
     "message": "Napansin naming sinubukang gamitin ng kasalukuyang website ang tinanggal na window.web3 API. Kung mukhang sira ang site, paki-click ang $1 para sa higit pang impormasyon.",

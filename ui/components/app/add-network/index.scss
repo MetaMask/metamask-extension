@@ -1,0 +1,56 @@
+.add-network {
+  &__header {
+    border-bottom: 1px solid var(--color-border-default);
+
+    &__back-icon {
+      margin-left: 24px;
+      margin-right: 16px;
+    }
+  }
+
+  &__warning-icon {
+    color: var(--color-icon-muted);
+  }
+
+  &__warning-tooltip {
+    color: var(--color-text-alternative);
+    width: 180px;
+
+    a {
+      color: var(--color-primary-default);
+    }
+  }
+
+  &__add-icon {
+    color: var(--color-text-alternative);
+    margin-left: auto;
+    margin-right: 0;
+    cursor: pointer;
+  }
+
+  &__add-button.button {
+    color: var(--color-primary-default);
+    font-size: $font-size-h7;
+    margin-left: 24px;
+  }
+
+  &__footer {
+    border-top: 1px solid var(--color-border-muted);
+
+    & .btn-link {
+      display: initial;
+      padding: 0;
+    }
+
+    &__link {
+      color: var(--color-primary-default);
+    }
+
+    & .actionable-message--warning .actionable-message__message,
+    .actionable-message--warning .actionable-message__action {
+      color: var(--color-text-alternative);
+    }
+  }
+}
+
+

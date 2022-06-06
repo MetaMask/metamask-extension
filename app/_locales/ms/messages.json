@@ -8,9 +8,6 @@
   "about": {
     "message": "Mengenai"
   },
-  "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
-  },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
   },
-  "addToAddressBook": {
-    "message": "Tambah kepada buku alamat"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "cth. John D."
-  },
   "addToken": {
     "message": "Tambah Token"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
-  },
-  "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
   },
   "amount": {
     "message": "Jumlah"
@@ -145,17 +133,14 @@
     "message": "Lihat akaun pada $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
   "buyWithWyre": {
-    "message": "Beli ETH dengan Wyre"
+    "message": "Beli $1 dengan Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit ETH secara terus ke dalam akaun MetaMask anda."
+    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit $1 secara terus ke dalam akaun MetaMask anda."
   },
   "bytes": {
     "message": "Bait"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Butiran"
   },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Terus"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
-  },
   "done": {
     "message": "Selesai"
   },
@@ -351,9 +330,6 @@
   },
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
-  },
-  "enterAnAlias": {
-    "message": "Masukkan alias"
   },
   "enterPassword": {
     "message": "Masukkan kata laluan"
@@ -418,9 +394,6 @@
   },
   "general": {
     "message": "Am"
-  },
-  "generalSettingsDescription": {
-    "message": "Penukaran mata wang, mata wang utama, bahasa, blockies identicon"
   },
   "getEther": {
     "message": "Dapatkan Ether"
@@ -585,9 +558,6 @@
   },
   "networkName": {
     "message": "Nama Rangkaian"
-  },
-  "networkSettingsDescription": {
-    "message": "Tambah dan sunting rangkaian RPC tersuai"
   },
   "networks": {
     "message": "Rangkaian"
@@ -766,9 +736,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
-  },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
@@ -820,12 +787,6 @@
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
-  "securitySettingsDescription": {
-    "message": "Tetapan privasi dan ungkapan benih dompet"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Pisahkan setiap perkataan dengan satu ruang"
-  },
   "seedPhraseReq": {
     "message": "Frasa benih panjangnya 12 patah perkataan"
   },
@@ -855,9 +816,6 @@
   },
   "sendTokens": {
     "message": "Hantar Token"
-  },
-  "separateEachWord": {
-    "message": "Pisahkan setiap perkataan dengan ruang tunggal"
   },
   "settings": {
     "message": "Tetapan"

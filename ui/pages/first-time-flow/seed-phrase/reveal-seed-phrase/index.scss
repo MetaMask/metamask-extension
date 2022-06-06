@@ -11,9 +11,9 @@
     position: relative;
     display: flex;
     justify-content: center;
-    border: 1px solid #cdcdcd;
+    border: 1px solid var(--color-border-default);
     border-radius: 6px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     padding: 18px;
     margin-top: 36px;
     max-width: 350px;
@@ -36,7 +36,7 @@
     bottom: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--color-overlay-default);
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -48,7 +48,7 @@
   &__reveal-button {
     @include H7;
 
-    color: var(--white);
+    color: var(--color-overlay-inverse);
     font-weight: 500;
     text-transform: uppercase;
     margin-top: 8px;
@@ -56,7 +56,7 @@
   }
 
   &__export-text {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
     cursor: pointer;
     font-weight: 500;
   }

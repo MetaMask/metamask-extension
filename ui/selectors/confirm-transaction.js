@@ -25,7 +25,7 @@ import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
-import { isEqualCaseInsensitive } from '../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
@@ -108,6 +108,29 @@ export const unconfirmedTransactionsHashSelector = createSelector(
 
     return {
       ...filteredUnapprovedTxs,
+      ...unapprovedMsgs,
+      ...unapprovedPersonalMsgs,
+      ...unapprovedDecryptMsgs,
+      ...unapprovedEncryptionPublicKeyMsgs,
+      ...unapprovedTypedMessages,
+    };
+  },
+);
+
+export const unconfirmedMessagesHashSelector = createSelector(
+  unapprovedMsgsSelector,
+  unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
+  (
+    unapprovedMsgs = {},
+    unapprovedPersonalMsgs = {},
+    unapprovedDecryptMsgs = {},
+    unapprovedEncryptionPublicKeyMsgs = {},
+    unapprovedTypedMessages = {},
+  ) => {
+    return {
       ...unapprovedMsgs,
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,

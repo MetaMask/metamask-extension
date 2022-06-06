@@ -2,7 +2,6 @@
 @import 'account-mismatch-warning/index';
 @import 'account-list/index';
 @import 'actionable-message/index';
-@import 'alert-circle-icon/index';
 @import 'alert/index';
 @import 'box/box';
 @import 'breadcrumbs/index';
@@ -11,7 +10,6 @@
 @import 'callout/callout';
 @import 'check-box/index';
 @import 'chip/chip';
-@import 'circle-icon/index';
 @import 'color-indicator/color-indicator';
 @import 'confusable/index';
 @import 'currency-display/index';
@@ -32,6 +30,7 @@
 @import 'list-item/index';
 @import 'loading-heartbeat/index';
 @import 'loading-indicator/loading-indicator';
+@import 'logo/logo-coinbasepay.scss';
 @import 'loading-screen/index';
 @import 'menu/menu';
 @import 'numeric-input/numeric-input';
@@ -42,12 +41,13 @@
 @import 'pulse-loader/index';
 @import 'qr-code/index';
 @import 'radio-group/index';
-@import 'readonly-input/index';
 @import 'sender-to-recipient/index';
+@import 'show-hide-toggle/index.scss';
 @import 'snackbar/index';
 @import 'site-origin/index';
 @import 'slider/index';
 @import 'tabs/index';
+@import 'text-field/index';
 @import 'toggle-button/index';
 @import 'token-balance/index';
 @import 'tooltip/index';

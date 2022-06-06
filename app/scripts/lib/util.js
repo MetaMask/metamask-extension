@@ -1,4 +1,5 @@
-import extension from 'extensionizer';
+import browser from 'webextension-polyfill';
+
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -26,7 +27,7 @@ const getEnvironmentTypeMemo = memoize((url) => {
   const parsedUrl = new URL(url);
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP;
-  } else if (['/home.html', '/phishing.html'].includes(parsedUrl.pathname)) {
+  } else if (['/home.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
@@ -102,7 +103,7 @@ function BnMultiplyByFraction(targetBN, numerator, denominator) {
  * @returns {Error|undefined}
  */
 function checkForError() {
-  const { lastError } = extension.runtime;
+  const { lastError } = browser.runtime;
   if (!lastError) {
     return undefined;
   }

@@ -8,9 +8,6 @@
   "about": {
     "message": "מידע כללי"
   },
-  "aboutSettingsDescription": {
-    "message": "גרסה, מרכז תמיכה ופרטי יצירת קשר."
-  },
   "acceleratingATransaction": {
     "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "הוסף/י אסימונים מוצעים"
   },
-  "addToAddressBook": {
-    "message": "הוסף לפנקס הכתובות"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "למשל ג'ון ד'"
-  },
   "addToken": {
     "message": "הוסף/י אסימון"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "אפשרויות מתקדמות"
-  },
-  "advancedSettingsDescription": {
-    "message": "קבלת גישה לפיצ'רים למפתחים, הורדת יומני מצב, איפוס חשבון, הגדרת testnets ו-RPC מותאם אישית."
   },
   "amount": {
     "message": "כמות"
@@ -145,9 +133,6 @@
     "message": "הצג חשבון ב- $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "השתמש ב- Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
@@ -155,7 +140,7 @@
     "message": "רכישת את'ר עם Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד ETH ישירות בחשבון ה-MetaMask שלך."
+    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד $1 ישירות בחשבון ה-MetaMask שלך."
   },
   "bytes": {
     "message": "בייטים"
@@ -295,12 +280,6 @@
   "details": {
     "message": "פרטים"
   },
-  "directDepositEther": {
-    "message": "הפקד את'ר ישירות"
-  },
-  "directDepositEtherExplainer": {
-    "message": "אם כבר יש ברשותך את'ר (Ether) , הדרך המהירה ביותר להכניס את'ר לארנק החדש שלך היא באמצעות הפקדה ישירה."
-  },
   "done": {
     "message": "סיום"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
-  },
-  "enterAnAlias": {
-    "message": "יש להזין כינוי"
   },
   "enterPassword": {
     "message": "יש להזין ססמה"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "כללי"
-  },
-  "generalSettingsDescription": {
-    "message": "המרת מטבע, מטבע עיקרי, שפה, blockies identicon"
   },
   "getEther": {
     "message": "השג/י את'ר"
@@ -599,9 +572,6 @@
   },
   "networkName": {
     "message": "שם רשת"
-  },
-  "networkSettingsDescription": {
-    "message": "הוסף וערוך רשתות RPC מותאמות אישית"
   },
   "networks": {
     "message": "רשתות"
@@ -783,9 +753,6 @@
   "restore": {
     "message": "שחזר"
   },
-  "restoreAccountWithSeed": {
-    "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
-  },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
@@ -834,12 +801,6 @@
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
-  "securitySettingsDescription": {
-    "message": "הגדרות פרטיות וצירוף הגרעין של הארנק"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "הפרד/י בין המילים ברווח אחד"
-  },
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"
   },
@@ -869,9 +830,6 @@
   },
   "sendTokens": {
     "message": "שלח טוקנים"
-  },
-  "separateEachWord": {
-    "message": "יש להפריד כל מילה עם רווח יחיד"
   },
   "settings": {
     "message": "הגדרות"

@@ -4,6 +4,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
@@ -53,7 +54,6 @@ export default class ConfirmRemoveAccount extends Component {
         </div>
         <div className="confirm-remove-account__account__link">
           <a
-            className=""
             onClick={() => {
               const accountLink = getAccountLink(
                 identity.address,
@@ -61,7 +61,7 @@ export default class ConfirmRemoveAccount extends Component {
                 rpcPrefs,
               );
               this.context.trackEvent({
-                category: 'Accounts',
+                category: EVENT.CATEGORIES.ACCOUNTS,
                 event: 'Clicked Block Explorer Link',
                 properties: {
                   link_type: 'Account Tracker',
@@ -77,7 +77,11 @@ export default class ConfirmRemoveAccount extends Component {
             rel="noopener noreferrer"
             title={t('etherscanView')}
           >
-            <img src="images/popout.svg" alt={t('etherscanView')} />
+            <i
+              className="fa fa-share-square"
+              style={{ color: 'var(--color-icon-muted)' }}
+              title={t('etherscanView')}
+            />
           </a>
         </div>
       </div>

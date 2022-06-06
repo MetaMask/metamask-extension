@@ -9,11 +9,14 @@ import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
+  ASSET_TYPES,
 } from '../../../../shared/constants/transaction';
 
 import { SECOND } from '../../../../shared/constants/time';
@@ -23,6 +26,8 @@ import {
 } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
+import { TOKEN_STANDARDS } from '../../../../ui/helpers/constants/common';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionController from '.';
 
 const noop = () => true;
@@ -81,6 +86,8 @@ describe('Transaction Controller', function () {
       getEventFragmentById: () =>
         fragmentExists === false ? undefined : { id: 0 },
       getEIP1559GasFeeEstimates: () => undefined,
+      getAccountType: () => 'MetaMask',
+      getDeviceModel: () => 'N/A',
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -786,7 +793,7 @@ describe('Transaction Controller', function () {
         },
         type: TRANSACTION_TYPES.SIMPLE_SEND,
         transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        origin: 'metamask',
+        origin: ORIGIN_METAMASK,
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
@@ -1302,156 +1309,6 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('#_determineTransactionType', function () {
-    it('should return a simple send type when to is truthy but data is falsy', async function () {
-      const result = await txController._determineTransactionType({
-        to: '0xabc',
-        data: '',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
-        getCodeResponse: null,
-      });
-    });
-
-    it('should return a token transfer type when data is for the respective method call', async function () {
-      const result = await txController._determineTransactionType({
-        to: '0xabc',
-        data:
-          '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-        getCodeResponse: undefined,
-      });
-    });
-
-    it('should return a token approve type when data is for the respective method call', async function () {
-      const result = await txController._determineTransactionType({
-        to: '0xabc',
-        data:
-          '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-        getCodeResponse: undefined,
-      });
-    });
-
-    it('should return a contract deployment type when to is falsy and there is data', async function () {
-      const result = await txController._determineTransactionType({
-        to: '',
-        data: '0xabd',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.DEPLOY_CONTRACT,
-        getCodeResponse: undefined,
-      });
-    });
-
-    it('should return a simple send type with a 0x getCodeResponse when there is data and but the to address is not a contract address', async function () {
-      const result = await txController._determineTransactionType({
-        to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
-        data: '0xabd',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
-        getCodeResponse: '0x',
-      });
-    });
-
-    it('should return a simple send type with a null getCodeResponse when to is truthy and there is data and but getCode returns an error', async function () {
-      const result = await txController._determineTransactionType({
-        to: '0xabc',
-        data: '0xabd',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
-        getCodeResponse: null,
-      });
-    });
-
-    it('should return a contract interaction type with the correct getCodeResponse when to is truthy and there is data and it is not a token transaction', async function () {
-      const _providerResultStub = {
-        // 1 gwei
-        eth_gasPrice: '0x0de0b6b3a7640000',
-        // by default, all accounts are external accounts (not contracts)
-        eth_getCode: '0xa',
-      };
-      const _provider = createTestProviderTools({
-        scaffold: _providerResultStub,
-      }).provider;
-      const _fromAccount = getTestAccounts()[0];
-      const _blockTrackerStub = new EventEmitter();
-      _blockTrackerStub.getCurrentBlock = noop;
-      _blockTrackerStub.getLatestBlock = noop;
-      const _txController = new TransactionController({
-        provider: _provider,
-        getGasPrice() {
-          return '0xee6b2800';
-        },
-        networkStore: new ObservableStore(currentNetworkId),
-        getCurrentChainId: () => currentChainId,
-        txHistoryLimit: 10,
-        blockTracker: _blockTrackerStub,
-        signTransaction: (ethTx) =>
-          new Promise((resolve) => {
-            ethTx.sign(_fromAccount.key);
-            resolve();
-          }),
-        getParticipateInMetrics: () => false,
-      });
-      const result = await _txController._determineTransactionType({
-        to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
-        data: 'abd',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
-        getCodeResponse: '0x0a',
-      });
-    });
-
-    it('should return a contract interaction type with the correct getCodeResponse when to is a contract address and data is falsy', async function () {
-      const _providerResultStub = {
-        // 1 gwei
-        eth_gasPrice: '0x0de0b6b3a7640000',
-        // by default, all accounts are external accounts (not contracts)
-        eth_getCode: '0xa',
-      };
-      const _provider = createTestProviderTools({
-        scaffold: _providerResultStub,
-      }).provider;
-      const _fromAccount = getTestAccounts()[0];
-      const _blockTrackerStub = new EventEmitter();
-      _blockTrackerStub.getCurrentBlock = noop;
-      _blockTrackerStub.getLatestBlock = noop;
-      const _txController = new TransactionController({
-        provider: _provider,
-        getGasPrice() {
-          return '0xee6b2800';
-        },
-        networkStore: new ObservableStore(currentNetworkId),
-        getCurrentChainId: () => currentChainId,
-        txHistoryLimit: 10,
-        blockTracker: _blockTrackerStub,
-        signTransaction: (ethTx) =>
-          new Promise((resolve) => {
-            ethTx.sign(_fromAccount.key);
-            resolve();
-          }),
-        getParticipateInMetrics: () => false,
-      });
-      const result = await _txController._determineTransactionType({
-        to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
-        data: '',
-      });
-      assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
-        getCodeResponse: '0x0a',
-      });
-    });
-  });
-
   describe('#getPendingTransactions', function () {
     it('should show only submitted and approved transactions as pending transaction', function () {
       txController.txStateManager._addTransactionsToState([
@@ -1561,6 +1418,10 @@ describe('Transaction Controller', function () {
         txController,
         'finalizeEventFragment',
       );
+
+      sinon
+        .stub(txController, '_getEIP1559GasFeeEstimates')
+        .resolves(mockEstimates['fee-market']);
     });
 
     afterEach(function () {
@@ -1583,29 +1444,42 @@ describe('Transaction Controller', function () {
             nonce: '0x4b',
           },
           type: TRANSACTION_TYPES.SIMPLE_SEND,
-          origin: 'metamask',
+          origin: ORIGIN_METAMASK,
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
         };
       });
 
-      it('should create an event fragment when transaction added', function () {
+      it('should create an event fragment when transaction added', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Added',
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
           uniqueIdentifier: 'transaction-added-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
-            referrer: 'metamask',
-            source: 'user',
+            referrer: ORIGIN_METAMASK,
+            source: EVENT.SOURCE.TRANSACTION.USER,
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
+            device_model: 'N/A',
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1614,7 +1488,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.ADDED,
         );
@@ -1626,9 +1500,9 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', function () {
+      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
         fragmentExists = true;
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
         );
@@ -1643,9 +1517,9 @@ describe('Transaction Controller', function () {
         });
       });
 
-      it('Should finalize the transaction added fragment if user approves transaction', function () {
+      it('Should finalize the transaction added fragment if user approves transaction', async function () {
         fragmentExists = true;
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
         );
@@ -1661,21 +1535,30 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('should create an event fragment when transaction is submitted', function () {
+      it('should create an event fragment when transaction is submitted', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
-            referrer: 'metamask',
-            source: 'user',
+            referrer: ORIGIN_METAMASK,
+            source: EVENT.SOURCE.TRANSACTION.USER,
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
+            device_model: 'N/A',
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1684,7 +1567,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.SUBMITTED,
         );
@@ -1696,9 +1579,9 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction submitted fragment when transaction finalizes', function () {
+      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
         fragmentExists = true;
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
         );
@@ -1733,25 +1616,38 @@ describe('Transaction Controller', function () {
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
         };
       });
 
-      it('should create an event fragment when transaction added', function () {
+      it('should create an event fragment when transaction added', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Added',
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
           uniqueIdentifier: 'transaction-added-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
             referrer: 'other',
-            source: 'dapp',
+            source: EVENT.SOURCE.TRANSACTION.DAPP,
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
+            device_model: 'N/A',
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1760,7 +1656,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.ADDED,
         );
@@ -1772,10 +1668,10 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', function () {
+      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
         fragmentExists = true;
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
         );
@@ -1790,10 +1686,10 @@ describe('Transaction Controller', function () {
         });
       });
 
-      it('Should finalize the transaction added fragment if user approves transaction', function () {
+      it('Should finalize the transaction added fragment if user approves transaction', async function () {
         fragmentExists = true;
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
         );
@@ -1809,21 +1705,30 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('should create an event fragment when transaction is submitted', function () {
+      it('should create an event fragment when transaction is submitted', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
-          category: 'Transactions',
+          category: EVENT.CATEGORIES.TRANSACTIONS,
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
             referrer: 'other',
-            source: 'dapp',
+            source: EVENT.SOURCE.TRANSACTION.DAPP,
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
+            device_model: 'N/A',
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1832,7 +1737,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.SUBMITTED,
         );
@@ -1844,10 +1749,10 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction submitted fragment when transaction finalizes', function () {
+      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
         fragmentExists = true;
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
         );
@@ -1864,7 +1769,7 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('should create missing fragments when events happen out of order or are missing', function () {
+    it('should create missing fragments when events happen out of order or are missing', async function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -1886,14 +1791,21 @@ describe('Transaction Controller', function () {
         successEvent: 'Transaction Approved',
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         persist: true,
         properties: {
           chain_id: '0x2a',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
           network: '42',
           referrer: 'other',
-          source: 'dapp',
+          source: EVENT.SOURCE.TRANSACTION.DAPP,
           type: TRANSACTION_TYPES.SIMPLE_SEND,
+          account_type: 'MetaMask',
+          asset_type: ASSET_TYPES.NATIVE,
+          token_standard: TOKEN_STANDARDS.NONE,
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1903,7 +1815,7 @@ describe('Transaction Controller', function () {
           status: 'unapproved',
         },
       };
-      txController._trackTransactionMetricsEvent(
+      await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.APPROVED,
       );
@@ -1920,7 +1832,7 @@ describe('Transaction Controller', function () {
       assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], undefined);
     });
 
-    it('should call _trackMetaMetricsEvent with the correct payload (extra params)', function () {
+    it('should call _trackMetaMetricsEvent with the correct payload (extra params)', async function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -1943,13 +1855,20 @@ describe('Transaction Controller', function () {
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           network: '42',
           referrer: 'other',
-          source: 'dapp',
+          source: EVENT.SOURCE.TRANSACTION.DAPP,
           type: TRANSACTION_TYPES.SIMPLE_SEND,
           chain_id: '0x2a',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          account_type: 'MetaMask',
+          asset_type: ASSET_TYPES.NATIVE,
+          token_standard: TOKEN_STANDARDS.NONE,
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1962,7 +1881,7 @@ describe('Transaction Controller', function () {
         },
       };
 
-      txController._trackTransactionMetricsEvent(
+      await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.ADDED,
         {
@@ -1978,7 +1897,7 @@ describe('Transaction Controller', function () {
       );
     });
 
-    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', function () {
+    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', async function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -1997,6 +1916,11 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        defaultGasEstimates: {
+          estimateType: 'medium',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+        },
       };
       const expectedPayload = {
         initialEvent: 'Transaction Added',
@@ -2004,13 +1928,20 @@ describe('Transaction Controller', function () {
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           chain_id: '0x2a',
+          eip_1559_version: '1',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
           network: '42',
           referrer: 'other',
-          source: 'dapp',
+          source: EVENT.SOURCE.TRANSACTION.DAPP,
           type: TRANSACTION_TYPES.SIMPLE_SEND,
+          account_type: 'MetaMask',
+          asset_type: ASSET_TYPES.NATIVE,
+          token_standard: TOKEN_STANDARDS.NONE,
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2023,10 +1954,13 @@ describe('Transaction Controller', function () {
           status: 'unapproved',
           estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
           estimate_used: GAS_RECOMMENDATIONS.HIGH,
+          default_estimate: 'medium',
+          default_max_fee_per_gas: '70',
+          default_max_priority_fee_per_gas: '7',
         },
       };
 
-      txController._trackTransactionMetricsEvent(
+      await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.ADDED,
         {
@@ -2107,6 +2041,329 @@ describe('Transaction Controller', function () {
       };
       const result = txController._getGasValuesInGWEI(params);
       assert.deepEqual(result, expectedParams);
+    });
+  });
+
+  describe('update transaction methods', function () {
+    let txStateManager;
+
+    beforeEach(function () {
+      txStateManager = txController.txStateManager;
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gasLimit: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: 'swap',
+        sourceTokenSymbol: 'ETH',
+        destinationTokenSymbol: 'UNI',
+        destinationTokenDecimals: 16,
+        destinationTokenAddress: VALID_ADDRESS,
+        swapMetaData: {},
+        swapTokenValue: '0x007',
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+    });
+
+    it('updates transaction gas fees', function () {
+      // test update gasFees
+      txController.updateTransactionGasFees('1', {
+        gasPrice: '0x0022',
+        gasLimit: '0x0011',
+      });
+      let result = txStateManager.getTransaction('1');
+      assert.equal(result.txParams.gasPrice, '0x0022');
+      // TODO: weird behavior here...only gasPrice gets returned.
+      // assert.equal(result.txParams.gasLimit, '0x0011');
+
+      // test update maxPriorityFeePerGas
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x003',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+      });
+      txController.updateTransactionGasFees('2', {
+        maxPriorityFeePerGas: '0x0033',
+      });
+      result = txStateManager.getTransaction('2');
+      assert.equal(result.txParams.maxPriorityFeePerGas, '0x0033');
+
+      // test update maxFeePerGas
+      txStateManager.addTransaction({
+        id: '3',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x003',
+          maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+      });
+      txController.updateTransactionGasFees('3', { maxFeePerGas: '0x0044' });
+      result = txStateManager.getTransaction('3');
+      assert.equal(result.txParams.maxFeePerGas, '0x0044');
+
+      // test update estimate used
+      txController.updateTransactionGasFees('3', { estimateUsed: '0x0055' });
+      result = txStateManager.getTransaction('3');
+      assert.equal(result.estimateUsed, '0x0055');
+    });
+
+    it('updates estimated base fee', function () {
+      txController.updateTransactionEstimatedBaseFee('1', {
+        estimatedBaseFee: '0x0066',
+        decEstimatedBaseFee: '66',
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.estimatedBaseFee, '0x0066');
+      assert.equal(result.decEstimatedBaseFee, '66');
+    });
+
+    it('updates swap approval transaction', function () {
+      txController.updateSwapApprovalTransaction('1', {
+        type: 'swapApproval',
+        sourceTokenSymbol: 'XBN',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.type, 'swapApproval');
+      assert.equal(result.sourceTokenSymbol, 'XBN');
+    });
+
+    it('updates swap transaction', function () {
+      txController.updateSwapTransaction('1', {
+        sourceTokenSymbol: 'BTCX',
+        destinationTokenSymbol: 'ETH',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.sourceTokenSymbol, 'BTCX');
+      assert.equal(result.destinationTokenSymbol, 'ETH');
+      assert.equal(result.destinationTokenDecimals, 16);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS);
+      assert.equal(result.swapTokenValue, '0x007');
+
+      txController.updateSwapTransaction('1', {
+        type: 'swapped',
+        destinationTokenDecimals: 8,
+        destinationTokenAddress: VALID_ADDRESS_TWO,
+        swapTokenValue: '0x0077',
+      });
+      assert.equal(result.sourceTokenSymbol, 'BTCX');
+      assert.equal(result.destinationTokenSymbol, 'ETH');
+      assert.equal(result.type, 'swapped');
+      assert.equal(result.destinationTokenDecimals, 8);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
+      assert.equal(result.swapTokenValue, '0x0077');
+    });
+
+    it('updates transaction user settings', function () {
+      txController.updateTransactionUserSettings('1', {
+        userEditedGasLimit: '0x0088',
+        userFeeLevel: 'high',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.userEditedGasLimit, '0x0088');
+      assert.equal(result.userFeeLevel, 'high');
+    });
+
+    it('should not update and should throw error if status is not type "unapproved"', function () {
+      txStateManager.addTransaction({
+        id: '4',
+        status: TRANSACTION_STATUSES.DROPPED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x007',
+          maxFeePerGas: '0x008',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x009',
+      });
+
+      assert.throws(
+        () =>
+          txController.updateTransactionGasFees('4', {
+            maxFeePerGas: '0x0088',
+          }),
+        Error,
+        `TransactionsController: Can only call updateTransactionGasFees on an unapproved transaction.
+         Current tx status: ${TRANSACTION_STATUSES.DROPPED}`,
+      );
+
+      const transaction = txStateManager.getTransaction('4');
+      assert.equal(transaction.txParams.maxFeePerGas, '0x008');
+    });
+
+    it('does not update unknown parameters in update method', function () {
+      txController.updateSwapTransaction('1', {
+        type: 'swapped',
+        destinationTokenDecimals: 8,
+        destinationTokenAddress: VALID_ADDRESS_TWO,
+        swapTokenValue: '0x011',
+        gasPrice: '0x12',
+      });
+
+      let result = txStateManager.getTransaction('1');
+
+      assert.equal(result.type, 'swapped');
+      assert.equal(result.destinationTokenDecimals, 8);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
+      assert.equal(result.swapTokenValue, '0x011');
+      assert.equal(result.txParams.gasPrice, '0x002'); // not updated even though it's passed in to update
+
+      txController.updateTransactionGasFees('1', {
+        estimateUsed: '0x13',
+        gasPrice: '0x14',
+        destinationTokenAddress: VALID_ADDRESS,
+      });
+
+      result = txStateManager.getTransaction('1');
+      assert.equal(result.estimateUsed, '0x13');
+      assert.equal(result.txParams.gasPrice, '0x14');
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update
+    });
+  });
+
+  describe('updateEditableParams', function () {
+    let txStateManager;
+
+    beforeEach(function () {
+      txStateManager = txController.txStateManager;
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gas: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: 'simpleSend',
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+    });
+
+    it('updates editible params when type changes from simple send to token transfer', async function () {
+      // test update gasFees
+      await txController.updateEditableParams('1', {
+        data:
+          '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(
+        result.txParams.data,
+        '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      );
+      assert.equal(result.type, TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
+    });
+
+    it('updates editible params when type changes from token transfer to simple send', async function () {
+      // test update gasFees
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gas: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+          data:
+            '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+      await txController.updateEditableParams('2', {
+        data: '0x',
+      });
+      const result = txStateManager.getTransaction('2');
+      assert.equal(result.txParams.data, '0x');
+      assert.equal(result.type, TRANSACTION_TYPES.SIMPLE_SEND);
+    });
+
+    it('updates editible params when type changes from simpleSend to contract interaction', async function () {
+      // test update gasFees
+      txStateManager.addTransaction({
+        id: '3',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gas: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+      providerResultStub.eth_getCode = '0x5';
+      await txController.updateEditableParams('3', {
+        data: '0x123',
+      });
+      const result = txStateManager.getTransaction('3');
+      assert.equal(result.txParams.data, '0x123');
+      assert.equal(result.type, TRANSACTION_TYPES.CONTRACT_INTERACTION);
+    });
+
+    it('updates editible params when type does not change', async function () {
+      // test update gasFees
+      await txController.updateEditableParams('1', {
+        data: '0x123',
+        gas: '0xabc',
+        from: VALID_ADDRESS_TWO,
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.txParams.data, '0x123');
+      assert.equal(result.txParams.gas, '0xabc');
+      assert.equal(result.txParams.from, VALID_ADDRESS_TWO);
+      assert.equal(result.txParams.to, VALID_ADDRESS);
+      assert.equal(result.txParams.gasPrice, '0x002');
+      assert.equal(result.type, TRANSACTION_TYPES.SIMPLE_SEND);
     });
   });
 });

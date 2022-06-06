@@ -8,9 +8,6 @@
   "about": {
     "message": "Tietoja asetuksista"
   },
-  "aboutSettingsDescription": {
-    "message": "Versio, tukikeskus ja yhteystiedot"
-  },
   "acceleratingATransaction": {
     "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lisää ehdotetut käyttötunnukset"
   },
-  "addToAddressBook": {
-    "message": "Lisää osoitekirjaan"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "esim. Jukka E."
-  },
   "addToken": {
     "message": "Lisää tietue"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Tarkemmat vaihtoehdot"
-  },
-  "advancedSettingsDescription": {
-    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä"
   },
   "amount": {
     "message": "Summa"
@@ -145,17 +133,14 @@
     "message": "Näytä tili kohteessa $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Käytä Blockies Identiconia"
-  },
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
   },
   "buyWithWyre": {
-    "message": "Osta ETH:ta Wyrella"
+    "message": "Osta $1 :ta Wyrella"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre antaa sinun käyttää luottokorttia, jotta voit tallettaa ETH:ta suoraan MetaMask-tilillesi."
+    "message": "Wyre antaa sinun käyttää luottokorttia, jotta voit tallettaa $1 :ta suoraan MetaMask-tilillesi."
   },
   "bytes": {
     "message": "Tavua"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Tiedot"
   },
-  "directDepositEther": {
-    "message": "Talleta etheriä suoraan"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
-  },
   "done": {
     "message": "Valmis"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Virhe ENS-nimen rekisteröinnissä"
-  },
-  "enterAnAlias": {
-    "message": "Anna peitenimi"
   },
   "enterPassword": {
     "message": "Kirjoita salasana"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "Yleistä"
-  },
-  "generalSettingsDescription": {
-    "message": "Valuuttamuunnin, päävaluutta, kieli, blockies identicon"
   },
   "getEther": {
     "message": "Hanki Etheriä"
@@ -602,9 +575,6 @@
   },
   "networkName": {
     "message": "Verkon nimi"
-  },
-  "networkSettingsDescription": {
-    "message": "Lisää ja muokkaa omia RPC-verkostojasi"
   },
   "networks": {
     "message": "Verkot"
@@ -783,9 +753,6 @@
   "restore": {
     "message": "Palauta"
   },
-  "restoreAccountWithSeed": {
-    "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
-  },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
@@ -837,12 +804,6 @@
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
-  "securitySettingsDescription": {
-    "message": "Yksityisyysasetukset ja kukkaron salausteksti"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Erota kukin sana yhdellä välilyönnillä"
-  },
   "seedPhraseReq": {
     "message": "Juurilauseet ovat 12 sanan pituisia"
   },
@@ -872,9 +833,6 @@
   },
   "sendTokens": {
     "message": "Lähetä tietueita"
-  },
-  "separateEachWord": {
-    "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
   },
   "settings": {
     "message": "Asetukset"

@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import * as tokenUtil from '../helpers/utils/token-util';
-import * as txUtil from '../helpers/utils/transactions.util';
+import * as txUtil from '../../shared/modules/transaction.utils';
 import { useTokenDisplayValue } from './useTokenDisplayValue';
 
 const tests = [
@@ -122,9 +122,12 @@ describe('useTokenDisplayValue', () => {
     describe(`when input is decimals: ${token.decimals} and value: ${tokenValue}`, () => {
       it(`should return ${displayValue} as displayValue`, () => {
         const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValueParam');
-        const getTokenDataStub = sinon.stub(txUtil, 'getTransactionData');
+        const parseStandardTokenTransactionDataStub = sinon.stub(
+          txUtil,
+          'parseStandardTokenTransactionData',
+        );
 
-        getTokenDataStub.callsFake(() => tokenData);
+        parseStandardTokenTransactionDataStub.callsFake(() => tokenData);
         getTokenValueStub.callsFake(() => tokenValue);
 
         const { result } = renderHook(() =>

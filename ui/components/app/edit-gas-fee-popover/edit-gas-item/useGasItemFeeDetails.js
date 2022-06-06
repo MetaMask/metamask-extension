@@ -58,7 +58,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
       maxFeePerGas = maxFeePerGasValue;
       maxPriorityFeePerGas = maxPriorityFeePerGasValue;
-    } else if (advancedGasFeeValues) {
+    } else if (advancedGasFeeValues && editGasMode !== EDIT_GAS_MODES.SWAPS) {
       maxFeePerGas = advancedGasFeeValues.maxBaseFee;
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }

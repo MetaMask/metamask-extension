@@ -8,9 +8,6 @@
   "about": {
     "message": "O možnostih"
   },
-  "aboutSettingsDescription": {
-    "message": "Različica, center za podporo in podatki za stik"
-  },
   "acceleratingATransaction": {
     "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj priporočene žetone"
   },
-  "addToAddressBook": {
-    "message": "Dodaj stik v imenik"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. Jaka N."
-  },
   "addToken": {
     "message": "Dodaj žeton"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Napredne možnosti"
-  },
-  "advancedSettingsDescription": {
-    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri"
   },
   "amount": {
     "message": "Znesek"
@@ -145,17 +133,14 @@
     "message": "Ogled računa na  $1 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Uporabi identifikacijo Blockies"
-  },
   "browserNotSupported": {
     "message": "Vaš brskalnik ni podptrt ..."
   },
   "buyWithWyre": {
-    "message": "Kupi ETH z Wyre"
+    "message": "Kupi $1 z Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vam omogoča, da s kreditno kartico nakažete ETH neposredno na svoj račun MetaMask."
+    "message": "Wyre vam omogoča, da s kreditno kartico nakažete $1 neposredno na svoj račun MetaMask."
   },
   "bytes": {
     "message": "Bajti"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Podrobnosti"
   },
-  "directDepositEther": {
-    "message": "Neposredno vplačilo ehera"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z neposrednim vplačilom."
-  },
   "done": {
     "message": "Končano"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Napaka pri registraciji imena ENS"
-  },
-  "enterAnAlias": {
-    "message": "Vnesite vzdevek"
   },
   "enterPassword": {
     "message": "Vnesite geslo"
@@ -422,9 +398,6 @@
   },
   "general": {
     "message": "Splošno"
-  },
-  "generalSettingsDescription": {
-    "message": "Pretvorba valut, primarna valuta, jezik, identifikacija Blockies"
   },
   "getEther": {
     "message": "Pridobi Ether"
@@ -590,9 +563,6 @@
   },
   "networkName": {
     "message": "Ime omrežja"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodajte in uredite omrežja RPC po meri"
   },
   "networks": {
     "message": "Omrežja"
@@ -774,9 +744,6 @@
   "restore": {
     "message": "Obnovi"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovi račun z seed phrase"
-  },
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },
@@ -828,12 +795,6 @@
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
-  "securitySettingsDescription": {
-    "message": "Nastavitve zasebnosti in geslo za denarnico seed phrase "
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Vsako besedo ločite z enim presledkom"
-  },
   "seedPhraseReq": {
     "message": "Seed phrase mora biti dolg 12 besed"
   },
@@ -863,9 +824,6 @@
   },
   "sendTokens": {
     "message": "Pošlji žetone"
-  },
-  "separateEachWord": {
-    "message": "Vsako besedo ločite z enim presledkom"
   },
   "settings": {
     "message": "Nastavitve"

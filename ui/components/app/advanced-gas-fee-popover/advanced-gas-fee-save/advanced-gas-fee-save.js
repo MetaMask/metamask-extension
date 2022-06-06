@@ -1,16 +1,18 @@
 import React from 'react';
 
 import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
+import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import Button from '../../../ui/button';
 import I18nValue from '../../../ui/i18n-value';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
-import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 
 const AdvancedGasFeeSaveButton = () => {
-  const { closeAllModals } = useTransactionModalContext();
+  const { closeModal } = useTransactionModalContext();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { updateTransaction } = useGasFeeContext();
   const {
     gasLimit,
@@ -26,7 +28,12 @@ const AdvancedGasFeeSaveButton = () => {
       maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
       gasLimit,
     });
-    closeAllModals();
+    updateTransactionEventFragment({
+      properties: {
+        gas_edit_type: 'advanced',
+      },
+    });
+    closeModal(['advancedGasFee', 'editGasFee']);
   };
 
   return (

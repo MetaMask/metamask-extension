@@ -3,7 +3,9 @@ const os = require('os');
 const path = require('path');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const { version } = require('../../../package.json');
+const proxy = require('selenium-webdriver/proxy');
+const { getVersion } = require('../../../development/lib/get-version');
+const { BuildType } = require('../../../development/lib/build-type');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -12,6 +14,13 @@ const { version } = require('../../../package.json');
  * @type {string}
  */
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
+
+/**
+ * Proxy host to use for HTTPS requests
+ *
+ * @type {string}
+ */
+const HTTPS_PROXY_HOST = '127.0.0.1:8000';
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
@@ -23,11 +32,14 @@ class FirefoxDriver {
    * @param {Object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.type
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port }) {
+  static async build({ responsive, port, type }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
+    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
@@ -38,9 +50,14 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension(
-      `builds/metamask-firefox-${version}.zip`,
-    );
+    const version = getVersion(type || BuildType.main, 0);
+    let extensionString = `builds/metamask-firefox-${version}.zip`;
+
+    if (type) {
+      extensionString = `builds/metamask-${type}-firefox-${version}.zip`;
+    }
+
+    const extensionId = await fxDriver.installExtension(extensionString);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive) {

@@ -8,10 +8,10 @@
   }
 
   .form-field__row--error .form-field__heading-title h6 {
-    color: var(--error-1);
+    color: var(--color-error-default);
 
     & path {
-      fill: var(--error-1);
+      fill: var(--color-error-default);
     }
   }
 
@@ -21,6 +21,6 @@
   }
 
   path {
-    fill: var(--ui-3);
+    fill: var(--color-icon-alternative);
   }
 }

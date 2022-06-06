@@ -26,7 +26,7 @@
     }
 
     &--selected {
-      color: var(--white);
+      color: var(--color-overlay-inverse);
     }
 
     &--dragging {
@@ -71,9 +71,9 @@
     flex-flow: row wrap;
     min-height: 161px;
     max-width: $break-small;
-    border: 1px solid #cdcdcd;
+    border: 1px solid var(--color-border-muted);
     border-radius: 6px;
-    background-color: var(--white);
+    background-color: var(--color-background-default);
     margin: 24px 0 36px;
     padding: 12px;
 

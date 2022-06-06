@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -27,23 +28,23 @@ export default class NewAccountCreateForm extends Component {
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.ACCOUNTS,
+            event: 'Added New Account',
+            properties: {
               action: 'Add New Account',
-              name: 'Added New Account',
+              legacy_event: true,
             },
           });
           history.push(mostRecentOverviewPage);
         })
         .catch((e) => {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.ACCOUNTS,
+            event: 'Error',
+            properties: {
               action: 'Add New Account',
-              name: 'Error',
-            },
-            customVariables: {
+              legacy_event: true,
               errorMessage: e.message,
             },
           });
@@ -120,5 +121,5 @@ NewAccountCreateForm.propTypes = {
 
 NewAccountCreateForm.contextTypes = {
   t: PropTypes.func,
-  metricsEvent: PropTypes.func,
+  trackEvent: PropTypes.func,
 };

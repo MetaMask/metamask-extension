@@ -2,9 +2,6 @@
   "about": {
     "message": "ስለ"
   },
-  "aboutSettingsDescription": {
-    "message": "ስሪት፣ የድጋፍ መስጫ ማዕከልና የግንኙነት መረጃ "
-  },
   "acceleratingATransaction": {
     "message": "* ከፍተኛ የነዳጅ ዋጋን በመጠቀም ግብይትን ማፋጠን በአውታረ መረቡ በፍጥነት እንዲከወን የማድረግ ዕድልን ይጨምራል፤ ነገር ግን ሁልጊዜም የተረጋገጠ አይደለም።"
   },
@@ -41,12 +38,6 @@
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
-  "addToAddressBook": {
-    "message": "በአድራሻ መዝገብ ላይ አክል"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ለምሳሌ፡ ጆን ዲ."
-  },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
@@ -55,9 +46,6 @@
   },
   "advancedOptions": {
     "message": "የላቁ አማራጮች"
-  },
-  "advancedSettingsDescription": {
-    "message": "አዘጋጅ ባህርያትን መድረስ፣ የስቴት መዛግብትን ማውረድ፣ መለያን ዳግም መሙላት፣ testnets እና ብጁ RPC አዋቅር።"
   },
   "amount": {
     "message": "ሰርዝ "
@@ -139,17 +127,14 @@
     "message": "መለያን በ$1እይ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon ተጠቀም"
-  },
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
   "buyWithWyre": {
-    "message": "ETH በ Wyre ይግዙ"
+    "message": "$1 በ Wyre ይግዙ"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ክሬዲት ካርድ ተጠቅመው ETH በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
+    "message": "Wyre ክሬዲት ካርድ ተጠቅመው $1 በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
   },
   "bytes": {
     "message": "ባይት"
@@ -286,12 +271,6 @@
   "details": {
     "message": "ዝርዝሮች"
   },
-  "directDepositEther": {
-    "message": "Ether በቀጥታ ያስቀምጡ"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
-  },
   "done": {
     "message": "ተጠናቅቋል"
   },
@@ -345,9 +324,6 @@
   },
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
-  "enterAnAlias": {
-    "message": "ተለዋጭ ስም ያስገቡ"
   },
   "enterPassword": {
     "message": "የይለፍ ቃል ያስገቡ"
@@ -416,9 +392,6 @@
   },
   "general": {
     "message": "አጠቃላይ"
-  },
-  "generalSettingsDescription": {
-    "message": "የገንዘብ ልወጣ፣ ተቀዳሚ የገንዘብ ዓይነት፣ ቋንቋ፣ blockies identicon"
   },
   "getEther": {
     "message": "Ether ያግኙ"
@@ -587,9 +560,6 @@
   },
   "networkName": {
     "message": "የአውታረ መረብ ስም"
-  },
-  "networkSettingsDescription": {
-    "message": "ብጁ የ RPC አውታረ መረቦችን አክልና አርትዕ"
   },
   "networks": {
     "message": "አውታረ መረቦች"
@@ -771,9 +741,6 @@
   "restore": {
     "message": "እነበረበት መልስ"
   },
-  "restoreAccountWithSeed": {
-    "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
-  },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
@@ -825,12 +792,6 @@
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
-  "securitySettingsDescription": {
-    "message": "የግላዊነት ቅንብሮች እና የቋት ዘር ሐረግ"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
-  },
   "seedPhraseReq": {
     "message": "የዘር ሐረጋት የ 12 ቃላት ርዝመት አላቸው"
   },
@@ -860,9 +821,6 @@
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
-  },
-  "separateEachWord": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },
   "settings": {
     "message": "ቅንብሮች"

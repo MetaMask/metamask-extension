@@ -11,8 +11,16 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #d2d8dd;
+    border-top: 1px solid var(--color-border-muted);
     padding: 16px 24px;
+
+    & &-link-button {
+      @include H7;
+
+      padding: 0;
+      width: auto;
+      padding-inline-start: 24px;
+    }
   }
 
   &__subject-info {
@@ -26,14 +34,6 @@
 
   &__subject-name {
     max-width: 215px;
-    white-space: nowrap;
-    overflow: hidden;
-    direction: rtl;
-    text-overflow: ellipsis;
     margin-left: 6px;
-  }
-
-  &__trash {
-    cursor: pointer;
   }
 }

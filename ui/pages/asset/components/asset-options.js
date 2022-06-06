@@ -8,6 +8,7 @@ const AssetOptions = ({
   onRemove,
   onClickBlockExplorer,
   onViewAccountDetails,
+  onViewTokenDetails,
   tokenSymbol,
   isNativeAsset,
   isEthNetwork,
@@ -66,6 +67,18 @@ const AssetOptions = ({
               {t('hideTokenSymbol', [tokenSymbol])}
             </MenuItem>
           )}
+          {isNativeAsset ? null : (
+            <MenuItem
+              iconClassName="fas fa-info-circle asset-options__icon"
+              data-testid="asset-options__token-details"
+              onClick={() => {
+                setAssetOptionsOpen(false);
+                onViewTokenDetails();
+              }}
+            >
+              {t('tokenDetails')}
+            </MenuItem>
+          )}
         </Menu>
       ) : null}
     </>
@@ -78,6 +91,7 @@ AssetOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
+  onViewTokenDetails: PropTypes.func.isRequired,
   tokenSymbol: PropTypes.string,
 };
 

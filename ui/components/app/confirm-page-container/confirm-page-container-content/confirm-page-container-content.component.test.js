@@ -1,6 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
@@ -10,8 +11,18 @@ describe('Confirm Page Container Content', () => {
     metamask: {
       provider: {
         type: 'test',
+        chainId: '0x3',
       },
       eip1559V2Enabled: false,
+      addressBook: {
+        '0x3': {
+          '0x06195827297c7A80a443b6894d3BDB8824b43896': {
+            address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
+            name: 'Address Book Account 1',
+            chainId: '0x3',
+          },
+        },
+      },
     },
   };
 
@@ -28,7 +39,6 @@ describe('Confirm Page Container Content', () => {
       action: ' Withdraw Stake',
       errorMessage: null,
       errorKey: null,
-      hasSimulationError: true,
       onCancelAll: mockOnCancelAll,
       onCancel: mockOnCancel,
       cancelText: 'Reject',
@@ -41,40 +51,12 @@ describe('Confirm Page Container Content', () => {
     };
   });
 
-  it('render ConfirmPageContainer component with simulation error', async () => {
-    const { queryByText, getByText } = renderWithProvider(
-      <ConfirmPageContainerContent {...props} />,
-      store,
-    );
-
-    expect(
-      queryByText('Transaction Error. Exception thrown in contract code.'),
-    ).not.toBeInTheDocument();
-    expect(
-      queryByText(
-        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
-      ),
-    ).toBeInTheDocument();
-    expect(queryByText('I will try anyway')).toBeInTheDocument();
-
-    const confirmButton = getByText('Confirm');
-    expect(getByText('Confirm').closest('button')).toBeDisabled();
-    fireEvent.click(confirmButton);
-    expect(props.onSubmit).toHaveBeenCalledTimes(0);
-
-    const iWillTryButton = getByText('I will try anyway');
-    fireEvent.click(iWillTryButton);
-    expect(props.setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
-
-    const cancelButton = getByText('Reject');
-    fireEvent.click(cancelButton);
-    expect(props.onCancel).toHaveBeenCalledTimes(1);
-  });
-
   it('render ConfirmPageContainer component with another error', async () => {
-    props.hasSimulationError = false;
     props.disabled = true;
     props.errorKey = TRANSACTION_ERROR_KEY;
+    props.currentTransaction = {
+      type: 'transfer',
+    };
     const { queryByText, getByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,
@@ -82,10 +64,10 @@ describe('Confirm Page Container Content', () => {
 
     expect(
       queryByText(
-        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
+        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
       ),
     ).not.toBeInTheDocument();
-    expect(queryByText('I will try anyway')).not.toBeInTheDocument();
+    expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
     expect(getByText('Confirm').closest('button')).toBeDisabled();
     expect(
       getByText('Transaction Error. Exception thrown in contract code.'),
@@ -97,7 +79,6 @@ describe('Confirm Page Container Content', () => {
   });
 
   it('render ConfirmPageContainer component with no errors', async () => {
-    props.hasSimulationError = false;
     props.disabled = false;
     const { queryByText, getByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
@@ -106,13 +87,13 @@ describe('Confirm Page Container Content', () => {
 
     expect(
       queryByText(
-        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
+        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
       ),
     ).not.toBeInTheDocument();
     expect(
       queryByText('Transaction Error. Exception thrown in contract code.'),
     ).not.toBeInTheDocument();
-    expect(queryByText('I will try anyway')).not.toBeInTheDocument();
+    expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
 
     const confirmButton = getByText('Confirm');
     fireEvent.click(confirmButton);
@@ -121,5 +102,29 @@ describe('Confirm Page Container Content', () => {
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
     expect(props.onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('render contract address name from addressBook in title for contract', async () => {
+    props.disabled = false;
+    props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
+    props.transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Address Book Account 1')).toBeInTheDocument();
+  });
+
+  it('render simple title without address name for simple send', async () => {
+    props.disabled = false;
+    props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
+    props.transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
   });
 });

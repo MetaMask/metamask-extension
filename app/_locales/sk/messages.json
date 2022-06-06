@@ -8,9 +8,6 @@
   "about": {
     "message": "Informácie"
   },
-  "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie"
-  },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Pridať navrhované tokeny"
   },
-  "addToAddressBook": {
-    "message": "Pridať do adresára"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "napr. Ján D."
-  },
   "addToken": {
     "message": "Přidat token"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
-  },
-  "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "amount": {
     "message": "Částka"
@@ -139,17 +127,14 @@
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },
   "buyWithWyre": {
-    "message": "Kúpte ETH s Wyre"
+    "message": "Kúpte $1 s Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu ETH priamo na váš účet MetaMask."
+    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu $1 priamo na váš účet MetaMask."
   },
   "bytes": {
     "message": "Bajty"
@@ -289,12 +274,6 @@
   "details": {
     "message": "Podrobnosti"
   },
-  "directDepositEther": {
-    "message": "Vložit Ether přímo"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
-  },
   "done": {
     "message": "Hotovo"
   },
@@ -348,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
-  },
-  "enterAnAlias": {
-    "message": "Zadať alias"
   },
   "enterPassword": {
     "message": "Zadejte heslo"
@@ -419,9 +395,6 @@
   },
   "general": {
     "message": "Všeobecne"
-  },
-  "generalSettingsDescription": {
-    "message": "Prevod mien, primárna mena, jazyk, identifikácia blokov"
   },
   "getEther": {
     "message": "Získejte Ether"
@@ -574,9 +547,6 @@
   },
   "networkName": {
     "message": "Názov siete"
-  },
-  "networkSettingsDescription": {
-    "message": "Pridať a upraviť vlastné siete RPC"
   },
   "networks": {
     "message": "Sítě"
@@ -755,9 +725,6 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnoviť účet pomocou seed frázy"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
@@ -803,12 +770,6 @@
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
-  "securitySettingsDescription": {
-    "message": "Nastavenia súkromia a seed fráza peňaženky"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Každé slovo oddeľte jednou medzerou"
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
@@ -838,9 +799,6 @@
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
-  },
-  "separateEachWord": {
-    "message": "Každé slovo oddeľte jednou medzerou"
   },
   "settings": {
     "message": "Nastavení"

@@ -1,7 +1,7 @@
 name: Bug Report
 description: Using MetaMask, but it's not working as you expect?
 title: "[Bug]: "
-labels: ["bug"]
+labels: ["type-bug"]
 body:
  - type: markdown
    attributes:
@@ -89,6 +89,7 @@ body:
        - Trezor
        - Keystone
        - GridPlus Lattice1
+       - AirGap Vault
        - Other (please elaborate in the "Additional Context" section)
  - type: textarea
    id: additional

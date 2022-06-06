@@ -5,6 +5,15 @@
   flex: 1;
   width: 100%;
 
+  &::after { // Hide preloaded images.
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+    content: url('/images/transaction-background-top.svg') url('/images/transaction-background-bottom.svg'); // Preload images for the STX status page.
+  }
+
   &__content {
     display: flex;
     flex-flow: column;
@@ -36,58 +45,9 @@
 
     &--danger {
       span {
-        color: var(--Red-500);
+        color: var(--color-error-default);
       }
     }
-  }
-
-  &__view-other-button-container {
-    border-radius: 28px;
-    width: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 46px;
-  }
-
-  &__view-other-button,
-  &__view-other-button-fade {
-    display: flex;
-    align-items: center;
-    position: absolute;
-
-    @include H7;
-
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 28px;
-    padding: 5px 18px;
-    background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
-
-
-    @media screen and (min-width: $break-large) {
-      @include H6;
-
-      margin-bottom: 0;
-    }
-
-    .fa-arrow-right {
-      margin-left: 4px;
-      font-size: 10px;
-      margin-top: 2px;
-    }
-  }
-
-  &__view-other-button-fade {
-    background: #0372c3;
-    opacity: 0;
-    transition: opacity ease-in-out 1s;
-
-    &:hover {
-      opacity: 1;
-    };
   }
 
   &__price-difference-warning {
@@ -98,6 +58,10 @@
       &.medium,
       &.high {
         .actionable-message {
+          &::before {
+            background: none;
+          }
+
           .actionable-message__message {
             color: inherit;
           }
@@ -113,31 +77,31 @@
       &.low {
         .actionable-message {
           button {
-            background: var(--Blue-500);
-            color: #fff;
+            background: var(--color-primary-default);
+            color: var(--color-primary-inverse);
           }
         }
       }
 
       &.medium {
         .actionable-message {
-          border-color: var(--Yellow-500);
-          background: var(--Yellow-100);
+          border-color: var(--color-warning-default);
+          background: var(--color-warning-muted);
 
           button {
-            background: var(--Yellow-500);
+            background: var(--color-warning-default);
           }
         }
       }
 
       &.high {
         .actionable-message {
-          border-color: var(--Red-300);
-          background: var(--Red-000);
+          border-color: var(--color-error-default);
+          background: var(--color-error-muted);
 
           button {
-            background: var(--Red-500);
-            color: #fff;
+            background: var(--color-error-default);
+            color: var(--color-error-inverse);
           }
         }
       }
@@ -208,7 +172,7 @@
   &__metamask-rate-text {
     @include H7;
 
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__metamask-rate-info-icon {

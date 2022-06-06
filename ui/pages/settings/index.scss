@@ -3,30 +3,131 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
+@import 'flask/snaps-list-tab/index';
+@import 'flask/view-snap/index';
 
 .settings-page {
   position: relative;
-  background: var(--white);
+  background: var(--color-background-default);
   display: flex;
   flex-flow: column nowrap;
 
   &__header {
-    display: flex;
-    flex-flow: row nowrap;
-    padding: 12px 24px;
-    align-items: center;
-    flex: 0 0 auto;
+    padding: 8px 24px 8px 24px;
+    position: relative;
 
-    &__title {
-      @include H3;
+    @media screen and (max-width: $break-small) {
+      background: var(--color-background-alternative);
+    }
 
-      flex: 1 0 auto;
+    &__title-container {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      flex: 0 0 auto;
 
+      &__close-button {
+        margin-left: auto;
+      }
+
+      &__close-button::after {
+        content: '\00D7';
+        font-size: 40px;
+        color: var(--color-icon-default);
+        cursor: pointer;
+      }
+
+      &__title {
+        @include H3;
+
+        flex: 1 0 auto;
+
+        @media screen and (max-width: $break-small) {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          max-width: 250px;
+        }
+      }
+    }
+
+    &__search {
       @media screen and (max-width: $break-small) {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        max-width: 250px;
+        position: relative;
+      }
+
+      @media screen and (min-width: $break-large) {
+        position: absolute;
+        right: 57px;
+        top: 10px;
+        width: 300px;
+      }
+
+      @media screen and (min-width: $break-midpoint) {
+        width: 400px;
+      }
+
+      &__list {
+        background: var(--color-background-default);
+        box-sizing: border-box;
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+        border-radius: 6px;
+        position: absolute;
+        width: 100%;
+        z-index: 10;
+
+        > div {
+          &:hover {
+            background: var(--color-background-alternative);
+          }
+        }
+
+        &__item {
+          transition: 200ms ease-in-out;
+          display: grid;
+          align-items: center;
+          padding: 16px;
+          border-top: 1px solid var(--color-border-muted);
+          cursor: pointer;
+          grid-template-columns: 16px max-content 24px auto;
+          gap: 8px;
+
+          &__icon {
+            background: var(--color-background-alternative);
+            height: 15px;
+            width: 15px;
+            margin-right: 16px;
+          }
+
+          &__request,
+          &__tab,
+          &__section,
+          &__no-matching {
+            @include H6;
+
+            color: var(--color-icon-default);
+          }
+
+          &__section-multiple-lines {
+            @media screen and (max-width: $break-small) {
+              margin-left: 10px;
+            }
+          }
+
+          &__caret {
+            [dir='rtl'] & {
+              transform: rotate(180deg);
+            }
+          }
+
+          &__link {
+            @include H6;
+
+            display: inline;
+            color: var(--color-primary-default);
+            margin-left: 3px;
+          }
+        }
       }
     }
   }
@@ -36,7 +137,7 @@
     @include H4;
 
     padding: 16px 4px;
-    border-bottom: 1px solid var(--alto);
+    border-bottom: 1px solid var(--color-border-muted);
     margin-right: 24px;
     height: 72px;
     align-items: center;
@@ -55,7 +156,7 @@
 
   &__subheader--link:hover {
     cursor: pointer;
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
   }
 
   &__subheader--break {
@@ -64,7 +165,7 @@
 
   &__sub-header {
     height: 72px;
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid var(--color-border-muted);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -92,31 +193,14 @@
 
     @media screen and (max-width: $break-small) {
       display: block;
-      background-image: url('/images/caret-left-black.svg');
-      width: 18px;
-      height: 18px;
-      opacity: 0.5;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      margin-right: 16px;
+      margin-right: 8px;
       cursor: pointer;
 
       [dir='rtl'] & {
+        margin: 0 0 0 8px;
         transform: rotate(180deg);
       }
     }
-  }
-
-  &__close-button {
-    margin-left: auto;
-  }
-
-  &__close-button::after {
-    content: '\00D7';
-    font-size: 40px;
-    color: var(--ui-4);
-    cursor: pointer;
   }
 
   &__content {
@@ -124,7 +208,7 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    border-top: 1px solid #d8d8d8;
+    border-top: 1px solid var(--color-border-muted);
 
     &__tabs {
       display: flex;
@@ -133,13 +217,13 @@
 
       @media screen and (min-width: $break-large) {
         flex: 0 0 40%;
-        max-width: 210px;
-        padding-top: 8px;
+        max-width: 197px;
+        padding-top: 13px;
       }
 
       .tab-bar__tab {
         @media screen and (min-width: $break-large) {
-          padding: 16px 24px 0;
+          max-height: 50px;
         }
       }
     }
@@ -203,6 +287,41 @@
     & .dialog {
       margin-top: 10px;
     }
+
+    &__identicon {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+
+      &__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background: unset;
+        border: 1px solid transparent;
+
+        &__icon {
+          &--active {
+            height: 40px;
+            width: 40px;
+            border-radius: 40px;
+            border: 2px solid var(--color-primary-default);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    &__description {
+      @include H6;
+
+      margin-top: 8px;
+      margin-bottom: 12px;
+      color: var(--color-text-default);
+    }
   }
 
   &__content-label {
@@ -212,11 +331,11 @@
   &__content-description {
     @include H6;
 
-    color: var(--dusty-gray);
+    color: var(--color-text-default);
     padding-top: 5px;
 
     a {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
     }
   }
 

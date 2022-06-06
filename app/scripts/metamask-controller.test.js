@@ -6,13 +6,19 @@ import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
+import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  KEYRING_TYPES,
+  DEVICE_NAMES,
+} from '../../shared/constants/hardware-wallets';
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
+
+const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
 const firstTimeState = {
   config: {},
@@ -25,6 +31,17 @@ const firstTimeState = {
     networkDetails: {
       EIPS: {
         1559: false,
+      },
+    },
+  },
+  NotificationController: {
+    notifications: {
+      [NOTIFICATION_ID]: {
+        id: NOTIFICATION_ID,
+        origin: 'local:http://localhost:8086/',
+        createdDate: 1652967897732,
+        readDate: null,
+        message: 'Hello, http://localhost:8086!',
       },
     },
   },
@@ -62,10 +79,13 @@ class ThreeBoxControllerMock {
   }
 }
 
-const ExtensionizerMock = {
+const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
+      addListener: () => undefined,
+    },
+    onMessageExternal: {
       addListener: () => undefined,
     },
     getPlatformInfo: async () => 'mac',
@@ -128,6 +148,10 @@ describe('MetaMaskController', function () {
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
 
+    sandbox.replace(browser, 'runtime', {
+      sendMessage: sandbox.stub().rejects(),
+    });
+
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: {
@@ -145,7 +169,7 @@ describe('MetaMaskController', function () {
         showTransactionNotification: () => undefined,
         getVersion: () => 'foo',
       },
-      extension: ExtensionizerMock,
+      browser: browserPolyfillMock,
       infuraProjectId: 'foo',
     });
 
@@ -490,7 +514,9 @@ describe('MetaMaskController', function () {
 
     it('should add the Trezor Hardware keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring');
-      await metamaskController.connectHardware('trezor', 0).catch(() => null);
+      await metamaskController
+        .connectHardware(DEVICE_NAMES.TREZOR, 0)
+        .catch(() => null);
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         KEYRING_TYPES.TREZOR,
       );
@@ -503,7 +529,9 @@ describe('MetaMaskController', function () {
 
     it('should add the Ledger Hardware keyring', async function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring');
-      await metamaskController.connectHardware('ledger', 0).catch(() => null);
+      await metamaskController
+        .connectHardware(DEVICE_NAMES.LEDGER, 0)
+        .catch(() => null);
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         KEYRING_TYPES.LEDGER,
       );
@@ -531,8 +559,12 @@ describe('MetaMaskController', function () {
     });
 
     it('should be locked by default', async function () {
-      await metamaskController.connectHardware('trezor', 0).catch(() => null);
-      const status = await metamaskController.checkHardwareStatus('trezor');
+      await metamaskController
+        .connectHardware(DEVICE_NAMES.TREZOR, 0)
+        .catch(() => null);
+      const status = await metamaskController.checkHardwareStatus(
+        DEVICE_NAMES.TREZOR,
+      );
       assert.equal(status, false);
     });
   });
@@ -550,8 +582,10 @@ describe('MetaMaskController', function () {
     });
 
     it('should wipe all the keyring info', async function () {
-      await metamaskController.connectHardware('trezor', 0).catch(() => null);
-      await metamaskController.forgetDevice('trezor');
+      await metamaskController
+        .connectHardware(DEVICE_NAMES.TREZOR, 0)
+        .catch(() => null);
+      await metamaskController.forgetDevice(DEVICE_NAMES.TREZOR);
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         KEYRING_TYPES.TREZOR,
       );
@@ -592,11 +626,11 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.preferencesController, 'setSelectedAddress');
       sinon.spy(metamaskController.preferencesController, 'setAccountLabel');
       await metamaskController
-        .connectHardware('trezor', 0, `m/44'/1'/0'/0`)
+        .connectHardware(DEVICE_NAMES.TREZOR, 0, `m/44'/1'/0'/0`)
         .catch(() => null);
       await metamaskController.unlockHardwareWalletAccount(
         accountToUnlock,
-        'trezor',
+        DEVICE_NAMES.TREZOR,
         `m/44'/1'/0'/0`,
       );
     });
@@ -1189,6 +1223,27 @@ describe('MetaMaskController', function () {
       assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]]);
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]]);
       assert.deepEqual(metamaskController.getState(), oldState);
+    });
+  });
+
+  describe('markNotificationsAsRead', function () {
+    it('marks the notification as read', function () {
+      metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
+      const readNotification = metamaskController.getState().notifications[
+        NOTIFICATION_ID
+      ];
+      assert.notEqual(readNotification.readDate, null);
+    });
+  });
+
+  describe('dismissNotifications', function () {
+    it('deletes the notification from state', function () {
+      metamaskController.dismissNotifications([NOTIFICATION_ID]);
+      const state = metamaskController.getState().notifications;
+      assert.ok(
+        !Object.values(state).includes(NOTIFICATION_ID),
+        'Object should not include the deleted notification',
+      );
     });
   });
 });

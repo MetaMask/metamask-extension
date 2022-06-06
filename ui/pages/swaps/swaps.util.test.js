@@ -7,6 +7,7 @@ import {
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
@@ -18,6 +19,7 @@ import {
   POLYGON,
   BSC,
   RINKEBY,
+  AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -36,6 +38,7 @@ import {
   getSwapsLivenessForNetwork,
   countDecimals,
   shouldEnableDirectWrapping,
+  showRemainingTimeInMinAndSec,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -91,7 +94,7 @@ describe('Swaps Util', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://api2.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
@@ -117,7 +120,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeAll(() => {
-      nock('https://api2.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/tokens')
         .reply(200, TOKENS);
@@ -136,7 +139,7 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeAll(() => {
-      nock('https://api2.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
@@ -155,7 +158,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssets', () => {
     beforeAll(() => {
-      nock('https://api2.metaswap.codefi.network')
+      nock('https://swap.metaswap.codefi.network')
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
@@ -316,6 +319,10 @@ describe('Swaps Util', () => {
 
     it('returns "rinkeby" for Rinkeby chain ID', () => {
       expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe(RINKEBY);
+    });
+
+    it('returns "avalanche" for Avalanche chain ID', () => {
+      expect(getNetworkNameByChainId(AVALANCHE_CHAIN_ID)).toBe(AVALANCHE);
     });
 
     it('returns an empty string for an unsupported network', () => {
@@ -537,6 +544,27 @@ describe('Swaps Util', () => {
       expect(
         shouldEnableDirectWrapping(MAINNET_CHAIN_ID, WETH_CONTRACT_ADDRESS),
       ).toBe(false);
+    });
+  });
+
+  describe('showRemainingTimeInMinAndSec', () => {
+    it('returns 0:00 if we do not pass an integer', () => {
+      expect(showRemainingTimeInMinAndSec('5')).toBe('0:00');
+    });
+
+    it('returns 0:05 if 5 seconds are remaining', () => {
+      expect(showRemainingTimeInMinAndSec(5)).toBe('0:05');
+    });
+
+    it('returns 2:59', () => {
+      expect(showRemainingTimeInMinAndSec(179)).toBe('2:59');
+    });
+  });
+
+  describe('getFeeForSmartTransaction', () => {
+    it('returns estimated for for STX', () => {
+      // TODO: Implement tests for this function.
+      expect(true).toBe(true);
     });
   });
 });

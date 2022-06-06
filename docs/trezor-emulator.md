@@ -1,6 +1,6 @@
 # Using the TREZOR simulator
 
-You can install the TREZOR emulator and use it with Metamask. 
+You can install the TREZOR emulator and use it with MetaMask.
 Here is how:
 
 ## 1 - Install the TREZOR Bridge
@@ -9,7 +9,7 @@ Download the corresponding bridge for your platform from [this url](https://wall
 
 ## 2 - Download and build the simulator
 
-Follow this instructions: https://github.com/trezor/trezor-core/blob/master/docs/build.md
+Follow this instructions: https://github.com/trezor/trezor-firmware/blob/master/docs/core/emulator/index.md
 
 ## 3 - Restart the bridge with emulator support (Mac OSx instructions)
 
@@ -22,4 +22,4 @@ Follow this instructions: https://github.com/trezor/trezor-core/blob/master/docs
 
     # launch the emulator
     ~/trezor-core/emu.sh
-````
+```

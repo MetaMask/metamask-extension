@@ -8,9 +8,6 @@
   "about": {
     "message": "Информация"
   },
-  "aboutSettingsDescription": {
-    "message": "Версия, център за поддръжка и информация за контакт"
-  },
   "acceleratingATransaction": {
     "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },
-  "addToAddressBook": {
-    "message": "Добавяне към адресната книга"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "напр. Джон Д."
-  },
   "addToken": {
     "message": "Добавяне на жетон"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Разширени опции"
-  },
-  "advancedSettingsDescription": {
-    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC"
   },
   "amount": {
     "message": "Сума"
@@ -145,17 +133,14 @@
     "message": "Преглед на акаунт на $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Използване на Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
   },
   "buyWithWyre": {
-    "message": "Купете ETH с Wyre"
+    "message": "Купете $1 с Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате ETH право във вашата MetaMask сметка."
+    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате $1 право във вашата MetaMask сметка."
   },
   "bytes": {
     "message": "Байта"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Подробности"
   },
-  "directDepositEther": {
-    "message": "Директно депозиране на етер"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ако вече имате някакъв етер, най-бързият начин да получите етер в новия си портфейл е чрез директен депозит."
-  },
   "done": {
     "message": "Готово"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Грешка при регистрацията на име на ENS"
-  },
-  "enterAnAlias": {
-    "message": "Въведете псевдоним"
   },
   "enterPassword": {
     "message": "Въведете парола"
@@ -421,9 +397,6 @@
   },
   "general": {
     "message": "Общ"
-  },
-  "generalSettingsDescription": {
-    "message": "Конвертиране на валута, първична валута, език, блокчейн идентичност"
   },
   "getEther": {
     "message": "Вземете етер"
@@ -598,9 +571,6 @@
   },
   "networkName": {
     "message": "Име на мрежата"
-  },
-  "networkSettingsDescription": {
-    "message": "Добавете и редактирайте персонализирани RPC мрежи"
   },
   "networks": {
     "message": "Mрежи"
@@ -782,9 +752,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "restoreAccountWithSeed": {
-    "message": "Възстановете акаунта си с фраза зародиш"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
@@ -836,12 +803,6 @@
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
-  "securitySettingsDescription": {
-    "message": "Настройки за поверителност и фраза зародиш за портфейла"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Отделете всяка дума с един интервал"
-  },
   "seedPhraseReq": {
     "message": "Фразите зародиш се състоят от 12 думи"
   },
@@ -871,9 +832,6 @@
   },
   "sendTokens": {
     "message": "Изпращане на жетони"
-  },
-  "separateEachWord": {
-    "message": "Отделете всяка дума с интервал"
   },
   "settings": {
     "message": "Настройки"

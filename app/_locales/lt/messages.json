@@ -8,9 +8,6 @@
   "about": {
     "message": "Apie"
   },
-  "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija"
-  },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
   },
-  "addToAddressBook": {
-    "message": "Pridėti į adresų knygelę"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pvz., John D."
-  },
   "addToken": {
     "message": "Pridėti žetoną"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
-  },
-  "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
   },
   "amount": {
     "message": "Suma"
@@ -145,17 +133,14 @@
     "message": "Peržiūrėti paskyrą $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "„Blockies Identicon“ naudojimas"
-  },
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
   "buyWithWyre": {
-    "message": "Pirkti ETH su „Wyre“"
+    "message": "Pirkti $1 su „Wyre“"
   },
   "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti ETH tiesiai į jūsų „MetaMask“ paskyrą."
+    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti $1 tiesiai į jūsų „MetaMask“ paskyrą."
   },
   "bytes": {
     "message": "Baitai"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Išsami informacija"
   },
-  "directDepositEther": {
-    "message": "Tiesiogiai įnešti eteriai"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
-  },
   "done": {
     "message": "Atlikta"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
-  },
-  "enterAnAlias": {
-    "message": "Įveskite alternatyvųjį vardą"
   },
   "enterPassword": {
     "message": "Įveskite slaptažodį"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "Bendra"
-  },
-  "generalSettingsDescription": {
-    "message": "Valiutos keitimas, pagrindinė valiuta, kalba, „blockies identicon“"
   },
   "getEther": {
     "message": "Gauti eterių"
@@ -602,9 +575,6 @@
   },
   "networkName": {
     "message": "Tinklo pavadinimas"
-  },
-  "networkSettingsDescription": {
-    "message": "Įtraukti ir redaguoti tinkintus RPC tinklus"
   },
   "networks": {
     "message": "Tinklai"
@@ -786,9 +756,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },
@@ -840,12 +807,6 @@
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
-  "securitySettingsDescription": {
-    "message": "Privatumo nuostatos ir slaptažodinės atkūrimo frazė"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
-  },
   "seedPhraseReq": {
     "message": "Atkūrimo frazės yra 12 žodžių ilgio"
   },
@@ -875,9 +836,6 @@
   },
   "sendTokens": {
     "message": "Siųsti žetonus"
-  },
-  "separateEachWord": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
   "settings": {
     "message": "Nustatymai"

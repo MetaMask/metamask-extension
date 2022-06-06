@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
@@ -8,6 +8,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TYPOGRAPHY,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -15,8 +16,9 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { getFirstTimeFlowType } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default function CreationSuccessful() {
   const firstTimeFlowTypeNameMap = {
@@ -28,20 +30,23 @@ export default function CreationSuccessful() {
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const onboardingCompletedEvent = useMetricEvent({
-    category: 'Onboarding',
-    action: 'Onboarding Complete',
-    name: firstTimeFlowTypeNameMap[firstTimeFlowType],
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onComplete = async () => {
     await dispatch(setCompletedOnboarding());
-    onboardingCompletedEvent();
+    trackEvent({
+      event: firstTimeFlowTypeNameMap[firstTimeFlowType],
+      category: EVENT.CATEGORIES.ONBOARDING,
+      properties: {
+        action: 'Onboarding Complete',
+        legacy_event: true,
+      },
+    });
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
   return (
     <div className="creation-successful">
-      <Box textAlign={TEXT_ALIGN.CENTER} margin={6}>
+      <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
           variant={TYPOGRAPHY.H2}
@@ -54,7 +59,13 @@ export default function CreationSuccessful() {
           {t('walletCreationSuccessDetail')}
         </Typography>
       </Box>
-      <Typography variant={TYPOGRAPHY.H4}>{t('remember')}</Typography>
+      <Typography
+        variant={TYPOGRAPHY.H4}
+        boxProps={{ align: ALIGN_ITEMS.LEFT }}
+        marginLeft={12}
+      >
+        {t('remember')}
+      </Typography>
       <ul>
         <li>
           <Typography variant={TYPOGRAPHY.H4}>
@@ -85,7 +96,7 @@ export default function CreationSuccessful() {
             type="link"
             rel="noopener noreferrer"
           >
-            {t('learnMore')}
+            {t('learnMoreUpperCase')}
           </Button>
         </li>
       </ul>
@@ -103,7 +114,7 @@ export default function CreationSuccessful() {
           rounded
           onClick={onComplete}
         >
-          {t('done')}
+          {t('gotIt')}
         </Button>
       </Box>
     </div>

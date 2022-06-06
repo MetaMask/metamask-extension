@@ -8,9 +8,6 @@
   "about": {
     "message": "Про Google Chrome"
   },
-  "aboutSettingsDescription": {
-    "message": "Версія, центр підтримки та контактна інформація"
-  },
   "acceleratingATransaction": {
     "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Додати рекомендовані токени"
   },
-  "addToAddressBook": {
-    "message": "Додати до адресної книги"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Напр.: Джон Д."
-  },
   "addToken": {
     "message": "Додати токен"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Додаткові параметри"
-  },
-  "advancedSettingsDescription": {
-    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC"
   },
   "amount": {
     "message": "Кількість"
@@ -145,17 +133,14 @@
     "message": "Переглянути обліковий запис на $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Викоритовувати Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
   "buyWithWyre": {
-    "message": "Купити ETH через Wyre"
+    "message": "Купити $1 через Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre дає змогу використовувати кредитну картку для внесення валюти ETH безпосередньо у свій гаманець MetaMask."
+    "message": "Wyre дає змогу використовувати кредитну картку для внесення валюти $1 безпосередньо у свій гаманець MetaMask."
   },
   "bytes": {
     "message": "Байти"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Деталі"
   },
-  "directDepositEther": {
-    "message": "Внести безпосередньо Ефір"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
-  },
   "done": {
     "message": "Готово"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Помилка у реєстрації ENS ім'я"
-  },
-  "enterAnAlias": {
-    "message": "Введіть псевдонім"
   },
   "enterPassword": {
     "message": "Введіть пароль"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "Загальні"
-  },
-  "generalSettingsDescription": {
-    "message": "Конверсія валют, первісна валюта, мова, ідентикон блокіз"
   },
   "getEther": {
     "message": "Отримати Ефір"
@@ -602,9 +575,6 @@
   },
   "networkName": {
     "message": "Ім’я мережі"
-  },
-  "networkSettingsDescription": {
-    "message": "Додавайте та редагуйте мережі RPC, що можна налаштовувати"
   },
   "networks": {
     "message": "Мережі"
@@ -786,9 +756,6 @@
   "restore": {
     "message": "Відновити"
   },
-  "restoreAccountWithSeed": {
-    "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
-  },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
@@ -840,12 +807,6 @@
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
-  "securitySettingsDescription": {
-    "message": "Налаштування приватності та початкова фраза гаманця"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Відділіть кожне слово одним пробілом"
-  },
   "seedPhraseReq": {
     "message": "Початкові фрази мають 12 слів"
   },
@@ -875,9 +836,6 @@
   },
   "sendTokens": {
     "message": "Надіслати токени"
-  },
-  "separateEachWord": {
-    "message": "Відділіть кожне слово одним пробілом"
   },
   "settings": {
     "message": "Налаштування"

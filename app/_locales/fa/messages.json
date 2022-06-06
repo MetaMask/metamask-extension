@@ -8,9 +8,6 @@
   "about": {
     "message": "درباره"
   },
-  "aboutSettingsDescription": {
-    "message": "نسخه، مرکز پشتیبانی و معلومات تماس."
-  },
   "acceleratingATransaction": {
     "message": "* تسریع یک معامله با استفاده از قیمت بالاتر گاز، فرصت تسریع پروسس آنرا توسط شبکه افزایش میدهد اما همیشه این تضمین نمیشود."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },
-  "addToAddressBook": {
-    "message": "به کتاب آدرسها اضافه کنید"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلًا. John D."
-  },
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "گزینه های پیشرفته"
-  },
-  "advancedSettingsDescription": {
-    "message": "مشخصات توسعه دهنده دسترسی، دفترچه ثبت وضعیت دانلود، دوباره سازی حساب، شبکه های آزمایشی تنظیمات و RPC معمول."
   },
   "amount": {
     "message": "مبلغ"
@@ -145,17 +133,14 @@
     "message": "مشاهده حساب در 1$1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "استفاده شناسا بلوک ها"
-  },
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
   },
   "buyWithWyre": {
-    "message": "ETH را توسط Wyre خریداری نمایید"
+    "message": "$1 را توسط Wyre خریداری نمایید"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت ETH مستقیمًا به حساب MetaMask تان استفاده نمایید."
+    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت 1$ مستقیمًا به حساب MetaMask تان استفاده نمایید."
   },
   "bytes": {
     "message": "بایت ها"
@@ -295,12 +280,6 @@
   "details": {
     "message": "جزئیات"
   },
-  "directDepositEther": {
-    "message": "پرداخت مستقیم ایتر"
-  },
-  "directDepositEtherExplainer": {
-    "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
-  },
   "done": {
     "message": "تمام"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "خطا در ثبت نام ENS"
-  },
-  "enterAnAlias": {
-    "message": "یک نام مستعار را وارد کنید"
   },
   "enterPassword": {
     "message": "رمز عبور را وارد کنید"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "عمومی"
-  },
-  "generalSettingsDescription": {
-    "message": "تبادل واحد پول، واحد پول اصلی، زبان، شناسا های بلوکی"
   },
   "getEther": {
     "message": "اتر را بگیرید"
@@ -602,9 +575,6 @@
   },
   "networkName": {
     "message": "نام شبکه"
-  },
-  "networkSettingsDescription": {
-    "message": "اضافه سازی و ویرایش شبکه های دلخواه PRC"
   },
   "networks": {
     "message": "شبکه ها"
@@ -786,9 +756,6 @@
   "restore": {
     "message": "بازیابی"
   },
-  "restoreAccountWithSeed": {
-    "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
-  },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
@@ -840,12 +807,6 @@
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
-  "securitySettingsDescription": {
-    "message": "تنظیمات حریم خصوصی و عبارت بازیاب کیف"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
-  },
   "seedPhraseReq": {
     "message": "عبارات بازیاب 12 کلمه اند"
   },
@@ -875,9 +836,6 @@
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
-  },
-  "separateEachWord": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
   "settings": {
     "message": "تنظیمات"

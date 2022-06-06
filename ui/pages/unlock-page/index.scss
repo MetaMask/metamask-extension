@@ -1,4 +1,5 @@
 .unlock-page {
+  color: var(--color-text-default);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -6,14 +7,13 @@
   width: 357px;
   padding: 30px;
   font-weight: 400;
-  color: var(--silver-chalice);
 
   &__container {
-    background: var(--white);
     display: flex;
     align-self: stretch;
     justify-content: center;
     flex: 1 0 auto;
+    background: var(--color-background-default);
   }
 
   &__mascot-container {
@@ -25,7 +25,7 @@
 
     margin-top: 5px;
     font-weight: 800;
-    color: var(--tundora);
+    color: var(--color-text-alternative);
   }
 
   &__form {
@@ -38,18 +38,11 @@
     width: 100%;
     text-align: center;
     font-size: 0.75rem;
-
-    button {
-      font-weight: bold;
-      border-radius: 100px;
-    }
   }
 
   &__link {
-    cursor: pointer;
-    background-color: unset;
-    color: var(--Blue-500);
     font-size: unset;
+    font-weight: bold;
   }
 
   &__support {
@@ -57,7 +50,7 @@
     font-size: 0.75rem;
 
     a {
-      color: var(--Blue-500);
+      color: var(--color-primary-default);
     }
   }
 }

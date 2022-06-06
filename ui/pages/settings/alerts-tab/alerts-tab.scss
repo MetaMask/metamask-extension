@@ -6,28 +6,30 @@
     grid-template-columns: 8fr 30px max-content;
     grid-template-rows: 1fr 1fr;
     align-items: center;
+    display: block;
   }
 
-  &__body > * {
-    border-bottom: 1px solid var(--Grey-100);
-    padding: 16px 8px;
-    height: 100%;
+  &__description-container {
+    display: flex;
   }
 
-  &__body > :first-child {
-    padding-left: 32px;
-  }
-
-  &__body > :nth-child(3n+4) {
-    padding-left: 32px;
-  }
-
-  &__body > :nth-child(3n) {
-    padding-right: 32px;
+  &__description-container > * {
+    padding: 0 8px;
   }
 
   &__description {
     display: flex;
     align-items: center;
+
+    &__icon {
+      color: var(--color-icon-alternative);
+    }
+  }
+
+  &__item {
+    border-bottom: 1px solid var(--color-border-muted);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
   }
 }

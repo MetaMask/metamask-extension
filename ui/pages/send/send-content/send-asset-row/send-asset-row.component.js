@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
+import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { ERC20, ERC721, PRIMARY } from '../../../../helpers/constants/common';
-import { ASSET_TYPES } from '../../../../ducks/send';
-import { isEqualCaseInsensitive } from '../../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { EVENT } from '../../../../../shared/constants/metametrics';
+import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -45,7 +47,7 @@ export default class SendAssetRow extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   state = {
@@ -86,13 +88,12 @@ export default class SendAssetRow extends Component {
         isShowingDropdown: false,
       },
       () => {
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.TRANSACTIONS,
+          event: 'User clicks "Assets" dropdown',
+          properties: {
             action: 'Send Screen',
-            name: 'User clicks "Assets" dropdown',
-          },
-          customVariables: {
+            legacy_event: true,
             assetSelected: this.getAssetSelected(type, token),
           },
         });
@@ -162,9 +163,12 @@ export default class SendAssetRow extends Component {
           />
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
-            {this.state.sendableTokens.map((token) =>
-              this.renderToken(token, true),
-            )}
+            <TokenListDisplay
+              clickHandler={(token) =>
+                this.selectToken(ASSET_TYPES.TOKEN, token)
+              }
+            />
+
             {this.state.sendableCollectibles.map((collectible) =>
               this.renderCollectible(collectible, true),
             )}

@@ -1,0 +1,202 @@
+import { Meta } from '@storybook/addon-docs';
+import ActionaleMessage from '../ui/components/ui/actionable-message';
+import designTokenDiagramImage from './images/design.token.graphic.svg';
+
+<Meta title="Design Tokens / Color" />
+
+# Color
+
+Color is used to express style and communicate meaning.
+
+<ActionaleMessage
+  type="warning"
+  message="We are in the process of consolidating all of our colors, making them accessible and enabling theming. Many of the colors used throughout the codebase are deprecated please follow the guide below to ensure you are using the correct colors when building MetaMask UI"
+/>
+
+<br />
+
+## Design tokens
+
+We are importing design tokens as CSS variables from [@metamask/design-tokens](https://github.com/MetaMask/design-tokens) repo to help consolidate colors and enable theming across all MetaMask products.
+
+### Token tiers
+
+We follow a 3 tiered system for color design tokens and css variables.
+
+<div
+  style={{
+    textAlign: 'center',
+    backgroundColor: 'var(--color-background-alternative)',
+    padding: 32,
+  }}
+>
+  <img width="80%" src={designTokenDiagramImage} />
+</div>
+
+<br />
+<br />
+
+### **Brand colors** (tier 1)
+
+These colors **SHOULD NOT** be used in your styles directly. They are used as a reference for the [theme colors](#theme-colors-tier-2). Brand colors should just keep track of every color used in our app.
+
+#### Example of brand color css variables
+
+```css
+/** !!!DO NOT USE BRAND COLORS DIRECTLY IN YOUR CODE!!! */
+var(--brand-colors-white-white000)
+var(--brand-colors-white-white010)
+var(--brand-colors-grey-grey030)
+```
+
+### **Theme colors** (tier 2)
+
+Theme colors are color agnostic, semantically neutral and theme compatible design tokens that you can use in your code and styles. Please refer to the description of each token for it's intended purpose in [@metamask/design-tokens](https://github.com/MetaMask/design-tokens/blob/main/src/figma/tokens.json#L329-L554).
+
+#### Example of theme color css variables
+
+```css
+/** Backgrounds */
+var(--color-background-default)
+var(--color-background-alternative)
+
+/** Text */
+var(--color-text-default)
+var(--color-text-alternative)
+var(--color-text-muted)
+
+/** Icons */
+var(--color-icon-default)
+var(--color-icon-alternative)
+var(--color-icon-muted)
+
+/** Borders */
+var(--color-border-default)
+var(--color-border-muted)
+
+/** Overlays */
+var(--color-overlay-default)
+var(--color-overlay-inverse) [DEPRECATED]
+
+/** User Actions */
+var(--color-primary-default)
+var(--color-primary-alternative)
+var(--color-primary-muted)
+var(--color-primary-inverse)
+var(--color-primary-disabled) [DEPRECATED]
+
+var(--color-secondary-default) [DEPRECATED]
+var(--color-secondary-alternative) [DEPRECATED]
+var(--color-secondary-muted) [DEPRECATED]
+var(--color-secondary-inverse) [DEPRECATED]
+var(--color-secondary-disabled) [DEPRECATED]
+
+/** States */
+/** Error */
+var(--color-error-default)
+var(--color-error-alternative)
+var(--color-error-muted)
+var(--color-error-inverse)
+var(--color-error-disabled) [DEPRECATED]
+
+/** Warning */
+var(--color-warning-default)
+var(--color-warning-alternative) [DEPRECATED]
+var(--color-warning-muted)
+var(--color-warning-inverse)
+var(--color-warning-disabled) [DEPRECATED]
+
+/** Success */
+var(--color-success-default)
+var(--color-success-alternative) [DEPRECATED]
+var(--color-success-muted)
+var(--color-success-inverse)
+var(--color-success-disabled) [DEPRECATED]
+
+/** Info */
+var(--color-info-default)
+var(--color-info-alternative) [DEPRECATED]
+var(--color-info-muted)
+var(--color-info-inverse)
+var(--color-info-disabled) [DEPRECATED]
+```
+
+### **Component colors** (tier 3)
+
+Another level of abstraction is component tier colors that you can define at the top of your styles and use at the component specific level.
+
+```scss
+.button {
+  --color-background-primary: var(--color-primary-default);
+  --color-text-primary: var(--color-primary-inverse);
+  --color-border-primary: var(--color-primary-default);
+
+  --color-background-primary-hover: var(--color-primary-alternative);
+  --color-border-primary-hover: var(--color-primary-alternative);
+
+  .btn-primary {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-primary);
+
+    &:hover {
+      background-color: var(--color-background-primary-hover);
+      border: 1px solid var(--color-border-primary-hover);
+    }
+
+    /** btn-primary css continued... */
+  }
+}
+```
+
+## Takeaways
+
+- Do not use static HEX values in your code. Use the [theme colors](#theme-colors-tier-2). If one does not exist for your use case ask the designer or [create an issue](https://github.com/MetaMask/metamask-extension/issues/new) and tag it with a `design-system` label.
+- Make sure the design token you are using is for it's intended purpose. Please refer to the description of each token in [@metamask/design-tokens](https://github.com/MetaMask/design-tokens/blob/main/src/figma/tokens.json#L329-L554).
+
+### ❌ Don't do this
+
+Don't use static hex values or brand color tokens in your code.
+
+```css
+/**
+* Don't do this
+* Static hex values create inconsistency and will break UI when using dark mode
+**/
+.card {
+  background-color: #ffffff;
+  color: #24272a;
+}
+
+/**
+* Don't do this
+* Not theme compatible and will break UI when using dark theme
+**/
+.card {
+  background-color: var(--brand-colors-white-white000);
+  color: var(--brand-colors-grey-grey800);
+}
+```
+
+### ✅ Do this
+
+Do use component tiered and [theme colors](#theme-colors-tier-2) in your styles and code
+
+```css
+.card {
+  --color-background: var(--color-background-default);
+  --color-text: var(--color-text-default);
+
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+```
+
+<br />
+
+## References
+
+- [@metamask/design-tokens](https://github.com/MetaMask/design-tokens)
+- [Figma brand colors library](https://www.figma.com/file/cBAUPFMnbv6tHR1J8KvBI2/Brand-Colors?node-id=0%3A1) (internal use only)
+- [Figma theme colors library](https://www.figma.com/file/kdFzEC7xzSNw7cXteqgzDW/Light-Theme-Colors?node-id=0%3A1) (internal use only)
+- [Figma dark theme colors library](https://www.figma.com/file/rLKsoqpjyoKauYnFDcBIbO/Dark-Theme-Colors?node-id=0%3A1) (internal use only)

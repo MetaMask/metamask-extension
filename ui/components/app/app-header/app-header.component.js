@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Identicon from '../../ui/identicon';
 import MetaFoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
 
 export default class AppHeader extends PureComponent {
@@ -19,12 +20,15 @@ export default class AppHeader extends PureComponent {
     disabled: PropTypes.bool,
     disableNetworkIndicator: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    unreadNotificationsCount: PropTypes.number,
+    ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
   };
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   handleNetworkIndicatorClick(event) {
@@ -44,11 +48,12 @@ export default class AppHeader extends PureComponent {
     }
 
     if (networkDropdownOpen === false) {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.NAVIGATION,
+        event: 'Opened Network Menu',
+        properties: {
           action: 'Home',
-          name: 'Opened Network Menu',
+          legacy_event: true,
         },
       });
       showNetworkDropdown();
@@ -64,6 +69,9 @@ export default class AppHeader extends PureComponent {
       selectedAddress,
       disabled,
       isAccountMenuOpen,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      unreadNotificationsCount,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     return (
@@ -75,11 +83,12 @@ export default class AppHeader extends PureComponent {
           onClick={() => {
             if (!disabled) {
               !isAccountMenuOpen &&
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Navigation',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Opened Main Menu',
+                  properties: {
                     action: 'Home',
-                    name: 'Opened Main Menu',
+                    legacy_event: true,
                   },
                 });
               toggleAccountMenu();
@@ -87,6 +96,15 @@ export default class AppHeader extends PureComponent {
           }}
         >
           <Identicon address={selectedAddress} diameter={32} addBorder />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            unreadNotificationsCount > 0 && (
+              <div className="account-menu__icon__notification-count">
+                {unreadNotificationsCount}
+              </div>
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
         </div>
       )
     );
@@ -95,7 +113,6 @@ export default class AppHeader extends PureComponent {
   render() {
     const {
       history,
-      isUnlocked,
       hideNetworkIndicator,
       disableNetworkIndicator,
       disabled,
@@ -103,11 +120,7 @@ export default class AppHeader extends PureComponent {
     } = this.props;
 
     return (
-      <div
-        className={classnames('app-header', {
-          'app-header--back-drop': isUnlocked,
-        })}
-      >
+      <div className="app-header">
         <div className="app-header__contents">
           <MetaFoxLogo
             unsetIconHeight
@@ -122,9 +135,6 @@ export default class AppHeader extends PureComponent {
             {!hideNetworkIndicator && (
               <div className="app-header__network-component-wrapper">
                 <NetworkDisplay
-                  colored={false}
-                  outline
-                  iconClassName="app-header__network-down-arrow"
                   onClick={(event) => this.handleNetworkIndicatorClick(event)}
                   disabled={disabled || disableNetworkIndicator}
                 />

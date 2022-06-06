@@ -8,9 +8,6 @@
   "about": {
     "message": "Om"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation"
-  },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lägg till föreslagna tokens"
   },
-  "addToAddressBook": {
-    "message": "Lägg till i adressbok"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "exempelvis John D."
-  },
   "addToken": {
     "message": "Lägg till token"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
-  },
-  "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "amount": {
     "message": "Belopp"
@@ -145,17 +133,14 @@
     "message": "Visa konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Använd Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Din webbläsare stöds inte..."
   },
   "buyWithWyre": {
-    "message": "Köp ETH med Wyre"
+    "message": "Köp $1 med Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre låter dig använda ett kreditkort för att sätta in ETH direkt på ditt MetaMask-konto."
+    "message": "Wyre låter dig använda ett kreditkort för att sätta in $1 direkt på ditt MetaMask-konto."
   },
   "cancel": {
     "message": "Avbryt"
@@ -289,12 +274,6 @@
   "details": {
     "message": "Info"
   },
-  "directDepositEther": {
-    "message": "Sätt in Ether direkt"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
-  },
   "done": {
     "message": "Klart"
   },
@@ -348,9 +327,6 @@
   },
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
-  },
-  "enterAnAlias": {
-    "message": "Ange ett alias"
   },
   "enterPassword": {
     "message": "Ange lösenord"
@@ -415,9 +391,6 @@
   },
   "general": {
     "message": "Allmänt"
-  },
-  "generalSettingsDescription": {
-    "message": "Valutaomvandling, primär valuta, språk"
   },
   "getEther": {
     "message": "Skaffa Ether"
@@ -586,9 +559,6 @@
   },
   "networkName": {
     "message": "Nätverksnamn"
-  },
-  "networkSettingsDescription": {
-    "message": "Lägg till och redigera RPC-nätverk"
   },
   "networks": {
     "message": "Nätverk"
@@ -770,9 +740,6 @@
   "restore": {
     "message": "Återställ"
   },
-  "restoreAccountWithSeed": {
-    "message": "Återställ ditt konto med seedphrase"
-  },
   "revealSeedWords": {
     "message": "Visa seed-ord"
   },
@@ -824,12 +791,6 @@
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
-  "securitySettingsDescription": {
-    "message": "Sekretessinställningar och plånbokens seedfras"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separera varje ord med ett enda mellanslag."
-  },
   "seedPhraseReq": {
     "message": "Nyckelfraser är 12 ord långa."
   },
@@ -859,9 +820,6 @@
   },
   "sendTokens": {
     "message": "Skicka tokens"
-  },
-  "separateEachWord": {
-    "message": "Lägg in ett mellanslag mellan varje ord"
   },
   "settings": {
     "message": "Inställningar"

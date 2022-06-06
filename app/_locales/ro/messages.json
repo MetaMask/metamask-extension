@@ -8,9 +8,6 @@
   "about": {
     "message": "Despre"
   },
-  "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
-  "addToAddressBook": {
-    "message": "Adăugați în agendă"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "de ex. John D."
-  },
   "addToken": {
     "message": "Adăugare simbol"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
   },
   "amount": {
     "message": "Sumă"
@@ -145,17 +133,14 @@
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
   "buyWithWyre": {
-    "message": "Cumpărați ETH cu Wyre"
+    "message": "Cumpărați $1 cu Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune ETH direct în contul dvs. MetaMask."
+    "message": "Wyre vă permite să folosiți un card de credit pentru a depune $1 direct în contul dvs. MetaMask."
   },
   "bytes": {
     "message": "Octeți"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Detalii"
   },
-  "directDepositEther": {
-    "message": "Depuneți direct Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
-  },
   "done": {
     "message": "Efectuat"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
-  },
-  "enterAnAlias": {
-    "message": "Introduceți un alias"
   },
   "enterPassword": {
     "message": "Introduceți parola"
@@ -418,9 +394,6 @@
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
-  },
-  "generalSettingsDescription": {
-    "message": "Schimb valutar, moneda principală, limba, blockies identicon"
   },
   "getEther": {
     "message": "Obțineți Ether"
@@ -589,9 +562,6 @@
   },
   "networkName": {
     "message": "Numele rețelei"
-  },
-  "networkSettingsDescription": {
-    "message": "Adăugați și editați rețelele RPC particularizate"
   },
   "networks": {
     "message": "Rețele"
@@ -773,9 +743,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
@@ -827,12 +794,6 @@
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
-  "securitySettingsDescription": {
-    "message": "Setările de confidențialitate și fraza seed a portofelului"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
-  },
   "seedPhraseReq": {
     "message": "Expresiile seed sunt lungi de 12 cuvinte"
   },
@@ -862,9 +823,6 @@
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "settings": {
     "message": "Setări"

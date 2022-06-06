@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
@@ -22,13 +23,13 @@ const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const {
-    hasErrors,
+    gasErrors,
     maxBaseFee,
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { editGasMode } = useGasFeeContext();
-
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
     Boolean(advancedGasFeeValues) &&
       advancedGasFeeValues.maxBaseFee === maxBaseFee &&
@@ -47,6 +48,12 @@ const AdvancedGasFeeDefaults = () => {
     if (isDefaultSettingsSelected) {
       dispatch(setAdvancedGasFee(null));
       setDefaultSettingsSelected(false);
+      updateTransactionEventFragment({
+        properties: {
+          advanced_gas_defaults_updated_maxbasefee: null,
+          advanced_gas_defaults_updated_priorityfee: null,
+        },
+      });
     } else {
       dispatch(
         setAdvancedGasFee({
@@ -54,7 +61,12 @@ const AdvancedGasFeeDefaults = () => {
           priorityFee: maxPriorityFeePerGas,
         }),
       );
-      setDefaultSettingsSelected(true);
+      updateTransactionEventFragment({
+        properties: {
+          advanced_gas_defaults_updated_maxbasefee: maxBaseFee,
+          advanced_gas_defaults_updated_priorityfee: maxPriorityFeePerGas,
+        },
+      });
     }
   };
 
@@ -74,9 +86,13 @@ const AdvancedGasFeeDefaults = () => {
           checked={isDefaultSettingsSelected}
           className="advanced-gas-fee-defaults__checkbox"
           onClick={handleUpdateDefaultSettings}
-          disabled={hasErrors}
+          disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          margin={0}
+        >
           {isDefaultSettingsSelected
             ? t('advancedGasFeeDefaultOptOut')
             : t('advancedGasFeeDefaultOptIn', [

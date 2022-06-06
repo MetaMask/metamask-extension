@@ -6,7 +6,7 @@
 
 html,
 body {
-  color: #4d4d4d;
+  color: var(--color-text-default);
   width: 100%;
   height: 100%;
   margin: 0;
@@ -38,17 +38,9 @@ html {
   /ui/pages/keychains/restore-vault.js
 */
 .error {
-  color: #f7861c;
+  color: var(--color-error-default);
   margin-top: 3px;
   margin-bottom: 9px;
-}
-
-/*
-  This warning class is used in the following files still:
-  /ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.component.js
-*/
-.warning {
-  color: #ffae00;
 }
 
 /* stylelint-disable */
@@ -57,10 +49,10 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f7f7f7;
+  background: var(--color-background-alternative);
 
   @media screen and (max-width: $break-small) {
-    background-color: var(--white);
+    background-color: var(--color-background-default);
   }
 }
 /* stylelint-enable */
@@ -71,7 +63,7 @@ a {
 }
 
 a:hover {
-  color: var(--Blue-400);
+  color: var(--color-primary-alternative);
 }
 
 input.large-input,
@@ -97,32 +89,34 @@ input.form-control {
   padding-left: 10px;
   font-size: 14px;
   height: 40px;
-  border: 1px solid var(--alto);
+  border: 1px solid var(--color-border-default);
+  color: 1px solid var(--color-text-default);
+  background: transparent;
   border-radius: 3px;
   width: 100%;
 
   &::-webkit-input-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &::-moz-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &:-ms-input-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &:-moz-placeholder {
     font-weight: 100;
-    color: var(--dusty-gray);
+    color: var(--color-text-muted);
   }
 
   &--error {
-    border: 1px solid var(--monzo);
+    border: 1px solid var(--color-error-default);
   }
 }
 

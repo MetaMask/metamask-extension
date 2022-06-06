@@ -1,6 +1,6 @@
 .transaction-list-item {
   &__primary-currency {
-    color: var(--Black-100);
+    color: var(--color-text-default);
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -9,15 +9,15 @@
     @include H7;
 
     margin-top: 4px;
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   & &--unconfirmed {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &--unconfirmed &__primary-currency {
-    color: var(--Grey-500);
+    color: var(--color-text-alternative);
   }
 
   &__pending-actions {
@@ -53,15 +53,9 @@
     margin: 0 4px;
   }
 
-  &__origin,
   &__address {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  &__origin {
-    /*rtl:ignore*/
-    direction: rtl;
   }
 }

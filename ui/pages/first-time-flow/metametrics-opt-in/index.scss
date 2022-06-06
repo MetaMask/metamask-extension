@@ -3,7 +3,7 @@
   width: 100%;
 
   a {
-    color: #2f9ae0bf;
+    color: var(--color-primary-default);
   }
 
   &__main {
@@ -11,7 +11,7 @@
     flex-direction: column;
     margin-left: 26.26%;
     margin-right: 28%;
-    color: black;
+    color: var(--color-text-default);
 
     @media screen and (max-width: $break-small) {
       justify-content: center;
@@ -33,10 +33,6 @@
 
   &__body-graphic {
     margin-top: 25px;
-
-    .fa-bar-chart {
-      color: #c4c4c4;
-    }
   }
 
   &__description {
@@ -61,12 +57,12 @@
 
     .fa-check {
       margin-right: 12px;
-      color: #1acc56;
+      color: var(--color-success-default);
     }
 
     .fa-times {
       margin-right: 12px;
-      color: #d0021b;
+      color: var(--color-error-default);
     }
   }
 
@@ -93,7 +89,7 @@
 
   &__bottom-text {
     margin-top: 10px;
-    color: #9a9a9a;
+    color: var(--color-text-alternative);
   }
 
   &__content {

@@ -5,12 +5,13 @@ import Snackbar from '../../../components/ui/snackbar';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { returnToOnboardingInitiator } from '../onboarding-initiator-util';
+import { returnToOnboardingInitiatorTab } from '../onboarding-initiator-util';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -34,11 +35,12 @@ export default class EndOfFlowScreen extends PureComponent {
   async _onOnboardingComplete() {
     const { setCompletedOnboarding, completionMetaMetricsName } = this.props;
     await setCompletedOnboarding();
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: completionMetaMetricsName,
+      properties: {
         action: 'Onboarding Complete',
-        name: completionMetaMetricsName,
+        legacy_event: true,
       },
     });
   }
@@ -49,7 +51,7 @@ export default class EndOfFlowScreen extends PureComponent {
     this._removeBeforeUnload();
     await this._onOnboardingComplete();
     if (onboardingInitiator) {
-      await returnToOnboardingInitiator(onboardingInitiator);
+      await returnToOnboardingInitiatorTab(onboardingInitiator);
     }
     history.push(DEFAULT_ROUTE);
   };

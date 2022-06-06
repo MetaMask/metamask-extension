@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
+import {
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -21,12 +26,33 @@ export default class SecurityTab extends PureComponent {
     usePhishDetect: PropTypes.bool.isRequired,
   };
 
+  settingsRefs = Array(
+    getNumberOfSettingsInSection(
+      this.context.t,
+      this.context.t('securityAndPrivacy'),
+    ),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+  }
+
+  componentDidMount() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+  }
+
   renderSeedWords() {
     const { t } = this.context;
     const { history } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('revealSeedWords')}</span>
         </div>
@@ -37,11 +63,12 @@ export default class SecurityTab extends PureComponent {
               large
               onClick={(event) => {
                 event.preventDefault();
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Reveal Seed Phrase',
+                  properties: {
                     action: 'Reveal Seed Phrase',
-                    name: 'Reveal Seed Phrase',
+                    legacy_event: true,
                   },
                 });
                 history.push(REVEAL_SEED_ROUTE);
@@ -63,7 +90,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('participateInMetaMetrics')}</span>
           <div className="settings-page__content-description">
@@ -92,7 +119,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('showIncomingTransactions')}</span>
           <div className="settings-page__content-description">
@@ -120,7 +147,7 @@ export default class SecurityTab extends PureComponent {
     const { usePhishDetect, setUsePhishDetect } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('usePhishingDetection')}</span>
           <div className="settings-page__content-description">

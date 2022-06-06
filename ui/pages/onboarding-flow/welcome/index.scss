@@ -1,28 +1,31 @@
 @import "./react-gallery/carousel.min.css";
 
 .onboarding-welcome {
-  width: 600px;
-
   .control-dots .dot {
-    background: var(--ui-2);
+    background: var(--color-icon-muted);
     box-shadow: none;
 
     &.selected {
-      background: var(--ui-4);
+      background: var(--color-icon-default);
     }
   }
 
   /* next and previous arrow colors */
   .carousel.carousel-slider .control-arrow {
     opacity: 1;
+    color: var(--color-icon-default);
+
+    @media screen and (min-width: $break-large) {
+      padding: 40px;
+    }
   }
 
   .carousel .control-next.control-arrow::before {
-    border-left-color: var(--ui-3);
+    border-left-color: var(--color-icon-default);
   }
 
   .carousel .control-prev.control-arrow::before {
-    border-right-color: var(--ui-3);
+    border-right-color: var(--color-icon-default);
   }
 
   .carousel.carousel-slider .control-arrow:hover {
@@ -41,7 +44,7 @@
   }
 
   &__buttons {
-    max-width: 50%;
+    max-width: 300px;
     margin: 40px auto 0 auto;
 
     li {

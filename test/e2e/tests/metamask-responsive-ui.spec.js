@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
-describe('Metamask Responsive UI', function () {
+describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {
     const driverOptions = { responsive: true };
 
@@ -164,17 +164,15 @@ describe('Metamask Responsive UI', function () {
 
         // Import Secret Recovery Phrase
         const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link--import',
+          '.unlock-page__link',
         );
-        assert.equal(
-          await restoreSeedLink.getText(),
-          'import using Secret Recovery Phrase',
-        );
+        assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
         await restoreSeedLink.click();
 
-        await driver.clickElement('.import-account__checkbox-container');
-
-        await driver.fill('.import-account__secret-phrase', testSeedPhrase);
+        await driver.pasteIntoField(
+          '[data-testid="import-srp__srp-word-0"]',
+          testSeedPhrase,
+        );
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');

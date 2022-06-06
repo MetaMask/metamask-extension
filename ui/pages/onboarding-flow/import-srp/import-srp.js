@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { ethers } from 'ethers';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   TwoStepProgressBar,
@@ -16,88 +14,49 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
-import { clearClipboard } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import SrpInput from '../../../components/app/srp-input';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
-  const [revealSRP, setRevealSRP] = useState(true);
-  const [error, setError] = useState('');
   const history = useHistory();
   const t = useI18nContext();
-  const { isValidMnemonic } = ethers.utils;
-
-  const parseSeedPhrase = (seedPhrase) =>
-    (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || '';
-
-  const handleSecretRecoveryPhraseChange = (recoveryPhrase) => {
-    setError('');
-    if (recoveryPhrase) {
-      const parsedSecretRecoveryPhrase = parseSeedPhrase(recoveryPhrase);
-      const wordCount = parsedSecretRecoveryPhrase.split(/\s/u).length;
-      if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
-        setError(t('seedPhraseReq'));
-      } else if (!isValidMnemonic(parsedSecretRecoveryPhrase)) {
-        setError(t('invalidSeedPhrase'));
-      }
-    }
-    setSecretRecoveryPhrase(recoveryPhrase);
-  };
 
   return (
     <div className="import-srp">
-      <TwoStepProgressBar stage={twoStepStages.RECOVERY_PHRASE_CONFIRM} />
+      <TwoStepProgressBar
+        stage={twoStepStages.RECOVERY_PHRASE_CONFIRM}
+        marginBottom={4}
+      />
       <div className="import-srp__header">
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('importExistingWalletTitle')}
+          {t('accessYourWalletWithSRP')}
         </Typography>
+      </div>
+      <div className="import-srp__description">
         <Typography variant={TYPOGRAPHY.H4}>
-          {t('importExistingWalletDescription', [
+          {t('accessYourWalletWithSRPDescription', [
             <a
               key="learnMore"
               type="link"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360036464651"
+              href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('learnMore')}
+              {t('learnMoreUpperCase')}
             </a>,
           ])}
         </Typography>
       </div>
       <div className="import-srp__actions">
         <Box textAlign={TEXT_ALIGN.LEFT}>
-          <Typography variant={TYPOGRAPHY.H4}>
-            {t('secretRecoveryPhrase')}
-          </Typography>
-
-          <div className="srp-text-area">
-            <button onClick={() => setRevealSRP(!revealSRP)}>
-              <i
-                className={`far fa-eye${revealSRP ? '-slash' : ''}`}
-                color="grey"
-              />
-            </button>
-            <textarea
-              data-testid="import-srp-text"
-              className={classnames('srp-text-area__textarea', {
-                'srp-text-area__textarea--blur': !revealSRP,
-                'srp-text-area__textarea--error': error,
-              })}
-              onChange={({ target: { value } }) =>
-                handleSecretRecoveryPhraseChange(value)
-              }
-              onPaste={clearClipboard}
-              autoComplete="off"
-              autoCorrect="off"
-            />
-            {error && (
-              <span className="srp-text-area__textarea__error-message">
-                {error}
-              </span>
-            )}
-          </div>
+          <SrpInput
+            onChange={setSecretRecoveryPhrase}
+            srpText={t('typeYourSRP')}
+          />
           <Button
+            className="import-srp__confirm-button"
             type="primary"
             data-testid="import-srp-confirm"
             large
@@ -105,7 +64,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
               history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
             }}
-            disabled={error || secretRecoveryPhrase.length === 0}
+            disabled={!secretRecoveryPhrase.trim()}
           >
             {t('confirmRecoveryPhrase')}
           </Button>

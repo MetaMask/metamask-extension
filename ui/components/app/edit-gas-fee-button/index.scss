@@ -8,7 +8,7 @@
 
     display: flex;
     align-items: baseline;
-    color: var(--primary-1);
+    color: var(--color-primary-default);
     background: transparent;
     border: 0;
     padding-inline-end: 0;
@@ -16,7 +16,7 @@
   }
 
   i {
-    color: var(--primary-1);
+    color: var(--color-primary-default);
     margin-right: 2px;
   }
 
@@ -37,13 +37,20 @@
 
   &__tooltip {
     p {
-      color: var(--Grey-500);
+      color: var(--color-text-alternative);
     }
 
     b {
-      color: var(--neutral-black);
+      color: var(--color-text-default);
       display: inline-block;
       min-width: 60%;
     }
   }
+}
+
+
+// Overrides react-tippy
+
+.tippy-tooltip .tippy-tooltip-content .edit-gas-fee-button__tooltip {
+  min-width: 170px;
 }

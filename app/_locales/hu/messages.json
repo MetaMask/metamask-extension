@@ -8,9 +8,6 @@
   "about": {
     "message": "Névjegy"
   },
-  "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
-  },
   "acceleratingATransaction": {
     "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },
-  "addToAddressBook": {
-    "message": "Hozzáadás a címjegyzékhez"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "pl. John D."
-  },
   "addToken": {
     "message": "Token hozzáadása"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Haladó beállítások"
-  },
-  "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
   },
   "amount": {
     "message": "Összeg"
@@ -145,14 +133,11 @@
     "message": "Tekintse meg a fiókot a(z) $1-en",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies identikon használata"
-  },
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
   "buyWithWyre": {
-    "message": "Vásároljon ETH-t a Wyre-rel"
+    "message": "Vásároljon $1 -t a Wyre-rel"
   },
   "buyWithWyreDescription": {
     "message": "A Wyre segítségével egyensen a MetaMaks fiókjában tehet letétbe ETH-t."
@@ -295,12 +280,6 @@
   "details": {
     "message": "Részletek"
   },
-  "directDepositEther": {
-    "message": "Fizess be ethert közvetlenül"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Amennyiben már rendelkezik némi Ether-rel, a közvetlen letéttel gyorsan elhelyezheti azt új pénztárcájában."
-  },
   "done": {
     "message": "Kész"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
-  },
-  "enterAnAlias": {
-    "message": "Adjon meg álnevet"
   },
   "enterPassword": {
     "message": "Adja meg a jelszót"
@@ -421,9 +397,6 @@
   },
   "general": {
     "message": "Általános"
-  },
-  "generalSettingsDescription": {
-    "message": "Pénznem átváltása, elsődleges pénznem, nyelv, blockies identikonok"
   },
   "getEther": {
     "message": "Ether beszerzése"
@@ -595,9 +568,6 @@
   },
   "networkName": {
     "message": "Hálózat neve"
-  },
-  "networkSettingsDescription": {
-    "message": "Egyedi RPC-hálózatok hozzáadása és szerkesztése"
   },
   "networks": {
     "message": "Hálózatok"
@@ -779,9 +749,6 @@
   "restore": {
     "message": "Visszaállítás"
   },
-  "restoreAccountWithSeed": {
-    "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
@@ -833,12 +800,6 @@
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
-  "securitySettingsDescription": {
-    "message": "Biztonsági beállítások és pénztárca kulcsszólánca"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "A szavakat egy-egy szóközzel válassza el"
-  },
   "seedPhraseReq": {
     "message": "A seed mondat 12 szóból áll"
   },
@@ -868,9 +829,6 @@
   },
   "sendTokens": {
     "message": "Token küldése"
-  },
-  "separateEachWord": {
-    "message": "Minden egyes szavat szóközzel válasszon el"
   },
   "settings": {
     "message": "Beállítások"

@@ -8,9 +8,6 @@
   "about": {
     "message": "Teave"
   },
-  "aboutSettingsDescription": {
-    "message": "Versioon, tugikeskus ja kontaktteave"
-  },
   "acceleratingATransaction": {
     "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Lisa soovitatud lube"
   },
-  "addToAddressBook": {
-    "message": "Lisage aadressiraamatusse"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "nt John D."
-  },
   "addToken": {
     "message": "Lisage luba"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Täpsemad suvandid"
-  },
-  "advancedSettingsDescription": {
-    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine"
   },
   "amount": {
     "message": "Summa"
@@ -145,17 +133,14 @@
     "message": "Vaata kontot $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Kasuta Blockies Identiconi"
-  },
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },
   "buyWithWyre": {
-    "message": "Ostke ETH-d Wyre'iga"
+    "message": "Ostke $1 -d Wyre'iga"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre võimaldab kasutada krediitkaarti, et teha ETH sissemakse otse MetaMaski kontole."
+    "message": "Wyre võimaldab kasutada krediitkaarti, et teha $1 sissemakse otse MetaMaski kontole."
   },
   "bytes": {
     "message": "Baidid"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Üksikasjad"
   },
-  "directDepositEther": {
-    "message": "Eetri otsene sissemakse"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kui teil on juba veidi eetrit, on kiirem viis eetri rahakotti saamiseks otsene sissemakse."
-  },
   "done": {
     "message": "Valmis"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Tõrge ENS-i nime registreerimisel"
-  },
-  "enterAnAlias": {
-    "message": "Sisestage alias"
   },
   "enterPassword": {
     "message": "Sisestage parool"
@@ -421,9 +397,6 @@
   },
   "general": {
     "message": "Üldine teave"
-  },
-  "generalSettingsDescription": {
-    "message": "Valuutavahetus, põhivaluuta, keel, plokkidest identicon"
   },
   "getEther": {
     "message": "Hankige eetrit"
@@ -592,9 +565,6 @@
   },
   "networkName": {
     "message": "Võrgu nimi"
-  },
-  "networkSettingsDescription": {
-    "message": "Kohandatud RPC-võrkude lisamine ja muutmine"
   },
   "networks": {
     "message": "Võrgud"
@@ -776,9 +746,6 @@
   "restore": {
     "message": "Taasta"
   },
-  "restoreAccountWithSeed": {
-    "message": "Taastage konto seemnefraasi abil"
-  },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
@@ -830,12 +797,6 @@
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
-  "securitySettingsDescription": {
-    "message": "Privaatsusseaded ja rahakoti seemnefraas"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Eraldage iga sõna ühe tühikuga"
-  },
   "seedPhraseReq": {
     "message": "Seemnefraasid on 12 sõna pikad"
   },
@@ -865,9 +826,6 @@
   },
   "sendTokens": {
     "message": "Saada lube"
-  },
-  "separateEachWord": {
-    "message": "Eraldage iga sõna ühe tühikuga"
   },
   "settings": {
     "message": "Seaded"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -8,27 +8,38 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import { setAlertEnabledness } from '../../../store/actions';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 
 const AlertSettingsEntry = ({ alertId, description, title }) => {
   const t = useI18nContext();
+  const settingsRefs = useRef();
+
+  useEffect(() => {
+    handleSettingsRefs(t, t('alerts'), settingsRefs);
+  }, [settingsRefs, t]);
+
   const isEnabled = useSelector((state) => getAlertEnabledness(state)[alertId]);
 
   return (
     <>
-      <span>{title}</span>
-      <Tooltip
-        position="top"
-        title={description}
-        wrapperClassName="alerts-tab__description"
-      >
-        <i className="fa fa-info-circle" />
-      </Tooltip>
-      <ToggleButton
-        offLabel={t('off')}
-        onLabel={t('on')}
-        onToggle={() => setAlertEnabledness(alertId, !isEnabled)}
-        value={isEnabled}
-      />
+      <div ref={settingsRefs} className="alerts-tab__item">
+        <span>{title}</span>
+        <div className="alerts-tab__description-container">
+          <Tooltip
+            position="top"
+            title={description}
+            wrapperClassName="alerts-tab__description"
+          >
+            <i className="fa fa-info-circle alerts-tab__description__icon" />
+          </Tooltip>
+          <ToggleButton
+            offLabel={t('off')}
+            onLabel={t('on')}
+            onToggle={() => setAlertEnabledness(alertId, !isEnabled)}
+            value={isEnabled}
+          />
+        </div>
+      </div>
     </>
   );
 };
@@ -55,14 +66,16 @@ const AlertsTab = () => {
 
   return (
     <div className="alerts-tab__body">
-      {Object.entries(alertConfig).map(([alertId, { title, description }]) => (
-        <AlertSettingsEntry
-          alertId={alertId}
-          description={description}
-          key={alertId}
-          title={title}
-        />
-      ))}
+      {Object.entries(alertConfig).map(
+        ([alertId, { title, description }], _) => (
+          <AlertSettingsEntry
+            alertId={alertId}
+            description={description}
+            key={alertId}
+            title={title}
+          />
+        ),
+      )}
     </div>
   );
 };

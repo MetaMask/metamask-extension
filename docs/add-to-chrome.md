@@ -2,13 +2,16 @@
 
 ![Load dev build](./load-dev-build-chrome.gif)
 
+* Create a local build of MetaMask using your preferred method.
+  * You can find build instructions in the [readme](https://github.com/MetaMask/metamask-extension#readme).
 * Open `Settings` > `Extensions`.
+  * Or go straight to [chrome://extensions](chrome://extensions).
 * Check "Developer mode".
-* Alternatively, use the URL `chrome://extensions/` in your address bar
 * At the top, click `Load Unpacked Extension`.
-* Navigate to your `metamask-plugin/dist/chrome` folder.
+* Navigate to your `metamask-extension/dist/chrome` folder.
 * Click `Select`.
 * Change to your locale via `chrome://settings/languages`
-* Restart the browser and test the plugin in your locale
+* Restart the browser and test the extension in your locale
 
-You now have the plugin, and can click 'inspect views: background plugin' to view its dev console.
+Your dev build is now added to Chrome, and you can click `Inspect views
+background.html` in its card on the extension settings page to view its dev console.

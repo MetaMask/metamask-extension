@@ -2,6 +2,11 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../../components/ui/button';
+import LogoLedger from '../../../components/ui/logo/logo-ledger';
+import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
+import LogoTrezor from '../../../components/ui/logo/logo-trezor';
+import LogoLattice from '../../../components/ui/logo/logo-lattice';
+
 import {
   DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
@@ -37,11 +42,7 @@ export default class SelectHardware extends Component {
         })}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.TREZOR })}
       >
-        <img
-          className="hw-connect__btn__img"
-          src="images/trezor-logo.svg"
-          alt="Trezor"
-        />
+        <LogoTrezor className="hw-connect__btn__img" ariaLabel="Trezor" />
       </button>
     );
   }
@@ -54,11 +55,7 @@ export default class SelectHardware extends Component {
         })}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LATTICE })}
       >
-        <img
-          className="hw-connect__btn__img"
-          src="images/lattice-logo.png"
-          alt=""
-        />
+        <LogoLattice className="hw-connect__btn__img" ariaLabel="Lattice" />
       </button>
     );
   }
@@ -71,11 +68,7 @@ export default class SelectHardware extends Component {
         })}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LEDGER })}
       >
-        <img
-          className="hw-connect__btn__img"
-          src="images/ledger-logo.svg"
-          alt="Ledger"
-        />
+        <LogoLedger className="hw-connect__btn__img" ariaLabel="Ledger" />
       </button>
     );
   }
@@ -88,11 +81,7 @@ export default class SelectHardware extends Component {
         })}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.QR })}
       >
-        <img
-          className="hw-connect__btn__img"
-          src="images/qrcode-wallet-logo.svg"
-          alt="QRCode"
-        />
+        <LogoQRBased className="hw-connect__btn__img" ariaLabel="QRCode" />
       </button>
     );
   }
@@ -346,6 +335,30 @@ export default class SelectHardware extends Component {
               key="keystone-tutorial-link"
             >
               {this.context.t('keystoneTutorial')}
+            </a>
+          </>
+        ),
+      },
+      {
+        message: (
+          <>
+            <a
+              className="hw-connect__msg-link"
+              href="https://airgap.it/metamask"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="airgap-vault-support-link"
+            >
+              {this.context.t('airgapVault')}
+            </a>
+            <a
+              className="hw-connect__msg-link"
+              href="https://support.airgap.it/guides/metamask"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="airgap-vault-tutorial-link"
+            >
+              {this.context.t('airgapVaultTutorial')}
             </a>
           </>
         ),

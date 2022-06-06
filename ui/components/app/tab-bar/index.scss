@@ -3,17 +3,16 @@
   flex-direction: column;
   justify-content: flex-start;
 
-
   &__tab {
     @include Paragraph;
 
+    color: var(--color-text-default);
     display: flex;
     flex-flow: row nowrap;
-    align-items: flex-start;
+    align-items: center;
     min-width: 0;
     flex: 0 0 auto;
     box-sizing: border-box;
-    padding: 16px 24px;
     opacity: 0.5;
     transition: opacity 200ms ease-in-out;
     background-color: unset;
@@ -32,14 +31,23 @@
     @media screen and (max-width: $break-small) {
       @include H4;
 
-      padding: 24px;
-      border-bottom: 1px solid var(--alto);
+      border-bottom: 1px solid var(--color-border-muted);
       opacity: 1;
     }
 
     &__content {
-      flex: 1 1 auto;
-      width: 0;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      &__title {
+        @include H4;
+
+        @media screen and (min-width: $break-large) {
+          @include H6;
+        }
+      }
 
       &__description {
         display: none;
@@ -53,6 +61,18 @@
           min-height: 14px;
         }
       }
+
+      &__icon {
+        display: flex;
+        justify-content: center;
+        margin-inline-end: 16px;
+        flex: 0 0 18px;
+        color: var(--color-icon-alternative);
+
+        @media screen and (min-width: $break-large) {
+          flex: 0 0 14px;
+        }
+      }
     }
 
     &__caret {
@@ -60,12 +80,8 @@
 
       @media screen and (max-width: $break-small) {
         display: block;
-        background-image: url('/images/caret-right.svg');
-        width: 8.27px;
-        height: 13.64px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+        margin-inline-start: auto;
+        margin-inline-end: 8px;
 
         [dir='rtl'] & {
           transform: rotate(180deg);

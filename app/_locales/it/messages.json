@@ -8,9 +8,6 @@
   "about": {
     "message": "Informazioni"
   },
-  "aboutSettingsDescription": {
-    "message": "Versione, centro di supporto e contatti"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
   },
@@ -58,12 +55,6 @@
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },
-  "addToAddressBook": {
-    "message": "Aggiungi alla rubrica"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "Ad esempio, John D."
-  },
   "addToken": {
     "message": "Aggiungi Token"
   },
@@ -73,14 +64,8 @@
   "advancedOptions": {
     "message": "Opzioni Avanzate"
   },
-  "advancedSettingsDescription": {
-    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata"
-  },
   "affirmAgree": {
     "message": "Acconsento"
-  },
-  "aggregatorFeeCost": {
-    "message": "Tassa per la rete aggregatore"
   },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
@@ -99,9 +84,6 @@
   },
   "alerts": {
     "message": "Avvisi"
-  },
-  "alertsSettingsDescription": {
-    "message": "Attiva o disattiva ogni avviso"
   },
   "allowExternalExtensionTo": {
     "message": "Permetti a questa estensione di:"
@@ -131,12 +113,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Tassa di approvazione per la rete aggregatore"
-  },
-  "approvalTxGasCost": {
-    "message": "Costo Gas Approvazione Tx"
   },
   "approve": {
     "message": "Approva"
@@ -206,9 +182,6 @@
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usa le icone Blockie"
-  },
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
@@ -216,10 +189,10 @@
     "message": "Compra"
   },
   "buyWithWyre": {
-    "message": "Compra ETH con Wyre"
+    "message": "Compra $1 con Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ti consente di usare la carta di credito per depositare ETH direttamente nel tuo account MetaMask."
+    "message": "Wyre ti consente di usare la carta di credito per depositare $1 direttamente nel tuo account MetaMask."
   },
   "canToggleInSettings": {
     "message": "Puoi riabilitare questa notifica in Impostazioni -> Avvisi."
@@ -340,9 +313,6 @@
   "contacts": {
     "message": "Contatti"
   },
-  "contactsSettingsDescription": {
-    "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
-  },
   "continue": {
     "message": "Continua"
   },
@@ -453,12 +423,6 @@
   "details": {
     "message": "Dettagli"
   },
-  "directDepositEther": {
-    "message": "Deposita Direttamente Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
-  },
   "disconnect": {
     "message": "Disconnetti"
   },
@@ -548,9 +512,6 @@
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
   },
-  "enterAnAlias": {
-    "message": "Inserisci un alias"
-  },
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
@@ -583,10 +544,6 @@
   "estimatedProcessingTimes": {
     "message": "Tempi di Elaborazione Stimati"
   },
-  "eth_accounts": {
-    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Indirizzo pubblico Ethereum "
   },
@@ -601,10 +558,6 @@
   },
   "externalExtension": {
     "message": "Estensione Esterna"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 gas approvazione",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Fallita"
@@ -686,9 +639,6 @@
   },
   "general": {
     "message": "Generale"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversione moneta, moneta primaria, lingua, icone blockie"
   },
   "getEther": {
     "message": "Ottieni Ether"
@@ -958,9 +908,6 @@
   "networkSettingsChainIdDescription": {
     "message": "Il chain ID è usato per firmare le transazioni. Deve essere uguale al chain ID restituito dalla rete. Puoi inserire un numero intero o un numero esadecimale con prefisso '0x', ma mostreremo sempre un numero intero."
   },
-  "networkSettingsDescription": {
-    "message": "Aggiungi e modifica reti RPC personalizzate"
-  },
   "networks": {
     "message": "Reti"
   },
@@ -1078,6 +1025,10 @@
   "pending": {
     "message": "in corso"
   },
+  "permission_ethereumAccounts": {
+    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Permessi"
   },
@@ -1179,9 +1130,6 @@
   "restore": {
     "message": "Ripristina"
   },
-  "restoreAccountWithSeed": {
-    "message": "Ripristina Account con la Frase Seed"
-  },
   "restoreWalletPreferences": {
     "message": "È stato trovato un backup dei tuoi dati da $1. Vuoi ripristinare le preferenze del portafoglio?",
     "description": "$1 is the date at which the data was backed up"
@@ -1246,15 +1194,6 @@
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
-  "securitySettingsDescription": {
-    "message": "Impostazioni sulla Privacy e sulla frase seed del portafoglio"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separa ogni parola con un singolo spazio"
-  },
-  "seedPhrasePlaceholderPaste": {
-    "message": "Incolla frase seed dagli appunti"
-  },
   "seedPhraseReq": {
     "message": "le frasi seed sono lunghe 12 parole"
   },
@@ -1298,9 +1237,6 @@
   "sendTokens": {
     "message": "Invia Tokens"
   },
-  "separateEachWord": {
-    "message": "Separa ogni parola con un solo spazio"
-  },
   "settings": {
     "message": "Impostazioni"
   },
@@ -1333,9 +1269,6 @@
   },
   "showPrivateKeys": {
     "message": "Mostra Chiave Privata"
-  },
-  "showSeedPhrase": {
-    "message": "Mostra frase seed"
   },
   "sigRequest": {
     "message": "Firma Richiesta"
@@ -1511,10 +1444,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si chiama \"slippage\" la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il \"massimo slippage\" impostato."
-  },
-  "swapQuoteNofN": {
-    "message": "Quotazione $1 di $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Sorgente della quota"

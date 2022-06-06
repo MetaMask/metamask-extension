@@ -1,0 +1,58 @@
+.confirm-add-suggested-token {
+  padding: 16px;
+
+  &__link {
+    @include H7;
+
+    display: inline;
+    color: var(--color-primary-default);
+    padding-left: 0;
+  }
+
+  &__header {
+    @include H7;
+
+    display: flex;
+  }
+
+  &__token {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__balance {
+    flex: 0 0 30%;
+    min-width: 0;
+  }
+
+  &__token-list {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  &__token-list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-top: 8px;
+    box-sizing: border-box;
+  }
+
+  &__data {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+  }
+
+  &__name {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__token-icon {
+    margin-right: 12px;
+    flex: 0 0 auto;
+  }
+}

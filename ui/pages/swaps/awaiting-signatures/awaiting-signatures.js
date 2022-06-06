@@ -4,11 +4,13 @@ import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   getApproveTxParams,
   prepareToLeaveSwaps,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -30,6 +32,8 @@ import {
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
@@ -41,26 +45,35 @@ export default function AwaitingSignatures() {
   const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const needsTwoConfirmations = Boolean(approveTxParams);
-
-  const awaitingSignaturesEvent = useNewMetricEvent({
-    event: 'Awaiting Signature(s) on a HW wallet',
-    sensitiveProperties: {
-      needs_two_confirmations: needsTwoConfirmations,
-      token_from: sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      token_to: destinationTokenInfo?.symbol,
-      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage === 2,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-    },
-    category: 'swaps',
-  });
+  const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
-    awaitingSignaturesEvent();
+    trackEvent({
+      event: 'Awaiting Signature(s) on a HW wallet',
+      category: EVENT.CATEGORIES.SWAPS,
+      sensitiveProperties: {
+        needs_two_confirmations: needsTwoConfirmations,
+        token_from: sourceTokenInfo?.symbol,
+        token_from_amount: fetchParams?.value,
+        token_to: destinationTokenInfo?.symbol,
+        request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+        slippage: fetchParams?.slippage,
+        custom_slippage: fetchParams?.slippage === 2,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,7 +94,7 @@ export default function AwaitingSignatures() {
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
         </Box>
-        <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
+        <Typography color={COLORS.TEXT_DEFAULT} variant={TYPOGRAPHY.H3}>
           {headerText}
         </Typography>
         {needsTwoConfirmations && (

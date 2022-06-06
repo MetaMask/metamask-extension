@@ -1,7 +1,7 @@
 .edit-gas-item {
   border-radius: 24px;
-  background: white;
-  color: var(--ui-4);
+  background: var(--color-background-default);
+  color: var(--color-text-alternative);
   cursor: pointer;
   font-size: 12px;
   display: flex;
@@ -12,11 +12,11 @@
   width: 100%;
 
   &:hover:not([disabled]) {
-    background-color: var(--primary-2);
+    background-color: var(--color-primary-muted);
   }
 
   &--selected {
-    background-color: var(--ui-1);
+    background-color: var(--color-background-alternative);
   }
 
   button.edit-gas-item--disabled[disabled] {
@@ -27,7 +27,7 @@
   &__name {
     display: inline-flex;
     align-items: center;
-    color: var(--ui-black);
+    color: var(--color-text-default);
     font-size: 12px;
     font-weight: bold;
     white-space: nowrap;
@@ -78,11 +78,11 @@
 
   &__time-estimate-low,
   &__fee-estimate-high {
-    color: var(--secondary-1);
+    color: var(--color-warning-default);
   }
 
   &__time-estimate-medium,
   &__time-estimate-high {
-    color: var(--success-3);
+    color: var(--color-success-default);
   }
 }

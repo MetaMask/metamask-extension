@@ -1,0 +1,30 @@
+.create-new-vault {
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__create-password {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+  }
+
+  &__terms {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__terms-label {
+    margin-left: 8px;
+  }
+
+  &__terms-link {
+    color: var(--color-primary-default);
+  }
+
+  &__submit-button#{&}__submit-button {
+    margin-top: 16px;
+    width: 170px;
+  }
+}

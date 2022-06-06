@@ -6,12 +6,17 @@ import createId from '../../../../shared/modules/random-id';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   generateHistoryEntry,
   replayHistory,
   snapshotFromTxMeta,
 } from './lib/tx-state-history-helpers';
-import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
+import {
+  getFinalStates,
+  normalizeAndValidateTxParams,
+  validateConfirmedExternalTransaction,
+} from './lib/util';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
@@ -88,7 +93,7 @@ export default class TransactionStateManager extends EventEmitter {
     if (
       opts.txParams &&
       typeof opts.origin === 'string' &&
-      opts.origin !== 'metamask'
+      opts.origin !== ORIGIN_METAMASK
     ) {
       if (typeof opts.txParams.gasPrice !== 'undefined') {
         dappSuggestedGasFees = {
@@ -122,6 +127,7 @@ export default class TransactionStateManager extends EventEmitter {
       chainId,
       loadingDefaults: true,
       dappSuggestedGasFees,
+      sendFlowHistory: [],
       ...opts,
     };
   }
@@ -245,9 +251,9 @@ export default class TransactionStateManager extends EventEmitter {
     const txsToDelete = transactions
       .reverse()
       .filter((tx) => {
-        const { nonce } = tx.txParams;
+        const { nonce, from } = tx.txParams;
         const { chainId, metamaskNetworkId, status } = tx;
-        const key = `${nonce}-${chainId ?? metamaskNetworkId}`;
+        const key = `${nonce}-${chainId ?? metamaskNetworkId}-${from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (
@@ -262,6 +268,19 @@ export default class TransactionStateManager extends EventEmitter {
       .map((tx) => tx.id);
 
     this._deleteTransactions(txsToDelete);
+    this._addTransactionsToState([txMeta]);
+    return txMeta;
+  }
+
+  addExternalTransaction(txMeta) {
+    const fromAddress = txMeta?.txParams?.from;
+    const confirmedTransactions = this.getConfirmedTransactions(fromAddress);
+    const pendingTransactions = this.getPendingTransactions(fromAddress);
+    validateConfirmedExternalTransaction({
+      txMeta,
+      pendingTransactions,
+      confirmedTransactions,
+    });
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }

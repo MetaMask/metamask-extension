@@ -63,7 +63,7 @@ class SelectedAccount extends Component {
             <div className="selected-account__address">
               {shortenAddress(checksummedAddress)}
               <div className="selected-account__copy">
-                <CopyIcon size={11} color="#989a9b" />
+                <CopyIcon size={11} color="var(--color-icon-alternative)" />
               </div>
             </div>
           </button>

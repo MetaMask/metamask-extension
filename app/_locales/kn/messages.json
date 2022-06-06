@@ -8,9 +8,6 @@
   "about": {
     "message": "ಕುರಿತು"
   },
-  "aboutSettingsDescription": {
-    "message": "ಆವೃತ್ತಿ, ಬೆಂಬಲ ಕೇಂದ್ರ ಮತ್ತು ಸಂಪರ್ಕ ಮಾಹಿತಿ"
-  },
   "acceleratingATransaction": {
     "message": "* ಹೆಚ್ಚಿನ ಗ್ಯಾಸ್ ಬೆಲೆಯನ್ನು ಬಳಸಿಕೊಂಡು ವಹಿವಾಟನ್ನು ವೇಗಗೊಳಿಸುವುದರಿಂದ ನೆಟ್‌ವರ್ಕ್ ವೇಗವಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುವ ಸಾಧ್ಯತೆಗಳನ್ನು ಅದು ಹೆಚ್ಚಿಸುತ್ತದೆ, ಆದರೆ ಇದು ಯಾವಾಗಲೂ ಖಚಿತವಾಗಿರುವುದಿಲ್ಲ."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
-  "addToAddressBook": {
-    "message": "ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಿ"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "ಉದಾ. ಜಾನ್ ಡಿ."
-  },
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
-  },
-  "advancedSettingsDescription": {
-    "message": "ಡೆವಲಪರ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಿ, ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ, ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ, ಟೆಸ್ಟ್‌ನೆಟ್ಸ್‌ ಹೊಂದಿಸಿ ಮತ್ತು ಕಸ್ಟಮ್ RPC"
   },
   "amount": {
     "message": "ಮೊತ್ತ"
@@ -145,17 +133,14 @@
     "message": " $1 ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ಬ್ಲಾಕೀಸ್ ಐಡೆಂಟಿಕಾನ್ ಬಳಸಿ"
-  },
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
   },
   "buyWithWyre": {
-    "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
+    "message": "Wyre ನೊಂದಿಗೆ $1 ಖರೀದಿಸಿ"
   },
   "buyWithWyreDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ ETH ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
+    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ $1 ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
   },
   "bytes": {
     "message": "ಬೈಟ್‌ಗಳು"
@@ -295,12 +280,6 @@
   "details": {
     "message": "ವಿವರಗಳು"
   },
-  "directDepositEther": {
-    "message": "ಎಥರ್ ನೇರವಾಗಿ ಠೇವಣಿ ಮಾಡಿ"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ನೀವು ಈಗಾಗಲೇ ಕೆಲವು ಎಥರ್ ಹೊಂದಿದ್ದರೆ, ನೇರ ಠೇವಣಿ ಮೂಲಕ ನಿಮ್ಮ ಹೊಸ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ಎಥರ್ ಅನ್ನು ಪಡೆಯುವ ತ್ವರಿತ ಮಾರ್ಗ."
-  },
   "done": {
     "message": "ಮುಗಿದಿದೆ"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS ಹೆಸರಿನ ನೋಂದಣಿಯಲ್ಲಿ ದೋಷ"
-  },
-  "enterAnAlias": {
-    "message": "ಆಲಿಯಾಸ್ ಅನ್ನು ನಮೂದಿಸಿ"
   },
   "enterPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್‌ ಅನ್ನು ನಮೂದಿಸಿ"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
-  },
-  "generalSettingsDescription": {
-    "message": "ಕರೆನ್ಸಿ ಪರಿವರ್ತನೆ, ಪ್ರಾಥಮಿಕ ಕರೆನ್ಸಿ, ಭಾಷೆ, ನಿರ್ಬಂಧಗಳ ಗುರುತಿಸುವಿಕೆ"
   },
   "getEther": {
     "message": "ಎಥರ್ ಪಡೆಯಿರಿ"
@@ -602,9 +575,6 @@
   },
   "networkName": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಹೆಸರು"
-  },
-  "networkSettingsDescription": {
-    "message": "ಕಸ್ಟಮ್ RPC ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಸೇರಿಸಿ ಮತ್ತು ಸಂಪಾದಿಸಿ"
   },
   "networks": {
     "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
@@ -786,9 +756,6 @@
   "restore": {
     "message": "ಮರುಸ್ಥಾಪನೆ"
   },
-  "restoreAccountWithSeed": {
-    "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
   "revealSeedWords": {
     "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
   },
@@ -840,12 +807,6 @@
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
-  "securitySettingsDescription": {
-    "message": "ಗೌಪ್ಯತೆ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ವ್ಯಾಲೆಟ್ ಸೀಡ್ ಫ್ರೇಸ್"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
-  },
   "seedPhraseReq": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳು 12 ಪದಗಳಷ್ಟು ದೀರ್ಘವಾಗಿವೆ"
   },
@@ -875,9 +836,6 @@
   },
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
-  },
-  "separateEachWord": {
-    "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },
   "settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"

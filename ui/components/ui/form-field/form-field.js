@@ -31,6 +31,9 @@ export default function FormField({
   allowDecimals,
   disabled,
   placeholder,
+  warning,
+  passwordStrength,
+  passwordStrengthText,
 }) {
   return (
     <div
@@ -55,7 +58,7 @@ export default function FormField({
               <Typography
                 tag={TYPOGRAPHY.H6}
                 variant={TYPOGRAPHY.H6}
-                color={COLORS.UI4}
+                color={COLORS.TEXT_ALTERNATIVE}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               >
                 {titleUnit}
@@ -92,6 +95,7 @@ export default function FormField({
           <input
             className={classNames('form-field__input', {
               'form-field__input--error': error,
+              'form-field__input--warning': warning,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -104,11 +108,38 @@ export default function FormField({
         )}
         {error && (
           <Typography
-            color={COLORS.ERROR1}
+            color={COLORS.ERROR_DEFAULT}
             variant={TYPOGRAPHY.H7}
             className="form-field__error"
           >
             {error}
+          </Typography>
+        )}
+        {warning && (
+          <Typography
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__warning"
+          >
+            {warning}
+          </Typography>
+        )}
+        {passwordStrength && (
+          <Typography
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__password-strength"
+          >
+            {passwordStrength}
+          </Typography>
+        )}
+        {passwordStrengthText && (
+          <Typography
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H8}
+            className="form-field__password-strength-text"
+          >
+            {passwordStrengthText}
           </Typography>
         )}
       </label>
@@ -141,6 +172,10 @@ FormField.propTypes = {
    * Show error message
    */
   error: PropTypes.string,
+  /**
+   * Show warning message
+   */
+  warning: PropTypes.string,
   /**
    * Handler when fields change
    */
@@ -177,6 +212,14 @@ FormField.propTypes = {
    * Set the placeholder text for the input field
    */
   placeholder: PropTypes.string,
+  /**
+   * Show password strength according to the score
+   */
+  passwordStrength: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show password strength description
+   */
+  passwordStrengthText: PropTypes.string,
 };
 
 FormField.defaultProps = {

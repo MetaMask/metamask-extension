@@ -109,7 +109,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       case 'error':
         return (
           <span className="sol-item solidity-error">
-            <span>Malformed data</span>
+            <span>{t('malformedData')}</span>
           </span>
         );
 
@@ -202,7 +202,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     if (loading) {
       return (
         <div className="tx-insight-loading">
-          <Spinner color="#F7C06C" />
+          <Spinner color="var(--color-warning-default)" />
         </div>
       );
     }

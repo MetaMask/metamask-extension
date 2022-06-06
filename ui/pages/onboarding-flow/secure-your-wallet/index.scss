@@ -3,16 +3,29 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  max-width: 1000px;
-  max-height: 1300px;
 
-  &__details {
-    max-width: 550px;
+  &__video {
+    max-width: 100%;
+    border-radius: 8px;
   }
 
   &__actions {
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+
+    @media screen and (min-width: $break-large) {
+      flex-direction: row;
+    }
+
     button {
-      margin: 16px;
+      margin-bottom: 16px;
+
+      @media screen and (min-width: $break-large) {
+        + button {
+          margin-left: 16px;
+        }
+      }
     }
   }
 
@@ -20,22 +33,37 @@
     list-style: disc inside;
 
     li {
-      font-size: 18px;
+      @include H4;
     }
   }
 
   &__highlighted {
-    background-color: var(--primary-2);
+    background-color: var(--color-primary-muted);
     padding: 12px;
     border-radius: 10px;
+
+    @media screen and (min-width: $break-large) {
+      margin-inline-end: 43px;
+    }
   }
 }
 
 .skip-srp-backup-popover {
   width: 365px;
 
+  &__icon {
+    color: var(--color-error-default);
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
   &__checkbox {
     margin: 8px 12px 0 0;
+  }
+
+  &__label {
+    display: flex;
   }
 
   &__footer {

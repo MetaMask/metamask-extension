@@ -8,9 +8,6 @@
   "about": {
     "message": "Informacje"
   },
-  "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe"
-  },
   "acceleratingATransaction": {
     "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
-  "addToAddressBook": {
-    "message": "Dodaj do książki adresowej"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "np. John D."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"
-  },
-  "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
   },
   "amount": {
     "message": "Ilość"
@@ -145,17 +133,14 @@
     "message": "Wyświetl konto w $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Użyj Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
   },
   "buyWithWyre": {
-    "message": "Kup ETH poprzez Wyre"
+    "message": "Kup $1 poprzez Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić ETH bezpośrednio na swoje konto MetaMask."
+    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić $1 bezpośrednio na swoje konto MetaMask."
   },
   "bytes": {
     "message": "Bajty"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Szczegóły"
   },
-  "directDepositEther": {
-    "message": "Zdeponuj Eter bezpośrednio"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
-  },
   "done": {
     "message": "Gotowe"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
-  },
-  "enterAnAlias": {
-    "message": "Wpisz alias"
   },
   "enterPassword": {
     "message": "Wpisz hasło"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "Ogólne"
-  },
-  "generalSettingsDescription": {
-    "message": "Przeliczanie walut, waluta podstawowa, język, ikona (identicon) Blockies"
   },
   "getEther": {
     "message": "Zdobądź Eter"
@@ -599,9 +572,6 @@
   },
   "networkName": {
     "message": "Nazwa sieci"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodawaj i edytuj niestandardowe sieci RPC"
   },
   "networks": {
     "message": "Sieci"
@@ -780,9 +750,6 @@
   "restore": {
     "message": "Przywróć"
   },
-  "restoreAccountWithSeed": {
-    "message": "Przywróć konto frazą seed"
-  },
   "revealSeedWords": {
     "message": "Pokaż słowa seed"
   },
@@ -834,12 +801,6 @@
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
-  "securitySettingsDescription": {
-    "message": "Ustawienia prywatności i fraza seed portfela"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Oddziel słowa pojedynczą spacją"
-  },
   "seedPhraseReq": {
     "message": "Frazy seed mają 12 słów"
   },
@@ -869,9 +830,6 @@
   },
   "sendTokens": {
     "message": "Wyślij tokeny"
-  },
-  "separateEachWord": {
-    "message": "Oddziel słowa pojedynczą spacją"
   },
   "settings": {
     "message": "Ustawienia"

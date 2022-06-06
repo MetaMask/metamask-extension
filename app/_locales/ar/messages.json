@@ -8,9 +8,6 @@
   "about": {
     "message": "حول"
   },
-  "aboutSettingsDescription": {
-    "message": "نسخة الإصدار ومركز الدعم ومعلومات الاتصال."
-  },
   "acceleratingATransaction": {
     "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
   },
@@ -55,12 +52,6 @@
   "addSuggestedTokens": {
     "message": "أضف العملات الرمزية المقترحة"
   },
-  "addToAddressBook": {
-    "message": "إضافة إلى دفتر العناوين"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "مثلا جون دي"
-  },
   "addToken": {
     "message": "إضافة عملة رمزية"
   },
@@ -69,9 +60,6 @@
   },
   "advancedOptions": {
     "message": "خيارات متقدمة"
-  },
-  "advancedSettingsDescription": {
-    "message": "يتاح لك استخدام ميزات تطوير البرامج وتنزيل سجلات الحالة وإعادة تعيين الحساب وإعداد شبكات الاختبارات وتخصيص استدعاء الإجراء عن بعد (RPC)."
   },
   "amount": {
     "message": "المبلغ"
@@ -153,9 +141,6 @@
     "message": "عرض الحساب في $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "استخدم خدمة تكتلات Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
   },
@@ -163,7 +148,7 @@
     "message": "قم بشراء عملة إيثير بواسطة Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع ETH مباشرة في حساب MetaMask الخاص بك."
+    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع 1$ مباشرة في حساب MetaMask الخاص بك."
   },
   "bytes": {
     "message": "بايتات"
@@ -303,12 +288,6 @@
   "details": {
     "message": "التفاصيل"
   },
-  "directDepositEther": {
-    "message": "إيداع مباشرة لعملة الأثير"
-  },
-  "directDepositEtherExplainer": {
-    "message": "إذا كان لديك بالفعل بعض الأثير، فإن أسرع طريقة للحصول على الأثير في محفظتك الجديدة عن طريق الإيداع المباشر."
-  },
   "done": {
     "message": "تم"
   },
@@ -362,9 +341,6 @@
   },
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
-  },
-  "enterAnAlias": {
-    "message": "أدخل اسمًا مستعارًا"
   },
   "enterPassword": {
     "message": "أدخل كلمة مرور"
@@ -429,9 +405,6 @@
   },
   "general": {
     "message": "عام"
-  },
-  "generalSettingsDescription": {
-    "message": "تحويل العملات، العملة الأساسية، اللغة ، تكتلات blockies identicon"
   },
   "getEther": {
     "message": "احصل على إيثر"
@@ -603,9 +576,6 @@
   },
   "networkName": {
     "message": "اسم الشبكة"
-  },
-  "networkSettingsDescription": {
-    "message": "إضافة وتعديل شبكات RPC المخصصة"
   },
   "networks": {
     "message": "الشبكات"
@@ -787,9 +757,6 @@
   "restore": {
     "message": "استعادة"
   },
-  "restoreAccountWithSeed": {
-    "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
-  },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
@@ -841,12 +808,6 @@
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
-  "securitySettingsDescription": {
-    "message": "إعدادات الخصوصية وعبارة أمان المحفظة"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "يرجى فصل كل كلمة بمسافة واحدة"
-  },
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"
   },
@@ -876,9 +837,6 @@
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
-  },
-  "separateEachWord": {
-    "message": "افصل كل كلمة بمسافة واحدة"
   },
   "settings": {
     "message": "الإعدادات"

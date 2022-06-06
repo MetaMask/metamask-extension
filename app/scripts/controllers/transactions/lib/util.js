@@ -264,6 +264,44 @@ export function validateRecipient(txParams) {
   return txParams;
 }
 
+export const validateConfirmedExternalTransaction = ({
+  txMeta,
+  pendingTransactions,
+  confirmedTransactions,
+} = {}) => {
+  if (!txMeta || !txMeta.txParams) {
+    throw ethErrors.rpc.invalidParams(
+      '"txMeta" or "txMeta.txParams" is missing',
+    );
+  }
+  if (txMeta.status !== TRANSACTION_STATUSES.CONFIRMED) {
+    throw ethErrors.rpc.invalidParams(
+      'External transaction status should be "confirmed"',
+    );
+  }
+  const externalTxNonce = txMeta.txParams.nonce;
+  if (pendingTransactions && pendingTransactions.length > 0) {
+    const foundPendingTxByNonce = pendingTransactions.find(
+      (el) => el.txParams?.nonce === externalTxNonce,
+    );
+    if (foundPendingTxByNonce) {
+      throw ethErrors.rpc.invalidParams(
+        'External transaction nonce should not be in pending txs',
+      );
+    }
+  }
+  if (confirmedTransactions && confirmedTransactions.length > 0) {
+    const foundConfirmedTxByNonce = confirmedTransactions.find(
+      (el) => el.txParams?.nonce === externalTxNonce,
+    );
+    if (foundConfirmedTxByNonce) {
+      throw ethErrors.rpc.invalidParams(
+        'External transaction nonce should not be in confirmed txs',
+      );
+    }
+  }
+};
+
 /**
  * Returns a list of final states
  *
@@ -276,4 +314,16 @@ export function getFinalStates() {
     TRANSACTION_STATUSES.FAILED, // the tx failed for some reason, included on tx data.
     TRANSACTION_STATUSES.DROPPED, // the tx nonce was already used
   ];
+}
+
+/**
+ * Normalizes tx receipt gas used to be a hexadecimal string.
+ * It seems that sometimes the numerical values being returned from
+ * this.query.getTransactionReceipt are BN instances and not strings.
+ *
+ * @param {string or BN instance} gasUsed
+ * @returns normalized gas used as hexadecimal string
+ */
+export function normalizeTxReceiptGasUsed(gasUsed) {
+  return typeof gasUsed === 'string' ? gasUsed : gasUsed.toString(16);
 }

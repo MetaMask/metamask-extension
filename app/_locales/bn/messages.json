@@ -8,9 +8,6 @@
   "about": {
     "message": "সম্পর্কে"
   },
-  "aboutSettingsDescription": {
-    "message": "সংস্করণ, সহায়তা কেন্দ্র, এবং যোগাযোগের তথ্য।"
-  },
   "acceleratingATransaction": {
     "message": "* একটি উচ্চতর গ্যাসের মূল্য ব্যবহার করে একটি লেনদেনের গতি বৃদ্ধি নেটওয়ার্কের দ্বারা সেটির প্রক্রিয়াকরণ দ্রুততর হওয়ার সম্ভাবনা বৃদ্ধি করে, কিন্তু সবসময় সেটির নিশ্চয়তা দেওয়া যায় না।"
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
-  "addToAddressBook": {
-    "message": "অ্যাড্রেস বুকে যোগ করুন"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "যেমন জন.ডি."
-  },
   "addToken": {
     "message": "টোকেন যোগ করুন"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "উন্নত বিকল্পসমূহ"
-  },
-  "advancedSettingsDescription": {
-    "message": "ডেভেলপারের বৈশিষ্ট্যগুলি অ্যাক্সেস করুন, স্টেট লগগুলি ডাউনলোড করুন, অ্যাকাউন্ট রিসেট করুন, টেস্টনেটস এবং কাস্টম RPC সেটআপ করুন।"
   },
   "amount": {
     "message": "পরিমান"
@@ -145,17 +133,14 @@
     "message": "$1 এ অ্যাকাউন্ট দেখুন",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ব্লকিজ আইডেন্টিকন ব্যবহার করুন"
-  },
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
   "buyWithWyre": {
-    "message": "Wyre দিয়ে ETH ক্রয় করুন"
+    "message": "Wyre দিয়ে $1 ক্রয় করুন"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre আপনার MetaMask অ্যাকাউন্টে সরাসরি ETH জমা করতে আপনাকে একটি ক্রেডিট কার্ড ব্যবহার করতে দেয়।"
+    "message": "Wyre আপনার MetaMask অ্যাকাউন্টে সরাসরি $1 জমা করতে আপনাকে একটি ক্রেডিট কার্ড ব্যবহার করতে দেয়।"
   },
   "bytes": {
     "message": "বাইটস"
@@ -295,12 +280,6 @@
   "details": {
     "message": "বিশদ বিবরণ"
   },
-  "directDepositEther": {
-    "message": "সরাসরি ইথার জমা করুন"
-  },
-  "directDepositEtherExplainer": {
-    "message": "আপনার ইতিমধ্যে কিছু ইথার থেকে থাকলে আপনার নতুন ওয়ালেটে ইথার পাওয়ার দ্রুততম উপায় হল সরাসরি জমা করা।"
-  },
   "done": {
     "message": "সম্পন্ন "
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
-  },
-  "enterAnAlias": {
-    "message": "একটি উপনাম লিখুন"
   },
   "enterPassword": {
     "message": "পাসওয়ার্ড লিখুন"
@@ -425,9 +401,6 @@
   },
   "general": {
     "message": "সাধারণ"
-  },
-  "generalSettingsDescription": {
-    "message": "মুদ্রা বিনিময়, প্রাথমিক মুদ্রা, ভাষা, ব্লকিস আইডেন্টিকন"
   },
   "getEther": {
     "message": "ইথার পান"
@@ -602,9 +575,6 @@
   },
   "networkName": {
     "message": "নেটওয়ার্কের নাম"
-  },
-  "networkSettingsDescription": {
-    "message": "কাস্টম RPC নেটওয়ার্কগুলি যোগ ও সম্পাদনা করুন"
   },
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
@@ -786,9 +756,6 @@
   "restore": {
     "message": "পুনরুদ্ধার করুন"
   },
-  "restoreAccountWithSeed": {
-    "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
-  },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
@@ -840,12 +807,6 @@
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
-  "securitySettingsDescription": {
-    "message": "গোপনীয়তা সেটিংস এবং ওয়ালেট সীড ফ্রেজ"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
-  },
   "seedPhraseReq": {
     "message": "সীড ফ্রেজগুলি 12 শব্দের"
   },
@@ -875,9 +836,6 @@
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
-  },
-  "separateEachWord": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
   },
   "settings": {
     "message": "সেটিংস"

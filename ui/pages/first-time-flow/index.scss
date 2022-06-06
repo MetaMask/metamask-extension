@@ -7,7 +7,7 @@
 
 .first-time-flow {
   width: 100%;
-  background-color: var(--white);
+  background-color: var(--color-background-default);
   display: flex;
   justify-content: center;
 
@@ -29,6 +29,7 @@
     }
   }
 
+  &__import,
   &__form {
     display: flex;
     flex-direction: column;
@@ -42,57 +43,16 @@
     @include H1;
 
     margin-bottom: 24px;
-    color: black;
-  }
-
-  &__subheader {
-    margin-bottom: 16px;
+    color: var(--color-text-default);
   }
 
   &__input {
     max-width: 350px;
   }
 
-  &__textarea-wrapper {
-    margin-bottom: 8px;
-    display: inline-flex;
-    padding: 0;
-    position: relative;
-    min-width: 0;
-    flex-direction: column;
-    max-width: 350px;
-  }
-
-  &__textarea-label {
-    @include H4;
-
-    margin-bottom: 9px;
-    color: #1b344d;
-  }
-
-  &__textarea {
-    @include Paragraph;
-
-    /*rtl:ignore*/
-    direction: ltr;
-    border: 1px solid #cdcdcd;
-    border-radius: 6px;
-    background-color: #fff;
-    padding: 16px;
-    margin-top: 8px;
-  }
-
-  &__seedphrase {
-    margin-top: 9px !important;
-  }
-
-  &__breadcrumbs {
-    margin: 36px 0;
-  }
-
   &__text-block {
     margin-bottom: 24px;
-    color: black;
+    color: var(--color-text-default);
 
     @media screen and (max-width: $break-small) {
       @include H6;
@@ -114,8 +74,8 @@
   }
 
   &__checkbox {
-    background: #fff;
-    border: 1px solid #cdcdcd;
+    background: var(--color-background-default);
+    border: 1px solid var(--color-border-muted);
     box-sizing: border-box;
     height: 34px;
     width: 34px;
@@ -124,23 +84,23 @@
     align-items: center;
 
     &:hover {
-      border: 1.5px solid #2f9ae0;
+      border: 1.5px solid var(--color-primary-alternative);
     }
 
     .fa-check {
-      color: #2f9ae0;
+      color: var(--color-primary-default);
     }
   }
 
   &__checkbox-label {
     @include H4;
 
-    color: #939090;
+    color: var(--color-text-alternative);
     margin-left: 18px;
   }
 
   &__link-text {
-    color: var(--primary-blue);
+    color: var(--color-primary-default);
   }
 }
 

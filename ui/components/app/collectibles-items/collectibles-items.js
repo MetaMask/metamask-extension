@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
 import Card from '../../ui/card';
@@ -17,7 +18,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getIpfsGateway } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getIpfsGateway,
+  getSelectedAddress,
+} from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import { updateCollectibleDropDownState } from '../../../store/actions';
@@ -39,22 +44,39 @@ export default function CollectiblesItems({
   const collectionsKeys = Object.keys(collections);
   const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
+  const selectedAddress = useSelector(getSelectedAddress);
+  const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
     if (
-      !Object.keys(collectiblesDropdownState).length &&
-      previousCollectionKeys !== collectionsKeys
+      chainId !== undefined &&
+      selectedAddress !== undefined &&
+      !isEqual(previousCollectionKeys, collectionsKeys) &&
+      (collectiblesDropdownState?.[selectedAddress]?.[chainId] === undefined ||
+        Object.keys(collectiblesDropdownState?.[selectedAddress]?.[chainId])
+          .length === 0)
     ) {
       const initState = {};
       collectionsKeys.forEach((key) => {
         initState[key] = true;
       });
-      dispatch(updateCollectibleDropDownState(initState));
+
+      const newCollectibleDropdownState = {
+        ...collectiblesDropdownState,
+        [selectedAddress]: {
+          ...collectiblesDropdownState?.[selectedAddress],
+          [chainId]: initState,
+        },
+      };
+
+      dispatch(updateCollectibleDropDownState(newCollectibleDropdownState));
     }
   }, [
     collectionsKeys,
     previousCollectionKeys,
     collectiblesDropdownState,
+    selectedAddress,
+    chainId,
     dispatch,
   ]);
 
@@ -84,6 +106,22 @@ export default function CollectiblesItems({
     );
   };
 
+  const updateCollectibleDropDownStateKey = (key, isExpanded) => {
+    const currentAccountCollectibleDropdownState =
+      collectiblesDropdownState[selectedAddress][chainId];
+
+    const newCurrentAccountState = {
+      ...currentAccountCollectibleDropdownState,
+      [key]: !isExpanded,
+    };
+
+    collectiblesDropdownState[selectedAddress][
+      chainId
+    ] = newCurrentAccountState;
+
+    dispatch(updateCollectibleDropDownState(collectiblesDropdownState));
+  };
+
   const renderCollection = ({
     collectibles,
     collectionName,
@@ -95,17 +133,13 @@ export default function CollectiblesItems({
       return null;
     }
 
-    const isExpanded = collectiblesDropdownState[key];
+    const isExpanded =
+      collectiblesDropdownState[selectedAddress]?.[chainId]?.[key];
     return (
       <div className="collectibles-items__collection" key={`collection-${key}`}>
         <button
           onClick={() => {
-            dispatch(
-              updateCollectibleDropDownState({
-                ...collectiblesDropdownState,
-                [key]: !isExpanded,
-              }),
-            );
+            updateCollectibleDropDownStateKey(key, isExpanded);
           }}
           className="collectibles-items__collection-wrapper"
         >
@@ -126,7 +160,7 @@ export default function CollectiblesItems({
                 collectionName,
               )}
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
                 margin={[0, 0, 0, 2]}
               >
@@ -134,7 +168,11 @@ export default function CollectiblesItems({
               </Typography>
             </Box>
             <Box alignItems={ALIGN_ITEMS.FLEX_END}>
-              <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
+              <i
+                className={`collectibles-items__collection__icon-chevron fa fa-chevron-${
+                  isExpanded ? 'down' : 'right'
+                }`}
+              />
             </Box>
           </Box>
         </button>

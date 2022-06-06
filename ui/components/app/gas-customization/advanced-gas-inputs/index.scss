@@ -13,7 +13,7 @@
     &__label {
       @include H7;
 
-      color: #313b5e;
+      color: var(--color-text-alternative);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -23,25 +23,25 @@
       }
 
       .fa-info-circle {
-        color: var(--silver);
+        color: var(--color-icon-alternative);
         cursor: pointer;
       }
 
       .fa-info-circle:hover {
-        color: var(--mid-gray);
+        color: var(--color-icon-muted);
       }
     }
 
     &__error-text {
       @include H7;
 
-      color: red;
+      color: var(--color-error-default);
     }
 
     &__warning-text {
       @include H7;
 
-      color: orange;
+      color: var(--color-warning-default);
     }
 
     &__input-wrapper {
@@ -53,9 +53,10 @@
       @include Paragraph;
 
       direction: ltr;
-      border: 1px solid var(--dusty-gray);
+      border: 1px solid var(--color-border-muted);
       border-radius: 4px;
-      color: var(--mid-gray);
+      background: var(--color-background-default);
+      color: var(--color-text-alternative);
       height: 24px;
       width: 100%;
       padding-left: 8px;
@@ -64,11 +65,11 @@
     }
 
     &__input--error {
-      border: 1px solid var(--red);
+      border: 1px solid var(--color-error-default);
     }
 
     &__input--warning {
-      border: 1px solid var(--orange);
+      border: 1px solid var(--color-warning-default);
     }
 
     &__input-arrows {
@@ -81,11 +82,11 @@
       right: 0;
       width: 17px;
       height: 24px;
-      border: 1px solid #dadada;
+      border: 1px solid var(--color-border-muted);
       border-top-right-radius: 4px;
       display: flex;
       flex-direction: column;
-      color: #9b9b9b;
+      color: var(--color-icon-muted);
       border-bottom-right-radius: 4px;
       cursor: pointer;
 
@@ -98,12 +99,12 @@
       }
 
       &__i-wrap:hover {
-        background: #4eade7;
-        color: var(--white);
+        background: var(--color-primary-default);
+        color: var(--color-primary-inverse);
       }
 
       i:hover {
-        background: #4eade7;
+        background: var(--color-primary-muted);
       }
 
       i {
@@ -116,11 +117,11 @@
     }
 
     &__input-arrows--error {
-      border: 1px solid var(--red);
+      border: 1px solid var(--color-error-default);
     }
 
     &__input-arrows--warning {
-      border: 1px solid var(--orange);
+      border: 1px solid var(--color-warning-default);
     }
 
     input[type="number"] {
@@ -145,7 +146,7 @@
       position: absolute;
       top: 8px;
       right: 10px;
-      color: var(--dusty-gray);
+      color: var(--color-text-muted);
     }
 
     &__custom-text {

@@ -12,6 +12,7 @@ describe('Personal sign', function () {
         },
       ],
     };
+    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -28,7 +29,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -42,7 +43,25 @@ describe('Personal sign', function () {
 
         await driver.clickElement('[data-testid="request-signature__sign"]');
 
+        // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        // Verify
+        await driver.clickElement('#personalSignVerify');
+        const verifySigUtil = await driver.findElement(
+          '#personalSignVerifySigUtilResult',
+        );
+        const verifyECRecover = await driver.waitForSelector(
+          {
+            css: '#personalSignVerifyECRecoverResult',
+            text: publicAddress,
+          },
+          { timeout: 10000 },
+        );
+        assert.equal(await verifySigUtil.getText(), publicAddress);
+        assert.equal(await verifyECRecover.getText(), publicAddress);
       },
     );
   });

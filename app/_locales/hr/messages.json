@@ -8,9 +8,6 @@
   "about": {
     "message": "O opcijama"
   },
-  "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt"
-  },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
   },
@@ -47,12 +44,6 @@
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
   },
-  "addToAddressBook": {
-    "message": "Dodaj u imenik"
-  },
-  "addToAddressBookModalPlaceholder": {
-    "message": "npr. Ivan M."
-  },
   "addToken": {
     "message": "Dodaj token"
   },
@@ -61,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"
-  },
-  "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
   },
   "amount": {
     "message": "Iznos"
@@ -145,17 +133,14 @@
     "message": "Prikaži račun u $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Upotrijebi identifikaciju blokovima"
-  },
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
   },
   "buyWithWyre": {
-    "message": "Kupi ETH Wyerom"
+    "message": "Kupi $1 Wyerom"
   },
   "buyWithWyreDescription": {
-    "message": "Wyreom vam se omogućava korištenje kreditnom karticom za polaganje ETH-a izravno na vaš račun za MetaMask."
+    "message": "Wyreom vam se omogućava korištenje kreditnom karticom za polaganje $1 -a izravno na vaš račun za MetaMask."
   },
   "bytes": {
     "message": "Bajtovi"
@@ -295,12 +280,6 @@
   "details": {
     "message": "Detalji"
   },
-  "directDepositEther": {
-    "message": "Izravan polog Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ako imate nešto Ethera, najbrži je način prebacivanja Ethera u vaš novi novčanik izravan polog."
-  },
   "done": {
     "message": "Gotovo"
   },
@@ -354,9 +333,6 @@
   },
   "ensRegistrationError": {
     "message": "Greška u registraciji naziva ENS"
-  },
-  "enterAnAlias": {
-    "message": "Upiši pseudonim"
   },
   "enterPassword": {
     "message": "Upiši lozinku"
@@ -421,9 +397,6 @@
   },
   "general": {
     "message": "Opće"
-  },
-  "generalSettingsDescription": {
-    "message": "Konverzija valuta, glavna valuta, jezik, blockies identicon"
   },
   "getEther": {
     "message": "Dohvati Ether"
@@ -595,9 +568,6 @@
   },
   "networkName": {
     "message": "Naziv mreže"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodaj i uredi prilagođene mreže RPC"
   },
   "networks": {
     "message": "Mreže"
@@ -779,9 +749,6 @@
   "restore": {
     "message": "Vrati"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovite svoj račun početnom rečenicom"
-  },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
@@ -833,12 +800,6 @@
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
-  "securitySettingsDescription": {
-    "message": "Postavke privatnosti i početna rečenica novčanika"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
-  },
   "seedPhraseReq": {
     "message": "Početne rečenice imaju 12 riječi"
   },
@@ -868,9 +829,6 @@
   },
   "sendTokens": {
     "message": "Pošalji tokene"
-  },
-  "separateEachWord": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
   },
   "settings": {
     "message": "Postavke"

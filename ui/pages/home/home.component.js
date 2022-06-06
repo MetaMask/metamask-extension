@@ -13,6 +13,7 @@ import TransactionList from '../../components/app/transaction-list';
 import MenuBar from '../../components/app/menu-bar';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -21,7 +22,14 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  DISPLAY,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  COLORS,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../helpers/constants/design-system';
 
 import {
   ASSET_ROUTE,
@@ -92,6 +100,8 @@ export default class Home extends PureComponent {
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
     defaultHomeActiveTabName: PropTypes.string,
+    firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -104,7 +114,12 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    notificationsToShow: PropTypes.bool.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    errorsToShow: PropTypes.object.isRequired,
+    shouldShowErrors: PropTypes.bool.isRequired,
+    removeSnapError: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -117,6 +132,8 @@ export default class Home extends PureComponent {
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
+    newTokensImported: PropTypes.string,
+    setNewTokensImported: PropTypes.func.isRequired,
   };
 
   state = {
@@ -242,55 +259,87 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      removeSnapError,
+      errorsToShow,
+      shouldShowErrors,
+      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      newTokensImported,
+      setNewTokensImported,
     } = this.props;
     return (
       <MultipleNotifications>
-        {newCollectibleAddedMessage ? (
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          shouldShowErrors
+            ? Object.entries(errorsToShow).map(([errorId, error]) => {
+                return (
+                  <HomeNotification
+                    classNames={['home__error-message']}
+                    infoText={error.data.snapId}
+                    descriptionText={
+                      <>
+                        <Typography
+                          color={COLORS.TEXT_ALTERNATIVE}
+                          variant={TYPOGRAPHY.H5}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          {t('somethingWentWrong')}
+                        </Typography>
+                        <Typography
+                          color={COLORS.TEXT_ALTERNATIVE}
+                          variant={TYPOGRAPHY.H7}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          {t('snapError', [error.message, error.code])}
+                        </Typography>
+                      </>
+                    }
+                    onIgnore={async () => {
+                      await removeSnapError(errorId);
+                    }}
+                    ignoreText="Dismiss"
+                    key="home-error-message"
+                  />
+                );
+              })
+            : null
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {newCollectibleAddedMessage === 'success' ? (
           <ActionableMessage
-            type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}
+            type="success"
             className="home__new-network-notification"
             message={
-              <div className="home__new-network-notification-message">
-                {newCollectibleAddedMessage === 'success' ? (
-                  <img
-                    src="./images/check_circle.svg"
-                    className="home__new-network-notification-message--image"
-                  />
-                ) : null}
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {newCollectibleAddedMessage === 'success'
-                    ? t('newCollectibleAddedMessage')
-                    : t('newCollectibleAddFailed', [
-                        newCollectibleAddedMessage,
-                      ])}
+                  {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
-                  className="fas fa-times home__close"
+                  className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
                 />
-              </div>
+              </Box>
             }
           />
         ) : null}
         {newNetworkAdded ? (
           <ActionableMessage
-            type="info"
+            type="success"
             className="home__new-network-notification"
             message={
-              <div className="home__new-network-notification-message">
-                <img
-                  src="./images/check_circle.svg"
-                  className="home__new-network-notification-message--image"
-                />
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
@@ -298,11 +347,43 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
                 <button
-                  className="fas fa-times home__close"
+                  className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
                   onClick={() => setNewNetworkAdded('')}
                 />
-              </div>
+              </Box>
+            }
+          />
+        ) : null}
+        {newTokensImported ? (
+          <ActionableMessage
+            type="success"
+            className="home__new-tokens-imported-notification"
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
+                <Box>
+                  <Typography
+                    className="home__new-tokens-imported-notification-title"
+                    variant={TYPOGRAPHY.H6}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('newTokensImportedTitle')}
+                  </Typography>
+                  <Typography
+                    className="home__new-tokens-imported-notification-message"
+                    variant={TYPOGRAPHY.H7}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                  >
+                    {t('newTokensImportedMessage', [newTokensImported])}
+                  </Typography>
+                </Box>
+                <button
+                  className="fas fa-times home__new-tokens-imported-notification-close"
+                  title={t('close')}
+                  onClick={() => setNewTokensImported('')}
+                />
+              </Box>
             }
           />
         ) : null}
@@ -444,11 +525,13 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      notificationsToShow,
+      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
+      firstTimeFlowType,
+      completedOnboarding,
     } = this.props;
 
     if (forgottenPassword) {
@@ -457,8 +540,11 @@ export default class Home extends PureComponent {
       return null;
     }
 
-    const showWhatsNew = notificationsToShow && showWhatsNewPopup;
-
+    const showWhatsNew =
+      ((completedOnboarding && firstTimeFlowType === 'import') ||
+        !completedOnboarding) &&
+      announcementsToShow &&
+      showWhatsNewPopup;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />

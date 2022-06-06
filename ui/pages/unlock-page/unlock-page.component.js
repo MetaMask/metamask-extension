@@ -7,10 +7,11 @@ import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -24,7 +25,7 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
-     * onClick handler for "import using Secret Recovery Phrase" link
+     * onClick handler for "Forgot password?" link
      */
     onRestore: PropTypes.func,
     /**
@@ -75,14 +76,19 @@ export default class UnlockPage extends Component {
     try {
       await onSubmit(password);
       const newState = await forceUpdateMetamaskState();
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Navigation',
-          action: 'Unlock',
-          name: 'Success',
+      this.context.trackEvent(
+        {
+          category: EVENT.CATEGORIES.NAVIGATION,
+          event: 'Success',
+          properties: {
+            action: 'Unlock',
+            legacy_event: true,
+          },
         },
-        isNewVisit: true,
-      });
+        {
+          isNewVisit: true,
+        },
+      );
 
       if (
         newState.participateInMetaMetrics === null ||
@@ -93,13 +99,12 @@ export default class UnlockPage extends Component {
     } catch ({ message }) {
       if (message === 'Incorrect password') {
         const newState = await forceUpdateMetamaskState();
-        this.context.metricsEvent({
-          eventOpts: {
-            category: 'Navigation',
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.NAVIGATION,
+          event: 'Incorrect Password',
+          properties: {
             action: 'Unlock',
-            name: 'Incorrect Password',
-          },
-          customVariables: {
+            legacy_event: true,
             numberOfTokens: newState.tokens.length,
             numberOfAccounts: Object.keys(newState.accounts).length,
           },
@@ -128,8 +133,8 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton() {
     const style = {
-      backgroundColor: '#037dd6',
-      color: 'white',
+      backgroundColor: 'var(--color-primary-default)',
+      color: 'var(--color-primary-inverse)',
       marginTop: '20px',
       height: '60px',
       fontWeight: '400',
@@ -184,15 +189,14 @@ export default class UnlockPage extends Component {
           </form>
           {this.renderSubmitButton()}
           <div className="unlock-page__links">
-            {t('importAccountText', [
-              <button
-                key="import-account"
-                className="unlock-page__link unlock-page__link--import"
-                onClick={() => onRestore()}
-              >
-                {t('importAccountLinkText')}
-              </button>,
-            ])}
+            <Button
+              type="link"
+              key="import-account"
+              className="unlock-page__link"
+              onClick={() => onRestore()}
+            >
+              {t('forgotPassword')}
+            </Button>
           </div>
           <div className="unlock-page__support">
             {t('needHelp', [
