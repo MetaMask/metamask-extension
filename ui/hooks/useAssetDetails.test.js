@@ -1,10 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
 import * as tokenUtils from '../helpers/utils/token-util';
-import { ERC20, ERC721 } from '../helpers/constants/common';
+import { ERC1155, ERC20, ERC721 } from '../helpers/constants/common';
 import { useAssetDetails } from './useAssetDetails';
 
 const renderUseAssetDetails = ({
@@ -51,9 +51,7 @@ describe('useAssetDetails', () => {
       transactionData,
     });
 
-    await act(async () => {
-      await waitForNextUpdate;
-    });
+    await waitForNextUpdate();
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
@@ -96,15 +94,13 @@ describe('useAssetDetails', () => {
       transactionData,
     });
 
-    await act(async () => {
-      await waitForNextUpdate;
-    });
+    await waitForNextUpdate();
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
       assetName: undefined,
       assetStandard: standard,
-      decimals: decimals,
+      decimals,
       toAddress: `0x${toAddress}`,
       tokenAmount: '0.0000000000000005',
       tokenId: undefined,
@@ -142,9 +138,7 @@ describe('useAssetDetails', () => {
       transactionData,
     });
 
-    await act(async () => {
-      await waitForNextUpdate;
-    });
+    await waitForNextUpdate();
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
@@ -152,7 +146,7 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: tokenId,
+      tokenId,
       tokenImage: image,
       tokenSymbol: symbol,
       tokenValue: undefined,
@@ -164,20 +158,16 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC1155 token', async () => {
     const tokenAddress = '0x76BE3b62873462d2142405439777e971754E8E77';
     const toAddress = '000000000000000000000000000000000000dead';
-    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000c`;
+    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000322000000000000000000000000000000000000000000000000000000000000009c00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000`;
 
-    const symbol = 'BAYC';
-    const tokenId = '12';
-    const name = 'BoredApeYachtClub';
+    const tokenId = '121';
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
-    const standard = ERC721;
+    const standard = ERC1155;
 
     getAssetDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
-        symbol,
-        name,
         tokenId,
         image,
       }),
@@ -188,19 +178,17 @@ describe('useAssetDetails', () => {
       transactionData,
     });
 
-    await act(async () => {
-      await waitForNextUpdate;
-    });
+    await waitForNextUpdate();
 
     expect(result.current).toStrictEqual({
       assetAddress: tokenAddress,
-      assetName: name,
+      assetName: undefined,
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: tokenId,
+      tokenId: undefined,
       tokenImage: image,
-      tokenSymbol: symbol,
+      tokenSymbol: '',
       tokenValue: undefined,
       userBalance: undefined,
       tokenAmount: undefined,
