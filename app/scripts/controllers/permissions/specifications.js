@@ -166,10 +166,10 @@ export const getPermissionSpecifications = ({
 };
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export const getExtraPermissionSpecifications = () =>
-  // {
-  //   // functions you need to use in the permission go here
-  // },
+export const getExtraPermissionSpecifications = (
+  {
+   // functions you need to use in the permission go here
+  }) =>
   {
     return {
       [PermissionKeys.snap_manageAccounts]: {
@@ -182,6 +182,7 @@ export const getExtraPermissionSpecifications = () =>
         // },
 
         methodImplementation: async (_args) => {
+          console.log("manageAccounts methodImpl running with", _args);
           // method implementation goes here
           return null;
         },

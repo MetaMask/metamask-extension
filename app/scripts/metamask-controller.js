@@ -618,7 +618,7 @@ export default class MetamaskController extends EventEmitter {
         }),
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
-        ...getExtraPermissionSpecifications(),
+        ...getExtraPermissionSpecifications({}),
         ///: END:ONLY_INCLUDE_IN
       },
       unrestrictedMethods,
