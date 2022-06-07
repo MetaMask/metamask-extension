@@ -159,14 +159,14 @@ export default function SignatureRequestSIWE({
         >
           <div className="signature-request-siwe__popover__checkbox-wrapper">
             <Checkbox
-              id="domainWarning_checkbox"
+              id="signature-request-siwe_domain-checkbox"
               checked={agreeToDomainWarning}
               className="signature-request-siwe__popover__checkbox-wrapper__checkbox checkbox checkbox--error"
               onClick={() => setAgreeToDomainWarning((checked) => !checked)}
             />
             <label
               className="signature-request-siwe__popover__checkbox-wrapper__checkbox__label"
-              htmlFor="domainWarning_checkbox"
+              htmlFor="signature-request-siwe_domain-checkbox"
             >
               {confirmErrorMessage}
             </label>
