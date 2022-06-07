@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 
-const noop = () => {};
-
 const AssetOptions = ({
   onRemove,
   onClickBlockExplorer,
@@ -93,17 +91,17 @@ AssetOptions.propTypes = {
   onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
   onRemove: (props, propName, componentName) => {
-    if (props.isNativeAsset === false && typeof(onRemove) !== "function") {
+    if (props.isNativeAsset === false && typeof(props.onRemove) !== "function") {
       throw new Error("When isNativeAsset is true, onRemove is a required prop");
     }
   },
   onViewTokenDetails: (props, propName, componentName) => {
-    if (props.isNativeAsset === false && typeof(onViewTokenDetails) !== "function") {
+    if (props.isNativeAsset === false && typeof(props.onViewTokenDetails) !== "function") {
       throw new Error("When isNativeAsset is true, onViewTokenDetails is a required prop");
     }
   },
   tokenSymbol: (props, propName, componentName) => {
-    if (props.isNativeAsset === false && typeof(tokenSymbol) !== "string") {
+    if (props.isNativeAsset === false && typeof(props.tokenSymbol) !== "string") {
       throw new Error("When isNativeAsset is true, tokenSymbol is a required prop");
     }
   }

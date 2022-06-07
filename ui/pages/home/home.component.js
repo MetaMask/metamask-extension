@@ -123,7 +123,13 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    seedPhraseBackedUp: PropTypes.bool.isRequired,
+    seedPhraseBackedUp: (props, propName, componentName) => {
+      if (props.seedPhraseBackedUp !== null && typeof(props.seedPhraseBackedUp) !== "boolean") {
+        throw new Error(
+          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`
+        );
+      }
+    },
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function

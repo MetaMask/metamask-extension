@@ -34,7 +34,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
     }
 
-    if (seedPhraseBackedUp) {
+    if (seedPhraseBackedUp !== null) {
       return <Redirect to={{ pathname: INITIALIZE_END_OF_FLOW_ROUTE }} />;
     }
 
