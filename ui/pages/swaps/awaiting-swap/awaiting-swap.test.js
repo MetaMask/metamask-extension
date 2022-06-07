@@ -5,7 +5,7 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import { DEFAULT_SLIPPAGE } from '../../../../shared/constants/swaps';
+import { SLIPPAGE } from '../../../../shared/constants/swaps';
 import AwaitingSwap from '.';
 
 const createProps = (customProps = {}) => {
@@ -15,7 +15,7 @@ const createProps = (customProps = {}) => {
     tokensReceived: 'tokens received:',
     submittingSwap: true,
     inputValue: 5,
-    maxSlippage: DEFAULT_SLIPPAGE,
+    maxSlippage: SLIPPAGE.DEFAULT,
     ...customProps,
   };
 };

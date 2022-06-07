@@ -207,4 +207,7 @@ export const TOKEN_BUCKET_PRIORITY = {
   TOP: 'top',
 };
 
-export const DEFAULT_SLIPPAGE = 2;
+export const SLIPPAGE = {
+  DEFAULT: 2,
+  HIGH: 3,
+};
