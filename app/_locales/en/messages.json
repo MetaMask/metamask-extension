@@ -3161,14 +3161,11 @@
   "stxFallbackUnavailable": {
     "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalizing..."
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Privately submitting your Swap..."
   },
-  "stxPendingOptimizingGas": {
-    "message": "Optimizing gas..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Privately submitting the Swap..."
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Publicly submitting your Swap..."
   },
   "stxSubDescription": {
     "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
@@ -3179,6 +3176,10 @@
   "stxSuccessDescription": {
     "message": "Your $1 is now available.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Swap will complete in <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
@@ -3257,10 +3258,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Swap complete in <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
@@ -3442,6 +3439,10 @@
   },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
+  },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
   },
   "swapSource": {
     "message": "Liquidity source"
