@@ -23,6 +23,16 @@ const addEthereumChain = {
 };
 export default addEthereumChain;
 
+const getFirstValidUri = (uris) => {
+  const isSet = uris !== null && Array.isArray(uris);
+
+  if (isSet) {
+    return uris.find((uri) =>
+      validUrl.isHttpsUri(uri) || validUrl.isHttpUri(uri),
+    );
+  }
+};
+
 async function addEthereumChainHandler(
   req,
   res,
@@ -76,17 +86,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => validUrl.isHttpsUri(rpcUrl))
-    : null;
-
-  const firstValidBlockExplorerUrl =
-    blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          validUrl.isHttpsUri(blockExplorerUrl),
-        )
-      : null;
-
+  const firstValidRPCUrl = getFirstValidUri(rpcUrls);
   if (!firstValidRPCUrl) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -95,6 +95,7 @@ async function addEthereumChainHandler(
     );
   }
 
+  const hasBlockExplorerUrls = getFirstValidUri(blockExplorerUrls);
   if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
     return end(
       ethErrors.rpc.invalidParams({
