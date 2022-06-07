@@ -85,26 +85,39 @@ const AssetOptions = ({
   );
 };
 
+const isntFunc = (p) => {
+  return typeof p !== 'function';
+};
+
 AssetOptions.propTypes = {
   isEthNetwork: PropTypes.bool,
   isNativeAsset: PropTypes.bool,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
-  onRemove: (props, propName, componentName) => {
-    if (props.isNativeAsset === false && typeof(props.onRemove) !== "function") {
-      throw new Error("When isNativeAsset is true, onRemove is a required prop");
+  onRemove: (props) => {
+    if (props.isNativeAsset === false && isntFunc(props.onRemove)) {
+      throw new Error(
+        'When isNativeAsset is true, onRemove is a required prop',
+      );
     }
   },
-  onViewTokenDetails: (props, propName, componentName) => {
-    if (props.isNativeAsset === false && typeof(props.onViewTokenDetails) !== "function") {
-      throw new Error("When isNativeAsset is true, onViewTokenDetails is a required prop");
+  onViewTokenDetails: (props) => {
+    if (props.isNativeAsset === false && isntFunc(props.onViewTokenDetails)) {
+      throw new Error(
+        'When isNativeAsset is true, onViewTokenDetails is a required prop',
+      );
     }
   },
-  tokenSymbol: (props, propName, componentName) => {
-    if (props.isNativeAsset === false && typeof(props.tokenSymbol) !== "string") {
-      throw new Error("When isNativeAsset is true, tokenSymbol is a required prop");
+  tokenSymbol: (props) => {
+    if (
+      props.isNativeAsset === false &&
+      typeof props.tokenSymbol !== 'string'
+    ) {
+      throw new Error(
+        'When isNativeAsset is true, tokenSymbol is a required prop',
+      );
     }
-  }
+  },
 };
 
 export default AssetOptions;

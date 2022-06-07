@@ -123,10 +123,13 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    seedPhraseBackedUp: (props, propName, componentName) => {
-      if (props.seedPhraseBackedUp !== null && typeof(props.seedPhraseBackedUp) !== "boolean") {
+    seedPhraseBackedUp: (props) => {
+      if (
+        props.seedPhraseBackedUp !== null &&
+        typeof props.seedPhraseBackedUp !== 'boolean'
+      ) {
         throw new Error(
-          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`
+          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
         );
       }
     },

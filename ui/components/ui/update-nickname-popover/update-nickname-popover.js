@@ -20,8 +20,10 @@ export default function UpdateNicknamePopover({
 }) {
   const t = useContext(I18nContext);
 
-  const [nicknameInput, setNicknameInput] = useState(nickname === null ? "" : nickname);
-  const [memoInput, setMemoInput] = useState(memo === null ? "" : memo);
+  const [nicknameInput, setNicknameInput] = useState(
+    nickname === null ? '' : nickname,
+  );
+  const [memoInput, setMemoInput] = useState(memo === null ? '' : memo);
 
   const handleNicknameChange = (event) => {
     setNicknameInput(event.target.value);
