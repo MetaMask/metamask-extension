@@ -25,42 +25,43 @@
   &__domain-mismatch-warning {
     padding: 4px 16px;
   }
+}
 
-  &__page-container-footer {
-    border: none !important;
+
+.signature-request-siwe__page-container-footer {
+  border: none !important;
+}
+
+.signature-request-siwe__popover {
+  &__footer {
+    padding: 0 !important;
+    display: block !important;
+
+    &__warning-footer {
+      border: none !important;
+      display: block !important;
+    }
   }
 
-  &__popover {
-    &__footer {
-      padding: 0 !important;
-      display: block !important;
+  &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 16px;
 
-      &__warning-footer {
-        border: none !important;
-        display: block !important;
-      }
-    }
+    &__checkbox {
+      color: var(--color-error-default) !important;
 
-    &__checkbox-wrapper {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      padding: 16px;
+      &__label {
+        @include H7;
 
-      &__checkbox {
-        color: var(--color-error-default) !important;
-
-        &__label {
-          @include H7;
-
-          color: var(--color-text-default);
-          margin-left: 8px;
-          margin-top: 1px;
-          user-select: none;
-          -moz-user-select: none;
-          -webkit-user-select: none;
-          cursor: pointer;
-        }
+        color: var(--color-text-default);
+        margin-left: 8px;
+        margin-top: 1px;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        cursor: pointer;
       }
     }
   }
