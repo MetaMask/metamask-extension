@@ -24,6 +24,7 @@ class MetaRPCClient {
         return cb(new Error('No response from RPC'), null);
       }
 
+      delete this.responseHandled[id];
       // needed for linter to pass
       return true;
     }, TEN_SECONDS_IN_MILLISECONDS);
