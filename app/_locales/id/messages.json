@@ -3083,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Anda masih bisa menukar token meskipun Transaksi Pintar tidak tersedia."
   },
-  "stxPendingFinalizing": {
-    "message": "Menyelesaikan..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Mengoptimalkan gas..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Mengirimkan Pertukaran secara pribadi..."
-  },
   "stxSubDescription": {
     "message": "* Transaksi Pintar akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Pertukaran telah berhasil dilakukan."
   },
@@ -3179,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Pertukaran selesai di <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"

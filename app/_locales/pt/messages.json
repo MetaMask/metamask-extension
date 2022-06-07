@@ -3083,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Você ainda pode fazer swap com seus tokens mesmo quando as Transações Inteligentes estiverem indisponíveis."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalizando..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Otimizando as taxas de gás..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Enviando a Swap de forma privada..."
-  },
   "stxSubDescription": {
     "message": "* A função de Transações Inteligentes tentará enviar a sua transação várias vezes de forma privada. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua Swap seja realizada com sucesso."
   },
@@ -3179,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Nenhum token disponível correspondente a $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Swap concluído em <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirme com sua carteira de hardware"

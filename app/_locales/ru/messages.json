@@ -3083,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Вы по-прежнему можете обменивать свои токены, даже если смарт-транзакции недоступны."
   },
-  "stxPendingFinalizing": {
-    "message": "Завершение..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Оптимизация газа..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Конфиденциальная отправка ооперации обмена..."
-  },
   "stxSubDescription": {
     "message": "* Смарт-транзакции попытаются несколько раз отправить вашу транзакцию в конфиденциальном порядке. Если все попытки не увенчаются успехом, транзакция будет показана публично, чтобы гарантировать успешное завершение вашего обмена."
   },
@@ -3179,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Нет доступных токенов, соответствующих $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Обмен завершится через <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердите с помощью аппаратного кошелька"
