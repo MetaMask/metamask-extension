@@ -28,18 +28,26 @@
 }
 
 
+.signature-request-siwe__domain-mismatch-warning {
+
+  .no-margin-top {
+    margin-top: 0px;
+  }
+}
+
+
 .signature-request-siwe__page-container-footer {
   border: none !important;
 }
 
 .signature-request-siwe__popover {
   &__footer {
-    padding: 0 !important;
-    display: block !important;
+    padding: 0;
+    display: block;
 
     &__warning-footer {
-      border: none !important;
-      display: block !important;
+      border: none;
+      display: block;
     }
   }
 
@@ -50,7 +58,7 @@
     padding: 16px;
 
     &__checkbox {
-      color: var(--color-error-default) !important;
+      color: var(--color-error-default);
 
       &__label {
         @include H7;

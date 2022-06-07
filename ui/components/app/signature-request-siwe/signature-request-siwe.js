@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import ErrorMessage from '../../ui/error-message';
+import ActionableMessage from '../../ui/actionable-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -105,15 +106,34 @@ export default function SignatureRequestSIWE({
         subjectMetadata={subjectMetadata}
       />
       <Message data={formatMessageParams(messageData, t)} />
-      {showError && (
+      {!isMatchingAddress && (
         <div className="signature-request-siwe__domain-mismatch-warning">
-          <ErrorMessage errorMessage={errorMessage} />
+          <ActionableMessage
+            type="warning"
+            message={t('SIWEAddressInvalid', [
+              messageData.address,
+              fromAccount.address,
+            ])}
+            iconFillColor="var(--color-warning-default)"
+            useIcon
+            withRightButton
+            className="no-margin-top"
+          />
+        </div>
+      )}
+      {!isSIWEDomainValid && (
+        <div className="signature-request-siwe__domain-mismatch-warning">
+          <ErrorMessage
+            errorMessage={t('SIWEDomainInvalid', [messageData.domain])}
+          />
         </div>
       )}
       <PageContainerFooter
         footerClassName="signature-request-siwe__page-container-footer"
         onCancel={onCancel}
-        onSubmit={showError ? () => setIsShowingDomainWarning(true) : onSign}
+        onSubmit={
+          isSIWEDomainValid ? onSign : () => setIsShowingDomainWarning(true)
+        }
         cancelText={t('cancel')}
         submitText={t('signin')}
       />
