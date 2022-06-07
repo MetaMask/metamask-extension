@@ -31,8 +31,7 @@ export default function SlippageButtons({
   const [customValue, setCustomValue] = useState(() => {
     if (
       typeof currentSlippage === 'number' &&
-      currentSlippage !== SLIPPAGE.DEFAULT &&
-      currentSlippage !== SLIPPAGE.HIGH
+      !Object.values(SLIPPAGE).includes(currentSlippage)
     ) {
       return currentSlippage.toString();
     }
