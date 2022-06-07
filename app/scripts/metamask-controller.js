@@ -566,9 +566,7 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    console.log("Got SnapKeyring", SnapKeyring);
     additionalKeyrings.push(SnapKeyring);
-    console.log("additionalKeyrings", additionalKeyrings);
     ///: END:ONLY_INCLUDE_IN
 
     this.keyringController = new KeyringController({
@@ -631,7 +629,13 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
         ...getExtraPermissionSpecifications({
-          getSnapKeyring: this.getSnapKeyring.bind(this)
+          getSnapKeyring: this.getSnapKeyring.bind(this),
+          saveKeyring: async () => {
+            // TODO[muji]: add a save() method to KeyringController
+            await this.keyringController.persistAllKeyrings();
+            await this.keyringController._updateMemStoreKeyrings();
+            await this.keyringController.fullUpdate();
+          }
         }),
         ///: END:ONLY_INCLUDE_IN
       },

@@ -2910,17 +2910,6 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@metamask/eth-sig-util@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-sig-util/-/eth-sig-util-4.0.1.tgz#3ad61f6ea9ad73ba5b19db780d40d9aae5157088"
-  integrity sha512-tghyZKLHZjcdlDqCA3gNZmLeR0XvOE9U1qoQO9ohyAZT6Pya+H9vkBPcsyXytmYLNgVoin7CKCmweo/R43V+tQ==
-  dependencies:
-    ethereumjs-abi "^0.6.8"
-    ethereumjs-util "^6.2.1"
-    ethjs-util "^0.1.6"
-    tweetnacl "^1.0.3"
-    tweetnacl-util "^0.15.1"
-
 "@metamask/eth-token-tracker@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-4.0.0.tgz#f3129855873a857ef675d4c28f532be684241b61"
@@ -24573,12 +24562,11 @@ snake-case@^2.1.0:
   dependencies:
     no-case "^2.2.0"
 
-snap-keyring@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/snap-keyring/-/snap-keyring-0.0.8.tgz#76cd35ac1506b415f10e848f2ac45555c4cd263e"
-  integrity sha512-P35TN5OPW1n1OVYBV+lBLuvKep4WAkdq4v5Tr1wiOM6N8tr6cmXaS8OT+X1GGbcC4Bj5rx1ZqHzasdNKgbULBg==
+snap-keyring@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/snap-keyring/-/snap-keyring-0.0.13.tgz#49f533f120ecae5a5ee84a6c9f9ea6fea8988bd1"
+  integrity sha512-acGnNFawDFYXZ/Dr9TCZ75754ruQ9FOZBtFdSyc8auNnAkyQl7q1UbAw/rtCgGSImH07K8MMkzQzzMtxVAUWtA==
   dependencies:
-    "@metamask/eth-sig-util" "^4.0.1"
     "@metamask/utils" "^2.0.0"
     ethereumjs-util "^7.1.4"
 

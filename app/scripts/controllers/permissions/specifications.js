@@ -169,6 +169,7 @@ export const getPermissionSpecifications = ({
 export const getExtraPermissionSpecifications = (
   {
     getSnapKeyring,
+    saveKeyring,
   }) =>
   {
     return {
@@ -189,14 +190,22 @@ export const getExtraPermissionSpecifications = (
           console.log("manageAccounts methodImpl running with", keyring);
           const methodAction = params[0];
           switch (methodAction) {
-            case "add":
+            case "create":
               const keypair = params[1];
               // Expecting a tuple of hex encoded public key
               // and some arbitrary private data
               const [publicKey, privateData] = keypair;
               console.log("TODO: add an account to the keyring for the snap");
+
+              const publicKeyBuffer = Buffer.from(publicKey, "hex");
+              console.log("got public key buffer", publicKeyBuffer);
+
+              // TODO[muji]: verify buffer is 33 or 64 bytes
+              keyring.addAccount(publicKeyBuffer, privateData);
+              await saveKeyring();
+
               break;
-            case "get":
+            case "read":
               //const publicKey = params[1];
               console.log("TODO: get the private data from the keyring for the snap");
               break;
