@@ -137,7 +137,7 @@ export default function SlippageButtons({
                       onSelect(SLIPPAGE.DEFAULT);
                     }}
                   >
-                    {`${SLIPPAGE.DEFAULT}%`}
+                    {t('swapSlippagePercent', [SLIPPAGE.DEFAULT])}
                   </Button>
                   <Button
                     onClick={() => {
@@ -147,7 +147,7 @@ export default function SlippageButtons({
                       onSelect(SLIPPAGE.HIGH);
                     }}
                   >
-                    {`${SLIPPAGE.HIGH}%`}
+                    {t('swapSlippagePercent', [SLIPPAGE.HIGH])}
                   </Button>
                   <Button
                     className={classnames(

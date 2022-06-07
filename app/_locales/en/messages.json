@@ -3443,6 +3443,10 @@
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Liquidity source"
   },
