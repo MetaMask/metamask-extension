@@ -86,7 +86,9 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
 export const getPermissionSpecifications = ({
   getAllAccounts,
   getIdentities,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getWalletLocale,
+  ///: END:ONLY_INCLUDE_IN
   captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
@@ -163,6 +165,7 @@ export const getPermissionSpecifications = ({
         }
       },
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     [PermissionKeys.wallet_getLocale]: {
       permissionType: PermissionType.RestrictedMethod,
       targetKey: PermissionKeys.wallet_getLocale,
@@ -183,6 +186,7 @@ export const getPermissionSpecifications = ({
         return walletLocale;
       },
     },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
