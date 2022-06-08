@@ -49,8 +49,11 @@ How should reviewers and QA manually test your changes? For instance:
 ## Pre-Merge Checklist
 
 - [ ] PR template is filled out
-- [ ] Manual testing complete & passed
 - [ ] **IF** this PR fixes a bug, a test that _would have_ caught the bug has been added
 - [ ] PR is linked to the appropriate GitHub issue
-- [ ] **IF** QA attention is required, "QA Board" label has been applied
 - [ ] PR has been added to the appropriate release Milestone
+
+### + If there are functional changes:
+
+- [ ] Manual testing complete & passed
+- [ ] "Extension QA Board" label has been applied

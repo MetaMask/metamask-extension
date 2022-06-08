@@ -631,7 +631,7 @@
     "message": "Interacción con el contrato"
   },
   "convertTokenToNFTDescription": {
-    "message": "Hemos detectado que este activo es un NFT. Metamask ahora tiene soporte nativo completo para NFTs. ¿Quieres eliminarlo de tu lista de tokens y añadirlo como un NFT?"
+    "message": "Hemos detectado que este activo es un NFT. MetaMask ahora tiene soporte nativo completo para NFTs. ¿Quieres eliminarlo de tu lista de tokens y añadirlo como un NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Hemos detectado que este recurso se ha agregado como NFT. ¿Quiere eliminarlo de su lista de tokens?"
@@ -3083,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Todavía puede intercambiar sus tokens incluso cuando las transacciones inteligentes no están disponibles."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalizando…"
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Optimizando gas..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Enviando el Swap de forma privada..."
-  },
   "stxSubDescription": {
     "message": "* Transacciones inteligentes intentará enviar su transacción de forma privada varias veces. Si todos los intentos fallan, la transacción se transmitirá públicamente para garantizar que su swap se realice con éxito."
   },
@@ -3179,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "No hay tokens disponibles que coincidan con $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Swap finalizado en <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con la cartera de hardware"

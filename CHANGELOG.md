@@ -6,6 +6,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.14.7]
+### Changed
+- Make JavaScript bundles more reproducible between environments.
+  - The bundles no longer include absolute paths to each module included.
+
+## [10.14.6]
+### Changed
+- Move phishing warning page to external site.
+  - The page shown when a site is blocked has been extracted from the extension and moved to an external site. This site is eagerly cached with a service worker upon extension startup, so it should continue to work even while offline.
+- Make build .zip files reproducible (#14623)
+  - The ordering of files within each .zip file was non-deterministic before this change. We fixed this to comply with Firefox store policies.
+
+## [10.14.5]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.4]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.3]
+### Fixed
+- This release was deployed to fix a configuration issue.
+
+## [10.14.2]
+### Fixed
+- Make build deterministic (#14610)
+    - The ordering of modules within each bundle was non-deterministic before this change. We fixed this to comply with Firefox store policies.
+
+## [10.14.1]
+### Changed
+- This version was used to rollback from v10.14.0 to v10.13.0.
+
 ## [10.14.0]
 ### Added
 - **[FLASK]** Add snap version to details page ([#14110](https://github.com/MetaMask/metamask-extension/pull/14110))
@@ -2908,7 +2941,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...HEAD
+[10.14.7]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...v10.14.7
+[10.14.6]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...v10.14.6
+[10.14.5]: https://github.com/MetaMask/metamask-extension/compare/v10.14.4...v10.14.5
+[10.14.4]: https://github.com/MetaMask/metamask-extension/compare/v10.14.3...v10.14.4
+[10.14.3]: https://github.com/MetaMask/metamask-extension/compare/v10.14.2...v10.14.3
+[10.14.2]: https://github.com/MetaMask/metamask-extension/compare/v10.14.1...v10.14.2
+[10.14.1]: https://github.com/MetaMask/metamask-extension/compare/v10.14.0...v10.14.1
 [10.14.0]: https://github.com/MetaMask/metamask-extension/compare/v10.13.0...v10.14.0
 [10.13.0]: https://github.com/MetaMask/metamask-extension/compare/v10.12.4...v10.13.0
 [10.12.4]: https://github.com/MetaMask/metamask-extension/compare/v10.12.3...v10.12.4

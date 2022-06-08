@@ -208,9 +208,13 @@ export default class AddRecipient extends Component {
           addressBook={addressBook}
           searchForContacts={this.searchForContacts.bind(this)}
           searchForRecents={this.searchForRecents.bind(this)}
-          selectRecipient={(address, name) =>
-            this.selectRecipient(address, name, 'contact list')
-          }
+          selectRecipient={(address, name) => {
+            this.selectRecipient(
+              address,
+              name,
+              `${name ? 'contact' : 'recent'} list`,
+            );
+          }}
         >
           {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button
