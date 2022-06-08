@@ -6,6 +6,7 @@ import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
+import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
@@ -16,6 +17,8 @@ import {
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
+
+const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
 const firstTimeState = {
   config: {},
@@ -28,6 +31,17 @@ const firstTimeState = {
     networkDetails: {
       EIPS: {
         1559: false,
+      },
+    },
+  },
+  NotificationController: {
+    notifications: {
+      [NOTIFICATION_ID]: {
+        id: NOTIFICATION_ID,
+        origin: 'local:http://localhost:8086/',
+        createdDate: 1652967897732,
+        readDate: null,
+        message: 'Hello, http://localhost:8086!',
       },
     },
   },
@@ -69,6 +83,9 @@ const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
+      addListener: () => undefined,
+    },
+    onMessageExternal: {
       addListener: () => undefined,
     },
     getPlatformInfo: async () => 'mac',
@@ -130,6 +147,10 @@ describe('MetaMaskController', function () {
       .persist()
       .get(/.*/u)
       .reply(200, '{"JPY":12415.9}');
+
+    sandbox.replace(browser, 'runtime', {
+      sendMessage: sandbox.stub().rejects(),
+    });
 
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
@@ -1202,6 +1223,27 @@ describe('MetaMaskController', function () {
       assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]]);
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]]);
       assert.deepEqual(metamaskController.getState(), oldState);
+    });
+  });
+
+  describe('markNotificationsAsRead', function () {
+    it('marks the notification as read', function () {
+      metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
+      const readNotification = metamaskController.getState().notifications[
+        NOTIFICATION_ID
+      ];
+      assert.notEqual(readNotification.readDate, null);
+    });
+  });
+
+  describe('dismissNotifications', function () {
+    it('deletes the notification from state', function () {
+      metamaskController.dismissNotifications([NOTIFICATION_ID]);
+      const state = metamaskController.getState().notifications;
+      assert.ok(
+        !Object.values(state).includes(NOTIFICATION_ID),
+        'Object should not include the deleted notification',
+      );
     });
   });
 });

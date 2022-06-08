@@ -86,6 +86,8 @@ export default function ExperimentalArea({ redirectTo }) {
         <p>{t('flaskWelcomeWarning2')}</p>
         <br />
         <p>{t('flaskWelcomeWarning3')}</p>
+        <br />
+        <p>{t('flaskWelcomeWarning4')}</p>
       </div>
       <Button type="primary" onClick={onClick}>
         {t('flaskWelcomeWarningAcceptButton')}

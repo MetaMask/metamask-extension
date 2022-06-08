@@ -137,10 +137,10 @@
     "message": "Браузърът ви не се поддържа ..."
   },
   "buyWithWyre": {
-    "message": "Купете ETH с Wyre"
+    "message": "Купете $1 с Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате ETH право във вашата MetaMask сметка."
+    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате $1 право във вашата MetaMask сметка."
   },
   "bytes": {
     "message": "Байта"

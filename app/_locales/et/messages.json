@@ -137,10 +137,10 @@
     "message": "Teie lehitsejat ei toetata..."
   },
   "buyWithWyre": {
-    "message": "Ostke ETH-d Wyre'iga"
+    "message": "Ostke $1 -d Wyre'iga"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre võimaldab kasutada krediitkaarti, et teha ETH sissemakse otse MetaMaski kontole."
+    "message": "Wyre võimaldab kasutada krediitkaarti, et teha $1 sissemakse otse MetaMaski kontole."
   },
   "bytes": {
     "message": "Baidid"

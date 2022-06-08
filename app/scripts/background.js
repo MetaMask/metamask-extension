@@ -23,6 +23,7 @@ import {
   REJECT_NOTFICIATION_CLOSE,
   REJECT_NOTFICIATION_CLOSE_SIG,
 } from '../../shared/constants/metametrics';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -44,6 +45,14 @@ import { getPlatform } from './lib/util';
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
+
+const metamaskInternalProcessHash = {
+  [ENVIRONMENT_TYPE_POPUP]: true,
+  [ENVIRONMENT_TYPE_NOTIFICATION]: true,
+  [ENVIRONMENT_TYPE_FULLSCREEN]: true,
+};
+
+const metamaskBlockedPorts = ['trezor-connect'];
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
@@ -67,8 +76,29 @@ if (inTest || process.env.METAMASK_DEBUG) {
   global.metamaskGetState = localStore.get.bind(localStore);
 }
 
-// initialization flow
-initialize().catch(log.error);
+const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
+const ONE_SECOND_IN_MILLISECONDS = 1_000;
+// Timeout for initializing phishing warning page.
+const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
+
+/**
+ * In case of MV3 we attach a "onConnect" event listener as soon as the application is initialised.
+ * Reason is that in case of MV3 a delay in doing this was resulting in missing first connect event after service worker is re-activated.
+ */
+
+const initApp = async (remotePort) => {
+  browser.runtime.onConnect.removeListener(initApp);
+  await initialize(remotePort);
+  log.info('MetaMask initialization complete.');
+};
+
+if (isManifestV3()) {
+  browser.runtime.onConnect.addListener(initApp);
+} else {
+  // initialization flow
+  initialize().catch(log.error);
+}
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -128,13 +158,81 @@ initialize().catch(log.error);
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {string} remotePort - remote application port connecting to extension.
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
+async function initialize(remotePort) {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
-  await setupController(initState, initLangCode);
+  await setupController(initState, initLangCode, remotePort);
+  await loadPhishingWarningPage();
   log.info('MetaMask initialization complete.');
+}
+
+/**
+ * An error thrown if the phishing warning page takes too long to load.
+ */
+class PhishingWarningPageTimeoutError extends Error {
+  constructor() {
+    super('Timeout failed');
+  }
+}
+
+/**
+ * Load the phishing warning page temporarily to ensure the service
+ * worker has been registered, so that the warning page works offline.
+ */
+async function loadPhishingWarningPage() {
+  let iframe;
+  try {
+    const extensionStartupPhishingPageUrl = new URL(
+      process.env.PHISHING_WARNING_PAGE_URL,
+    );
+    // The `extensionStartup` hash signals to the phishing warning page that it should not bother
+    // setting up streams for user interaction. Otherwise this page load would cause a console
+    // error.
+    extensionStartupPhishingPageUrl.hash = '#extensionStartup';
+
+    iframe = window.document.createElement('iframe');
+    iframe.setAttribute('src', extensionStartupPhishingPageUrl.href);
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+
+    // Create "deferred Promise" to allow passing resolve/reject to event handlers
+    let deferredResolve;
+    let deferredReject;
+    const loadComplete = new Promise((resolve, reject) => {
+      deferredResolve = resolve;
+      deferredReject = reject;
+    });
+
+    // The load event is emitted once loading has completed, even if the loading failed.
+    // If loading failed we can't do anything about it, so we don't need to check.
+    iframe.addEventListener('load', deferredResolve);
+
+    // This step initiates the page loading.
+    window.document.body.appendChild(iframe);
+
+    // This timeout ensures that this iframe gets cleaned up in a reasonable
+    // timeframe, and ensures that the "initialization complete" message
+    // doesn't get delayed too long.
+    setTimeout(
+      () => deferredReject(new PhishingWarningPageTimeoutError()),
+      PHISHING_WARNING_PAGE_TIMEOUT,
+    );
+    await loadComplete;
+  } catch (error) {
+    if (error instanceof PhishingWarningPageTimeoutError) {
+      console.warn(
+        'Phishing warning page timeout; page not guaraneteed to work offline.',
+      );
+    } else {
+      console.error('Failed to initialize phishing warning page', error);
+    }
+  } finally {
+    if (iframe) {
+      iframe.remove();
+    }
+  }
 }
 
 //
@@ -205,9 +303,10 @@ async function loadStateFromPersistence() {
  *
  * @param {Object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @param {string} remoteSourcePort - remote application port connecting to extension.
  * @returns {Promise} After setup is complete.
  */
-function setupController(initState, initLangCode) {
+function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // MetaMask Controller
   //
@@ -294,16 +393,12 @@ function setupController(initState, initLangCode) {
   //
   // connect to other contexts
   //
+  if (isManifestV3() && remoteSourcePort) {
+    connectRemote(remoteSourcePort);
+  }
+
   browser.runtime.onConnect.addListener(connectRemote);
   browser.runtime.onConnectExternal.addListener(connectExternal);
-
-  const metamaskInternalProcessHash = {
-    [ENVIRONMENT_TYPE_POPUP]: true,
-    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
-    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-  };
-
-  const metamaskBlockedPorts = ['trezor-connect'];
 
   const isClientOpenStatus = () => {
     return (
@@ -362,11 +457,22 @@ function setupController(initState, initLangCode) {
         remotePort.sender.origin === `chrome-extension://${browser.runtime.id}`;
     }
 
+    const senderUrl = remotePort.sender?.url
+      ? new URL(remotePort.sender.url)
+      : null;
+
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      if (isManifestV3()) {
+        // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
+        // This ensures that UI is initialised only after background is ready
+        // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
+        remotePort.postMessage({ name: 'CONNECTION_READY' });
+      }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
@@ -406,6 +512,15 @@ function setupController(initState, initLangCode) {
           );
         });
       }
+    } else if (
+      senderUrl &&
+      senderUrl.origin === phishingPageUrl.origin &&
+      senderUrl.pathname === phishingPageUrl.pathname
+    ) {
+      const portStream = new PortStream(remotePort);
+      controller.setupPhishingCommunication({
+        connectionStream: portStream,
+      });
     } else {
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id;
@@ -480,8 +595,14 @@ function setupController(initState, initLangCode) {
     if (count) {
       label = String(count);
     }
-    browser.browserAction.setBadgeText({ text: label });
-    browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    // browserAction has been replaced by action in MV3
+    if (isManifestV3()) {
+      browser.action.setBadgeText({ text: label });
+      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
+    } else {
+      browser.browserAction.setBadgeText({ text: label });
+      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+    }
   }
 
   function getUnapprovedTransactionCount() {

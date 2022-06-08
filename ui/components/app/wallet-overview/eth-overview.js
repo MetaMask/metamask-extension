@@ -31,6 +31,7 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -99,7 +100,7 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               trackEvent({
                 event: 'Clicked Deposit',
-                category: 'Navigation',
+                category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
                   action: 'Home',
                   legacy_event: true,
@@ -116,7 +117,7 @@ const EthOverview = ({ className }) => {
             onClick={() => {
               trackEvent({
                 event: 'Clicked Send: Eth',
-                category: 'Navigation',
+                category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
                   action: 'Home',
                   legacy_event: true,
@@ -133,9 +134,9 @@ const EthOverview = ({ className }) => {
               if (isSwapsChain) {
                 trackEvent({
                   event: 'Swaps Opened',
-                  category: 'swaps',
+                  category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: 'Main View',
+                    source: EVENT.SOURCE.SWAPS.MAIN_VIEW,
                     active_currency: 'ETH',
                   },
                 });

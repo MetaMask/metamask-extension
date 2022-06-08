@@ -21,6 +21,7 @@ import {
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
+import { setBackgroundConnection } from '../../../test/jest';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -77,9 +78,18 @@ jest.mock('./send', () => {
   };
 });
 
+setBackgroundConnection({
+  addPollingTokenToAppState: jest.fn(),
+  addUnapprovedTransaction: jest.fn((_w, _x, _y, _z, cb) => {
+    cb(null);
+  }),
+  updateTransactionSendFlowHistory: jest.fn((_x, _y, cb) => cb(null)),
+});
+
 describe('Send Slice', () => {
   let getTokenStandardAndDetailsStub;
   beforeEach(() => {
+    jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
       .spyOn(Actions, 'getTokenStandardAndDetails')
       .mockImplementation(() => Promise.resolve({ standard: 'ERC20' }));
@@ -184,9 +194,7 @@ describe('Send Slice', () => {
         };
         const result = sendReducer(initialState, action);
 
-        expect(result.draftTransaction.userInputHexData).toStrictEqual(
-          action.payload,
-        );
+        expect(result.userInputHexData).toStrictEqual(action.payload);
       });
     });
 
@@ -207,9 +215,6 @@ describe('Send Slice', () => {
         );
 
         expect(result.gas.gasLimit).toStrictEqual(action.payload);
-        expect(result.draftTransaction.txParams.gas).toStrictEqual(
-          action.payload,
-        );
       });
 
       it('should recalculate gasTotal', () => {
@@ -375,203 +380,6 @@ describe('Send Slice', () => {
 
         expect(result.stage).toStrictEqual(SEND_STAGES.DRAFT);
         expect(result.recipient.address).toStrictEqual(action.payload.address);
-      });
-    });
-
-    describe('updateDraftTransaction', () => {
-      describe('with LEGACY transactions', () => {
-        it('should properly set fields', () => {
-          const detailsForDraftTransactionState = {
-            ...initialState,
-            status: SEND_STATUSES.VALID,
-            transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-            account: {
-              address: '0xCurrentAddress',
-            },
-            asset: {
-              type: '',
-            },
-            recipient: {
-              address: '0xRecipientAddress',
-            },
-            amount: {
-              value: '0x1',
-            },
-            gas: {
-              gasPrice: '0x3b9aca00', // 1000000000
-              gasLimit: '0x5208', // 21000
-            },
-          };
-
-          const action = {
-            type: 'send/updateDraftTransaction',
-          };
-
-          const result = sendReducer(detailsForDraftTransactionState, action);
-
-          expect(result.draftTransaction.txParams.to).toStrictEqual(
-            detailsForDraftTransactionState.recipient.address,
-          );
-          expect(result.draftTransaction.txParams.value).toStrictEqual(
-            detailsForDraftTransactionState.amount.value,
-          );
-          expect(result.draftTransaction.txParams.gas).toStrictEqual(
-            detailsForDraftTransactionState.gas.gasLimit,
-          );
-          expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
-            detailsForDraftTransactionState.gas.gasPrice,
-          );
-        });
-
-        it('should update the draftTransaction txParams recipient to token address when asset is type TOKEN', () => {
-          const detailsForDraftTransactionState = {
-            ...initialState,
-            status: SEND_STATUSES.VALID,
-            transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-            account: {
-              address: '0xCurrentAddress',
-            },
-            asset: {
-              type: ASSET_TYPES.TOKEN,
-              details: {
-                address: '0xTokenAddress',
-              },
-            },
-            amount: {
-              value: '0x1',
-            },
-            gas: {
-              gasPrice: '0x3b9aca00', // 1000000000
-              gasLimit: '0x5208', // 21000
-            },
-          };
-
-          const action = {
-            type: 'send/updateDraftTransaction',
-          };
-
-          const result = sendReducer(detailsForDraftTransactionState, action);
-
-          expect(result.draftTransaction.txParams.to).toStrictEqual(
-            detailsForDraftTransactionState.asset.details.address,
-          );
-          expect(result.draftTransaction.txParams.value).toStrictEqual('0x0');
-          expect(result.draftTransaction.txParams.gas).toStrictEqual(
-            detailsForDraftTransactionState.gas.gasLimit,
-          );
-          expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
-            detailsForDraftTransactionState.gas.gasPrice,
-          );
-          expect(result.draftTransaction.txParams.data).toStrictEqual(
-            '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
-          );
-        });
-      });
-
-      describe('with FEE_MARKET transactions', () => {
-        it('should properly set fields', () => {
-          const detailsForDraftTransactionState = {
-            ...initialState,
-            status: SEND_STATUSES.VALID,
-            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
-            account: {
-              address: '0xCurrentAddress',
-            },
-            asset: {
-              type: '',
-            },
-            recipient: {
-              address: '0xRecipientAddress',
-            },
-            amount: {
-              value: '0x1',
-            },
-            gas: {
-              maxFeePerGas: '0x2540be400', // 10 GWEI
-              maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
-              gasLimit: '0x5208', // 21000
-            },
-            eip1559support: true,
-          };
-
-          const action = {
-            type: 'send/updateDraftTransaction',
-          };
-
-          const result = sendReducer(detailsForDraftTransactionState, action);
-
-          expect(result.draftTransaction.txParams.to).toStrictEqual(
-            detailsForDraftTransactionState.recipient.address,
-          );
-          expect(result.draftTransaction.txParams.value).toStrictEqual(
-            detailsForDraftTransactionState.amount.value,
-          );
-          expect(result.draftTransaction.txParams.gas).toStrictEqual(
-            detailsForDraftTransactionState.gas.gasLimit,
-          );
-          expect(result.draftTransaction.txParams.gasPrice).toBeUndefined();
-          expect(result.draftTransaction.txParams.maxFeePerGas).toStrictEqual(
-            detailsForDraftTransactionState.gas.maxFeePerGas,
-          );
-          expect(
-            result.draftTransaction.txParams.maxPriorityFeePerGas,
-          ).toStrictEqual(
-            detailsForDraftTransactionState.gas.maxPriorityFeePerGas,
-          );
-        });
-
-        it('should update the draftTransaction txParams recipient to token address when asset is type TOKEN', () => {
-          const detailsForDraftTransactionState = {
-            ...initialState,
-            status: SEND_STATUSES.VALID,
-            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
-            account: {
-              address: '0xCurrentAddress',
-            },
-            asset: {
-              type: ASSET_TYPES.TOKEN,
-              details: {
-                address: '0xTokenAddress',
-              },
-            },
-            amount: {
-              value: '0x1',
-            },
-            gas: {
-              maxFeePerGas: '0x2540be400', // 10 GWEI
-              maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
-              gasLimit: '0x5208', // 21000
-            },
-            eip1559support: true,
-          };
-
-          const action = {
-            type: 'send/updateDraftTransaction',
-          };
-
-          const result = sendReducer(detailsForDraftTransactionState, action);
-
-          expect(result.draftTransaction.txParams.to).toStrictEqual(
-            detailsForDraftTransactionState.asset.details.address,
-          );
-          expect(result.draftTransaction.txParams.value).toStrictEqual('0x0');
-          expect(result.draftTransaction.txParams.gas).toStrictEqual(
-            detailsForDraftTransactionState.gas.gasLimit,
-          );
-
-          expect(result.draftTransaction.txParams.maxFeePerGas).toStrictEqual(
-            detailsForDraftTransactionState.gas.maxFeePerGas,
-          );
-          expect(
-            result.draftTransaction.txParams.maxPriorityFeePerGas,
-          ).toStrictEqual(
-            detailsForDraftTransactionState.gas.maxPriorityFeePerGas,
-          );
-          expect(result.draftTransaction.txParams.gasPrice).toBeUndefined();
-          expect(result.draftTransaction.txParams.data).toStrictEqual(
-            '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
-          );
-        });
       });
     });
 
@@ -1239,6 +1047,10 @@ describe('Send Slice', () => {
 
         const expectedActionResult = [
           {
+            type: 'send/addHistoryEntry',
+            payload: 'sendFlow - user set legacy gasPrice to 0x0',
+          },
+          {
             type: 'send/updateGasFees',
             payload: {
               gasPrice: '0x0',
@@ -1286,29 +1098,33 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
         };
         const store = mockStore(sendState);
 
-        const newSendAmount = 'aNewSendAmount';
+        const newSendAmount = 'DE0B6B3A7640000';
 
         await store.dispatch(updateSendAmount(newSendAmount));
 
         const actionResult = store.getActions();
 
         const expectedFirstActionResult = {
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set amount to 1 ETH',
+        };
+
+        const expectedSecondActionResult = {
           type: 'send/updateSendAmount',
-          payload: 'aNewSendAmount',
+          payload: 'DE0B6B3A7640000',
         };
 
         expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[1]).toStrictEqual(expectedSecondActionResult);
+        expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -1336,9 +1152,7 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
         };
 
@@ -1349,15 +1163,21 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         const expectedFirstActionResult = {
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set amount to 0 ETH',
+        };
+
+        const expectedSecondActionResult = {
           type: 'send/updateSendAmount',
           payload: undefined,
         };
 
         expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[1]).toStrictEqual(expectedSecondActionResult);
+        expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -1386,9 +1206,7 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
         };
 
@@ -1398,12 +1216,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
-        expect(actionResult[0].type).toStrictEqual('send/updateSendAmount');
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual('send/addHistoryEntry');
+        expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
+        expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -1435,9 +1254,7 @@ describe('Send Slice', () => {
           amount: {
             value: '',
           },
-          draftTransaction: {
-            userInputHexData: '',
-          },
+          userInputHexData: '',
         },
       };
 
@@ -1457,19 +1274,31 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
+        expect(actionResult).toHaveLength(6);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset type to ',
+        });
+        expect(actionResult[1]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset symbol to ',
+        });
+        expect(actionResult[2]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset address to ',
+        });
 
-        expect(actionResult[0].type).toStrictEqual('send/updateAsset');
-        expect(actionResult[0].payload).toStrictEqual({
+        expect(actionResult[3].type).toStrictEqual('send/updateAsset');
+        expect(actionResult[3].payload).toStrictEqual({
           ...newSendAsset,
           balance: '',
           error: null,
         });
 
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -1497,19 +1326,31 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
-        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
-        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
-        expect(actionResult[2].payload).toStrictEqual({
+        expect(actionResult).toHaveLength(8);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: `sendFlow - user set asset type to ${ASSET_TYPES.TOKEN}`,
+        });
+        expect(actionResult[1]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset symbol to tokenSymbol',
+        });
+        expect(actionResult[2]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset address to tokenAddress',
+        });
+        expect(actionResult[3].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[4].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[5].payload).toStrictEqual({
           ...newSendAsset,
           balance: '0x0',
           error: null,
         });
 
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[6].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -1534,10 +1375,22 @@ describe('Send Slice', () => {
           store.dispatch(updateSendAsset(newSendAsset)),
         ).rejects.toThrow('invalidAssetType');
         const actionResult = store.getActions();
-        expect(actionResult).toHaveLength(3);
-        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
-        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
-        expect(actionResult[2]).toStrictEqual({
+        expect(actionResult).toHaveLength(6);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: `sendFlow - user set asset type to ${ASSET_TYPES.TOKEN}`,
+        });
+        expect(actionResult[1]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset symbol to tokenSymbol',
+        });
+        expect(actionResult[2]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset address to tokenAddress',
+        });
+        expect(actionResult[3].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[4].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[5]).toStrictEqual({
           payload: {
             name: 'CONVERT_TOKEN_TO_NFT',
             tokenAddress: 'tokenAddress',
@@ -1591,24 +1444,32 @@ describe('Send Slice', () => {
 
         await store.dispatch(updateRecipientUserInput(newUserRecipientInput));
 
-        expect(store.getActions()).toHaveLength(1);
-        expect(store.getActions()[0].type).toStrictEqual(
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(1);
+        expect(actionResult[0].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(store.getActions()[0].payload).toStrictEqual(
-          newUserRecipientInput,
-        );
+        expect(actionResult[0].payload).toStrictEqual(newUserRecipientInput);
 
         clock.tick(300); // debounce
 
-        expect(store.getActions()).toHaveLength(2);
-        expect(store.getActions()[1].type).toStrictEqual(
+        const actionResultAfterDebounce = store.getActions();
+        expect(actionResultAfterDebounce).toHaveLength(3);
+
+        expect(actionResultAfterDebounce[1]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: `sendFlow - user typed ${newUserRecipientInput} into recipient input field`,
+        });
+
+        expect(actionResultAfterDebounce[2].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(store.getActions()[1].payload).toStrictEqual({
+        expect(actionResultAfterDebounce[2].payload).toStrictEqual({
           chainId: '',
           tokens: [],
           useTokenDetection: true,
+          userInput: newUserRecipientInput,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
@@ -1621,8 +1482,13 @@ describe('Send Slice', () => {
         await store.dispatch(useContactListForRecipientSearch());
 
         const actionResult = store.getActions();
+        expect(actionResult).toHaveLength(2);
 
         expect(actionResult).toStrictEqual([
+          {
+            type: 'send/addHistoryEntry',
+            payload: 'sendFlow - user selected back to all on recipient screen',
+          },
           {
             type: 'send/updateRecipientSearchMode',
             payload: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
@@ -1639,7 +1505,14 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
+        expect(actionResult).toHaveLength(2);
+
         expect(actionResult).toStrictEqual([
+          {
+            type: 'send/addHistoryEntry',
+            payload:
+              'sendFlow - user selected transfer to my accounts on recipient screen',
+          },
           {
             type: 'send/updateRecipientSearchMode',
             payload: RECIPIENT_SEARCH_MODES.MY_ACCOUNTS,
@@ -1683,9 +1556,7 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
         };
 
@@ -1744,9 +1615,7 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
         };
 
@@ -1798,9 +1667,7 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
         };
 
@@ -1872,7 +1739,6 @@ describe('Send Slice', () => {
             amount: {
               value: '0x1',
             },
-            draftTransaction: {},
           },
         };
 
@@ -1881,20 +1747,24 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
-        expect(actionResult[0].type).toStrictEqual(
+        expect(actionResult).toHaveLength(7);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user cleared recipient input',
+        });
+        expect(actionResult[1].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[0].payload).toStrictEqual('');
-        expect(actionResult[1].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[1].payload).toStrictEqual('');
+        expect(actionResult[2].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[4].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[6].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -1918,10 +1788,14 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         const expectActionResult = [
+          {
+            type: 'send/addHistoryEntry',
+            payload: 'sendFlow - user added custom hexData 0x1',
+          },
           { type: 'send/updateUserInputHexData', payload: hexData },
         ];
 
-        expect(actionResult).toHaveLength(1);
+        expect(actionResult).toHaveLength(2);
         expect(actionResult).toStrictEqual(expectActionResult);
       });
     });
@@ -1944,9 +1818,7 @@ describe('Send Slice', () => {
               mode: '',
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
           metamask: {
             provider: {
@@ -1961,13 +1833,17 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(5);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateAmountToMax');
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[2]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user toggled max mode on',
+        });
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -1989,9 +1865,7 @@ describe('Send Slice', () => {
               mode: AMOUNT_MODES.MAX,
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
           },
           metamask: {
             provider: {
@@ -2005,13 +1879,17 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(5);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[2]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user toggled max mode off',
+        });
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
       });
@@ -2022,26 +1900,29 @@ describe('Send Slice', () => {
         send: {
           asset: {},
           stage: '',
-          draftTransaction: {},
           recipient: {},
           amount: {},
           account: {},
+          gas: {
+            gasLimit: GAS_LIMITS.SIMPLE,
+          },
         },
       };
 
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
-        global.ethQuery = {
-          sendTransaction: sinon.stub(),
-        };
-
         const store = mockStore(signTransactionState);
 
         await store.dispatch(signTransaction());
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(1);
-        expect(actionResult[0].type).toStrictEqual('SHOW_CONF_TX_PAGE');
+        expect(actionResult).toHaveLength(2);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload:
+            'sendFlow - user clicked next and transaction should be added to controller',
+        });
+        expect(actionResult[1].type).toStrictEqual('SHOW_CONF_TX_PAGE');
       });
 
       it('should create actions for updateTransaction rejecting', async () => {
@@ -2059,12 +1940,7 @@ describe('Send Slice', () => {
           send: {
             ...signTransactionState.send,
             stage: SEND_STAGES.EDIT,
-            draftTransaction: {
-              id: 1,
-              txParams: {
-                value: 'newTxValue',
-              },
-            },
+            id: 1,
           },
         };
 
@@ -2076,11 +1952,16 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(2);
-        expect(actionResult[0].type).toStrictEqual(
+        expect(actionResult).toHaveLength(3);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload:
+            'sendFlow - user clicked next and transaction should be updated in controller',
+        });
+        expect(actionResult[1].type).toStrictEqual(
           'UPDATE_TRANSACTION_EDITABLE_PARAMS',
         );
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[2].type).toStrictEqual(
           'UPDATE_TRANSACTION_GAS_FEES',
         );
       });
@@ -2128,9 +2009,13 @@ describe('Send Slice', () => {
         await store.dispatch(editTransaction(ASSET_TYPES.NATIVE, 1));
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(1);
-        expect(actionResult[0].type).toStrictEqual('send/editTransaction');
-        expect(actionResult[0].payload).toStrictEqual({
+        expect(actionResult).toHaveLength(2);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user clicked edit on transaction with id 1',
+        });
+        expect(actionResult[1].type).toStrictEqual('send/editTransaction');
+        expect(actionResult[1].payload).toStrictEqual({
           address: '0xRecipientAddress',
           amount: '0xde0b6b3a7640000',
           data: '',
@@ -2141,7 +2026,7 @@ describe('Send Slice', () => {
           nickname: '',
         });
 
-        const action = actionResult[0];
+        const action = actionResult[1];
 
         const result = sendReducer(initialState, action);
 
@@ -2149,19 +2034,6 @@ describe('Send Slice', () => {
         expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
 
         expect(result.amount.value).toStrictEqual(action.payload.amount);
-
-        expect(result.draftTransaction.txParams.to).toStrictEqual(
-          action.payload.address,
-        );
-        expect(result.draftTransaction.txParams.value).toStrictEqual(
-          action.payload.amount,
-        );
-        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
-          action.payload.gasPrice,
-        );
-        expect(result.draftTransaction.txParams.gas).toStrictEqual(
-          action.payload.gasLimit,
-        );
       });
 
       it('should set up the appropriate state for editing a collectible asset transaction', async () => {
@@ -2205,9 +2077,8 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            draftTransaction: {
-              userInputHexData: '',
-            },
+            userInputHexData: '',
+
             recipient: {
               address: 'Address',
               nickname: 'NickName',
@@ -2249,9 +2120,25 @@ describe('Send Slice', () => {
           ),
         );
         const actionResult = store.getActions();
-        expect(actionResult).toHaveLength(5);
-        expect(actionResult[0].type).toStrictEqual('send/updateAsset');
-        expect(actionResult[0].payload).toStrictEqual({
+        expect(actionResult).toHaveLength(9);
+        expect(actionResult[0]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user clicked edit on transaction with id 1',
+        });
+        expect(actionResult[1]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: `sendFlow - user set asset type to ${ASSET_TYPES.COLLECTIBLE}`,
+        });
+        expect(actionResult[2]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset symbol to undefined',
+        });
+        expect(actionResult[3]).toMatchObject({
+          type: 'send/addHistoryEntry',
+          payload: 'sendFlow - user set asset address to 0xTokenAddress',
+        });
+        expect(actionResult[4].type).toStrictEqual('send/updateAsset');
+        expect(actionResult[4].payload).toStrictEqual({
           balance: '0x1',
           type: ASSET_TYPES.COLLECTIBLE,
           error: null,
@@ -2265,18 +2152,17 @@ describe('Send Slice', () => {
             tokenId: '26847',
           },
         });
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[6].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[4].type).toStrictEqual('send/editTransaction');
-
-        const action = actionResult[4];
+        expect(actionResult[8].type).toStrictEqual('send/editTransaction');
+        const action = actionResult[8];
 
         const result = sendReducer(initialState, action);
 
@@ -2284,19 +2170,6 @@ describe('Send Slice', () => {
         expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
 
         expect(result.amount.value).toStrictEqual(action.payload.amount);
-
-        expect(result.draftTransaction.txParams.to).toStrictEqual(
-          action.payload.address,
-        );
-        expect(result.draftTransaction.txParams.value).toStrictEqual(
-          action.payload.amount,
-        );
-        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
-          action.payload.gasPrice,
-        );
-        expect(result.draftTransaction.txParams.gas).toStrictEqual(
-          action.payload.gasLimit,
-        );
       });
     });
 
@@ -2341,9 +2214,7 @@ describe('Send Slice', () => {
           amount: {
             value: '',
           },
-          draftTransaction: {
-            userInputHexData: '',
-          },
+          userInputHexData: '',
           recipient: {
             address: 'Address',
             nickname: 'NickName',
@@ -2378,11 +2249,27 @@ describe('Send Slice', () => {
       );
       const actionResult = store.getActions();
 
-      expect(actionResult).toHaveLength(7);
-      expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
-      expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
-      expect(actionResult[2].type).toStrictEqual('send/updateAsset');
-      expect(actionResult[2].payload).toStrictEqual({
+      expect(actionResult).toHaveLength(11);
+      expect(actionResult[0]).toMatchObject({
+        type: 'send/addHistoryEntry',
+        payload: 'sendFlow - user clicked edit on transaction with id 1',
+      });
+      expect(actionResult[1]).toMatchObject({
+        type: 'send/addHistoryEntry',
+        payload: `sendFlow - user set asset type to ${ASSET_TYPES.TOKEN}`,
+      });
+      expect(actionResult[2]).toMatchObject({
+        type: 'send/addHistoryEntry',
+        payload: 'sendFlow - user set asset symbol to SYMB',
+      });
+      expect(actionResult[3]).toMatchObject({
+        type: 'send/addHistoryEntry',
+        payload: 'sendFlow - user set asset address to 0xTokenAddress',
+      });
+      expect(actionResult[4].type).toStrictEqual('SHOW_LOADING_INDICATION');
+      expect(actionResult[5].type).toStrictEqual('HIDE_LOADING_INDICATION');
+      expect(actionResult[6].type).toStrictEqual('send/updateAsset');
+      expect(actionResult[6].payload).toStrictEqual({
         balance: '0x0',
         type: ASSET_TYPES.TOKEN,
         error: null,
@@ -2393,17 +2280,17 @@ describe('Send Slice', () => {
           standard: 'ERC20',
         },
       });
-      expect(actionResult[3].type).toStrictEqual(
+      expect(actionResult[7].type).toStrictEqual(
         'send/computeEstimatedGasLimit/pending',
       );
-      expect(actionResult[4].type).toStrictEqual(
+      expect(actionResult[8].type).toStrictEqual(
         'metamask/gas/SET_CUSTOM_GAS_LIMIT',
       );
-      expect(actionResult[5].type).toStrictEqual(
+      expect(actionResult[9].type).toStrictEqual(
         'send/computeEstimatedGasLimit/fulfilled',
       );
-      expect(actionResult[6].type).toStrictEqual('send/editTransaction');
-      expect(actionResult[6].payload).toStrictEqual({
+      expect(actionResult[10].type).toStrictEqual('send/editTransaction');
+      expect(actionResult[10].payload).toStrictEqual({
         address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
         amount: '0x3a98',
         data: '',
@@ -2414,7 +2301,7 @@ describe('Send Slice', () => {
         nickname: '',
       });
 
-      const action = actionResult[6];
+      const action = actionResult[10];
 
       const result = sendReducer(initialState, action);
 
@@ -2422,19 +2309,6 @@ describe('Send Slice', () => {
       expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
 
       expect(result.amount.value).toStrictEqual(action.payload.amount);
-
-      expect(result.draftTransaction.txParams.to).toStrictEqual(
-        action.payload.address,
-      );
-      expect(result.draftTransaction.txParams.value).toStrictEqual(
-        action.payload.amount,
-      );
-      expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
-        action.payload.gasPrice,
-      );
-      expect(result.draftTransaction.txParams.gas).toStrictEqual(
-        action.payload.gasLimit,
-      );
     });
   });
 
@@ -2634,10 +2508,7 @@ describe('Send Slice', () => {
           getDraftTransactionID({
             send: {
               ...initialState,
-              draftTransaction: {
-                ...initialState.draftTransaction,
-                id: 'ID',
-              },
+              id: 'ID',
             },
           }),
         ).toBe('ID');
@@ -2649,10 +2520,7 @@ describe('Send Slice', () => {
           getSendHexData({
             send: {
               ...initialState,
-              draftTransaction: {
-                ...initialState.draftTransaction,
-                userInputHexData: '0x0',
-              },
+              userInputHexData: '0x0',
             },
           }),
         ).toBe('0x0');

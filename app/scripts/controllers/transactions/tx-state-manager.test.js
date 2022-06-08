@@ -11,6 +11,7 @@ import {
   KOVAN_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TxStateManager from './tx-state-manager';
 import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
 
@@ -1188,7 +1189,7 @@ describe('TransactionStateManager', function () {
       };
       const generatedTransaction = txStateManager.generateTxMeta({
         txParams,
-        origin: 'metamask',
+        origin: ORIGIN_METAMASK,
       });
       assert.ok(generatedTransaction);
       assert.strictEqual(generatedTransaction.dappSuggestedGasFees, null);
