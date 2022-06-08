@@ -6176,10 +6176,13 @@
     "react-dnd-html5-backend": {
       "globals": {
         "Image": true,
+        "addEventListener": true,
+        "clearTimeout": true,
         "console.warn": true,
         "devicePixelRatio": true,
         "document": true,
         "navigator.userAgent": true,
+        "removeEventListener": true,
         "safari": true,
         "setTimeout": true
       }
