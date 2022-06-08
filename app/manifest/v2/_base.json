@@ -66,12 +66,12 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
+    "https://chainid.network/chains.json",
     "https://lattice.gridplus.io/*",
     "activeTab",
     "webRequest",
     "*://*.eth/",
     "notifications"
   ],
-  "short_name": "__MSG_appName__",
-  "web_accessible_resources": ["inpage.js", "phishing.html"]
+  "short_name": "__MSG_appName__"
 }

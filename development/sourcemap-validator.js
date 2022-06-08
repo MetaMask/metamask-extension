@@ -24,7 +24,6 @@ async function start() {
     `common-0.js`,
     `background-0.js`,
     `ui-0.js`,
-    'phishing-detect.js',
     // `contentscript.js`, skipped because the validator is erroneously sampling the inlined `inpage.js` script
     `inpage.js`,
   ];
