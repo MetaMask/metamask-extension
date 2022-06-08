@@ -3045,10 +3045,6 @@
   "snapInstallWarningCheck": {
     "message": "理解したことを確認するために、すべての項目にチェックを入れてください。"
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "スナップ「$1」に重要なアクセス権を付与しようとしています。これは取り消し不可能で、「$1」によるアカウントとアセットのコントロールが可能になります。続行する前に、「$1」が信頼できることを確認してください。",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapRequestsPermission": {
     "message": "このスナップが次のパーミッションをリクエストしています:"
   },

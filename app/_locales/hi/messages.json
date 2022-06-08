@@ -3045,10 +3045,6 @@
   "snapInstallWarningCheck": {
     "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी पर सही का निशान लगाएं।"
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "आप स्नैप \"$1\" को महत्वपूर्ण एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके अकाउंट्स और एसेट्स पर \"$1\" को नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapRequestsPermission": {
     "message": "ये स्नैप निम्नलिखित अनुमतियों हेतु अनुरोध कर रहा है:"
   },
