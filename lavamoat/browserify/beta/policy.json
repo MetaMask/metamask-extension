@@ -2757,23 +2757,6 @@
       }
     },
     "@metamask/controllers>eth-method-registry>ethjs>js-sha3": {
-      "globals": {
-        "addEventListener": true,
-        "console.warn": true,
-        "document.createElement": true,
-        "document.head.appendChild": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "buffer": true,
-        "eth-sig-util": true,
-        "ethereumjs-tx": true,
-        "ethereumjs-util": true,
-        "events": true,
-        "hdkey": true,
-        "rlp": true
-      }
-    },
       "packages": {
         "browserify>process": true
       }
@@ -2801,9 +2784,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-        "ethereumjs-util": true
-      }
-    },
       }
     },
     "@metamask/controllers>isomorphic-fetch": {

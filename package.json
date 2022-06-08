@@ -451,7 +451,22 @@
       "eth-lattice-keyring>secp256k1": false,
       "eth-walletconnect-keyring>hdkey>secp256k1": false,
       "eth-walletconnect-keyring>@metamask/eth-sig-util>ethereumjs-abi>ethereumjs-util>ethereum-cryptography>keccak": false,
-      "eth-walletconnect-keyring>@metamask/eth-sig-util>ethereumjs-abi>ethereumjs-util>ethereum-cryptography>secp256k1": false
+      "eth-walletconnect-keyring>@metamask/eth-sig-util>ethereumjs-abi>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "3box>3box-orbitdb-plugins>ipfs-log>orbit-db-identity-provider>orbit-db-keystore>leveldown": false,
+      "3box>3box-orbitdb-plugins>ipfs-log>orbit-db-identity-provider>orbit-db-keystore>libp2p-crypto>libp2p-crypto-secp256k1>secp256k1": false,
+      "3box>3box-orbitdb-plugins>ipfs-log>orbit-db-identity-provider>orbit-db-keystore>libp2p-crypto>ursa-optional": false,
+      "3box>ipfs>ipfs-mfs>ipfs-unixfs-exporter>ipfs-unixfs-importer>rabin-wasm>assemblyscript": false,
+      "3box>ipfs>ipld-bitcoin>bitcoinjs-lib>bip32>tiny-secp256k1": false,
+      "3box>ipfs>ipld-ethereum>ethereumjs-block>ethereumjs-tx>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "3box>ipfs>ipld-ethereum>ethereumjs-block>ethereumjs-tx>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "3box>ipfs>ipld-ethereum>ethereumjs-block>merkle-patricia-tree>ethereumjs-util>keccak": false,
+      "@metamask/controllers>babel-runtime>core-js": false,
+      "@metamask/controllers>eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>keccak": false,
+      "@metamask/controllers>eth-keyring-controller>eth-hd-keyring>eth-sig-util>ethereumjs-util>keccak": false,
+      "@metamask/controllers>web3-provider-engine>eth-json-rpc-filters>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>keccak": false,
+      "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>keccak": false,
+      "@storybook/addon-a11y>@storybook/addons>@storybook/api>@storybook/channels>core-js": false,
+      "@storybook/addon-essentials>@storybook/addon-docs>@storybook/builder-webpack4>@storybook/ui>core-js-pure": false
     }
   }
 }
