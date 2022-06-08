@@ -1,0 +1,12 @@
+diff --git a/node_modules/@metamask/controllers/dist/util.js b/node_modules/@metamask/controllers/dist/util.js
+index 574c57b..d12dd57 100644
+--- a/node_modules/@metamask/controllers/dist/util.js
++++ b/node_modules/@metamask/controllers/dist/util.js
+@@ -835,6 +835,7 @@ var SupportedTokenDetectionNetworks;
+     SupportedTokenDetectionNetworks["bsc"] = "56";
+     SupportedTokenDetectionNetworks["polygon"] = "137";
+     SupportedTokenDetectionNetworks["avax"] = "43114";
++    SupportedTokenDetectionNetworks["local"] = "1337";
+ })(SupportedTokenDetectionNetworks = exports.SupportedTokenDetectionNetworks || (exports.SupportedTokenDetectionNetworks = {}));
+ /**
+  * Check if token detection is enabled for certain networks.

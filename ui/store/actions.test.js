@@ -1099,32 +1099,32 @@ describe('Actions', () => {
     });
   });
 
-  describe('#removeToken', () => {
+  describe('#ignoreTokens', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeToken in background', async () => {
+    it('calls ignoreTokens in background', async () => {
       const store = mockStore();
 
-      const removeTokenStub = sinon.stub().callsFake((_, cb) => cb());
+      const ignoreTokensStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        removeToken: removeTokenStub,
+        ignoreTokens: ignoreTokensStub,
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.removeToken());
-      expect(removeTokenStub.callCount).toStrictEqual(1);
+      await store.dispatch(actions.ignoreTokens());
+      expect(ignoreTokensStub.callCount).toStrictEqual(1);
     });
 
-    it('should display warning when removeToken in background fails', async () => {
+    it('should display warning when ignoreTokens in background fails', async () => {
       const store = mockStore();
 
       background.getApi.returns({
-        removeToken: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
@@ -1140,7 +1140,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.removeToken());
+      await store.dispatch(actions.ignoreTokens());
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
