@@ -86,22 +86,20 @@ describe('Test Snap Notification', function () {
         assert.equal(await notificationResult.getText(), '1');
 
         // try to click on the account menu icon (via xpath)
-        await driver.clickElement({
-          xpath:
-            '//*[@id="app-content"]/div/div[1]/div/div[2]/div[2]/div[1]/div',
-        });
+        await driver.clickElement('.account-menu__icon');
         await driver.delay(500);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
-          xpath: '//*[@id="app-content"]/div/div[3]/div[10]',
+          text: 'Notifications',
+          tag: 'div',
         });
         await driver.delay(500);
 
         // look for the correct text in notifications (via xpath)
-        const notificationResultMessage = await driver.findElement({
-          xpath: '//*[@id="app-content"]/div/div[3]/div/div[2]/div/div[2]/p[1]',
-        });
+        const notificationResultMessage = await driver.findElement(
+          '.notifications__item__details__message',
+        );
         assert.equal(
           await notificationResultMessage.getText(),
           'TEST INAPP NOTIFICATION',
