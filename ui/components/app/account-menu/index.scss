@@ -106,8 +106,9 @@
   & &__lock-button {
     @include H7;
 
-    padding: 3.5px 5px;
-    width: 59px;
+    padding: 0.25rem 0.5rem;
+    min-width: 59px;
+    width: auto;
   }
 
   &__accounts-container {

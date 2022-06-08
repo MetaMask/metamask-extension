@@ -41,6 +41,7 @@ import {
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
@@ -60,6 +61,7 @@ import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
+const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
 
 const SWAP_TRANSACTION_TYPES = [
   TRANSACTION_TYPES.SWAP,
@@ -1465,6 +1467,39 @@ export default class TransactionController extends EventEmitter {
     this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED);
   }
 
+  async updatePostTxBalance({ txMeta, txId, numberOfAttempts = 6 }) {
+    const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
+    const latestTxMeta = this.txStateManager.getTransaction(txId);
+    const approvalTxMeta = latestTxMeta.approvalTxId
+      ? this.txStateManager.getTransaction(latestTxMeta.approvalTxId)
+      : null;
+    latestTxMeta.postTxBalance = postTxBalance.toString(16);
+    const isDefaultTokenAddress = isSwapsDefaultTokenAddress(
+      txMeta.destinationTokenAddress,
+      txMeta.chainId,
+    );
+    if (
+      isDefaultTokenAddress &&
+      txMeta.preTxBalance === latestTxMeta.postTxBalance &&
+      numberOfAttempts > 0
+    ) {
+      setTimeout(() => {
+        // If postTxBalance is the same as preTxBalance, try it again.
+        this.updatePostTxBalance({
+          txMeta,
+          txId,
+          numberOfAttempts: numberOfAttempts - 1,
+        });
+      }, UPDATE_POST_TX_BALANCE_TIMEOUT);
+    } else {
+      this.txStateManager.updateTransaction(
+        latestTxMeta,
+        'transactions#confirmTransaction - add postTxBalance',
+      );
+      this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
+    }
+  }
+
   /**
    * Sets the status of the transaction to confirmed and sets the status of nonce duplicates as
    * dropped if the txParams have data it will fetch the txReceipt
@@ -1528,21 +1563,10 @@ export default class TransactionController extends EventEmitter {
       );
 
       if (txMeta.type === TRANSACTION_TYPES.SWAP) {
-        const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
-        const latestTxMeta = this.txStateManager.getTransaction(txId);
-
-        const approvalTxMeta = latestTxMeta.approvalTxId
-          ? this.txStateManager.getTransaction(latestTxMeta.approvalTxId)
-          : null;
-
-        latestTxMeta.postTxBalance = postTxBalance.toString(16);
-
-        this.txStateManager.updateTransaction(
-          latestTxMeta,
-          'transactions#confirmTransaction - add postTxBalance',
-        );
-
-        this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
+        await this.updatePostTxBalance({
+          txMeta,
+          txId,
+        });
       }
     } catch (err) {
       log.error(err);
@@ -1600,21 +1624,10 @@ export default class TransactionController extends EventEmitter {
       );
 
       if (txMeta.type === TRANSACTION_TYPES.SWAP) {
-        const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
-        const latestTxMeta = this.txStateManager.getTransaction(txId);
-
-        const approvalTxMeta = latestTxMeta.approvalTxId
-          ? this.txStateManager.getTransaction(latestTxMeta.approvalTxId)
-          : null;
-
-        latestTxMeta.postTxBalance = postTxBalance.toString(16);
-
-        this.txStateManager.updateTransaction(
-          latestTxMeta,
-          'transactions#confirmTransaction - add postTxBalance',
-        );
-
-        this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
+        await this.updatePostTxBalance({
+          txMeta,
+          txId,
+        });
       }
     } catch (err) {
       log.error(err);

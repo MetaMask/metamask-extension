@@ -631,7 +631,7 @@
     "message": "Sözleşme Etkileşimi"
   },
   "convertTokenToNFTDescription": {
-    "message": "Bu varlığın bir NFT olduğunu tespit ettik. Metamask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenden çıkarmak ve bir NFT olarak eklemek ister misin?"
+    "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenden çıkarmak ve bir NFT olarak eklemek ister misin?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Bu varlığın bir NFT olarak eklendiğini tespit ettik. Token listenden çıkarmak ister misin?"
@@ -3083,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Akıllı İşlemler kullanılamazken bile token'larını değiştirebilirsin."
   },
-  "stxPendingFinalizing": {
-    "message": "Sonuçlandırılıyor..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Gas optimize ediliyor..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Takas özel olarak gönderiliyor..."
-  },
   "stxSubDescription": {
     "message": "* Akıllı İşlemler, işlemini birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Takas'ının başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
   },
@@ -3179,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1 ile eşleşen token yok",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Değiştirme işlemi şu süre içinde tamamlandı <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
@@ -3498,7 +3485,7 @@
     "message": "Hesaplarınızı ve bilgilerinizi mobil cihazınızla senkronize edebilirsiniz. MetaMask mobil uygulamasını açın, \"Ayarlar\" kısmına gidin ve \"Tarayıcı Uzantısından Senkronize Et\" seçeneğine dokunun"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Metamask Mobil uygulamasını ilk defa açıyorsanız telefonunuzdaki adımları izleyin."
+    "message": "MetaMask Mobil uygulamasını ilk defa açıyorsanız telefonunuzdaki adımları izleyin."
   },
   "syncWithMobileScanThisCode": {
     "message": "MetaMask mobil uygulamanızla bu kodu tarayın"
