@@ -12,7 +12,7 @@ import {
   ASSET_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCollectibles } from '../../../../ducks/metamask/metamask';
-import { removeToken } from '../../../../store/actions';
+import { ignoreTokens } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
@@ -28,7 +28,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
     <Modal
       onSubmit={async () => {
         if (tokenAddedAsNFT) {
-          await dispatch(removeToken(tokenAddress));
+          await dispatch(ignoreTokens(tokenAddress));
           const { tokenId } = tokenAddedAsNFT;
           history.push({
             pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,
