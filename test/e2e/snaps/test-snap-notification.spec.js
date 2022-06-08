@@ -4,7 +4,7 @@ const { PAGES } = require('../webdriver/driver');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Notification', function () {
-  it('can it send 1 correctly read inapp notification', async function () {
+  it('can send 1 correctly read inapp notification', async function () {
     const ganacheOptions = {
       accounts: [
         {
