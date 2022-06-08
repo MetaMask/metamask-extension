@@ -137,10 +137,10 @@
     "message": "Jūsų naršyklė neatpažįstama..."
   },
   "buyWithWyre": {
-    "message": "Pirkti ETH su „Wyre“"
+    "message": "Pirkti $1 su „Wyre“"
   },
   "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti ETH tiesiai į jūsų „MetaMask“ paskyrą."
+    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti $1 tiesiai į jūsų „MetaMask“ paskyrą."
   },
   "bytes": {
     "message": "Baitai"

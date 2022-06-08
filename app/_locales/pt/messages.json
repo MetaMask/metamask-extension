@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Concordo"
   },
-  "aggregatorFeeCost": {
-    "message": "Taxa de rede do agregador"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Taxa de aprovação e da rede do agregador"
-  },
-  "approvalTxGasCost": {
-    "message": "Custo em gás da transação de aprovação"
   },
   "approve": {
     "message": "Aprovar"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Comprar ETH com Wyre"
+    "message": "Comprar $1 com Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar ETH diretamente na sua conta da MetaMask."
+    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
   },
   "bytes": {
     "message": "Bytes"
@@ -640,7 +631,7 @@
     "message": "Interação com contrato"
   },
   "convertTokenToNFTDescription": {
-    "message": "Detectamos que esse ativo é um NFT. A Metamask agora oferece suporte nativo a NFTs. Gostaria de removê-lo da sua lista de tokens e adicioná-lo como NFT?"
+    "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo da sua lista de tokens e adicioná-lo como NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Detectamos que esse ativo foi adicionado como NFT. Deseja removê-lo da sua lista de tokens?"
@@ -793,9 +784,6 @@
   },
   "decryptRequest": {
     "message": "Solicitação de descriptografia"
-  },
-  "defaultTheme": {
-    "message": "Padrão"
   },
   "delete": {
     "message": "Excluir"
@@ -1176,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Extensão externa"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 de gás por aprovação",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Falhou"
@@ -3099,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Você ainda pode fazer swap com seus tokens mesmo quando as Transações Inteligentes estiverem indisponíveis."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalizando..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Otimizando as taxas de gás..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Enviando a Swap de forma privada..."
-  },
   "stxSubDescription": {
     "message": "* A função de Transações Inteligentes tentará enviar a sua transação várias vezes de forma privada. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua Swap seja realizada com sucesso."
   },
@@ -3195,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Nenhum token disponível correspondente a $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Swap concluído em <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirme com sua carteira de hardware"

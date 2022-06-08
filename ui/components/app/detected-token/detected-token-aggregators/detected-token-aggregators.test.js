@@ -10,7 +10,7 @@ import DetectedTokenAggregators from './detected-token-aggregators';
 
 describe('DetectedTokenAggregators', () => {
   const args = {
-    aggregatorsList: [
+    aggregators: [
       'Aave',
       'Bancor',
       'CMC',

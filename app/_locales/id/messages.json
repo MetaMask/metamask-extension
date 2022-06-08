@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Saya Setuju"
   },
-  "aggregatorFeeCost": {
-    "message": "Biaya jaringan agregator"
-  },
   "airgapVault": {
     "message": "Brankas AirGap"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Persetujuan dan biaya jaringan agregator"
-  },
-  "approvalTxGasCost": {
-    "message": "Persetujuan Ongkos Jaringan Tx"
   },
   "approve": {
     "message": "Setujui batas penggunaan"
@@ -425,7 +416,7 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Beli ETH dengan Wyre"
+    "message": "Beli $1 dengan Wyre"
   },
   "buyWithWyreDescription": {
     "message": "Wyre memungkinkan Anda menggunakan kartu debit untuk menyetorkan ETH langsung di akun MetaMask Anda."
@@ -640,7 +631,7 @@
     "message": "Interaksi Kontrak"
   },
   "convertTokenToNFTDescription": {
-    "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini Metamask memiliki dukungan asli penuh untuk NFT. Anda ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
+    "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini MetaMask memiliki dukungan asli penuh untuk NFT. Anda ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Kami mendeteksi bahwa aset ini telah ditambahkan sebagai NFT. Anda ingin menghapusnya dari daftar token?"
@@ -793,9 +784,6 @@
   },
   "decryptRequest": {
     "message": "Dekrip permintaan"
-  },
-  "defaultTheme": {
-    "message": "Awal"
   },
   "delete": {
     "message": "Hapus"
@@ -1176,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Ekstensi Eksternal"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 gas yang disetujui",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Gagal"
@@ -3099,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Anda masih bisa menukar token meskipun Transaksi Pintar tidak tersedia."
   },
-  "stxPendingFinalizing": {
-    "message": "Menyelesaikan..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Mengoptimalkan gas..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Mengirimkan Pertukaran secara pribadi..."
-  },
   "stxSubDescription": {
     "message": "* Transaksi Pintar akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Pertukaran telah berhasil dilakukan."
   },
@@ -3195,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Pertukaran selesai di <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"

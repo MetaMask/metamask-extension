@@ -117,6 +117,31 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
+  {
+    title: 'Contract Deployment',
+    category: TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    subtitle: 'metamask.github.io',
+    subtitleContainsOrigin: true,
+    date: 'May 12, 2020',
+    primaryCurrency: '-0 ETH',
+    senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
+    recipientAddress: undefined,
+    secondaryCurrency: '-0 ETH',
+    isPending: false,
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+  },
+  {
+    title: 'Safe Transfer From',
+    category: TRANSACTION_GROUP_CATEGORIES.SEND,
+    subtitle: 'To: 0xe7d...dd98',
+    subtitleContainsOrigin: true,
+    primaryCurrency: '-0 ETH',
+    senderAddress: '0x806627172af48bd5b0765d3449a7def80d6576ff',
+    recipientAddress: '0xe7d522230eff653bb0a9b4385f0be0815420dd98',
+    secondaryCurrency: '-0 ETH',
+    isPending: false,
+    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;

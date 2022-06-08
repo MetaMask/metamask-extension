@@ -7,7 +7,6 @@ import {
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
 import { EVENT } from '../../../../shared/constants/metametrics';
-
 import { THEME_TYPE } from './experimental-tab.constant';
 
 export default class ExperimentalTab extends PureComponent {
@@ -239,12 +238,16 @@ export default class ExperimentalTab extends PureComponent {
 
     const themesOptions = [
       {
-        name: t('defaultTheme'),
-        value: THEME_TYPE.DEFAULT,
+        name: t('lightTheme'),
+        value: THEME_TYPE.LIGHT,
       },
       {
         name: t('darkTheme'),
         value: THEME_TYPE.DARK,
+      },
+      {
+        name: t('osTheme'),
+        value: THEME_TYPE.OS,
       },
     ];
 
@@ -260,7 +263,7 @@ export default class ExperimentalTab extends PureComponent {
     };
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">

@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Συμφωνώ"
   },
-  "aggregatorFeeCost": {
-    "message": "Αμοιβή ανταλλακτηρίου"
-  },
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Τέλος έγκρισης και δικτύου ανταλλακτηρίου"
-  },
-  "approvalTxGasCost": {
-    "message": "Έγκριση Tx τέλους συναλλαγής"
   },
   "approve": {
     "message": "Έγκριση"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Αγοράστε ETH με το Wyre"
+    "message": "Αγοράστε $1 με το Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Το Wyre σας επιτρέπει να χρησιμοποιήσετε μια πιστωτική κάρτα για να καταθέσετε ETH απευθείας στον λογαριασμό σας MetaTask."
+    "message": "Το Wyre σας επιτρέπει να χρησιμοποιήσετε μια πιστωτική κάρτα για να καταθέσετε $1 απευθείας στον λογαριασμό σας MetaTask."
   },
   "bytes": {
     "message": "Bytes"
@@ -640,7 +631,7 @@
     "message": "Αλληλεπίδραση Σύμβασης"
   },
   "convertTokenToNFTDescription": {
-    "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το Metamask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
+    "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το MetaMask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο προστέθηκε ως NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας;"
@@ -793,9 +784,6 @@
   },
   "decryptRequest": {
     "message": "Αίτημα αποκρυπτογράφησης"
-  },
-  "defaultTheme": {
-    "message": "Προεπιλεγμένο"
   },
   "delete": {
     "message": "Διαγραφή"
@@ -1176,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Εξωτερική Επέκταση"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 τέλος συναλλαγής",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Απέτυχε"
@@ -3099,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Μπορείτε να ανταλλάξετε ακόμα τα token σας, ακόμα και αν οι Έξυπνες Συναλλαγές δεν είναι διαθέσιμες."
   },
-  "stxPendingFinalizing": {
-    "message": "Ολοκλήρωση..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Βελτιστοποίηση τελών συναλλαγής..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Ιδιωτική υποβολή της Ανταλλαγής..."
-  },
   "stxSubDescription": {
     "message": "* Οι Έξυπνες Συναλλαγές θα προσπαθήσουν να υποβάλουν τη συναλλαγή σας ιδιωτικά, πολλές φορές. Εάν όλες οι προσπάθειες αποτύχουν, η συναλλαγή θα μεταδοθεί δημόσια για να διασφαλιστεί η επιτυχής πραγματοποίηση της ανταλλαγής σας."
   },
@@ -3195,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Δεν υπάρχουν διαθέσιμα tokens που να ταιριάζουν σε $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Η ανταλλαγή θα ολοκληρωθεί σε <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Επιβεβαιώστε με το υλικό πορτοφόλι σας"

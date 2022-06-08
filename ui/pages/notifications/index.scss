@@ -1,0 +1,114 @@
+.notifications {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-default);
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 65px 24px 15px 24px;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    @media screen and (max-width: $break-small) {
+      padding: 10px 20px;
+    }
+
+    &__title-container {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      flex: 0 0 auto;
+
+      &__title {
+        @include H3;
+
+        margin-left: 26px;
+
+        @media screen and (max-width: $break-small) {
+          @include H6;
+
+          margin-left: 16px;
+          font-weight: bold;
+        }
+      }
+    }
+
+    &_button {
+      width: auto;
+
+      @media screen and (max-width: $break-small) {
+        font-size: 0.75rem;
+        padding: 3.5px 1rem;
+      }
+    }
+  }
+
+  &__container {
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    @media screen and (max-width: $break-small) {
+      height: 100%;
+    }
+
+    &__text {
+      @include H3;
+
+      color: var(--color-text-muted);
+      text-align: center;
+
+      @media screen and (max-width: $break-small) {
+        @include H6;
+      }
+    }
+  }
+
+  .empty {
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-muted);
+    padding: 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-background-alternative);
+    }
+
+    &__unread-dot {
+      content: ' ';
+      align-self: flex-start;
+      margin-top: 6px;
+      width: 8px;
+      height: 8px;
+      background-color: transparent;
+      border-radius: 50%;
+    }
+
+    .unread {
+      background-color: var(--color-primary-default);
+    }
+
+    &__details {
+      display: flex;
+      flex-direction: column;
+      margin-left: 12px;
+
+      &__infos {
+        color: var(--color-text-muted);
+        font-size: 12px;
+        margin-top: 6px;
+      }
+    }
+  }
+}
