@@ -2853,7 +2853,7 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/controllers@^30.0.0":
+"@metamask/controllers@^30.0.0", "@metamask/controllers@^30.0.1":
   version "30.0.1"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-30.0.1.tgz#8d57d6abcb9bf0376c00b5bcc79154096f115c16"
   integrity sha512-uOAjReSEofaX54g9tUauCzPDK1pE4iGLj12oPSoV6LDUpHPOO5H0PnERg+qNK6fWBXf7sFOTFNsx2n2WYQgt3g==

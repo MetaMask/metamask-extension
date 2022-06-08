@@ -1654,10 +1654,10 @@ export function addDetectedTokens(newDetectedTokens) {
  *
  * @param tokensToImport
  */
-export function importTokens(tokensToImport) {
+export function addImportedTokens(tokensToImport) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.importTokens(tokensToImport);
+      await promisifiedBackground.addImportedTokens(tokensToImport);
     } catch (error) {
       log.error(error);
     } finally {
@@ -1667,18 +1667,25 @@ export function importTokens(tokensToImport) {
 }
 
 /**
- * To add ignored tokens to state
+ * To add ignored token addresses to state
  *
  * @param tokensToIgnore
  */
 export function ignoreTokens(tokensToIgnore) {
+  const _tokensToIgnore = Array.isArray(tokensToIgnore)
+    ? tokensToIgnore
+    : [tokensToIgnore];
+
   return async (dispatch) => {
+    dispatch(showLoadingIndication());
     try {
-      await promisifiedBackground.ignoreTokens(tokensToIgnore);
+      await promisifiedBackground.ignoreTokens(_tokensToIgnore);
     } catch (error) {
       log.error(error);
+      dispatch(displayWarning(error.message));
     } finally {
       await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -1837,21 +1844,6 @@ export async function getTokenStandardAndDetails(
     userAddress,
     tokenId,
   );
-}
-
-export function removeToken(address) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await promisifiedBackground.removeToken(address);
-    } catch (error) {
-      log.error(error);
-      dispatch(displayWarning(error.message));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
 }
 
 export function addTokens(tokens) {

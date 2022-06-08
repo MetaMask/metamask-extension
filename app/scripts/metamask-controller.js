@@ -54,6 +54,7 @@ import {
 ///: END:ONLY_INCLUDE_IN
 
 import {
+  ASSET_TYPES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
@@ -245,35 +246,28 @@ export default class MetamaskController extends EventEmitter {
       config: { provider: this.provider },
       state: initState.TokensController,
     });
-    process.env.TOKEN_DETECTION_V2
-      ? (this.assetsContractController = new AssetsContractController({
-          onPreferencesStateChange: (listener) =>
-            this.preferencesController.store.subscribe(listener),
-          onNetworkStateChange: (cb) =>
-            this.networkController.store.subscribe((networkState) => {
-              const modifiedNetworkState = {
-                ...networkState,
-                provider: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            }),
-          config: {
-            provider: this.provider,
-          },
-          state: initState.AssetsContractController,
-        }))
-      : (this.assetsContractController = new AssetsContractController(
-          {
-            onPreferencesStateChange: (listener) =>
-              this.preferencesController.store.subscribe(listener),
-          },
-          {
-            provider: this.provider,
-          },
-        ));
+
+    this.assetsContractController = new AssetsContractController(
+      {
+        onPreferencesStateChange: (listener) =>
+          this.preferencesController.store.subscribe(listener),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              provider: {
+                ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
+      },
+      {
+        provider: this.provider,
+      },
+      initState.AssetsContractController,
+    );
 
     this.collectiblesController = new CollectiblesController(
       {
@@ -301,6 +295,15 @@ export default class MetamaskController extends EventEmitter {
         getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
           this.assetsContractController,
         ),
+        onCollectibleAdded: ({ address, symbol, tokenId, standard, source }) =>
+          this.metaMetricsController.trackEvent({
+            token_contract_address: address,
+            token_symbol: symbol,
+            tokenId,
+            asset_type: ASSET_TYPES.COLLECTIBLE,
+            token_standard: standard,
+            source,
+          }),
       },
       {},
       initState.CollectiblesController,
@@ -417,50 +420,23 @@ export default class MetamaskController extends EventEmitter {
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
-    process.env.TOKEN_DETECTION_V2
-      ? (this.tokenListController = new TokenListController({
-          chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-          onNetworkStateChange: (cb) =>
-            this.networkController.store.subscribe((networkState) => {
-              const modifiedNetworkState = {
-                ...networkState,
-                provider: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            }),
-          messenger: tokenListMessenger,
-          state: initState.TokenListController,
-        }))
-      : (this.tokenListController = new TokenListController({
-          chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-          useStaticTokenList: !this.preferencesController.store.getState()
-            .useTokenDetection,
-          onNetworkStateChange: (cb) =>
-            this.networkController.store.subscribe((networkState) => {
-              const modifiedNetworkState = {
-                ...networkState,
-                provider: {
-                  ...networkState.provider,
-                  chainId: hexToDecimal(networkState.provider.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            }),
-          onPreferencesStateChange: (cb) =>
-            this.preferencesController.store.subscribe((preferencesState) => {
-              const modifiedPreferencesState = {
-                ...preferencesState,
-                useStaticTokenList: !this.preferencesController.store.getState()
-                  .useTokenDetection,
-              };
-              return cb(modifiedPreferencesState);
-            }),
-          messenger: tokenListMessenger,
-          state: initState.TokenListController,
-        }));
+
+    this.tokenListController = new TokenListController({
+      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            provider: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+      messenger: tokenListMessenger,
+      state: initState.TokenListController,
+    });
 
     this.phishingController = new PhishingController();
 
@@ -1586,7 +1562,6 @@ export default class MetamaskController extends EventEmitter {
         tokensController,
       ),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
-      removeToken: tokensController.removeAndIgnoreToken.bind(tokensController),
       setAccountLabel: preferencesController.setAccountLabel.bind(
         preferencesController,
       ),
@@ -1960,20 +1935,14 @@ export default class MetamaskController extends EventEmitter {
         : null,
 
       /** Token Detection V2 */
-      addDetectedTokens: process.env.TOKEN_DETECTION_V2
-        ? tokensController.addDetectedTokens.bind(tokensController)
-        : null,
-      importTokens: process.env.TOKEN_DETECTION_V2
-        ? tokensController.importTokens.bind(tokensController)
-        : null,
-      ignoreTokens: process.env.TOKEN_DETECTION_V2
-        ? tokensController.ignoreTokens.bind(tokensController)
-        : null,
-      getBalancesInSingleCall: process.env.TOKEN_DETECTION_V2
-        ? assetsContractController.getBalancesInSingleCall.bind(
-            assetsContractController,
-          )
-        : null,
+      addDetectedTokens: tokensController.addDetectedTokens.bind(
+        tokensController,
+      ),
+      addImportedTokens: tokensController.addTokens.bind(tokensController),
+      ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
+      getBalancesInSingleCall: assetsContractController.getBalancesInSingleCall.bind(
+        assetsContractController,
+      ),
     };
   }
 
@@ -3342,7 +3311,7 @@ export default class MetamaskController extends EventEmitter {
     if (sender.url) {
       const { hostname } = new URL(sender.url);
       // Check if new connection is blocked if phishing detection is on
-      if (usePhishDetect && this.phishingController.test(hostname)) {
+      if (usePhishDetect && this.phishingController.test(hostname)?.result) {
         log.debug('MetaMask - sending phishing warning for', hostname);
         this.sendPhishingWarning(connectionStream, hostname);
         return;

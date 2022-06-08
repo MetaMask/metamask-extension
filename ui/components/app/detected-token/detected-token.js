@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
 
 import {
-  importTokens,
+  addImportedTokens,
   ignoreTokens,
   setNewTokensImported,
 } from '../../../store/actions';
@@ -63,7 +63,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         },
       });
     });
-    await dispatch(importTokens(selectedTokens));
+    await dispatch(addImportedTokens(selectedTokens));
     const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
     dispatch(setNewTokensImported(tokenSymbols.join(', ')));
   };
@@ -90,7 +90,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         asset_type: ASSET_TYPES.TOKEN,
       },
     });
-    await dispatch(ignoreTokens(deSelectedTokens));
+    const deSelectedTokensAddresses = deSelectedTokens.map(
+      ({ address }) => address,
+    );
+    await dispatch(ignoreTokens(deSelectedTokensAddresses));
     setShowDetectedTokens(false);
   };
 
