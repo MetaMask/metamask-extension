@@ -1,1 +1,1 @@
-export { default } from './signature-request-siwe.container';
+export { default } from './signature-request-siwe';

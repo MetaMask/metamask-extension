@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import ErrorMessage from '../../ui/error-message';
 import ActionableMessage from '../../ui/actionable-message';
@@ -8,31 +9,43 @@ import Checkbox from '../../ui/check-box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
+import {
+  accountsWithSendEtherInfoSelector,
+  getSubjectMetadata,
+} from '../../../selectors';
+import { getAccountByAddress } from '../../../helpers/utils/util';
 import formatMessageParams from './format-message-params';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
 export default function SignatureRequestSIWE({
-  txData: {
+  txData,
+  cancelPersonalMessage,
+  signPersonalMessage,
+}) {
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const subjectMetadata = useSelector(getSubjectMetadata);
+
+  const {
     msgParams: {
-      version,
+      from,
+      origin,
       siwe: { isSIWEDomainValid, isMatchingAddress, messageData },
+      version,
     },
     type,
-  },
-  cancel,
-  sign,
-  fromAccount,
-  subjectMetadata,
-}) {
+  } = txData;
+
+  const fromAccount = getAccountByAddress(allAccounts, from);
+  const targetSubjectMetadata = subjectMetadata[origin];
+
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
-
   const onSign = (event) => {
-    sign(event);
+    signPersonalMessage(event);
     trackEvent({
       category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Confirm',
@@ -45,7 +58,7 @@ export default function SignatureRequestSIWE({
   };
 
   const onCancel = (event) => {
-    cancel(event);
+    cancelPersonalMessage(event);
     trackEvent({
       category: EVENT.CATEGORIES.TRANSACTIONS,
       event: 'Cancel',
@@ -63,7 +76,7 @@ export default function SignatureRequestSIWE({
         fromAccount={fromAccount}
         domain={messageData.domain}
         isSIWEDomainValid={isSIWEDomainValid}
-        subjectMetadata={subjectMetadata}
+        subjectMetadata={targetSubjectMetadata}
       />
       <Message data={formatMessageParams(messageData, t)} />
       {!isMatchingAddress && (
@@ -143,23 +156,11 @@ SignatureRequestSIWE.propTypes = {
    */
   txData: PropTypes.object.isRequired,
   /**
-   * The metadata for the calling site
-   */
-  subjectMetadata: PropTypes.object.isRequired,
-  /**
-   * The display content of sender account
-   */
-  fromAccount: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-    balance: PropTypes.string,
-    name: PropTypes.string,
-  }).isRequired,
-  /**
    * Handler for cancel button
    */
-  cancel: PropTypes.func.isRequired,
+  cancelPersonalMessage: PropTypes.func.isRequired,
   /**
    * Handler for sign button
    */
-  sign: PropTypes.func.isRequired,
+  signPersonalMessage: PropTypes.func.isRequired,
 };
