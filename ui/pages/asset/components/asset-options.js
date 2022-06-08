@@ -85,7 +85,7 @@ const AssetOptions = ({
   );
 };
 
-const isntFunc = (p) => {
+const isNotFunc = (p) => {
   return typeof p !== 'function';
 };
 
@@ -95,14 +95,14 @@ AssetOptions.propTypes = {
   onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
   onRemove: (props) => {
-    if (props.isNativeAsset === false && isntFunc(props.onRemove)) {
+    if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {
       throw new Error(
         'When isNativeAsset is true, onRemove is a required prop',
       );
     }
   },
   onViewTokenDetails: (props) => {
-    if (props.isNativeAsset === false && isntFunc(props.onViewTokenDetails)) {
+    if (props.isNativeAsset === false && isNotFunc(props.onViewTokenDetails)) {
       throw new Error(
         'When isNativeAsset is true, onViewTokenDetails is a required prop',
       );

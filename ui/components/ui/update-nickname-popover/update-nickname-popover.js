@@ -12,10 +12,10 @@ import Identicon from '../identicon/identicon.component';
 import { getUseTokenDetection, getTokenList } from '../../../selectors';
 
 export default function UpdateNicknamePopover({
-  nickname,
   address,
+  nickname = '',
+  memo = '',
   onAdd,
-  memo,
   onClose,
 }) {
   const t = useContext(I18nContext);
