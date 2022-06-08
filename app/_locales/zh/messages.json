@@ -2896,10 +2896,6 @@
   "snapInstallWarningCheck": {
     "message": "请勾选全部以确认您理解。"
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "您正在向snap \"$1\"授予密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
-    "description": "The parameter is the name of the snap"
-  },
   "snapRequestsPermission": {
     "message": "此Snap正在请求以下权限："
   },
