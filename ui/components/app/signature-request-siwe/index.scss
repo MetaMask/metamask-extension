@@ -36,41 +36,42 @@
 }
 
 
-.signature-request-siwe__page-container-footer {
-  border: none;
+.signature-request-siwe__page-container-footer.page-container__footer {
+  border-top: none;
 }
 
-.signature-request-siwe__popover {
-  &__footer {
+.signature-request-siwe__warning-popover {
+  .page-container__footer {
+    border-top: none;
     padding: 0;
     display: block;
+  }
 
-    &__warning-footer {
-      border: none;
-      display: block;
-    }
+  .popover-footer {
+    padding: inherit;
+    display: block;
   }
 
   &__checkbox-wrapper {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding: 16px;
+    padding: 8px 16px 24px;
 
-    &__checkbox {
+    &__label {
+      @include H7;
+      color: var(--color-text-default);
+      margin-left: 8px;
+      margin-top: 1px;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+    }
+
+    .check-box {
       color: var(--color-error-default);
-
-      &__label {
-        @include H7;
-
-        color: var(--color-text-default);
-        margin-left: 8px;
-        margin-top: 1px;
-        user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        cursor: pointer;
-      }
     }
   }
+
 }

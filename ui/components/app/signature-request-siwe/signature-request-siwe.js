@@ -57,46 +57,6 @@ export default function SignatureRequestSIWE({
     });
   };
 
-  const generateSIWEWarning = () => {
-    let showError = false;
-    let errorMessage = '';
-    let confirmErrorMessage = '';
-
-    if (!isSIWEDomainValid) {
-      showError = true;
-      errorMessage += `${t('SIWEDomainInvalid', [messageData.domain])} `;
-      confirmErrorMessage += `${t('SIWEDomainWarningBody', [
-        messageData.domain,
-      ])} `;
-    }
-
-    if (!isMatchingAddress) {
-      showError = true;
-      errorMessage += `${t('SIWEAddressInvalid', [
-        messageData.address,
-        fromAccount.address,
-      ])} `;
-      confirmErrorMessage += `${t('SIWEAddressInvalid', [
-        messageData.address,
-        fromAccount.address,
-      ])} `;
-    }
-
-    return {
-      showError,
-      errorMessage: errorMessage.trim(),
-      confirmErrorMessage: confirmErrorMessage.trim(),
-    };
-  };
-
-  const {
-    showError,
-    errorMessage,
-    confirmErrorMessage,
-  } = generateSIWEWarning();
-
-  console.log(showError, errorMessage, confirmErrorMessage);
-
   return (
     <div className="signature-request-siwe">
       <Header
@@ -142,11 +102,11 @@ export default function SignatureRequestSIWE({
           onClose={() => setIsShowingDomainWarning(false)}
           title={t('SIWEWarningTitle')}
           subtitle={t('SIWEWarningSubtitle')}
-          className="signature-request-siwe__popover"
-          footerClassName="signature-request-siwe__popover__footer"
+          className="signature-request-siwe__warning-popover"
+          footerClassName="signature-request-siwe__warning-popover__footer"
           footer={
             <PageContainerFooter
-              footerClassName="signature-request-siwe__popover__footer__warning-footer"
+              footerClassName="signature-request-siwe__warning-popover__footer__warning-footer"
               onCancel={() => setIsShowingDomainWarning(false)}
               cancelText={t('cancel')}
               cancelButtonType="default"
@@ -157,18 +117,18 @@ export default function SignatureRequestSIWE({
             />
           }
         >
-          <div className="signature-request-siwe__popover__checkbox-wrapper">
+          <div className="signature-request-siwe__warning-popover__checkbox-wrapper">
             <Checkbox
               id="signature-request-siwe_domain-checkbox"
               checked={agreeToDomainWarning}
-              className="signature-request-siwe__popover__checkbox-wrapper__checkbox checkbox checkbox--error"
+              className="signature-request-siwe__warning-popover__checkbox-wrapper__checkbox"
               onClick={() => setAgreeToDomainWarning((checked) => !checked)}
             />
             <label
-              className="signature-request-siwe__popover__checkbox-wrapper__checkbox__label"
+              className="signature-request-siwe__warning-popover__checkbox-wrapper__label"
               htmlFor="signature-request-siwe_domain-checkbox"
             >
-              {confirmErrorMessage}
+              {t('SIWEDomainWarningBody', [messageData.domain])}
             </label>
           </div>
         </Popover>
