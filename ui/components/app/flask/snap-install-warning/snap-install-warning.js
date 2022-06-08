@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import React, { useCallback, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { produce } from 'immer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -30,25 +30,12 @@ const checkboxStateReducer = produce((state, action) => {
 export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
   const t = useI18nContext();
   const [checkboxState, dispatch] = useReducer(checkboxStateReducer, {});
-  const [isAllChecked, setIsAllChecked] = useState(true);
 
-  const verifyCheckboxes = useCallback(() => {
-    for (const warning of warnings) {
-      if (!checkboxState[warning.id]) {
-        setIsAllChecked(false);
-        return;
-      }
-    }
-    setIsAllChecked(true);
-  }, [checkboxState, warnings]);
+  const isAllChecked = warnings.every((warning) => checkboxState[warning.id]);
 
-  const onCheckboxClicked = useCallback(
-    (checkboxId) => {
-      dispatch({ type: 'check', checkboxId });
-      verifyCheckboxes();
-    },
-    [verifyCheckboxes],
-  );
+  const onCheckboxClicked = useCallback((checkboxId) => {
+    dispatch({ type: 'check', checkboxId });
+  }, []);
 
   const SnapInstallWarningFooter = () => {
     return (
@@ -63,7 +50,7 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
         <Button
           className="snap-install-warning__footer-button"
           type="primary"
-          disabled={isAllChecked}
+          disabled={!isAllChecked}
           onClick={onSubmit}
         >
           {t('confirm')}
