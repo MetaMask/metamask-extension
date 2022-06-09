@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure theme selection dropdown is discoverable via settings search([#14379](https://github.com/MetaMask/metamask-extension/pull/14379))
 - Stop using the 4bytes registry to name contract deployment transactions in the activity list, preventing false method names from being shown for deployments ([#14598](https://github.com/MetaMask/metamask-extension/pull/14598))
 - Save send flow user action history in transaction state logs ([#14510](https://github.com/MetaMask/metamask-extension/pull/14510))
-- Update Gridplus to use  https://github.com/GridPlus/gridplus-sdk/compare/v1.1.6...v1.2.4 ([#14467](https://github.com/MetaMask/metamask-extension/pull/14467))
+- Update GridPlus to use https://github.com/GridPlus/gridplus-sdk/compare/v1.1.6...v1.2.4 ([#14467](https://github.com/MetaMask/metamask-extension/pull/14467))
 
 
 ### Fixed
