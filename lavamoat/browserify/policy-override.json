@@ -31,6 +31,13 @@
         "clearTimeout": true
       }
     },
+    "react-dnd-html5-backend": {
+      "globals": {
+        "clearTimeout": true,
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
     "ethers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
