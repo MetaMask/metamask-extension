@@ -29,7 +29,6 @@ export default function FeeCard({
   primaryFee,
   secondaryFee,
   hideTokenApprovalRow,
-  onFeeCardMaxRowClick,
   tokenApprovalSourceTokenSymbol,
   onTokenApprovalClick,
   metaMaskFee,
@@ -139,16 +138,6 @@ export default function FeeCard({
                       {t('maxFee')}
                     </Typography>
                     {`: ${secondaryFee.maxFee}`}
-                    {!supportsEIP1559V2 &&
-                      (!smartTransactionsEnabled ||
-                        !smartTransactionsOptInStatus) && (
-                        <span
-                          className="fee-card__edit-link"
-                          onClick={() => onFeeCardMaxRowClick()}
-                        >
-                          {t('edit')}
-                        </span>
-                      )}
                   </>
                 )
               }
@@ -213,7 +202,6 @@ FeeCard.propTypes = {
     fee: PropTypes.string.isRequired,
     maxFee: PropTypes.string.isRequired,
   }),
-  onFeeCardMaxRowClick: PropTypes.func.isRequired,
   hideTokenApprovalRow: PropTypes.bool.isRequired,
   tokenApprovalSourceTokenSymbol: PropTypes.string,
   onTokenApprovalClick: PropTypes.func,

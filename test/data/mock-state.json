@@ -37,6 +37,22 @@
         "1559": true
       }
     },
+    "notifications": {
+      "test": {
+        "id": "test",
+        "origin": "local:http://localhost:8086/",
+        "createdDate": 1652967897732,
+        "readDate": null,
+        "message": "Hello, http://localhost:8086!"
+      },
+      "test2": {
+        "id": "test2",
+        "origin": "local:http://localhost:8086/",
+        "createdDate": 1652967897732,
+        "readDate": 1652967897732,
+        "message": "Hello, http://localhost:8086!"
+      }
+    },
     "cachedBalances": {},
     "incomingTransactions": {},
     "unapprovedTxs": {
