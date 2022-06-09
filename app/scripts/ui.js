@@ -148,6 +148,8 @@ function connectToAccountManager(connectionStream, cb) {
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
 function setupWeb3Connection(connectionStream) {
+  // TODO: Replace with @metamask/providers#StreamProvider or modified version
+  // thereof.
   const providerStream = new StreamProvider();
   providerStream.pipe(connectionStream).pipe(providerStream);
   connectionStream.on('error', console.error.bind(console));
