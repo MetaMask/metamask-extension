@@ -1,3 +1,4 @@
+import { isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
@@ -39,7 +40,7 @@ function sendMetadataHandler(
   { addSubjectMetadata, subjectType },
 ) {
   const { origin, params } = req;
-  if (params && typeof params === 'object' && !Array.isArray(params)) {
+  if (isObject(params)) {
     const { icon = null, name = null, ...remainingParams } = params;
 
     addSubjectMetadata({

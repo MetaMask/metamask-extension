@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isObject } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetaMaskTemplateRenderer, {
   SectionShape,
@@ -31,11 +32,7 @@ export default function MetaMaskTranslation({ translationKey, variables }) {
   return t(
     translationKey,
     variables?.map((variable) => {
-      if (
-        typeof variable === 'object' &&
-        !Array.isArray(variable) &&
-        variable.element
-      ) {
+      if (isObject(variable) && variable.element) {
         if (!variable.key) {
           throw new Error(
             `When using MetaMask Template Language in a MetaMaskTranslation variable, you must provide a key for the section regardless of syntax.

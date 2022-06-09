@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { isObject } from '@metamask/utils';
 import { isEqual } from 'lodash';
 import { safeComponentList } from './safe-component-list';
 
@@ -21,11 +22,7 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
   } else if (typeof sections === 'string') {
     // React can render strings directly, so return the string
     return sections;
-  } else if (
-    sections &&
-    typeof sections === 'object' &&
-    !Array.isArray(sections)
-  ) {
+  } else if (isObject(sections)) {
     // If dealing with a single entry, then render a single object without key
     const Element = getElement(sections);
     return (
