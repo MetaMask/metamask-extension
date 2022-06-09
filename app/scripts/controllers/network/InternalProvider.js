@@ -33,6 +33,11 @@ class InternalProvider extends BaseProvider {
     this.handleUnlockStateChanged = this.handleUnlockStateChanged.bind(this);
     this.sendAsync = this.sendAsync.bind(this);
 
+    // TODO
+    // This is meant to replace the following lines: https://github.com/MetaMask/eth-json-rpc-middleware/blob/main/src/providerFromEngine.ts#L27-L29
+    // However, it's not clear to me that the legacy provider actually emitted
+    // any notifications of this nature, and I don't think that anything had a
+    // reference to the legacy provider's engine in order to emit notifications.
     // Forward notifications
     this._rpcEngine.on('notification', (payload) => {
       // Legacy / backwards compatibility event.
