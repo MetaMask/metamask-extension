@@ -170,6 +170,7 @@
  *  change, we identify the new number_of_accounts trait
  * @property {'number_of_nft_collections'} NUMBER_OF_NFT_COLLECTIONS - user
  *  trait for number of unique NFT addresses
+ * @property {'number_of_nfts'} NUMBER_OF_NFTS - user trait for number of all NFT addresses
  * @property {'number_of_tokens'} NUMBER_OF_TOKENS - when the number of tokens change, we
  * identify the new number_of_tokens trait
  * @property {'opensea_api_enabled'} OPENSEA_API_ENABLED - when the OpenSea API is enabled
@@ -191,6 +192,7 @@ export const TRAITS = {
   NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
+  NUMBER_OF_NFTS: 'number_of_nfts',
   NUMBER_OF_TOKENS: 'number_of_tokens',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
@@ -211,6 +213,8 @@ export const TRAITS = {
  *  of identities(accounts) added to the user's MetaMask.
  * @property {number} [number_of_nft_collections] - A number representing the
  *  amount of different NFT collections the user possesses an NFT from.
+ * @property {number} [number_of_nfts] - A number representing the
+ *  amount of all NFTs the user possesses across all networks and accounts.
  * @property {number} [number_of_tokens] - The total number of token contracts
  *  the user has across all networks and accounts.
  * @property {boolean} [opensea_api_enabled] - does the user have the OpenSea
@@ -256,9 +260,32 @@ export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
 export const REJECT_NOTFICIATION_CLOSE_SIG =
   'Cancel Sig Request Via Notification Close';
 
+/**
+ * EVENTS
+ */
+
 export const EVENT_NAMES = {
   SIGNATURE_REQUESTED: 'Signature Requested',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+};
+
+export const EVENT = {
+  CATEGORIES: {
+    ACCOUNTS: 'Accounts',
+    AUTH: 'Auth',
+    BACKGROUND: 'Background',
+    INPAGE_PROVIDER: 'inpage_provider',
+    MESSAGES: 'Messages',
+    NAVIGATION: 'Navigation',
+    NETWORK: 'Network',
+    ONBOARDING: 'Onboarding',
+    RETENTION: 'Retention',
+    SETTINGS: 'Settings',
+    SNAPS: 'Snaps',
+    SWAPS: 'Swaps',
+    TRANSACTIONS: 'Transactions',
+    WALLET: 'Wallet',
+  },
 };

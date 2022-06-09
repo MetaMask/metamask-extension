@@ -13,7 +13,7 @@ import {
   unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
-  getSortedNotificationsToShow,
+  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
@@ -124,7 +124,7 @@ const mapStateToProps = (state) => {
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
-    notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: metamask.snapErrors,
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,

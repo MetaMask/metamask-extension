@@ -8,6 +8,7 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../../../store/actions';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import AdvancedTabContent from './advanced-tab-content';
 import BasicTabContent from './basic-tab-content';
 
@@ -219,7 +220,7 @@ export default class GasModalPageContainer extends Component {
           onSubmit={() => {
             if (isSpeedUp) {
               this.context.trackEvent({
-                category: 'Navigation',
+                category: EVENT.CATEGORIES.NAVIGATION,
                 event: 'Saved "Speed Up"',
                 properties: {
                   action: 'Activity Log',

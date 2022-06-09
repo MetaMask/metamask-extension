@@ -29,6 +29,7 @@ import {
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -92,7 +93,7 @@ export default function DropdownSearchList({
   const onImportTokenClick = () => {
     trackEvent({
       event: 'Token Imported',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         symbol: tokenForImport?.symbol,
         address: tokenForImport?.address,
@@ -241,7 +242,7 @@ export default function DropdownSearchList({
                             onClick={() => {
                               trackEvent({
                                 event: 'Clicked Block Explorer Link',
-                                category: 'Swaps',
+                                category: EVENT.CATEGORIES.SWAPS,
                                 properties: {
                                   link_type: 'Token Tracker',
                                   action: 'Verify Contract Address',

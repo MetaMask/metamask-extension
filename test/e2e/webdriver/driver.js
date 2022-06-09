@@ -53,6 +53,7 @@ class Driver {
     this.Key = {
       BACK_SPACE: '\uE003',
       ENTER: '\uE007',
+      SPACE: '\uE00D',
     };
   }
 

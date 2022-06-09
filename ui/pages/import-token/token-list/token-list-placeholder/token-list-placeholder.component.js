@@ -22,7 +22,7 @@ export default class TokenListPlaceholder extends Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {this.context.t('learnMore')}
+          {this.context.t('learnMoreUpperCase')}
         </Button>
       </div>
     );

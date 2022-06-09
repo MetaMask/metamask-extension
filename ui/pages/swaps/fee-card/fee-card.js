@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import GasDetailsItemTitle from '../../../components/app/gas-details-item/gas-details-item-title';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -103,7 +104,7 @@ export default function FeeCard({
                               onClick={() => {
                                 trackEvent({
                                   event: 'Clicked "Gas Fees: Learn More" Link',
-                                  category: 'Swaps',
+                                  category: EVENT.CATEGORIES.SWAPS,
                                 });
                                 global.platform.openTab({
                                   url: GAS_FEES_LEARN_MORE_URL,
