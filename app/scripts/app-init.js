@@ -17,18 +17,20 @@ function importAllScripts() {
   // we need to dynamically inject values of applyLavaMoat once this is fixed.
   const applyLavaMoat = true;
 
-  tryImport('./globalthis.js');
-  tryImport('./sentry-install.js');
+  const systemFiles = [];
+
+  systemFiles.push('./globalthis.js');
+  systemFiles.push('./sentry-install.js');
 
   if (applyLavaMoat) {
-    tryImport('./runtime-lavamoat.js');
-    tryImport('./lockdown-more.js');
-    tryImport('./policy-load.js');
+    systemFiles.push('./runtime-lavamoat.js');
+    systemFiles.push('./lockdown-more.js');
+    systemFiles.push('./policy-load.js');
   } else {
-    tryImport('./lockdown-install.js');
-    tryImport('./lockdown-more.js');
-    tryImport('./lockdown-run.js');
-    tryImport('./runtime-cjs.js');
+    systemFiles.push('./lockdown-install.js');
+    systemFiles.push('./lockdown-more.js');
+    systemFiles.push('./lockdown-run.js');
+    systemFiles.push('./runtime-cjs.js');
   }
 
   const fileList = [
@@ -36,7 +38,7 @@ function importAllScripts() {
     /** FILE NAMES */
   ];
 
-  fileList.forEach((fileName) => tryImport(fileName));
+  tryImport(...systemFiles, ...fileList);
 
   // for performance metrics/reference
   console.log(
