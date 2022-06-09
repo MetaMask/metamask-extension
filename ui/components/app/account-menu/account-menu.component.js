@@ -100,11 +100,12 @@ export default class AccountMenu extends Component {
   };
 
   addressFuse = new Fuse([], {
-    threshold: 0.45,
+    threshold: 0.55,
     location: 0,
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
+    ignoreFieldNorm: true,
     keys: [
       { name: 'name', weight: 0.5 },
       { name: 'address', weight: 0.5 },
