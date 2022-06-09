@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
@@ -38,20 +38,16 @@ export default function SnapInstall({
     approveSnapInstall,
   ]);
 
-  const findBip44EntropyPermission =
+  const bip44EntropyPermissions =
     request.permissions &&
-    Object.keys(request.permissions).find((v) =>
+    Object.keys(request.permissions).filter((v) =>
       v.startsWith('snap_getBip44Entropy_'),
     );
 
-  const shouldShowWarning = useMemo(() => Boolean(findBip44EntropyPermission), [
-    findBip44EntropyPermission,
-  ]);
+  const shouldShowWarning = Boolean(bip44EntropyPermissions);
 
-  const coinType = useMemo(
-    () => findBip44EntropyPermission?.split('_').slice(-1),
-    [findBip44EntropyPermission],
-  );
+  const getCoinType = (bip44EntropyPermission) =>
+    bip44EntropyPermission?.split('_').slice(-1);
 
   return (
     <Box
@@ -129,23 +125,25 @@ export default function SnapInstall({
           submitText={t('approveAndInstall')}
         />
       </Box>
-      {isShowingWarning && (
-        <SnapInstallWarning
-          onCancel={() => setIsShowingWarning(false)}
-          onSubmit={onSubmit}
-          warnings={[
-            {
-              id: 'key-access',
-              message: t('snapInstallWarningKeyAccess', [
-                targetSubjectMetadata.name,
+      {isShowingWarning &&
+        bip44EntropyPermissions.map((permission, i) => (
+          <SnapInstallWarning
+            key={i}
+            onCancel={() => setIsShowingWarning(false)}
+            onSubmit={onSubmit}
+            warnings={[
+              {
+                id: `key-access-${i}`,
+                message: t('snapInstallWarningKeyAccess', [
+                  targetSubjectMetadata.name,
 
-                coinTypeToProtocolName(coinType) ||
-                  `${coinType} (Unrecognized protocol)`,
-              ]),
-            },
-          ]}
-        />
-      )}
+                  coinTypeToProtocolName(getCoinType(permission)) ||
+                    `${getCoinType(permission)} (Unrecognized protocol)`,
+                ]),
+              },
+            ]}
+          />
+        ))}
     </Box>
   );
 }
