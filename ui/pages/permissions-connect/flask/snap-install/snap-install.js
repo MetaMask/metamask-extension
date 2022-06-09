@@ -44,7 +44,7 @@ export default function SnapInstall({
       v.startsWith('snap_getBip44Entropy_'),
     );
 
-  const shouldShowWarning = Boolean(bip44EntropyPermissions);
+  const shouldShowWarning = Boolean(bip44EntropyPermissions.length);
 
   const getCoinType = (bip44EntropyPermission) =>
     bip44EntropyPermission?.split('_').slice(-1);
