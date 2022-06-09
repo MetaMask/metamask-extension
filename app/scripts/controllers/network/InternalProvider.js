@@ -20,45 +20,27 @@ import { isObject } from '@metamask/utils';
  */
 const AccountMethods = Object.freeze(['eth_accounts', 'eth_requestAccounts']);
 
-class InternalProvider extends BaseProvider {
+/**
+ * An internal background provider that hands off JSON-RPC requests to whatever
+ * the current RPC endpoint is.
+ *
+ * Does not handle any notifications because there are no notifications for this
+ * provider to emit.
+ */
+export class InternalProvider extends BaseProvider {
   /**
    * @param {InternalProviderOptions} options - Options bag.
    */
-  constructor({ chainId, isUnlocked, rpcMiddleware }) {
-    super({ rpcMiddleware });
+  constructor({ chainId, rpcMiddleware }) {
+    super({ chainId, rpcMiddleware });
 
-    this.handleChainChanged = this.handleChainChanged.bind(this);
-    this.handleConnect = this.handleConnect.bind(this);
-    this.handleDisconnect = this.handleDisconnect.bind(this);
-    this.handleUnlockStateChanged = this.handleUnlockStateChanged.bind(this);
+    // We should keep this around for compatibility with legacy code.
     this.sendAsync = this.sendAsync.bind(this);
-
-    // TODO
-    // This is meant to replace the following lines: https://github.com/MetaMask/eth-json-rpc-middleware/blob/main/src/providerFromEngine.ts#L27-L29
-    // However, it's not clear to me that the legacy provider actually emitted
-    // any notifications of this nature, and I don't think that anything had a
-    // reference to the legacy provider's engine in order to emit notifications.
-    // Forward notifications
-    this._rpcEngine.on('notification', (payload) => {
-      // Legacy / backwards compatibility event.
-      this.emit('data', null, payload);
-
-      // EIP-1193 'message' even notifications.
-      if (isObject(payload)) {
-        // This is the only notification we emit from the inpage provider.
-        if (payload.method === 'eth_subscription') {
-          this.emit('message', {
-            type: payload.method,
-            data: payload.params,
-          });
-        }
-      }
-    });
 
     this._initializeState({
       accounts: [],
-      chainId,
-      isUnlocked,
+      chainId, // ethers may use this property
+      isUnlocked: true,
     });
   }
 
@@ -66,44 +48,9 @@ class InternalProvider extends BaseProvider {
   // Public Methods
   //====================
 
-  /**
-   * See {@link BaseProvider._handleChainChanged}.
-   *
-   * @param {string} chainId - The new chain ID.
-   */
-  handleChainChanged(chainId) {
-    this._handleChainChanged({ chainId });
-  }
-
-  /**
-   * See {@link BaseProvider._handleConnect}.
-   *
-   * @param {string} chainId - The connected chain ID.
-   */
-  handleConnect(chainId) {
-    this._handleConnect(chainId);
-  }
-
-  /**
-   * See {@link BaseProvider._handleDisconnect}.
-   */
-  handleDisconnect() {
-    // `true` indicating that the disconnection is recoverable, which should
-    // always be the case for our internal provider.
-    // `false` would cause the provider instance to be torn down.
-    this._handleDisconnect(true);
-  }
-
-  /**
-   * See {@link BaseProvider._handleUnlockStateChanged}.
-   *
-   * @param {boolean} isUnlocked - Whether the extension is unlocked.
-   */
-  handleUnlockStateChanged(isUnlocked) {
-    // Since this provider doesn't handle accounts, we just pass the isUnlocked
-    // state.
-    this._handleUnlockStateChanged({ accounts: [], isUnlocked });
-  }
+  // TODO: See if we can get away with not adding `send`.
+  // Otherwise, add with same signature as in `providerFromEngine` and tag as
+  // deprecated.
 
   /**
    * Submits an RPC request per the given JSON-RPC request object.
@@ -121,11 +68,28 @@ class InternalProvider extends BaseProvider {
   // Private Methods
   //====================
 
-  /**
-   * We override this method with a no-op because the internal provider does not
-   * manage accounts.
-   */
+  // Stub all state / event handler methods because we don't emit events from
+  // this provider.
+  // These get called in `BaseProvider` for a variety different reasons and we
+  // don't want that to happen.
+
   _handleAccountsChanged() {
+    return undefined;
+  }
+
+  _handleChainChanged() {
+    return undefined;
+  }
+
+  _handleConnect() {
+    return undefined;
+  }
+
+  _handleDisconnect() {
+    return undefined;
+  }
+
+  _handleUnlockStateChanged() {
     return undefined;
   }
 
@@ -133,8 +97,8 @@ class InternalProvider extends BaseProvider {
    * We override this method to reject requests for account-related methods
    * because the internal provider does not manage accounts.
    *
-   * @param payload
-   * @param callback
+   * @param payload - The RPC request.
+   * @param callback - The callback function.
    */
   _rpcRequest(payload, callback) {
     if (isObject(payload) && AccountMethods.includes(payload.method)) {
@@ -144,24 +108,4 @@ class InternalProvider extends BaseProvider {
     }
     return super._rpcRequest(payload, callback);
   }
-}
-
-export function createInternalProvider({
-  /* controllers etc. go here */
-  chainId,
-  isUnlocked,
-  rpcMiddleware,
-}) {
-  const provider = new InternalProvider({
-    chainId,
-    isUnlocked,
-    rpcMiddleware,
-  });
-
-  // Add these as event listeners where appropriate.
-  // provider.handleChainChanged
-  // provider.handleConnect
-  // provider.handleDisconnect
-  // provider.handleUnlockStateChanged
-  return provider;
 }

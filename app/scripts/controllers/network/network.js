@@ -1,8 +1,6 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -29,6 +27,7 @@ import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import createMetamaskMiddleware from './createMetamaskMiddleware';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
+import { InternalProvider } from './InternalProvider';
 
 const env = process.env.METAMASK_ENV;
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
@@ -401,7 +400,7 @@ export default class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
     if (isInfura) {
-      this._configureInfuraProvider(type, this._infuraProjectId);
+      this._configureInfuraProvider(type, this._infuraProjectId, chainId);
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPE_RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
@@ -412,29 +411,30 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  _configureInfuraProvider(type, projectId) {
+  _configureInfuraProvider(type, projectId, chainId) {
     log.info('NetworkController - configureInfuraProvider', type);
     const networkClient = createInfuraClient({
       network: type,
       projectId,
     });
-    this._setNetworkClient(networkClient);
+    this._setNetworkClient(networkClient, chainId);
   }
 
   _configureStandardProvider(rpcUrl, chainId) {
     log.info('NetworkController - configureStandardProvider', rpcUrl);
     const networkClient = createJsonRpcClient({ rpcUrl, chainId });
-    this._setNetworkClient(networkClient);
+    this._setNetworkClient(networkClient, chainId);
   }
 
-  _setNetworkClient({ networkMiddleware, blockTracker }) {
-    const metamaskMiddleware = createMetamaskMiddleware(
-      this._baseProviderParams,
-    );
-    const engine = new JsonRpcEngine();
-    engine.push(metamaskMiddleware);
-    engine.push(networkMiddleware);
-    const provider = providerFromEngine(engine);
+  _setNetworkClient({ blockTracker, chainId, networkMiddleware }) {
+    const provider = new InternalProvider({
+      chainId,
+      rpcMiddleware: [
+        createMetamaskMiddleware(this._baseProviderParams),
+        networkMiddleware,
+      ],
+    });
+
     this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 
