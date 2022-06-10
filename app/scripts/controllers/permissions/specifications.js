@@ -189,26 +189,36 @@ export const getExtraPermissionSpecifications = (
           console.log("manageAccounts methodImpl running with", args);
           console.log("manageAccounts methodImpl running with", keyring);
           const methodAction = params[0];
+          const methodArgs = params[1]
+
+          const publicKeyBuffer = Buffer.from(methodArgs[0], "hex");
+          // TODO[muji]: verify buffer is 33 or 64 bytes
+
           switch (methodAction) {
+            case "list":
+              return keyring.listAccounts(origin);
             case "create":
-              const keypair = params[1];
-              // Expecting a tuple of hex encoded public key
-              // and some arbitrary private data
-              const [publicKey, privateData] = keypair;
-              console.log("TODO: add an account to the keyring for the snap");
-
-              const publicKeyBuffer = Buffer.from(publicKey, "hex");
-              console.log("got public key buffer", publicKeyBuffer);
-
-              // TODO[muji]: verify buffer is 33 or 64 bytes
-              keyring.addAccount(publicKeyBuffer, privateData);
-              await saveKeyring();
-
-              break;
+              const created = keyring.createAccount(
+                origin, publicKeyBuffer, methodArgs[1]);
+              if (created) {
+                await saveKeyring();
+              }
+              return created;
             case "read":
-              //const publicKey = params[1];
-              console.log("TODO: get the private data from the keyring for the snap");
-              break;
+              return keyring.readAccount(origin, publicKeyBuffer);
+            case "update":
+              const updated = keyring.updateAccount(
+                origin, publicKeyBuffer, methodArgs[1]);
+              if (updated) {
+                await saveKeyring();
+              }
+              return updated;
+            case "delete":
+              const deleted = keyring.deleteAccount(origin, publicKeyBuffer);
+              if (deleted) {
+                await saveKeyring();
+              }
+              return deleted;
             default:
               // TODO: return this error to the client!
               throw new Error("invalid snap_manageAccounts action");
