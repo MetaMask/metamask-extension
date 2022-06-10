@@ -135,7 +135,6 @@ export default function SnapInstall({
             id: `key-access-${i}`,
             message: t('snapInstallWarningKeyAccess', [
               targetSubjectMetadata.name,
-
               coinTypeToProtocolName(getCoinType(permission)) ||
                 `${getCoinType(permission)} (Unrecognized protocol)`,
             ]),
