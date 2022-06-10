@@ -21,6 +21,19 @@ import { isObject } from '@metamask/utils';
 const AccountMethods = Object.freeze(['eth_accounts', 'eth_requestAccounts']);
 
 /**
+ * Stubs a method by setting it to `() => undefined`.
+ *
+ * @param {Record<string, unknown>} object - The object whose method to stub.
+ * @param {string} methodName - The name of the method to stub.
+ */
+const stubMethod = (object, methodName) => {
+  Object.defineProperty(object, methodName, {
+    value: () => undefined,
+    writable: false,
+  });
+};
+
+/**
  * An internal background provider that hands off JSON-RPC requests to whatever
  * the current RPC endpoint is.
  *
@@ -37,11 +50,21 @@ export class InternalProvider extends BaseProvider {
     // We should keep this around for compatibility with legacy code.
     this.sendAsync = this.sendAsync.bind(this);
 
+    // Stub this before initializing state, because this provider does not
+    // manage accounts.
+    stubMethod(this, '_handleAccountsChanged');
+
     this._initializeState({
       accounts: [],
-      chainId, // ethers may use this property
+      chainId,
       isUnlocked: true,
     });
+
+    // Stub all remaining event handlers other than `_handleChainChanged`,
+    // because they are not relevant for the internal provider.
+    stubMethod(this, '_handleConnect');
+    stubMethod(this, '_handleDisconnect');
+    stubMethod(this, '_handleUnlockStateChanged');
   }
 
   //====================
@@ -67,31 +90,6 @@ export class InternalProvider extends BaseProvider {
   //====================
   // Private Methods
   //====================
-
-  // Stub all state / event handler methods because we don't emit events from
-  // this provider.
-  // These get called in `BaseProvider` for a variety different reasons and we
-  // don't want that to happen.
-
-  _handleAccountsChanged() {
-    return undefined;
-  }
-
-  _handleChainChanged() {
-    return undefined;
-  }
-
-  _handleConnect() {
-    return undefined;
-  }
-
-  _handleDisconnect() {
-    return undefined;
-  }
-
-  _handleUnlockStateChanged() {
-    return undefined;
-  }
 
   /**
    * We override this method to reject requests for account-related methods
