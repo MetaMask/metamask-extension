@@ -13,26 +13,19 @@
     }
   }
 
-  &__account {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    margin-top: 8px;
+  &__account-list-item {
+    &__top-row {
+      align-items: center;
+    }
 
-    &__item.account-list-item {
-      &__top-row {
-        align-items: center;
-      }
+    &__account-name {
+      @include H5;
 
-      &__account-name {
-        @include H5;
+      font-weight: 500;
+    }
 
-        font-weight: 500;
-      }
-
-      &__top-row {
-        margin: 0;
-      }
+    &__top-row {
+      margin: 0;
     }
   }
 }

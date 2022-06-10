@@ -38,14 +38,12 @@ export default function SignatureRequestSIWEHeader({
           )
         }
       />
-      <div className="signature-request-siwe-header__account">
-        {fromAccount && (
-          <AccountListItem
-            account={fromAccount}
-            className="signature-request-siwe-header__account__item"
-          />
-        )}
-      </div>
+      {fromAccount && (
+        <AccountListItem
+          account={fromAccount}
+          className="signature-request-siwe-header__account-list-item"
+        />
+      )}
     </div>
   );
 }
