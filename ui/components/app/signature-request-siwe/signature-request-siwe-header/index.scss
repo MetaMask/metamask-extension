@@ -13,7 +13,9 @@
     }
   }
 
-  &__account-list-item {
+  .account-list-item {
+    margin: 8px 0 0;
+
     &__top-row {
       align-items: center;
     }
