@@ -211,8 +211,6 @@ export const getExtraPermissionSpecifications = (
               }
               return created;
             case "read":
-              console.log("Read account",
-                keyring.readAccount(origin, publicKeyBuffer));
               return keyring.readAccount(origin, publicKeyBuffer);
             case "update":
               const updated = keyring.updateAccount(
