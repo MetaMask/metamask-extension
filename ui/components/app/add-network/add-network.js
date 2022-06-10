@@ -80,6 +80,10 @@ const AddNetwork = () => {
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
       setShowPopover(true);
     }
+
+    if (showPopover && !anAddNetworkConfirmationFromMetaMaskExists) {
+      setShowPopover(false);
+    }
   }, [unapprovedConfirmations, showPopover]);
 
   return (

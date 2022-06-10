@@ -3729,6 +3729,18 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
+export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+  return async () => {
+    try {
+      await promisifiedBackground.setCustomNetworkListEnabled(
+        customNetworkListEnabled,
+      );
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);

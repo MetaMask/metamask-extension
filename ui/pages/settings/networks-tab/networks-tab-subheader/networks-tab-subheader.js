@@ -1,13 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../../helpers/constants/routes';
+import {
+  ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
+} from '../../../../helpers/constants/routes';
 import Button from '../../../../components/ui/button';
+import { getIsCustomNetworkListEnabled } from '../../../../selectors';
 
 const NetworksFormSubheader = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const history = useHistory();
+  const addPopularNetworkFeatureToggledOn = useSelector(
+    getIsCustomNetworkListEnabled,
+  );
+
   return addNewNetwork ? (
     <div className="networks-tab__subheader">
       <span className="networks-tab__sub-header-text">{t('networks')}</span>
@@ -26,7 +35,9 @@ const NetworksFormSubheader = ({ addNewNetwork }) => {
           type="primary"
           onClick={(event) => {
             event.preventDefault();
-            history.push(ADD_POPULAR_CUSTOM_NETWORK);
+            addPopularNetworkFeatureToggledOn
+              ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
+              : history.push(ADD_NETWORK_ROUTE);
           }}
         >
           {t('addANetwork')}

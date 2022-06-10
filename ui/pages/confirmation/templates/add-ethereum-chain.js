@@ -176,7 +176,7 @@ function getValues(pendingApproval, t, actions) {
             element: 'b',
             key: 'bolded-text',
             props: {
-              style: { display: '-webkit-box' },
+              style: { display: originIsMetaMask && '-webkit-box' },
             },
             children: [
               `${t('addEthereumChainConfirmationRisks')} `,

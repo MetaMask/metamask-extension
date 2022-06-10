@@ -131,6 +131,7 @@ export default function ConfirmationPage() {
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [stayOnPage, setStayOnPage] = useState(false);
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
@@ -147,11 +148,11 @@ export default function ConfirmationPage() {
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
     if (pendingConfirmations.length === 0) {
-      history.push(DEFAULT_ROUTE);
+      !stayOnPage && history.push(DEFAULT_ROUTE);
     } else if (pendingConfirmations.length <= currentPendingConfirmation) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
-  }, [pendingConfirmations, history, currentPendingConfirmation]);
+  }, [pendingConfirmations, history, currentPendingConfirmation, stayOnPage]);
   if (!pendingConfirmation) {
     return null;
   }
@@ -239,9 +240,13 @@ export default function ConfirmationPage() {
         }
         onApprove={() => {
           templatedValues.onApprove.apply();
-          dispatch(addCustomNetwork(pendingConfirmation.requestData));
+          pendingConfirmation.origin === 'metamask' &&
+            dispatch(addCustomNetwork(pendingConfirmation.requestData));
         }}
-        onCancel={templatedValues.onCancel}
+        onCancel={() => {
+          templatedValues.onCancel.apply();
+          pendingConfirmation.origin === 'metamask' && setStayOnPage(true);
+        }}
         approveText={templatedValues.approvalText}
         cancelText={templatedValues.cancelText}
       />

@@ -19,6 +19,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
+  ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -49,6 +50,7 @@ function mapStateToProps(state) {
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
+    addPopularNetworkFeatureToggledOn: state.metamask.customNetworkListEnabled,
   };
 }
 
@@ -101,6 +103,7 @@ class NetworkDropdown extends Component {
     showTestnetMessageInDropdown: PropTypes.bool.isRequired,
     hideTestNetMessage: PropTypes.func.isRequired,
     history: PropTypes.object,
+    addPopularNetworkFeatureToggledOn: PropTypes.bool,
   };
 
   handleClick(newProviderType) {
@@ -129,10 +132,12 @@ class NetworkDropdown extends Component {
         <Button
           type="secondary"
           onClick={() => {
-            if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+            if (this.props.addPopularNetworkFeatureToggledOn) {
               this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             } else {
-              this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
+              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+                : this.props.history.push(ADD_NETWORK_ROUTE);
             }
             this.props.hideNetworkDropdown();
           }}
