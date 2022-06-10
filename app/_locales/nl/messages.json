@@ -1637,7 +1637,7 @@
   },
   "jsonFile": {
     "message": "JSON-bestand",
-    "description": "format voor het importeren van een account"
+    "description": "format for importing an account"
   },
   "keystone": {
     "message": "Keystone"
