@@ -1,5 +1,6 @@
 import { stripHexPrefix } from 'ethereumjs-util';
 import { ParsedMessage } from '@spruceid/siwe-parser';
+import log from 'loglevel';
 
 const msgHexToText = (hex) => {
   try {
@@ -7,6 +8,7 @@ const msgHexToText = (hex) => {
     const buff = Buffer.from(stripped, 'hex');
     return buff.length === 32 ? hex : buff.toString('utf8');
   } catch (e) {
+    log.error(e);
     return hex;
   }
 };
