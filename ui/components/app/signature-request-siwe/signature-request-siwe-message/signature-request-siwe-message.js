@@ -6,7 +6,10 @@ const SignatureRequestSIWEMessage = ({ data }) => {
     <div className="signature-request-siwe-message">
       <div className="signature-request-siwe-message__list">
         {data.map(({ label, value }, i) => (
-          <div className="signature-request-siwe-message__list__item" key={i}>
+          <div
+            className="signature-request-siwe-message__list__item"
+            key={i.toString()}
+          >
             <div className="signature-request-siwe-message__list__item__label">
               {label}
             </div>
