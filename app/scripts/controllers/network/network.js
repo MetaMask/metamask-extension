@@ -417,16 +417,16 @@ export default class NetworkController extends EventEmitter {
       network: type,
       projectId,
     });
-    this._setNetworkClient(networkClient, chainId);
+    this._setNetworkClient(chainId, networkClient);
   }
 
   _configureStandardProvider(rpcUrl, chainId) {
     log.info('NetworkController - configureStandardProvider', rpcUrl);
     const networkClient = createJsonRpcClient({ rpcUrl, chainId });
-    this._setNetworkClient(networkClient, chainId);
+    this._setNetworkClient(chainId, networkClient);
   }
 
-  _setNetworkClient({ blockTracker, chainId, networkMiddleware }) {
+  _setNetworkClient(chainId, { blockTracker, networkMiddleware }) {
     const provider = new InternalProvider({
       chainId,
       rpcMiddleware: [
