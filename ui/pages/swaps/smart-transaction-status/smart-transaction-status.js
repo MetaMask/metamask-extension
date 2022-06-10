@@ -169,17 +169,15 @@ export default function SmartTransactionStatus() {
     }, 1000); // Stop polling for quotes after 1s.
   }, [dispatch]);
 
-  let headerText = t('stxPendingOptimizingGas');
+  let headerText = t('stxPendingPrivatelySubmittingSwap');
   let description;
   let subDescription;
   let icon;
   if (isSmartTransactionPending) {
-    if (timeLeftForPendingStxInSec < 120) {
-      headerText = t('stxPendingFinalizing');
-    } else if (timeLeftForPendingStxInSec < 150) {
-      headerText = t('stxPendingPrivatelySubmitting');
-    } else if (cancelSwapLinkClicked) {
+    if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
+    } else if (latestSmartTransaction?.statusMetadata?.cancellationFeeWei > 0) {
+      headerText = t('stxPendingPubliclySubmittingSwap');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
@@ -332,7 +330,7 @@ export default function SmartTransactionStatus() {
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginLeft: 1 }}
             >
-              {`${t('swapCompleteIn')} `}
+              {`${t('stxSwapCompleteIn')} `}
             </Typography>
             <Typography
               color={COLORS.TEXT_ALTERNATIVE}
