@@ -184,14 +184,20 @@ export const getExtraPermissionSpecifications = (
 
         methodImplementation: async (args) => {
           const { context, params } = args;
+          // FIXME[muji]: `origin` should be a stable identifier not snapId
           const { origin } = context;
           const keyring = await getSnapKeyring();
-          console.log("manageAccounts methodImpl running with", args);
-          console.log("manageAccounts methodImpl running with", keyring);
+          console.log("manageAccounts methodImpl running with", origin, args);
           const methodAction = params[0];
           const methodArgs = params[1]
 
-          const publicKeyBuffer = Buffer.from(methodArgs[0], "hex");
+          // Create and update args is a two-value tuple whereas
+          // read and delete just expect a single parameter
+          const publicKeyBuffer =
+            Buffer.from(
+              Array.isArray(methodArgs) ? methodArgs[0] : methodArgs,
+              "hex");
+
           // TODO[muji]: verify buffer is 33 or 64 bytes
 
           switch (methodAction) {
@@ -205,6 +211,8 @@ export const getExtraPermissionSpecifications = (
               }
               return created;
             case "read":
+              console.log("Read account",
+                keyring.readAccount(origin, publicKeyBuffer));
               return keyring.readAccount(origin, publicKeyBuffer);
             case "update":
               const updated = keyring.updateAccount(

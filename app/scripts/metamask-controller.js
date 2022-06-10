@@ -1122,7 +1122,6 @@ export default class MetamaskController extends EventEmitter {
    * Initialize the snap keyring if it is not present.
    */
   async getSnapKeyring() {
-    console.log("getSnapKeyring", SnapKeyring);
     if (!this.snapKeyring) {
       this.snapKeyring = await this.keyringController
         .addNewKeyring('Snap Keyring');
