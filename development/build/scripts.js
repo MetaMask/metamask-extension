@@ -407,7 +407,7 @@ async function bundleMV3AppInitialiser({
     const fileOutput = fileContent
       .replace('/** FILE NAMES */', fileList)
       .replace(
-        'const applyLavaMoat = false;',
+        'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
     writeFileSync(appInitFile, fileOutput);

@@ -32,7 +32,7 @@ function importAllScripts() {
 
   const fileList = [
     // The list of files is injected at build time by replacing comment below with comma separated strings of file names
-    // https://github.com/MetaMask/metamask-extension/blob/develop/development/build/scripts.js#L406
+    // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
     /** FILE NAMES */
   ];
 
