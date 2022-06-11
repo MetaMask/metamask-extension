@@ -395,9 +395,9 @@ async function bundleMV3AppInitialiser({
   watch('./dist/chrome/app-init.js', () => {
     const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
     if (chromeFileContent !== prevChromeFileContent) {
+      prevChromeFileContent = chromeFileContent;
       postProcessServiceWorker(mv3BrowserPlatforms, fileList);
     }
-    prevChromeFileContent = chromeFileContent;
   });
 
   console.log(`Bundle end: service worker app-init.js`);
