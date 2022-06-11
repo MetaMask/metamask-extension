@@ -22,6 +22,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
     - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask](./development/README.md).
 - Build the project to the `./dist/` folder with `yarn dist`.
+    - Optionally, you may run `yarn start` to run dev mode.
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 

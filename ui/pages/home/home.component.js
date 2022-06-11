@@ -114,7 +114,7 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    notificationsToShow: PropTypes.bool.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
@@ -123,7 +123,16 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    seedPhraseBackedUp: PropTypes.bool.isRequired,
+    seedPhraseBackedUp: (props) => {
+      if (
+        props.seedPhraseBackedUp !== null &&
+        typeof props.seedPhraseBackedUp !== 'boolean'
+      ) {
+        throw new Error(
+          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
+        );
+      }
+    },
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
@@ -525,7 +534,7 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      notificationsToShow,
+      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
       seedPhraseBackedUp,
@@ -543,9 +552,8 @@ export default class Home extends PureComponent {
     const showWhatsNew =
       ((completedOnboarding && firstTimeFlowType === 'import') ||
         !completedOnboarding) &&
-      notificationsToShow &&
+      announcementsToShow &&
       showWhatsNewPopup;
-
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
