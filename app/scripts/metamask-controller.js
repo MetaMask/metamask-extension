@@ -1538,6 +1538,10 @@ export default class MetamaskController extends EventEmitter {
         this,
       ),
       checkDeviceReady: this.checkDeviceReady.bind(this),
+      startDeviceConnectionPolling: this.startDeviceConnectionPolling.bind(
+        this,
+      ),
+      stopDeviceConnectionPolling: this.stopDeviceConnectionPolling.bind(this),
 
       // qr hardware devices
       submitQRHardwareCryptoHDKey: qrHardwareKeyring.submitCryptoHDKey.bind(
@@ -2536,6 +2540,24 @@ export default class MetamaskController extends EventEmitter {
 
     const isReady = Boolean(keyring?.isConnected?.());
     return isReady;
+  }
+
+  async startDeviceConnectionPolling(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    if (!keyring) {
+      throw new Error('No keyring could be found for this address');
+    }
+
+    keyring?.startConnectionPolling?.();
+  }
+
+  async stopDeviceConnectionPolling(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    if (!keyring) {
+      throw new Error('No keyring could be found for this address');
+    }
+
+    keyring?.stopConnectionPolling?.();
   }
 
   //

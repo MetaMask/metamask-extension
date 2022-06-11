@@ -516,6 +516,22 @@ export async function checkDeviceReady(fromAddress) {
   return isReady;
 }
 
+export async function startDeviceConnectionPolling(fromAddress) {
+  try {
+    await promisifiedBackground.startDeviceConnectionPolling(fromAddress);
+  } catch (e) {
+    log.error(e);
+  }
+}
+
+export async function stopDeviceConnectionPolling(fromAddress) {
+  try {
+    await promisifiedBackground.startDeviceConnectionPolling(fromAddress);
+  } catch (e) {
+    log.error(e);
+  }
+}
+
 export function showQrScanner() {
   return (dispatch) => {
     dispatch(

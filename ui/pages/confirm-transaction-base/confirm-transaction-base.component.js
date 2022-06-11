@@ -65,6 +65,8 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   checkDeviceReady,
+  startDeviceConnectionPolling,
+  stopDeviceConnectionPolling,
 } from '../../store/actions';
 
 import Typography from '../../components/ui/typography/typography';
@@ -203,7 +205,6 @@ export default class ConfirmTransactionBase extends Component {
 
     this.setState({
       hardwareIsReady,
-      pollingIntervalId: null,
       showHardwareConnectionAdvancedPopover: hardwareIsReady
         ? false
         : showHardwareConnectionAdvancedPopover,
@@ -214,12 +215,13 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { showHardwareConnectivity } = this.props;
+    const { showHardwareConnectivity, fromAddress } = this.props;
 
     if (!showHardwareConnectivity) {
       return;
     }
 
+    startDeviceConnectionPolling(fromAddress);
     this.pollLedgerReady();
     const intervalId = setInterval(() => {
       this.pollLedgerReady();
@@ -230,10 +232,12 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _clearPollingInterval() {
+    const { fromAddress } = this.props;
     const { pollingIntervalId } = this.state;
     if (pollingIntervalId) {
       clearInterval(pollingIntervalId);
     }
+    stopDeviceConnectionPolling(fromAddress);
   }
 
   componentDidUpdate(prevProps) {
