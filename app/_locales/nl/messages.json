@@ -1,21 +1,251 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Fout"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Niet kloppende transactiedata. Controleer de transactie."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "Geen accounts meer. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Plaats de QR-code voor je camera. Het scherm is vervaagd, maar dat heeft geen effect op het uitlezen."
+  },
   "QRHardwareSignRequestCancel": {
     "message": "Afwijzen"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "Klik nadat je met je portomonnee hebt getekent op 'Ontvang handtekening' om de handtekening te ontvangen."
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Ontvang handtekening"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scan de QR-code met je portomonnee"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Handtekening vragen"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Fout"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Ongeldige QR-code. Please scan the sync QR code of the hardware wallet."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR-code"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Verbind een airgapped hardware portomonnee die communiceert met behulp van QR-codes. Officieel ondersteunde airgapped hardware portomonees zijn:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "Op QR-gebaseerde HW Wallet"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "Ngrave (komt binnenkort)"
+  },
+  "about": {
+    "message": "Over"
+  },
+  "acceleratingATransaction": {
+    "message": "* Een transactie versnellen door een hogere gasprijs te gebruiken vergroot de kans om sneller door het netwerk verwerkt te worden, al is dit niet altijd gegarandeerd."
+  },
+  "acceptTermsOfUse": {
+    "message": "Ik heb de $1 gelezen en ga hiermee akkoord",
+    "description": "$1 is the `terms` message"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 mag toegang krijgen en tot maximaal dit bedrag besteden",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 mag toegang krijgen en dit bezit besteden",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessYourWalletWithSRP": {
+    "message": "Krijg toegang tot je portomonnee met je geheugensteun"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask kan niet je wachtwoord herstellen. We gebruiken je geheugensteun om  je eigenaarschap te valideren, je portomonnee te herstellen en een nieuw wachtwoord in te stellen. Voer eerst de geheugensteun in die je hebt gekregen bij het aanmaken van je portomonnee. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
+  "accessingYourCamera": {
+    "message": "Toegang tot je camera aan het verkrijgen..."
+  },
+  "account": {
+    "message": "Account"
   },
   "accountDetails": {
     "message": "Accountgegevens"
   },
+  "accountIdenticon": {
+    "message": "Account Identicon"
+  },
   "accountName": {
     "message": "Accountnaam"
   },
+  "accountNameDuplicate": {
+    "message": "Deze accountnaam is al door iemand anders gekozen",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
+  "accountOptions": {
+    "message": "Account opties"
+  },
+  "accountSelectionRequired": {
+    "message": "Je moet een account selecteren!"
+  },
+  "active": {
+    "message": "Actief"
+  },
+  "activity": {
+    "message": "Activiteit"
+  },
+  "activityLog": {
+    "message": "Activiteitenlogboek"
+  },
+  "add": {
+    "message": "Voeg toe"
+  },
+  "addANetwork": {
+    "message": "Voeg een netwerk toe"
+  },
+  "addANetworkManually": {
+    "message": "Voeg handmatig een netwerk toe"
+  },
+  "addANickname": {
+    "message": "Voeg een bijnaam toe"
+  },
+  "addAcquiredTokens": {
+    "message": "Voeg de door jou geworven tokens toe met behulp van MetaMask"
+  },
+  "addAlias": {
+    "message": "Voeg alias toe"
+  },
+  "addContact": {
+    "message": "Voeg contact toe"
+  },
+  "addCustomToken": {
+    "message": "Voeg eigen token toe"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "Kan je een token niet vinden? Je kan handmatig een token toevoegen door het adres te plakken. Adressen van tokens kunnen worden gevonden op $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Dit staat dit netwerk toe om door MetaMask gebruikt te worden."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask verifieert geen eigen netwerken."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Leer over $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "oplichting en netwerkbeveiligingsrisico's",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Toestaan dat deze website een netwerk toevoegd?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Voeg vrienden en adressen toe die je vertrouwt"
+  },
+  "addFromAListOfPopularNetworks": {
+    "message": "Voeg toe van een lijst met populaire netwerken of voeg handmatig een netwerk toe.  Communiceer alleen met entiteiten die je vertrouwt."
+  },
+  "addMemo": {
+    "message": "Voeg memo toe"
+  },
+  "addNetwork": {
+    "message": "Voeg netwerk toe"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Deze netwerkverbinding is afhankelijk van derde partijen. Deze verbinding kan minder betrouwbaar zijn of het mogelijk maken dat derde partijen je activiteit volgen. $1",
+    "description": "$1 is Learn more link"
+  },
+  "addSuggestedTokens": {
+    "message": "Voeg voorgestelde tokens toe"
+  },
   "addToken": {
     "message": "Voeg token toe"
+  },
+  "address": {
+    "message": "Adres"
+  },
+  "addressBookIcon": {
+    "message": "Adresboekicoon"
+  },
+  "advanced": {
+    "message": "Geavanceerd"
+  },
+  "advancedBaseGasFeeToolTip": {
+    "message": "Als je transactie in het blok wordt meegenomen wordt het verschil tussen het maximale basistarief en het daadwerkelijke basistarief terugbetaald. Het totale bedrag wordt berekend met het maximale basistarief (in GWEI) x gaslimiet."
+  },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "Sla deze $1 op als mijn standaard voor \"Geavanceerd\""
+  },
+  "advancedGasFeeDefaultOptOut": {
+    "message": "Gebruik deze waarden en geavanceerde instellingen altijd als standaard."
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "Geavanaceerde gasprijs"
+  },
+  "advancedGasPriceTitle": {
+    "message": "Gasprijs"
+  },
+  "advancedOptions": {
+    "message": "Geavanceerde opties"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "Prioriteitsvergoeding (ook wel bekend als fooi voor miners) gaat direct naar miners en stimuleert ze om jouw transactie voor te laten gaan."
+  },
+  "affirmAgree": {
+    "message": "Ik ga akkoord"
+  },
+  "airgapVault": {
+    "message": "AirGap kluis"
+  },
+  "airgapVaultTutorial": {
+    "message": " (Handleidingen)"
+  },
+  "alertDisableTooltip": {
+    "message": "Dit kan worden aangepast in \"Instellingen > Waarschuwingen\""
+  },
+  "alertSettingsUnconnectedAccount": {
+    "message": "Een website bezoeken met een niet verbonden account geselecteerd"
+  },
+  "alertSettingsUnconnectedAccountDescription": {
+    "message": "Deze waarschuwing wordt getoond in de popup als je een verbonden web3-website bezoekt, maar het huidig geselecteerde account is niet verbonden."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "Als een website de verwijderde window.web3 API probeert te gebruiken"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "Deze waarschuwing wordt getoond in de popup als je een website bezoekt die de verwijderde window.web3 API probeert te gebruiken, en als gevolg mogelijk stuk is."
+  },
+  "alerts": {
+    "message": "Waarschuwingen"
+  },
+  "allowExternalExtensionTo": {
+    "message": "Sta deze externe extensie toe om:"
+  },
+  "allowSpendToken": {
+    "message": "Toestemming geven voor toegang tot je $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
+  },
+  "allowThisSiteTo": {
+    "message": "Geef deze website toestemming om:"
+  },
+  "allowWithdrawAndSpend": {
+    "message": "Geef $1 toestemming om het volgende bedrag op te nemen en uit te geven:",
+    "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
   "amount": {
     "message": "Bedrag"
   },
   "appDescription": {
-    "message": "Ethereum Browser-extensie",
+    "message": "Ethereum browserextensie",
     "description": "The description of the application"
   },
   "appName": {
@@ -33,47 +263,523 @@
   "approve": {
     "message": "Goedkeuren"
   },
+  "approveAndInstall": {
+    "message": "Goedkeuren & installeren"
+  },
+  "approveButtonText": {
+    "message": "Goedkeuren"
+  },
+  "approveSpendLimit": {
+    "message": "Keur $1 bestedingslimiet goed",
+    "description": "The token symbol that is being approved"
+  },
+  "approved": {
+    "message": "Goedgekeurd"
+  },
+  "approvedAmountWithColon": {
+    "message": "Goedgekeurd bedrag:"
+  },
+  "approvedAsset": {
+    "message": "Goedgekeurd bezit"
+  },
+  "areYouDeveloper": {
+    "message": "Ben je een programmeur?"
+  },
+  "areYouSure": {
+    "message": "Weet je het zeker?"
+  },
+  "asset": {
+    "message": "bezit"
+  },
+  "assetOptions": {
+    "message": "Bezit opties"
+  },
+  "assets": {
+    "message": "Bezit"
+  },
+  "attemptToCancel": {
+    "message": "Poging om te annuleren?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Deze poging versturen garandeerd niet dat je originele transactie word geannuleerd. Als de poging om te annuleren succesvol is, worden bovenstaande transactiekosten in rekening gebracht."
+  },
   "attemptingConnect": {
     "message": "Poging om verbinding te maken met blockchain."
   },
   "attributions": {
     "message": "Bevoegdheden"
   },
+  "authorizedPermissions": {
+    "message": "Je hebt de volgende rechten geautoriseerd"
+  },
+  "autoLockTimeLimit": {
+    "message": "Auto-Lock timer (minuten)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Stel de tijd in waarna MetaMask wordt vergrendeld na inactiviteit in minuten."
+  },
+  "average": {
+    "message": "Gemiddeld"
+  },
   "back": {
     "message": "Terug"
+  },
+  "backToAll": {
+    "message": "Terug naar alle"
+  },
+  "backupApprovalInfo": {
+    "message": "Deze geheime code is nodig om toegang tot je portomonnee te krijgen in het geval dat je je apparaat kwijtraakt, wachtwoord vergeet, MetaMask opnieuw moet installeren, of als je op een ander apparaat toegang wil."
+  },
+  "backupApprovalNotice": {
+    "message": "Sla je geheime code goed op om je portomonnee en tegoeden veilig te houden."
+  },
+  "backupNow": {
+    "message": "Maak nu een backup"
   },
   "balance": {
     "message": "Balans:"
   },
+  "balanceOutdated": {
+    "message": "Balans kan verouderd zijn"
+  },
+  "baseFee": {
+    "message": "Basistarief"
+  },
+  "basic": {
+    "message": "Basis"
+  },
+  "betaMetamaskDescription": {
+    "message": "MetaMask biedt een veilige portomonnee waarmee web3 voor iedereen toegankelijk wordt."
+  },
+  "betaMetamaskDescriptionExplanation": {
+    "message": "Gebruik deze versie om aankomende  functionaliteiten te testen voordat deze worden gepubliceerd. Je gebruik en feedback helpt ons om de best mogelijke versie van MetaMask te bouwen. Je gebruik van MetaMask Beta is onderworpen aan zowel onze standaard $1 als onze $2. In de Betaversie is het risico op fouten groter . Als je doorgaat accepteer en erken je deze risico's en de risico's in onze voorwaarden en Betavoorwaarden.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "Aanvullende Betavoorwaarden"
+  },
+  "betaMetamaskDescriptionExplanationTermsLinkText": {
+    "message": "Voorwaarden"
+  },
+  "betaMetamaskVersion": {
+    "message": "MetaMask Beta versie"
+  },
+  "betaWelcome": {
+    "message": "Welkom bij MetaMask Beta"
+  },
+  "blockExplorerAccountAction": {
+    "message": "Account",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "Bezit",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Wissel",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
+  },
+  "blockExplorerUrl": {
+    "message": "Blokverkenner URL"
+  },
+  "blockExplorerUrlDefinition": {
+    "message": "De URL die wordt gebruikt als blokverkenner voor dit netwerk."
+  },
+  "blockExplorerView": {
+    "message": "Zie account op $1",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockies": {
+    "message": "Blockies"
+  },
+  "browserNotSupported": {
+    "message": "Je browser wordt niet ondersteund..."
+  },
+  "buildContactList": {
+    "message": "Maak je contactlijst"
+  },
+  "builtAroundTheWorld": {
+    "message": "MetaMask is ontworpen en gebouwd rondom de wereld."
+  },
+  "busy": {
+    "message": "Druk"
+  },
+  "buy": {
+    "message": "Koop"
+  },
+  "buyAsset": {
+    "message": "Koop $1",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Koop $1 met Coinbase Pay",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Met je Coinbase account kan je kan makkelijk kopen en handelen.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithMoonPay": {
+    "message": "Koop $1 met MoonPay",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithMoonPayDescription": {
+    "message": "MoonPay ondersteunt populaire betaalmethodes zoals Visa, Mastercard, Apple / Google / Samsung Pay, en banktransacties in meer dan 145 landen. Tokens worden gestort in je MetaMask account."
+  },
+  "buyCryptoWithTransak": {
+    "message": "Koop $1 met Transak",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyCryptoWithTransakDescription": {
+    "message": "Transak ondersteunt debetkaarten en banktransacties (afhankelijk van locatie) in meer dan 59 landen. $1 wordt gestort in je MetaMask account.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyWithWyre": {
+    "message": "Koop ETH met Wyre"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyre laat je je debetkaart gebruiken om ETH direct in je MetaMask te storten."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "canToggleInSettings": {
+    "message": "Je kan deze melding opnieuw instellen in Instellingen > Waarschuwingen."
+  },
   "cancel": {
-    "message": "Annuleer"
+    "message": "Annuleren"
+  },
+  "cancelEdit": {
+    "message": "Annuleer wijzigingen"
+  },
+  "cancelPopoverTitle": {
+    "message": "Annuleer transactie"
+  },
+  "cancelSpeedUp": {
+    "message": "annuleer of versnel een transactie."
+  },
+  "cancelSpeedUpLabel": {
+    "message": "Dit gastarief zal het originele $1.",
+    "description": "$1 is text 'replace' in bold"
+  },
+  "cancelSpeedUpTransactionTooltip": {
+    "message": "Om een transactie te $1 moet het gastarief met tenminste 10% worden verhoogd om door het netwerk erkent te worden.",
+    "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwap": {
+    "message": "Annuleer ruil"
+  },
+  "cancellationGasFee": {
+    "message": "Annulering gastarief"
+  },
+  "cancelled": {
+    "message": "Geannuleerd"
+  },
+  "chainId": {
+    "message": "Chain ID"
+  },
+  "chainIdDefinition": {
+    "message": "De chain ID die wordt gebruikt om transacties de ondertekenen op dit netwerk."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Deze Chain ID wordt momenteel gebruikt door het $1."
+  },
+  "chainListReturnedDifferentTickerSymbol": {
+    "message": "Het netwerk met chain ID $1 gebruikt mogelijk een ander valutasymbool ($2) dan die je hebt ingevoerd. Controleer dit voordat je verder gaat.",
+    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "Je moet MetaMask op Google Chrome gebruiken om met je hardwareportomonnee te verbinden."
+  },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "Klik hier om je Ledger via WebHID te verbinden",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToRevealSeed": {
+    "message": "Klik hier om de geheugensteun te tonen"
+  },
+  "close": {
+    "message": "Sluit"
+  },
+  "collectibleAddFailedMessage": {
+    "message": "De NFT kan niet worden toegevoegd omdat de eigendomsdetails niet overeenkomen. Zorg ervoor dat je de juiste informatie invoert."
+  },
+  "collectibleAddressError": {
+    "message": "Deze token is een NFT. Voeg toe aan de $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Bevestigen"
   },
   "confirmPassword": {
-    "message": "bevestig wachtwoord"
+    "message": "Bevestig wachtwoord"
+  },
+  "confirmRecoveryPhrase": {
+    "message": "Bevestig geheugensteun"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Bevestig je geheugensteun"
+  },
+  "confirmed": {
+    "message": "Bevestigd"
+  },
+  "confusableUnicode": {
+    "message": "'$1' is gelijk aan '$2'."
+  },
+  "confusableZeroWidthUnicode": {
+    "message": "Karakter zonder breedte gevonden."
+  },
+  "confusingEnsDomain": {
+    "message": "We hebben een verwarrend teken in de ENS-naam gedetecteerd. Controleer de ENS-naam om potentiële oplichting te vermijden."
+  },
+  "congratulations": {
+    "message": "Gefeliciteerd"
+  },
+  "connect": {
+    "message": "Verbind"
+  },
+  "connectAccountOrCreate": {
+    "message": "Verbind account of maak een nieuw account"
+  },
+  "connectHardwareWallet": {
+    "message": "Verbind hardwareportomonnee"
+  },
+  "connectManually": {
+    "message": "Verbind handmatig met de huidige website"
+  },
+  "connectTo": {
+    "message": "Verbind met $1",
+    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
+  },
+  "connectToAll": {
+    "message": "Verbind met al je $1",
+    "description": "$1 will be replaced by the translation of connectToAllAccounts"
+  },
+  "connectToAllAccounts": {
+    "message": "accounts",
+    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
+  },
+  "connectToMultiple": {
+    "message": "Verbind met $1",
+    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
+  },
+  "connectToMultipleNumberOfAccounts": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
+  },
+  "connectWithMetaMask": {
+    "message": "Verbind met MetaMask"
+  },
+  "connectedAccountsDescriptionPlural": {
+    "message": "Je hebt $1 accounts verbonden aan deze website.",
+    "description": "$1 is the number of accounts"
+  },
+  "connectedAccountsDescriptionSingular": {
+    "message": "Je hebt 1 account verbonden aan deze website."
+  },
+  "connectedAccountsEmptyDescription": {
+    "message": "MetaMask is niet verbonden met deze website. Zoek op de website op hoe je verbinding kan maken met een Web3-provider."
+  },
+  "connectedSites": {
+    "message": "Verbonden websites"
+  },
+  "connectedSitesDescription": {
+    "message": "$1 is verbonden met deze websites. Zij kunnen het adres van je account zien.",
+    "description": "$1 is the account name"
+  },
+  "connectedSitesEmptyDescription": {
+    "message": "$1 is niet verbonden met websites.",
+    "description": "$1 is the account name"
+  },
+  "connectedSnapSites": {
+    "message": "$1 snap is verbonden met deze websites. Ze hebben toegang tot bovenstaande rechten.",
+    "description": "$1 represents the name of the snap"
+  },
+  "connecting": {
+    "message": "Aan het verbinden..."
+  },
+  "connectingTo": {
+    "message": "Aan het verbinden met het $1"
+  },
+  "connectingToGoerli": {
+    "message": "Aan het verbinden met het Goerli testnetwerk"
+  },
+  "connectingToKovan": {
+    "message": "Aan het verbinden met het Kovan testnetwerk"
+  },
+  "connectingToMainnet": {
+    "message": "Aan het verbinden met het Ethereum hoofdnetwerk"
+  },
+  "connectingToRinkeby": {
+    "message": "Aan het verbinden met het Rinkeby testnetwerk"
+  },
+  "connectingToRopsten": {
+    "message": "Aan het verbinden met het Ropsten testnetwerk"
+  },
+  "contactUs": {
+    "message": "Contacteer ons"
+  },
+  "contacts": {
+    "message": "Contacten"
+  },
+  "continue": {
+    "message": "Verdergaan"
+  },
+  "continueToCoinbasePay": {
+    "message": "Ga verder naar Coinbase Pay"
+  },
+  "continueToMoonPay": {
+    "message": "Verdergaan naar MoonPay"
+  },
+  "continueToTransak": {
+    "message": "Verdergaan naar Transak"
+  },
+  "continueToWyre": {
+    "message": "Verdergaan naar Wyre"
+  },
+  "contract": {
+    "message": "Contract"
+  },
+  "contractAddress": {
+    "message": "Adres van contract"
+  },
+  "contractAddressError": {
+    "message": "Je verstuurt tokens naar het contractadres van de token. Dit kan leiden tot een verlies van deze tokens."
   },
   "contractDeployment": {
-    "message": "Contractimplementatie"
+    "message": "Inzetten contract"
+  },
+  "contractInteraction": {
+    "message": "Contractinteractie"
+  },
+  "convertTokenToNFTDescription": {
+    "message": "We zien dat deze token is toegevoegd als NFT. MetaMask biedt nu volledige ondersteuning van NFT's. Wil je deze van je tokenlijst verwijderen en toevoegen als NFT?"
+  },
+  "convertTokenToNFTExistDescription": {
+    "message": "We zien dat deze token is toegevoegd als NFT. Wil je dit verwijderen van je tokenlijst?"
   },
   "copiedExclamation": {
     "message": "Gekopieerd!"
   },
+  "copyAddress": {
+    "message": "Kopieer adres naar klembord"
+  },
   "copyPrivateKey": {
-    "message": "Dit is uw privésleutel (klik om te kopiëren)"
+    "message": "Dit is je privésleutel (klik om te kopiëren)"
+  },
+  "copyRawTransactionData": {
+    "message": "Kopieer ruwe transactiedata"
   },
   "copyToClipboard": {
     "message": "Kopieer naar klembord"
   },
+  "copyTransactionId": {
+    "message": "Kopieer transactie ID"
+  },
   "create": {
-    "message": "creëren"
+    "message": "Maak portomonnee aan"
+  },
+  "createAWallet": {
+    "message": "Maak een portomonnee aan"
   },
   "createAccount": {
     "message": "Account aanmaken"
   },
+  "createNewWallet": {
+    "message": "Maak een nieuwe portomonnee aan"
+  },
+  "createPassword": {
+    "message": "Maak portomonnee aan"
+  },
+  "currencyConversion": {
+    "message": "Valutaconversie"
+  },
+  "currencySymbol": {
+    "message": "Valutasymbool"
+  },
+  "currencySymbolDefinition": {
+    "message": "Het symbool dat voor de valuta van dit netwerk wordt getoond."
+  },
+  "currentAccountNotConnected": {
+    "message": "Je huidige account is niet verbonden"
+  },
+  "currentExtension": {
+    "message": "Huidige extensiepagina"
+  },
+  "currentLanguage": {
+    "message": "Huidige taal"
+  },
+  "currentTitle": {
+    "message": "Huidig:"
+  },
+  "currentlyUnavailable": {
+    "message": "Niet beschikbaar op dit netwerk"
+  },
+  "curveHighGasEstimate": {
+    "message": "Schattingsgrafiek van gasmode Aggressief"
+  },
+  "curveLowGasEstimate": {
+    "message": "Schattingsgrafiek van gasmode Laag"
+  },
+  "curveMediumGasEstimate": {
+    "message": "Schattingsgrafiek van gasmode Markt"
+  },
+  "custom": {
+    "message": "Geavanaceerd"
+  },
+  "customContentSearch": {
+    "message": "Zoek naar een eerder toegevoegd netwerk"
+  },
   "customGas": {
-    "message": "Pas Gas aan"
+    "message": "Personaliseer gasinstellingen"
+  },
+  "customGasSettingToolTipMessage": {
+    "message": "Gebruik $1 om de gasprijs te personaliseren. Dit kan verwarrend zijn al je hier niet mee bekend ben. Gebruik op eigen risico.",
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+  },
+  "customGasSubTitle": {
+    "message": "Het verhogen van het tarief kan de verwerkingstijden verlagen, maar dit is niet gegarandeerd."
+  },
+  "customSpendLimit": {
+    "message": "Eigen bestedingslimiet"
+  },
+  "customToken": {
+    "message": "Eigen token"
+  },
+  "customTokenWarningInNonTokenDetectionNetwork": {
+    "message": "Tokendetectie is nog niet beschikbaar op dit netwerk. Importeer de token handmatig en wees er zeker van dat dit te vertrouwen is. Leer over $1"
+  },
+  "customTokenWarningInTokenDetectionNetwork": {
+    "message": "Wees er zeker van dat dit te vertrouwen is voor het handmatig importeren van een token. Leer over $1."
+  },
+  "customerSupport": {
+    "message": "klantenservice"
+  },
+  "dappSuggested": {
+    "message": "Website voorgesteld"
+  },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1 heeft deze prijs voorgesteld.",
+    "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedShortLabel": {
+    "message": "Website"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 heeft deze prijs aanbevolen.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "darkTheme": {
+    "message": "Donker"
+  },
+  "data": {
+    "message": "Data"
+  },
+  "dataBackupFoundInfo": {
+    "message": "Een deel van de data van je account was opgeslagen bij een eerdere installatie van MetaMask. Dit kan je instellingen, contacten en tokens bevatten. Wil je deze data nu herstellen?"
+  },
+  "dataHex": {
+    "message": "Hex"
   },
   "decimal": {
     "message": "Decimalen van precisie"
@@ -81,26 +787,429 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
   },
+  "decrypt": {
+    "message": "Decoderen"
+  },
+  "decryptCopy": {
+    "message": "Kopieer versleuteld bericht"
+  },
+  "decryptInlineError": {
+    "message": "Dit bericht kan niet worden ontsleuteld vanwege het volgende probleem: $1",
+    "description": "$1 is error message"
+  },
+  "decryptMessageNotice": {
+    "message": "$1 wil dit bericht lezen om je actie to voltooien",
+    "description": "$1 is the web3 site name"
+  },
+  "decryptMetamask": {
+    "message": "Ontsleutel bericht"
+  },
+  "decryptRequest": {
+    "message": "Ontsleutel verzoek"
+  },
+  "delete": {
+    "message": "Verwijder"
+  },
+  "deleteAccount": {
+    "message": "Verwijder account"
+  },
+  "deleteNetwork": {
+    "message": "Verwijder netwerk?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Weet je zeker dat je dit netwerk wil verwijderen?"
+  },
+  "depositCrypto": {
+    "message": "Stort $1",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "description": {
+    "message": "Beschrijving"
+  },
+  "details": {
+    "message": "Details"
+  },
+  "directDepositCrypto": {
+    "message": "Stort direct $1"
+  },
+  "directDepositCryptoExplainer": {
+    "message": "Als je al wat $1 hebt is de snelste manier om $1 te krijgen een directe storting."
+  },
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1” is uitgeschakeld, omdat dit niet voldoet aan het minimum van een 10% toename van het oorspronkelijk gastarief.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
+  "disconnect": {
+    "message": "Verbreek verbinding"
+  },
+  "disconnectAllAccounts": {
+    "message": "Verbreek verbinding met alle accounts"
+  },
+  "disconnectAllAccountsConfirmationDescription": {
+    "message": "Weet je zeker dat je de verbinding wil verbreken? Het kan zijn dat functionaliteiten van de website daardoor niet meer werken."
+  },
+  "disconnectPrompt": {
+    "message": "Verbreek verbinding met $1"
+  },
+  "disconnectThisAccount": {
+    "message": "Verbreek verbinding met dit account"
+  },
+  "dismiss": {
+    "message": "Afwijzen"
+  },
+  "dismissReminderDescriptionField": {
+    "message": "Schakel dit in om de herinnering aan het maken van een back-up van je geheugensteun af te wijzen. We bevelen van harte aan om deze back-up te maken om te voorkomen dat je je bezit verliest."
+  },
+  "dismissReminderField": {
+    "message": "Wijs herinnering aan het veilig opslaan van geheugensteun af"
+  },
+  "domain": {
+    "message": "Domein"
+  },
   "done": {
     "message": "Gedaan"
   },
+  "dontShowThisAgain": {
+    "message": "Laat dit niet opnieuw zien"
+  },
+  "downArrow": {
+    "message": "pijl naar beneden"
+  },
+  "downloadGoogleChrome": {
+    "message": "Download Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Klik hier om je geheugensteun te downloaden. Sla deze veilig op, op een versleutelde harde schijf of ander opslagmedium."
+  },
   "downloadStateLogs": {
-    "message": "Staatslogboeken downloaden"
+    "message": "Statuslogboeken downloaden"
+  },
+  "dropped": {
+    "message": "Laten vallen"
   },
   "edit": {
     "message": "Bewerk"
   },
+  "editANickname": {
+    "message": "Bewerk bijnaam"
+  },
+  "editAddressNickname": {
+    "message": "Bewerk bijnaam van adres"
+  },
+  "editCancellationGasFeeModalTitle": {
+    "message": "Bewerk annulering gastarief"
+  },
+  "editContact": {
+    "message": "Bewerk contact"
+  },
+  "editGasEducationButtonText": {
+    "message": "Hoe moet ik kiezen?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "Dit is het beste voor tijdsintensieve transacties (zoals wissels), omdat het de kans op een succesvolle transactie vergroot. Als het te lang duurt voordat een wissel plaatsvindt kan het zijn dat de transactie leidt tot een verlies aan gas."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "Een lager gastarief moet alleen worden gebruikt wanneer de verwerkingstijd minder belangrijk. Lagere tarieven maken het moeilijk te voorspellen wanneer en of je transactie succesvol zal zijn."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "Een medium gastarief is goed voor het versturen, opnemen of andere niet tijdgevoelige transacties. Deze instelling zorgt meestal voor een succesvolle transactie."
+  },
+  "editGasEducationModalIntro": {
+    "message": "Het juiste gastarief selecteren hangt af van het type transactie en hoe belangrijk dit voor je is."
+  },
+  "editGasEducationModalTitle": {
+    "message": "Hoe te kiezen?"
+  },
+  "editGasFeeModalTitle": {
+    "message": "Bewerk gastarief"
+  },
+  "editGasHigh": {
+    "message": "Hoog"
+  },
+  "editGasLimitOutOfBounds": {
+    "message": "Gaslimiet moet tenminste $1 zijn"
+  },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Gaslimiet moet groter zijn dan $1 en kleiner dan $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
+  "editGasLimitTooltip": {
+    "message": "Gaslimiet is het maximum aantal eenheden van gas die je bereid bent te gebruiken. Eenheden van gas zijn een vermenigvuldiging van “Maximale prioreitsvergoeding“ en “Maximaal tarief”."
+  },
+  "editGasLow": {
+    "message": "Laag"
+  },
+  "editGasMaxBaseFeeGWEIImbalance": {
+    "message": "Maximale basistarief kan niet lager zijn dan de prioreitsvergoeding"
+  },
+  "editGasMaxBaseFeeHigh": {
+    "message": "Maximale basistarief is hoger dan vereist"
+  },
+  "editGasMaxBaseFeeLow": {
+    "message": "Maximale basistarief is laag voor de huidige conditie van het netwerk"
+  },
+  "editGasMaxFeeHigh": {
+    "message": "Maximale tarief is hoger dan vereist"
+  },
+  "editGasMaxFeeLow": {
+    "message": "Maximale tarief is te laag voor de huidige conditie van het netwerk"
+  },
+  "editGasMaxFeePriorityImbalance": {
+    "message": "Maximale tarief kan niet lager zijn dan de maximale prioreitsvergoeding"
+  },
+  "editGasMaxFeeTooltip": {
+    "message": "Het maximale tarief is het meeste dat je zal betalen (basistarief + prioriteitsvergoeding)."
+  },
+  "editGasMaxPriorityFeeBelowMinimum": {
+    "message": "Maximale prioreitsvergoeding moet groter zijn dan 0 GWEI"
+  },
+  "editGasMaxPriorityFeeBelowMinimumV2": {
+    "message": "Prioriteitsvergoeding moet groter zijn dan 0."
+  },
+  "editGasMaxPriorityFeeHigh": {
+    "message": "Maximale prioreitsvergoeding is hoger dan vereist. Je betaalt meer dan nodig is."
+  },
+  "editGasMaxPriorityFeeHighV2": {
+    "message": "Prioriteitsvergoeding is hoger dan noodzakelijk. Je betaalt meer dan nodig is"
+  },
+  "editGasMaxPriorityFeeLow": {
+    "message": "Maximale prioreitsvergoeding is laag voor de huidige stand van het netwerk"
+  },
+  "editGasMaxPriorityFeeLowV2": {
+    "message": "Prioriteitsvergoeding is laag voor de hudige stand van het netwerk"
+  },
+  "editGasMaxPriorityFeeTooltip": {
+    "message": "Maximale prioreitsvergoeding (oftewel “fooi voor miner”) gaat direct naar miners en stimuleert ze om jouw transactie te prioriteren. Vaak betaal je jouw maximaal ingestelde bedrag"
+  },
+  "editGasMedium": {
+    "message": "Medium"
+  },
+  "editGasPriceTooLow": {
+    "message": "Gasprijs moet groter zijn dan 0"
+  },
+  "editGasPriceTooltip": {
+    "message": "Dit netwerk vereist een veld met voor de “Gasprijs” wanneer je een transactie verstuurd. De gasprijs is het bedrag die je betaald per eenheid van gas."
+  },
+  "editGasSubTextAmountLabel": {
+    "message": "Maximaal bedrag:",
+    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
+  },
+  "editGasSubTextFeeLabel": {
+    "message": "Maximale tarief:"
+  },
+  "editGasTitle": {
+    "message": "Wijzig prioriteit"
+  },
+  "editGasTooLow": {
+    "message": "Verwerkingstijd onbekend"
+  },
+  "editGasTooLowTooltip": {
+    "message": "Je maximale tarief of maximale prioreitsvergoeding kan laag zijn voor de huidige stand van de markt. We weten niet wanneer en of je transactie wordt verwerkt. "
+  },
+  "editGasTooLowWarningTooltip": {
+    "message": "Dit verlaagt je maximale tarief, maar als de hoeveelheid netwerkverkeer groeit kan dit je transactie vertragen of laten mislukken."
+  },
+  "editNonceField": {
+    "message": "Wijzig nonce"
+  },
+  "editNonceMessage": {
+    "message": "Dit is een geavanceerde optie, gebruik voorzichtig."
+  },
+  "editPermission": {
+    "message": "Wijzig toestemming"
+  },
+  "editSpeedUpEditGasFeeModalTitle": {
+    "message": "Pas gastarief voor versnelde transacties aan"
+  },
+  "enableAutoDetect": {
+    "message": " Schakel Autodetect in"
+  },
+  "enableEIP1559V2": {
+    "message": "Schakel de verbeterde interface voor gastarieven in"
+  },
+  "enableEIP1559V2AlertMessage": {
+    "message": "We hebben de manier waarop gastarieven worden geschat en gepersonaliseerd geüpdated."
+  },
+  "enableEIP1559V2ButtonText": {
+    "message": "Schakel de verbeterde interface voor gastarieven in bij Instellingen"
+  },
+  "enableEIP1559V2Description": {
+    "message": "We hebben de werking van gasschattingen en personalisering geüpdated. Schakel in als je de nieuwe beleving van gas wil gebruiken. $1",
+    "description": "$1 here is Learn More link"
+  },
+  "enableEIP1559V2Header": {
+    "message": "Nieuwe beleving van gas"
+  },
+  "enableFromSettings": {
+    "message": " Schakel in bij Instellingen."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Schakel OpenSea API in"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gebruik de API van OpenSea om NFT-data op te halen. De NFT-autodetectie is afhankelijk van de API van OpenSea en zal niet beschikbaar zijn als dit is uitgeschakeld."
+  },
+  "enableSmartTransactions": {
+    "message": "Schakel Smart Transactions in"
+  },
+  "enableToken": {
+    "message": "schakel $1 in",
+    "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 wil je publieke encryptiesleutel. Als je hiermee akkoord gaat kan de website versleutelde berichten naar jou versturen.",
+    "description": "$1 is the web3 site name"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Verzoek versleuteling publieke sleutel"
+  },
+  "endOfFlowMessage1": {
+    "message": "Je bent geslaagd voor de test - houd je geheugensteun veilig, dat is jouw verantwoordelijkheid!"
+  },
+  "endOfFlowMessage10": {
+    "message": "Afronden"
+  },
+  "endOfFlowMessage2": {
+    "message": "Tips om je herstelzin veilig op te bergen"
+  },
+  "endOfFlowMessage3": {
+    "message": "Sla de back-up op op meerdere plekken."
+  },
+  "endOfFlowMessage4": {
+    "message": "Deel de zin nooit met anderen."
+  },
+  "endOfFlowMessage5": {
+    "message": "Kijk uit voor phishing! MetaMask zal nooit spontaan vragen om je geheugensteun."
+  },
+  "endOfFlowMessage6": {
+    "message": "Als je opnieuw een back-up wil maken van je geheugensteun kan dit bij Instellingen > Veiligheid."
+  },
+  "endOfFlowMessage7": {
+    "message": "Als je ooit vragen hebt of iets verdachts ziet, neem dan contact op met onze klantenservice ($1).",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask kan je geheugensteun niet herstellen."
+  },
+  "endOfFlowMessage9": {
+    "message": "Leer meer."
+  },
+  "endpointReturnedDifferentChainId": {
+    "message": "De RPC URL die je hebt ingevoerd heeft een andere chain ID ($1) gestuurd. Update de Chain ID zodat deze overeenkomt met de RPC URL van het netwerk dat je probeert toe te voegen.",
+    "description": "$1 is the return value of eth_chainId from an RPC endpoint"
+  },
+  "ensIllegalCharacter": {
+    "message": "Karakter niet toegestaan voor ENS."
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS naam niet gevonden op het huidige netwerk. Probeer naar het Ethereum hoofdnetwerk te schakelen."
+  },
+  "ensNotSupportedOnNetwork": {
+    "message": "Netwerk ondersteunt ENS niet"
+  },
+  "ensRegistrationError": {
+    "message": "Probleem in ENS naamregistratie"
+  },
+  "ensUnknownError": {
+    "message": "ENS zoekopdracht niet gelukt."
+  },
+  "enterMaxSpendLimit": {
+    "message": "Voer maximaal bestedingslimiet in"
+  },
   "enterPassword": {
     "message": "Voer wachtwoord in"
+  },
+  "enterPasswordContinue": {
+    "message": "Voer wachtwoord in om door te gaan"
+  },
+  "errorCode": {
+    "message": "Code: $1",
+    "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "Details van fout",
+    "description": "Title for collapsible section that displays error details for debugging purposes"
+  },
+  "errorMessage": {
+    "message": "Bericht: $1",
+    "description": "Displayed error message for debugging purposes. $1 is the error message"
+  },
+  "errorName": {
+    "message": "Code: $1",
+    "description": "Displayed error name for debugging purposes. $1 is the error name"
+  },
+  "errorPageMessage": {
+    "message": "Probeer opnieuw door de pagina opnieuw te laden, of neem $1 contact op voor ondersteuning.",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "errorPagePopupMessage": {
+    "message": "Probeer opnieuw door de popup te sluiten en opnieuw te openen, of neem $1 contact op voor ondersteuning.",
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "errorPageTitle": {
+    "message": "MetaMask is tegen een probleem aangelopen",
+    "description": "Title of generic error page"
+  },
+  "errorStack": {
+    "message": "Stack:",
+    "description": "Title for error stack, which is displayed for debugging purposes"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Geschatte verwerktijden"
+  },
+  "ethGasPriceFetchWarning": {
+    "message": "Een backup van de gasprijs wordt gebruikt, omdat de belangrijkste service voor gasschattingen op dit moment niet beschikbaar is."
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereum publiek adres"
+  },
+  "etherscan": {
+    "message": "Etherscan"
   },
   "etherscanView": {
     "message": "Bekijk account op Etherscan"
   },
+  "etherscanViewOn": {
+    "message": "Zie op Etherscan"
+  },
+  "expandExperience": {
+    "message": "Breid je web3 beleving uit"
+  },
+  "expandView": {
+    "message": "Weergave vergroten"
+  },
+  "experimental": {
+    "message": "Experimenteel"
+  },
   "exportPrivateKey": {
     "message": "Exporteer privésleutel"
   },
+  "externalExtension": {
+    "message": "Externe extensie"
+  },
   "failed": {
     "message": "mislukt"
+  },
+  "failedToFetchChainId": {
+    "message": "Kon niet de chain ID ophalen. Klopt je RPC URL?"
+  },
+  "failedToFetchTickerSymbolData": {
+    "message": "Tickersymbool verificatiedata is op dit moment niet beschikbaar, zorg ervoor dat het symbool die je hebt ingevoerd klopt. Dit heeft invloed op de conversieratio's die je voor dit netwerk ziet"
+  },
+  "failureMessage": {
+    "message": "Er ging iets fout en we zijn niet in staat om deze actie te voltooien"
+  },
+  "fakeTokenWarning": {
+    "message": "Iedereen kan een token of neppe versies van bestaande tokens maken. Leer meer over $1"
+  },
+  "fast": {
+    "message": "Snel"
+  },
+  "fastest": {
+    "message": "Snelste"
+  },
+  "feeAssociatedRequest": {
+    "message": "Er zijn kosten aan dit verzoek verbonden."
   },
   "fiat": {
     "message": "FIAT",
@@ -110,17 +1219,171 @@
     "message": "Bestandsimport werkt niet? Klik hier!",
     "description": "Helps user import their account from a JSON file"
   },
+  "flaskSnapSettingsCardButtonCta": {
+    "message": "Zie details",
+    "description": "Call to action a user can take to see more information about the Snap that is installed"
+  },
+  "flaskSnapSettingsCardDateAddedOn": {
+    "message": "Toegevoegd op",
+    "description": "Start of the sentence describing when and where snap was added"
+  },
+  "flaskSnapSettingsCardFrom": {
+    "message": "van",
+    "description": "Part of the sentence describing when and where snap was added"
+  },
+  "flaskWelcomeUninstall": {
+    "message": "je moet deze extensie verwijderen",
+    "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
+  },
+  "flaskWelcomeWarning1": {
+    "message": "Flask is voor ontwikkelaars om te expirimenteren met nieuwe instabiele API's. Tenzij je een ontwikkelaar of beta tester bent, $1.",
+    "description": "This is a warning shown on the Flask Welcome screen, intended to encourage non-developers not to proceed any further. $1 is the bolded message 'flaskWelcomeUninstall'"
+  },
+  "flaskWelcomeWarning2": {
+    "message": "We garanderen niet de veiligheid of stabiliteit van deze extensie. De nieuwe API's aangeboden door Flask zijn niet gebouwd tegen phishing aanvallen. Dit betekent dat elke website of snap die Flask vereist een kwaadwillende poging is om je bezit te stelen.",
+    "description": "This explains the risks of using MetaMask Flask"
+  },
+  "flaskWelcomeWarning3": {
+    "message": "Alle Flask API's zijn experimenteel. Ze kunnen veranderd of verwijderd worden zonder melding of ze kunnen voor onbepaalde tijd op Flask blijven zonder ooit naar MetaMask gemigreerd te worden. Gebruik ze op eigen risico.",
+    "description": "This message warns developers about unstable Flask APIs"
+  },
+  "flaskWelcomeWarning4": {
+    "message": "Zorg ervoor dat je reguliere MetaMask-extensie is uitgeschakeld wanneer je Flask gebruikt.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
+  "flaskWelcomeWarningAcceptButton": {
+    "message": "Ik accepteer de risico's",
+    "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
+  },
+  "followUsOnTwitter": {
+    "message": "Volg ons op Twitter"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "Verboden IPFS Gateway: Specificeer een CID gateway"
+  },
+  "forgetDevice": {
+    "message": "Vergeet dit apparaat"
+  },
+  "forgotPassword": {
+    "message": "Wachtwoord vergeten?"
+  },
   "from": {
     "message": "Van"
+  },
+  "fromAddress": {
+    "message": "Van: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
+  },
+  "fromTokenLists": {
+    "message": "Van tokenlijsten: $1"
+  },
+  "functionApprove": {
+    "message": "Functie: goedkeuren"
+  },
+  "functionType": {
+    "message": "Functietype"
+  },
+  "gas": {
+    "message": "Gas"
+  },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "Wijzig voorgesteld gastarief"
+  },
+  "gasDisplayDappWarning": {
+    "message": "Dit gastarief is voorgesteld door $1. Dit overschrijven kan een probleem met je transactie veroorzaken. Neem contact op met $1 als je vragen hebt.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "gasEstimatesUnavailableWarning": {
+    "message": "Onze lage, medium en hoger schattingen zijn niet beschikbaar."
+  },
+  "gasFee": {
+    "message": "Gastarief"
   },
   "gasLimit": {
     "message": "Gaslimiet"
   },
+  "gasLimitInfoTooltipContent": {
+    "message": "Het gaslimit is de maximale hoeveelheid gas die je bereid bent uit te geven."
+  },
+  "gasLimitRecommended": {
+    "message": "Aanbevolen gaslimiet is $1. Als het gaslimiet lager dan dat is kan het mislukken."
+  },
   "gasLimitTooLow": {
-    "message": "De gaslimiet moet minstens 21000 zijn"
+    "message": "Het gaslimiet moet minstens 21000 zijn"
+  },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "Gaslimiet moet minimaal $1 zijn",
+    "description": "$1 is the custom gas limit, in decimal."
+  },
+  "gasLimitV2": {
+    "message": "Gaslimiet"
+  },
+  "gasOption": {
+    "message": "Gasoptie"
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
+  },
+  "gasPriceExcessive": {
+    "message": "Je gastarief is onnodig hoog. Overweeg het tarief te verlagen."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Gasprijs is buitengewoon hoog"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gasprijs is extreem laag"
+  },
+  "gasPriceFetchFailed": {
+    "message": "Schatting van gasprijs is mislukt door een netwerkfout."
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Gasprijs is het bedrag aan Ether die je bereid bent te betalen voor elke eenheid van gas."
+  },
+  "gasTimingHoursShort": {
+    "message": "$1 uur",
+    "description": "$1 represents a number of hours"
+  },
+  "gasTimingMinutes": {
+    "message": "$1 minuten",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 minuten",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingNegative": {
+    "message": "Misschien in $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingPositive": {
+    "message": "Waarschijnlijk in < $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingSeconds": {
+    "message": "$1 seconden",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 seconden",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingVeryPositive": {
+    "message": "Erg waarschijnlijk in < $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasUsed": {
+    "message": "Gas gebruikt"
+  },
+  "gdprMessage": {
+    "message": "Deze data wordt geaggregeerd en is daarom anoniem in verband met de General Data Protection Regulation (EU) 2016/679. Zie ons $1 voor meer informatie over onze privacymaatregelen.",
+    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
+  },
+  "gdprMessagePrivacyPolicy": {
+    "message": "hier ons privacybeleid",
+    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
+  },
+  "general": {
+    "message": "Algemeen"
   },
   "getEther": {
     "message": "Krijg Ether"
@@ -129,15 +1392,93 @@
     "message": "Haal Ether uit een kraan voor de $1",
     "description": "Displays network name for Ether faucet"
   },
+  "getStarted": {
+    "message": "Begin"
+  },
+  "goBack": {
+    "message": "Ga terug"
+  },
+  "goerli": {
+    "message": "Goerli testnetwerk"
+  },
+  "gotIt": {
+    "message": "Begrepen!"
+  },
+  "grantedToWithColon": {
+    "message": "Toegekend aan:"
+  },
+  "gwei": {
+    "message": "GWEI"
+  },
+  "happyToSeeYou": {
+    "message": "We zijn blij je te zien."
+  },
+  "hardware": {
+    "message": "Hardware"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardwareportomonnee verbonden"
+  },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "klik hier"
+  },
+  "hardwareWallets": {
+    "message": "Verbind een hardware portomonnee"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Selecteer een hardware portomonnee die je wil gebruiken met MetaMask."
+  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
+  "hexData": {
+    "message": "Hex data"
+  },
   "hide": {
     "message": "Verbergen"
   },
+  "hideFullTransactionDetails": {
+    "message": "Verberg volledige transactiedetails"
+  },
+  "hideSeedPhrase": {
+    "message": "Verberg zin"
+  },
+  "hideToken": {
+    "message": "Verberg token"
+  },
   "hideTokenPrompt": {
     "message": "Token verbergen?"
+  },
+  "hideTokenSymbol": {
+    "message": "Verberg $1",
+    "description": "$1 is the symbol for a token (e.g. 'DAI')"
+  },
+  "hideZeroBalanceTokens": {
+    "message": "Verberg tokens zonder positieve balans"
+  },
+  "high": {
+    "message": "Agressief"
+  },
+  "highGasSettingToolTipMessage": {
+    "message": "Grote kans, zelfs in volatiele marktcondities. Gebruik $1 voor dekking bij pieken van het netwerkverkeer door bijvoorbeeld populaire NFT-uitgiftes.",
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+  },
+  "highLowercase": {
+    "message": "hoog"
+  },
+  "history": {
+    "message": "Geschiedenis"
+  },
+  "ignoreAll": {
+    "message": "Negeer allen"
+  },
+  "ignoreTokenWarning": {
+    "message": "Als je tokens verbergt worden deze niet in je portomonnee getoond. Echter, je kan ze nog steeds toevoegen door ze op te zoeken."
   },
   "import": {
     "message": "Importeren",
@@ -146,15 +1487,82 @@
   "importAccount": {
     "message": "Account importeren"
   },
+  "importAccountError": {
+    "message": "Probleem met importeren van account."
+  },
   "importAccountMsg": {
-    "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
+    "message": " Geïmporteerde accounts zijn niet te herstellen met de geheugensteun van het oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts vind je"
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importeer een portomonnee met geheugensteun"
+  },
+  "importMyWallet": {
+    "message": "Importeer mijn portomonnee"
+  },
+  "importNFT": {
+    "message": "Importeer NFT"
+  },
+  "importNFTAddressToolTip": {
+    "message": "Op bijvoorbeeld de pagina NFT's onder Details op OpenSea staat een blauw label met 'Contractadres'. Als je hierop klikt ga je naar het contactadres op Etherscan; linksboven op die pagina zou een icoon moeten staan met het label 'Contract', en aan de rechterkant een lang veld met letters en nummers. Dit is het adres van het contract waarmee je NFT is gemaakt. Klik op het kopieericoon rechts van het adres om dit te kopiëren."
+  },
+  "importNFTPage": {
+    "message": "Importeer NFT-pagina"
+  },
+  "importNFTTokenIdToolTip": {
+    "message": "De ID van een NFT is uniek zodat niet twee NFT's hetzelfde zijn. Op OpenSea staat dit nummer onder 'Details'. Noteer of kopieer dit."
+  },
+  "importNFTs": {
+    "message": "Importeer NFT's"
+  },
+  "importTokenQuestion": {
+    "message": "Importeer token?"
+  },
+  "importTokenWarning": {
+    "message": "Iedereen kan een token met elke naam maken, ook neppe versies van bestaande tokens. Voeg toe en verhandel op eigen risico!"
+  },
+  "importTokens": {
+    "message": "importeer tokens"
+  },
+  "importTokensCamelCase": {
+    "message": "Importeer tokens"
+  },
+  "importWallet": {
+    "message": "Importeer portomonnee"
+  },
+  "importWithCount": {
+    "message": "Importeer $1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
+  },
+  "importYourExisting": {
+    "message": "Importeer je bestaande portomonnee met een geheugensteun"
   },
   "imported": {
     "message": "geïmporteerd",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "infuraBlockedNotification": {
+    "message": "MetaMask is niet in staat om te verbinden met de blockchain host. Zie $1 mogelijke redenen.",
+    "description": "$1 is a clickable link with with text defined by the 'here' key"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Je eerste transactie is bevestigd door het netwerk. Klik op OK om terug te gaan."
+  },
+  "insufficientBalance": {
+    "message": "Onvoldoende saldo."
+  },
+  "insufficientCurrencyBuyOrDeposit": {
+    "message": "Je hebt niet genoeg $1 in je account om de transactiekosten op $2 te betalen. $3 of stort vanuit een ander account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyDeposit": {
+    "message": "Je hebt niet genoeg $1 in je account om de transactiekosten op $2 te betalen. Stort $1 vanuit een ander account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network"
+  },
   "insufficientFunds": {
-    "message": "Onvoldoende fondsen."
+    "message": "Onvoldoende middelen."
+  },
+  "insufficientFundsForGas": {
+    "message": "Niet voldoende middelen voor gas"
   },
   "insufficientTokens": {
     "message": "Onvoldoende tokens."
@@ -165,45 +1573,372 @@
   "invalidAddressRecipient": {
     "message": "Het adres van de ontvanger is ongeldig"
   },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Niet het ETH netwerk, kleine letters ingevoerd"
+  },
+  "invalidAssetType": {
+    "message": "Dit object is een NFT en moet opnieuw worden toegevoegd op de pagina 'Importeer NFT's' onder het tabblad 'NFT's'"
+  },
   "invalidBlockExplorerURL": {
-    "message": "Ongeldige Block Explorer URI"
+    "message": "Ongeldige URL van blokverkenner"
+  },
+  "invalidChainIdTooBig": {
+    "message": "Ongeldige chain ID. De chain ID is te groot."
+  },
+  "invalidCustomNetworkAlertContent1": {
+    "message": "De chain ID voor eigen netwerk '$1' moet opnieuw worden ingevoerd.",
+    "description": "$1 is the name/identifier of the network."
+  },
+  "invalidCustomNetworkAlertContent2": {
+    "message": "Om je te beschermen van  kwaadwillende of foute netwerkaanbieders zijn chain ID's nu vereist voor alle eigen netwerken."
+  },
+  "invalidCustomNetworkAlertContent3": {
+    "message": "Ga naar Instellingen > Netwerk en voer de chain ID in. Je kan de chain ID's van de meest populaire netwerken vinden op $1.",
+    "description": "$1 is a link to https://chainid.network"
+  },
+  "invalidCustomNetworkAlertTitle": {
+    "message": "Ongeldig eigen netwerk"
+  },
+  "invalidHexNumber": {
+    "message": "Ongeldig hexadecimaal nummer."
+  },
+  "invalidHexNumberLeadingZeros": {
+    "message": "Ongeldig hexadecimaal nummer. Verwijder de nullen aan het begin."
+  },
+  "invalidIpfsGateway": {
+    "message": "Ongeldige IPFS Gateway: de waarde moet een geldige URL zijn"
+  },
+  "invalidNumber": {
+    "message": "Ongeldig nummer. Voer een decimaal in of hexadecimaal nummer beginnend met 0x."
+  },
+  "invalidNumberLeadingZeros": {
+    "message": "Ongeldig nummer. Verwijder de nullen aan het begin."
   },
   "invalidRPC": {
-    "message": "Ongeldige RPC-URI"
+    "message": "Ongeldige RPC-URL"
+  },
+  "invalidSeedPhrase": {
+    "message": "Ongeldige geheugensteun"
+  },
+  "ipfsGateway": {
+    "message": "IPFS Gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Voer de URL in van de IPFS CID gateway die je wil gebruiken voor ENS content resolution."
+  },
+  "jazzAndBlockies": {
+    "message": "Jazzicons en Blockies zijn twee verschillende stijlen van unieke iconen die je helpen om een account op het eerste gezicht te identificeren."
+  },
+  "jazzicons": {
+    "message": "Jazzicons"
+  },
+  "jsDeliver": {
+    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON-bestand",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (Handleidingen)"
+  },
+  "knownAddressRecipient": {
+    "message": "Bekend adres van contract."
+  },
+  "knownTokenWarning": {
+    "message": "Met deze actie worden tokens die al in je portomonnee staan aangepast. Keur alleen goed als je er zeker van bent dat je het gebruik van deze tokens wil veranderen. Leer meer over $1"
+  },
   "kovan": {
-    "message": "Kovan-testnetwerk"
+    "message": "Kovan testnetwerk"
+  },
+  "lastConnected": {
+    "message": "Voor het laatst verbonden"
+  },
+  "learmMoreAboutGas": {
+    "message": "Wil je $1 over gas?"
+  },
+  "learnCancelSpeeedup": {
+    "message": "Leer hoe je $1",
+    "description": "$1 is link to cancel or speed up transactions"
+  },
+  "learnMore": {
+    "message": "meer leren"
+  },
+  "learnMoreUpperCase": {
+    "message": "Meer leren"
+  },
+  "learnScamRisk": {
+    "message": "oplichting en beveiligingsrisico's."
+  },
+  "ledgerAccountRestriction": {
+    "message": "Je moet je laatste account gebruiken voordat je een nieuwe kan toevoegen."
+  },
+  "ledgerConnectionInstructionCloseOtherApps": {
+    "message": "Sluit andere software die is verbonden met je apparaat en klik dan hier om te verversen."
+  },
+  "ledgerConnectionInstructionHeader": {
+    "message": "Voordat je klikt op bevestigen:"
+  },
+  "ledgerConnectionInstructionStepFour": {
+    "message": "Schakel \"smart contract data\" of \"blind ondertekenen\" op je Ledger apparaat in"
+  },
+  "ledgerConnectionInstructionStepOne": {
+    "message": "Schakel Ledger Live in bij Instellingen > Geavanceerd"
+  },
+  "ledgerConnectionInstructionStepThree": {
+    "message": "Plug je Ledger apparaat in en selecteer de Ethereum app"
+  },
+  "ledgerConnectionInstructionStepTwo": {
+    "message": "Open en ontgrendel Ledger Live App"
+  },
+  "ledgerConnectionPreferenceDescription": {
+    "message": "Personaliseer hoe je je Ledger met MetaMask verbind. $1 is aanbevolen, maar andere opties zijn ook beschikbaar. Lees hier meer: $2",
+    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
+  },
+  "ledgerDeviceOpenFailureMessage": {
+    "message": "Het is niet gelukt je Ledger apparaat te openen. Je Ledger is mogelijk verbonden met andere software. Sluit Ledger Live of andere applicaties die zijn verbonden aan je Ledger apparaat en probeer opnieuw te verbinden."
+  },
+  "ledgerLive": {
+    "message": "Ledger Live",
+    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
+  },
+  "ledgerLiveApp": {
+    "message": "Ledger Live App"
+  },
+  "ledgerLocked": {
+    "message": "Kan niet verbinden met het Ledger apparaat. Zorg ervoor dat je apparaat is ontgrendeld en dat de Ethereum app is geopend."
+  },
+  "ledgerTimeout": {
+    "message": "Het duurt te lang voordat Ledger Live reageert of er is een timeout in de verbinding. Zorg ervoor dat je Ledger Live app is geopend en je apparaat is ontgrendeld."
+  },
+  "ledgerTransportChangeWarning": {
+    "message": "Als je Ledger Live app is geopend, verbreek dan de verbinding met alle Ledger Live verbindingen en sluit de Ledger Live app."
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "Het Ledger apparaat was niet verbonden. Als je je Ledger wilt verbinden, klik dan opnieuw op 'Doorgaan' en sta de HID-verbinding toe",
+    "description": "An error message shown to the user during the hardware connect flow."
+  },
+  "letsGoSetUp": {
+    "message": "Ja, beginnen!"
+  },
+  "levelArrow": {
+    "message": "level pijl"
+  },
+  "lightTheme": {
+    "message": "Licht"
   },
   "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
+  "link": {
+    "message": "Verwijzing"
+  },
+  "links": {
+    "message": "Verwijzingen"
+  },
+  "loadMore": {
+    "message": "Laad meer"
+  },
   "loading": {
     "message": "Bezig met laden..."
   },
+  "loadingNFTs": {
+    "message": "NFT's aan het laden..."
+  },
   "loadingTokens": {
-    "message": "Tokens laden ..."
+    "message": "Tokens aan het laden ..."
+  },
+  "localhost": {
+    "message": "Localhost 8545"
   },
   "lock": {
-    "message": "Uitloggen"
+    "message": "Vergrendelen"
+  },
+  "lockTimeTooGreat": {
+    "message": "Vergrendeltijd is te groot"
+  },
+  "logo": {
+    "message": "$1 logo",
+    "description": "$1 is the name of the ticker"
+  },
+  "low": {
+    "message": "Laag"
+  },
+  "lowGasSettingToolTipMessage": {
+    "message": "Gebruik $1 om te wachten op een lagere prijs. Tijdschattingen zijn veel minder accuraat doordat de prijzen vrij onvoorspelbaar zijn.",
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+  },
+  "lowLowercase": {
+    "message": "laag"
+  },
+  "lowPriorityMessage": {
+    "message": "Toekomstige transacties komen na deze in de wachtrij."
   },
   "mainnet": {
-    "message": "Mainnetwerk"
+    "message": "Hoofdnetwerk"
+  },
+  "mainnetToken": {
+    "message": "Dit adres komt overeen met een bekend tokenadres op het Ethereum hoofdnetwerk. Controleer opnieuw het contractadres en netwerk voor de token die je wil toevoegen."
+  },
+  "makeAnotherSwap": {
+    "message": "Maak een nieuwe wissel"
+  },
+  "makeSureNoOneWatching": {
+    "message": "Zorg ervoor dat niemand op je scherm kijkt",
+    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "malformedData": {
+    "message": "Misvormde data"
+  },
+  "manageSnaps": {
+    "message": "Beheer je geïnstalleerde Snaps"
+  },
+  "max": {
+    "message": "Maximale"
+  },
+  "maxBaseFee": {
+    "message": "Maximale basistarief"
+  },
+  "maxFee": {
+    "message": "Maximale tarief"
+  },
+  "maxPriorityFee": {
+    "message": "Maximale prioreitsvergoeding"
+  },
+  "medium": {
+    "message": "Markt"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "Gebruik $1 voor snelle verwerking bij de huidige marktprijs.",
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+  },
+  "memo": {
+    "message": "memo"
+  },
+  "memorizePhrase": {
+    "message": "Onthoud deze zin."
   },
   "message": {
     "message": "Bericht"
   },
+  "metaMaskConnectStatusParagraphOne": {
+    "message": "Je hebt meer controle over de verbindingen met je accounts in MetaMask."
+  },
+  "metaMaskConnectStatusParagraphThree": {
+    "message": "Klik erop om je verbonden accounts te beheren."
+  },
+  "metaMaskConnectStatusParagraphTwo": {
+    "message": "De knop connectiestatus toont of de website die je bezoekt verbonden is met je geselecteerde account."
+  },
   "metamaskDescription": {
     "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
+  },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask wissels is op dit moment in onderhoud."
+  },
+  "metamaskVersion": {
+    "message": "MetaMask versie"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "Je altijd toestaan je af te melden via Instellingen"
+  },
+  "metametricsCommitmentsAllowOptOut2": {
+    "message": "Het is altijd mogelijk je af te meldingen bij Instellingen"
+  },
+  "metametricsCommitmentsBoldNever": {
+    "message": "Nooit",
+    "description": "This string is localized separately from some of the commitments so that we can bold it"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask zal.."
+  },
+  "metametricsCommitmentsNeverCollect": {
+    "message": "Nooit sleutels, adressen, transacties, saldo's, hashes of andere persoonlijke informatie bewaren"
+  },
+  "metametricsCommitmentsNeverCollectIP": {
+    "message": "$1 je volledige IP-adres bewaren",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverCollectKeysEtc": {
+    "message": "$1 sleutels, adressen, transacties, saldo's, hashes of andere persoonlijke informatie bewaren",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverIP": {
+    "message": "Nooit je volledige IP-adres bewaren"
+  },
+  "metametricsCommitmentsNeverSell": {
+    "message": "Nooit data verkopen. Nooit!"
+  },
+  "metametricsCommitmentsNeverSellDataForProfit": {
+    "message": "$1 data verkopen. Nooit!",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "Anonieme klik & view events sturen"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "Help ons om MetaMask te verbeteren"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMask wil graag data over het gebruik van de extensie verzamelen om beter te begrijpen hoe onze gebruikers de extensie gebruiken. Deze data zal worden gebruikt om blijvend de bruikbaarheid en beleving van ons product en het Ethereum ecosysteem te verbeteren."
+  },
+  "metametricsOptInDescription2": {
+    "message": "We willen graag basale data over het gebruik willen verzamelen om de bruikbaarheid van ons product te verbeteren. Deze gegevens zullen..."
+  },
+  "metametricsTitle": {
+    "message": "Help ons om MetaMask te verbeteren"
+  },
+  "mismatchedChain": {
+    "message": "De netwerkgegevens voor deze chain ID komen niet overeen met onze gegevens. We bevelen je aan om de $1 voordat je verder gaat.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
+  },
+  "mismatchedChainLinkText": {
+    "message": "netwerkgegevens te verifiëren",
+    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "missingNFT": {
+    "message": "Zie je je NFT niet?"
+  },
+  "missingSetting": {
+    "message": "Kan je een instelling niet vinden?"
+  },
+  "missingSettingRequest": {
+    "message": "Verzoek hier"
+  },
+  "missingToken": {
+    "message": "Zie je je token niet?"
+  },
+  "mobileSyncWarning": {
+    "message": "De optie 'Synchroniseren met extensie' is tijdelijk uitgeschakelt. Als je de portomonnee in de extensie op je mobiel wil gebruiken, ga dan terug naar de opties om je portomonnee in te stellen en klik vervolgens op 'Importeer met geheugensteun'. Gebruik de geheugensteun van de extensie om je portomonnee op je mobiel te importeren."
   },
   "mustSelectOne": {
     "message": "Moet ten minste één token selecteren."
   },
   "myAccounts": {
     "message": "Mijn accounts"
+  },
+  "name": {
+    "message": "Naam"
+  },
+  "needCryptoInWallet": {
+    "message": "Om verbinding te maken met gedecentraliseerde applicaties met MetaMask heb je $1 in je portomonnee nodig.",
+    "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "needHelp": {
+    "message": "Hulp nodig? Contacteer $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
+  "needHelpFeedback": {
+    "message": "Deel je feedback"
+  },
+  "needHelpLinkText": {
+    "message": "MetaMask Support"
+  },
+  "needHelpSubmitTicket": {
+    "message": "Verstuur een melding"
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -212,67 +1947,744 @@
   "negativeETH": {
     "message": "Kan geen negatieve hoeveelheden ETH verzenden."
   },
+  "network": {
+    "message": "Netwerk:"
+  },
+  "networkDetails": {
+    "message": "Netwerkdetails"
+  },
+  "networkIsBusy": {
+    "message": "Het netwerk is druk. Gasprijzen zijn hoog en schattingen zijn minder acuraat."
+  },
+  "networkName": {
+    "message": "Netwerknaam"
+  },
+  "networkNameAvalanche": {
+    "message": "Avalanche"
+  },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
+  "networkNameDefinition": {
+    "message": "De naam die bij dit netwerk hoort."
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNamePolygon": {
+    "message": "Polygon"
+  },
+  "networkNameRinkeby": {
+    "message": "Rinkeby"
+  },
+  "networkNameTestnet": {
+    "message": "Testnet"
+  },
+  "networkSettingsChainIdDescription": {
+    "message": "De chain ID wordt gebruikt om transacties te ondertekenen. Het moet overeenkomen met de chain ID die het netwerk terugstuurt. Je kan een de- of hexadecimaal beginnend met '0x' invoeren, maar we tonen het nummer in decimalen."
+  },
+  "networkStatus": {
+    "message": "Netwerk status"
+  },
+  "networkStatusBaseFeeTooltip": {
+    "message": "Dit basistarief wordt door het netwerk vastgesteld en veranderd elke 13 tot 14 seconden. Onze $1 en $2 opties houden rekening met plotselinge stijgingen.",
+    "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "Bereik van prioriteitsvergoedingen (ook wel miner fooi genoemd). Dit gaat naar de miners en stimuleert ze om prioriteit te geven aan jouw transactie."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Gastarieven zijn relatief gezien $1 ten opzichte van de afgelopen 72 uur.",
+    "description": "$1 is networks stability value - stable, low, high"
+  },
+  "networkURL": {
+    "message": "Netwerk URL"
+  },
+  "networkURLDefinition": {
+    "message": "De URL die wordt gebruikt voor toegang tot dit netwerk."
+  },
   "networks": {
-    "message": "netwerken"
+    "message": "Netwerken"
+  },
+  "nevermind": {
+    "message": "Laat maar"
   },
   "newAccount": {
     "message": "Nieuw account"
   },
+  "newAccountDetectedDialogMessage": {
+    "message": "Nieuw adres gedetecteerd! Klik hier om deze aan je adresboek toe te voegen."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newCollectibleAddedMessage": {
+    "message": "Verzamelobject is succesvol toegevoegd!"
+  },
+  "newContact": {
+    "message": "Nieuw contact"
+  },
   "newContract": {
     "message": "Nieuw contract"
   },
+  "newNFTDetectedMessage": {
+    "message": "Sta MetaMask toe om automatisch NFT's van OpenSea te detecteren en in je portomonnee te tonen."
+  },
+  "newNFTsDetected": {
+    "message": "Nieuw! NFT-detectie"
+  },
+  "newNetworkAdded": {
+    "message": "“$1” is succesvol toegevoegd!"
+  },
   "newPassword": {
-    "message": "Nieuw wachtwoord (min 8 tekens)"
+    "message": "Nieuw wachtwoord (minimaal 8 tekens)"
+  },
+  "newToMetaMask": {
+    "message": "Nieuw bij MetaMask?"
+  },
+  "newTokensImportedMessage": {
+    "message": "Je hebt $1 succesvol geïmporteerd.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Token geïmporteerd"
+  },
+  "newTotal": {
+    "message": "Nieuw totaal"
+  },
+  "newTransactionFee": {
+    "message": "Nieuwe transactiekosten"
+  },
+  "newValues": {
+    "message": "nieuwe waarden"
   },
   "next": {
-    "message": "volgende"
+    "message": "Volgende"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce is hoger dan voorgestelde nonce van $1",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nft": {
+    "message": "NFT"
+  },
+  "nftTokenIdPlaceholder": {
+    "message": "Voer de Token ID in"
+  },
+  "nfts": {
+    "message": "NFT's"
+  },
+  "nickname": {
+    "message": "Bijnaam"
+  },
+  "noAccountsFound": {
+    "message": "Geen accounts gevonden met deze zoekopdracht"
   },
   "noAddressForName": {
     "message": "Er is geen adres ingesteld voor deze naam."
   },
+  "noAlreadyHaveSeed": {
+    "message": "Nee, ik heb al een geheugensteun"
+  },
+  "noConversionDateAvailable": {
+    "message": "Geen datum van valutaconversie beschikbaar"
+  },
+  "noConversionRateAvailable": {
+    "message": "Geen conversieratio beschikbaar"
+  },
+  "noNFTs": {
+    "message": "Nog geen NFT's"
+  },
+  "noSnaps": {
+    "message": "Snaps niet geïnstalleerd"
+  },
+  "noThanks": {
+    "message": "Nee bedankt"
+  },
+  "noThanksVariant2": {
+    "message": "Nee, bedankt."
+  },
   "noTransactions": {
     "message": "Geen transacties"
   },
+  "noWebcamFound": {
+    "message": "De webcam van je computer is niet gevonden. Probeer opnieuw."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Webcam niet gevonden"
+  },
+  "nonce": {
+    "message": "Nonce"
+  },
+  "nonceField": {
+    "message": "Maak eigen transactie nonce"
+  },
+  "nonceFieldDescription": {
+    "message": "Schakel dit in om de nonce (transactienummer) te veranderen op bevestigingsschermen. Dit is een geavanceerde functie, dus gebruik voorzichtig."
+  },
+  "nonceFieldHeading": {
+    "message": "Eigen nonce"
+  },
+  "notBusy": {
+    "message": "Niet druk"
+  },
+  "notCurrentAccount": {
+    "message": "Is dit het juiste account? Het is anders dan het op dit moment geselecteerde account in je portomonnee."
+  },
+  "notEnoughGas": {
+    "message": "Niet genoeg gas"
+  },
+  "notifications": {
+    "message": "Meldingen"
+  },
+  "notifications10ActionText": {
+    "message": "Ga naar instellingen",
+    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+  },
+  "notifications10DescriptionOne": {
+    "message": "Verbeterde tokendetectie is nu beschikbaar voor het Ethereum hoofdnetwerk, Polygon, BSC en Avalanche netwerken. Er komt meer!"
+  },
+  "notifications10DescriptionThree": {
+    "message": "De optie tokendetectie staat standaard aan, maar je kan het uitzetten bij Instellingen."
+  },
+  "notifications10DescriptionTwo": {
+    "message": "We halen tokens op van tokenlijsten van derde partijen. Tokens die op meer dan twee tokenlijsten staan worden automatisch gedetecteerd."
+  },
+  "notifications10Title": {
+    "message": "Hier is verbeterde tokendetectie"
+  },
+  "notifications11Description": {
+    "message": "Tokens kunnen door iedereen worden gemaakt en kunnen dubbele namen hebben. Als je een token ziet die je niet vertrouwt of nog niks mee hebt gedaan is het veiliger om dit niet te vertrouwen."
+  },
+  "notifications11Title": {
+    "message": "Oplichting en beveiligingsrisico's"
+  },
+  "notifications12ActionText": {
+    "message": "Schakel donkere modus in"
+  },
+  "notifications12Description": {
+    "message": "De donkere modus voor de extensie is er eindelijk! Ga hiervoor naar Instellingen > Expirimenteel en selecteer één van de weergave-opties: Licht, Donker of Systeem."
+  },
+  "notifications12Title": {
+    "message": "Wanneer donkere modus? Nu donkere modus! 🕶️🦊"
+  },
+  "notifications1Description": {
+    "message": "Gebruikers van de mobiele MetaMask app kunnen nu tokens wisselen in hun mobiele portomonnee. Scan de QR-code om de app te openen en begin met wisselen.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
+  },
+  "notifications1Title": {
+    "message": "Vanaf nu kan je wisselen op je mobiel!",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
+  },
+  "notifications3ActionText": {
+    "message": "Lees meer",
+    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
+  },
+  "notifications3Description": {
+    "message": "Blijf op de hoogte van de beste manier om MetaMask te beveiligen en krijg de laatste beveiligingstips van MetaMask Support.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
+  },
+  "notifications3Title": {
+    "message": "Blijf veilig",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
+  },
+  "notifications4ActionText": {
+    "message": "Start met wisselen",
+    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
+  },
+  "notifications4Description": {
+    "message": "Ontvang de beste prijzen voor tokenwissels direct in je portomonnee. MetaMask verbindt je nu met meerdere gedecentraliseerde handelsaggregatoren en professionele marktmakers op de Binance Smart Chain.",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
+  "notifications4Title": {
+    "message": "Wissel op de Binance Smart Chain",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
+  },
+  "notifications5Description": {
+    "message": "Je \"Seed Phrase\" wordt nu \"Geheugensteun.\" genoemd",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
+  },
+  "notifications6DescriptionOne": {
+    "message": "Sinds versie 91 van Google Chrome ondersteunt de API die voor onze Ledger Support (U2F) werd gebruikt geen hardware portomonees meer. MetaMask has implemented a new Ledger Live support that allows you to continue to connect to your Ledger device via the Ledger Live desktop app.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Wanneer je je Ledger account gebruikt in MetaMask opent een nieuw tabblad dat zal vragen of je de Ledger Live app kan openen. Als de app is geopend wordt gevraagd of je toestemming geeft voor een verbinding van Websocket naar je MetaMask account. Dat is alles!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Je kan Ledger Live Support inschakelen door te klikken op Instellingen > Geavanceerd > Gebruik Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Ledger Support update voor gebruikers van Google Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
+  "notifications7DescriptionOne": {
+    "message": "MetaMask v10.1.0 bevat nieuwe ondersteuning voor EIP-1559 transacties bij het gebruik van Ledger apparaten.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
+  },
+  "notifications7DescriptionTwo": {
+    "message": "Zorg ervoor dat je Ledger apparaat de laatste firmware heeft om transacties op het Ethereum hoofdnetwerk af te handelen.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
+  },
+  "notifications7Title": {
+    "message": "Ledger firmware update",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
+  },
+  "notifications8ActionText": {
+    "message": "Ga naar geavanceerde instellingen",
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+  },
+  "notifications8DescriptionOne": {
+    "message": "Vanaf MetaMask v10.4.0 heb je geen Ledger Live meer nodig om je Ledger apparaat te verbinden met MetaMask.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
+  },
+  "notifications8DescriptionTwo": {
+    "message": "Voor een makkelijkere en stabielere ledger ervaring, ga naar geavanceerde instellingen en schakel de 'Preferred Ledger Connection Type' naar 'WebHID'.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
+  },
+  "notifications8Title": {
+    "message": "Verbeterde Ledger connectie",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
+  },
+  "notifications9DescriptionOne": {
+    "message": "We bieden nu meer inzicht in het datatabblad bij het bevestigen van smart contract transacties."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "Je kan transacties nu beter begrijpen voordat je ze bevestigd en makkelijker transactieadressen aan je adresboek toevoegen, om je te helpen bij het maken van veilige en geïnformeerde beslissingen."
+  },
+  "notifications9Title": {
+    "message": "👓 We maken transacties makkelijker te lezen."
+  },
+  "notificationsEmptyText": {
+    "message": "Niks te zien hier."
+  },
+  "notificationsHeader": {
+    "message": "Meldingen"
+  },
+  "notificationsInfos": {
+    "message": "$1 van $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Markeer allen als gelezen"
+  },
+  "numberOfNewTokensDetected": {
+    "message": "$1 nieuwe tokens gevonden in dit account",
+    "description": "$1 is the number of new tokens detected"
+  },
+  "ofTextNofM": {
+    "message": "van"
+  },
+  "off": {
+    "message": "Uit"
+  },
+  "offlineForMaintenance": {
+    "message": "Offline voor onderhoud"
+  },
+  "ok": {
+    "message": "Oké"
+  },
+  "on": {
+    "message": "Aan"
+  },
+  "onboardingCreateWallet": {
+    "message": "Maak een nieuwe portomonnee"
+  },
+  "onboardingImportWallet": {
+    "message": "Importeer een bestaande portomonnee"
+  },
+  "onboardingPinExtensionBillboardAccess": {
+    "message": "Volledige toegang"
+  },
+  "onboardingPinExtensionBillboardDescription": {
+    "message": "Deze extensies kunnen informatie zien en veranderen"
+  },
+  "onboardingPinExtensionBillboardDescription2": {
+    "message": "op deze website."
+  },
+  "onboardingPinExtensionBillboardTitle": {
+    "message": "Extensies"
+  },
+  "onboardingPinExtensionChrome": {
+    "message": "Klik op het browserextensie icoon"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "Pin MetaMask aan je browser vast zodat je de extensie makkelijk kan openen."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "Je kan MetaMask openen door op de extensie te klikken. Hierin zie je direct je portomonnee."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "Klik op het icoon van de browserextensie om MetaMask direct te openen"
+  },
+  "onboardingPinExtensionLabel": {
+    "message": "Pin MetaMask vast"
+  },
+  "onboardingPinExtensionStep1": {
+    "message": "1"
+  },
+  "onboardingPinExtensionStep2": {
+    "message": "2"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "De installatie van MetaMask is voltooid!"
+  },
+  "onboardingReturnNotice": {
+    "message": "\"$1\" zal dit tabblad sluiten en teruggaan naar $2",
+    "description": "Return the user to the site that initiated onboarding"
+  },
+  "onboardingShowIncomingTransactionsDescription": {
+    "message": "Het kunnen tonen van binnenkomende transacties is afhankelijk van communicatie met $1. Etherscan heeft toegang tot je Ethereum- en IP-adres. Zie het $2.",
+    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
+  },
+  "onboardingUsePhishingDetectionDescription": {
+    "message": "Phishing detectie waarschuwingen zijn afhankelijk van communicatie met $1. jsDeliver heeft toegang tot je IP-adres. Zie het $2.",
+    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "onlyAddTrustedNetworks": {
+    "message": "Een kwaadwillende netwerkprovider kan liegen over de status van de blockchain en je netwerkactiviteit monitoren. Voeg alleen eigen netwerken toe die je vertrouwt."
+  },
+  "onlyConnectTrust": {
+    "message": "Verbind alleen met websites die je vertrouwt."
+  },
+  "openFullScreenForLedgerWebHid": {
+    "message": "Open MetaMask in een volledig scherm om je met je ledger te verbinden via WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openSourceCode": {
+    "message": "Controleer de broncode"
+  },
+  "optional": {
+    "message": "Optioneel"
+  },
+  "optionalWithParanthesis": {
+    "message": "(Optioneel)"
+  },
+  "or": {
+    "message": "of"
+  },
+  "origin": {
+    "message": "Herkomst"
+  },
+  "osTheme": {
+    "message": "Systeem"
+  },
+  "padlock": {
+    "message": "Hangslot"
+  },
+  "parameters": {
+    "message": "Parameters"
+  },
+  "participateInMetaMetrics": {
+    "message": "Doe mee aan MetaMetrics"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Doe mee aan MetaMetrics om MetaMask te verbeteren"
+  },
+  "password": {
+    "message": "Wachtwoord"
+  },
+  "passwordNotLongEnough": {
+    "message": "Wachtwoord is niet lang genoeg"
+  },
+  "passwordSetupDetails": {
+    "message": "Dit wachtwoord geeft je alleen toegang tot je MetaMask-portomonnee op dit apparaat. MetaMask kan dit wachtwoord niet herstellen."
+  },
+  "passwordStrength": {
+    "message": "Sterkte van wachtwoord: $1",
+    "description": "Return password strength to the user when user wants to create password."
+  },
+  "passwordStrengthDescription": {
+    "message": "Een sterk wachtwoord verbeterd de beveiliging van je portomonnee indien je apparaat wordt gestolen of ingenomen."
+  },
+  "passwordTermsWarning": {
+    "message": "Ik begrijp dat MetaMask dit wachtwoord niet voor mij kan herstellen. $1"
+  },
+  "passwordsDontMatch": {
+    "message": "Wachtwoorden komen niet overeen"
+  },
   "pastePrivateKey": {
-    "message": "Plak hier uw privésleutelstring:",
+    "message": "Plak hier uw privésleutel:",
     "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "In behandeling"
+  },
+  "pendingTransactionInfo": {
+    "message": "Deze transactie wordt niet verwerkt totdat die andere is voltooid."
+  },
+  "pendingTransactionMultiple": {
+    "message": "Je hebt ($1) transacties in behandeling."
+  },
+  "pendingTransactionSingle": {
+    "message": "Je hebt (1) transactie in behandeling.",
+    "description": "$1 is count of pending transactions"
+  },
+  "permissionRequest": {
+    "message": "Toestemmingsverzoek"
+  },
+  "permissionRequestCapitalized": {
+    "message": "Toestemmingsverzoek"
+  },
+  "permission_accessNetwork": {
+    "message": "Verbind met het internet.",
+    "description": "The description of the `endowment:network-access` permission."
+  },
+  "permission_accessSnap": {
+    "message": "Verbind met de $1 Snap.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+  },
+  "permission_customConfirmation": {
+    "message": "Toon een bevestiging in MetaMask.",
+    "description": "The description for the `snap_confirm` permission"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Zie adres, acountbalans, activiteit en stel transacties voor om toe te staan",
+    "description": "The description for the `eth_accounts` permission"
+  },
+  "permission_longRunning": {
+    "message": "Voor onbepaalde tijd uitvoeren.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
+  "permission_manageBip44Keys": {
+    "message": "Beheer je \"$1\" accounts en bezit.",
+    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+  },
+  "permission_manageState": {
+    "message": "Bewaar en beheer de data op je apparaat.",
+    "description": "The description for the `snap_manageState` permission"
+  },
+  "permission_notifications": {
+    "message": "Toon meldingen.",
+    "description": "The description for the `snap_notify` permission"
+  },
+  "permission_unknown": {
+    "message": "Onbekende toestemming: $1",
+    "description": "$1 is the name of a requested permission that is not recognized."
+  },
+  "permissions": {
+    "message": "Rechten"
   },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
+  },
+  "pleaseConfirm": {
+    "message": "Bevestig"
+  },
+  "plusXMore": {
+    "message": "+ $1 meer",
+    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Populaire eigen netwerken"
+  },
+  "preferredLedgerConnectionType": {
+    "message": "Voorkeur van je Ledger verbindingstype",
+    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preparingSwap": {
+    "message": "Ruil voorbereiden..."
+  },
+  "prev": {
+    "message": "Vorige"
+  },
+  "primaryCurrencySetting": {
+    "message": "Primaire valuta"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Selecteer 'Eigen' om aan te geven liever waarden in de eigen valuta van de chain te tonen (bijv. ETH). Selecteer 'Fiat' om aan te geven liever waarden in je geselecteerde fiat valuta te tonen."
+  },
+  "priorityFee": {
+    "message": "Prioriteitsvergoeding"
+  },
+  "priorityFeeProperCase": {
+    "message": "Prioriteitsvergoeding"
   },
   "privacyMsg": {
     "message": "Privacybeleid"
   },
   "privateKey": {
-    "message": "Prive sleutel",
+    "message": "Privésleutel",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
+    "message": "Waarschuwing: deel deze sleutel niet met anderen. Je privésleutels geven toegang tot al je bezit in je account."
   },
   "privateNetwork": {
-    "message": "Prive netwerk"
+    "message": "Privénetwerk"
+  },
+  "proceedWithTransaction": {
+    "message": "Ik wil toch doorgaan"
+  },
+  "proposedApprovalLimit": {
+    "message": "Voorgesteld goedkeuringslimiet"
+  },
+  "provide": {
+    "message": "Verstrek"
+  },
+  "publicAddress": {
+    "message": "Publiek adres"
+  },
+  "queue": {
+    "message": "Wachtrij"
+  },
+  "queued": {
+    "message": "In de wachtrij"
+  },
+  "reAddAccounts": {
+    "message": "opnieuw alle andere accounts toegevoegd"
+  },
+  "reAdded": {
+    "message": "opnieuw toegevoegd"
   },
   "readdToken": {
-    "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
+    "message": "U kunt dit token in de toekomst weer toevoegen door te klikken op 'Token toevoegen' in het menu met accountopties."
+  },
+  "receive": {
+    "message": "Ontvang"
+  },
+  "recents": {
+    "message": "Recente"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Zoek, publiek adres (0x), of ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Aanbevolen"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Start hier"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Ik begrijp het"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Bewaar je geheugensteun altijd op een veilige en geheime plek"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Wil je opnieuw je geheugensteun opslaan?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Deel nooit je geheugensteun met anderen"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Het team van MetaMask zal nooit om je geheugensteun vragen"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Met je geheugensteun kunnen al je accounts worden beheerd."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Bescherm je fondsen"
+  },
+  "refreshList": {
+    "message": "Ververs lijst"
   },
   "reject": {
     "message": "Afwijzen"
   },
+  "rejectAll": {
+    "message": "Wijs allemaal af"
+  },
+  "rejectTxsDescription": {
+    "message": "Je staat op het punt om $1 transacties af te wijzen."
+  },
+  "rejectTxsN": {
+    "message": "Wijs $1 transacties af"
+  },
   "rejected": {
     "message": "Verworpen"
+  },
+  "remember": {
+    "message": "Onthoud:"
+  },
+  "remindMeLater": {
+    "message": "Herinner me er later aan"
+  },
+  "remove": {
+    "message": "Verwijder"
+  },
+  "removeAccount": {
+    "message": "Verwijder account"
+  },
+  "removeAccountDescription": {
+    "message": "Dit account wordt verwijderd van je portomonnee. Zorg ervoor dat je de originele geheugensteun of privésleutel hebt voordat je verder gaat. Je kan opnieuw accounts importeren of aanmaken vanuit het dropdownmenu met accounts. "
+  },
+  "removeNFT": {
+    "message": "Verwijder NFT"
+  },
+  "removeSnap": {
+    "message": "Verwijder Snap"
+  },
+  "removeSnapConfirmation": {
+    "message": "Weet je zeker dat je $1 wil verwijderen?",
+    "description": "$1 represents the name of the snap"
+  },
+  "removeSnapDescription": {
+    "message": "Hiermee wordt de snap en bijbehorende data verwijderd en worden je gegeven toestemmingen ingetrokken."
+  },
+  "replace": {
+    "message": "vervang"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "verzoeken die wachten op erkenning"
   },
   "required": {
     "message": "Verplicht"
   },
+  "reset": {
+    "message": "Opnieuw instellen"
+  },
   "resetAccount": {
     "message": "Account opnieuw instellen"
+  },
+  "resetAccountDescription": {
+    "message": "Het resetten van je account zorg ervoor dat je transactiehistorie wordt gewist. Dit veranderd niets aan de balans van je accounts en zal er niet voor zorgen dat je opnieuw je geheugensteun moet invoeren."
+  },
+  "resetWallet": {
+    "message": "Stel portomonnee opnieuw in"
+  },
+  "resetWalletSubHeader": {
+    "message": "MetaMask bewaart geen kopie van je wachtwoord. Als je problemen ondervindt in het ontgrendelen van je account moet je je portomonnee opnieuw instellen. Je kan dit doen met behulp van de geheugensteun die je hebt gebruikt om je portomonnee aan te maken."
+  },
+  "resetWalletUsingSRP": {
+    "message": "Hiermee verwijder je je huidige portomonnee, geheugensteun en bijbehorende accounts van dit apparaat. Nadat je je account opnieuw hebt ingesteld met een geheugensteun zie je een lijst met accounts gebaseerd op de geheugensteun die je hebt gebruikt om je account opnieuw in te stellen. Deze nieuwe lijst bevat automatisch account met een positieve balans. Je kan ook $1 die je hiervoor hebt aangemaakt. Eigen netwerken die je hebt geïmporteerd moeten $2 zijn. Eigen tokens die je hebt toegevoegd aan je account moeten ook $3 zijn."
+  },
+  "resetWalletWarning": {
+    "message": "Zorg ervoor dat je de juiste geheugensteun gebruikt voordat je verder gaat. Het is niet mogelijk om dit ongedaan te maken."
+  },
+  "restartMetamask": {
+    "message": "Start MetaMask opnieuw op"
+  },
+  "restore": {
+    "message": "Herstel"
+  },
+  "restoreWalletPreferences": {
+    "message": "Er is nog een backup van je data van $1. Wil je de voorkeuren van je portomonnee herstellen?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "retryTransaction": {
+    "message": "Probeer transactie opnieuw"
+  },
+  "reusedTokenNameWarning": {
+    "message": "Deze token heeft hetzelfde symbool als van een andere token die je volgt. Dit kan verwarrend zijn."
   },
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
   },
+  "revealSeedWordsDescription": {
+    "message": "Als je ooit van browser of computer wisselt heb je deze geheugensteun nodig om toegang te krijgen tot je accounts. Sla deze veilig en geheim op."
+  },
   "revealSeedWordsWarning": {
     "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Deel deze zin niet met anderen!"
+  },
+  "revealTheSeedPhrase": {
+    "message": "Onthul geheugensteun"
   },
   "rinkeby": {
     "message": "Rinkeby testnetwerk"
@@ -280,29 +2692,236 @@
   "ropsten": {
     "message": "Ropsten testnetwerk"
   },
+  "rpcUrl": {
+    "message": "Nieuwe RPC URL"
+  },
+  "safeTransferFrom": {
+    "message": "Veilige overdracht van"
+  },
   "save": {
     "message": "Opslaan"
+  },
+  "saveAsCsvFile": {
+    "message": "Sla op als CSV-bestand"
+  },
+  "scanInstructions": {
+    "message": "Plaats de QR-code voor je camera"
+  },
+  "scanQrCode": {
+    "message": "Scan QR-code"
+  },
+  "scrollDown": {
+    "message": "Scroll naar beneden"
   },
   "search": {
     "message": "Zoeken"
   },
+  "searchAccounts": {
+    "message": "Zoek accounts"
+  },
+  "searchResults": {
+    "message": "Zoek resultaten"
+  },
+  "searchSettings": {
+    "message": "Zoek in instellingen"
+  },
+  "searchTokens": {
+    "message": "Zoek tokens"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Je geheugensteun maakt het makkelijk om je account te herstellen en hier een backup van te maken."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "WAARSCHUWING: Deel nooit je geheugensteun met anderen. Iedereen met deze zin kan je portomonnee voorgoed leeghalen."
+  },
+  "secretPhrase": {
+    "message": "Alleen het eerste account van deze portomonnee zal automatisch laden. Na het voltooien van dit proces moet je om extra accounts toe te voegen klikken op het dropdownmenu en vervolgens 'Aanmaken account' selecteren."
+  },
+  "secretRecoveryPhrase": {
+    "message": "Geheugensteun"
+  },
+  "secureWallet": {
+    "message": "Veilige portomonnee"
+  },
+  "securityAndPrivacy": {
+    "message": "Veiligheid & privacy"
+  },
+  "seedPhraseConfirm": {
+    "message": "Bevestig geheugensteun"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "Bevestig geheugensteun"
+  },
+  "seedPhraseIntroNotRecommendedButtonCopy": {
+    "message": "Herinner me er later aan (niet aanbevolen)"
+  },
+  "seedPhraseIntroRecommendedButtonCopy": {
+    "message": "Beveilig mijn portomonnee (aanbevolen)"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Schrijf op en bewaar op meerdere geheime plekken"
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Sla op in een wachtwoordbeheerprogramma"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Sla op in een veilige kluis"
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Sla op in een bankkluis"
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Je geheugensteun is een zin van 12 woorden die dient als hoofdsleutel voor toegang tot je portomonnee en fondsen"
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Als iemand om je geheugensteun vraagt is het waarschijnlijk dat je wordt opgelicht."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Deel nooit, maar dan ook nooit, je geheugensteun, ook niet met MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Wat is een geheugensteun?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Moet ik mijn geheugensteun delen?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Hoe sla ik mijn geheugensteun op?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Beveilig je portomonnee"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Bekijk voordat je begint deze korte video voor informatie over de geheugensteun en hoe je je portomonnee beveiligd."
+  },
   "seedPhraseReq": {
-    "message": "Back-up woorden zijn 12 woorden lang"
+    "message": "Geheugensteun is 12 woorden lang"
+  },
+  "seedPhraseWriteDownDetails": {
+    "message": "Schrijf deze geheugensteun van 12 woorden op en sla het op op een plek die je vertrouwt en waar alleen jij toegang tot hebt."
+  },
+  "seedPhraseWriteDownHeader": {
+    "message": "Schrijf je geheugensteun op"
+  },
+  "selectAHigherGasFee": {
+    "message": "Selecteer een hoger gastarief om de verwerkingstijd van je transactie te versnellen.*"
+  },
+  "selectAccounts": {
+    "message": "Selecteer het account of de accounts die je op deze website wil gebruiken"
+  },
+  "selectAll": {
+    "message": "Selecteer allemaal"
+  },
+  "selectAnAccount": {
+    "message": "Selecteer een account"
+  },
+  "selectAnAccountAlreadyConnected": {
+    "message": "Dit account is al verbonden met MetaMask"
+  },
+  "selectEachPhrase": {
+    "message": "Selecteer de woorden in de volgorde zoals deze in je geheugensteun staan."
+  },
+  "selectHdPath": {
+    "message": "Selecteer HD-pad"
+  },
+  "selectNFTPrivacyPreference": {
+    "message": "Zet NFT-detectie aan bij Instellingen"
+  },
+  "selectPathHelp": {
+    "message": "Als je niet de accounts ziet die je verwacht, probeer dan het HD pad te wisselen."
   },
   "selectType": {
     "message": "Selecteer type"
   },
+  "selectingAllWillAllow": {
+    "message": "Door alles te selecteren kan de website al je huidige accounts zien. Wees er zeker van dat de website te vertrouwen is."
+  },
   "send": {
-    "message": "Sturen"
+    "message": "Stuur"
+  },
+  "sendAmount": {
+    "message": "Stuur hoeveelheid"
+  },
+  "sendBugReport": {
+    "message": "Stuur ons een foutrapportage."
+  },
+  "sendSpecifiedTokens": {
+    "message": "Stuur $1",
+    "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "Stuur naar"
   },
   "sendTokens": {
     "message": "Stuur tokens"
   },
+  "sendingDisabled": {
+    "message": "Het versturen van ERC-1155 NFT's wordt nog niet ondersteund."
+  },
+  "sendingNativeAsset": {
+    "message": "$1 aan het versturen",
+    "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "setAdvancedPrivacySettings": {
+    "message": "Stel geavanceerde privacy instellingen in"
+  },
+  "setAdvancedPrivacySettingsDetails": {
+    "message": "MetaMask gebruikt de services van deze vertrouwde derde partijen om het gebruik en de veiligheid van MetaMask te verbeteren."
+  },
   "settings": {
-    "message": "instellingen"
+    "message": "Instellingen"
+  },
+  "settingsSearchMatchingNotFound": {
+    "message": "Geen overeenkomende resultaten gevonden"
+  },
+  "shorthandVersion": {
+    "message": "v$1",
+    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
+  },
+  "show": {
+    "message": "Toon"
+  },
+  "showAdvancedGasInline": {
+    "message": "Geavanceerd gasbeheer"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Selecteer dit om op de schermen bij het versturen en bevestigen de gasprijs en beheer van gaslimieten te tonen."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Toon conversie op testnetwerken"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Selecteer dit om fiatconversie te tonen op testnetwerken"
+  },
+  "showHexData": {
+    "message": "Toon hexadecimale data"
+  },
+  "showHexDataDescription": {
+    "message": "Selecteer dit om de het veld met hex data te tonen op het scherm bij het versturen"
+  },
+  "showHide": {
+    "message": "Toon/verberg"
+  },
+  "showIncomingTransactions": {
+    "message": "Toon binnenkomende transacties"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Selecteer dit om Etherscan te gebruiken om binnenkomende transacties in de transactielijst te tonen"
+  },
+  "showPermissions": {
+    "message": "Toon machtigingen"
   },
   "showPrivateKeys": {
     "message": "Privésleutels weergeven"
+  },
+  "showRecommendations": {
+    "message": "Toon aanbevelingen"
+  },
+  "showTestnetNetworks": {
+    "message": "Toon testnetwerken"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Selecteer om testnetwerken in de netwerklijst te tonen"
   },
   "sigRequest": {
     "message": "Ondertekeningsverzoek"
@@ -316,65 +2935,1144 @@
   "signatureRequest": {
     "message": "Ondertekeningsverzoek"
   },
+  "signatureRequest1": {
+    "message": "Bericht"
+  },
+  "signed": {
+    "message": "Ondertekend"
+  },
+  "simulationErrorMessageV2": {
+    "message": "We waren niet in staat om een schatting van de hoeveelheid gas te maken. Er kan een fout zitten in het contract en de transactie kan mislukken."
+  },
+  "skip": {
+    "message": "Sla over"
+  },
+  "skipAccountSecurity": {
+    "message": "Sla accountbeveiliging over?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "Ik begrijp dat zolang ik geen backup heb gemaakt van mijn geheugensteun, ik toegang kan verliezen tot al mijn accounts en bijbehorend bezit."
+  },
+  "slow": {
+    "message": "Langzaam"
+  },
+  "smartTransaction": {
+    "message": "Slimme transactie"
+  },
+  "snapAccess": {
+    "message": "$1 snap heeft toegang tot:",
+    "description": "$1 represents the name of the snap"
+  },
+  "snapAdded": {
+    "message": "Toegevoegd op $1 via $2",
+    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
+  },
+  "snapError": {
+    "message": "Snap fout: '$1'. Foutcode: '$2'",
+    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
+  },
+  "snapInstall": {
+    "message": "Installeer Snap"
+  },
+  "snapInstallWarningCheck": {
+    "message": "Vink allemaal aan om te bevestigen dat je het begrijpt."
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "Je geeft sleuteltoegang tot de snap \"$1\". Dit is onomkeerbaar en geeft \"$1\" toegang tot je accounts en eigendom. Wees er zeker van dat je \"$1\" vertrouwt voordat je verder gaat.",
+    "description": "The parameter is the name of the snap"
+  },
+  "snapRequestsPermission": {
+    "message": "Deze snap vraag om de volgende toestemming:"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsSettingsDescription": {
+    "message": "Beheer je Snaps"
+  },
+  "snapsStatus": {
+    "message": "Snap status is afhankelijk van activiteit."
+  },
+  "snapsToggle": {
+    "message": "Een snap zal alleen worden uitgevoerd als het is ingeschakelt"
+  },
+  "somethingWentWrong": {
+    "message": "Oeps! Er ging iets mis."
+  },
+  "source": {
+    "message": "Bron"
+  },
+  "speedUp": {
+    "message": "Versnel"
+  },
+  "speedUpCancellation": {
+    "message": "Versnel deze annulering"
+  },
+  "speedUpExplanation": {
+    "message": "We hebben de gastarieven geüpdatet op basis van de conditie van het huidige netwerk en deze met tenminste 10% verhoogd (vereist door het netwerk)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "Versnel transactie"
+  },
+  "speedUpTooltipText": {
+    "message": "Nieuwe gastarieven"
+  },
+  "speedUpTransaction": {
+    "message": "Versnel deze transactie"
+  },
+  "spendLimitAmount": {
+    "message": "Bestedingslimiet"
+  },
+  "spendLimitInsufficient": {
+    "message": "Bestedingslimiet niet toereikend"
+  },
+  "spendLimitInvalid": {
+    "message": "Bestedingslimiet ongeldig; dit moet een positief getal zijn"
+  },
+  "spendLimitPermission": {
+    "message": "Toestemming bestedingslimiet"
+  },
+  "spendLimitRequestedBy": {
+    "message": "Bestedingslimiet opgevraagd door $1",
+    "description": "Origin of the site requesting the spend limit"
+  },
+  "spendLimitTooLarge": {
+    "message": "Bestedingslimiet te groot"
+  },
+  "srpInputNumberOfWords": {
+    "message": "Ik heb een geheugensteun van $1 woorden",
+    "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
+  },
+  "srpPasteFailedTooManyWords": {
+    "message": "Plakken mislukt omdat het meer dan 24 woorden bevat. Een geheugensteun kan niet meer dan 24 woorden bevatten.",
+    "description": "Description of SRP paste erorr when the pasted content has too many words"
+  },
+  "srpPasteTip": {
+    "message": "Je kan je geheugensteun in elk veld plakken",
+    "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpToggleShow": {
+    "message": "Toon/Verberg dit woord van de geheugensteun",
+    "description": "Describes a toggle that is used to show or hide a single word of the secret recovery phrase"
+  },
+  "srpWordHidden": {
+    "message": "Dit woord is verborgen",
+    "description": "Explains that a word in the secret recovery phrase is hidden"
+  },
+  "srpWordShown": {
+    "message": "Dit woord wordt getoond",
+    "description": "Explains that a word in the secret recovery phrase is being shown"
+  },
+  "stable": {
+    "message": "Stabiel"
+  },
+  "stableLowercase": {
+    "message": "stabiel"
+  },
+  "stateLogError": {
+    "message": "Fout bij het ontvangen van statuslogs."
+  },
+  "stateLogFileName": {
+    "message": "MetaMask statuslogs"
+  },
   "stateLogs": {
-    "message": "Staatslogboeken"
+    "message": "statuslogs"
   },
   "stateLogsDescription": {
-    "message": "Staatslogboeken bevatten uw openbare accountadressen en verzonden transacties."
+    "message": "Statuslogs bevatten uw openbare accountadressen en verzonden transacties."
+  },
+  "status": {
+    "message": "Status"
+  },
+  "statusConnected": {
+    "message": "Verbonden"
+  },
+  "statusNotConnected": {
+    "message": "Niet verbonden"
+  },
+  "step1LatticeWallet": {
+    "message": "Zorg ervoor dat je Lattice1 klaar is om te verbinden"
+  },
+  "step1LatticeWalletMsg": {
+    "message": "Je kan MetaMask met je Lattice1 apparaat verbinden als het is ingesteld en online is. Ontgrendel je apparaat en houd de ID van je apparaat bij de hand. Voor meer informatie over hardware portomonees, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "step1LedgerWallet": {
+    "message": "Download Ledger app"
+  },
+  "step1LedgerWalletMsg": {
+    "message": "Download, stel in en voer je wachtwoord in om $1 te ontgrendelen.",
+    "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1TrezorWallet": {
+    "message": "Plug in Trezor wallet"
+  },
+  "step1TrezorWalletMsg": {
+    "message": "Verbind je portomonnee direct met je computer. Voor meer informatie over het gebruik van je hardwareportomonnee, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "step2LedgerWallet": {
+    "message": "Plug in Ledger wallet"
+  },
+  "step2LedgerWalletMsg": {
+    "message": "Verbind je portomonnee direct aan je computer. Ontgrendel je Ledger en open de Ethereum app. Voor meer informatie over het gebruik van een hardwareportomonnee, $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "stillGettingMessage": {
+    "message": "Krijg je nog steeds dit bericht?"
+  },
+  "storePhrase": {
+    "message": "Bewaar deze zin in een wachtwoordbeheerprogramma zoals 1Password."
+  },
+  "strong": {
+    "message": "Sterk"
+  },
+  "stxAreHere": {
+    "message": "Slimme transacties zijn er!"
+  },
+  "stxBenefit1": {
+    "message": "Minimaliseer transactiekosten"
+  },
+  "stxBenefit2": {
+    "message": "Verminder transactiefouten"
+  },
+  "stxBenefit3": {
+    "message": "Verwijder vastzittende transacties"
+  },
+  "stxBenefit4": {
+    "message": "Voorkom front-running"
+  },
+  "stxCancelled": {
+    "message": "Wissel zou niet zijn gelukt"
+  },
+  "stxCancelledDescription": {
+    "message": "Je transactie zou niet zijn gelukt en is geannuleerd om je te beschermen van te hoge gastarieven."
+  },
+  "stxCancelledSubDescription": {
+    "message": "Probeer je wissel opnieuw. We zijn hier om je volgende keer tegen dezelfde risico's te beschermen."
+  },
+  "stxDescription": {
+    "message": "MetaMask wissels zijn nu een stuk slimmer! Door slimme transacties toe te staan wordt MetaMask in staat gesteld om je wissel te optimaliseren om met het volgende te helpen:"
+  },
+  "stxErrorNotEnoughFunds": {
+    "message": "Niet genoeg fondsen voor een slimme transactie."
+  },
+  "stxErrorUnavailable": {
+    "message": "Slimme transacties zijn tijdelijk niet beschikbaar."
+  },
+  "stxFailure": {
+    "message": "Wissel niet gelukt"
+  },
+  "stxFailureDescription": {
+    "message": "Plotselinge veranderingen in de markt kunnen problemen veroorzaken. Neem contact met ons op via $1 als het probleem aanhoudt.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxFallbackPendingTx": {
+    "message": "Slimme transacties zijn tijdelijk niet beschikbaar omdat je een transactie hebt die in behandeling is."
+  },
+  "stxFallbackUnavailable": {
+    "message": "Je kan nog steeds je tokens wisselen, ook al zijn slimme transacties niet beschikbaar."
+  },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Privé versturen van swap..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Wissel publiekelijk aan het versturen..."
+  },
+  "stxSubDescription": {
+    "message": "* Slimme transacties zullen meerdere keren proberen je transactie privé te versturen. Als alle pogingen mislukken wordt de transactie publiekelijk verstuurd om ervoor te zorgen dat de wissel succesvol wordt afgehandeld."
+  },
+  "stxSuccess": {
+    "message": "Wissel voltooid!"
+  },
+  "stxSuccessDescription": {
+    "message": "Je $1 is nu beschikbaar.",
+    "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Wissel is klaar in <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
+  },
+  "stxTooltip": {
+    "message": "Stimuleer transacties voor het verlagen van de transactiekosten om de kans op fouten te verkleinen."
+  },
+  "stxTryRegular": {
+    "message": "Probeer een reguliere wissel."
+  },
+  "stxTryingToCancel": {
+    "message": "Aan het proberen je transactie te annuleren..."
+  },
+  "stxUnavailable": {
+    "message": "Slimme transacties tijdelijk niet beschikbaar"
+  },
+  "stxUnknown": {
+    "message": "Status onbekend"
+  },
+  "stxUnknownDescription": {
+    "message": "Een transactie is succesvol voltooid, maar we weten niet wat het is. Dit kan komen doordat een andere transactie werd verstuurd terwijl deze wissel nog bezig was."
+  },
+  "stxUserCancelled": {
+    "message": "Wissel geannuleerd"
+  },
+  "stxUserCancelledDescription": {
+    "message": "Je transactie is geannulleerd en je hebt niet onnodig hoge gastarieven betaald."
+  },
+  "stxYouCanOptOut": {
+    "message": "Je kan dit elk moment uitschakelen bij geavanceerde instellingen."
+  },
+  "submit": {
+    "message": "Verzend"
+  },
+  "submitted": {
+    "message": "Verzonden"
+  },
+  "support": {
+    "message": "Steun"
   },
   "supportCenter": {
-    "message": "Bezoek ons ​​ondersteuningscentrum"
+    "message": "Bezoek ons ondersteuningscentrum"
+  },
+  "swap": {
+    "message": "Wissel"
+  },
+  "swapAdvancedSlippageInfo": {
+    "message": "Als de prijs veranderd tussen het moment waarop je bestelling is geplaatst en bevestigd is er sprake van 'slippage'. Je wissel wordt automatisch geannuleerd als de slippage je ingestelde maximale slippage overschrijdt."
+  },
+  "swapAggregator": {
+    "message": "Aggregator"
+  },
+  "swapAllowSwappingOf": {
+    "message": "Sta wissel van $1 toe",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "swapAmountReceived": {
+    "message": "Gegarandeerde hoeveelheid"
+  },
+  "swapAmountReceivedInfo": {
+    "message": "Dit is het minimale bedrag dat je zal ontvangen. Je kan meer ontvangen, afhankelijk van de slippage."
+  },
+  "swapApproval": {
+    "message": "Keur $1 goed voor wissels",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
+  "swapApproveNeedMoreTokens": {
+    "message": "Je hebt $1 meer $2 nodig om de wissel te voltooien",
+    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
+  },
+  "swapApproveNeedMoreTokensSmartTransactions": {
+    "message": "Je hebt meer $1 nodig om deze wissel met behulp van slimme contracten te voltooien.",
+    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
+  },
+  "swapBestOfNQuotes": {
+    "message": "Beste van $1 offertes.",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "Geen tokens beschikbaar die overeenkomen met $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapConfirmWithHwWallet": {
+    "message": "Bevestig met je hardwareportomonnee"
+  },
+  "swapContractDataDisabledErrorDescription": {
+    "message": "Ga in de Ethereum app op je Ledger naar \"Instellingen\" en sta contractdata toe. Probeer daarna je wissel opnieuw."
+  },
+  "swapContractDataDisabledErrorTitle": {
+    "message": "Contractdata is niet ingeschakelt op je Ledger"
+  },
+  "swapCustom": {
+    "message": "eigen"
+  },
+  "swapDecentralizedExchange": {
+    "message": "Gedecentraliseerde beurs"
+  },
+  "swapDirectContract": {
+    "message": "Direct contract"
+  },
+  "swapEditLimit": {
+    "message": "Wijzig limiet"
+  },
+  "swapEnableDescription": {
+    "message": "Dit is vereist en geeft MetaMask toestemming om je $1 te wisselen.",
+    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
+  },
+  "swapEnableTokenForSwapping": {
+    "message": "Dit $1 om te wisselen",
+    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "Geschatte netwerktarieven"
+  },
+  "swapEstimatedNetworkFeesInfo": {
+    "message": "Dit is een schatting van het netwerktarief dat zal worden gebruikt om je wissel te voltooien. Het daadwerkelijke bedrag kan verschillen afhankelijk van de conditie van het netwerk."
+  },
+  "swapFailedErrorDescriptionWithSupportLink": {
+    "message": "Transactiefouten kunnen voorkomen en we zijn er voor je om hiermee te helpen. Als het probleem aanhoudt kan je onze klantenservice bereiken op $1 voor extra ondersteuning.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "swapFailedErrorTitle": {
+    "message": "Wissel niet gelukt"
+  },
+  "swapFetchingQuoteNofN": {
+    "message": "Offerte $1 van $2 aan het ophalen",
+    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
+  },
+  "swapFetchingQuotes": {
+    "message": "Offertes aan het ophalen"
+  },
+  "swapFetchingQuotesErrorDescription": {
+    "message": "Hmmm... er ging iets fout. Probeer opnieuw of neem contact op met de klantenservice als het probleem zich blijft herhalen."
+  },
+  "swapFetchingQuotesErrorTitle": {
+    "message": "Probleem met het ophalen van offertes"
+  },
+  "swapFetchingTokens": {
+    "message": "Tokens aan het ophalen..."
+  },
+  "swapFromTo": {
+    "message": "De wissel van $1 naar $2",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
+  },
+  "swapGasFeesDetails": {
+    "message": "Gastarieven worden geschat en zullen fluctureren afhankelijk van het netwerkverkeer en de complexiteit van transacties."
+  },
+  "swapGasFeesLearnMore": {
+    "message": "Leer meer over gastarieven"
+  },
+  "swapGasFeesSplit": {
+    "message": "Gastarieven op het vorige scherm zijn opgesplitst tussen deze twee transacties."
+  },
+  "swapGasFeesSummary": {
+    "message": "Gastarieven worden betaald aan miners die de transacties op $1 verwerken. MetaMask profiteert niet van gastarieven.",
+    "description": "$1 is the selected network, e.g. Ethereum or BSC"
+  },
+  "swapHighSlippageWarning": {
+    "message": "Bedrag aan slippage is erg hoog."
+  },
+  "swapIncludesMMFee": {
+    "message": "Bevat een vergoeding van $1% aan MetaMask.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapLowSlippageError": {
+    "message": "Transactie kan mislukken, maximale slippage te laag."
+  },
+  "swapMaxSlippage": {
+    "message": "Maximale slippage"
+  },
+  "swapMetaMaskFee": {
+    "message": "MetaMask tarief"
+  },
+  "swapMetaMaskFeeDescription": {
+    "message": "We ontvangen elke keer de beste prijzen van de top aan liquiditeitsbronnen. Een vergoeding van $1% wordt hier automatisch in meegenomen.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapNQuotesWithDot": {
+    "message": "$1 offertes.",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
+  },
+  "swapNewQuoteIn": {
+    "message": "Nieuwe offertes over $1",
+    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
+  },
+  "swapOnceTransactionHasProcess": {
+    "message": "Je $1 zal aan je account worden toegevoegd als de transactie is verwerkt.",
+    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
+  },
+  "swapPriceDifference": {
+    "message": "Je staat op het punt om $1 $2 (~$3) te wisselen voor $4 $5 (~$6).",
+    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Prijsverschil van ~$1%",
+    "description": "$1 is a number (ex: 1.23) that represents the price difference."
+  },
+  "swapPriceImpactTooltip": {
+    "message": " Prijsimpact is het verschil tussen de huidige marktprijs en de hoeveelheid ontvangen gedurende de verwerking van de transactie. Prijsimpact is een functie van de grootte van je transactie relatief gezien tot de grootte van de liquiditeitspool."
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "Prijsimpact kan niet worden beperkt door een gebrek aan data van de marktprijs. Bevestig dat je akkoord gaat met de te ontvangen hoeveelheid tokens voor het wisselen."
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "Controleer je tarief voordat je verder gaat"
+  },
+  "swapProcessing": {
+    "message": "Aan het verwerken"
+  },
+  "swapQuoteDetails": {
+    "message": "Details van offerte"
+  },
+  "swapQuoteDetailsSlippageInfo": {
+    "message": "Als de prijs veranderd tussen het moment waarop je bestelling wordt geplaatst en bevestigd wordt dit 'slippage' genoemd. Je wissel wordt automatisch geannuleerd als de slippage je instelling van de slippage tolerantie overschrijdt."
+  },
+  "swapQuoteSource": {
+    "message": "Bron van offerte"
+  },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "Vraag nieuwe offertes aan om de laatste prijzen te ontvangen."
+  },
+  "swapQuotesExpiredErrorTitle": {
+    "message": "Time-out offertes"
+  },
+  "swapQuotesNotAvailableErrorDescription": {
+    "message": "Probeer de hoeveelheid of slippage instellingen te veranderen en probeer opnieuw."
+  },
+  "swapQuotesNotAvailableErrorTitle": {
+    "message": "Geen offertes beschikbaar"
+  },
+  "swapRate": {
+    "message": "Tarief"
+  },
+  "swapReceiving": {
+    "message": "Ontvangen"
+  },
+  "swapReceivingInfoTooltip": {
+    "message": "Dit is een schatting. De exacte hoeveelheid hangt af van de slippage."
+  },
+  "swapRequestForQuotation": {
+    "message": "Offerte aanvragen"
+  },
+  "swapReviewSwap": {
+    "message": "Bekijk wissel"
+  },
+  "swapSearchForAToken": {
+    "message": "Zoek een token"
+  },
+  "swapSelect": {
+    "message": "Selecteer"
+  },
+  "swapSelectAQuote": {
+    "message": "Selecteer een offerte"
+  },
+  "swapSelectAToken": {
+    "message": "Selecteer een token"
+  },
+  "swapSelectQuotePopoverDescription": {
+    "message": "Hieronder staat een verzameling van alle offertes van meerdere liquiditeitsbronnen."
+  },
+  "swapSlippageNegative": {
+    "message": "Slippage moet groter of gelijk aan nul zijn"
+  },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSource": {
+    "message": "Bron van liquiditeit"
+  },
+  "swapSourceInfo": {
+    "message": "We zoeken bij meerdere liquiditeitsbronnen (handelsplatformen, aggregatoren en professionele marktmakers) om de beste prijzen en laagste netwerktarieven te vinden."
+  },
+  "swapSuggested": {
+    "message": "Wissel voorgesteld"
+  },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "Wissels zijn complexe en tijdsintensieve transacties. We bevelen dit gastarief aan voor een goede balans tussen kosten en vertrouwen in een goede wissel."
+  },
+  "swapSwapFrom": {
+    "message": "Wissel van"
+  },
+  "swapSwapSwitch": {
+    "message": "Wissel van en naar tokens"
+  },
+  "swapSwapTo": {
+    "message": "Wissel naar"
+  },
+  "swapToConfirmWithHwWallet": {
+    "message": "om dit met je hardwareportomonnee te bevestigen"
+  },
+  "swapTokenAvailable": {
+    "message": "Je $1 is toegevoegd aan je account.",
+    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
+  },
+  "swapTokenBalanceUnavailable": {
+    "message": "Het is niet gelukt om de balans op te halen van $1",
+    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenToToken": {
+    "message": "Wissel $1 voor $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationAddedManually": {
+    "message": "Deze token is handmatig toegevoegd."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Bevestig altijd het tokenadres op $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Alleen geverifieerd bij 1 bron."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Geverifieerd bij $1 bronnen.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTooManyDecimalsError": {
+    "message": "$1 staat tot $2 decimalen toe",
+    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
+  },
+  "swapTransactionComplete": {
+    "message": "Transactie compleet"
+  },
+  "swapTwoTransactions": {
+    "message": "2 transacties"
+  },
+  "swapUnknown": {
+    "message": "Onbekend"
+  },
+  "swapVerifyTokenExplanation": {
+    "message": "Meerdere tokens kunnen dezelfde naam en symbool gebruiken. Controleer op $1 om te bevestigen dat dit de token is waar je naar op zoek bent.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
+  },
+  "swapYourTokenBalance": {
+    "message": "$1 $2 beschikbaar om te wisselen",
+    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
+  },
+  "swapZeroSlippage": {
+    "message": "0% slippage"
+  },
+  "swapsAdvancedOptions": {
+    "message": "Geavanceerde opties"
+  },
+  "swapsExcessiveSlippageWarning": {
+    "message": "Slippage percentage is te hoog. Verlaag de slippage tolerantie tot een percentage lager dan 15%."
+  },
+  "swapsMaxSlippage": {
+    "message": "Slippage tolerantie"
+  },
+  "swapsNotEnoughForTx": {
+    "message": "Niet genoeg $1 om de transactie te voltooien",
+    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
+  },
+  "swapsViewInActivity": {
+    "message": "Zie in activiteit"
+  },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "Dit wisselt het geselecteerde netwerk van MetaMask met een eerder toegevoegd netwerk:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Sta deze website toe om van netwerk te wisselen?"
+  },
+  "switchNetwork": {
+    "message": "Wissel netwerk"
+  },
+  "switchNetworks": {
+    "message": "Wissel netwerken"
+  },
+  "switchToThisAccount": {
+    "message": "Wissel naar dit account"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "Bij het wisselen van netwerk worden alle bevestigingen in behandeling worden geannuleerd"
+  },
+  "symbol": {
+    "message": "Symbool"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Symbool moet 11 tekens of minder zijn."
+    "message": "Symbool mag tussen 0 en 12 tekens bevatten."
+  },
+  "syncFailed": {
+    "message": "Synchonisatie niet gelukt"
+  },
+  "syncInProgress": {
+    "message": "Synchronisatie is bezig"
+  },
+  "syncWithMobile": {
+    "message": "Synchronisatie met mobiel"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Zorg ervoor dat niemand anders naar je scherm kijkt terwijl je deze code scant"
+  },
+  "syncWithMobileComplete": {
+    "message": "Je data is succesvol gesynchroniseerd. Geniet van de mobiele app van MetaMask!"
+  },
+  "syncWithMobileDesc": {
+    "message": "Je kan je accounts en informatie met je mobiele apparaat synchroniseren. Open de mobiele app van MetaMask, ga naar \"Instellingen\" en klik op \"Synchroniseer van browserextensie\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "Als je net de mobiele app van MetaMask hebt geopend, volg dan de stappen op je telefoon."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "Scan deze code met de mobiele app van MetaMask"
+  },
+  "syncWithMobileTitle": {
+    "message": "Synchroniseer met mobiel"
+  },
+  "syncWithThreeBox": {
+    "message": "Synchroniseer data met 3Box (experimenteel)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Schakel in om een backup van je instellingen te maken met 3Box. Deze optie is nog expirimenteel; gebruik op eigen risico."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box is uitgeschakelt vanwege een probleem tijdens de eerste synchronisatie"
+  },
+  "tenPercentIncreased": {
+    "message": "10% toename"
   },
   "terms": {
     "message": "Gebruiksvoorwaarden"
   },
+  "termsOfService": {
+    "message": "Servicevoorwaarden"
+  },
   "testFaucet": {
-    "message": "Test de kraan"
+    "message": "Test faucet"
+  },
+  "testNetworks": {
+    "message": "Testnetwerken"
+  },
+  "theme": {
+    "message": "Thema"
+  },
+  "themeDescription": {
+    "message": "Kies naar eigen voorkeur een thema voor MetaMask."
+  },
+  "thisWillCreate": {
+    "message": "Hiermee maak je een nieuwe portomonnee en geheugensteun"
+  },
+  "time": {
+    "message": "Tijd"
+  },
+  "tips": {
+    "message": "Fooien"
   },
   "to": {
     "message": "Naar"
   },
+  "toAddress": {
+    "message": "Naar: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleTestNetworks": {
+    "message": "$1 testnetwerken",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+  },
+  "token": {
+    "message": "Token"
+  },
+  "tokenAddress": {
+    "message": "Tokenadres"
+  },
   "tokenAlreadyAdded": {
     "message": "Token is al toegevoegd."
   },
+  "tokenContractAddress": {
+    "message": "Tokencontractadres"
+  },
+  "tokenDecimalFetchFailed": {
+    "message": "Tokendecimaal vereist."
+  },
+  "tokenDecimalTitle": {
+    "message": "Tokendecimaal:"
+  },
+  "tokenDetails": {
+    "message": "Tokendetails"
+  },
+  "tokenDetection": {
+    "message": "Tokendetectie"
+  },
+  "tokenDetectionAlertMessage": {
+    "message": "Tokendetectie is momenteel beschikbaar op $1. $2"
+  },
+  "tokenDetectionAnnouncement": {
+    "message": "Nieuw! Verbeterde tokendetectie is beschikbaar op het Ethereum hoofdnetwerk als een expirimentele functie. $1"
+  },
+  "tokenDetectionToggleDescription": {
+    "message": "De token API van ConsenSys aggregeert een lijst met tokens van lijsten van verschillende derde partijen. Dit uitschakelen zorgt ervoor dat nieuwe tokens die aan je portomonnee worden toegevoegd worden gedetecteerd, maar behoud de optie om te zoeken naar tokens om deze te importeren."
+  },
+  "tokenId": {
+    "message": "Token ID"
+  },
+  "tokenList": {
+    "message": "Tokenlijsten:"
+  },
+  "tokenSymbol": {
+    "message": "Tokensymbool"
+  },
+  "tokensFoundTitle": {
+    "message": "$1 nieuwe tokens gevonden",
+    "description": "$1 is the number of new tokens detected"
+  },
+  "tooltipApproveButton": {
+    "message": "Ik begrijp dit"
+  },
   "total": {
     "message": "Totaal"
+  },
+  "transaction": {
+    "message": "transactie"
+  },
+  "transactionCancelAttempted": {
+    "message": "Geprobeerd transactie te annuleren met geschat gastarief van $1 bij $2"
+  },
+  "transactionCancelSuccess": {
+    "message": "Transactie succesvol geannuleerd bij $2"
+  },
+  "transactionConfirmed": {
+    "message": "Transactie bevestigd bij $2."
+  },
+  "transactionCreated": {
+    "message": "Transactie gemaakt met een waarde van $1 bij een prijs van $2."
+  },
+  "transactionData": {
+    "message": "Transactiedata"
+  },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Ontsleuteld door Truffle"
+  },
+  "transactionDecodingAccreditationVerified": {
+    "message": "Geverifieerd contract bij $1"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "Ontsleuteling van transactie is niet beschikbaar voor chainId $1"
+  },
+  "transactionDetailDappGasMoreInfo": {
+    "message": "Voorgestelde website"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "Pas aan om het door MetaMask aanbevolen gastarief gebaseerd op het laatste blok te gebruiken."
+  },
+  "transactionDetailGasHeading": {
+    "message": "Geschatte gastarief"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "geschatte"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "Leer meer over gastarieven"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Gastarieven worden bepaald door het netwerk en fluctureren afhankelijk van de hoeveelheid netwerkverkeer en de complexiteit van transacties."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Gastarieven worden betaald aan miners die transacties verwerken op het $1. MetaMask profiteerd niet van gastarieven."
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "Hoeveelheid + gastarief"
+  },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Laag 2 gastarief"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "Hoeveelheid + tarieven"
+  },
+  "transactionDropped": {
+    "message": "Transactie onderbroken bij $2."
+  },
+  "transactionError": {
+    "message": "Probleem met transactie. Uitzondering contractcode opgeworpen."
+  },
+  "transactionErrorNoContract": {
+    "message": "Aan het proberen een functie uit te voeren bij een adres dat niet van een contract is."
+  },
+  "transactionErrored": {
+    "message": "Transactie is tegen een probleem aangelopen."
+  },
+  "transactionFee": {
+    "message": "Transactiekosten"
+  },
+  "transactionHistoryBaseFee": {
+    "message": "Basistarief (GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Totaal L1 gastarief"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 gaslimiet"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 gasprijs"
+  },
+  "transactionHistoryMaxFeePerGas": {
+    "message": "Maximaal tarief per eenheid gas"
+  },
+  "transactionHistoryPriorityFee": {
+    "message": "Prioriteitsvergoeding (GWEI)"
+  },
+  "transactionHistoryTotalGasFee": {
+    "message": "Totaal gastarief"
+  },
+  "transactionResubmitted": {
+    "message": "Transactie opnieuw verstuurd met een geschat gastarief verhoogd naar $1 bij een prijs van $2"
+  },
+  "transactionSubmitted": {
+    "message": "Transactie verstuurd met een geschat gastarief van $1 bij een prijs van $2."
+  },
+  "transactionUpdated": {
+    "message": "Transactie geüpdatet bij een prijs van $2."
+  },
+  "transfer": {
+    "message": "Overdracht"
+  },
+  "transferBetweenAccounts": {
+    "message": "Overdracht tussen mijn accounts"
+  },
+  "transferFrom": {
+    "message": "Overdracht van"
+  },
+  "troubleConnectingToWallet": {
+    "message": "We hadden problemen met het verbinden met je $1, bekijk $2 en probeer opnieuw.",
+    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
+  },
+  "troubleStarting": {
+    "message": "MetaMask had problemen met opstarten. Deze fout kan problemen blijven veroorzaken, dus probeer de extensie opnieuw op te starten."
   },
   "troubleTokenBalances": {
     "message": "We hadden problemen bij het laden van uw tokenbalansen. Je kunt ze bekijken",
     "description": "Followed by a link (here) to view token balances"
   },
+  "trustSiteApprovePermission": {
+    "message": "Door toestemming te geven geef je $1 toegang tot je fondsen"
+  },
+  "tryAgain": {
+    "message": "Probeer opnieuw"
+  },
+  "turnOnTokenDetection": {
+    "message": "Schakel verbeterde tokendetectie in"
+  },
+  "twelveHrTitle": {
+    "message": "12 uur:"
+  },
+  "txInsightsNotSupported": {
+    "message": "Inzicht in transactie wordt op dit moment niet ondersteund voor dit contract."
+  },
   "typePassword": {
-    "message": "Typ uw wachtwoord"
+    "message": "Typ je MetaMask wachtwoord"
+  },
+  "typeYourSRP": {
+    "message": "Typ je geheugensteun"
+  },
+  "u2f": {
+    "message": "U2F",
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+  },
+  "unapproved": {
+    "message": "Niet goedgekeurd"
+  },
+  "units": {
+    "message": "eenheden"
   },
   "unknown": {
     "message": "Onbekend"
   },
+  "unknownCameraError": {
+    "message": "Er was een probleen bij het verkrijgen van toegang tot je camera. Probeer opnieuw..."
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Oeps! Er ging iets fout..."
+  },
   "unknownNetwork": {
     "message": "Onbekend privénetwerk"
+  },
+  "unknownQrCode": {
+    "message": "Probleem: We konden de QR-code niet identificeren"
+  },
+  "unlimited": {
+    "message": "Onbeperkt"
   },
   "unlock": {
     "message": "Log in"
   },
+  "unlockMessage": {
+    "message": "Het gedecentraliseerde web wacht op je"
+  },
+  "unrecognizedChain": {
+    "message": "Dit eigen netwerk wordt niet herkend. We raden aan dat je $1 voordat je verder gaat",
+    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "unrecognizedChainLinkText": {
+    "message": "verifieer de netwerkdetails",
+    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "unsendableAsset": {
+    "message": "Het versturen van verzameltokens (ERC-721) wordt op dit moment niet ondersteund",
+    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+  },
+  "unverifiedContractAddressMessage": {
+    "message": "We konden dit contract niet verifiëren. Wees er zeker van dat je dit contract kan vertrouwen."
+  },
+  "upArrow": {
+    "message": "pijl omhoog"
+  },
+  "updatedWithDate": {
+    "message": "Bijgewerkt op $1"
+  },
   "urlErrorMsg": {
     "message": "Voor URI's is het juiste HTTP / HTTPS-voorvoegsel vereist."
+  },
+  "urlExistsErrorMsg": {
+    "message": "Deze URL wordt momenteel gebruikt door het $1."
+  },
+  "useCollectibleDetection": {
+    "message": "Automatisch gedetecteerde NFT's"
+  },
+  "useCollectibleDetectionDescription": {
+    "message": "Het tonen van NFT's & data kan je IP-adres onthullen aan gecentraliseerde servers. API's van derde partijen (zoals OpenSea) worden gebruikt om NFT's in je portomonnee te detecteren. Dit stelt je accountadres bloot aan deze diensten. Laat deze optie uitgeschakelt als je niet wil dat de app data haalt van deze diensten."
+  },
+  "usePhishingDetection": {
+    "message": "Gebruik phishingdetectie"
+  },
+  "usePhishingDetectionDescription": {
+    "message": "Toon een waarschuwing bij phising websites die het hebben gemunt op gebruikers van Ethereum"
+  },
+  "useTokenDetection": {
+    "message": "Gebruik tokendetectie"
+  },
+  "useTokenDetectionDescription": {
+    "message": "We gebruiken API's van derde partijen om nieuwe tokens die naar je portomonnee worden verstuurd te detecteren en te tonen. Schakel dit uit als je niet wil dat MetaMask data van deze diensten ophaalt."
+  },
+  "useTokenDetectionPrivacyDesc": {
+    "message": "Onderdeel van het automatisch tonen van tokens die naar je account worden verstuurd is communicatie met servers van derde partijen om afbeeldingen van deze tokens op te halen. Deze servers zullen toegang hebben tot je IP-adres."
   },
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
   },
+  "userName": {
+    "message": "Gebruikersnaam"
+  },
+  "verifyThisTokenDecimalOn": {
+    "message": "Token decimaal kan worden gevonden bij $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisTokenOn": {
+    "message": "Verifieer deze token bij $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Verifieer deze token bij $1 en wees er zeker van dat dit de token is die je wil verhandelen.",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "Bekijk account"
+  },
+  "viewAllDetails": {
+    "message": "Bekijk alle details"
+  },
+  "viewContact": {
+    "message": "Bekijk contact"
+  },
+  "viewFullTransactionDetails": {
+    "message": "Bekijk volledie transactiedetails"
+  },
+  "viewMore": {
+    "message": "Bekijk meer"
+  },
+  "viewOnBlockExplorer": {
+    "message": "Bekijk op blokverkenner"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "Bekijk $1 op $2",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+  },
+  "viewOnEtherscan": {
+    "message": "Bekijk $1 op Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "Bekijk op Opensea"
+  },
+  "viewinExplorer": {
+    "message": "Bekijk $1 in verkenner",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Bezoek onze website"
   },
+  "walletConnectionGuide": {
+    "message": "onze handleiding over verbinden met een hardwareportomonnee"
+  },
+  "walletCreationSuccessDetail": {
+    "message": "Je hebt succesvol je portomonnee beschermed. Bewaar je geheugensteun veilig en op een geheime plek, het is je eigen verantwoordelijkheid!"
+  },
+  "walletCreationSuccessReminder1": {
+    "message": "MetaMask kan je geheugensteun niet herstellen."
+  },
+  "walletCreationSuccessReminder2": {
+    "message": "MetaMask zal nooit vragen naar je geheugensteun."
+  },
+  "walletCreationSuccessReminder3": {
+    "message": "$1 met anderen, anders loop je het risico dat je fondsen worden gestolen",
+    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
+  },
+  "walletCreationSuccessReminder3BoldSection": {
+    "message": "Deel nooit je geheugensteun met anderen",
+    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
+  },
+  "walletCreationSuccessTitle": {
+    "message": "Aanmaken van portomonnee succesvol"
+  },
+  "warning": {
+    "message": "Waarschuwing"
+  },
+  "weak": {
+    "message": "Zwak"
+  },
+  "web3ShimUsageNotification": {
+    "message": "We hebben gemerkt dat de huidige website heeft geprobeerd om de verwijderde window.web3 API te gebruiken. Als de website niet meer lijkt te werken, klik dan $1 voor meer informatie.",
+    "description": "$1 is a clickable link."
+  },
+  "webhid": {
+    "message": "WebHID",
+    "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
+  },
   "welcome": {
     "message": "Welkom bij MetaMask"
   },
+  "welcomeBack": {
+    "message": "Welkom terug!"
+  },
+  "welcomeExploreDescription": {
+    "message": "Bewaar, verzend en besteed cryptovaluta en ander bezit."
+  },
+  "welcomeExploreTitle": {
+    "message": "Ontdek gedecentraliseerde apps"
+  },
+  "welcomeLoginDescription": {
+    "message": "Gebruik MetaMask om in te loggen op gedecentraliseerde apps, registreren is overbodig."
+  },
+  "welcomeLoginTitle": {
+    "message": "Zeg hallo tegen je portomonnee"
+  },
+  "welcomeToMetaMask": {
+    "message": "Laten we beginnen"
+  },
+  "welcomeToMetaMaskIntro": {
+    "message": "MetaMask biedt een veilige portomonnee die web3 voor iedereen toegankelijk maakt."
+  },
+  "whatsNew": {
+    "message": "Wat er nieuw is",
+    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
+  },
+  "whatsThis": {
+    "message": "Wat is dit?"
+  },
+  "writePhrase": {
+    "message": "Schrijf deze zin op een stuk papier en berg dit op op een veilige plek. Als je nog meer veiligheid wil kan je de zin op meerdere stukken papier schrijven en deze op verschillende plekken bewaren."
+  },
+  "xOfY": {
+    "message": "$1 van $2",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
+  },
+  "xOfYPending": {
+    "message": "$1 van $2 in behandeling",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+  },
+  "yes": {
+    "message": "Ja"
+  },
+  "yesLetsTry": {
+    "message": "Ja, laten we het proberen"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Je moet toegang tot je camera geven om deze optie te gebruiken."
+  },
   "youSign": {
     "message": "U ondertekent"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Je geheugensteun"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Geen gasprijs bij speed-up"
   }
 }
