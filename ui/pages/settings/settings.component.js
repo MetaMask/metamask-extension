@@ -344,6 +344,7 @@ class SettingsPage extends PureComponent {
           render={() => <NetworksTab addNewNetwork />}
         />
         <Route
+          exact
           path={NETWORKS_ROUTE}
           render={() => <NetworksTab addNewNetwork={false} />}
         />
