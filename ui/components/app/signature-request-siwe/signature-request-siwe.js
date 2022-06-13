@@ -30,7 +30,7 @@ export default function SignatureRequestSIWE({
     msgParams: {
       from,
       origin,
-      siwe: { isSIWEDomainValid, isMatchingAddress, messageData },
+      siwe: { isSIWEDomainValid, isMatchingAddress, parsedMessage },
       version,
     },
     type,
@@ -74,17 +74,17 @@ export default function SignatureRequestSIWE({
     <div className="signature-request-siwe">
       <Header
         fromAccount={fromAccount}
-        domain={messageData.domain}
+        domain={parsedMessage.domain}
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-      <Message data={formatMessageParams(messageData, t)} />
+      <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <div className="signature-request-siwe__domain-mismatch-warning">
           <ActionableMessage
             type="warning"
             message={t('SIWEAddressInvalid', [
-              messageData.address,
+              parsedMessage.address,
               fromAccount.address,
             ])}
             iconFillColor="var(--color-warning-default)"
@@ -97,7 +97,7 @@ export default function SignatureRequestSIWE({
       {!isSIWEDomainValid && (
         <div className="signature-request-siwe__domain-mismatch-warning">
           <ErrorMessage
-            errorMessage={t('SIWEDomainInvalid', [messageData.domain])}
+            errorMessage={t('SIWEDomainInvalid', [parsedMessage.domain])}
           />
         </div>
       )}
@@ -141,7 +141,7 @@ export default function SignatureRequestSIWE({
               className="signature-request-siwe__warning-popover__checkbox-wrapper__label"
               htmlFor="signature-request-siwe_domain-checkbox"
             >
-              {t('SIWEDomainWarningBody', [messageData.domain])}
+              {t('SIWEDomainWarningBody', [parsedMessage.domain])}
             </label>
           </div>
         </Popover>

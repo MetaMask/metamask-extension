@@ -11,7 +11,7 @@ export default {
   },
   args: {
     data: [
-      { label: 'Label', value: 'value' },
+      { label: 'Label:', value: 'value' },
       {
         label: 'Message:',
         value:

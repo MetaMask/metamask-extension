@@ -8,7 +8,7 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 import { EVENT } from '../../../shared/constants/metametrics';
 import { addHexPrefix } from './util';
-import detectSIWE from './siwe/siwe-validation';
+import detectSIWE from './siwe/detectSIWE';
 
 const hexRe = /^[0-9A-Fa-f]+$/gu;
 

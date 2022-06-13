@@ -6,7 +6,7 @@
  * @param {Function} t - i18n function
  * @returns {Array} An array of label-value pairs with the type of the value as the label
  */
-export const formatParams = (parsedMessage, t) => {
+export const formatMessageParams = (parsedMessage, t) => {
   const output = [];
 
   const {
@@ -71,7 +71,6 @@ export const formatParams = (parsedMessage, t) => {
     });
   }
 
-  // not in design
   if (notBefore) {
     output.push({
       label: t('SIWELabelNotBefore'),
@@ -79,10 +78,9 @@ export const formatParams = (parsedMessage, t) => {
     });
   }
 
-  // not in design
   if (requestId) {
     output.push({
-      label: t('SIWELabelRequestId'),
+      label: t('SIWELabelRequestID'),
       value: requestId,
     });
   }
@@ -99,4 +97,4 @@ export const formatParams = (parsedMessage, t) => {
   return output;
 };
 
-export default formatParams;
+export default formatMessageParams;

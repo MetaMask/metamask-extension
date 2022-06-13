@@ -29,7 +29,7 @@ const msgParams = {
   siwe: {
     isSIWEMessage: true,
     isSIWEDomainValid: true,
-    messageData: {
+    parsedMessage: {
       domain: 'localhost:8080',
       address: primaryIdentity.address,
       statement:
@@ -55,7 +55,7 @@ const badMsgParams = {
   siwe: {
     isSIWEMessage: true,
     isSIWEDomainValid: false,
-    messageData: {
+    parsedMessage: {
       domain: 'baddomain.com',
       address: primaryIdentity.address,
       statement:
