@@ -13,7 +13,7 @@ function tryImport(...fileNames) {
 function importAllScripts() {
   const startImportScriptsTime = Date.now();
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
-  const applyLavaMoat = false;
+  const applyLavaMoat = true;
 
   tryImport('./globalthis.js');
   tryImport('./sentry-install.js');
