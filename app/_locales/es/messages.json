@@ -62,6 +62,13 @@
     "message": "$1 puede acceder y gastar este activo",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Acceda a su billetera con la frase secreta de respaldo"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask no puede recuperar su contraseña. Usaremos su frase secreta de respaldo para validar su propiedad, restaurar su billetera y configurar una nueva contraseña. Primero, ingrese la frase secreta de respaldo que recibió cuando creó su billetera. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara…"
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "Agregar red"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Esta conexión de red depende de terceros. Y puede ser menos confiable o permite que terceros rastreen la actividad. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
@@ -400,6 +411,14 @@
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Comprar $1 con Coinbase Pay",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Puede comprar o transferir criptomonedas fácilmente por medio de su cuenta de Coinbase.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "Comprar $1 con MoonPay",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "Continuar"
+  },
+  "continueToCoinbasePay": {
+    "message": "Continuar a Coinbase Pay"
   },
   "continueToMoonPay": {
     "message": "Continuar a MoonPay"
@@ -1225,6 +1247,10 @@
     "message": "Todas las API de Flask son experimentales. Se pueden cambiar o eliminadar sin previo aviso o pueden permanecer en Flask indefinidamente sin ser migradas a MetaMask estable. Úselas bajo su propia responsabilidad.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Asegúrese de deshabilitar su extensión recurrente de MetaMask cuando use Flask.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Acepto los riesgos",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "Ocultar"
   },
+  "hideFullTransactionDetails": {
+    "message": "Esconder los detalles completos de la transacción"
+  },
   "hideSeedPhrase": {
     "message": "Ocultar frase inicial"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "Historial"
+  },
+  "ignoreAll": {
+    "message": "Ignorar todo"
+  },
+  "ignoreTokenWarning": {
+    "message": "Si oculta tokens, estos no se mostrarán en su billetera. Sin embargo, aún puede agregarlos buscándolos."
   },
   "import": {
     "message": "Importar",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "Importar cartera"
+  },
+  "importWithCount": {
+    "message": "Importar $1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "Importar la cartera existente con una frase secreta de recuperación"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "flecha de nivel"
+  },
+  "lightTheme": {
+    "message": "Claro"
   },
   "likeToImportTokens": {
     "message": "¿Le gustaría agregar estos tokens?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "¿Es nuevo en MetaMask?"
   },
+  "newTokensImportedMessage": {
+    "message": "Ha importado $1 exitosamente.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Token importado"
+  },
   "newTotal": {
     "message": "Total nuevo"
   },
@@ -2083,6 +2132,9 @@
   "notEnoughGas": {
     "message": "No hay gas suficiente"
   },
+  "notifications": {
+    "message": "Notificaciones"
+  },
   "notifications10ActionText": {
     "message": "Vaya a configuración",
     "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
@@ -2109,7 +2161,7 @@
     "message": "Habilitar modo oscuro"
   },
   "notifications12Description": {
-    "message": "Se habilitará el modo oscuro para los nuevos usuarios según las preferencias de su sistema. Para usuarios existentes, habilite el modo oscuro de forma manual en Configuración -> Experimental."
+    "message": "¡El modo oscuro en Extension finalmente está aquí! Para encenderlo, vaya a Configuración -> Experimental y seleccione una de las opciones de visualización: Claro, Oscuro, Sistema."
   },
   "notifications12Title": {
     "message": "¿Cuándo estará disponible el modo oscuro? ¡Ahora! 🕶️🦊"
@@ -2202,6 +2254,19 @@
   },
   "notifications9Title": {
     "message": "👓 Estamos facilitando la lectura de las transacciones."
+  },
+  "notificationsEmptyText": {
+    "message": "Nada que ver aquí."
+  },
+  "notificationsHeader": {
+    "message": "Notificaciones"
+  },
+  "notificationsInfos": {
+    "message": "$1 de $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Marcar todo como leído"
   },
   "numberOfNewTokensDetected": {
     "message": "Se encontraron tokens nuevos de $1 en esta cuenta",
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "Origen"
   },
+  "osTheme": {
+    "message": "Sistema"
+  },
+  "padlock": {
+    "message": "Candado"
+  },
   "parameters": {
     "message": "Parámetros"
   },
@@ -2371,6 +2442,10 @@
     "message": "Ver las direcciones de las cuentas permitidas (requerido)",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "Ejecutar indefinidamente.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "Controle sus cuentas y activos \"$1\".",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "+ $1 más",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Redes populares personalizadas"
   },
   "preferredLedgerConnectionType": {
     "message": "Tipo de conexión de Ledger preferida",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "Asegúrese de usar la frase de recuperación secreta correcta antes de continuar. No podrá deshacer esto."
+  },
+  "restartMetamask": {
+    "message": "Reiniciar MetaMask"
   },
   "restore": {
     "message": "Restaurar"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "Enviar monto"
+  },
+  "sendBugReport": {
+    "message": "Envíenos un informe de error."
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -3031,6 +3115,9 @@
     "message": "Conecte la cartera directamente al equipo.  Desbloquee su Ledger y abra la aplicación de Ethereum. Para más información sobre el uso de su dispositivo de cartera de hardware, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "¿Sigue recibiendo este mensaje?"
+  },
   "storePhrase": {
     "message": "Guarde esta frase en un administrador de contraseñas como 1Password."
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "Todavía puede intercambiar sus tokens incluso cuando las transacciones inteligentes no están disponibles."
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Enviando su swap de forma privada..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Enviando su swap de forma pública..."
+  },
   "stxSubDescription": {
     "message": "* Transacciones inteligentes intentará enviar su transacción de forma privada varias veces. Si todos los intentos fallan, la transacción se transmitirá públicamente para garantizar que su swap se realice con éxito."
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "Su $1 ya está disponible.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "El swap finalizará en <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "Simule transacciones antes de enviarlas para disminuir los costos de transacción y reducir las fallas."
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "El desfase debe ser mayor o igual que cero"
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Fuente de liquidez"
   },
@@ -3585,6 +3686,10 @@
   "tokenSymbol": {
     "message": "Símbolo del token"
   },
+  "tokensFoundTitle": {
+    "message": "$1 nuevos tokens encontrados",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "Comprendo"
   },
@@ -3706,6 +3811,9 @@
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask tuvo problemas para iniciar. Este error podría ser intermitente, así que intente reiniciar la extensión."
+  },
   "troubleTokenBalances": {
     "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos ",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "Escriba su contraseña de MetaMask"
+  },
+  "typeYourSRP": {
+    "message": "Escriba la frase secreta de respaldo"
   },
   "u2f": {
     "message": "U2F",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Creación exitosa de la cartera"
+  },
+  "warning": {
+    "message": "Advertencia"
   },
   "weak": {
     "message": "Débil"
