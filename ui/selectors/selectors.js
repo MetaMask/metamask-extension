@@ -375,6 +375,10 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getEnsResolutionByAddress(state, address) {
+  return state.metamask.ensResolutionsByAddress[address] || '';
+}
+
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
