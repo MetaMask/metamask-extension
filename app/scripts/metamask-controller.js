@@ -3561,7 +3561,6 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-        // getWalletLocale: this.getWalletLocale.bind(this),
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
