@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.14.7",
+  "version": "10.15.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -126,7 +126,7 @@
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/obs-store": "^5.0.0",
     "@metamask/post-message-stream": "^4.0.0",
-    "@metamask/providers": "^8.1.1",
+    "@metamask/providers": "^9.0.0",
     "@metamask/rpc-methods": "^0.15.0",
     "@metamask/slip44": "^2.1.0",
     "@metamask/smart-transactions-controller": "^2.0.1",
