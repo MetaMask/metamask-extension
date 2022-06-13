@@ -18,8 +18,6 @@ const msgHexToText = (hex) => {
  *
  * @typedef localSIWEObject
  * @param {bool} isSIWEMessage - Does the intercepted message conform to the SIWE specification?
- * @param {bool} isSIWEDomainValid - Does the domain in the SIWE message match the domain the message is coming from?
- * @param {bool} isMatchingAddress - Does the address in the SIWE message match the account being requested to sign?
  * @param {ParsedMessage} parsedMessage - The data parsed out of the message
  */
 
@@ -35,29 +33,18 @@ const msgHexToText = (hex) => {
  */
 const detectSIWE = (msgParams) => {
   try {
-    const { data, from, origin = null } = msgParams;
+    const { data } = msgParams;
     const message = msgHexToText(data);
     const parsedMessage = new ParsedMessage(message);
-    const isMatchingAddress = from === parsedMessage.address;
-    let isSIWEDomainValid = false;
-
-    if (origin) {
-      const { host } = new URL(origin);
-      isSIWEDomainValid = parsedMessage.domain === host;
-    }
 
     return {
       isSIWEMessage: true,
-      isSIWEDomainValid,
-      isMatchingAddress,
       parsedMessage,
     };
   } catch (error) {
     // ignore error, it's not a valid SIWE message
     return {
       isSIWEMessage: false,
-      isSIWEDomainValid: false,
-      isMatchingAddress: false,
       parsedMessage: null,
     };
   }

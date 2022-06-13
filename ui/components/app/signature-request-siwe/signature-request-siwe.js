@@ -14,7 +14,7 @@ import {
   getSubjectMetadata,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
-import formatMessageParams from './format-message-params';
+import formatMessage from './format-message-params';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -30,7 +30,7 @@ export default function SignatureRequestSIWE({
     msgParams: {
       from,
       origin,
-      siwe: { isSIWEDomainValid, isMatchingAddress, parsedMessage },
+      siwe: { parsedMessage },
       version,
     },
     type,
@@ -41,6 +41,20 @@ export default function SignatureRequestSIWE({
 
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
+
+  const isMatchingAddress = from === parsedMessage.address;
+
+  const checkSIWEDomain = () => {
+    let isSIWEDomainValid = false;
+
+    if (origin) {
+      const { host } = new URL(origin);
+      isSIWEDomainValid = parsedMessage.domain === host;
+    }
+    return isSIWEDomainValid;
+  };
+
+  const isSIWEDomainValid = checkSIWEDomain();
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
@@ -78,7 +92,7 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-      <Message data={formatMessageParams(parsedMessage, t)} />
+      <Message data={formatMessage(parsedMessage, t)} />
       {!isMatchingAddress && (
         <div className="signature-request-siwe__domain-mismatch-warning">
           <ActionableMessage
