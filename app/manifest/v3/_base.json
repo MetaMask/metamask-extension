@@ -1,10 +1,5 @@
 {
-  "author": "https://metamask.io",
-  "background": {
-    "page": "background.html",
-    "persistent": true
-  },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
@@ -16,6 +11,10 @@
     },
     "default_title": "MetaMask",
     "default_popup": "popup.html"
+  },
+  "author": "https://metamask.io",
+  "background": {
+    "service_worker": "app-init.js"
   },
   "commands": {
     "_execute_browser_action": {
@@ -58,7 +57,7 @@
     "128": "images/icon-128.png",
     "512": "images/icon-512.png"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_appName__",
   "permissions": [
     "storage",
@@ -66,6 +65,7 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
+    "https://chainid.network/chains.json",
     "https://lattice.gridplus.io/*",
     "activeTab",
     "webRequest",
@@ -73,5 +73,10 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "web_accessible_resources": ["inpage.js", "phishing.html"]
+  "web_accessible_resources": [
+    {
+      "resources": ["inpage.js", "phishing.html"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
 }

@@ -10,6 +10,7 @@ jest.mock(
 
 const createProps = (customProps = {}) => {
   return {
+    hideEstimatedGasFee: false,
     selectedAggId: 'Agg2',
     onSelect: jest.fn(),
     onCaretClick: jest.fn(),

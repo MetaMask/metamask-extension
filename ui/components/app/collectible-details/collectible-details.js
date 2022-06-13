@@ -311,7 +311,7 @@ export default function CollectibleDetails({ collectible }) {
                 {copied ? (
                   t('copiedExclamation')
                 ) : (
-                  <Copy size={15} color="var(--color-icon-default)" />
+                  <Copy size={15} color="var(--color-icon-alternative)" />
                 )}
               </button>
             </Box>

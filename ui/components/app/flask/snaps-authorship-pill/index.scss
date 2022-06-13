@@ -3,6 +3,10 @@
 .snaps-authorship-pill {
   display: inline-block;
 
+  .chip {
+    padding-right: 8px;
+  }
+
   &:hover,
   &:focus {
     .chip {
@@ -12,5 +16,14 @@
 }
 
 .snaps-authorship-icon {
-  color: var(--color-icon-default);
+  color: var(--color-icon-alternative);
+}
+
+.snaps-authorship-version {
+  border-radius: 100px;
+  line-height: 100%;
+}
+
+.snaps-authorship-version > span {
+  vertical-align: middle;
 }

@@ -375,6 +375,10 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getEnsResolutionByAddress(state, address) {
+  return state.metamask.ensResolutionsByAddress[address] || '';
+}
+
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
@@ -467,6 +471,24 @@ export function getTotalUnapprovedCount(state) {
     getUnapprovedTxCount(state) +
     pendingApprovalCount +
     getSuggestedAssetCount(state)
+  );
+}
+
+export function getTotalUnapprovedMessagesCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount +
+    unapprovedTypedMessagesCount
   );
 }
 
@@ -693,6 +715,15 @@ export function getIsBuyableMoonPayChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
 }
 
+export function getIsBuyableWyreChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
+}
+export function getIsBuyableCoinbasePayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -714,16 +745,59 @@ export function getSnaps(state) {
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
     return {
+      id: snap.id,
       tabMessage: () => snap.manifest.proposedName,
       descriptionMessage: () => snap.manifest.description,
       sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
-        unescape(encodeURIComponent(snap.id)),
-      )}`,
+      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
       icon: 'fa fa-flask',
     };
   });
 });
+
+/**
+ * @typedef {Object} Notification
+ * @property {string} id - A unique identifier for the notification
+ * @property {string} origin - A string identifing the snap origin
+ * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
+ * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the notification was read by the user
+ * @property {string} message - A string containing the notification message
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user.
+ *
+ * The returned notifications are sorted by date.
+ *
+ * @param {Object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
+export function getNotifications(state) {
+  const notifications = Object.values(state.metamask.notifications);
+
+  const notificationsSortedByDate = notifications.sort(
+    (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+  );
+  return notificationsSortedByDate;
+}
+
+export function getUnreadNotifications(state) {
+  const notifications = getNotifications(state);
+
+  const unreadNotificationCount = notifications.filter(
+    (notification) => notification.readDate === null,
+  );
+
+  return unreadNotificationCount;
+}
+
+export const getUnreadNotificationsCount = createSelector(
+  getUnreadNotifications,
+  (notifications) => notifications.length,
+);
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -756,8 +830,8 @@ function getAllowedAnnouncementIds(state) {
 }
 
 /**
- * @typedef {Object} Notification
- * @property {number} id - A unique identifier for the notification
+ * @typedef {Object} Announcement
+ * @property {number} id - A unique identifier for the announcement
  * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
  */
 

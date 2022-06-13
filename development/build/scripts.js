@@ -34,6 +34,7 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
+  PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
@@ -133,6 +134,48 @@ function getSegmentWriteKey({ buildType, environment }) {
   throw new Error(`Invalid build type: '${buildType}'`);
 }
 
+/**
+ * Get the URL for the phishing warning page, if it has been set.
+ *
+ * @param {object} options - The phishing warning page options.
+ * @param {boolean} options.testing - Whether this is a test build or not.
+ * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
+ */
+function getPhishingWarningPageUrl({ testing }) {
+  let phishingWarningPageUrl = metamaskrc.PHISHING_WARNING_PAGE_URL;
+
+  if (!phishingWarningPageUrl) {
+    phishingWarningPageUrl = testing
+      ? 'http://localhost:9999/'
+      : 'https://metamask.github.io/phishing-warning/v1.1.0/';
+  }
+
+  // We add a hash/fragment to the URL dynamically, so we need to ensure it
+  // has a valid pathname to append a hash to.
+  const normalizedUrl = phishingWarningPageUrl.endsWith('/')
+    ? phishingWarningPageUrl
+    : `${phishingWarningPageUrl}/`;
+
+  let phishingWarningPageUrlObject;
+  try {
+    // eslint-disable-next-line no-new
+    phishingWarningPageUrlObject = new URL(normalizedUrl);
+  } catch (error) {
+    throw new Error(
+      `Invalid phishing warning page URL: '${normalizedUrl}'`,
+      error,
+    );
+  }
+  if (phishingWarningPageUrlObject.hash) {
+    // The URL fragment must be set dynamically
+    throw new Error(
+      `URL fragment not allowed in phishing warning page URL: '${normalizedUrl}'`,
+    );
+  }
+
+  return normalizedUrl;
+}
+
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
 );
@@ -218,11 +261,6 @@ function createScriptTasks({
       createTaskForBundleSentry({ devMode, testing }),
     );
 
-    const phishingDetectSubtask = createTask(
-      `${taskPrefix}:phishing-detect`,
-      createTaskForBundlePhishingDetect({ devMode, testing }),
-    );
-
     // task for initiating browser livereload
     const initiateLiveReload = async () => {
       if (devMode) {
@@ -245,7 +283,6 @@ function createScriptTasks({
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
-      phishingDetectSubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
         applyLavaMoat,
@@ -293,23 +330,6 @@ function createScriptTasks({
     });
   }
 
-  function createTaskForBundlePhishingDetect({ devMode, testing }) {
-    const label = 'phishing-detect';
-    return createNormalBundle({
-      buildType,
-      browserPlatforms,
-      destFilepath: `${label}.js`,
-      devMode,
-      entryFilepath: `./app/scripts/${label}.js`,
-      ignoredFiles,
-      label,
-      testing,
-      policyOnly,
-      shouldLintFenceFiles,
-      version,
-    });
-  }
-
   // the "contentscript" bundle contains the "inpage" bundle
   function createTaskForBundleContentscript({ devMode, testing }) {
     const inpage = 'inpage';
@@ -343,6 +363,50 @@ function createScriptTasks({
       }),
     );
   }
+}
+
+// Function generates app-init.js for browsers chrome, brave and opera.
+// It dynamically injects list of files generated in the build.
+async function bundleMV3AppInitialiser({
+  jsBundles,
+  browserPlatforms,
+  buildType,
+  devMode,
+  ignoredFiles,
+  testing,
+  policyOnly,
+  shouldLintFenceFiles,
+}) {
+  const label = 'app-init';
+  // TODO: remove this filter for firefox once MV3 is supported in it
+  const mv3BrowserPlatforms = browserPlatforms.filter(
+    (platform) => platform !== 'firefox',
+  );
+  const fileList = jsBundles.reduce(
+    (result, file) => `${result}'${file}',\n    `,
+    '',
+  );
+
+  await createNormalBundle({
+    browserPlatforms: mv3BrowserPlatforms,
+    buildType,
+    destFilepath: 'app-init.js',
+    devMode,
+    entryFilepath: './app/scripts/app-init.js',
+    ignoredFiles,
+    label,
+    testing,
+    policyOnly,
+    shouldLintFenceFiles,
+  })();
+
+  mv3BrowserPlatforms.forEach((browser) => {
+    const appInitFile = `./dist/${browser}/app-init.js`;
+    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+    const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    writeFileSync(appInitFile, fileOutput);
+  });
+  console.log(`Bundle end: service worker app-init.js`);
 }
 
 function createFactoredBuild({
@@ -457,7 +521,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', () => {
+    events.on('bundleDone', async () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -503,6 +567,22 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
             });
+            if (process.env.ENABLE_MV3) {
+              const jsBundles = [
+                ...commonSet.values(),
+                ...groupSet.values(),
+              ].map((label) => `./${label}.js`);
+              await bundleMV3AppInitialiser({
+                jsBundles,
+                browserPlatforms,
+                buildType,
+                devMode,
+                ignoredFiles,
+                testing,
+                policyOnly,
+                shouldLintFenceFiles,
+              });
+            }
             break;
           }
           case 'content-script': {
@@ -822,6 +902,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     IN_TEST: testing,
+    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},

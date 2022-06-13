@@ -185,7 +185,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         </details>
       </li>
     ) : (
-      <li className="solidity-value">
+      <li className="solidity-value" key={`solidity-value-${index}`}>
         <div className="solidity-named-item solidity-item">
           {typeClass !== 'array' && !Array.isArray(value) ? (
             <span className="param-name typography--color-black">{name}: </span>
@@ -202,7 +202,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     if (loading) {
       return (
         <div className="tx-insight-loading">
-          <Spinner color="var(--color-secondary-default)" />
+          <Spinner color="var(--color-warning-default)" />
         </div>
       );
     }
@@ -239,6 +239,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 }
 
 TransactionDecoding.propTypes = {
-  to: PropTypes.string.isRequired,
+  to: PropTypes.string,
   inputData: PropTypes.string.isRequired,
 };

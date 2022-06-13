@@ -160,7 +160,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         </div>
       </div>
     ) : null;
-  }, [isUnlocking, hasTriggeredUnlock, t]);
+  }, [isUnlocking, hasTriggeredUnlock, triggerOnLongPressed, t]);
 
   return (
     <Button

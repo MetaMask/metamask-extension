@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
-describe('Metamask Responsive UI', function () {
+describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {
     const driverOptions = { responsive: true };
 

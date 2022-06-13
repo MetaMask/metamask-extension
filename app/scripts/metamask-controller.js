@@ -42,12 +42,15 @@ import {
   SubjectMetadataController,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
+  NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapController } from '@metamask/snap-controllers';
-import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
+import {
+  SnapController,
+  IframeExecutionService,
+} from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -151,6 +154,9 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // TODO: Add this and similar enums to @metamask/controllers and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
+
+// stream channels
+const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -637,9 +643,8 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.workerController = new IframeExecutionService({
-      onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.4',
+        'https://metamask.github.io/iframe-execution-environment/0.4.6',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -665,7 +670,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.snapController = new SnapController({
-      endowmentPermissionNames: Object.values(EndowmentPermissions),
+      environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
       ),
@@ -681,6 +686,13 @@ export default class MetamaskController extends EventEmitter {
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
+    });
+
+    this.notificationController = new NotificationController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NotificationController',
+      }),
+      state: initState.NotificationController,
     });
 
     this.rateLimitController = new RateLimitController({
@@ -701,6 +713,15 @@ export default class MetamaskController extends EventEmitter {
           );
           return null;
         },
+        showInAppNotification: (origin, message) => {
+          this.controllerMessenger.call(
+            'NotificationController:show',
+            origin,
+            message,
+          );
+
+          return null;
+        },
       },
     });
     ///: END:ONLY_INCLUDE_IN
@@ -713,6 +734,9 @@ export default class MetamaskController extends EventEmitter {
           network: this.networkController,
           keyringMemStore: this.keyringController.memStore,
           tokenList: this.tokenListController,
+          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
         }))
       : (this.detectTokensController = new DetectTokensController({
           preferences: this.preferencesController,
@@ -999,6 +1023,7 @@ export default class MetamaskController extends EventEmitter {
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
+      NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
     });
 
@@ -1039,6 +1064,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
@@ -1114,11 +1140,19 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
-        showNotification: (origin, args) =>
+        showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
             'RateLimitController:call',
             origin,
             'showNativeNotification',
+            origin,
+            args.message,
+          ),
+        showInAppNotification: (origin, args) =>
+          this.controllerMessenger.call(
+            'RateLimitController:call',
+            origin,
+            'showInAppNotification',
             origin,
             args.message,
           ),
@@ -1129,6 +1163,25 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
   }
+
+  /**
+   * Deletes the specified notifications from state.
+   *
+   * @param {string[]} ids - The notifications ids to delete.
+   */
+  dismissNotifications(ids) {
+    this.notificationController.dismiss(ids);
+  }
+
+  /**
+   * Updates the readDate attribute of the specified notifications.
+   *
+   * @param {string[]} ids - The notifications ids to mark as read.
+   */
+  markNotificationsAsRead(ids) {
+    this.notificationController.markRead(ids);
+  }
+
   ///: END:ONLY_INCLUDE_IN
 
   /**
@@ -1226,6 +1279,26 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapTerminated`,
+      (snapId) => {
+        const approvals = Object.values(
+          this.approvalController.state.pendingApprovals,
+        ).filter(
+          (approval) =>
+            approval.origin === snapId &&
+            approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
+        );
+        for (const approval of approvals) {
+          this.approvalController.reject(
+            approval.id,
+            new Error('Snap was terminated.'),
+          );
+        }
+      },
+    );
+
     ///: END:ONLY_INCLUDE_IN
   }
 
@@ -1436,7 +1509,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
-      safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
@@ -1735,6 +1807,8 @@ export default class MetamaskController extends EventEmitter {
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
       removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      dismissNotifications: this.dismissNotifications.bind(this),
+      markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -1796,9 +1870,6 @@ export default class MetamaskController extends EventEmitter {
         smartTransactionsController,
       ),
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
-        smartTransactionsController,
-      ),
-      estimateSmartTransactionsGas: smartTransactionsController.estimateGas.bind(
         smartTransactionsController,
       ),
       submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(
@@ -2022,7 +2093,7 @@ export default class MetamaskController extends EventEmitter {
 
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block Metamask login due to
+      // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
       const transportPreference = this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
@@ -2194,7 +2265,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    // Optimistically called to not block Metamask login due to
+    // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
 
@@ -3244,6 +3315,33 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Used to create a multiplexed stream for connecting to the phishing warning page.
+   *
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   */
+  setupPhishingCommunication({ connectionStream }) {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+
+    if (!usePhishDetect) {
+      return;
+    }
+
+    // setup multiplexing
+    const mux = setupMultiplex(connectionStream);
+    const phishingStream = mux.createStream(PHISHING_SAFELIST);
+
+    // set up postStream transport
+    phishingStream.on(
+      'data',
+      createMetaRPCHandler(
+        { safelistPhishingDomain: this.safelistPhishingDomain.bind(this) },
+        phishingStream,
+      ),
+    );
+  }
+
+  /**
    * Called when we detect a suspicious domain. Requests the browser redirects
    * to our anti-phishing page.
    *
@@ -3355,17 +3453,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  /**
-   * For snaps running in workers.
-   *
-   * @param snapId
-   * @param error
-   */
-  onExecutionEnvironmentError(snapId, error) {
-    this.snapController.stopPlugin(snapId);
-    this.snapController.addSnapError(error);
-  }
-
   /**
    * For snaps running in workers.
    *
@@ -4122,6 +4209,12 @@ export default class MetamaskController extends EventEmitter {
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
+
+    const [ledgerKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.LEDGER,
+    );
+    ledgerKeyring?.destroy?.();
+
     return this.keyringController.setLocked();
   }
 }

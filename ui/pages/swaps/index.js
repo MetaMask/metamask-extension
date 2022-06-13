@@ -157,11 +157,21 @@ export default function Swap() {
   const showSmartTransactionsErrorMessage =
     currentSmartTransactionsError && !smartTransactionsErrorMessageDismissed;
 
-  if (networkAndAccountSupports1559) {
-    // This will pre-load gas fees before going to the View Quote page.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGasFeeEstimates();
-  }
+  useEffect(() => {
+    const leaveSwaps = async () => {
+      await dispatch(prepareToLeaveSwaps());
+      // We need to wait until "prepareToLeaveSwaps" is done, because otherwise
+      // a user would be redirected from DEFAULT_ROUTE back to Swaps.
+      history.push(DEFAULT_ROUTE);
+    };
+
+    if (!isSwapsChain) {
+      leaveSwaps();
+    }
+  }, [isSwapsChain, dispatch, history]);
+
+  // This will pre-load gas fees before going to the View Quote page.
+  useGasFeeEstimates();
 
   const {
     balance: ethBalance,
@@ -223,6 +233,9 @@ export default function Swap() {
 
   // eslint-disable-next-line
   useEffect(() => {
+    if (!isSwapsChain) {
+      return undefined;
+    }
     fetchTokens(chainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
@@ -240,7 +253,7 @@ export default function Swap() {
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-  }, [dispatch, chainId, networkAndAccountSupports1559]);
+  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -353,7 +366,9 @@ export default function Swap() {
   ]);
 
   if (!isSwapsChain) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+    // A user is being redirected outside of Swaps via the async "leaveSwaps" function above. In the meantime
+    // we have to prevent the code below this condition, which wouldn't work on an unsupported chain.
+    return <></>;
   }
 
   const isStxNotEnoughFundsError =
