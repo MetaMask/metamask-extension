@@ -29,9 +29,8 @@
 
 
 .signature-request-siwe__domain-mismatch-warning {
-
   .no-margin-top {
-    margin-top: 0px;
+    margin-top: 0;
   }
 }
 
@@ -60,6 +59,7 @@
 
     &__label {
       @include H7;
+
       color: var(--color-text-default);
       margin-left: 8px;
       margin-top: 1px;
@@ -73,5 +73,4 @@
       color: var(--color-error-default);
     }
   }
-
 }
