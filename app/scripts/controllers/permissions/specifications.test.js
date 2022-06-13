@@ -331,6 +331,85 @@ describe('PermissionController specifications', () => {
         });
       });
     });
+    describe('wallet_getLocale', () => {
+      describe('factory', () => {
+        it('constructs a valid wallet_getLocale permission', () => {
+          const getIdentities = jest.fn();
+          const getAllAccounts = jest.fn();
+          const getWalletLocale = jest.fn();
+          const { factory } = getPermissionSpecifications({
+            getIdentities,
+            getAllAccounts,
+            getWalletLocale,
+          })[RestrictedMethods.wallet_getLocale];
+
+          expect(
+            factory(
+              { invoker: 'foo.bar', target: 'wallet_getLocale' },
+              { approvedAccounts: ['0x1'] },
+            ),
+          ).toStrictEqual({
+            caveats: null,
+            date: 1,
+            id: expect.any(String),
+            invoker: 'foo.bar',
+            parentCapability: 'wallet_getLocale',
+          });
+        });
+      });
+
+      describe('methodImplementation', () => {
+        it('succesfully returns valid locale', async () => {
+          const getIdentities = jest.fn().mockImplementationOnce(() => {
+            return {
+              '0x2': {
+                lastSelected: 3,
+              },
+            };
+          });
+          const getAllAccounts = jest
+            .fn()
+            .mockImplementationOnce(() => ['0x1']);
+
+          const getWalletLocale = jest
+            .fn()
+            .mockImplementationOnce(() => 'en:EN');
+
+          const { methodImplementation } = getPermissionSpecifications({
+            getIdentities,
+            getAllAccounts,
+            getWalletLocale,
+          })[RestrictedMethods.wallet_getLocale];
+
+          expect(await methodImplementation()).toStrictEqual('en:EN');
+        });
+
+        it('throws if there is not valid locale', async () => {
+          const getIdentities = jest.fn().mockImplementationOnce(() => {
+            return {
+              '0x2': {
+                lastSelected: 3,
+              },
+            };
+          });
+          const getAllAccounts = jest
+            .fn()
+            .mockImplementationOnce(() => ['0x1']);
+
+          const getWalletLocale = jest.fn();
+
+          const { methodImplementation } = getPermissionSpecifications({
+            getIdentities,
+            getAllAccounts,
+            getWalletLocale,
+          })[RestrictedMethods.wallet_getLocale];
+
+          await expect(() => methodImplementation()).rejects.toThrow(
+            'wallet_getLocale error: We couldnt retrieve a valid locale',
+          );
+        });
+      });
+    });
   });
 
   describe('unrestricted methods', () => {

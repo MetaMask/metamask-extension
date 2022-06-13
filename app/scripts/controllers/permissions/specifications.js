@@ -180,7 +180,7 @@ export const getPermissionSpecifications = ({
         const walletLocale = await getWalletLocale();
         if (!walletLocale) {
           throw new Error(
-            'wallet_getLocalee error: We couldnt retrieve a valid locale',
+            'wallet_getLocale error: We couldnt retrieve a valid locale',
           );
         }
         return walletLocale;
