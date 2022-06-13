@@ -32,6 +32,9 @@
     align-items: center;
     position: relative;
     z-index: 201;
+    border: 0;
+    background: none;
+    width: 100%;
 
     @media screen and (max-width: $break-small) {
       padding: 14px;
@@ -63,6 +66,8 @@
 
     &__text {
       @include Paragraph;
+
+      color: var(--color-text-default);
     }
 
     &__subtext {
@@ -182,6 +187,9 @@
     flex-flow: row nowrap;
     padding: 16px 14px;
     flex: 0 0 auto;
+    background: none;
+    border: 0;
+    width: 100%;
 
     @media screen and (max-width: $break-small) {
       padding: 12px 14px;
@@ -230,6 +238,7 @@
     overflow: hidden;
     white-space: nowrap;
     max-width: 200px;
+    text-align: start;
   }
 
   &__balance {
