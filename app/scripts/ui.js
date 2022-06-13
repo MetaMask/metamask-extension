@@ -41,21 +41,6 @@ if (isManifestV3()) {
 start().catch(log.error);
 
 async function start() {
-  async function displayCriticalError(err, metamaskState) {
-    const html = await getErrorHtml(SUPPORT_LINK, metamaskState);
-
-    container.innerHTML = html;
-
-    const button = document.getElementById('critical-error-button');
-
-    button.addEventListener('click', (_) => {
-      browser.runtime.reload();
-    });
-
-    log.error(err.stack);
-    throw err;
-  }
-
   // create platform global
   global.platform = new ExtensionPlatform();
 
@@ -182,6 +167,21 @@ function initializeUi(activeTab, connectionStream, cb) {
       cb,
     );
   });
+}
+
+async function displayCriticalError(err, metamaskState) {
+  const html = await getErrorHtml(SUPPORT_LINK, metamaskState);
+
+  container.innerHTML = html;
+
+  const button = document.getElementById('critical-error-button');
+
+  button.addEventListener('click', (_) => {
+    browser.runtime.reload();
+  });
+
+  log.error(err.stack);
+  throw err;
 }
 
 /**
