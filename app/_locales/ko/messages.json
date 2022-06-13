@@ -62,6 +62,13 @@
     "message": "$1(은)는 이 자산에 접근하여 사용할 수 있습니다",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "비밀 복구 구문으로 지갑에 액세스하세요"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask는 사용자의 비밀번호를 복구할 수 없습니다. 사용자의 비밀 복구 구문을 이용하여 사용자의 소유권을 확인한 후, 지갑을 복구하고 새 비밀번호를 설정해 드립니다. 먼저 지갑을 생성할 때 받은 비밀 복구 구문을 입력하세요. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "카메라에 접근 중..."
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "네트워크 추가"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "이 네트워크 연결은 타사 서비스를 이용합니다. 연결의 보안이 취약하거나 타사에 연결 내용이 노출될 수 있습니다. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
@@ -400,6 +411,14 @@
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Coinbase Pay로 $1 구매",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Coinbase 계정으로 손쉽게 암호화폐를 구매하거나 전송할 수 있습니다.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "문페이(MoonPay)로 $1 구매",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "계속"
+  },
+  "continueToCoinbasePay": {
+    "message": "Coinbase Pay로 계속하기"
   },
   "continueToMoonPay": {
     "message": "문페이로 계속하기"
@@ -1225,6 +1247,10 @@
     "message": "모든 플라스크의 API는 실험 단계입니다. 따라서 예고 없이 변경, 제거되거나 안정적인 MetaMask로 마이그레이션되지 않고 플라스크에 무기한 남아 있을 수 있습니다. 사용 시 위험은 자기 책임입니다.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Flask를 사용할 때는 정규 MetaMask 익스텐션을 비활성화하세요.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "본인은 위험을 감수합니다",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "숨기기"
   },
+  "hideFullTransactionDetails": {
+    "message": "전체 거래 세부정보 숨기기"
+  },
   "hideSeedPhrase": {
     "message": "시드 구문 숨기기"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "기록"
+  },
+  "ignoreAll": {
+    "message": "모두 무시"
+  },
+  "ignoreTokenWarning": {
+    "message": "토큰을 숨기면 지갑에 표시되지 않습니다. 하지만 이를 검색하여 추가할 수 있습니다."
   },
   "import": {
     "message": "가져오기",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "지갑 가져오기"
+  },
+  "importWithCount": {
+    "message": "$1 불러오기",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "비밀 복구 구문을 사용하여 기존 지갑 가져오기"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "수평 화살표"
+  },
+  "lightTheme": {
+    "message": "라이트"
   },
   "likeToImportTokens": {
     "message": "이 토큰을 추가할까요?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "MetaMask가 처음이세요?"
   },
+  "newTokensImportedMessage": {
+    "message": "$1 토큰을 성공적으로 불러왔습니다.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "불러온 토큰"
+  },
   "newTotal": {
     "message": "새 합계"
   },
@@ -2082,6 +2131,9 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
+  },
+  "notifications": {
+    "message": "알림"
   },
   "notifications10ActionText": {
     "message": "설정으로 이동하기",
@@ -2203,6 +2255,19 @@
   "notifications9Title": {
     "message": "👓 사용자가 거래를 이해하기 쉽게 도와드립니다."
   },
+  "notificationsEmptyText": {
+    "message": "표시할 항목이 없습니다."
+  },
+  "notificationsHeader": {
+    "message": "알림"
+  },
+  "notificationsInfos": {
+    "message": "$1($2)",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "모두 읽음으로 표시"
+  },
   "numberOfNewTokensDetected": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
     "description": "$1 is the number of new tokens detected"
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "원본"
   },
+  "osTheme": {
+    "message": "시스템"
+  },
+  "padlock": {
+    "message": "패드락"
+  },
   "parameters": {
     "message": "매개변수"
   },
@@ -2371,6 +2442,10 @@
     "message": "허용되는 계정의 주소 보기(필수)",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "무기한 운용됩니다.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "'$1' 계정과 자산을 통제합니다.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "+ 그 외 $1개",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "인기 사용자 정의 네트워크"
   },
   "preferredLedgerConnectionType": {
     "message": "선호하는 Ledger 연결 유형",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "계속하기 전에 비밀 복구 구문이 정확한지 확인하세요. 이 작업은 취소할 수 없습니다."
+  },
+  "restartMetamask": {
+    "message": "MetaMask 재시작"
   },
   "restore": {
     "message": "복구"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "송금"
+  },
+  "sendBugReport": {
+    "message": "버그 리포트 전송"
   },
   "sendSpecifiedTokens": {
     "message": "$1 보내기",
@@ -3031,6 +3115,9 @@
     "message": "지갑을 컴퓨터에 바로 연결합니다.  Ledger를 잠금 해제하고 이더리움 앱을 엽니다. 하드웨어 지갑 장치를 사용하는 방법에 관한 자세한 내용은 $1 링크를 참조하세요.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "아직 이 메시지가 표시되시나요?"
+  },
   "storePhrase": {
     "message": "이 구문을 1Password 같은 비밀번호 관리자에 저장하세요."
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "스마트 거래를 사용할 수 없을 때도 토큰 스왑은 가능합니다."
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "스왑을 비공개로 제출하는 중..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "스왑을 공개로 제출하는 중..."
+  },
   "stxSubDescription": {
     "message": "*스마트 거래는 비공개로 거래를 제출하기 위해 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 거래는 공개적으로 브로드캐스트될 것입니다."
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "현재 $1(을)를 사용할 수 있습니다.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "스왑 완료까지 남은 시간:",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "제출하기 전에 거래를 시뮬레이션하면 거래 비용을 줄이고 실패율을 낮출 수 있습니다."
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "슬리패지는 0보다 크거나 같아야 합니다."
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "유동성 소스"
   },
@@ -3585,6 +3686,10 @@
   "tokenSymbol": {
     "message": "토큰 기호"
   },
+  "tokensFoundTitle": {
+    "message": "$1개의 새 토큰을 찾았습니다",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "이해했습니다"
   },
@@ -3706,6 +3811,9 @@
     "message": "$1 연결 도중 문제가 발생했습니다. $2을(를) 검토하고 다시 시도해 보세요.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
+  },
   "troubleTokenBalances": {
     "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "MetaMask 비밀번호를 입력하세요"
+  },
+  "typeYourSRP": {
+    "message": "비밀 복구 구문을 입력하세요"
   },
   "u2f": {
     "message": "U2F",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "지갑 생성 성공"
+  },
+  "warning": {
+    "message": "경고"
   },
   "weak": {
     "message": "약함"

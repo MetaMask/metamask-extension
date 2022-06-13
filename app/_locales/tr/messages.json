@@ -62,6 +62,13 @@
     "message": "$1 bu varlığa erişebilir ve harcayabilir",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Gizli Kurtarma İfadenizle cüzdanınıza erişin"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask parolanızı kurtaramaz. Sahipliğinizi doğrulamak, cüzdanınızı yenilemek ve yeni bir parola belirlemek için Gizli Kurtarma İfadenizi kullanırız. İlk olarak, cüzdanınızı oluştururken size verilmiş olan Gizli Kurtarma İfadenizi girin. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Kameranıza erişim sağlanıyor..."
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "Ağ ekle"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Bu ağ bağlantısı üçüncü taraflara dayalıdır. Bu bağlantı daha az güvenli olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Önerilen Tokenleri ekle"
@@ -400,6 +411,14 @@
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Coinbase Pay ile 1 USD al",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Coinbase hesabınla kolayca kripto para satın alabilir veya transfer edebilirsin.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "MoonPay ile $1 satın al",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "Devam et"
+  },
+  "continueToCoinbasePay": {
+    "message": "Coinbase Pay'e devam et"
   },
   "continueToMoonPay": {
     "message": "MoonPay'e devam et"
@@ -1225,6 +1247,10 @@
     "message": "Tüm Flask API'leri deneyseldir. Önceden haber verilmeksizin değiştirilebilir veya kaldırılabilirler ya da kararlı MetaMask'e taşınmadan süresiz olarak Flask'ta kalabilirler. Bunları kendi sorumluluğunda kullan.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Flask kullanırken normal MetaMask uzantınızı devre dışı bıraktığınızdan emin olun.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Riskleri kabul ediyorum",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "Gizle"
   },
+  "hideFullTransactionDetails": {
+    "message": "Tam işlem bilgilerini gizle"
+  },
   "hideSeedPhrase": {
     "message": "Tohum ifadesini gizle"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "Geçmiş"
+  },
+  "ignoreAll": {
+    "message": "Tümünü yoksay"
+  },
+  "ignoreTokenWarning": {
+    "message": "Gizlediğiniz tokenler cüzdanınızda gösterilmez. Ancak, yine de onları bulup ekleyebilirsiniz."
   },
   "import": {
     "message": "İçe Aktar",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "Cüzdanı içe aktar"
+  },
+  "importWithCount": {
+    "message": "$1 tokeni içe aktar",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "Gizli Kurtarma İfadesi kullanarak mevcut cüzdanınızı içe aktarın"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "seviye oku"
+  },
+  "lightTheme": {
+    "message": "Aydınlık"
   },
   "likeToImportTokens": {
     "message": "Bu tokenleri içe aktarmak ister misiniz?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "MetaMask'te yeni misiniz?"
   },
+  "newTokensImportedMessage": {
+    "message": "$1 tokeni başarılı bir şekilde içe aktardın.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Token içe aktarıldı"
+  },
   "newTotal": {
     "message": "Yeni Toplam"
   },
@@ -2082,6 +2131,9 @@
   },
   "notEnoughGas": {
     "message": "Yeterli Gaz Yok"
+  },
+  "notifications": {
+    "message": "Bildirimler"
   },
   "notifications10ActionText": {
     "message": "Ayarlarda ziyaret et",
@@ -2203,6 +2255,19 @@
   "notifications9Title": {
     "message": "👓 İşlemlerin okunmasını daha kolay hale getiriyoruz."
   },
+  "notificationsEmptyText": {
+    "message": "Burada gösterilecek bir şey yok."
+  },
+  "notificationsHeader": {
+    "message": "Bildirimler"
+  },
+  "notificationsInfos": {
+    "message": "$1 tarihli bildirim: $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Tümünü okundu olarak işaretle"
+  },
   "numberOfNewTokensDetected": {
     "message": "Bu hesapta $1 yeni token bulundu",
     "description": "$1 is the number of new tokens detected"
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "Köken"
   },
+  "osTheme": {
+    "message": "Sistem"
+  },
+  "padlock": {
+    "message": "Asma Kilit"
+  },
   "parameters": {
     "message": "Parametreler"
   },
@@ -2371,6 +2442,10 @@
     "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "Süresiz çalıştır.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "\"$1\" hesaplarını ve varlıklarını kontrol et.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "+ $1 tane daha",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Popüler özel ağlar"
   },
   "preferredLedgerConnectionType": {
     "message": "Tercih Edilen Kayıt Defteri Bağlantı Türü",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "Devam etmeden önce doğru Gizli Kurtarma İfadesini kullandığından emin ol. Bunu geri alamazsın."
+  },
+  "restartMetamask": {
+    "message": "MetaMask'i yeniden başlat"
   },
   "restore": {
     "message": "Geri Yükle"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "Tutarı Gönder"
+  },
+  "sendBugReport": {
+    "message": "Bize bir hata raporu gönder."
   },
   "sendSpecifiedTokens": {
     "message": "$1 Gönder",
@@ -3031,6 +3115,9 @@
     "message": "Cüzdanınızı doğrudan bilgisayara bağlayın. Kayıt defterinizin kilidini açın ve Ethereum uygulamasını açın. Donanım cüzdanı cihazınızın kullanımı hakkında daha fazla bilgi için $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "Bu mesajı almaya devam mı ediyorsun?"
+  },
   "storePhrase": {
     "message": "Bu ifadeyi 1Password gibi bir parola yöneticisinde saklayın."
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "Akıllı İşlemler kullanılamazken bile token'larını değiştirebilirsin."
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Swap işlemin özel olarak gönderiliyor..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Swap işlemin herkese açık olarak gönderiliyor..."
+  },
   "stxSubDescription": {
     "message": "* Akıllı İşlemler, işlemini birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Takas'ının başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "$1 artık kullanılabilir.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Swap işleminin tamamlanmasına kalan süre <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "İşlem maliyetlerini azaltmak ve arızaları azaltmak için göndermeden önce işlemleri simüle et."
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "Fark en az sıfır olmalıdır"
   },
+  "swapSlippagePercent": {
+    "message": "%$1",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Likidite kaynağı"
   },
@@ -3485,7 +3586,7 @@
     "message": "Hesaplarınızı ve bilgilerinizi mobil cihazınızla senkronize edebilirsiniz. MetaMask mobil uygulamasını açın, \"Ayarlar\" kısmına gidin ve \"Tarayıcı Uzantısından Senkronize Et\" seçeneğine dokunun"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "MetaMask Mobil uygulamasını ilk defa açıyorsanız telefonunuzdaki adımları izleyin."
+    "message": "Metamask Mobil uygulamasını ilk defa açıyorsanız telefonunuzdaki adımları izleyin."
   },
   "syncWithMobileScanThisCode": {
     "message": "MetaMask mobil uygulamanızla bu kodu tarayın"
@@ -3584,6 +3685,10 @@
   },
   "tokenSymbol": {
     "message": "Token Sembolü"
+  },
+  "tokensFoundTitle": {
+    "message": "$1 yeni token bulundu",
+    "description": "$1 is the number of new tokens detected"
   },
   "tooltipApproveButton": {
     "message": "Anladım"
@@ -3706,6 +3811,9 @@
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
+  },
   "troubleTokenBalances": {
     "message": "Token bakiyeleriniz yüklenirken sorun yaşadık. Burada görüntüleyebilirsiniz ",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "MetaMask parolanızı girin"
+  },
+  "typeYourSRP": {
+    "message": "Gizli Kurtarma İfadenizi girin"
   },
   "u2f": {
     "message": "U2F",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Cüzdan oluşturma başarılı"
+  },
+  "warning": {
+    "message": "Uyarı"
   },
   "weak": {
     "message": "Zayıf"
