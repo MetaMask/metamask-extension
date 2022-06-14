@@ -47,6 +47,7 @@ describe('Dapp interactions', function () {
         // Trigger Notification
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         await driver.clickElement('#addEthereumChain');
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
