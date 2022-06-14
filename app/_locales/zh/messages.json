@@ -62,6 +62,13 @@
     "message": "$1可以访问并使用此资产",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "使用账户助记词访问钱包"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask无法恢复您的密码。我们将使用您的助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的助记词。$1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "正在访问您的相机……"
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "添加网络"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "此网络连接依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "添加推荐代币"
@@ -400,6 +411,14 @@
     "message": "购买$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "用Coinbase Pay购买$1",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "您可以使用Coinbase账户轻松购买或转移加密货币。",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "用MoonPay购买$1",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -606,6 +625,9 @@
   "continue": {
     "message": "继续"
   },
+  "continueToCoinbasePay": {
+    "message": "继续使用Coinbase Pay"
+  },
   "continueToMoonPay": {
     "message": "继续使用MoonPay"
   },
@@ -717,9 +739,6 @@
   },
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不能保证。"
-  },
-  "customNetworks": {
-    "message": "自定义网络"
   },
   "customSpendLimit": {
     "message": "自定义消费限额"
@@ -1228,6 +1247,10 @@
     "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在Flask上而不会迁移到稳定的MetaMask。您需要自行承担使用它们的风险。",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "确保在使用Flask时禁用常规MetaMask扩展程序。",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "我接受风险",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1419,6 +1442,9 @@
   "hide": {
     "message": "隐藏"
   },
+  "hideFullTransactionDetails": {
+    "message": "隐藏完整的交易细节"
+  },
   "hideSeedPhrase": {
     "message": "隐藏助记词"
   },
@@ -1447,6 +1473,12 @@
   },
   "history": {
     "message": "历史记录"
+  },
+  "ignoreAll": {
+    "message": "忽略所有"
+  },
+  "ignoreTokenWarning": {
+    "message": "如果您隐藏代币，它们将不会在您的钱包中显示。但您仍然可以通过搜索代币来添加它们。"
   },
   "import": {
     "message": "导入",
@@ -1496,6 +1528,10 @@
   },
   "importWallet": {
     "message": "导入钱包"
+  },
+  "importWithCount": {
+    "message": "导入$1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "使用账户助记词导入您的现有钱包"
@@ -1659,7 +1695,7 @@
     "message": "打开和解锁 Ledger Live 应用程序"
   },
   "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
+    "message": "自定义连接您的 Ledger 到 Metamask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
     "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
   },
   "ledgerDeviceOpenFailureMessage": {
@@ -1690,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "水平箭头"
+  },
+  "lightTheme": {
+    "message": "浅色"
   },
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
@@ -2004,6 +2043,13 @@
   "newToMetaMask": {
     "message": "MetaMask 的新用户？"
   },
+  "newTokensImportedMessage": {
+    "message": "您已成功导入$1。",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "已导入代币"
+  },
   "newTotal": {
     "message": "新总额"
   },
@@ -2086,6 +2132,9 @@
   "notEnoughGas": {
     "message": "燃料不足"
   },
+  "notifications": {
+    "message": "通知"
+  },
   "notifications10ActionText": {
     "message": "在设置中访问",
     "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
@@ -2158,7 +2207,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
-    "message": "在 MetaMask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
+    "message": "在 Metamask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionTwo": {
@@ -2205,6 +2254,19 @@
   },
   "notifications9Title": {
     "message": "👓 我们正在使交易更容易阅读。"
+  },
+  "notificationsEmptyText": {
+    "message": "此处无内容。"
+  },
+  "notificationsHeader": {
+    "message": "通知"
+  },
+  "notificationsInfos": {
+    "message": "$1，来自$2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "将所有标记为已读"
   },
   "numberOfNewTokensDetected": {
     "message": "在此账户中发现 $1 新代币",
@@ -2285,9 +2347,6 @@
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
   },
-  "onlyInteractWith": {
-    "message": "仅与您信任的实体互动。"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "全屏打开 MetaMask 以通过 WebHID 连接您的 ledger。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2306,6 +2365,12 @@
   },
   "origin": {
     "message": "来源"
+  },
+  "osTheme": {
+    "message": "系统"
+  },
+  "padlock": {
+    "message": "挂锁"
   },
   "parameters": {
     "message": "参数"
@@ -2377,6 +2442,10 @@
     "message": "查看您允许的账户的地址（必填）",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "无限期运行。",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "控制您的“$1”账户和资产。",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2405,6 +2474,9 @@
   "plusXMore": {
     "message": "另外 $1 项",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "流行自定义网络"
   },
   "preferredLedgerConnectionType": {
     "message": "首选 Ledger 连接类型",
@@ -2579,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "在继续之前，请确保您所使用的助记词正确无误。您将无法撤消此操作。"
+  },
+  "restartMetamask": {
+    "message": "重新启动MetaMask"
   },
   "restore": {
     "message": "恢复"
@@ -2763,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "发送金额"
+  },
+  "sendBugReport": {
+    "message": "向我们发送错误报告。"
   },
   "sendSpecifiedTokens": {
     "message": "发送 $1",
@@ -3037,6 +3115,9 @@
     "message": "将您的钱包直接连接到电脑。解锁 Ledger 并打开 Ethereum 应用程序。若要了解有关使用您的硬件钱包设备的更多信息，$1。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "仍然收到此消息？"
+  },
   "storePhrase": {
     "message": "通过如 1Password 等密码管理工具保存该账户助记词。"
   },
@@ -3089,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "即使智能交易不可用，您仍然可以交换代币。"
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "正在秘密提交您的Swap..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "正在公开提交您的Swap..."
+  },
   "stxSubDescription": {
     "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },
@@ -3098,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "您的$1现在可用。",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Swap距离完成尚有<",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "在提交前模拟交易，以降低交易成本并减少失败。"
@@ -3358,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "滑点必须大于或等于0"
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "流动性来源"
   },
@@ -3591,6 +3686,10 @@
   "tokenSymbol": {
     "message": "代币符号"
   },
+  "tokensFoundTitle": {
+    "message": "发现$1新代币",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "我理解"
   },
@@ -3712,6 +3811,9 @@
     "message": "我们在连接您的 $1 时遇到问题，尝试检查 $2 并重试。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
+  },
   "troubleTokenBalances": {
     "message": "我们在加载您的代币余额时遇到问题。您可以查看它们 ",
     "description": "Followed by a link (here) to view token balances"
@@ -3733,6 +3835,9 @@
   },
   "typePassword": {
     "message": "输入您的 MetaMask 密码"
+  },
+  "typeYourSRP": {
+    "message": "输入助记词"
   },
   "u2f": {
     "message": "U2F",
@@ -3892,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "钱包创建成功"
+  },
+  "warning": {
+    "message": "警告"
   },
   "weak": {
     "message": "弱"
