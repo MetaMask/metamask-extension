@@ -15,7 +15,6 @@ describe('Chain Interactions', function () {
     concurrent: { port, chainId },
   };
   it('should add the Ganache test chain and not switch the network', async function () {
-
     await withFixtures(
       {
         dapp: true,
@@ -40,9 +39,11 @@ describe('Chain Interactions', function () {
         );
 
         // verify chain details
-        const [networkName, networkUrl, chainIdElement] = await driver.findElements(
-          '.definition-list dd',
-        );
+        const [
+          networkName,
+          networkUrl,
+          chainIdElement,
+        ] = await driver.findElements('.definition-list dd');
         assert.equal(await networkName.getText(), `Localhost ${port}`);
         assert.equal(await networkUrl.getText(), `http://127.0.0.1:${port}`);
         assert.equal(await chainIdElement.getText(), chainId.toString());
