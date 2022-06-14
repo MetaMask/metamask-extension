@@ -187,7 +187,6 @@ export const getSnapManageAccountSpecifications = (
           // FIXME[muji]: `origin` should be a stable identifier not snapId
           const { origin } = context;
           const keyring = await getSnapKeyring();
-          console.log("manageAccounts methodImpl running with", origin, args);
           const methodAction = params[0];
           const methodArgs = params[1]
 
@@ -198,7 +197,11 @@ export const getSnapManageAccountSpecifications = (
               Array.isArray(methodArgs) ? methodArgs[0] : methodArgs,
               "hex");
 
-          // TODO[muji]: verify buffer is 33 or 64 bytes
+          // Expecting a SEC-1 encoded compressed point or a uncompressed point
+          if (publicKeyBuffer.length !== 33 && publicKeyBuffer.length !== 64) {
+            throw new Error(
+              "public key must be a SEC-1 compressed point or an uncompressed point (33 or 64 bytes)");
+          }
 
           switch (methodAction) {
             case "list":
