@@ -419,10 +419,7 @@ export default class AccountMenu extends Component {
               }}
               icon={
                 <div className="account-menu__notifications">
-                  <i
-                    className="fa fa-bell fa-xl"
-                    color="var(--color-icon-default)"
-                  />
+                  <i className="fa fa-bell fa-xl" />
                   {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
                       {unreadNotificationsCount}
