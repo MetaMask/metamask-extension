@@ -220,11 +220,13 @@ export const getExtraPermissionSpecifications = (
               }
               return updated;
             case "delete":
-              const deleted = keyring.deleteAccount(origin, publicKeyBuffer);
-              if (deleted) {
-                await saveKeyring();
+              // NOTE: we don't call removeAccount() on the keyringController
+              // NOTE: as it prunes empty keyrings and we don't want that behavior
+              const address = keyring.deleteAccount(origin, publicKeyBuffer);
+              if (address) {
+                await saveKeyring(address);
               }
-              return deleted;
+              return address !== null;
             default:
               // TODO: return this error to the client!
               throw new Error("invalid snap_manageAccounts action");

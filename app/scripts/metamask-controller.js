@@ -630,7 +630,10 @@ export default class MetamaskController extends EventEmitter {
         ...this.getSnapPermissionSpecifications(),
         ...getExtraPermissionSpecifications({
           getSnapKeyring: this.getSnapKeyring.bind(this),
-          saveKeyring: async () => {
+          saveKeyring: async (removedAddress) => {
+            if (removedAddress) {
+              this.keyringController.emit('removedAccount', removedAddress);
+            }
             // TODO[muji]: add a save() method to KeyringController
             await this.keyringController.persistAllKeyrings();
             await this.keyringController._updateMemStoreKeyrings();
