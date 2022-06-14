@@ -38,6 +38,8 @@ describe('Fail approved but not submitted transaction on boot', function () {
         );
 
         assert.equal(await transactionStatus.length, 1);
+
+        assert.equal(await transactionStatus[0].getText(), 'Failed');
       },
     );
   });
