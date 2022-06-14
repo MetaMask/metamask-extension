@@ -38,7 +38,13 @@ async function getMethodFrom4Byte(fourBytePrefix) {
 
   if (fourByteResponse.count === 1) {
     return fourByteResponse.results[0].text_signature;
+  } else if (fourByteResponse.count > 1) {
+    const oldestEntry = fourByteResponse.results.reduce((prev, curr) =>
+      new Date(prev?.created_at) < new Date(curr?.created_at) ? prev : curr,
+    );
+    return oldestEntry.text_signature;
   }
+
   return null;
 }
 let registry;
