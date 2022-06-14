@@ -108,7 +108,7 @@ const NetworksTab = ({ addNewNetwork }) => {
               selectedNetwork={selectedNetwork}
               shouldRenderNetworkForm={shouldRenderNetworkForm}
             />
-            {!isFullScreen && !shouldRenderNetworkForm ? (
+            {shouldRenderNetworkForm ? null : (
               <div className="networks-tab__networks-list-popup-footer">
                 <Button
                   type="primary"
@@ -120,7 +120,7 @@ const NetworksTab = ({ addNewNetwork }) => {
                   {t('addNetwork')}
                 </Button>
               </div>
-            ) : null}
+            )}
           </>
         )}
       </div>
