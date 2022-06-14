@@ -166,7 +166,7 @@ export const getPermissionSpecifications = ({
 };
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export const getExtraPermissionSpecifications = (
+export const getSnapManageAccountSpecifications = (
   {
     getSnapKeyring,
     saveKeyring,

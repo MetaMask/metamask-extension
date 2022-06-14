@@ -145,7 +145,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-  getExtraPermissionSpecifications,
+  getSnapManageAccountSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -628,7 +628,7 @@ export default class MetamaskController extends EventEmitter {
         }),
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
-        ...getExtraPermissionSpecifications({
+        ...getSnapManageAccountSpecifications({
           getSnapKeyring: this.getSnapKeyring.bind(this),
           saveKeyring: async (removedAddress) => {
             if (removedAddress) {
