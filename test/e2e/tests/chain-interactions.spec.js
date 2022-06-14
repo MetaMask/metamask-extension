@@ -39,8 +39,8 @@ describe('Chain Interactions', function () {
         const [networkName, networkUrl, chainId] = await driver.findElements(
           '.definition-list dd',
         );
-        assert.equal(await networkName.getText(), 'xDAI Chain');
-        assert.equal(await networkUrl.getText(), 'https://dai.poa.network');
+        assert.equal(await networkName.getText(), 'Gnosis Chain');
+        assert.equal(await networkUrl.getText(), 'https://rpc.gnosischain.com');
         assert.equal(await chainId.getText(), '100');
 
         // approve add chain, cancel switch chain
