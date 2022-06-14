@@ -23,7 +23,10 @@ describe('Dapp interactions', function () {
       {
         dapp: true,
         fixtures: 'imported-account',
-        ganacheOptions: { ...ganacheOptions, concurrent: { port: 8546, chainId: 1338 } },
+        ganacheOptions: {
+          ...ganacheOptions,
+          concurrent: { port: 8546, chainId: 1338 },
+        },
         title: this.test.title,
       },
       async ({ driver }) => {
