@@ -132,7 +132,7 @@ export default class AccountMenu extends Component {
 
   renderAccountsSearch() {
     const handleChange = (e) => {
-      const val = e.target.value.length > 1 ? e.target.value : "";
+      const val = e.target.value.length > 1 ? e.target.value : '';
       this.setSearchQuery(val);
     };
 
