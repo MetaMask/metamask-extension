@@ -139,7 +139,7 @@ export default class AccountMenu extends Component {
           marginLeft: '8px',
         }}
       >
-        <SearchIcon color="currentColor" />
+        <SearchIcon color="var(--color-icon-muted)" />
       </InputAdornment>
     );
 

@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const SearchIcon = ({
-  size = 20,
+  size = 24,
   color = 'currentColor',
   ariaLabel,
   className,
-  onClick,
 }) => (
   <svg
     width={size}
@@ -14,13 +13,10 @@ const SearchIcon = ({
     fill={color}
     className={className}
     aria-label={ariaLabel}
-    onClick={onClick}
     xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 512 512"
   >
-    <g clipRule="evenodd" fillRule="evenodd">
-      <path d="M9.167 3.333a5.833 5.833 0 100 11.667 5.833 5.833 0 000-11.667zm-7.5 5.834a7.5 7.5 0 1115 0 7.5 7.5 0 01-15 0z" />
-      <path d="M13.286 13.286a.833.833 0 011.178 0l3.625 3.625a.833.833 0 11-1.178 1.178l-3.625-3.625a.833.833 0 010-1.178z" />
-    </g>
+    <path d="m235 427c-51 0-100-21-136-57-36-36-56-84-56-135 0-26 5-51 14-74 10-23 24-44 42-62 18-18 39-32 62-42 23-9 48-14 74-14 25 0 50 5 73 14 23 10 45 24 62 42 18 18 32 39 42 62 10 23 15 48 15 74 0 43-15 86-42 119l78 79c2 2 4 4 5 7 1 2 1 5 1 8 0 3 0 6-1 8-1 3-3 5-5 7-2 2-4 4-7 5-2 1-5 1-8 1-3 0-6 0-8-1-3-1-5-3-7-5l-79-78c-33 27-76 42-119 42z m0-43c82 0 149-67 149-149 0-83-67-150-149-150-83 0-150 67-150 150 0 82 67 149 150 149z" />
   </svg>
 );
 
@@ -37,10 +33,6 @@ SearchIcon.propTypes = {
    * An additional className to assign the Icon
    */
   className: PropTypes.string,
-  /**
-   * The onClick handler
-   */
-  onClick: PropTypes.func,
   /**
    * The aria-label of the icon for accessibility purposes
    */
