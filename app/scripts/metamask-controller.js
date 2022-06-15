@@ -593,7 +593,9 @@ export default class MetamaskController extends EventEmitter {
           getAllAccounts: this.keyringController.getAccounts.bind(
             this.keyringController,
           ),
-          getWalletPreferredCurrency: this.getWalletPreferredCurrency.bind(this),
+          getWalletPreferredCurrency: this.getWalletPreferredCurrency.bind(
+            this,
+          ),
           captureKeyringTypesWithMissingIdentities: (
             identities = {},
             accounts = [],
