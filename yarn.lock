@@ -3080,10 +3080,10 @@
   dependencies:
     "@metamask/controllers" "^28.0.0"
 
-"@metamask/test-dapp@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.0.0.tgz#ecea832b57ff97782bfdd57a4af3408c7c64c02d"
-  integrity sha512-eR9JQ0jPOeP/hdQj9hUkqbvinfjVLYTtdHV+mDCN1tsNxiTdninZbltg9bx6Gqp91v9/9YPhlhXCmMQPq/AMxQ==
+"@metamask/test-dapp@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.1.1.tgz#aadebf28542809650c57aa8f5a3489c748e1414f"
+  integrity sha512-Vast76cYR9vOvSH9Ut8y8LXZbDledUE2BkiLX+PGP5AOTp8Pn8V6jiYg1D/slBh7M8/Q/1AmdW9D0B+fw7esBQ==
 
 "@metamask/types@^1.1.0":
   version "1.1.0"
