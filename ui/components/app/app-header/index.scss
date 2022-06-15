@@ -89,6 +89,8 @@
 
   .account-menu__icon {
     position: relative;
+    border: 0;
+    background: none;
 
     &__notification-count {
       position: absolute;
