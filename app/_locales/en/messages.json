@@ -2445,10 +2445,6 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
-  "permission_preferredCurrency": {
-    "message": "Show your preferred currency.",
-    "description": "The description for the `wallet_preferredCurrency` permission"
-  },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
@@ -2464,6 +2460,10 @@
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
+  },
+  "permission_preferredCurrency": {
+    "message": "Show your preferred currency.",
+    "description": "The description for the `wallet_preferredCurrency` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
