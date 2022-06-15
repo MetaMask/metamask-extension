@@ -80,11 +80,11 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__edit-section__description">
             {t('allowWithdrawAndSpend', [origin])}
           </div>
-          <div className="edit-approval-permission__edit-section__option">
-            <div
-              className="edit-approval-permission__edit-section__radio-button"
-              onClick={() => this.setState({ selectedOptionIsUnlimited: true })}
-            >
+          <button
+            className="edit-approval-permission__edit-section__option"
+            onClick={() => this.setState({ selectedOptionIsUnlimited: true })}
+          >
+            <div className="edit-approval-permission__edit-section__radio-button">
               <div
                 className={classnames({
                   'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
@@ -116,14 +116,12 @@ export default class EditApprovalPermission extends PureComponent {
                 {`${Number(tokenAmount)} ${tokenSymbol}`}
               </div>
             </div>
-          </div>
-          <div className="edit-approval-permission__edit-section__option">
-            <div
-              className="edit-approval-permission__edit-section__radio-button"
-              onClick={() =>
-                this.setState({ selectedOptionIsUnlimited: false })
-              }
-            >
+          </button>
+          <button
+            className="edit-approval-permission__edit-section__option"
+            onClick={() => this.setState({ selectedOptionIsUnlimited: false })}
+          >
+            <div className="edit-approval-permission__edit-section__radio-button">
               <div
                 className={classnames({
                   'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
@@ -166,7 +164,7 @@ export default class EditApprovalPermission extends PureComponent {
                 />
               </div>
             </div>
-          </div>
+          </button>
         </div>
       </div>
     );

@@ -75,8 +75,9 @@
 
     &__option {
       display: flex;
-      align-items: flex-start;
       margin-top: 20px;
+      text-align: left;
+      background: none;
     }
 
     &__radio-button {
