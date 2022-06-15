@@ -76,11 +76,13 @@ const NetworksListItem = ({
         <IconCheck
           className="networks-tab__content__icon-check"
           color="var(--color-success-default)"
+          aria-label={t('active')}
         />
       ) : (
         <IconCheck
           className="networks-tab__content__icon-check"
           color="transparent"
+          aria-hidden="true"
         />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
