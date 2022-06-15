@@ -79,7 +79,7 @@ describe('Network Dropdown', () => {
       let found = false;
       while (!found) {
         if (
-          _wrapper.find(ColorIndicator).at(i).prop('color') === 'text-muted'
+          _wrapper.find(ColorIndicator).at(i).prop('color') === 'icon-muted'
         ) {
           i += 1;
         } else {

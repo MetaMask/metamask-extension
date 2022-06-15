@@ -551,6 +551,7 @@ const NetworksForm = ({
           iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
+          className="networks-tab__add-network-form__alert"
         />
       ) : null}
       <div
