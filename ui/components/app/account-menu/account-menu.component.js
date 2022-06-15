@@ -150,8 +150,7 @@ export default class AccountMenu extends Component {
         id="search-accounts"
         placeholder={this.context.t('searchAccounts')}
         type="text"
-        value={this.state.searchQuery}
-        onChange={(e) => this.setSearchQuery(e.target.value)}
+        onChange={(e) => e.target.value.length > 1 ? this.setSearchQuery(e.target.value) : this.setSearchQuery("")}
         startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
