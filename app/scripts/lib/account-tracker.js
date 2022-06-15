@@ -243,8 +243,19 @@ export default class AccountTracker {
    * @returns {Promise} after the account balance is updated
    */
   async _updateAccount(address) {
+    let balance;
+
     // query balance
-    const balance = await this._query.getBalance(address);
+    try {
+      balance = await this._query.getBalance(address);
+    } catch (error) {
+      if (error.data.request.method === 'eth_getBalance') {
+        balance = '0x0';
+      } else {
+        throw error;
+      }
+    }
+
     const result = { address, balance };
     // update accounts state
     const { accounts } = this.store.getState();
