@@ -682,6 +682,11 @@ export default class MetamaskController extends EventEmitter {
         this.workerController,
       ),
       closeAllConnections: this.removeAllConnections.bind(this),
+      // Prefix subject with appKeyType to generate separate keys for separate uses
+      getAppKey: async (subject, appKeyType) => {
+        await this.appStateController.getUnlockPromise(true);
+        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
+      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
     });
