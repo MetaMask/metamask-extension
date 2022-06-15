@@ -62,6 +62,13 @@
     "message": "$1 dapat mengakses dan membelanjakan aset ini",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "Tambahkan Jaringan"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Koneksi jaringan ini mengandalkan pihak ketiga. Koneksi ini mungkin kurang bisa diandalkan atau memungkinkan pihak ketiga melacak aktivitas. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Tambahkan Token yang Disarankan"
@@ -400,6 +411,14 @@
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Beli $1 melalui Coinbase Pay",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Anda dapat dengan mudah membeli atau mentransfer kripto dengan akun Coinbase Anda.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "Beli $1 melalui MoonPay",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "Lanjutkan"
+  },
+  "continueToCoinbasePay": {
+    "message": "Lanjutkan ke Coinbase Pay"
   },
   "continueToMoonPay": {
     "message": "Lanjutkan ke MoonPay"
@@ -1225,6 +1247,10 @@
     "message": "Semua API Flask bersifat eksperimental. API dapat diubah atau dihapus tanpa pemberitahuan, atau tetap berada di Flask tanpa batas waktu dan tanpa pernah dimigrasikan ke MetaMask yang stabil. Gunakan API dengan risiko Anda sendiri.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Pastikan untuk menonaktifkan ekstensi MetaMask reguler Anda saat menggunakan Flask.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Saya menerima risikonya",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "Sembunyikan"
   },
+  "hideFullTransactionDetails": {
+    "message": "Sembunyikan detail transaksi lengkap"
+  },
   "hideSeedPhrase": {
     "message": "Sembunyikan frasa seed"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "Riwayat"
+  },
+  "ignoreAll": {
+    "message": "Abaikan semua"
+  },
+  "ignoreTokenWarning": {
+    "message": "Jika Anda menyembunyikan token, token tersebut tidak akan ditampilkan di dompet Anda. Namun, Anda masih dapat menambahkannya dengan mencarinya."
   },
   "import": {
     "message": "Impor",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "Impor dompet"
+  },
+  "importWithCount": {
+    "message": "Impor $1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "Impor dompet Anda yang ada menggunakan Frasa Pemulihan Rahasia"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "panah tingkat"
+  },
+  "lightTheme": {
+    "message": "Terang"
   },
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "Baru menggunakan MetaMask?"
   },
+  "newTokensImportedMessage": {
+    "message": "Anda berhasil mengimpor $1.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Token diimpor"
+  },
   "newTotal": {
     "message": "Total Baru"
   },
@@ -2082,6 +2131,9 @@
   },
   "notEnoughGas": {
     "message": "Gas Tidak Cukup"
+  },
+  "notifications": {
+    "message": "Notifikasi"
   },
   "notifications10ActionText": {
     "message": "Lihat di pengaturan",
@@ -2203,6 +2255,19 @@
   "notifications9Title": {
     "message": ".👓 Kami membuat transaksi lebih mudah untuk dibaca."
   },
+  "notificationsEmptyText": {
+    "message": "Tak ada yang bisa dilihat di sini."
+  },
+  "notificationsHeader": {
+    "message": "Notifikasi"
+  },
+  "notificationsInfos": {
+    "message": "$1 dari $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Tandai semua telah dibaca"
+  },
   "numberOfNewTokensDetected": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "Asal"
   },
+  "osTheme": {
+    "message": "Sistem"
+  },
+  "padlock": {
+    "message": "Gembok"
+  },
   "parameters": {
     "message": "Parameter"
   },
@@ -2371,6 +2442,10 @@
     "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "Operasikan sepanjang waktu.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "Kontrol akun dan aset \"$1\" Anda.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "+ $1 lagi",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Jaringan khusus populer"
   },
   "preferredLedgerConnectionType": {
     "message": "Jenis Koneksi Ledger Pilihan",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "Pastikan Anda menggunakan Frasa Pemulihan Rahasia yang benar sebelum melanjutkan. Anda tidak dapat membatalkan tindakan ini."
+  },
+  "restartMetamask": {
+    "message": "Mulai ulang MetaMask"
   },
   "restore": {
     "message": "Pulihkan"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "Kirim Jumlah"
+  },
+  "sendBugReport": {
+    "message": "Kirimi kami laporan bug."
   },
   "sendSpecifiedTokens": {
     "message": "Kirim $1",
@@ -3031,6 +3115,9 @@
     "message": "Hubungkan dompet Anda langsung ke komputer.  Buka Ledger dan buka aplikasi Ethereum. Untuk selengkapnya seputar penggunaan perangkat dompet perangkat keras Anda, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "Masih menerima pesan ini?"
+  },
   "storePhrase": {
     "message": "Simpan frasa ini dalam pengelola kata sandi seperti 1Password."
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "Anda masih bisa menukar token meskipun Transaksi Pintar tidak tersedia."
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Kirimkan Swap Anda secara pribadi..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Kirimkan Swap Anda secara publik..."
+  },
   "stxSubDescription": {
     "message": "* Transaksi Pintar akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Pertukaran telah berhasil dilakukan."
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "$1 kini telah tersedia.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Swap akan selesai dalam <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "Simulasikan transaksi sebelum dikirim untuk mengurangi biaya transaksi dan mengurangi kegagalan."
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "Slippage harus lebih besar atau sama dengan nol"
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Sumber likuiditas"
   },
@@ -3585,6 +3686,10 @@
   "tokenSymbol": {
     "message": "Simbol Token"
   },
+  "tokensFoundTitle": {
+    "message": "$1 token baru ditemukan",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "Saya paham"
   },
@@ -3706,6 +3811,9 @@
     "message": "Kami mengalami masalah saat mencoba terhubung ke $1 Anda, tinjau kembali $2 dan coba lagi.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
+  },
   "troubleTokenBalances": {
     "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "Ketikkan kata sandi MetaMask Anda"
+  },
+  "typeYourSRP": {
+    "message": "Ketik Frasa Pemulihan Rahasia"
   },
   "u2f": {
     "message": "U2F",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Dompet berhasil dibuat"
+  },
+  "warning": {
+    "message": "Peringatan"
   },
   "weak": {
     "message": "Lemah"

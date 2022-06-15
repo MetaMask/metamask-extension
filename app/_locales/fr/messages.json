@@ -62,6 +62,13 @@
     "message": "$1 peut accéder à cet actif et le dépenser",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Accédez à votre portefeuille en utilisant votre phrase secrète de récupération"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask ne peut pas récupérer votre mot de passe. Nous utiliserons votre phrase secrète de récupération pour vérifier votre identité, restaurer votre portefeuille et définir un nouveau mot de passe. Veuillez tout d’abord saisir la phrase secrète de récupération qui vous a été fournie lorsque vous avez créé votre portefeuille. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Accès à votre appareil photo..."
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "Ajouter un réseau"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Cette connexion réseau repose sur des tiers. Elle peut être moins fiable ou permettre à des tiers de suivre l’activité des utilisateurs. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
@@ -400,6 +411,14 @@
     "message": "Acheter $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Achetez des $1 avec Coinbase Pay",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Vous pouvez facilement acheter et transférer des cryptomonnaies en utilisant votre compte Coinbase.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "Acheter $1 avec MoonPay",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "Continuer"
+  },
+  "continueToCoinbasePay": {
+    "message": "Accéder à Coinbase Pay"
   },
   "continueToMoonPay": {
     "message": "Continuer vers MoonPay"
@@ -860,7 +882,7 @@
     "message": "Téléchargez cette phrase de sauvegarde secrète et conservez-la en lieu sûr sur un disque dur ou un support de stockage externe chiffré."
   },
   "downloadStateLogs": {
-    "message": "Télécharger les Logs d'état"
+    "message": "Télécharger les Logs d’état"
   },
   "dropped": {
     "message": "Déconnecté"
@@ -1225,6 +1247,10 @@
     "message": "Toutes les API de Flask sont expérimentales. Elles peuvent être modifiées ou supprimées sans préavis. Elles peuvent aussi rester sur Flask indéfiniment sans jamais être migrées vers le MetaMask stable. Utilisez-les à vos risques et périls.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Assurez-vous de désactiver l’extension MetaMask que vous utilisez habituellement lorsque vous utilisez Flask.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "J’accepte les risques",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1280,7 +1306,7 @@
     "message": "La limite de carburant est la quantité maximale d’unités d’essence que vous consentez à dépenser."
   },
   "gasLimitRecommended": {
-    "message": "La limite recommandée de gas est de $1. Si la limite de gas est inférieure à cette valeur, l'opération peut échouer."
+    "message": "La limite recommandée de gas est de $1. Si la limite de gas est inférieure à cette valeur, l’opération peut échouer."
   },
   "gasLimitTooLow": {
     "message": "La limite de carburant doit être d’au moins 21000"
@@ -1376,7 +1402,7 @@
     "message": "Réseau de test Goerli"
   },
   "gotIt": {
-    "message": "J'ai compris !"
+    "message": "J’ai compris !"
   },
   "grantedToWithColon": {
     "message": "Accordé à :"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "Masquer"
   },
+  "hideFullTransactionDetails": {
+    "message": "Masquer tous les détails de la transaction"
+  },
   "hideSeedPhrase": {
     "message": "Masquer la phrase mnémonique"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "Historique"
+  },
+  "ignoreAll": {
+    "message": "Ignorer tout"
+  },
+  "ignoreTokenWarning": {
+    "message": "Si vous masquez des jetons, ils n’apparaîtront pas dans votre portefeuille. Cependant, vous pouvez toujours les ajouter en les recherchant."
   },
   "import": {
     "message": "Importer",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "Importer le portefeuille"
+  },
+  "importWithCount": {
+    "message": "Importer $1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "Importez votre portefeuille existant à l’aide d’une phrase secrète de récupération"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "flèche de niveau"
+  },
+  "lightTheme": {
+    "message": "Clair"
   },
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "Nouveau sur MetaMask ?"
   },
+  "newTokensImportedMessage": {
+    "message": "Vous avez importé avec succès $1.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Jeton importé"
+  },
   "newTotal": {
     "message": "Nouveau total"
   },
@@ -2082,6 +2131,9 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de carburant"
+  },
+  "notifications": {
+    "message": "Notifications"
   },
   "notifications10ActionText": {
     "message": "Ouvrir les paramètres",
@@ -2203,6 +2255,19 @@
   "notifications9Title": {
     "message": "👓 Nous simplifions la lisibilité des transactions."
   },
+  "notificationsEmptyText": {
+    "message": "Rien à voir ici."
+  },
+  "notificationsHeader": {
+    "message": "Notifications"
+  },
+  "notificationsInfos": {
+    "message": "Le $1 de $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Marquer tout comme lu"
+  },
   "numberOfNewTokensDetected": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
     "description": "$1 is the number of new tokens detected"
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "Origine"
   },
+  "osTheme": {
+    "message": "Système"
+  },
+  "padlock": {
+    "message": "Cadenas"
+  },
   "parameters": {
     "message": "Paramètres"
   },
@@ -2371,6 +2442,10 @@
     "message": "Consultez l’adresse, le solde du compte et l’activité, et lancez des transactions",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "Fonctionner indéfiniment.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "Contrôlez vos comptes et actifs « $1 ».",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "+ $1 de plus",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Réseaux personnalisés populaires"
   },
   "preferredLedgerConnectionType": {
     "message": "Type de connexion Ledger préféré",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "Vérifiez que vous avez saisi correctement la phrase de récupération secrète avant de continuer. Vous ne pourrez pas annuler cette action."
+  },
+  "restartMetamask": {
+    "message": "Redémarrer MetaMask"
   },
   "restore": {
     "message": "Restaurer"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "Envoyer le montant"
+  },
+  "sendBugReport": {
+    "message": "Envoyez-nous un rapport de bogue."
   },
   "sendSpecifiedTokens": {
     "message": "Envoyer $1",
@@ -3031,6 +3115,9 @@
     "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum. Pour en savoir plus sur l’utilisation de votre portefeuille matériel, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "Vous recevez toujours ce message ?"
+  },
   "storePhrase": {
     "message": "Stockez cette phrase dans un gestionnaire de mots de passe comme 1Password."
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "Vous pouvez toujours faire un swap de tokens, même si les transactions intelligentes ne sont pas disponibles."
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Soumission privée de votre Swap..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Soumission publique de votre Swap..."
+  },
   "stxSubDescription": {
     "message": "* Avec les transactions intelligentes, votre transaction sera soumise plusieurs fois en privé. Si toutes les tentatives échouent, la transaction sera diffusée publiquement pour s’assurer de la réussite de votre swap."
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "Votre $1 est maintenant disponible.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Le Swap sera effectué dans <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "Simulez les transactions avant de les soumettre pour réduire les coûts et les échecs de transaction."
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "Le glissement doit être supérieur ou égal à zéro"
   },
+  "swapSlippagePercent": {
+    "message": "$1 %",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Source de liquidité"
   },
@@ -3585,6 +3686,10 @@
   "tokenSymbol": {
     "message": "Symbole du jeton"
   },
+  "tokensFoundTitle": {
+    "message": "$1 nouveaux jetons trouvés",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "Je comprends"
   },
@@ -3706,6 +3811,9 @@
     "message": "Nous avons eu des difficultés à nous connecter à votre $1. Essayez de vérifier votre $2 et réessayez.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
+  },
   "troubleTokenBalances": {
     "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "Entrez votre mot de passe"
+  },
+  "typeYourSRP": {
+    "message": "Saisissez votre phrase secrète de récupération"
   },
   "u2f": {
     "message": "U2F",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Portefeuille créé avec succès"
+  },
+  "warning": {
+    "message": "Avertissement"
   },
   "weak": {
     "message": "Faible"
