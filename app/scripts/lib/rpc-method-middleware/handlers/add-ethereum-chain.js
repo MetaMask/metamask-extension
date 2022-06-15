@@ -24,6 +24,21 @@ const addEthereumChain = {
 };
 export default addEthereumChain;
 
+const isLocalhost = (strUrl) => {
+  try {
+    const url = new URL(strUrl);
+    return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+  } catch (error) {
+    return false;
+  }
+};
+
+const firstValidUrl = (urls) => urls.find(
+  (rpcUrl) => isLocalhost(rpcUrl) ||
+    validUrl.isHttpsUri(rpcUrl) ||
+    validUrl.isHttpUri(rpcUrl)
+);
+
 async function addEthereumChainHandler(
   req,
   res,
@@ -53,7 +68,7 @@ async function addEthereumChainHandler(
   const {
     chainId,
     chainName = null,
-    blockExplorerUrls = null,
+    blockExplorerUrls = [],
     nativeCurrency = null,
     rpcUrls,
   } = req.params[0];
@@ -77,29 +92,9 @@ async function addEthereumChainHandler(
     );
   }
 
-  const isLocalhost = (strUrl) => {
-    try {
-      const url = new URL(strUrl);
-      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
-    } catch (error) {
-      return false;
-    }
-  };
-
-  const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find(
-        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
-      )
-    : null;
-
-  const firstValidBlockExplorerUrl =
-    blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find(
-          (blockExplorerUrl) =>
-            isLocalhost(blockExplorerUrl) ||
-            validUrl.isHttpsUri(blockExplorerUrl),
-        )
-      : null;
+  const rpcs = Array.isArray(rpcUrls) ? rpcUrls : [rpcUrls];
+  const firstValidRPCUrl = firstValidUrl(rpcs);
+  const firstValidBlockExplorerUrl = firstValidUrl(blockExplorerUrls);
 
   if (!firstValidRPCUrl) {
     return end(
