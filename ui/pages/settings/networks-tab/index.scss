@@ -7,6 +7,13 @@
   }
 
   &__content {
+    &--with-networks-list-popup-footer {
+      // padding-bottom required to offset content from fixed footer: &__networks-list-popup-footer
+      padding-bottom: 80px;
+      // isolation contains stacking context(z-index) of &__networks-list-popup-footer
+      isolation: isolate;
+    }
+
     @media screen and (min-width: $break-large) {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -90,12 +97,12 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    border-right: 1px solid var(--color-border-muted);
     padding: 16px 24px;
 
     @media screen and (min-width: $break-large) {
       padding: 16px;
       min-width: 160px; // Allow network form to take priority in the grid on resize
+      border-right: 1px solid var(--color-border-muted);
     }
 
     &__custom-search-network {
@@ -110,8 +117,13 @@
   &__networks-list-popup-footer {
     display: flex;
     justify-content: center;
-    border-top: 1px solid var(--color-border-default);
     padding: 16px 24px;
+    border-top: 1px solid var(--color-border-default);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--color-background-default);
 
     @media screen and (min-width: $break-large) {
       display: none;

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -92,7 +93,12 @@ const NetworksTab = ({ addNewNetwork }) => {
       {isFullScreen ? (
         <NetworksFormSubheader addNewNetwork={addNewNetwork} />
       ) : null}
-      <div className="networks-tab__content">
+      <div
+        className={classnames('networks-tab__content', {
+          'networks-tab__content--with-networks-list-popup-footer':
+            !isFullScreen && !shouldRenderNetworkForm,
+        })}
+      >
         {addNewNetwork ? (
           <NetworksForm
             networksToRender={networksToRender}
@@ -108,7 +114,7 @@ const NetworksTab = ({ addNewNetwork }) => {
               selectedNetwork={selectedNetwork}
               shouldRenderNetworkForm={shouldRenderNetworkForm}
             />
-            {shouldRenderNetworkForm ? null : (
+            {!isFullScreen && !shouldRenderNetworkForm ? (
               <div className="networks-tab__networks-list-popup-footer">
                 <Button
                   type="primary"
@@ -120,7 +126,7 @@ const NetworksTab = ({ addNewNetwork }) => {
                   {t('addNetwork')}
                 </Button>
               </div>
-            )}
+            ) : null}
           </>
         )}
       </div>
