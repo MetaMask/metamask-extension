@@ -131,6 +131,11 @@ export default class AccountMenu extends Component {
   }
 
   renderAccountsSearch() {
+    const handleChange = (e) => {
+      const val = e.target.value.length > 1 ? e.target.value : "";
+      this.setSearchQuery(val);
+    };
+
     const inputAdornment = (
       <InputAdornment
         position="start"
@@ -150,7 +155,7 @@ export default class AccountMenu extends Component {
         id="search-accounts"
         placeholder={this.context.t('searchAccounts')}
         type="text"
-        onChange={(e) => e.target.value.length > 1 ? this.setSearchQuery(e.target.value) : this.setSearchQuery("")}
+        onChange={handleChange}
         startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
