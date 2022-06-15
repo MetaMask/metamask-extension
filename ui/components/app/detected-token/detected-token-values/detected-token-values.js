@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '../../../ui/box';
@@ -13,32 +13,44 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 
-const DetectedTokenValues = ({ token }) => {
-  const [selectedTokens, setSelectedTokens] = useState(false);
+const DetectedTokenValues = ({
+  token,
+  handleTokenSelection,
+  tokensListDetected,
+}) => {
+  const [tokenSelection, setTokenSelection] = useState(() => {
+    return tokensListDetected[token.address]?.selected;
+  });
+
   const { tokensWithBalances } = useTokenTracker([token]);
-  const balanceToRender = tokensWithBalances[0]?.string;
-  const balance = tokensWithBalances[0]?.balance;
+  const balanceString = tokensWithBalances[0]?.string;
   const formattedFiatBalance = useTokenFiatAmount(
     token.address,
-    balanceToRender,
+    balanceString,
     token.symbol,
   );
+
+  useEffect(() => {
+    setTokenSelection(tokensListDetected[token.address]?.selected);
+  }, [tokensListDetected, token.address, tokenSelection, setTokenSelection]);
+
+  const handleCheckBoxSelection = () => {
+    setTokenSelection(!tokenSelection);
+    handleTokenSelection(token);
+  };
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-values">
       <Box marginBottom={1}>
         <Typography variant={TYPOGRAPHY.H4}>
-          {`${balance || '0'} ${token.symbol}`}
+          {`${balanceString || '0'} ${token.symbol}`}
         </Typography>
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
           {formattedFiatBalance || '$0'}
         </Typography>
       </Box>
       <Box className="detected-token-values__checkbox">
-        <CheckBox
-          checked={selectedTokens}
-          onClick={() => setSelectedTokens((checked) => !checked)}
-        />
+        <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} />
       </Box>
     </Box>
   );
@@ -52,6 +64,8 @@ DetectedTokenValues.propTypes = {
     iconUrl: PropTypes.string,
     aggregators: PropTypes.array,
   }),
+  handleTokenSelection: PropTypes.func.isRequired,
+  tokensListDetected: PropTypes.object,
 };
 
 export default DetectedTokenValues;

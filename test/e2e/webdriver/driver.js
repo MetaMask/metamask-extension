@@ -15,7 +15,9 @@ function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
-    await element.clear();
+    await element.sendKeys(
+      Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
+    );
     await element.sendKeys(input);
   };
   element.waitForElementState = async (state, timeout) => {
@@ -54,6 +56,9 @@ class Driver {
       BACK_SPACE: '\uE003',
       ENTER: '\uE007',
       SPACE: '\uE00D',
+      CONTROL: '\uE009',
+      COMMAND: '\uE03D',
+      MODIFIER: process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL,
     };
   }
 
@@ -275,9 +280,7 @@ class Driver {
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
-    const modifierKey =
-      process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL;
-    await this.fill(element, Key.chord(modifierKey, 'v'));
+    await this.fill(element, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
@@ -302,6 +305,10 @@ class Driver {
 
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
+  }
+
+  async switchToFrame(element) {
+    await this.driver.switchTo().frame(element);
   }
 
   async getAllWindowHandles() {

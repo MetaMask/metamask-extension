@@ -38,7 +38,7 @@ export const mapStateToProps = (state) => {
   const {
     showFiatInTestnets,
     showTestNetworks,
-    autoLockTimeLimit,
+    autoLockTimeLimit = 0,
   } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);

@@ -6,6 +6,7 @@ const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
+const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { ensureXServerIsRunning } = require('./x-server');
 
@@ -27,6 +28,7 @@ async function withFixtures(options, testSuite) {
     title,
     failOnConsoleError = true,
     dappPath = undefined,
+    dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
@@ -38,6 +40,7 @@ async function withFixtures(options, testSuite) {
   let secondaryGanacheServer;
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
+  const phishingPageServer = new PhishingWarningPageServer();
 
   let webDriver;
   let failed = false;
@@ -55,14 +58,15 @@ async function withFixtures(options, testSuite) {
     }
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
+    await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
       }
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath) {
-          dappDirectory = path.resolve(__dirname, dappPath);
+        if (dappPath || (dappPaths && dappPaths[i])) {
+          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
         } else {
           dappDirectory = path.resolve(
             __dirname,
@@ -145,6 +149,9 @@ async function withFixtures(options, testSuite) {
             });
           }
         }
+      }
+      if (phishingPageServer.isRunning()) {
+        await phishingPageServer.quit();
       }
       await mockServer.stop();
     }
@@ -260,6 +267,47 @@ const completeImportSRPOnboardingFlow = async (
   }
 };
 
+const completeImportSRPOnboardingFlowWordByWord = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  // clicks the continue button on the welcome screen
+  await driver.findElement('.welcome-page__header');
+  await driver.clickElement({
+    text: enLocaleMessages.getStarted.message,
+    tag: 'button',
+  });
+
+  // clicks the "Import Wallet" option
+  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
+
+  // clicks the "No thanks" option on the metametrics opt-in screen
+  await driver.clickElement('.btn-secondary');
+
+  const words = seedPhrase.split(' ');
+  for (const word of words) {
+    await driver.pasteIntoField(
+      `[data-testid="import-srp__srp-word-${words.indexOf(word)}"]`,
+      word,
+    );
+  }
+
+  await driver.fill('#password', password);
+  await driver.fill('#confirm-password', password);
+
+  await driver.clickElement('[data-testid="create-new-vault__terms-checkbox"]');
+
+  await driver.clickElement({ text: 'Import', tag: 'button' });
+
+  // clicks through the success screen
+  await driver.findElement({ text: 'Congratulations', tag: 'div' });
+  await driver.clickElement({
+    text: enLocaleMessages.endOfFlowMessage10.message,
+    tag: 'button',
+  });
+};
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -270,4 +318,5 @@ module.exports = {
   withFixtures,
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
+  completeImportSRPOnboardingFlowWordByWord,
 };

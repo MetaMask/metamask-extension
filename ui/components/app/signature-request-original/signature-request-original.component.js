@@ -13,6 +13,7 @@ import AccountListItem from '../account-list-item';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
+import SiteOrigin from '../../ui/site-origin';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -38,6 +39,9 @@ export default class SignatureRequestOriginal extends Component {
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
     nativeCurrency: PropTypes.string.isRequired,
+    messagesCount: PropTypes.number,
+    showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
+    cancelAll: PropTypes.func.isRequired,
   };
 
   state = {
@@ -145,9 +149,10 @@ export default class SignatureRequestOriginal extends Component {
             size={24}
           />
         ) : null}
-        <div className="request-signature__origin">
-          {txData.msgParams.origin}
-        </div>
+        <SiteOrigin
+          className="request-signature__origin"
+          siteOrigin={txData.msgParams.origin}
+        />
       </div>
     );
   };
@@ -224,11 +229,11 @@ export default class SignatureRequestOriginal extends Component {
               onClick={() => {
                 global.platform.openTab({
                   url:
-                    'https://metamask.zendesk.com/hc/en-us/articles/360015488751',
+                    'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
                 });
               }}
             >
-              {this.context.t('learnMore')}
+              {this.context.t('learnMoreUpperCase')}
             </span>
           ) : null}
         </div>
@@ -315,7 +320,31 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
+  handleCancelAll = () => {
+    const {
+      cancelAll,
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      showRejectTransactionsConfirmationModal,
+      messagesCount,
+    } = this.props;
+    const unapprovedTxCount = messagesCount;
+
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount,
+      onSubmit: async () => {
+        await cancelAll();
+        clearConfirmTransaction();
+        history.push(mostRecentOverviewPage);
+      },
+    });
+  };
+
   render = () => {
+    const { messagesCount } = this.props;
+    const { t } = this.context;
+    const rejectNText = t('rejectTxsN', [messagesCount]);
     return (
       <div className="request-signature__container">
         {this.renderHeader()}
@@ -326,6 +355,15 @@ export default class SignatureRequestOriginal extends Component {
           </div>
         ) : null}
         {this.renderFooter()}
+        {messagesCount > 1 ? (
+          <Button
+            type="link"
+            className="request-signature__container__reject"
+            onClick={() => this.handleCancelAll()}
+          >
+            {rejectNText}
+          </Button>
+        ) : null}
       </div>
     );
   };

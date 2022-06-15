@@ -16,8 +16,6 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    max-width: 600px;
-    max-height: 750px;
   }
 
   &__link-text {
@@ -25,15 +23,13 @@
   }
 
   &__form {
-    padding: 0 24px;
+    @media screen and (min-width: $break-large) {
+      max-width: 320px;
+    }
 
     &--password-button {
       background-color: transparent;
       color: var(--color-text-default);
-    }
-
-    &--submit-button {
-      padding: 20px;
     }
 
     &--checkmark {
@@ -48,6 +44,7 @@
 
     .form-field__input {
       height: 50px;
+      width: 100%;
     }
   }
 }

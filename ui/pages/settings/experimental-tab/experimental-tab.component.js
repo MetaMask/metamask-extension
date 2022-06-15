@@ -215,9 +215,9 @@ export default class ExperimentalTab extends PureComponent {
               onToggle={(value) => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable OpenSea',
+                  event: 'Enable/Disable Advanced Gas UI',
                   properties: {
-                    action: 'Enabled/Disable OpenSea',
+                    action: 'Enable/Disable Advanced Gas UI',
                     legacy_event: true,
                   },
                 });
@@ -263,7 +263,7 @@ export default class ExperimentalTab extends PureComponent {
     };
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">
