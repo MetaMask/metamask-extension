@@ -2878,6 +2878,13 @@
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
+  "setApprovalForAll": {
+    "message": "Set Approval for All"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Approve $1 with no spend limit",
+    "description": "The token symbol that is being approved"
+  },
   "settings": {
     "message": "Settings"
   },
