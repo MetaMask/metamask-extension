@@ -11193,14 +11193,7 @@ eth-method-registry@^2.0.0:
   dependencies:
     ethjs "^0.4.0"
 
-eth-phishing-detect@^1.1.16:
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.1.16.tgz#637158d5774819e1a861f6d169e6d77d076a47fd"
-  integrity sha512-/o9arK5qFOKVdfZK9hJVAQP0eKXjAvImIKNBMfF9Nj1HGicD3wfsVuXDu1OHrxuEi6+4kYtD9wyAn/3G7g7VrA==
-  dependencies:
-    fast-levenshtein "^2.0.6"
-
-eth-phishing-detect@^1.2.0:
+eth-phishing-detect@^1.1.16, eth-phishing-detect@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eth-phishing-detect/-/eth-phishing-detect-1.2.0.tgz#11b357776b2d1b98a9ac594a1343e5184fc26bf0"
   integrity sha512-+M7D4dhu5tkSA9b5eiBwDeJCjwy+7Lv49nuTEw8fNZIZUAVZC3d2XHatBq1MOW7J8kxNGbBdgBuIf65opI7Tkg==
