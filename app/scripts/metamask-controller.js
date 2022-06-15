@@ -593,6 +593,7 @@ export default class MetamaskController extends EventEmitter {
           getAllAccounts: this.keyringController.getAccounts.bind(
             this.keyringController,
           ),
+          getWalletPreferredCurrency: this.getWalletPreferredCurrency.bind(this),
           captureKeyringTypesWithMissingIdentities: (
             identities = {},
             accounts = [],
@@ -2641,11 +2642,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string[]>} The wallet selected currency
    */
 
-  async getPreferredCurrency() {
-    console.log(this.currencyRateController.store, 'CCC');
+  async getWalletPreferredCurrency() {
     const { currentCurrency } = this.currencyRateController.state;
-
-    // console.log(currentCurrency, 'CURRENTTT')
 
     return currentCurrency;
   }
@@ -3563,7 +3561,6 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-        getPreferredCurrency: this.getPreferredCurrency.bind(this),
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),

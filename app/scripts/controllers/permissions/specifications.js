@@ -87,6 +87,9 @@ export const getPermissionSpecifications = ({
   getAllAccounts,
   getIdentities,
   captureKeyringTypesWithMissingIdentities,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getWalletPreferredCurrency,
+  ///: END:ONLY_INCLUDE_IN
 }) => {
   return {
     [PermissionKeys.eth_accounts]: {
@@ -162,6 +165,28 @@ export const getPermissionSpecifications = ({
         }
       },
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    [PermissionKeys.wallet_preferredCurrency]: {
+      permissionType: PermissionType.RestrictedMethod,
+      targetKey: PermissionKeys.wallet_preferredCurrency,
+
+      factory: (permissionOptions) => {
+        return constructPermission({
+          ...permissionOptions,
+        });
+      },
+
+      methodImplementation: async () => {
+        const walletCurrency = await getWalletPreferredCurrency();
+        if (!walletCurrency) {
+          throw new Error(
+            'wallet_preferredCurrency error: We couldnt retrieve a valid currency',
+          );
+        }
+        return walletCurrency;
+      },
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
