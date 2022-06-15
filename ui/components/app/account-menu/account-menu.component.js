@@ -50,13 +50,13 @@ export function AccountMenuItem(props) {
       {children}
     </div>
   ) : (
-    <div className={itemClassName} onClick={onClick}>
+    <button className={itemClassName} onClick={onClick}>
       {icon ? <div className="account-menu__item__icon">{icon}</div> : null}
       {text ? <div className="account-menu__item__text">{text}</div> : null}
       {subText ? (
         <div className="account-menu__item__subtext">{subText}</div>
       ) : null}
-    </div>
+    </button>
   );
 }
 
@@ -200,7 +200,7 @@ export default class AccountMenu extends Component {
       const iconAndNameForOpenSubject = addressSubjects[originOfCurrentTab];
 
       return (
-        <div
+        <button
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
             this.context.trackEvent({
@@ -239,7 +239,7 @@ export default class AccountMenu extends Component {
               />
             </div>
           ) : null}
-        </div>
+        </button>
       );
     });
   }
