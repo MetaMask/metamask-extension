@@ -365,6 +365,24 @@ function createScriptTasks({
   }
 }
 
+const postProcessServiceWorker = (
+  mv3BrowserPlatforms,
+  fileList,
+  applyLavaMoat,
+) => {
+  mv3BrowserPlatforms.forEach((browser) => {
+    const appInitFile = `./dist/${browser}/app-init.js`;
+    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+    const fileOutput = fileContent
+      .replace('/** FILE NAMES */', fileList)
+      .replace(
+        'const applyLavaMoat = true;',
+        `const applyLavaMoat = ${applyLavaMoat};`,
+      );
+    writeFileSync(appInitFile, fileOutput);
+  });
+};
+
 // Function generates app-init.js for browsers chrome, brave and opera.
 // It dynamically injects list of files generated in the build.
 async function bundleMV3AppInitialiser({
@@ -401,17 +419,17 @@ async function bundleMV3AppInitialiser({
     shouldLintFenceFiles,
   })();
 
-  mv3BrowserPlatforms.forEach((browser) => {
-    const appInitFile = `./dist/${browser}/app-init.js`;
-    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    const fileOutput = fileContent
-      .replace('/** FILE NAMES */', fileList)
-      .replace(
-        'const applyLavaMoat = true;',
-        `const applyLavaMoat = ${applyLavaMoat};`,
-      );
-    writeFileSync(appInitFile, fileOutput);
+  postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+
+  let prevChromeFileContent;
+  watch('./dist/chrome/app-init.js', () => {
+    const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
+    if (chromeFileContent !== prevChromeFileContent) {
+      prevChromeFileContent = chromeFileContent;
+      postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+    }
   });
+
   console.log(`Bundle end: service worker app-init.js`);
 }
 

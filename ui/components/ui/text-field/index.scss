@@ -2,3 +2,9 @@
 .MuiInputBase-input {
   color: var(--color-text-default) !important;
 }
+
+.MuiFormHelperText-root.Mui-error {
+  @include H7;
+
+  color: var(--color-error-default) !important;
+}

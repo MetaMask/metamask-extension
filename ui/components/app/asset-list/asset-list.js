@@ -7,7 +7,7 @@ import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
-  getCurrentAccountWithSendEtherInfo,
+  getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
@@ -33,9 +33,7 @@ const AssetList = ({ onClickAsset }) => {
 
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
-  const selectedAccountBalance = useSelector(
-    (state) => getCurrentAccountWithSendEtherInfo(state).balance,
-  );
+  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const trackEvent = useContext(MetaMetricsContext);

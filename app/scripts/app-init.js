@@ -48,8 +48,3 @@ function importAllScripts() {
 
 // Placing script import call here ensures that scripts are inported each time service worker is activated.
 importAllScripts();
-
-/**
- * An open issue is changes in this file break during hot reloading. Reason is dynamic injection of "FILE NAMES".
- * Developers need to restart local server if they change this file.
- */
