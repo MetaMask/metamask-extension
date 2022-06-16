@@ -250,7 +250,7 @@ const AddNetwork = () => {
                     type="inline"
                     className="add-network__add-button"
                     onClick={async () => {
-                      await dispatch(requestUserApproval(item));
+                      await dispatch(requestUserApproval(item, true));
                     }}
                   >
                     {t('add')}

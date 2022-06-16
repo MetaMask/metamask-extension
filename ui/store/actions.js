@@ -3780,10 +3780,13 @@ export function addCustomNetwork(customRpc) {
   };
 }
 
-export function requestUserApproval(customRpc) {
+export function requestUserApproval(customRpc, originIsMetaMask) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.requestUserApproval(customRpc);
+      await promisifiedBackground.requestUserApproval(
+        customRpc,
+        originIsMetaMask,
+      );
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));

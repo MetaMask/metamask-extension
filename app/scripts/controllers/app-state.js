@@ -37,7 +37,6 @@ export default class AppStateController extends EventEmitter {
       ...initState,
       qrHardware: {},
       collectiblesDropdownState: {},
-      customNetworkListEnabled: false,
     });
     this.timer = null;
 
@@ -293,17 +292,6 @@ export default class AppStateController extends EventEmitter {
   updateCollectibleDropDownState(collectiblesDropdownState) {
     this.store.updateState({
       collectiblesDropdownState,
-    });
-  }
-
-  /**
-   * A setter for the `customNetworkListEnabled` property
-   *
-   * @param customNetworkListEnabled
-   */
-  setCustomNetworkListEnabled(customNetworkListEnabled) {
-    this.store.updateState({
-      customNetworkListEnabled,
     });
   }
 }

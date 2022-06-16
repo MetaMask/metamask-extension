@@ -1610,7 +1610,9 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-
+      setCustomNetworkListEnabled: preferencesController.setCustomNetworkListEnabled.bind(
+        preferencesController,
+      ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -1675,9 +1677,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController,
       ),
       updateCollectibleDropDownState: appStateController.updateCollectibleDropDownState.bind(
-        appStateController,
-      ),
-      setCustomNetworkListEnabled: appStateController.setCustomNetworkListEnabled.bind(
         appStateController,
       ),
       // EnsController
@@ -2030,27 +2029,31 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  requestUserApproval(customRpc) {
-    this.approvalController.addAndShowApprovalRequest({
-      origin: 'metamask',
-      type: 'wallet_addEthereumChain',
-      requestData: {
-        chainId: customRpc.chainId,
-        blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
-        chainName: customRpc.nickname,
-        rpcUrl: customRpc.rpcUrl,
-        ticker: customRpc.ticker,
-        imageUrl: customRpc.rpcPrefs.imageUrl,
-      },
-    });
+  async requestUserApproval(customRpc, originIsMetaMask) {
+    try {
+      await this.approvalController.addAndShowApprovalRequest({
+        origin: 'metamask',
+        type: 'wallet_addEthereumChain',
+        requestData: {
+          chainId: customRpc.chainId,
+          blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
+          chainName: customRpc.nickname,
+          rpcUrl: customRpc.rpcUrl,
+          ticker: customRpc.ticker,
+          imageUrl: customRpc.rpcPrefs.imageUrl,
+        },
+      });
+    } catch (error) {
+      if (
+        !(originIsMetaMask && error.message === 'User rejected the request.')
+      ) {
+        throw error;
+      }
+    }
   }
 
   async addCustomNetwork(customRpc) {
-    const { chainId } = customRpc;
-    const { chainName } = customRpc;
-    const { rpcUrl } = customRpc;
-    const { ticker } = customRpc;
-    const { blockExplorerUrl } = customRpc;
+    const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
     await this.preferencesController.addToFrequentRpcList(
       rpcUrl,
