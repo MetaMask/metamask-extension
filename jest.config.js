@@ -11,8 +11,8 @@ module.exports = {
     global: {
       branches: 44,
       functions: 42,
-      lines: 52.54,
-      statements: 52.53,
+      lines: 52,
+      statements: 52,
     },
     './app/scripts/controllers/permissions/**/*.js': {
       branches: 100,
