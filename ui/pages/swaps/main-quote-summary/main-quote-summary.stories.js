@@ -1,13 +1,55 @@
 import React from 'react';
-import { text, number } from '@storybook/addon-knobs';
+import README from './README.mdx';
 import MainQuoteSummary from './main-quote-summary';
 
 export default {
   title: 'Pages/Swaps/MainQuoteSummary',
   id: __filename,
+  component: MainQuoteSummary,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    sourceValue: {
+      control: 'text',
+    },
+    sourceDecimals: {
+      control: 'number',
+    },
+    sourceSymbol: {
+      control: 'text',
+    },
+    destinationValue: {
+      control: 'text',
+    },
+    destinationDecimals: {
+      control: 'number',
+    },
+    destinationSymbol: {
+      control: 'text',
+    },
+    sourceIconUrl: {
+      control: 'text',
+    },
+    destinationIconUrl: {
+      control: 'text',
+    },
+  },
+  args: {
+    sourceValue: '2000000000000000000',
+    sourceDecimals: 18,
+    sourceSymbol: 'ETH',
+    destinationValue: '200000000000000000',
+    destinationDecimals: 18,
+    destinationSymbol: 'ABC',
+    sourceIconUrl: '.storybook/images/metamark.svg',
+    destinationIconUrl: '.storybook/images/sai.svg',
+  },
 };
 
-export const DefaultStory = () => {
+export const DefaultStory = (args) => {
   return (
     <div
       style={{
@@ -17,16 +59,7 @@ export const DefaultStory = () => {
         padding: '24px',
       }}
     >
-      <MainQuoteSummary
-        sourceValue={text('sourceValue', '2000000000000000000')}
-        sourceDecimals={number('sourceDecimals', 18)}
-        sourceSymbol={text('sourceSymbol', 'ETH')}
-        destinationValue={text('destinationValue', '200000000000000000')}
-        destinationDecimals={number('destinationDecimals', 18)}
-        destinationSymbol={text('destinationSymbol', 'ABC')}
-        sourceIconUrl=".storybook/images/metamark.svg"
-        destinationIconUrl=".storybook/images/sai.svg"
-      />
+      <MainQuoteSummary {...args} />
     </div>
   );
 };

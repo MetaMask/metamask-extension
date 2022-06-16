@@ -62,6 +62,13 @@
     "message": "$1 はこのアセットにアクセスし、使用できます",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "秘密のリカバリーフレーズでウォレットにアクセス"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMaskはユーザーのパスワードを復元できません。代わりに秘密のリカバリーフレーズを使用して所有者を確認し、ウォレットを復元して新しいパスワードを設定します。まずはじめに、ウォレットの作成時に提供された秘密のリカバリーフレーズを入力してください。$1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "カメラにアクセス中..."
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "ネットワークを追加"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "このネットワーク接続はサードパーティに依存しているため、信頼性が低かったり、サードパーティによるアクティビティの追跡が可能になる可能性があります。$1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "推奨されたトークンを追加"
@@ -400,6 +411,14 @@
     "message": "$1 を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Coinbase Pay で $1 を購入",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Coinbase アカウントで簡単に仮想通貨を購入または送金できます。",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "MoonPay で $1 を購入",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "続行"
+  },
+  "continueToCoinbasePay": {
+    "message": "Coinbase Pay に進む"
   },
   "continueToMoonPay": {
     "message": "MoonPay に進む"
@@ -1225,6 +1247,10 @@
     "message": "Flask API はすべて実験的なものです。これらは通知なしに変更または削除される可能性があり、安定した MetaMask に移行することなく永久に Flask に残る可能性もあります。自己責任でご使用ください。",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Flask の使用中は、通常の MetaMask 拡張機能を無効にしてください。",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "リスクを受け入れる",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "非表示"
   },
+  "hideFullTransactionDetails": {
+    "message": "完全なトランザクション情報を非表示"
+  },
   "hideSeedPhrase": {
     "message": "シードフレーズを非表示"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "履歴"
+  },
+  "ignoreAll": {
+    "message": "すべて無視"
+  },
+  "ignoreTokenWarning": {
+    "message": "トークンを非表示にするとウォレットに表示されなくなりますが、検索して追加することはできます。"
   },
   "import": {
     "message": "インポート",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "ウォレットをインポート"
+  },
+  "importWithCount": {
+    "message": "$1 をインポート",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "シークレットリカバリーフレーズを使用して既存のウォレットをインポート"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "水平矢印"
+  },
+  "lightTheme": {
+    "message": "ライト"
   },
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "MetaMaskを初めてご利用の場合"
   },
+  "newTokensImportedMessage": {
+    "message": "$1 をインポートしました。",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "トークンがインポートされました"
+  },
   "newTotal": {
     "message": "新しい総額"
   },
@@ -2082,6 +2131,9 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
+  },
+  "notifications": {
+    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "設定に移動",
@@ -2203,6 +2255,19 @@
   "notifications9Title": {
     "message": "👓 トランザクションが読みやすくなりました。"
   },
+  "notificationsEmptyText": {
+    "message": "ここに表示する内容はありません。"
+  },
+  "notificationsHeader": {
+    "message": "通知"
+  },
+  "notificationsInfos": {
+    "message": "$2 から $1 ",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "すべて既読にする"
+  },
   "numberOfNewTokensDetected": {
     "message": "$1 の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "起点"
   },
+  "osTheme": {
+    "message": "システム"
+  },
+  "padlock": {
+    "message": "南京錠"
+  },
   "parameters": {
     "message": "パラメーター"
   },
@@ -2371,6 +2442,10 @@
     "message": "アドレス、アカウント残高、アクティビティを表示してトランザクションを開始",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "無期限で実行。",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "「$1」アカウントとアセットをコントロールします。",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "他 + $1",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "人気のカスタムネットワーク"
   },
   "preferredLedgerConnectionType": {
     "message": "優先Ledger接続タイプ",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "続行する前に、正しい秘密のリカバリーフレーズを使用していることを確認してください。これは元に戻せません。"
+  },
+  "restartMetamask": {
+    "message": "MetaMask を再起動"
   },
   "restore": {
     "message": "復元"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "送金額"
+  },
+  "sendBugReport": {
+    "message": "バグレポートをお送りください。"
   },
   "sendSpecifiedTokens": {
     "message": "$1を送金",
@@ -3031,6 +3115,9 @@
     "message": "コンピューターにウォレットを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。ハードウェアウォレットデバイスの使い方の詳細については、$1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "まだこのメッセージが表示されますか？"
+  },
   "storePhrase": {
     "message": "このフレーズを1Passwordのようなパスワードマネージャーに保存します。"
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "スマートトランザクションが利用できなくても、トークンのスワップは可能です。"
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "スワップを非公開で送信中..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "スワップを公開で送信中..."
+  },
   "stxSubDescription": {
     "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "$1 が利用可能になりました。",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "スワップ完了まで残り <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "送信前にトランザクションのシミュレーションを行い、トランザクションのコストと失敗率を減らします。"
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "スリッページは0以上でなければなりません。"
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "流動性ソース"
   },
@@ -3585,6 +3686,10 @@
   "tokenSymbol": {
     "message": "トークンシンボル"
   },
+  "tokensFoundTitle": {
+    "message": "$1 種類の新しいトークンが見つかりました",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "理解しました"
   },
@@ -3706,6 +3811,9 @@
     "message": "$1に接続できませんでした。$2を確認してから、もう一度実行してください。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
+  },
   "troubleTokenBalances": {
     "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "MetaMaskパスワードを入力してください"
+  },
+  "typeYourSRP": {
+    "message": "秘密のリカバリーフレーズを入力してください"
   },
   "u2f": {
     "message": "U2F",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "ウォレットが作成されました"
+  },
+  "warning": {
+    "message": "警告"
   },
   "weak": {
     "message": "弱"

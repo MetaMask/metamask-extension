@@ -62,6 +62,13 @@
     "message": "$1 может получить доступ к этому активу и потратить его",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Получайте доступ к кошельку с помощью секретной фразы для восстановления"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask не может восстановить ваш пароль. Мы используем вашу cекретную фразу для восстановления, чтобы подтвердить ваше право собственности, восстановить ваш кошелек и установить новый пароль. Сначала введите секретную фразу для восстановления, которую вы получили при создании кошелька. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
   },
@@ -152,6 +159,10 @@
   },
   "addNetwork": {
     "message": "Добавить сеть"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Это сетевое подключение зависит от третьих сторон. Оно может быть менее надежным или позволять третьим лицам отслеживать активность. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Добавить рекомендованные токены"
@@ -400,6 +411,14 @@
     "message": "Купить $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Купите $1 с помощью Coinbase Pay",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Вы можете легко купить или перевести криптовалюту с помощью своего счета Coinbase.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "Купить $1 с помощью MoonPay",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -605,6 +624,9 @@
   },
   "continue": {
     "message": "Продолжить"
+  },
+  "continueToCoinbasePay": {
+    "message": "Перейти на Coinbase Pay"
   },
   "continueToMoonPay": {
     "message": "Перейти в MoonPay"
@@ -1225,6 +1247,10 @@
     "message": "Все API Flask являются экспериментальными. Они могут быть изменены или удалены без предварительного уведомления или могут оставаться во Flask на неопределенный срок без переноса в стабильную версию MetaMask. Используйте их на свой страх и риск.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Обязательно отключите свое обычное расширение MetaMask при использовании Flask.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Я принимаю риски",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1416,6 +1442,9 @@
   "hide": {
     "message": "Скрыть"
   },
+  "hideFullTransactionDetails": {
+    "message": "Скрыть полную информацию о транзакции"
+  },
   "hideSeedPhrase": {
     "message": "Скрыть сид-фразу"
   },
@@ -1444,6 +1473,12 @@
   },
   "history": {
     "message": "История"
+  },
+  "ignoreAll": {
+    "message": "Игнорировать все"
+  },
+  "ignoreTokenWarning": {
+    "message": "Если вы скроете токены, они не будут отображаться в вашем кошельке. Однако вы все равно можете добавить их, выполнив поиск по ним."
   },
   "import": {
     "message": "Импорт",
@@ -1493,6 +1528,10 @@
   },
   "importWallet": {
     "message": "Импорт кошелька"
+  },
+  "importWithCount": {
+    "message": "Импортировать $1",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "Импортируйте существующий кошелек, используя начальную секретную фразу восстановления"
@@ -1687,6 +1726,9 @@
   },
   "levelArrow": {
     "message": "стрелка «уровень»"
+  },
+  "lightTheme": {
+    "message": "Светлая"
   },
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
@@ -2001,6 +2043,13 @@
   "newToMetaMask": {
     "message": "Впервые в MetaMask?"
   },
+  "newTokensImportedMessage": {
+    "message": "Вы успешно импортировали $1.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Токен импортирован"
+  },
   "newTotal": {
     "message": "Новая общая сумма"
   },
@@ -2082,6 +2131,9 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
+  },
+  "notifications": {
+    "message": "Уведомления"
   },
   "notifications10ActionText": {
     "message": "Смотреть в настройках",
@@ -2203,6 +2255,19 @@
   "notifications9Title": {
     "message": "👓 Мы упрощаем просмотр реквизитов транзакций."
   },
+  "notificationsEmptyText": {
+    "message": "Здесь не на что смотреть."
+  },
+  "notificationsHeader": {
+    "message": "Уведомления"
+  },
+  "notificationsInfos": {
+    "message": "$1 из $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Отметить все как прочитанные"
+  },
   "numberOfNewTokensDetected": {
     "message": "$1 новых токена(-ов) найдены в этом аккаунте",
     "description": "$1 is the number of new tokens detected"
@@ -2301,6 +2366,12 @@
   "origin": {
     "message": "Источник"
   },
+  "osTheme": {
+    "message": "Системная"
+  },
+  "padlock": {
+    "message": "Замок"
+  },
   "parameters": {
     "message": "Параметры"
   },
@@ -2371,6 +2442,10 @@
     "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "Выполнять бесконечно.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "Контролируйте свои счета и активы «$1».",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2399,6 +2474,9 @@
   "plusXMore": {
     "message": "+ еще $1",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Популярные пользовательские сети"
   },
   "preferredLedgerConnectionType": {
     "message": "Предпочтительный тип подключения к леджеру",
@@ -2573,6 +2651,9 @@
   },
   "resetWalletWarning": {
     "message": "Прежде чем продолжить, убедитесь, что вы используете правильную секретную фразу восстановления. Вы не сможете отменить это."
+  },
+  "restartMetamask": {
+    "message": "Перезапустить MetaMask"
   },
   "restore": {
     "message": "Восстановить"
@@ -2757,6 +2838,9 @@
   },
   "sendAmount": {
     "message": "Сумма для отправки"
+  },
+  "sendBugReport": {
+    "message": "Отправьте нам сообщение об ошибке."
   },
   "sendSpecifiedTokens": {
     "message": "Отправить $1",
@@ -3031,6 +3115,9 @@
     "message": "Подключите кошелек напрямую к компьютеру. Разблокируйте леджер и откройте приложение Ethereum. Для получения дополнительной информации об использовании аппаратного кошелька $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "Все еще получаете это сообщение?"
+  },
   "storePhrase": {
     "message": "Сохраните эту фразу в диспетчере паролей, например, в 1Password."
   },
@@ -3083,6 +3170,12 @@
   "stxFallbackUnavailable": {
     "message": "Вы по-прежнему можете обменивать свои токены, даже если смарт-транзакции недоступны."
   },
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Приватная отправка вашей операции обмена..."
+  },
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Публичная отправка вашей операции обмена..."
+  },
   "stxSubDescription": {
     "message": "* Смарт-транзакции попытаются несколько раз отправить вашу транзакцию в конфиденциальном порядке. Если все попытки не увенчаются успехом, транзакция будет показана публично, чтобы гарантировать успешное завершение вашего обмена."
   },
@@ -3092,6 +3185,10 @@
   "stxSuccessDescription": {
     "message": "Ваши $1 уже доступны.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Обмен завершится через <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
@@ -3352,6 +3449,10 @@
   "swapSlippageNegative": {
     "message": "Проскальзывание должно быть больше нуля или равно нулю"
   },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Источник ликвидности"
   },
@@ -3585,6 +3686,10 @@
   "tokenSymbol": {
     "message": "Символ токена"
   },
+  "tokensFoundTitle": {
+    "message": "Найдены $1 новых токена(-ов)",
+    "description": "$1 is the number of new tokens detected"
+  },
   "tooltipApproveButton": {
     "message": "Я понимаю"
   },
@@ -3706,6 +3811,9 @@
     "message": "Не удалось подключиться к вашему $1, попробуйте проверить $2 и повторите попытку.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
+  },
   "troubleTokenBalances": {
     "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",
     "description": "Followed by a link (here) to view token balances"
@@ -3727,6 +3835,9 @@
   },
   "typePassword": {
     "message": "Введите свой пароль MetaMask"
+  },
+  "typeYourSRP": {
+    "message": "Введите секретную фразу для восстановления"
   },
   "u2f": {
     "message": "U2F:",
@@ -3886,6 +3997,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Кошелек создан"
+  },
+  "warning": {
+    "message": "Предупреждение"
   },
   "weak": {
     "message": "Слабый"
