@@ -593,9 +593,11 @@ export default class MetamaskController extends EventEmitter {
           getAllAccounts: this.keyringController.getAccounts.bind(
             this.keyringController,
           ),
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           getWalletPreferredCurrency: this.getWalletPreferredCurrency.bind(
             this,
           ),
+          ///: END:ONLY_INCLUDE_IN
           captureKeyringTypesWithMissingIdentities: (
             identities = {},
             accounts = [],
@@ -2638,6 +2640,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * Gets the current MetaMask preference selected currency (FIAT)
    *
@@ -2649,6 +2652,7 @@ export default class MetamaskController extends EventEmitter {
 
     return currentCurrency;
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Stops exposing the account with the specified address to all third parties.

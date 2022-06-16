@@ -19,6 +19,7 @@ describe('RestrictedMethods', () => {
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
         'eth_accounts',
+        'wallet_preferredCurrency',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
           (targetKey) => !ExcludedSnapPermissions.has(targetKey),
         ),

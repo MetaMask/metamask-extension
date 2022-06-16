@@ -47,7 +47,7 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  GET_PREFERRED_CURRENCY: RestrictedMethods.wallet_preferredCurrency,
+  GET_WALLET_CURRENCY: RestrictedMethods.wallet_preferredCurrency,
   SNAP_CONFIRM: RestrictedMethods.snap_confirm,
   ///: END:ONLY_INCLUDE_IN
 };
