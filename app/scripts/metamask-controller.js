@@ -593,7 +593,9 @@ export default class MetamaskController extends EventEmitter {
           getAllAccounts: this.keyringController.getAccounts.bind(
             this.keyringController,
           ),
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           getWalletLocale: this.getWalletLocale.bind(this),
+          ///: END:ONLY_INCLUDE_IN
           captureKeyringTypesWithMissingIdentities: (
             identities = {},
             accounts = [],
@@ -2635,7 +2637,7 @@ export default class MetamaskController extends EventEmitter {
       throw error;
     }
   }
-
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * Gets the default MM locale for the specified account
    *
@@ -2647,6 +2649,7 @@ export default class MetamaskController extends EventEmitter {
 
     return currentLocale;
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Stops exposing the account with the specified address to all third parties.
