@@ -43,8 +43,10 @@ export default function OnboardingMetametrics() {
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
 
+    const isInitiallyNotParticipating = !participateInMetaMetrics;
+
     try {
-      if (!participateInMetaMetrics) {
+      if (isInitiallyNotParticipating) {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
@@ -83,8 +85,11 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
 
+    const isInitiallyParticipatingOrNotSet =
+      participateInMetaMetrics === null || participateInMetaMetrics;
+
     try {
-      if (!participateInMetaMetrics) {
+      if (isInitiallyParticipatingOrNotSet) {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
