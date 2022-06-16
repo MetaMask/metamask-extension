@@ -12,6 +12,7 @@ import {
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
+import LedgerSVG from './ledger-svg';
 
 export default function HardwareConnectivityContent({
   deviceName,
@@ -45,7 +46,7 @@ export default function HardwareConnectivityContent({
           >
             {t('hardwareWalletConnectivityHelperHeading', [deviceName])}
           </Typography>
-          <img src="./images/ledger.svg" alt={deviceName} />
+          <LedgerSVG />
           <div className="hardware-connectivity-content-list-container">
             <ol>
               <li>{t('hardwareConnectivityLedgerInstructions1')}</li>
