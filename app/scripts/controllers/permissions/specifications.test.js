@@ -119,7 +119,7 @@ describe('PermissionController specifications', () => {
   describe('permission specifications', () => {
     it('getPermissionSpecifications returns the expected specifications object', () => {
       const permissionSpecifications = getPermissionSpecifications({});
-      expect(Object.keys(permissionSpecifications)).toHaveLength(1);
+      expect(Object.keys(permissionSpecifications)).toHaveLength(2);
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetKey,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
@@ -327,6 +327,86 @@ describe('PermissionController specifications', () => {
                 }),
               ).toThrow(/Invalid caveats./u);
             },
+          );
+        });
+      });
+    });
+
+    describe('wallet_preferredCurrency', () => {
+      describe('factory', () => {
+        it('constructs a valid wallet_preferredCurrency permission', () => {
+          const getIdentities = jest.fn();
+          const getAllAccounts = jest.fn();
+          const getWalletPreferredCurrency = jest.fn();
+          const { factory } = getPermissionSpecifications({
+            getIdentities,
+            getAllAccounts,
+            getWalletPreferredCurrency,
+          })[RestrictedMethods.wallet_preferredCurrency];
+
+          expect(
+            factory(
+              { invoker: 'foo.bar', target: 'wallet_preferredCurrency' },
+              { approvedAccounts: ['0x1'] },
+            ),
+          ).toStrictEqual({
+            caveats: null,
+            date: 1,
+            id: expect.any(String),
+            invoker: 'foo.bar',
+            parentCapability: 'wallet_preferredCurrency',
+          });
+        });
+      });
+
+      describe('methodImplementation', () => {
+        it('succesfully returns valid currency', async () => {
+          const getIdentities = jest.fn().mockImplementationOnce(() => {
+            return {
+              '0x2': {
+                lastSelected: 3,
+              },
+            };
+          });
+          const getAllAccounts = jest
+            .fn()
+            .mockImplementationOnce(() => ['0x1']);
+
+          const getWalletPreferredCurrency = jest
+            .fn()
+            .mockImplementationOnce(() => 'USD');
+
+          const { methodImplementation } = getPermissionSpecifications({
+            getIdentities,
+            getAllAccounts,
+            getWalletPreferredCurrency,
+          })[RestrictedMethods.wallet_preferredCurrency];
+
+          expect(await methodImplementation()).toStrictEqual('USD');
+        });
+
+        it('throws if there is not a valid currency', async () => {
+          const getIdentities = jest.fn().mockImplementationOnce(() => {
+            return {
+              '0x2': {
+                lastSelected: 3,
+              },
+            };
+          });
+          const getAllAccounts = jest
+            .fn()
+            .mockImplementationOnce(() => ['0x1']);
+
+          const getWalletPreferredCurrency = jest.fn();
+
+          const { methodImplementation } = getPermissionSpecifications({
+            getIdentities,
+            getAllAccounts,
+            getWalletPreferredCurrency,
+          })[RestrictedMethods.wallet_preferredCurrency];
+
+          await expect(() => methodImplementation()).rejects.toThrow(
+            'wallet_preferredCurrency error: We couldnt retrieve a valid currency',
           );
         });
       });
