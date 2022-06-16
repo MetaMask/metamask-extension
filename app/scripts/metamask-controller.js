@@ -630,7 +630,7 @@ export default class MetamaskController extends EventEmitter {
         ...this.getSnapPermissionSpecifications(),
         ...getSnapManageAccountSpecifications({
           getSnapKeyring: this.getSnapKeyring.bind(this),
-          saveKeyring: async (removedAddress) => {
+          saveSnapKeyring: async (removedAddress) => {
             if (removedAddress) {
               this.keyringController.emit('removedAccount', removedAddress);
             }

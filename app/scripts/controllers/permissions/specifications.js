@@ -168,7 +168,7 @@ export const getPermissionSpecifications = ({
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export const getSnapManageAccountSpecifications = ({
   getSnapKeyring,
-  saveKeyring,
+  saveSnapKeyring,
 }) => {
   return {
     [PermissionKeys.snap_manageAccounts]: {
@@ -212,7 +212,7 @@ export const getSnapManageAccountSpecifications = ({
               methodArgs[1],
             );
             if (created) {
-              await saveKeyring();
+              await saveSnapKeyring();
             }
             return created;
           }
@@ -225,7 +225,7 @@ export const getSnapManageAccountSpecifications = ({
               methodArgs[1],
             );
             if (updated) {
-              await saveKeyring();
+              await saveSnapKeyring();
             }
             return updated;
           }
@@ -234,7 +234,7 @@ export const getSnapManageAccountSpecifications = ({
             // NOTE: as it prunes empty keyrings and we don't want that behavior
             const address = keyring.deleteAccount(origin, publicKeyBuffer);
             if (address) {
-              await saveKeyring(address);
+              await saveSnapKeyring(address);
             }
             return address !== null;
           }
