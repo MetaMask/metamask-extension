@@ -166,82 +166,89 @@ export const getPermissionSpecifications = ({
 };
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export const getSnapManageAccountSpecifications = (
-  {
-    getSnapKeyring,
-    saveKeyring,
-  }) =>
-  {
-    return {
-      [PermissionKeys.snap_manageAccounts]: {
-        permissionType: PermissionType.RestrictedMethod,
-        targetKey: PermissionKeys.snap_manageAccounts,
-        allowedCaveats: null,
+export const getSnapManageAccountSpecifications = ({
+  getSnapKeyring,
+  saveKeyring,
+}) => {
+  return {
+    [PermissionKeys.snap_manageAccounts]: {
+      permissionType: PermissionType.RestrictedMethod,
+      targetKey: PermissionKeys.snap_manageAccounts,
+      allowedCaveats: null,
 
-        // factory: (permissionOptions, requestData) => {
-        //   // optional factory function for the permission goes here
-        // },
+      // factory: (permissionOptions, requestData) => {
+      //   // optional factory function for the permission goes here
+      // },
 
-        methodImplementation: async (args) => {
-          const { context, params } = args;
-          // FIXME[muji]: `origin` should be a stable identifier not snapId
-          const { origin } = context;
-          const keyring = await getSnapKeyring();
-          const methodAction = params[0];
-          const methodArgs = params[1]
+      methodImplementation: async (args) => {
+        const { context, params } = args;
+        // FIXME[muji]: `origin` should be a stable identifier not snapId
+        const { origin } = context;
+        const keyring = await getSnapKeyring();
+        const methodAction = params[0];
+        const methodArgs = params[1];
 
-          // Create and update args is a two-value tuple whereas
-          // read and delete just expect a single parameter
-          const publicKeyBuffer =
-            Buffer.from(
-              Array.isArray(methodArgs) ? methodArgs[0] : methodArgs,
-              "hex");
+        // Create and update args is a two-value tuple whereas
+        // read and delete just expect a single parameter
+        const publicKeyBuffer = Buffer.from(
+          Array.isArray(methodArgs) ? methodArgs[0] : methodArgs,
+          'hex',
+        );
 
-          // Expecting a SEC-1 encoded compressed point or a uncompressed point
-          if (publicKeyBuffer.length !== 33 && publicKeyBuffer.length !== 64) {
-            throw new Error(
-              "public key must be a SEC-1 compressed point or an uncompressed point (33 or 64 bytes)");
+        // Expecting a SEC-1 encoded compressed point or a uncompressed point
+        if (publicKeyBuffer.length !== 33 && publicKeyBuffer.length !== 64) {
+          throw new Error(
+            'public key must be a SEC-1 compressed point or an uncompressed point (33 or 64 bytes)',
+          );
+        }
+
+        switch (methodAction) {
+          case 'list':
+            return keyring.listAccounts(origin);
+          case 'create': {
+            const created = keyring.createAccount(
+              origin,
+              publicKeyBuffer,
+              methodArgs[1],
+            );
+            if (created) {
+              await saveKeyring();
+            }
+            return created;
           }
-
-          switch (methodAction) {
-            case "list":
-              return keyring.listAccounts(origin);
-            case "create":
-              const created = keyring.createAccount(
-                origin, publicKeyBuffer, methodArgs[1]);
-              if (created) {
-                await saveKeyring();
-              }
-              return created;
-            case "read":
-              return keyring.readAccount(origin, publicKeyBuffer);
-            case "update":
-              const updated = keyring.updateAccount(
-                origin, publicKeyBuffer, methodArgs[1]);
-              if (updated) {
-                await saveKeyring();
-              }
-              return updated;
-            case "delete":
-              // NOTE: we don't call removeAccount() on the keyringController
-              // NOTE: as it prunes empty keyrings and we don't want that behavior
-              const address = keyring.deleteAccount(origin, publicKeyBuffer);
-              if (address) {
-                await saveKeyring(address);
-              }
-              return address !== null;
-            default:
-              // TODO: return this error to the client!
-              throw new Error("invalid snap_manageAccounts action");
+          case 'read':
+            return keyring.readAccount(origin, publicKeyBuffer);
+          case 'update': {
+            const updated = keyring.updateAccount(
+              origin,
+              publicKeyBuffer,
+              methodArgs[1],
+            );
+            if (updated) {
+              await saveKeyring();
+            }
+            return updated;
           }
-          return null;
-        },
-
-        //validator: (permission, _origin, _target) => {
-        //},
+          case 'delete': {
+            // NOTE: we don't call removeAccount() on the keyringController
+            // NOTE: as it prunes empty keyrings and we don't want that behavior
+            const address = keyring.deleteAccount(origin, publicKeyBuffer);
+            if (address) {
+              await saveKeyring(address);
+            }
+            return address !== null;
+          }
+          default:
+            // TODO: return this error to the client!
+            throw new Error('invalid snap_manageAccounts action');
+        }
       },
-    };
+
+      // validator: (permission, _origin, _target) => {
+      // },
+    },
   };
+};
 ///: END:ONLY_INCLUDE_IN
 
 /**

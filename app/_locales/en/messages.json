@@ -2449,6 +2449,10 @@
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
   },
+  "permission_manageAccounts": {
+    "message": "Store and manage accounts on your device.",
+    "description": "The description for the `snap_manageAccounts` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2456,10 +2460,6 @@
   "permission_manageState": {
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageAccounts": {
-    "message": "Store and manage accounts on your device.",
-    "description": "The description for the `snap_manageAccounts` permission"
   },
   "permission_notifications": {
     "message": "Show notifications.",

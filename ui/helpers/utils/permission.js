@@ -40,7 +40,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-door-open',
     rightIcon: null,
   },
-  [RestrictedMethods['snap_manageAccounts']]: {
+  [RestrictedMethods.snap_manageAccounts]: {
     label: (t) => t('permission_manageAccounts'),
     leftIcon: 'fas fa-door-open',
     rightIcon: null,

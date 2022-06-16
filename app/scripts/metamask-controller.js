@@ -638,7 +638,7 @@ export default class MetamaskController extends EventEmitter {
             await this.keyringController.persistAllKeyrings();
             await this.keyringController._updateMemStoreKeyrings();
             await this.keyringController.fullUpdate();
-          }
+          },
         }),
         ///: END:ONLY_INCLUDE_IN
       },
@@ -1126,8 +1126,9 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSnapKeyring() {
     if (!this.snapKeyring) {
-      this.snapKeyring = await this.keyringController
-        .addNewKeyring('Snap Keyring');
+      this.snapKeyring = await this.keyringController.addNewKeyring(
+        'Snap Keyring',
+      );
     }
     return this.snapKeyring;
   }
