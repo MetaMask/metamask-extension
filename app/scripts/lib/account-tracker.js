@@ -249,7 +249,9 @@ export default class AccountTracker {
     try {
       balance = await this._query.getBalance(address);
     } catch (error) {
-      if (error.data.request.method === 'eth_getBalance') {
+      if (error.data.request.method !== 'eth_getBalance') {
+        throw error;
+      }
         balance = '0x0';
       } else {
         throw error;
