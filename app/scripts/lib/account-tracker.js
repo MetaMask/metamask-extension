@@ -252,10 +252,6 @@ export default class AccountTracker {
       if (error.data.request.method !== 'eth_getBalance') {
         throw error;
       }
-        balance = '0x0';
-      } else {
-        throw error;
-      }
     }
 
     const result = { address, balance };
