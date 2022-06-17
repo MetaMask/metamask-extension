@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash';
 const version = 72;
 
 /**
- * Renames NotificationController to AnnouncementController
+ * Should empty the `knownMethodData` object in PreferencesController
  */
 export default {
   version,
