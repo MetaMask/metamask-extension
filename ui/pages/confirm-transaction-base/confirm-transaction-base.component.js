@@ -238,6 +238,11 @@ export default class ConfirmTransactionBase extends Component {
       clearInterval(pollingIntervalId);
     }
     stopDeviceConnectionPolling(fromAddress);
+
+    window.removeEventListener(
+      'beforeunload',
+      () => this._clearPollingInterval,
+    );
   }
 
   componentDidUpdate(prevProps) {

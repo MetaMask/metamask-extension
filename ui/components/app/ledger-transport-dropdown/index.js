@@ -10,6 +10,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 import {
   getLedgerTransportType,
@@ -71,7 +72,7 @@ export default function LedgerTransportDropdown() {
             <Button
               key="ledger-connection-settings-learn-more"
               type="link"
-              href="https://metamask.zendesk.com/hc/en-us/articles/4408552261275-Hardware-Wallet-Hub"
+              href={ZENDESK_URLS.HARDWARE_WALLET_HELP}
               target="_blank"
               rel="noopener noreferrer"
               className="settings-page__inline-link"

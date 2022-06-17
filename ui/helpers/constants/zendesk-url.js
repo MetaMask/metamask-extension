@@ -11,6 +11,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
   PASSWORD_ARTICLE:
     'https://metamask.zendesk.com/hc/en-us/articles/4404722782107',
+  HARDWARE_WALLET_HELP:
+    'https://metamask.zendesk.com/hc/en-us/articles/4408552261275-Hardware-Wallet-Hub',
 };
 
 export default ZENDESK_URLS;

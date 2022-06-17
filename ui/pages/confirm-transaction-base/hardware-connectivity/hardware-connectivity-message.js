@@ -14,33 +14,35 @@ export default function HardwareConnectivityMessage({
 
   return (
     <div className="hardware-connectivity-message">
-      <ActionableMessage
-        type={connected ? 'success' : 'warning'}
-        withRightButton
-        primaryAction={
-          connected
-            ? null
-            : {
-                label: actionLabel,
-                onClick,
-              }
-        }
-        message={
-          connected ? (
+      {connected ? (
+        <ActionableMessage
+          type="success"
+          withRightButton
+          message={
             <>
               <i className="fa fa-check-circle" />{' '}
               {t('hardwareWalletConnectivityConnected', [KEYRING_NAMES.LEDGER])}
             </>
-          ) : (
+          }
+        />
+      ) : (
+        <ActionableMessage
+          type="warning"
+          withRightButton
+          primaryAction={{
+            label: actionLabel,
+            onClick,
+          }}
+          message={
             <>
               <i className="fa fa-exclamation-circle" />{' '}
               {t('hardwareWalletConnectivityNotConnected', [
                 KEYRING_NAMES.LEDGER,
               ])}{' '}
             </>
-          )
-        }
-      />
+          }
+        />
+      )}
     </div>
   );
 }
