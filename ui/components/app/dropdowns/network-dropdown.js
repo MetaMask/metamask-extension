@@ -17,6 +17,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   ADD_NETWORK_ROUTE,
   ADVANCED_ROUTE,
@@ -110,7 +111,7 @@ class NetworkDropdown extends Component {
     const { trackEvent } = this.context;
 
     trackEvent({
-      category: 'Navigation',
+      category: EVENT.CATEGORIES.NAVIGATION,
       event: 'Switched Networks',
       properties: {
         action: 'Home',
@@ -173,7 +174,7 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.TEXT_MUTED}
+            color={opts.isLocalHost ? 'localhost' : COLORS.ICON_MUTED}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
           />

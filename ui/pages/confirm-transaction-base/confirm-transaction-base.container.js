@@ -34,6 +34,7 @@ import {
   getIsMultiLayerFeeNetwork,
   getEIP1559V2Enabled,
   getIsBuyableChain,
+  getEnsResolutionByAddress,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -80,7 +81,6 @@ const mapStateToProps = (state, ownProps) => {
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
   const {
-    ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
@@ -116,14 +116,17 @@ const mapStateToProps = (state, ownProps) => {
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
-  const casedTokenList = useTokenDetection
-    ? tokenList
-    : Object.keys(tokenList).reduce((acc, base) => {
-        return {
-          ...acc,
-          [base.toLowerCase()]: tokenList[base],
-        };
-      }, {});
+  let casedTokenList = tokenList;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    casedTokenList = useTokenDetection
+      ? tokenList
+      : Object.keys(tokenList).reduce((acc, base) => {
+          return {
+            ...acc,
+            [base.toLowerCase()]: tokenList[base],
+          };
+        }, {});
+  }
   const toName =
     identities[toAddress]?.name ||
     casedTokenList[toAddress]?.name ||
@@ -134,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
     addressBook &&
     addressBook[chainId] &&
     addressBook[chainId][checksummedAddress];
-  const toEns = ensResolutionsByAddress[checksummedAddress] || '';
+  const toEns = getEnsResolutionByAddress(state, checksummedAddress);
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
   const supportsEIP1559 =

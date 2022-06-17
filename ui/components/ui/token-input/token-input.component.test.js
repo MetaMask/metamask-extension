@@ -28,6 +28,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
           />
         </Provider>,
         {
@@ -66,6 +75,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
@@ -101,6 +119,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
@@ -138,6 +165,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             currentCurrency="usd"
@@ -177,6 +213,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             hideConversion
@@ -229,6 +274,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
           />
         </Provider>,
@@ -273,6 +327,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             currentCurrency="usd"
@@ -319,6 +382,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
           />
@@ -365,6 +437,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             currentCurrency="usd"
@@ -404,6 +485,15 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
+            tokens={[
+              {
+                address: '0x1',
+                decimals: 4,
+                symbol: 'ABC',
+                image: null,
+                isERC721: false,
+              },
+            ]}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
             currentCurrency="usd"

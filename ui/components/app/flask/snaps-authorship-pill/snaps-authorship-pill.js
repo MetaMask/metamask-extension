@@ -7,9 +7,22 @@ import Typography from '../../../ui/typography';
 import {
   COLORS,
   TYPOGRAPHY,
+  TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const SnapsAuthorshipPill = ({ packageName, className, url }) => {
+const snapIdPrefixes = ['npm:', 'local:'];
+
+const SnapsAuthorshipPill = ({ snapId, version, className }) => {
+  // @todo Use getSnapPrefix from snaps-skunkworks when possible
+  const snapPrefix = snapIdPrefixes.find((prefix) => snapId.startsWith(prefix));
+  const packageName = snapId.replace(snapPrefix, '');
+  const isNPM = snapPrefix === 'npm:';
+  const url = isNPM
+    ? `https://www.npmjs.com/package/${packageName}`
+    : packageName;
+  const icon = isNPM ? 'fab fa-npm fa-lg' : 'fas fa-code';
+  const t = useI18nContext();
   return (
     <a
       href={url}
@@ -20,8 +33,28 @@ const SnapsAuthorshipPill = ({ packageName, className, url }) => {
       <Chip
         leftIcon={
           <Box paddingLeft={2}>
-            <i className="fab fa-npm fa-lg snaps-authorship-icon" />
+            <i className={`${icon} snaps-authorship-icon`} />
           </Box>
+        }
+        rightIcon={
+          version && (
+            <Box
+              className="snaps-authorship-version"
+              backgroundColor={COLORS.PRIMARY_DEFAULT}
+              paddingLeft={2}
+              paddingRight={2}
+            >
+              <Typography
+                color={COLORS.PRIMARY_INVERSE}
+                variant={TYPOGRAPHY.H7}
+                align={TEXT_ALIGN.CENTER}
+                tag="span"
+                className="version"
+              >
+                {t('shorthandVersion', [version])}
+              </Typography>
+            </Box>
+          )
         }
         backgroundColor={COLORS.BACKGROUND_DEFAULT}
       >
@@ -40,17 +73,17 @@ const SnapsAuthorshipPill = ({ packageName, className, url }) => {
 
 SnapsAuthorshipPill.propTypes = {
   /**
-   * NPM package name of the snap
+   * The id of the snap
    */
-  packageName: PropTypes.string,
+  snapId: PropTypes.string,
+  /**
+   * The version of the snap
+   */
+  version: PropTypes.string,
   /**
    * The className of the SnapsAuthorshipPill
    */
   className: PropTypes.string,
-  /**
-   * The url of the snap's package
-   */
-  url: PropTypes.string,
 };
 
 export default SnapsAuthorshipPill;

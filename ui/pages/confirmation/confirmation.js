@@ -11,12 +11,18 @@ import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
+import SiteIcon from '../../components/ui/site-icon';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  COLORS,
+  FLEX_DIRECTION,
+  SIZES,
+} from '../../helpers/constants/design-system';
+import { stripHttpsScheme } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
-import { COLORS, SIZES } from '../../helpers/constants/design-system';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
@@ -191,11 +197,21 @@ export default function ConfirmationPage() {
             />
           </Box>
         ) : null}
-        <Box justifyContent="center" padding={[4, 4, 4]}>
+        <Box
+          alignItems="center"
+          marginTop={1}
+          padding={[1, 4, 4]}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+        >
+          <SiteIcon
+            icon={originMetadata.iconUrl}
+            name={originMetadata.hostname}
+            size={36}
+          />
           <SiteOrigin
-            siteOrigin={originMetadata.origin}
-            iconSrc={originMetadata.iconUrl}
-            iconName={originMetadata.hostname}
+            chip
+            siteOrigin={stripHttpsScheme(originMetadata.origin)}
+            title={stripHttpsScheme(originMetadata.origin)}
           />
         </Box>
         <MetaMaskTemplateRenderer sections={templatedValues.content} />

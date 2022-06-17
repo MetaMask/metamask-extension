@@ -70,3 +70,25 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
 };
+
+export const ORIGIN_METAMASK = 'metamask';
+
+export const METAMASK_BETA_CHROME_ID = 'pbbkamfgmaedccnfkmjcofcecjhfgldn';
+export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
+export const METAMASK_FLASK_CHROME_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
+
+export const CHROME_BUILD_IDS = [
+  METAMASK_BETA_CHROME_ID,
+  METAMASK_PROD_CHROME_ID,
+  METAMASK_FLASK_CHROME_ID,
+];
+
+const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';
+const METAMASK_PROD_FIREFOX_ID = 'webextension@metamask.io';
+const METAMASK_FLASK_FIREFOX_ID = 'webextension-flask@metamask.io';
+
+export const FIREFOX_BUILD_IDS = [
+  METAMASK_BETA_FIREFOX_ID,
+  METAMASK_PROD_FIREFOX_ID,
+  METAMASK_FLASK_FIREFOX_ID,
+];

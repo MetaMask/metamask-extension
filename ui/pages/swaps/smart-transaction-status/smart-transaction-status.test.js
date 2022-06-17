@@ -19,7 +19,7 @@ describe('SmartTransactionStatus', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { getByText } = renderWithProvider(<SmartTransactionStatus />, store);
-    expect(getByText('Optimizing gas...')).toBeInTheDocument();
+    expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
     expect(getByText('Close')).toBeInTheDocument();
   });
 });

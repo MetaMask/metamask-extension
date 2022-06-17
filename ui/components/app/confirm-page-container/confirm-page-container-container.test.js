@@ -49,6 +49,7 @@ describe('Confirm Page Container Container Test', () => {
   const store = configureMockStore()(mockStore);
 
   const props = {
+    title: 'Title',
     fromAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     toAddress: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
     origin: 'testOrigin', // required

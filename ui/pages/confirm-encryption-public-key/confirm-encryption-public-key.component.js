@@ -5,7 +5,9 @@ import AccountListItem from '../../components/app/account-list-item';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 
+import { EVENT } from '../../../shared/constants/metametrics';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import SiteOrigin from '../../components/ui/site-origin';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -117,7 +119,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { t } = this.context;
 
     const targetSubjectMetadata = subjectMetadata[txData.origin];
-    const notice = t('encryptionPublicKeyNotice', [txData.origin]);
+    const notice = t('encryptionPublicKeyNotice', [
+      <SiteOrigin siteOrigin={txData.origin} key={txData.origin} />,
+    ]);
     const name = targetSubjectMetadata?.hostname || txData.origin;
 
     return (
@@ -165,7 +169,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           onClick={async (event) => {
             await cancelEncryptionPublicKey(txData, event);
             trackEvent({
-              category: 'Messages',
+              category: EVENT.CATEGORIES.MESSAGES,
               event: 'Cancel',
               properties: {
                 action: 'Encryption public key Request',
@@ -185,7 +189,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           onClick={async (event) => {
             await encryptionPublicKey(txData, event);
             this.context.trackEvent({
-              category: 'Messages',
+              category: EVENT.CATEGORIES.MESSAGES,
               event: 'Confirm',
               properties: {
                 action: 'Encryption public key Request',

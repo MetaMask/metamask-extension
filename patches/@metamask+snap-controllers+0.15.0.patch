@@ -1,0 +1,323 @@
+diff --git a/node_modules/@metamask/snap-controllers/CHANGELOG.md b/node_modules/@metamask/snap-controllers/CHANGELOG.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/LICENSE b/node_modules/@metamask/snap-controllers/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/README.md b/node_modules/@metamask/snap-controllers/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/index.d.ts b/node_modules/@metamask/snap-controllers/dist/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/index.js b/node_modules/@metamask/snap-controllers/dist/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/index.js.map b/node_modules/@metamask/snap-controllers/dist/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/resource/ExternalResourceController.d.ts b/node_modules/@metamask/snap-controllers/dist/resource/ExternalResourceController.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/resource/ExternalResourceController.js b/node_modules/@metamask/snap-controllers/dist/resource/ExternalResourceController.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/resource/ExternalResourceController.js.map b/node_modules/@metamask/snap-controllers/dist/resource/ExternalResourceController.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/resource/index.d.ts b/node_modules/@metamask/snap-controllers/dist/resource/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/resource/index.js b/node_modules/@metamask/snap-controllers/dist/resource/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/resource/index.js.map b/node_modules/@metamask/snap-controllers/dist/resource/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/AbstractExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/ExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/WebWorkerExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/WebWorkerExecutionService.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/WebWorkerExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/WebWorkerExecutionService.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/WebWorkerExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/WebWorkerExecutionService.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts
+old mode 100644
+new mode 100755
+index 91b3138..8ba2b34
+--- a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts
++++ b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.d.ts
+@@ -28,8 +28,9 @@ export declare class IframeExecutionService extends AbstractExecutionService<Env
+     protected _initJob(): Promise<EnvMetadata>;
+     private _initStreams;
+     /**
+-     * Creates the iframe to be used as the execution environment
+-     * This may run forever if the iframe never loads, but the promise should be wrapped in an initialization timeout in the SnapController
++     * Creates the iframe to be used as the execution environment. This may run
++     * forever if the iframe never loads, but the promise should be wrapped in
++     * an initialization timeout in the SnapController.
+      *
+      * @param uri - The iframe URI
+      * @param jobId - The job id
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
+old mode 100644
+new mode 100755
+index 8a93679..abf861d
+--- a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
++++ b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js
+@@ -69,25 +69,54 @@ class IframeExecutionService extends AbstractExecutionService_1.AbstractExecutio
+         };
+     }
+     /**
+-     * Creates the iframe to be used as the execution environment
+-     * This may run forever if the iframe never loads, but the promise should be wrapped in an initialization timeout in the SnapController
++     * Creates the iframe to be used as the execution environment. This may run
++     * forever if the iframe never loads, but the promise should be wrapped in
++     * an initialization timeout in the SnapController.
+      *
+      * @param uri - The iframe URI
+      * @param jobId - The job id
+      */
+     _createWindow(uri, jobId) {
+-        const iframe = document.createElement('iframe');
+-        return new Promise((resolve) => {
++        return new Promise((resolve, reject) => {
++            const iframe = document.createElement('iframe');
++            // The order of operations appears to matter for everything except this
++            // attribute. We may as well set it here.
++            iframe.setAttribute('id', jobId);
++            // In the past, we've had problems that appear to be symptomatic of the
++            // iframe firing the `load` event before its scripts are actually loaded,
++            // which has prevented snaps from executing properly. Therefore, we set
++            // the `src` attribute and append the iframe to the DOM before attaching
++            // the `load` listener.
++            //
++            // `load` should only fire when "all dependent resources" have been
++            // loaded, which includes scripts.
++            //
++            // MDN article for `load` event: https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event
++            // Re: `load` firing twice: https://stackoverflow.com/questions/10781880/dynamically-created-iframe-triggers-onload-event-twice/15880489#15880489
++            iframe.setAttribute('src', uri);
++            document.body.appendChild(iframe);
+             iframe.addEventListener('load', () => {
+                 if (iframe.contentWindow) {
+                     resolve(iframe.contentWindow);
+                 }
++                else {
++                    // We don't know of a case when this would happen, but better to fail
++                    // fast if it does.
++                    reject(new Error(`iframe.contentWindow not present on load for job "${jobId}".`));
++                }
+             });
+-            // Set attributes before adding the iframe to the DOM to trigger 'load' event once everything has been loaded.
+-            iframe.setAttribute('src', uri);
+-            iframe.setAttribute('id', jobId);
++            // We need to set the sandbox attribute after appending the iframe to the
++            // DOM, otherwise errors in the iframe will not be propagated via `error`
++            // and `unhandledrejection` events, and we cannot catch and handle them.
++            // We wish we knew why this was the case.
++            //
++            // We set this property after adding the `load` listener because it
++            // appears to work dependably. ¯\_(ツ)_/¯
++            //
++            // We apply this property as a principle of least authority (POLA)
++            // measure.
++            // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
+             iframe.setAttribute('sandbox', 'allow-scripts');
+-            document.body.appendChild(iframe);
+         });
+     }
+ }
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map
+old mode 100644
+new mode 100755
+index a9e6647..62f6c49
+--- a/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map
++++ b/node_modules/@metamask/snap-controllers/dist/services/iframe/IframeExecutionService.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"IframeExecutionService.js","sourceRoot":"","sources":["../../../src/services/iframe/IframeExecutionService.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"file":"IframeExecutionService.js","sourceRoot":"","sources":["../../../src/services/iframe/IframeExecutionService.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/testHelpers/server.d.ts b/node_modules/@metamask/snap-controllers/dist/services/iframe/testHelpers/server.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/testHelpers/server.js b/node_modules/@metamask/snap-controllers/dist/services/iframe/testHelpers/server.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/iframe/testHelpers/server.js.map b/node_modules/@metamask/snap-controllers/dist/services/iframe/testHelpers/server.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.d.ts b/node_modules/@metamask/snap-controllers/dist/services/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.js b/node_modules/@metamask/snap-controllers/dist/services/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/services/index.js.map b/node_modules/@metamask/snap-controllers/dist/services/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/RequestQueue.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/default-endowments.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/default-endowments.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/default-endowments.js b/node_modules/@metamask/snap-controllers/dist/snaps/default-endowments.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/default-endowments.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/default-endowments.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/constants.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/long-running.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/endowments/network-access.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/NpmSnapPackageJson.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/NpmSnapPackageJson.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/NpmSnapPackageJson.js b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/NpmSnapPackageJson.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/NpmSnapPackageJson.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/NpmSnapPackageJson.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/SnapManifest.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/SnapManifest.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/SnapManifest.js b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/SnapManifest.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/SnapManifest.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/SnapManifest.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/index.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/index.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/index.js b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/index.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/index.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/index.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateNpmSnapPackageJson.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateNpmSnapPackageJson.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateNpmSnapPackageJson.js b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateNpmSnapPackageJson.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateNpmSnapPackageJson.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateNpmSnapPackageJson.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateSnapManifest.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateSnapManifest.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateSnapManifest.js b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateSnapManifest.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateSnapManifest.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/json-schemas/validateSnapManifest.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils.d.ts b/node_modules/@metamask/snap-controllers/dist/snaps/utils.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils.js b/node_modules/@metamask/snap-controllers/dist/snaps/utils.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/utils.js.map b/node_modules/@metamask/snap-controllers/dist/snaps/utils.js.map
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/utils.d.ts b/node_modules/@metamask/snap-controllers/dist/utils.d.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/utils.js b/node_modules/@metamask/snap-controllers/dist/utils.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@metamask/snap-controllers/dist/utils.js.map b/node_modules/@metamask/snap-controllers/dist/utils.js.map
+old mode 100644
+new mode 100755

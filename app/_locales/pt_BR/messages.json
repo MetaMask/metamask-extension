@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "Concordo"
   },
-  "aggregatorFeeCost": {
-    "message": "Taxa de rede do agregador"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Taxa de aprovação e da rede do agregador"
-  },
-  "approvalTxGasCost": {
-    "message": "Custo em gás da transação de aprovação"
   },
   "approve": {
     "message": "Aprovar limite de gastos"
@@ -372,10 +363,10 @@
     "message": "Comprar"
   },
   "buyWithWyre": {
-    "message": "Comprar ETH com Wyre"
+    "message": "Comprar $1 com Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar ETH diretamente na sua conta da MetaMask."
+    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
   },
   "bytes": {
     "message": "Bytes"
@@ -1031,10 +1022,6 @@
   "externalExtension": {
     "message": "Extensão externa"
   },
-  "extraApprovalGas": {
-    "message": "+$1 de gás por aprovação",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "Falhou"
   },
@@ -1302,13 +1289,6 @@
   },
   "importAccountSeedPhrase": {
     "message": "Importe uma carteira com a Frase de Recuperação Secreta"
-  },
-  "importExistingWalletDescription": {
-    "message": "Digite sua Frase de Recuperação Secreta (ou seja, a frase seed) que lhe foi dada quando você criou a sua carteira. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importar carteira existente com Frase de Recuperação Secreta"
   },
   "importMyWallet": {
     "message": "Importar minha carteira"
@@ -2498,9 +2478,6 @@
   "signed": {
     "message": "Assinado"
   },
-  "simulationErrorMessage": {
-    "message": "É esperado que essa transação falhe. Como é esperado que sua tentativa de execução seja dispendiosa e falhe, ela não é recomendada."
-  },
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
   },
@@ -3171,9 +3148,6 @@
   },
   "tryAgain": {
     "message": "Tente novamente"
-  },
-  "tryAnywayOption": {
-    "message": "Vou tentar mesmo assim"
   },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"

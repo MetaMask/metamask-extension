@@ -38,10 +38,14 @@ export default class TokenList extends Component {
             .fill(undefined)
             .map((_, i) => {
               const { iconUrl, symbol, name, address } = results[i] || {};
-              // token from dynamic api list is fetched when useTokenDetection is true
-              const iconPath = useTokenDetection
-                ? iconUrl
-                : `images/contract/${iconUrl}`;
+              let iconPath = iconUrl;
+              if (!process.env.TOKEN_DETECTION_V2) {
+                /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+                // token from dynamic api list is fetched when useTokenDetection is true
+                iconPath = useTokenDetection
+                  ? iconUrl
+                  : `images/contract/${iconUrl}`;
+              }
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens);
               const onClick = () =>
                 !tokenAlreadyAdded && onToggleToken(results[i]);

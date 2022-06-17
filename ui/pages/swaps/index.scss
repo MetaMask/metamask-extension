@@ -121,7 +121,7 @@
     flex: 1;
   }
 
-  &__notification-close-button {
+  .actionable-message__message &__notification-close-button {
     background-color: transparent;
     position: absolute;
     right: 0;

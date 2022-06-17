@@ -22,6 +22,7 @@ export default class AddRecipient extends Component {
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
+    addHistoryEntry: PropTypes.func,
     useMyAccountsForRecipientSearch: PropTypes.func,
     useContactListForRecipientSearch: PropTypes.func,
     isUsingMyAccountsForRecipientSearch: PropTypes.bool,
@@ -64,7 +65,10 @@ export default class AddRecipient extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  selectRecipient = (address, nickname = '') => {
+  selectRecipient = (address, nickname = '', type = 'user input') => {
+    this.props.addHistoryEntry(
+      `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
+    );
     this.props.updateRecipient({ address, nickname });
   };
 
@@ -109,11 +113,13 @@ export default class AddRecipient extends Component {
       content = this.renderExplicitAddress(
         recipient.address,
         recipient.nickname,
+        'validated user input',
       );
     } else if (ensResolution) {
       content = this.renderExplicitAddress(
         ensResolution,
         addressBookEntryName || userInput,
+        'ENS resolution',
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -127,12 +133,12 @@ export default class AddRecipient extends Component {
     );
   }
 
-  renderExplicitAddress(address, name) {
+  renderExplicitAddress(address, name, type) {
     return (
       <div
         key={address}
         className="send__select-recipient-wrapper__group-item"
-        onClick={() => this.selectRecipient(address, name)}
+        onClick={() => this.selectRecipient(address, name, type)}
       >
         <Identicon address={address} diameter={28} />
         <div className="send__select-recipient-wrapper__group-item__content">
@@ -179,7 +185,9 @@ export default class AddRecipient extends Component {
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
-          onSelect={this.selectRecipient}
+          onSelect={(address, name) =>
+            this.selectRecipient(address, name, 'my accounts')
+          }
         />
       </div>
     );
@@ -200,7 +208,13 @@ export default class AddRecipient extends Component {
           addressBook={addressBook}
           searchForContacts={this.searchForContacts.bind(this)}
           searchForRecents={this.searchForRecents.bind(this)}
-          selectRecipient={this.selectRecipient.bind(this)}
+          selectRecipient={(address, name) => {
+            this.selectRecipient(
+              address,
+              name,
+              `${name ? 'contact' : 'recent'} list`,
+            );
+          }}
         >
           {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button

@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "我同意"
   },
-  "aggregatorFeeCost": {
-    "message": "聚集器网络手续费"
-  },
   "alertDisableTooltip": {
     "message": "这个可以在“设置 > 提醒”中进行更改"
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "批准聚合商网络手续费"
-  },
-  "approvalTxGasCost": {
-    "message": "批准交易燃料成本"
   },
   "approve": {
     "message": "批准消费限额"
@@ -372,10 +363,10 @@
     "message": "购买"
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 ETH"
+    "message": "使用 Wyre 购买 $1"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 ETH 存入您的 MetaMask 账户。"
+    "message": "您可以通过 Wyre 使用信用卡将 $1 存入您的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"
@@ -1017,10 +1008,6 @@
   "externalExtension": {
     "message": "外部扩展"
   },
-  "extraApprovalGas": {
-    "message": "+$1 批准燃料",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "失败"
   },
@@ -1269,13 +1256,6 @@
   },
   "importAccountSeedPhrase": {
     "message": "使用账户助记词导入账户"
-  },
-  "importExistingWalletDescription": {
-    "message": "输入您创建$1钱包时提供的保密恢复短语（或Seed Phrase）。",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "使用账户助记词导入现有钱包"
   },
   "importMyWallet": {
     "message": "导入我的钱包"
@@ -2462,9 +2442,6 @@
   "signed": {
     "message": "已签名"
   },
-  "simulationErrorMessage": {
-    "message": "此交易预计将失败。尝试执行该交易预计将是昂贵的，但失败，不推荐。"
-  },
   "simulationErrorMessageV2": {
     "message": "我们无法估计燃料。合同中可能有一个错误，这笔交易可能失败。"
   },
@@ -3129,9 +3106,6 @@
   },
   "tryAgain": {
     "message": "重试"
-  },
-  "tryAnywayOption": {
-    "message": "我仍然会试"
   },
   "turnOnTokenDetection": {
     "message": "打开增强代币检测"

@@ -18,13 +18,12 @@ import { getProvider } from '../../../../selectors';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
-import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
+import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 
 const NetworksListItem = ({
   network,
   networkIsSelected,
   selectedRpcUrl,
-  networkIndex,
   setSearchQuery,
   setSearchedNetworks,
 }) => {
@@ -56,8 +55,8 @@ const NetworksListItem = ({
   const settingsRefs = useRef();
 
   useEffect(() => {
-    handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
-  }, [networkIndex, settingsRefs, t]);
+    handleSettingsRefs(t, t('networks'), settingsRefs);
+  }, [settingsRefs, t]);
 
   return (
     <div
@@ -74,9 +73,17 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck color="var(--color-success-default)" />
+        <IconCheck
+          className="networks-tab__content__icon-check"
+          color="var(--color-success-default)"
+          aria-label={t('active')}
+        />
       ) : (
-        <div className="networks-tab__content__check-icon__transparent">✓</div>
+        <IconCheck
+          className="networks-tab__content__icon-check"
+          color="transparent"
+          aria-hidden="true"
+        />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -126,7 +133,6 @@ NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
-  networkIndex: PropTypes.number,
   setSearchQuery: PropTypes.func,
   setSearchedNetworks: PropTypes.func,
 };

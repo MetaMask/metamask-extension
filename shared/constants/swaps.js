@@ -114,14 +114,18 @@ const RINKEBY_DEFAULT_BLOCK_EXPLORER_URL = 'https://rinkeby.etherscan.io/';
 const POLYGON_DEFAULT_BLOCK_EXPLORER_URL = 'https://polygonscan.com/';
 const AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL = 'https://snowtrace.io/';
 
-export const ALLOWED_SWAPS_CHAIN_IDS = {
-  [MAINNET_CHAIN_ID]: true,
-  [SWAPS_TESTNET_CHAIN_ID]: true,
-  [BSC_CHAIN_ID]: true,
-  [POLYGON_CHAIN_ID]: true,
-  [RINKEBY_CHAIN_ID]: true,
-  [AVALANCHE_CHAIN_ID]: true,
-};
+export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
+  MAINNET_CHAIN_ID,
+  SWAPS_TESTNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+];
+
+export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
+  ...ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  RINKEBY_CHAIN_ID,
+];
 
 export const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS = [
   MAINNET_CHAIN_ID,
@@ -197,3 +201,13 @@ export const RINKEBY = 'rinkeby';
 export const AVALANCHE = 'avalanche';
 
 export const SWAPS_CLIENT_ID = 'extension';
+
+export const TOKEN_BUCKET_PRIORITY = {
+  OWNED: 'owned',
+  TOP: 'top',
+};
+
+export const SLIPPAGE = {
+  DEFAULT: 2,
+  HIGH: 3,
+};

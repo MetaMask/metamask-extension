@@ -137,10 +137,10 @@
     "message": "Twoja przeglądarka nie jest obsługiwana..."
   },
   "buyWithWyre": {
-    "message": "Kup ETH poprzez Wyre"
+    "message": "Kup $1 poprzez Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić ETH bezpośrednio na swoje konto MetaMask."
+    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić $1 bezpośrednio na swoje konto MetaMask."
   },
   "bytes": {
     "message": "Bajty"

@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Popover from '../popover';
@@ -8,18 +9,21 @@ import TextField from '../text-field';
 import { I18nContext } from '../../../contexts/i18n';
 
 import Identicon from '../identicon/identicon.component';
+import { getUseTokenDetection, getTokenList } from '../../../selectors';
 
 export default function UpdateNicknamePopover({
-  nickname,
   address,
+  nickname = '',
+  memo = '',
   onAdd,
-  memo,
   onClose,
 }) {
   const t = useContext(I18nContext);
 
-  const [nicknameInput, setNicknameInput] = useState(nickname);
-  const [memoInput, setMemoInput] = useState(memo);
+  const [nicknameInput, setNicknameInput] = useState(
+    nickname === null ? '' : nickname,
+  );
+  const [memoInput, setMemoInput] = useState(memo === null ? '' : memo);
 
   const handleNicknameChange = (event) => {
     setNicknameInput(event.target.value);
@@ -41,6 +45,9 @@ export default function UpdateNicknamePopover({
     onAdd(address, nicknameInput, memoInput);
     onClose();
   };
+
+  const useTokenDetection = useSelector(getUseTokenDetection);
+  const tokenList = useSelector(getTokenList);
 
   return (
     <Popover
@@ -72,6 +79,8 @@ export default function UpdateNicknamePopover({
           className="update-nickname__content__indenticon"
           address={address}
           diameter={36}
+          useTokenDetection={useTokenDetection}
+          tokenList={tokenList}
         />
         <label className="update-nickname__content__label--capitalized">
           {t('address')}

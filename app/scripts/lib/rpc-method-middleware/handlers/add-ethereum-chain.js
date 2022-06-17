@@ -2,6 +2,7 @@ import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -76,14 +77,27 @@ async function addEthereumChainHandler(
     );
   }
 
+  const isLocalhost = (strUrl) => {
+    try {
+      const url = new URL(strUrl);
+      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    } catch (error) {
+      return false;
+    }
+  };
+
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => validUrl.isHttpsUri(rpcUrl))
+    ? rpcUrls.find(
+        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
+      )
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            isLocalhost(blockExplorerUrl) ||
+            validUrl.isHttpsUri(blockExplorerUrl),
         )
       : null;
 
@@ -249,7 +263,7 @@ async function addEthereumChainHandler(
 
     sendMetrics({
       event: 'Custom Network Added',
-      category: 'Network',
+      category: EVENT.CATEGORIES.NETWORK,
       referrer: {
         url: origin,
       },
@@ -264,7 +278,7 @@ async function addEthereumChainHandler(
         network: firstValidRPCUrl,
         symbol: ticker,
         block_explorer_url: firstValidBlockExplorerUrl,
-        source: 'dapp',
+        source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
     });
 

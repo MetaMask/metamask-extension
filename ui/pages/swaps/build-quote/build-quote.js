@@ -86,9 +86,11 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  TOKEN_BUCKET_PRIORITY,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -214,13 +216,20 @@ export default function BuildQuote({
     useTokenDetection,
   );
 
-  const tokensToSearch = useTokensToSearch({
+  const tokensToSearchSwapFrom = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
+    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.OWNED,
+  });
+  const tokensToSearchSwapTo = useTokensToSearch({
+    usersTokens: memoizedUsersTokens,
+    topTokens: topAssets,
+    shuffledTokensList,
+    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.TOP,
   });
   const selectedToToken =
-    tokensToSearch.find(({ address }) =>
+    tokensToSearchSwapFrom.find(({ address }) =>
       isEqualCaseInsensitive(address, toToken?.address),
     ) || toToken;
   const toTokenIsNotDefault =
@@ -433,7 +442,7 @@ export default function BuildQuote({
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Build Quote Page Loaded',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
@@ -465,7 +474,7 @@ export default function BuildQuote({
         onClick={() => {
           trackEvent({
             event: 'Clicked Block Explorer Link',
-            category: 'Swaps',
+            category: EVENT.CATEGORIES.SWAPS,
             properties: {
               link_type: 'Token Tracker',
               action: 'Swaps Confirmation',
@@ -658,7 +667,7 @@ export default function BuildQuote({
         </div>
         <DropdownInputPair
           onSelect={onFromSelect}
-          itemsToSearch={tokensToSearch}
+          itemsToSearch={tokensToSearchSwapFrom}
           onInputChange={(value) => {
             onInputChange(value, fromTokenBalance);
           }}
@@ -668,7 +677,7 @@ export default function BuildQuote({
           maxListItems={30}
           loading={
             loading &&
-            (!tokensToSearch?.length ||
+            (!tokensToSearchSwapFrom?.length ||
               !topAssets ||
               !Object.keys(topAssets).length)
           }
@@ -729,7 +738,7 @@ export default function BuildQuote({
         <div className="dropdown-input-pair dropdown-input-pair__to">
           <DropdownSearchList
             startingItem={selectedToToken}
-            itemsToSearch={tokensToSearch}
+            itemsToSearch={tokensToSearchSwapTo}
             searchPlaceholderText={t('swapSearchForAToken')}
             fuseSearchKeys={fuseSearchKeys}
             selectPlaceHolderText={t('swapSelectAToken')}
@@ -737,7 +746,7 @@ export default function BuildQuote({
             onSelect={onToSelect}
             loading={
               loading &&
-              (!tokensToSearch?.length ||
+              (!tokensToSearchSwapTo?.length ||
                 !topAssets ||
                 !Object.keys(topAssets).length)
             }
@@ -794,7 +803,7 @@ export default function BuildQuote({
                       onClick={() => {
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
-                          category: 'Swaps',
+                          category: EVENT.CATEGORIES.SWAPS,
                           properties: {
                             link_type: 'Token Tracker',
                             action: 'Swaps Confirmation',

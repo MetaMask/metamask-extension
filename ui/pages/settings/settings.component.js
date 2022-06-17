@@ -24,8 +24,8 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
-import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 
+import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -105,7 +105,6 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
-    const { t } = this.context;
 
     return (
       <div
@@ -147,11 +146,10 @@ class SettingsPage extends PureComponent {
                   searchText: searchQuery,
                 });
               }}
-              settingsRoutesList={getSettingsRoutes(t)}
+              settingsRoutesList={getSettingsRoutes()}
             />
             {isSearchList && searchText.length >= 3 && (
               <SettingsSearchList
-                key=""
                 results={searchResults}
                 onClickSetting={(setting) => this.handleClickSetting(setting)}
               />
@@ -344,7 +342,10 @@ class SettingsPage extends PureComponent {
           path={ADD_NETWORK_ROUTE}
           render={() => <NetworksTab addNewNetwork />}
         />
-        <Route path={NETWORKS_ROUTE} component={NetworksTab} />
+        <Route
+          path={NETWORKS_ROUTE}
+          render={() => <NetworksTab addNewNetwork={false} />}
+        />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
