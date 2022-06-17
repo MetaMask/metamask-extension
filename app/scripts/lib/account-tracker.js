@@ -243,7 +243,7 @@ export default class AccountTracker {
    * @returns {Promise} after the account balance is updated
    */
   async _updateAccount(address) {
-    let balance;
+    let balance = '0x0';
 
     // query balance
     try {
