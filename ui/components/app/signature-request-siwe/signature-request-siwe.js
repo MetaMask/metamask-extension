@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import ErrorMessage from '../../ui/error-message';
 import ActionableMessage from '../../ui/actionable-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
