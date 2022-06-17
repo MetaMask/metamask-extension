@@ -18,7 +18,6 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import GasDetailsItemTitle from '../../../components/app/gas-details-item/gas-details-item-title';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
 
@@ -35,10 +34,7 @@ export default function FeeCard({
   numberOfQuotes,
   onQuotesClick,
   chainId,
-  smartTransactionsOptInStatus,
-  smartTransactionsEnabled,
   isBestQuote,
-  supportsEIP1559V2 = false,
 }) {
   const t = useContext(I18nContext);
 
@@ -72,57 +68,50 @@ export default function FeeCard({
     <div className="fee-card">
       <div className="fee-card__main">
         <TransactionDetail
-          disableEditGasFeeButton={
-            smartTransactionsEnabled && smartTransactionsOptInStatus
-          }
+          disableEditGasFeeButton
           rows={[
             <TransactionDetailItem
               key="gas-item"
               detailTitle={
-                supportsEIP1559V2 &&
-                (!smartTransactionsEnabled || !smartTransactionsOptInStatus) ? (
-                  <GasDetailsItemTitle />
-                ) : (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      position="top"
-                      contentText={
-                        <>
-                          <p className="fee-card__info-tooltip-paragraph">
-                            {t('swapGasFeesSummary', [
-                              getTranslatedNetworkName(),
-                            ])}
-                          </p>
-                          <p className="fee-card__info-tooltip-paragraph">
-                            {t('swapGasFeesDetails')}
-                          </p>
-                          <p className="fee-card__info-tooltip-paragraph">
-                            <a
-                              className="fee-card__link"
-                              onClick={() => {
-                                trackEvent({
-                                  event: 'Clicked "Gas Fees: Learn More" Link',
-                                  category: EVENT.CATEGORIES.SWAPS,
-                                });
-                                global.platform.openTab({
-                                  url: GAS_FEES_LEARN_MORE_URL,
-                                });
-                              }}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t('swapGasFeesLearnMore')}
-                            </a>
-                          </p>
-                        </>
-                      }
-                      containerClassName="fee-card__info-tooltip-content-container"
-                      wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
-                      wide
-                    />
-                  </>
-                )
+                <>
+                  {t('transactionDetailGasHeading')}
+                  <InfoTooltip
+                    position="top"
+                    contentText={
+                      <>
+                        <p className="fee-card__info-tooltip-paragraph">
+                          {t('swapGasFeesSummary', [
+                            getTranslatedNetworkName(),
+                          ])}
+                        </p>
+                        <p className="fee-card__info-tooltip-paragraph">
+                          {t('swapGasFeesDetails')}
+                        </p>
+                        <p className="fee-card__info-tooltip-paragraph">
+                          <a
+                            className="fee-card__link"
+                            onClick={() => {
+                              trackEvent({
+                                event: 'Clicked "Gas Fees: Learn More" Link',
+                                category: EVENT.CATEGORIES.SWAPS,
+                              });
+                              global.platform.openTab({
+                                url: GAS_FEES_LEARN_MORE_URL,
+                              });
+                            }}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t('swapGasFeesLearnMore')}
+                          </a>
+                        </p>
+                      </>
+                    }
+                    containerClassName="fee-card__info-tooltip-content-container"
+                    wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
+                    wide
+                  />
+                </>
               }
               detailText={primaryFee.fee}
               detailTotal={secondaryFee.fee}
@@ -209,8 +198,5 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
-  smartTransactionsOptInStatus: PropTypes.bool,
-  smartTransactionsEnabled: PropTypes.bool,
   isBestQuote: PropTypes.bool.isRequired,
-  supportsEIP1559V2: PropTypes.bool,
 };
