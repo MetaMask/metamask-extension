@@ -138,7 +138,7 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     const errorPromise = new Promise((_resolve, reject) =>
-      metaRPCClient.foo('bad', (error, _) => {
+      metaRPCClient.getState('bad', (error, _) => {
         reject(error);
       }),
     );
