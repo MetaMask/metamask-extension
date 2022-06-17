@@ -145,7 +145,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-  getSnapManageAccountSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -628,18 +627,6 @@ export default class MetamaskController extends EventEmitter {
         }),
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
-        ...getSnapManageAccountSpecifications({
-          getSnapKeyring: this.getSnapKeyring.bind(this),
-          saveSnapKeyring: async (removedAddress) => {
-            if (removedAddress) {
-              this.keyringController.emit('removedAccount', removedAddress);
-            }
-            // TODO[muji]: add a save() method to KeyringController
-            await this.keyringController.persistAllKeyrings();
-            await this.keyringController._updateMemStoreKeyrings();
-            await this.keyringController.fullUpdate();
-          },
-        }),
         ///: END:ONLY_INCLUDE_IN
       },
       unrestrictedMethods,
@@ -1190,6 +1177,16 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        getSnapKeyring: this.getSnapKeyring.bind(this),
+        saveSnapKeyring: async (removedAddress) => {
+          if (removedAddress) {
+            this.keyringController.emit('removedAccount', removedAddress);
+          }
+          // TODO[muji]: add a save() method to KeyringController
+          await this.keyringController.persistAllKeyrings();
+          await this.keyringController._updateMemStoreKeyrings();
+          await this.keyringController.fullUpdate();
+        },
       }),
     };
   }

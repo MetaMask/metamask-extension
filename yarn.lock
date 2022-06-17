@@ -2802,6 +2802,11 @@
     pbkdf2 "^3.0.9"
     randombytes "^2.0.1"
 
+"@metamask/browser-passworder@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-3.0.0.tgz#c06744e66a968ffa13f70cc71a7d3b15d86b0ee7"
+  integrity sha512-hD10mgvhcDkZX8wnauw8udp1K2MzcbZfrN7Yon9sQ+OqVK9kiQ4VhZAyZNZTy9KJLtfoVD9Y2F6L4gEese7hDA==
+
 "@metamask/contract-metadata@^1.31.0", "@metamask/contract-metadata@^1.33.0", "@metamask/contract-metadata@^1.35.0":
   version "1.35.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.35.0.tgz#2bf2b8f2b6fdbd5132f0bcfa594b6c02dc71c42e"
@@ -2984,6 +2989,21 @@
     ses "^0.15.15"
     stream-browserify "^3.0.0"
 
+"@metamask/execution-environments@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@metamask/execution-environments/-/execution-environments-0.16.0.tgz#1c12f1aeedc1b58db91fc3dfd2371b7235c00595"
+  integrity sha512-Y+2d3SzVmFq1ij3DssYOLmJLQZM1rVJmh+dyYPJ5BFI5Cl6YwPluOrc1hoEDokT14vs+4wQsjMTdIHchza1EmQ==
+  dependencies:
+    "@metamask/object-multiplex" "^1.2.0"
+    "@metamask/post-message-stream" "^4.0.0"
+    "@metamask/providers" "^9.0.0"
+    "@metamask/snap-types" "^0.16.0"
+    "@metamask/utils" "^2.0.0"
+    eth-rpc-errors "^4.0.3"
+    pump "^3.0.0"
+    ses "^0.15.15"
+    stream-browserify "^3.0.0"
+
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
@@ -3102,14 +3122,12 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-"@metamask/rpc-methods@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.15.0.tgz#3bdfbf620d1ab328ff4d26f6a9c293136a50e51e"
-  integrity sha512-HyUaFey3zMFRZCmu4TTw3TyW+/8ODzJOAskMF4WZPiYg97yJikJ9tdDzhxQbiyWIZe+0+ZI65HuaUNCmV4j8DQ==
+"@metamask/rpc-methods@file:../snaps-skunkworks/packages/rpc-methods":
+  version "0.16.0"
   dependencies:
-    "@metamask/controllers" "^29.0.1"
+    "@metamask/controllers" "^30.0.0"
     "@metamask/key-tree" "^4.0.0"
-    "@metamask/snap-controllers" "^0.15.0"
+    "@metamask/snap-controllers" "^0.16.0"
     "@metamask/types" "^1.1.0"
     "@metamask/utils" "^2.0.0"
     eth-rpc-errors "^4.0.2"
@@ -3166,12 +3184,49 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
+"@metamask/snap-controllers@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.16.0.tgz#c271b2c04aa49e657273646478ef6cae356a9212"
+  integrity sha512-B9zpP8FXGK7zbdPOfbb1pdipZNstSt5ps0lB67597T1o/lcR0APX9FUUATL0N1X52cAuqfs30sqpDJBr5/Y89w==
+  dependencies:
+    "@metamask/browser-passworder" "^3.0.0"
+    "@metamask/controllers" "^30.0.0"
+    "@metamask/execution-environments" "^0.16.0"
+    "@metamask/object-multiplex" "^1.1.0"
+    "@metamask/obs-store" "^7.0.0"
+    "@metamask/post-message-stream" "4.0.0"
+    "@metamask/safe-event-emitter" "^2.0.0"
+    "@metamask/utils" "^2.0.0"
+    "@types/deep-freeze-strict" "^1.1.0"
+    "@types/semver" "^7.3.9"
+    ajv "^8.8.2"
+    concat-stream "^2.0.0"
+    deep-freeze-strict "^1.1.1"
+    eth-rpc-errors "^4.0.2"
+    fast-deep-equal "^3.1.3"
+    gunzip-maybe "^1.4.2"
+    immer "^9.0.6"
+    json-rpc-engine "^6.1.0"
+    json-rpc-middleware-stream "^3.0.0"
+    nanoid "^3.1.31"
+    pump "^3.0.0"
+    readable-web-to-node-stream "^3.0.2"
+    semver "^7.3.5"
+    tar-stream "^2.2.0"
+
 "@metamask/snap-types@^0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.15.0.tgz#ccf8ea495e9823430de4e6ca1d979ae10f25177e"
   integrity sha512-U6fRnB4qUZVSWJl08V1+UqJjf8m4DzhORCQ6HL8BHg4Npfg7Zn5luFTfS6y6dXVDAydIB6JJr43efEcAgcEsdA==
   dependencies:
     "@metamask/controllers" "^29.0.1"
+
+"@metamask/snap-types@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.16.0.tgz#e62a29843e8be520b9e7fa7fff4ef7ca1d8a7733"
+  integrity sha512-X3DJrltoBjEC8mnnyjK9LW5JdB9WgG+sIOMNtRPkM2OJjGw8uPcxjljJ9jV2gLYfwXfpVCB26Byn6ovmhIa2wQ==
+  dependencies:
+    "@metamask/controllers" "^30.0.0"
 
 "@metamask/test-dapp@^5.1.1":
   version "5.1.1"
