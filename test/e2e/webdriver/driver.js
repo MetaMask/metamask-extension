@@ -58,6 +58,7 @@ class Driver {
       SPACE: '\uE00D',
       CONTROL: '\uE009',
       COMMAND: '\uE03D',
+      PAGE_DOWN: '\uE00F',
       MODIFIER: process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL,
     };
   }
