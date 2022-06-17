@@ -110,8 +110,13 @@ export default function SignatureRequestSIWE({
       )}
       {!isSIWEDomainValid && (
         <div className="signature-request-siwe__domain-mismatch-warning">
-          <ErrorMessage
-            errorMessage={t('SIWEDomainInvalid', [parsedMessage.domain])}
+          <ActionableMessage
+            type="danger"
+            message={t('SIWEDomainInvalid', [parsedMessage.domain])}
+            iconFillColor="var(--color-error-default)"
+            useIcon
+            withRightButton
+            className="no-margin-top"
           />
         </div>
       )}
