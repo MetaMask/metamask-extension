@@ -93,31 +93,27 @@ export default function SignatureRequestSIWE({
       />
       <Message data={formatMessage(parsedMessage, t)} />
       {!isMatchingAddress && (
-        <div className="signature-request-siwe__domain-mismatch-warning">
-          <ActionableMessage
-            type="warning"
-            message={t('SIWEAddressInvalid', [
-              parsedMessage.address,
-              fromAccount.address,
-            ])}
-            iconFillColor="var(--color-warning-default)"
-            useIcon
-            withRightButton
-            className="no-margin-top"
-          />
-        </div>
+        <ActionableMessage
+          className="signature-request-siwe__actionable-message"
+          type="warning"
+          message={t('SIWEAddressInvalid', [
+            parsedMessage.address,
+            fromAccount.address,
+          ])}
+          iconFillColor="var(--color-warning-default)"
+          useIcon
+          withRightButton
+        />
       )}
       {!isSIWEDomainValid && (
-        <div className="signature-request-siwe__domain-mismatch-warning">
-          <ActionableMessage
-            type="danger"
-            message={t('SIWEDomainInvalid', [parsedMessage.domain])}
-            iconFillColor="var(--color-error-default)"
-            useIcon
-            withRightButton
-            className="no-margin-top"
-          />
-        </div>
+        <ActionableMessage
+          className="signature-request-siwe__actionable-message"
+          type="danger"
+          message={t('SIWEDomainInvalid', [parsedMessage.domain])}
+          iconFillColor="var(--color-error-default)"
+          useIcon
+          withRightButton
+        />
       )}
       <PageContainerFooter
         footerClassName="signature-request-siwe__page-container-footer"

@@ -9,6 +9,7 @@
   background-color: var(--color-background-default);
   margin-right: auto;
   margin-left: auto;
+  overflow-y: scroll;
 
   @media screen and (min-width: $break-large) {
     width: 408px;
@@ -19,22 +20,15 @@
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   }
 
-  &__domain-mismatch-warning {
-    padding: 4px 16px;
-  }
-}
+  .signature-request-siwe__actionable-message {
+    margin: 4px 16px;
 
-
-.signature-request-siwe__domain-mismatch-warning {
-  .no-margin-top {
-    margin-top: 0;
-  }
-
-  .actionable-message svg {
-    width: 13px;
-    height: 13px;
-    left: 10px;
-    top: 20px;
+    svg {
+      width: 13px;
+      height: 13px;
+      left: 10px;
+      top: 20px;
+    }
   }
 }
 
