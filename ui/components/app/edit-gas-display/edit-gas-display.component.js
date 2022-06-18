@@ -81,7 +81,7 @@ export default function EditGasDisplay({
   const isMainnet = useSelector(getIsMainnet);
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction.txParams);
+    !isLegacyTransaction(transaction?.txParams);
   const showAdvancedInlineGasIfPossible = useSelector(
     getAdvancedInlineGasShown,
   );

@@ -365,11 +365,20 @@ function createScriptTasks({
   }
 }
 
-const postProcessServiceWorker = (mv3BrowserPlatforms, fileList) => {
+const postProcessServiceWorker = (
+  mv3BrowserPlatforms,
+  fileList,
+  applyLavaMoat,
+) => {
   mv3BrowserPlatforms.forEach((browser) => {
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    const fileOutput = fileContent
+      .replace('/** FILE NAMES */', fileList)
+      .replace(
+        'const applyLavaMoat = true;',
+        `const applyLavaMoat = ${applyLavaMoat};`,
+      );
     writeFileSync(appInitFile, fileOutput);
   });
 };
@@ -385,6 +394,7 @@ async function bundleMV3AppInitialiser({
   testing,
   policyOnly,
   shouldLintFenceFiles,
+  applyLavaMoat,
 }) {
   const label = 'app-init';
   // TODO: remove this filter for firefox once MV3 is supported in it
@@ -409,14 +419,14 @@ async function bundleMV3AppInitialiser({
     shouldLintFenceFiles,
   })();
 
-  postProcessServiceWorker(mv3BrowserPlatforms, fileList);
+  postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
 
   let prevChromeFileContent;
   watch('./dist/chrome/app-init.js', () => {
     const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
     if (chromeFileContent !== prevChromeFileContent) {
       prevChromeFileContent = chromeFileContent;
-      postProcessServiceWorker(mv3BrowserPlatforms, fileList);
+      postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
     }
   });
 
@@ -595,6 +605,7 @@ function createFactoredBuild({
                 testing,
                 policyOnly,
                 shouldLintFenceFiles,
+                applyLavaMoat,
               });
             }
             break;
