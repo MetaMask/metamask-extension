@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.16.0]
+### Uncategorized
+- Create e2e test for snap in-app notification ([#14894](https://github.com/MetaMask/metamask-extension/pull/14894))
+- Include snap version in pill ([#14803](https://github.com/MetaMask/metamask-extension/pull/14803))
+- Snap notifications integration ([#14605](https://github.com/MetaMask/metamask-extension/pull/14605))
+- Remove site origin on snap install ([#14752](https://github.com/MetaMask/metamask-extension/pull/14752))
+- create e2e test for manageState snap ([#14699](https://github.com/MetaMask/metamask-extension/pull/14699))
+- snaps-skunkworks@0.15.0 ([#14772](https://github.com/MetaMask/metamask-extension/pull/14772))
+- snaps-skunkworks@0.14.0 ([#14700](https://github.com/MetaMask/metamask-extension/pull/14700))
+- Use enum for test snaps website URL ([#14727](https://github.com/MetaMask/metamask-extension/pull/14727))
+- Fix Snaps view search ([#14693](https://github.com/MetaMask/metamask-extension/pull/14693))
+- Remove confirmation for terminated snaps ([#14566](https://github.com/MetaMask/metamask-extension/pull/14566))
+- snaps-skunkworks@0.12.0 ([#14670](https://github.com/MetaMask/metamask-extension/pull/14670))
+- Simplify removeSnap functionality after snaps-skunkworks update ([#14646](https://github.com/MetaMask/metamask-extension/pull/14646))
+
 ### Added
 - Add friendly error handling screen, when UI fails to connect to background ([#14461](https://github.com/MetaMask/metamask-extension/pull/14461))
 - Add fiat onboarding for AVAX and MATIC through Wyre ([#14683](https://github.com/MetaMask/metamask-extension/pull/14683))
@@ -50,12 +64,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix incorrect line breaks on footer buttons from NetworksTab ([#14733](https://github.com/MetaMask/metamask-extension/pull/14733))
 - Fix incorrect currency symbol in the send flow history state logs ([#14726](https://github.com/MetaMask/metamask-extension/pull/14726))
 - Fix batch cancel/reject for signature requests ([#13786](https://github.com/MetaMask/metamask-extension/pull/13786))
-- Fix unrecognized tx type safeTransferFrom, by adding the case in useTransactionDisplayData ([#14678](https://github.com/MetaMask/metamask-extension/pull/14678))
 - Fix "Learn more" dialog broken link from Eth Sign ([#14667](https://github.com/MetaMask/metamask-extension/pull/14667))
-- Fix incorrect casing of includeUsdRate option passed to CurrencyRateController ([#14615](https://github.com/MetaMask/metamask-extension/pull/14615))
 - Fix mixed text for Speed up/Cancel information ([#14551](https://github.com/MetaMask/metamask-extension/pull/14551))
 - Fix SRP paste duplication ([#14625](https://github.com/MetaMask/metamask-extension/pull/14625))
-- Fix browser.tab.get API call by removing `returnToOnboardingInitiator` redundant method ([#14550](https://github.com/MetaMask/metamask-extension/pull/14550))
+- Fix onboarding functionality so that users of dapps using our onboarding library are redirected to the dapp after completing onboarding ([#14550](https://github.com/MetaMask/metamask-extension/pull/14550))
 - Fix error handling for signature methods so that proper errors are returned to dapps when there is a permissions error ([#14126](https://github.com/MetaMask/metamask-extension/pull/14126))
 - Fix `Speed Up` and `Cancel` button styles from `TransactionListItem` consolidating them with `TransactionListItemDetails` buttons ([#14659](https://github.com/MetaMask/metamask-extension/pull/14659))
 - Swaps: fix wrong colour for the high price impact notification ([#14697](https://github.com/MetaMask/metamask-extension/pull/14697))
