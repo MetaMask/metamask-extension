@@ -2836,9 +2836,6 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
-  "selectToShowCustomNetworkList": {
-    "message": "Select this to show a list of networks with prefilled details when adding a new network."
-  },
   "selectType": {
     "message": "Select Type"
   },
@@ -2897,7 +2894,10 @@
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showCustomNetworkList": {
-    "message": "Show custom network list"
+    "message": "Show Custom Network List"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Select this to show a list of networks with prefilled details when adding a new network."
   },
   "showFiatConversionInTestnets": {
     "message": "Show Conversion on test networks"

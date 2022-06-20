@@ -298,7 +298,7 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('showCustomNetworkList')}</span>
           <div className="settings-page__content-description">
-            {t('selectToShowCustomNetworkList')}
+            {t('showCustomNetworkListDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
