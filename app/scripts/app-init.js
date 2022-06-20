@@ -12,9 +12,7 @@ function tryImport(...fileNames) {
 
 function importAllScripts() {
   const startImportScriptsTime = Date.now();
-  // applyLavaMoat has been hard coded to "true" as
-  // tryImport('./runtime-cjs.js') is giving issue with XMLHttpRequest object which is not avaialble to service worker.
-  // we need to dynamically inject values of applyLavaMoat once this is fixed.
+  // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = true;
 
   tryImport('./globalthis.js');
@@ -25,14 +23,16 @@ function importAllScripts() {
     tryImport('./lockdown-more.js');
     tryImport('./policy-load.js');
   } else {
+    tryImport('./init-globals.js');
     tryImport('./lockdown-install.js');
-    tryImport('./lockdown-more.js');
     tryImport('./lockdown-run.js');
+    tryImport('./lockdown-more.js');
     tryImport('./runtime-cjs.js');
   }
 
   const fileList = [
     // The list of files is injected at build time by replacing comment below with comma separated strings of file names
+    // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
     /** FILE NAMES */
   ];
 
