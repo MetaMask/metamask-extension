@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix line-wrapping in Edit Nickname screen by decreasing the padding ([#14842](https://github.com/MetaMask/metamask-extension/pull/14842))
-- Fix permissions to https://chainid.network/chains.json by adding the domain into the manifest.json file ([#14810](https://github.com/MetaMask/metamask-extension/pull/14810))
+- Fix 'Currency Symbol' detection in network settings when using Firefox ([#14810](https://github.com/MetaMask/metamask-extension/pull/14810))
 - Fix switching between ETH and USD in the amount field on the send screen ([#13827](https://github.com/MetaMask/metamask-extension/pull/13827))
 - Fix addition of 'add recipient' events to the send flow change logs so that 'contact' and 'recent' recipient are correctly distinguished ([#14771](https://github.com/MetaMask/metamask-extension/pull/14771))
 - Fix lock button sizing for text exceeding button boundaries ([#14335](https://github.com/MetaMask/metamask-extension/pull/14335))
