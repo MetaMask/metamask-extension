@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -18,7 +19,10 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
+  getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -46,6 +50,8 @@ import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import { showRemainingTimeInMinAndSec } from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import CreateNewSwap from '../create-new-swap';
+import ViewOnBlockExplorer from '../view-on-block-explorer';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -71,11 +77,17 @@ export default function SmartTransactionStatus() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const baseNetworkUrl =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
   let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
@@ -122,6 +134,7 @@ export default function SmartTransactionStatus() {
   const showCloseButtonOnly =
     isSmartTransactionPending ||
     smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS;
+  const txHash = latestSmartTransaction?.statusMetadata?.minedHash;
 
   useEffect(() => {
     trackEvent({
@@ -173,6 +186,7 @@ export default function SmartTransactionStatus() {
   let description;
   let subDescription;
   let icon;
+  let blockExplorerUrl;
   if (isSmartTransactionPending) {
     if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
@@ -220,6 +234,12 @@ export default function SmartTransactionStatus() {
       </a>,
     ]);
     icon = <RevertedIcon />;
+  }
+  if (txHash && latestSmartTransactionUuid) {
+    blockExplorerUrl = getBlockExplorerLink(
+      { hash: txHash, chainId },
+      { blockExplorerUrl: baseNetworkUrl },
+    );
   }
 
   const showCancelSwapLink =
@@ -373,6 +393,9 @@ export default function SmartTransactionStatus() {
             {description}
           </Typography>
         )}
+        {blockExplorerUrl && (
+          <ViewOnBlockExplorer blockExplorerUrl={blockExplorerUrl} />
+        )}
         <Box
           marginTop={3}
           className="smart-transaction-status__background-animation smart-transaction-status__background-animation--bottom"
@@ -390,6 +413,9 @@ export default function SmartTransactionStatus() {
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
         isSmartTransactionPending && <CancelSwap />}
+      {smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS ? (
+        <CreateNewSwap sensitiveProperties={sensitiveProperties} />
+      ) : null}
       <SwapsFooter
         onSubmit={async () => {
           if (showCloseButtonOnly) {
