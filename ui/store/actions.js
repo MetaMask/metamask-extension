@@ -1669,10 +1669,11 @@ export function addImportedTokens(tokensToImport) {
 /**
  * To add ignored token addresses to state
  *
- * @param tokensToIgnore
- * @param dontShowLoadingIndicator
+ * @param options
+ * @param options.tokensToIgnore
+ * @param options.dontShowLoadingIndicator
  */
-export function ignoreTokens(tokensToIgnore, dontShowLoadingIndicator) {
+export function ignoreTokens({ tokensToIgnore, dontShowLoadingIndicator }) {
   const _tokensToIgnore = Array.isArray(tokensToIgnore)
     ? tokensToIgnore
     : [tokensToIgnore];

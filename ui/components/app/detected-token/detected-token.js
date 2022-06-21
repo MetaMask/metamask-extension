@@ -93,7 +93,12 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     const deSelectedTokensAddresses = deSelectedTokens.map(
       ({ address }) => address,
     );
-    await dispatch(ignoreTokens(deSelectedTokensAddresses));
+    await dispatch(
+      ignoreTokens({
+        tokensToIgnore: deSelectedTokensAddresses,
+        dontShowLoadingIndicator: true,
+      }),
+    );
     setShowDetectedTokens(false);
   };
 
