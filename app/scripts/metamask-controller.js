@@ -2673,8 +2673,17 @@ export default class MetamaskController extends EventEmitter {
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
 
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+
     // Remove account from the keyring
     await this.keyringController.removeAccount(address);
+
+    const updatedKeyringAccounts = await keyring.getAccounts();
+
+    if (updatedKeyringAccounts.length === 0) {
+      keyring.destroy?.();
+    }
+
     return address;
   }
 
