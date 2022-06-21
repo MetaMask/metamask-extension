@@ -359,7 +359,7 @@ export default function BuildQuote({
   const onToSelect = useCallback(
     (token) => {
       if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(ignoreTokens(toAddress));
+        dispatch(ignoreTokens(toAddress, true));
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);

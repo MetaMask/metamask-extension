@@ -37,7 +37,6 @@ describe('Swap Eth for another Token', function () {
           '[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]',
         );
         await driver.clickElement('[placeholder="Search for a token"]');
-        await driver.clickElement('[placeholder="Search for a token"]');
         await driver.fill('[placeholder="Search for a token"]', 'DAI');
         await driver.waitForSelector(
           '[class="searchable-item-list__primary-label"]',
