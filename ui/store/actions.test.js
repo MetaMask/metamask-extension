@@ -1116,7 +1116,9 @@ describe('Actions', () => {
 
       actions._setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.ignoreTokens());
+      await store.dispatch(
+        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
+      );
       expect(ignoreTokensStub.callCount).toStrictEqual(1);
     });
 
@@ -1140,7 +1142,9 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.ignoreTokens());
+      await store.dispatch(
+        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
+      );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
