@@ -18,6 +18,9 @@ describe('Swap Eth for another Token', function () {
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
+        driverOptions: {
+          timeOut: 20000,
+        },
       },
       async ({ driver }) => {
         await driver.navigate();
