@@ -3082,7 +3082,7 @@
     "message": "Status"
   },
   "statusConnected": {
-    "message": "Verbinden"
+    "message": "Verbunden"
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
