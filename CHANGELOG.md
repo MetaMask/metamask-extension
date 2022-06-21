@@ -8,18 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.16.0]
 ### Uncategorized
-- Create e2e test for snap in-app notification ([#14894](https://github.com/MetaMask/metamask-extension/pull/14894))
-- Include snap version in pill ([#14803](https://github.com/MetaMask/metamask-extension/pull/14803))
-- Snap notifications integration ([#14605](https://github.com/MetaMask/metamask-extension/pull/14605))
-- snaps-skunkworks@0.15.0 ([#14772](https://github.com/MetaMask/metamask-extension/pull/14772))
-- Remove site origin on snap install ([#14752](https://github.com/MetaMask/metamask-extension/pull/14752))
-- snaps-skunkworks@0.14.0 ([#14700](https://github.com/MetaMask/metamask-extension/pull/14700))
-- Use enum for test snaps website URL ([#14727](https://github.com/MetaMask/metamask-extension/pull/14727))
-- create e2e test for manageState snap ([#14699](https://github.com/MetaMask/metamask-extension/pull/14699))
-- Fix Snaps view search ([#14693](https://github.com/MetaMask/metamask-extension/pull/14693))
-- Remove confirmation for terminated snaps ([#14566](https://github.com/MetaMask/metamask-extension/pull/14566))
-- snaps-skunkworks@0.12.0 ([#14670](https://github.com/MetaMask/metamask-extension/pull/14670))
-- Simplify removeSnap functionality after snaps-skunkworks update ([#14646](https://github.com/MetaMask/metamask-extension/pull/14646))
+- **[FLASK]** Improve snap install screen ([#14803](https://github.com/MetaMask/metamask-extension/pull/14803), ([#14752](https://github.com/MetaMask/metamask-extension/pull/14752)))
+- **[FLASK]** Add in-app notifications for snaps ([#14605](https://github.com/MetaMask/metamask-extension/pull/14605))
+- **[FLASK]** Fix issues with the snap startup process and usage of `WebAssembly` ([#14772](https://github.com/MetaMask/metamask-extension/pull/14772))
+- **[FLASK] BREAKING** Bump `@metamask/key-tree` used by snaps to `4.0.0` ([#14700](https://github.com/MetaMask/metamask-extension/pull/14700))
+- **[FLASK]** Add `long-running` snap permission ([#14700](https://github.com/MetaMask/metamask-extension/pull/14700))
+- **[FLASK]** Fix issues with snap id encoding ([#14693](https://github.com/MetaMask/metamask-extension/pull/14693))
+- **[FLASK]** Stopped showing confirmations for terminated snaps ([#14566](https://github.com/MetaMask/metamask-extension/pull/14566))
+- **[FLASK]** Fix multiple smaller bugs with snaps ([#14670](https://github.com/MetaMask/metamask-extension/pull/14670))
 
 ### Added
 - Add friendly error handling screen, when UI fails to connect to background ([#14461](https://github.com/MetaMask/metamask-extension/pull/14461))
