@@ -1670,14 +1670,17 @@ export function addImportedTokens(tokensToImport) {
  * To add ignored token addresses to state
  *
  * @param tokensToIgnore
+ * @param dontShowLoadingIndicator
  */
-export function ignoreTokens(tokensToIgnore) {
+export function ignoreTokens(tokensToIgnore, dontShowLoadingIndicator) {
   const _tokensToIgnore = Array.isArray(tokensToIgnore)
     ? tokensToIgnore
     : [tokensToIgnore];
 
   return async (dispatch) => {
-    dispatch(showLoadingIndication());
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
     try {
       await promisifiedBackground.ignoreTokens(_tokensToIgnore);
     } catch (error) {
