@@ -28,7 +28,12 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
     <Modal
       onSubmit={async () => {
         if (tokenAddedAsNFT) {
-          await dispatch(ignoreTokens(tokenAddress));
+          await dispatch(
+            ignoreTokens({
+              tokensToIgnore: tokenAddress,
+              dontShowLoadingIndicator: true,
+            }),
+          );
           const { tokenId } = tokenAddedAsNFT;
           history.push({
             pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,

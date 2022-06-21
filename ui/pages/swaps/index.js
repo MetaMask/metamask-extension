@@ -214,7 +214,12 @@ export default function Swap() {
         destinationTokenAddedForSwap &&
         (!isAwaitingSwapRoute || conversionError)
       ) {
-        dispatch(ignoreTokens(destinationTokenInfo?.address));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: destinationTokenInfo?.address,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
     };
   }, [
