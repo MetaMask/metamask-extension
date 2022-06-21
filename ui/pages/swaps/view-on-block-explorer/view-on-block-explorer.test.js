@@ -17,7 +17,7 @@ describe('ViewOnBlockExplorer', () => {
     const { container, getByText } = renderWithProvider(
       <ViewOnBlockExplorer {...createProps()} />,
     );
-    expect(getByText('View Swap on etherscan.io')).toBeInTheDocument();
+    expect(getByText('View Swap at etherscan.io')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

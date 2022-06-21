@@ -387,7 +387,7 @@ export default function SmartTransactionStatus() {
         {description && (
           <Typography
             variant={TYPOGRAPHY.H6}
-            boxProps={{ marginTop: 0 }}
+            boxProps={{ ...(blockExplorerUrl && { margin: [1, 0, 0] }) }}
             color={COLORS.TEXT_ALTERNATIVE}
           >
             {description}
