@@ -28,7 +28,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import SearchIcon from '../../ui/search-icon';
 import IconCheck from '../../ui/icon/icon-check';
 import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
 import IconConnect from '../../ui/icon/icon-connect';
@@ -37,6 +36,7 @@ import IconPlus from '../../ui/icon/icon-plus';
 import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
+import SearchIcon from '../../ui/icon/search-icon';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -145,7 +145,7 @@ export default class AccountMenu extends Component {
           marginLeft: '8px',
         }}
       >
-        <SearchIcon color="currentColor" />
+        <SearchIcon color="var(--color-icon-muted)" />
       </InputAdornment>
     );
 
