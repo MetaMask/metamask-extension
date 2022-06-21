@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.15.1]
+
 ## [10.15.0]
 ### Added
 - Add warning when multiple instances of MetaMask are running ([#13836](https://github.com/MetaMask/metamask-extension/pull/13836))
@@ -2964,7 +2966,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...HEAD
+[10.15.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.15.1
 [10.15.0]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...v10.15.0
 [10.14.7]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...v10.14.7
 [10.14.6]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...v10.14.6
