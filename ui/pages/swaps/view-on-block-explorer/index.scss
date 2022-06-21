@@ -1,6 +1,7 @@
 .view-on-block-explorer {
-    a {
-        @include H7;
-        color: var(--color-primary-default);
-    }
+  a {
+    @include H7;
+
+    color: var(--color-primary-default);
+  }
 }

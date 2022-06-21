@@ -164,7 +164,10 @@ export default function AwaitingSwap({
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
     content = blockExplorerUrl && (
-      <ViewOnBlockExplorer blockExplorerUrl={blockExplorerUrl} />
+      <ViewOnBlockExplorer
+        blockExplorerUrl={blockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
+      />
     );
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
     headerText = t('swapQuotesExpiredErrorTitle');
@@ -208,7 +211,10 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnBlockExplorer blockExplorerUrl={blockExplorerUrl} />
+      <ViewOnBlockExplorer
+        blockExplorerUrl={blockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
+      />
     );
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete');
@@ -223,7 +229,10 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnBlockExplorer blockExplorerUrl={blockExplorerUrl} />
+      <ViewOnBlockExplorer
+        blockExplorerUrl={blockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
+      />
     );
   }
 
@@ -250,7 +259,7 @@ export default function AwaitingSwap({
         {content}
       </div>
       {!errorKey && swapComplete ? (
-        <CreateNewSwap sensitiveProperties={sensitiveProperties} />
+        <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
       ) : null}
       <SwapsFooter
         onSubmit={async () => {

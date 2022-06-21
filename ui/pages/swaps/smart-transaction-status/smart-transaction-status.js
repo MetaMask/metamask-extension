@@ -394,7 +394,10 @@ export default function SmartTransactionStatus() {
           </Typography>
         )}
         {blockExplorerUrl && (
-          <ViewOnBlockExplorer blockExplorerUrl={blockExplorerUrl} />
+          <ViewOnBlockExplorer
+            blockExplorerUrl={blockExplorerUrl}
+            sensitiveTrackingProperties={sensitiveProperties}
+          />
         )}
         <Box
           marginTop={3}
@@ -414,7 +417,7 @@ export default function SmartTransactionStatus() {
         latestSmartTransactionUuid &&
         isSmartTransactionPending && <CancelSwap />}
       {smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS ? (
-        <CreateNewSwap sensitiveProperties={sensitiveProperties} />
+        <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
       ) : null}
       <SwapsFooter
         onSubmit={async () => {

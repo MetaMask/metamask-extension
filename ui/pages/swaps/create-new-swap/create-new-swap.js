@@ -14,7 +14,7 @@ import {
 } from '../../../ducks/swaps/swaps';
 import { getSwapsDefaultToken } from '../../../selectors';
 
-export default function CreateNewSwap({ sensitiveProperties }) {
+export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ export default function CreateNewSwap({ sensitiveProperties }) {
           trackEvent({
             event: 'Make Another Swap',
             category: EVENT.CATEGORIES.SWAPS,
-            sensitiveProperties,
+            sensitiveProperties: sensitiveTrackingProperties,
           });
           await dispatch(navigateBackToBuildQuote(history));
           dispatch(setSwapsFromToken(defaultSwapsToken));
@@ -42,5 +42,5 @@ export default function CreateNewSwap({ sensitiveProperties }) {
 }
 
 CreateNewSwap.propTypes = {
-  sensitiveProperties: PropTypes.object.isRequired,
+  sensitiveTrackingProperties: PropTypes.object.isRequired,
 };

@@ -7,7 +7,10 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
 
-export default function ViewOnBlockExplorer({ blockExplorerUrl }) {
+export default function ViewOnBlockExplorer({
+  blockExplorerUrl,
+  sensitiveTrackingProperties,
+}) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -19,6 +22,7 @@ export default function ViewOnBlockExplorer({ blockExplorerUrl }) {
           trackEvent({
             event: 'Clicked Block Explorer Link',
             category: EVENT.CATEGORIES.SWAPS,
+            sensitiveProperties: sensitiveTrackingProperties,
             properties: {
               link_type: 'Transaction Block Explorer',
               action: 'Swap Transaction',
@@ -38,5 +42,6 @@ export default function ViewOnBlockExplorer({ blockExplorerUrl }) {
 }
 
 ViewOnBlockExplorer.propTypes = {
-  blockExplorerUrl: PropTypes.string,
+  blockExplorerUrl: PropTypes.string.isRequired,
+  sensitiveTrackingProperties: PropTypes.object.isRequired,
 };
