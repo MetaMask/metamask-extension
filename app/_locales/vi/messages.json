@@ -466,9 +466,6 @@
     "message": "Để $1 một giao dịch, phí gas phải tăng tối thiểu 10% để mạng nhận ra giao dịch này.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Hủy hoán đổi"
-  },
   "cancellationGasFee": {
     "message": "Phí gas hủy"
   },
