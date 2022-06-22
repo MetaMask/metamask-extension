@@ -466,9 +466,6 @@
     "message": "किसी लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि की जानी चाहिए ताकि उसे नेटवर्क द्वारा मान्यता मिल सके।",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "स्वैप रद्द करें"
-  },
   "cancellationGasFee": {
     "message": "रद्दीकरण गैस शुल्क"
   },
