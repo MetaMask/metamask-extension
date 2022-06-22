@@ -90,7 +90,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        const confirmResult = await driver.findElement('.sendResults');
+        const confirmResult = await driver.findElement('.confirmResult');
         assert.equal(await confirmResult.getText(), 'true');
       },
     );
