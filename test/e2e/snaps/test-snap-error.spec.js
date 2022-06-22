@@ -28,7 +28,7 @@ describe('Test Snap Error', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/');
+        await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3');
         await driver.fill('.snapId2', 'npm:@metamask/test-snap-error');
         await driver.clickElement({
           text: 'Connect Error Snap',

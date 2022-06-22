@@ -29,8 +29,8 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/');
-        await driver.fill('.snapId', 'npm:@metamask/test-snap-confirm');
+        await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3');
+        await driver.fill('.snapId1', 'npm:@metamask/test-snap-confirm');
         await driver.clickElement({
           text: 'Connect To Confirm Snap',
           tag: 'button',
@@ -90,7 +90,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        const confirmResult = await driver.findElement('.sendResults');
+        const confirmResult = await driver.findElement('.confirmResult');
         assert.equal(await confirmResult.getText(), 'true');
       },
     );
