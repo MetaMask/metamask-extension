@@ -466,9 +466,6 @@
     "message": "거래를 $1하려면 가스비를 최소 10%를 인상해야 네트워크에서 인식될 수 있습니다.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "스왑 취소"
-  },
   "cancellationGasFee": {
     "message": "가스 수수료 취소"
   },
