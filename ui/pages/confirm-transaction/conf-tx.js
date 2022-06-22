@@ -129,7 +129,7 @@ class ConfirmTxScreen extends Component {
       return SignatureRequest;
     }
 
-    if (siwe?.isSIWEMessage) {
+    if (process.env.SIWE_VALIDATION && siwe?.isSIWEMessage) {
       return SignatureRequestSIWE;
     }
 
