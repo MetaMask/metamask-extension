@@ -9,7 +9,7 @@
   background-color: var(--color-background-default);
   margin-right: auto;
   margin-left: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   @media screen and (min-width: $break-large) {
     width: 408px;
