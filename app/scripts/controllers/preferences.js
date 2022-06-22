@@ -16,6 +16,7 @@ export default class PreferencesController {
    *
    * @typedef {Object} PreferencesController
    * @param {Object} opts - Overrides the defaults for the initial state of this.store
+   * @property {Object} accountTracker An {@code AccountTracker} reference
    * @property {Object} store The stored object containing a users preferences, stored in local storage
    * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
@@ -72,6 +73,7 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
+    this.accountTracker = opts.accountTracker;
     this.network = opts.network;
     this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
@@ -322,9 +324,14 @@ export default class PreferencesController {
     const address = normalizeAddress(_address);
 
     const { identities } = this.store.getState();
+    const { accounts } = this.accountTracker.store.getState();
     const selectedIdentity = identities[address];
+    const selectedAccount = accounts[address];
     if (!selectedIdentity) {
       throw new Error(`Identity for '${address} not found`);
+    }
+    if (!selectedAccount) {
+      throw new Error(`Account for '${address} not found`);
     }
 
     selectedIdentity.lastSelected = Date.now();

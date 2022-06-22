@@ -226,7 +226,17 @@ export default class MetamaskController extends EventEmitter {
     this.provider = this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker;
 
+    // account tracker watches balances, nonces, and any code at their address
+    this.accountTracker = new AccountTracker({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
+    });
+
     this.preferencesController = new PreferencesController({
+      accountTracker: this.accountTracker,
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       openPopup: opts.openPopup,
@@ -513,15 +523,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       preferencesController: this.preferencesController,
       initState: initState.IncomingTransactionsController,
-    });
-
-    // account tracker watches balances, nonces, and any code at their address
-    this.accountTracker = new AccountTracker({
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getCurrentChainId: this.networkController.getCurrentChainId.bind(
-        this.networkController,
-      ),
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -2399,6 +2400,9 @@ export default class MetamaskController extends EventEmitter {
         oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
       ),
     ];
+
+    // Ensure preferences + identities controller know about all addresses
+    this.preferencesController.syncAddresses(accountsToTrack);
     this.accountTracker.syncWithAddresses(accountsToTrack);
     return accounts;
   }
