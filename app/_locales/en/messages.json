@@ -466,8 +466,12 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Cancel swap"
+  "cancelSwapForFee": {
+    "message": "Cancel swap for ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Cancel swap for free"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
