@@ -9,7 +9,7 @@
   flex: 0 0 auto;
 
   @media screen and (max-width: $break-small) {
-    padding: 1rem;
+    padding: 16px;
     z-index: $mobile-header-z-index;
   }
 

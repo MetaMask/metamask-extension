@@ -42,12 +42,15 @@ import {
   SubjectMetadataController,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   RateLimitController,
+  NotificationController,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SnapController } from '@metamask/snap-controllers';
-import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
+import {
+  SnapController,
+  IframeExecutionService,
+} from '@metamask/snap-controllers';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -403,7 +406,7 @@ export default class MetamaskController extends EventEmitter {
       name: 'CurrencyRateController',
     });
     this.currencyRateController = new CurrencyRateController({
-      includeUSDRate: true,
+      includeUsdRate: true,
       messenger: currencyRateMessenger,
       state: {
         ...initState.CurrencyController,
@@ -637,10 +640,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    this.workerController = new IframeExecutionService({
-      onError: this.onExecutionEnvironmentError.bind(this),
+    this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.4',
+        'https://metamask.github.io/iframe-execution-environment/0.5.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -666,22 +668,34 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.snapController = new SnapController({
-      endowmentPermissionNames: Object.values(EndowmentPermissions),
-      terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
-        this.workerController,
+      environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+      terminateAllSnaps: this.snapExecutionService.terminateAllSnaps.bind(
+        this.snapExecutionService,
       ),
-      terminateSnap: this.workerController.terminateSnap.bind(
-        this.workerController,
+      terminateSnap: this.snapExecutionService.terminateSnap.bind(
+        this.snapExecutionService,
       ),
-      executeSnap: this.workerController.executeSnap.bind(
-        this.workerController,
+      executeSnap: this.snapExecutionService.executeSnap.bind(
+        this.snapExecutionService,
       ),
-      getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
-        this.workerController,
+      getRpcMessageHandler: this.snapExecutionService.getRpcMessageHandler.bind(
+        this.snapExecutionService,
       ),
       closeAllConnections: this.removeAllConnections.bind(this),
+      // Prefix subject with appKeyType to generate separate keys for separate uses
+      getAppKey: async (subject, appKeyType) => {
+        await this.appStateController.getUnlockPromise(true);
+        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
+      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
+    });
+
+    this.notificationController = new NotificationController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'NotificationController',
+      }),
+      state: initState.NotificationController,
     });
 
     this.rateLimitController = new RateLimitController({
@@ -702,6 +716,15 @@ export default class MetamaskController extends EventEmitter {
           );
           return null;
         },
+        showInAppNotification: (origin, message) => {
+          this.controllerMessenger.call(
+            'NotificationController:show',
+            origin,
+            message,
+          );
+
+          return null;
+        },
       },
     });
     ///: END:ONLY_INCLUDE_IN
@@ -714,6 +737,9 @@ export default class MetamaskController extends EventEmitter {
           network: this.networkController,
           keyringMemStore: this.keyringController.memStore,
           tokenList: this.tokenListController,
+          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
         }))
       : (this.detectTokensController = new DetectTokensController({
           preferences: this.preferencesController,
@@ -1000,6 +1026,7 @@ export default class MetamaskController extends EventEmitter {
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
+      NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
     });
 
@@ -1040,6 +1067,7 @@ export default class MetamaskController extends EventEmitter {
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        NotificationController: this.notificationController,
         ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
@@ -1115,11 +1143,19 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
-        showNotification: (origin, args) =>
+        showNativeNotification: (origin, args) =>
           this.controllerMessenger.call(
             'RateLimitController:call',
             origin,
             'showNativeNotification',
+            origin,
+            args.message,
+          ),
+        showInAppNotification: (origin, args) =>
+          this.controllerMessenger.call(
+            'RateLimitController:call',
+            origin,
+            'showInAppNotification',
             origin,
             args.message,
           ),
@@ -1130,6 +1166,25 @@ export default class MetamaskController extends EventEmitter {
       }),
     };
   }
+
+  /**
+   * Deletes the specified notifications from state.
+   *
+   * @param {string[]} ids - The notifications ids to delete.
+   */
+  dismissNotifications(ids) {
+    this.notificationController.dismiss(ids);
+  }
+
+  /**
+   * Updates the readDate attribute of the specified notifications.
+   *
+   * @param {string[]} ids - The notifications ids to mark as read.
+   */
+  markNotificationsAsRead(ids) {
+    this.notificationController.markRead(ids);
+  }
+
   ///: END:ONLY_INCLUDE_IN
 
   /**
@@ -1227,6 +1282,26 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapTerminated`,
+      (snapId) => {
+        const approvals = Object.values(
+          this.approvalController.state.pendingApprovals,
+        ).filter(
+          (approval) =>
+            approval.origin === snapId &&
+            approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
+        );
+        for (const approval of approvals) {
+          this.approvalController.reject(
+            approval.id,
+            new Error('Snap was terminated.'),
+          );
+        }
+      },
+    );
+
     ///: END:ONLY_INCLUDE_IN
   }
 
@@ -1242,12 +1317,17 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: async ({ origin }) => {
+      getAccounts: async (
+        { origin },
+        { suppressUnauthorizedError = true } = {},
+      ) => {
         if (origin === ORIGIN_METAMASK) {
           const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
-          return await this.getPermittedAccounts(origin);
+          return await this.getPermittedAccounts(origin, {
+            suppressUnauthorizedError,
+          });
         }
         return []; // changing this is a breaking change
       },
@@ -1728,7 +1808,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
-      removeSnap: this.removeSnap.bind(this),
+      removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      dismissNotifications: this.dismissNotifications.bind(this),
+      markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -1790,9 +1872,6 @@ export default class MetamaskController extends EventEmitter {
         smartTransactionsController,
       ),
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
-        smartTransactionsController,
-      ),
-      estimateSmartTransactionsGas: smartTransactionsController.estimateGas.bind(
         smartTransactionsController,
       ),
       submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(
@@ -2016,7 +2095,7 @@ export default class MetamaskController extends EventEmitter {
 
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block Metamask login due to
+      // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
       const transportPreference = this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
@@ -2188,7 +2267,7 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    // Optimistically called to not block Metamask login due to
+    // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
 
@@ -2537,17 +2616,24 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {boolean} [suppressUnauthorizedError] - Suppresses the unauthorized error.
    * @returns {Promise<string[]>} The origin's permitted accounts, or an empty
    * array.
    */
-  async getPermittedAccounts(origin) {
+  async getPermittedAccounts(
+    origin,
+    { suppressUnauthorizedError = true } = {},
+  ) {
     try {
       return await this.permissionController.executeRestrictedMethod(
         origin,
         RestrictedMethods.eth_accounts,
       );
     } catch (error) {
-      if (error.code === rpcErrorCodes.provider.unauthorized) {
+      if (
+        suppressUnauthorizedError &&
+        error.code === rpcErrorCodes.provider.unauthorized
+      ) {
         return [];
       }
       throw error;
@@ -3379,17 +3465,6 @@ export default class MetamaskController extends EventEmitter {
    * For snaps running in workers.
    *
    * @param snapId
-   * @param error
-   */
-  onExecutionEnvironmentError(snapId, error) {
-    this.snapController.stopPlugin(snapId);
-    this.snapController.addSnapError(error);
-  }
-
-  /**
-   * For snaps running in workers.
-   *
-   * @param snapId
    * @param connectionStream
    */
   setupSnapProvider(snapId, connectionStream) {
@@ -4150,23 +4225,4 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.setLocked();
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  // SNAPS
-  /**
-   * Removes the specified snap, and all of its associated permissions.
-   * If we didn't revoke the permission to access the snap from all subjects,
-   * they could just reinstall without any confirmation.
-   *
-   * TODO: This should be implemented in `SnapController.removeSnap` via a controller action.
-   *
-   * @param {{ id: string, permissionName: string }} snap - The wrapper object of the snap to remove.
-   */
-  removeSnap(snap) {
-    this.snapController.removeSnap(snap.id);
-    this.permissionController.revokePermissionForAllSubjects(
-      snap.permissionName,
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 }

@@ -8,6 +8,7 @@ import {
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
   AVALANCHE_CHAIN_ID,
+  ETH_SYMBOL,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
@@ -39,6 +40,7 @@ import {
   countDecimals,
   shouldEnableDirectWrapping,
   showRemainingTimeInMinAndSec,
+  getSwapsTokensReceivedFromTxMeta,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -565,6 +567,108 @@ describe('Swaps Util', () => {
     it('returns estimated for for STX', () => {
       // TODO: Implement tests for this function.
       expect(true).toBe(true);
+    });
+  });
+
+  describe('getSwapsTokensReceivedFromTxMeta', () => {
+    const createProps = () => {
+      return {
+        tokenSymbol: ETH_SYMBOL,
+        txMeta: {
+          swapMetaData: {
+            token_to_amount: 5,
+          },
+          txReceipt: {
+            status: '0x0',
+          },
+          preTxBalance: '8b11',
+          postTxBalance: '8b11',
+        },
+        tokenAddress: '0x881d40237659c251811cec9c364ef91234567890',
+        accountAddress: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+        tokenDecimals: 6,
+        approvalTxMeta: null,
+        chainId: MAINNET_CHAIN_ID,
+      };
+    };
+
+    it('returns an estimated amount if preTxBalance and postTxBalance are the same for ETH', () => {
+      const props = createProps();
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBe(props.txMeta.swapMetaData.token_to_amount);
+    });
+
+    it('returns null if there is no txMeta', () => {
+      const props = createProps();
+      props.txMeta = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
+    });
+
+    it('returns null if there is no txMeta.txReceipt', () => {
+      const props = createProps();
+      props.txMeta.txReceipt = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
+    });
+
+    it('returns null if there is no txMeta.postTxBalance', () => {
+      const props = createProps();
+      props.txMeta.postTxBalance = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
+    });
+
+    it('returns null if there is no txMeta.preTxBalance', () => {
+      const props = createProps();
+      props.txMeta.preTxBalance = undefined;
+      expect(
+        getSwapsTokensReceivedFromTxMeta(
+          props.tokenSymbol,
+          props.txMeta,
+          props.tokenAddress,
+          props.accountAddress,
+          props.tokenDecimals,
+          props.approvalTxMeta,
+          props.chainId,
+        ),
+      ).toBeNull();
     });
   });
 });

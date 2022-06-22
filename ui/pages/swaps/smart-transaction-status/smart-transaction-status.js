@@ -12,13 +12,18 @@ import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
-  getSwapsRefreshStates,
+  getSwapsNetworkConfig,
   cancelSwapsSmartTransaction,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
   getHardwareWalletType,
-} from '../../../selectors/selectors';
+  getCurrentChainId,
+  getUSDConversionRate,
+  conversionRateSelector,
+  getCurrentCurrency,
+} from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -44,7 +49,10 @@ import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transac
 
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import { showRemainingTimeInMinAndSec } from '../swaps.util';
+import {
+  showRemainingTimeInMinAndSec,
+  getFeeForSmartTransaction,
+} from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
@@ -71,14 +79,21 @@ export default function SmartTransactionStatus() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const chainId = useSelector(getCurrentChainId);
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const conversionRate = useSelector(conversionRateSelector);
+  const USDConversionRate = useSelector(getUSDConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
   let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
+  let cancellationFeeWei;
 
   if (currentSmartTransactions && currentSmartTransactions.length > 0) {
     latestSmartTransaction =
@@ -86,10 +101,12 @@ export default function SmartTransactionStatus() {
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus =
       latestSmartTransaction?.status || SMART_TRANSACTION_STATUSES.PENDING;
+    cancellationFeeWei =
+      latestSmartTransaction?.statusMetadata?.cancellationFeeWei;
   }
 
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
-    swapsRefreshRates.stxStatusDeadline,
+    swapsNetworkConfig.stxStatusDeadline,
   );
 
   const sensitiveProperties = {
@@ -139,13 +156,13 @@ export default function SmartTransactionStatus() {
         const secondsAfterStxSubmission = Math.round(
           (Date.now() - latestSmartTransaction.time) / 1000,
         );
-        if (secondsAfterStxSubmission > swapsRefreshRates.stxStatusDeadline) {
+        if (secondsAfterStxSubmission > swapsNetworkConfig.stxStatusDeadline) {
           setTimeLeftForPendingStxInSec(0);
           clearInterval(intervalId);
           return;
         }
         setTimeLeftForPendingStxInSec(
-          swapsRefreshRates.stxStatusDeadline - secondsAfterStxSubmission,
+          swapsNetworkConfig.stxStatusDeadline - secondsAfterStxSubmission,
         );
       };
       intervalId = setInterval(calculateRemainingTime, 1000);
@@ -158,7 +175,7 @@ export default function SmartTransactionStatus() {
     isSmartTransactionPending,
     latestSmartTransactionUuid,
     latestSmartTransaction.time,
-    swapsRefreshRates.stxStatusDeadline,
+    swapsNetworkConfig.stxStatusDeadline,
   ]);
 
   useEffect(() => {
@@ -169,17 +186,15 @@ export default function SmartTransactionStatus() {
     }, 1000); // Stop polling for quotes after 1s.
   }, [dispatch]);
 
-  let headerText = t('stxPendingOptimizingGas');
+  let headerText = t('stxPendingPrivatelySubmittingSwap');
   let description;
   let subDescription;
   let icon;
   if (isSmartTransactionPending) {
-    if (timeLeftForPendingStxInSec < 120) {
-      headerText = t('stxPendingFinalizing');
-    } else if (timeLeftForPendingStxInSec < 150) {
-      headerText = t('stxPendingPrivatelySubmitting');
-    } else if (cancelSwapLinkClicked) {
+    if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
+    } else if (cancellationFeeWei > 0) {
+      headerText = t('stxPendingPubliclySubmittingSwap');
     }
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
@@ -228,6 +243,17 @@ export default function SmartTransactionStatus() {
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
+    let feeInFiat;
+    if (cancellationFeeWei > 0) {
+      ({ feeInFiat } = getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        USDConversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: cancellationFeeWei,
+      }));
+    }
     return (
       <Box marginBottom={0}>
         <a
@@ -244,7 +270,9 @@ export default function SmartTransactionStatus() {
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
-          {t('cancelSwap')}
+          {feeInFiat
+            ? t('cancelSwapForFee', [feeInFiat])
+            : t('cancelSwapForFree')}
         </a>
       </Box>
     );
@@ -332,7 +360,7 @@ export default function SmartTransactionStatus() {
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginLeft: 1 }}
             >
-              {`${t('swapCompleteIn')} `}
+              {`${t('stxSwapCompleteIn')} `}
             </Typography>
             <Typography
               color={COLORS.TEXT_ALTERNATIVE}
@@ -358,8 +386,8 @@ export default function SmartTransactionStatus() {
               className="smart-transaction-status__loading-bar"
               style={{
                 width: `${
-                  (100 / swapsRefreshRates.stxStatusDeadline) *
-                  (swapsRefreshRates.stxStatusDeadline -
+                  (100 / swapsNetworkConfig.stxStatusDeadline) *
+                  (swapsNetworkConfig.stxStatusDeadline -
                     timeLeftForPendingStxInSec)
                 }%`,
               }}

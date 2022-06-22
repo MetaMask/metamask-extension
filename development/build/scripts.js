@@ -365,6 +365,74 @@ function createScriptTasks({
   }
 }
 
+const postProcessServiceWorker = (
+  mv3BrowserPlatforms,
+  fileList,
+  applyLavaMoat,
+) => {
+  mv3BrowserPlatforms.forEach((browser) => {
+    const appInitFile = `./dist/${browser}/app-init.js`;
+    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
+    const fileOutput = fileContent
+      .replace('/** FILE NAMES */', fileList)
+      .replace(
+        'const applyLavaMoat = true;',
+        `const applyLavaMoat = ${applyLavaMoat};`,
+      );
+    writeFileSync(appInitFile, fileOutput);
+  });
+};
+
+// Function generates app-init.js for browsers chrome, brave and opera.
+// It dynamically injects list of files generated in the build.
+async function bundleMV3AppInitialiser({
+  jsBundles,
+  browserPlatforms,
+  buildType,
+  devMode,
+  ignoredFiles,
+  testing,
+  policyOnly,
+  shouldLintFenceFiles,
+  applyLavaMoat,
+}) {
+  const label = 'app-init';
+  // TODO: remove this filter for firefox once MV3 is supported in it
+  const mv3BrowserPlatforms = browserPlatforms.filter(
+    (platform) => platform !== 'firefox',
+  );
+  const fileList = jsBundles.reduce(
+    (result, file) => `${result}'${file}',\n    `,
+    '',
+  );
+
+  await createNormalBundle({
+    browserPlatforms: mv3BrowserPlatforms,
+    buildType,
+    destFilepath: 'app-init.js',
+    devMode,
+    entryFilepath: './app/scripts/app-init.js',
+    ignoredFiles,
+    label,
+    testing,
+    policyOnly,
+    shouldLintFenceFiles,
+  })();
+
+  postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+
+  let prevChromeFileContent;
+  watch('./dist/chrome/app-init.js', () => {
+    const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
+    if (chromeFileContent !== prevChromeFileContent) {
+      prevChromeFileContent = chromeFileContent;
+      postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+    }
+  });
+
+  console.log(`Bundle end: service worker app-init.js`);
+}
+
 function createFactoredBuild({
   applyLavaMoat,
   browserPlatforms,
@@ -477,7 +545,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', () => {
+    events.on('bundleDone', async () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -523,6 +591,23 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
             });
+            if (process.env.ENABLE_MV3) {
+              const jsBundles = [
+                ...commonSet.values(),
+                ...groupSet.values(),
+              ].map((label) => `./${label}.js`);
+              await bundleMV3AppInitialiser({
+                jsBundles,
+                browserPlatforms,
+                buildType,
+                devMode,
+                ignoredFiles,
+                testing,
+                policyOnly,
+                shouldLintFenceFiles,
+                applyLavaMoat,
+              });
+            }
             break;
           }
           case 'content-script': {
