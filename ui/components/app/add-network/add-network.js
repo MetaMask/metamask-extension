@@ -19,11 +19,9 @@ import Tooltip from '../../ui/tooltip';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import IconBorder from '../../ui/icon-border';
 import {
-  getTheme,
   getFrequentRpcListDetail,
   getUnapprovedConfirmations,
 } from '../../../selectors';
-import { THEME_TYPE } from '../../../pages/settings/experimental-tab/experimental-tab.constant';
 
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -58,15 +56,6 @@ const AddNetwork = () => {
   );
   const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const [showPopover, setShowPopover] = useState(false);
-  const [theme, setTheme] = useState(useSelector(getTheme));
-
-  if (theme === THEME_TYPE.OS) {
-    const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
-      ? THEME_TYPE.DARK
-      : THEME_TYPE.LIGHT;
-
-    setTheme(osTheme);
-  }
 
   useEffect(() => {
     const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations?.find(
@@ -237,7 +226,6 @@ const AddNetwork = () => {
                           </Box>
                         }
                         trigger="mouseenter"
-                        theme={theme}
                       >
                         <i
                           className="fa fa-exclamation-triangle add-network__warning-icon"
