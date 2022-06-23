@@ -368,6 +368,10 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
+
+    const shouldShowNetworkInfo =
+      isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
+
     return (
       <div
         className={classnames('app', {
@@ -383,9 +387,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork && (
-          <NewNetworkInfo />
-        )}
+        {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
