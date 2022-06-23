@@ -13,6 +13,7 @@ describe('Test Snap manageState', function () {
         },
       ],
     };
+
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -29,11 +30,17 @@ describe('Test Snap manageState', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page, page down, enter and connect
+        // navigate to test snaps page, then fill in the snapId
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         await driver.fill('#snapId4', 'npm:@metamask/test-snap-managestate');
-        await driver.press('#snapId4', driver.Key.PAGE_DOWN);
+
+        // find and scroll to the rest of the card
+        const snapButton = await driver.findElement('#snapId4');
+        await driver.scrollToElement(snapButton);
+        await driver.delay(500);
+
+        // connect the snap
         await driver.clickElement('#connectManageState');
 
         // switch to metamask extension and click connect
@@ -50,7 +57,6 @@ describe('Test Snap manageState', function () {
           },
           10000,
         );
-
         await driver.delay(2000);
 
         // approve install of snap
@@ -73,7 +79,7 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#sendManageState');
 
         // check the results of the public key test
-        await driver.delay(1000);
+        await driver.delay(500);
         const manageStateResult = await driver.findElement(
           '#sendManageStateResult',
         );
@@ -83,7 +89,7 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#retrieveManageState');
 
         // check the results
-        await driver.delay(1000);
+        await driver.delay(500);
         const retrieveManageStateResult = await driver.findElement(
           '#retrieveManageStateResult',
         );
@@ -96,7 +102,7 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#clearManageState');
 
         // check if true
-        await driver.delay(1000);
+        await driver.delay(500);
         const clearManageStateResult = await driver.findElement(
           '#clearManageStateResult',
         );
@@ -106,7 +112,7 @@ describe('Test Snap manageState', function () {
         await driver.clickElement('#retrieveManageState');
 
         // check result array is empty
-        await driver.delay(1000);
+        await driver.delay(500);
         const retrieveManageStateResult2 = await driver.findElement(
           '#retrieveManageStateResult',
         );

@@ -33,7 +33,13 @@ describe('Test Snap bip-44', function () {
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         await driver.fill('#snapId3', 'npm:@metamask/test-snap-bip44');
-        await driver.press('#snapId3', driver.Key.PAGE_DOWN);
+
+        // find and scroll to snapId3
+        const snapButton = await driver.findElement('#snapId4');
+        await driver.scrollToElement(snapButton);
+        await driver.delay(500);
+
+        // connect the snap
         await driver.clickElement('#connectBip44');
 
         // switch to metamask extension and click connect

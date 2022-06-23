@@ -30,12 +30,17 @@ describe('Test Snap Notification', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page and page down and connect
+        // navigate to test snaps page
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        await driver.press('#snapId3', driver.Key.PAGE_DOWN);
+
+        // find and scroll down to snapId5
+        const snapButton = await driver.findElement('#snapId5');
+        await driver.scrollToElement(snapButton);
+        await driver.delay(500);
         await driver.fill('#snapId5', 'npm:@metamask/test-snap-notification');
-        await driver.press('#snapId5', driver.Key.PAGE_DOWN);
+
+        // connect the snap
         await driver.clickElement('#connectNotification');
 
         // switch to metamask extension and click connect
