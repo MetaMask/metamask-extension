@@ -57,7 +57,7 @@ export const FormFieldWithTitleDetail = (args) => {
       <button
         style={{
           backgroundColor: clicked
-            ? 'var(--color-secondary-default)'
+            ? 'var(--color-warning-default)'
             : 'var(--color-background-alternative)',
         }}
         onClick={() => setClicked(!clicked)}

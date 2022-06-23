@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Tôi đồng ý"
   },
-  "aggregatorFeeCost": {
-    "message": "Phí mạng cho trình tổng hợp"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Phí mạng cho trình tổng hợp và việc phê duyệt"
-  },
-  "approvalTxGasCost": {
-    "message": "Chi phí gas cho giao dịch phê duyệt"
   },
   "approve": {
     "message": "Phê duyệt giới hạn chi tiêu"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Mua ETH qua Wyre"
+    "message": "Mua $1 qua Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre cho phép bạn dùng thẻ ghi nợ để nạp ETH trực tiếp vào tài khoản MetaMask của mình."
+    "message": "Wyre cho phép bạn dùng thẻ ghi nợ để nạp $1 trực tiếp vào tài khoản MetaMask của mình."
   },
   "bytes": {
     "message": "Byte"
@@ -640,7 +631,7 @@
     "message": "Tương tác với hợp đồng"
   },
   "convertTokenToNFTDescription": {
-    "message": "Chúng tôi phát hiện tài sản này là một NFT. Metamask hiện đã hỗ trợ gốc đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
+    "message": "Chúng tôi phát hiện tài sản này là một NFT. MetaMask hiện đã hỗ trợ gốc đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Chúng tôi phát hiện tài sản này đã được thêm dưới dạng NFT. Bạn có muốn xóa tài sản khỏi danh sách token không?"
@@ -1173,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 gas phê duyệt",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Không thành công"
@@ -3096,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Bạn vẫn có thể hoán đổi token ngay cả khi Giao dịch thông minh không khả dụng."
   },
-  "stxPendingFinalizing": {
-    "message": "Đang hoàn thành..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Đang tối ưu gas..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Đang gửi yêu cầu Hoán đổi riêng tư..."
-  },
   "stxSubDescription": {
     "message": "* Giao dịch thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần theo cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
   },
@@ -3192,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Không có token nào khớp với $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Hoán đổi xong sau <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Xác nhận ví cứng của bạn"

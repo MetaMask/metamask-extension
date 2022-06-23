@@ -15,6 +15,7 @@ import {
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
+import { SLIPPAGE } from '../../../../shared/constants/swaps';
 
 export default function SlippageButtons({
   onSelect,
@@ -30,8 +31,7 @@ export default function SlippageButtons({
   const [customValue, setCustomValue] = useState(() => {
     if (
       typeof currentSlippage === 'number' &&
-      currentSlippage !== 2 &&
-      currentSlippage !== 3
+      !Object.values(SLIPPAGE).includes(currentSlippage)
     ) {
       return currentSlippage.toString();
     }
@@ -39,17 +39,17 @@ export default function SlippageButtons({
   });
   const [enteringCustomValue, setEnteringCustomValue] = useState(false);
   const [activeButtonIndex, setActiveButtonIndex] = useState(() => {
-    if (currentSlippage === 3) {
-      return 1;
-    } else if (currentSlippage === 2) {
-      return 0;
+    if (currentSlippage === SLIPPAGE.HIGH) {
+      return 1; // 3% slippage.
+    } else if (currentSlippage === SLIPPAGE.DEFAULT) {
+      return 0; // 2% slippage.
     } else if (typeof currentSlippage === 'number') {
-      return 2;
+      return 2; // Custom slippage.
     }
-    return 1; // Choose activeButtonIndex = 1 for 3% slippage by default.
+    return 0;
   });
   const [open, setOpen] = useState(() => {
-    return currentSlippage !== 3; // Only open Advanced Options by default if it's not default 3% slippage.
+    return currentSlippage !== SLIPPAGE.DEFAULT; // Only open Advanced Options by default if it's not default slippage.
   });
   const [inputRef, setInputRef] = useState(null);
 
@@ -133,20 +133,20 @@ export default function SlippageButtons({
                       setCustomValue('');
                       setEnteringCustomValue(false);
                       setActiveButtonIndex(0);
-                      onSelect(2);
+                      onSelect(SLIPPAGE.DEFAULT);
                     }}
                   >
-                    2%
+                    {t('swapSlippagePercent', [SLIPPAGE.DEFAULT])}
                   </Button>
                   <Button
                     onClick={() => {
                       setCustomValue('');
                       setEnteringCustomValue(false);
                       setActiveButtonIndex(1);
-                      onSelect(3);
+                      onSelect(SLIPPAGE.HIGH);
                     }}
                   >
-                    3%
+                    {t('swapSlippagePercent', [SLIPPAGE.HIGH])}
                   </Button>
                   <Button
                     className={classnames(

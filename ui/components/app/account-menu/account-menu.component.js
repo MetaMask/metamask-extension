@@ -23,6 +23,9 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
@@ -84,6 +87,9 @@ export default class AccountMenu extends Component {
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    unreadNotificationsCount: PropTypes.number,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   accountsRef;
@@ -293,6 +299,9 @@ export default class AccountMenu extends Component {
       toggleAccountMenu,
       lockMetamask,
       history,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      unreadNotificationsCount,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     if (!isAccountMenuOpen) {
@@ -350,7 +359,7 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-default)" />}
+          icon={<IconPlus color="var(--color-icon-alternative)" />}
           text={t('createAccount')}
         />
         <AccountMenuItem
@@ -368,7 +377,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconImport
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('importAccount')}
             />
           }
@@ -393,20 +402,47 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconConnect
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('connectHardwareWallet')}
             />
           }
           text={t('connectHardwareWallet')}
         />
         <div className="account-menu__divider" />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <>
+            <AccountMenuItem
+              onClick={() => {
+                toggleAccountMenu();
+                history.push(NOTIFICATIONS_ROUTE);
+              }}
+              icon={
+                <div className="account-menu__notifications">
+                  <i
+                    className="fa fa-bell fa-xl"
+                    color="var(--color-icon-default)"
+                  />
+                  {unreadNotificationsCount > 0 && (
+                    <div className="account-menu__notifications__count">
+                      {unreadNotificationsCount}
+                    </div>
+                  )}
+                </div>
+              }
+              text={t('notifications')}
+            />
+            <div className="account-menu__divider" />
+          </>
+          ///: END:ONLY_INCLUDE_IN
+        }
         <AccountMenuItem
           onClick={() => {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
             <IconSpeechBubbles
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={supportText}
             />
           }
@@ -428,7 +464,7 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconCog
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('settings')}
             />
           }

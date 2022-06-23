@@ -137,10 +137,10 @@
     "message": "Nettleseren din støttes ikke ..."
   },
   "buyWithWyre": {
-    "message": "Kjøp ETH med Wyre"
+    "message": "Kjøp $1 med Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre lar deg bruke et kredittkort for å sette inn ETH rett på MetaMask-kontoen din."
+    "message": "Wyre lar deg bruke et kredittkort for å sette inn $1 rett på MetaMask-kontoen din."
   },
   "cancel": {
     "message": "Avbryt"

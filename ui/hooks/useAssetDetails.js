@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
-import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
+import { getCollectibles } from '../ducks/metamask/metamask';
 import { ERC1155, ERC721, ERC20 } from '../helpers/constants/common';
 import {
   calcTokenAmount,
@@ -9,16 +9,13 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
-import { getTokenList } from '../selectors';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
 import { usePrevious } from './usePrevious';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();
   // state selectors
-  const tokens = useSelector(getTokens);
   const collectibles = useSelector(getCollectibles);
-  const tokenList = useSelector(getTokenList);
 
   // in-hook state
   const [currentAsset, setCurrentAsset] = useState(null);
@@ -36,8 +33,6 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
         userAddress,
         transactionData,
         collectibles,
-        tokens,
-        tokenList,
       );
       setCurrentAsset(assetDetails);
       dispatch(hideLoadingIndication());
@@ -58,8 +53,6 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     userAddress,
     transactionData,
     collectibles,
-    tokens,
-    tokenList,
   ]);
 
   let assetStandard,
@@ -83,11 +76,13 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       balance,
       decimals: currentAssetDecimals,
     } = currentAsset;
+
     const tokenData = parseStandardTokenTransactionData(transactionData);
     assetStandard = standard;
     assetAddress = tokenAddress;
-    tokenSymbol = symbol;
+    tokenSymbol = symbol ?? '';
     tokenImage = image;
+
     toAddress = getTokenAddressParam(tokenData);
     if (assetStandard === ERC721 || assetStandard === ERC1155) {
       assetName = name;
@@ -101,6 +96,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
         calcTokenAmount(getTokenValueParam(tokenData), decimals).toString(10);
     }
   }
+
   return {
     assetStandard,
     assetName,

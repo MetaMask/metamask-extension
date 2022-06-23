@@ -10,7 +10,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
-import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal';
 import DepositEtherModal from './deposit-ether-modal';
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
@@ -262,31 +261,6 @@ const MODALS = {
     customOnHideOpts: {
       action: resetCustomGasData,
       args: [],
-    },
-  },
-
-  CUSTOMIZE_METASWAP_GAS: {
-    contents: <SwapsGasCustomizationModal />,
-    mobileModalStyle: {
-      width: '100vw',
-      height: '100vh',
-      top: '0',
-      transform: 'none',
-      left: '0',
-      right: '0',
-      margin: '0 auto',
-    },
-    laptopModalStyle: {
-      width: 'auto',
-      height: '0px',
-      top: '80px',
-      left: '0px',
-      transform: 'none',
-      margin: '0 auto',
-      position: 'relative',
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 

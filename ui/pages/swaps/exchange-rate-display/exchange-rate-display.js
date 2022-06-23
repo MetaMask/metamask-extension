@@ -12,7 +12,7 @@ export default function ExchangeRateDisplay({
   secondaryTokenValue,
   secondaryTokenDecimals = 18,
   secondaryTokenSymbol,
-  arrowColor = 'var(--color-icon-default)',
+  arrowColor = 'var(--color-primary-default)',
   boldSymbols = true,
   className,
 }) {

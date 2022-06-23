@@ -670,6 +670,13 @@ jobs:
       - run:
           name: test:coverage:jest
           command: yarn test:coverage:jest
+      - run: 
+          name: Validate coverage thresholds
+          command: |
+            if ! git diff --exit-code jest.config.js development/jest.config.js; then
+              echo "Detected changes in coverage thresholds"
+              exit 1
+            fi
       - persist_to_workspace:
           root: .
           paths:
