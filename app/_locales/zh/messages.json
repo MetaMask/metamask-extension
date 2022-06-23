@@ -466,9 +466,6 @@
     "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "取消交换"
-  },
   "cancellationGasFee": {
     "message": "取消燃料费用"
   },

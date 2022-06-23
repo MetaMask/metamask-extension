@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.15.0",
+  "version": "10.15.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -335,7 +335,6 @@
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",
-    "minimist": "^1.2.6",
     "mocha": "^7.2.0",
     "mockttp": "^2.6.0",
     "nock": "^9.0.14",

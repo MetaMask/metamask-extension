@@ -466,9 +466,6 @@
     "message": "Pour $1 la transaction, les gas fees doivent être augmentés d’au moins 10 % pour être reconnus par le réseau.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Annuler le swap"
-  },
   "cancellationGasFee": {
     "message": "Frais d’annulation de carburant"
   },
