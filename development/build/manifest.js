@@ -7,6 +7,7 @@ const baseManifest = process.env.ENABLE_MV3
   : require('../../app/manifest/v2/_base.json');
 const { BuildType } = require('../lib/build-type');
 
+const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 
 module.exports = createManifestTasks;
@@ -68,19 +69,22 @@ function createManifestTasks({
   });
 
   // high level manifest tasks
-  const dev = createTask('manifest:dev', composeSeries(prepPlatforms, envDev));
+  const dev = createTask(
+    TASKS.MANIFEST_DEV,
+    composeSeries(prepPlatforms, envDev),
+  );
 
   const testDev = createTask(
-    'manifest:testDev',
+    TASKS.MANIFEST_TEST_DEV,
     composeSeries(prepPlatforms, envTestDev),
   );
 
   const test = createTask(
-    'manifest:test',
+    TASKS.MANIFEST_TEST,
     composeSeries(prepPlatforms, envTest),
   );
 
-  const prod = createTask('manifest:prod', prepPlatforms);
+  const prod = createTask(TASKS.MANIFEST_PROD, prepPlatforms);
 
   return { prod, dev, testDev, test };
 

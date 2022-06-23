@@ -35,12 +35,23 @@ async function getMethodFrom4Byte(fourBytePrefix) {
       mode: 'cors',
     },
   );
-
-  if (fourByteResponse.count === 1) {
-    return fourByteResponse.results[0].text_signature;
-  }
-  return null;
+  fourByteResponse.results.sort((a, b) => {
+    return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
+      ? -1
+      : 1;
+  });
+  return fourByteResponse.results[0].text_signature;
 }
+
+function pickShortest(registrySig, fourByteSig) {
+  if (!registrySig) {
+    return fourByteSig;
+  } else if (!fourByteSig) {
+    return registrySig;
+  }
+  return fourByteSig.length < registrySig.length ? fourByteSig : registrySig;
+}
+
 let registry;
 
 /**
@@ -51,7 +62,7 @@ let registry;
  */
 export async function getMethodDataAsync(fourBytePrefix) {
   try {
-    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+    const fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
       log.error(e);
       return null;
     });
@@ -60,11 +71,12 @@ export async function getMethodDataAsync(fourBytePrefix) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    let sig = await registry.lookup(fourBytePrefix);
+    const registrySig = await registry.lookup(fourBytePrefix).catch((e) => {
+      log.error(e);
+      return null;
+    });
 
-    if (!sig) {
-      sig = await fourByteSig;
-    }
+    const sig = pickShortest(registrySig, fourByteSig);
 
     if (!sig) {
       return {};

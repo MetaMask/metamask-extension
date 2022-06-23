@@ -466,8 +466,12 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Cancel swap"
+  "cancelSwapForFee": {
+    "message": "Cancel swap for ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Cancel swap for free"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -2069,6 +2073,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT"
+  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the Token ID"
   },
@@ -2655,6 +2662,9 @@
   "resetWalletWarning": {
     "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
   },
+  "restartMetamask": {
+    "message": "Restart MetaMask"
+  },
   "restore": {
     "message": "Restore"
   },
@@ -2838,6 +2848,9 @@
   },
   "sendAmount": {
     "message": "Send Amount"
+  },
+  "sendBugReport": {
+    "message": "Send us a bug report."
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -3112,6 +3125,9 @@
     "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "Still getting this message?"
+  },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
@@ -3164,14 +3180,11 @@
   "stxFallbackUnavailable": {
     "message": "You can still swap your tokens even while Smart Transactions are unavailable."
   },
-  "stxPendingFinalizing": {
-    "message": "Finalizing..."
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Privately submitting your Swap..."
   },
-  "stxPendingOptimizingGas": {
-    "message": "Optimizing gas..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Privately submitting the Swap..."
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Publicly submitting your Swap..."
   },
   "stxSubDescription": {
     "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
@@ -3182,6 +3195,10 @@
   "stxSuccessDescription": {
     "message": "Your $1 is now available.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Swap will complete in <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
@@ -3260,10 +3277,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Swap complete in <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
@@ -3445,6 +3458,10 @@
   },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
+  },
+  "swapSlippagePercent": {
+    "message": "$1%",
+    "description": "$1 is the amount of % for slippage"
   },
   "swapSource": {
     "message": "Liquidity source"
@@ -3804,6 +3821,9 @@
     "message": "We had trouble connecting to your $1, try reviewing $2 and try again.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
+  },
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
@@ -3963,7 +3983,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "Visit our web site"
+    "message": "Visit our website"
   },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
