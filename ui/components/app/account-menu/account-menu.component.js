@@ -28,7 +28,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import SearchIcon from '../../ui/search-icon';
 import IconCheck from '../../ui/icon/icon-check';
 import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
 import IconConnect from '../../ui/icon/icon-connect';
@@ -37,6 +36,7 @@ import IconPlus from '../../ui/icon/icon-plus';
 import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
+import SearchIcon from '../../ui/icon/search-icon';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -100,11 +100,12 @@ export default class AccountMenu extends Component {
   };
 
   addressFuse = new Fuse([], {
-    threshold: 0.45,
+    threshold: 0.55,
     location: 0,
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
+    ignoreFieldNorm: true,
     keys: [
       { name: 'name', weight: 0.5 },
       { name: 'address', weight: 0.5 },
@@ -130,6 +131,11 @@ export default class AccountMenu extends Component {
   }
 
   renderAccountsSearch() {
+    const handleChange = (e) => {
+      const val = e.target.value.length > 1 ? e.target.value : '';
+      this.setSearchQuery(val);
+    };
+
     const inputAdornment = (
       <InputAdornment
         position="start"
@@ -139,7 +145,7 @@ export default class AccountMenu extends Component {
           marginLeft: '8px',
         }}
       >
-        <SearchIcon color="currentColor" />
+        <SearchIcon color="var(--color-icon-muted)" />
       </InputAdornment>
     );
 
@@ -149,8 +155,7 @@ export default class AccountMenu extends Component {
         id="search-accounts"
         placeholder={this.context.t('searchAccounts')}
         type="text"
-        value={this.state.searchQuery}
-        onChange={(e) => this.setSearchQuery(e.target.value)}
+        onChange={handleChange}
         startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
@@ -419,10 +424,7 @@ export default class AccountMenu extends Component {
               }}
               icon={
                 <div className="account-menu__notifications">
-                  <i
-                    className="fa fa-bell fa-xl"
-                    color="var(--color-icon-default)"
-                  />
+                  <i className="fa fa-bell fa-xl" />
                   {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
                       {unreadNotificationsCount}

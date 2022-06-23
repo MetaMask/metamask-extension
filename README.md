@@ -22,6 +22,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
     - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
     - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
     - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
+    - Optionally, replace the `PASSWORD` value with your development wallet password to avoid entering it each time you open the app.
 - Build the project to the `./dist/` folder with `yarn dist`.
     - Optionally, you may run `yarn start` to run dev mode.
 
