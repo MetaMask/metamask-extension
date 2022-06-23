@@ -77,14 +77,27 @@ async function addEthereumChainHandler(
     );
   }
 
+  const isLocalhost = (strUrl) => {
+    try {
+      const url = new URL(strUrl);
+      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    } catch (error) {
+      return false;
+    }
+  };
+
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => validUrl.isHttpsUri(rpcUrl))
+    ? rpcUrls.find(
+        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
+      )
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            isLocalhost(blockExplorerUrl) ||
+            validUrl.isHttpsUri(blockExplorerUrl),
         )
       : null;
 

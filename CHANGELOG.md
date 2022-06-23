@@ -67,6 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[FLASK]** Fix issues with the snap startup process and usage of `WebAssembly` ([#14772](https://github.com/MetaMask/metamask-extension/pull/14772))
 - **[FLASK]** Fix issues with snap id encoding ([#14693](https://github.com/MetaMask/metamask-extension/pull/14693))
 - **[FLASK]** Fix multiple smaller bugs with snaps ([#14670](https://github.com/MetaMask/metamask-extension/pull/14670))
+## [10.15.1]
+### Fixed
+- Fix Ledger connection failures that can occur after remove all hardware wallet accounts and reconnecting  ([#14993](https://github.com/MetaMask/metamask-extension/pull/14993))
+- Fix bug that could cause MetaMask to crash in some cases when interacting with tokens or NFTs ([#14962](https://github.com/MetaMask/metamask-extension/pull/14962))
 
 ## [10.15.0]
 ### Added
@@ -3028,6 +3032,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...HEAD
 [10.16.0]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.16.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...HEAD
+[10.15.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.15.1
 [10.15.0]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...v10.15.0
 [10.14.7]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...v10.14.7
 [10.14.6]: https://github.com/MetaMask/metamask-extension/compare/v10.14.5...v10.14.6
