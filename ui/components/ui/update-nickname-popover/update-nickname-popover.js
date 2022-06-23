@@ -12,16 +12,18 @@ import Identicon from '../identicon/identicon.component';
 import { getUseTokenDetection, getTokenList } from '../../../selectors';
 
 export default function UpdateNicknamePopover({
-  nickname,
   address,
+  nickname = '',
+  memo = '',
   onAdd,
-  memo,
   onClose,
 }) {
   const t = useContext(I18nContext);
 
-  const [nicknameInput, setNicknameInput] = useState(nickname);
-  const [memoInput, setMemoInput] = useState(memo);
+  const [nicknameInput, setNicknameInput] = useState(
+    nickname === null ? '' : nickname,
+  );
+  const [memoInput, setMemoInput] = useState(memo === null ? '' : memo);
 
   const handleNicknameChange = (event) => {
     setNicknameInput(event.target.value);
