@@ -449,14 +449,26 @@ export default function ViewQuote() {
     : null;
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
-
   useEffect(() => {
-    if (insufficientTokens || insufficientEth) {
+    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+      if (insufficientTokens) {
+        dispatch(setBalanceError(true));
+      } else if (balanceError && !insufficientTokens) {
+        dispatch(setBalanceError(false));
+      }
+    } else if (insufficientTokens || insufficientEth) {
       dispatch(setBalanceError(true));
     } else if (balanceError && !insufficientTokens && !insufficientEth) {
       dispatch(setBalanceError(false));
     }
-  }, [insufficientTokens, insufficientEth, balanceError, dispatch]);
+  }, [
+    insufficientTokens,
+    insufficientEth,
+    balanceError,
+    dispatch,
+    currentSmartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+  ]);
 
   useEffect(() => {
     const currentTime = Date.now();
