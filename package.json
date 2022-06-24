@@ -11,7 +11,7 @@
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
     "start": "yarn build:dev dev --apply-lavamoat=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
-    "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
+    "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=true",
     "dist": "yarn build prod",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
@@ -100,7 +100,8 @@
     "pull-ws": "^3.3.2",
     "ws": "^7.4.6",
     "json-schema": "^0.4.0",
-    "simple-get": "^4.0.1"
+    "simple-get": "^4.0.1",
+    "bn.js": "^4.11.7"
   },
   "dependencies": {
     "3box": "^1.10.2",
