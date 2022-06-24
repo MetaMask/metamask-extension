@@ -12,6 +12,7 @@ import {
   navigateBackToBuildQuote,
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getSwapsDefaultToken } from '../../../selectors';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
@@ -23,21 +24,20 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
 
   return (
     <Box marginBottom={3} className="create-new-swap">
-      <a
-        href="#"
-        onClick={async (e) => {
-          e.preventDefault();
+      <button
+        onClick={async () => {
           trackEvent({
             event: 'Make Another Swap',
             category: EVENT.CATEGORIES.SWAPS,
             sensitiveProperties: sensitiveTrackingProperties,
           });
+          history.push(DEFAULT_ROUTE); // It cleans up Swaps state.
           await dispatch(navigateBackToBuildQuote(history));
           dispatch(setSwapsFromToken(defaultSwapsToken));
         }}
       >
         {t('makeAnotherSwap')}
-      </a>
+      </button>
     </Box>
   );
 }

@@ -1,7 +1,8 @@
 .view-on-block-explorer {
-  a {
+  button {
     @include H7;
 
     color: var(--color-primary-default);
+    background-color: transparent;
   }
 }
