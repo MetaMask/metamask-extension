@@ -7,37 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.17.0]
-### Uncategorized
-- Show how much a cancellation of a smart transaction will cost ([#15011](https://github.com/MetaMask/metamask-extension/pull/15011))
-- fix minor german translation issue. connected=verbunden ([#14997](https://github.com/MetaMask/metamask-extension/pull/14997))
-- Fix 14802 - Prevent children error in page container ([#14809](https://github.com/MetaMask/metamask-extension/pull/14809))
-- Fixing tooltip theming by enforcing default theme ([#14992](https://github.com/MetaMask/metamask-extension/pull/14992))
-- Move search icon and add to storybook ([#14940](https://github.com/MetaMask/metamask-extension/pull/14940))
-- Changed accounts fuzzy search threshhold to match all ([#14914](https://github.com/MetaMask/metamask-extension/pull/14914))
-- [FLASK] Fix notifications icon color ([#14941](https://github.com/MetaMask/metamask-extension/pull/14941))
+### Added
+- Add cost estimation for canceling a Smart Transaction on Awaiting Swap page ([#15011](https://github.com/MetaMask/metamask-extension/pull/15011))
+- Add missing subtitles for Secret Recovery Phrase video, including French, Greek, Turkish, Chinese
+ ([#14943](https://github.com/MetaMask/metamask-extension/pull/14943))
+
+### Changed
+- Consolidate all Error Messages in one style component ([#14945](https://github.com/MetaMask/metamask-extension/pull/14945))
+- Improve accessibility by allowing keyboard navigation on Accounts menu ([#14936](https://github.com/MetaMask/metamask-extension/pull/14936))
+- Allow using locally hosted RPCs and Block Explorer Urls when adding an Ethereum Chain programmatically ([#14272](https://github.com/MetaMask/metamask-extension/pull/14272))
 - [FLASK] snaps-skunkworks@0.16.0 ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
-- Add missing subtitles for secret recovery phrase ([#14943](https://github.com/MetaMask/metamask-extension/pull/14943))
-- Only have timeout for when payload is getState ([#14972](https://github.com/MetaMask/metamask-extension/pull/14972))
-- Update smart-transactions-controller to v2.1.0 ([#14955](https://github.com/MetaMask/metamask-extension/pull/14955))
-- Fix/14856 network settings page ([#14857](https://github.com/MetaMask/metamask-extension/pull/14857))
-- SB:EditGasDisplay: fix error ([#14946](https://github.com/MetaMask/metamask-extension/pull/14946))
-- Remove experimental gas editing for Swaps ([#14942](https://github.com/MetaMask/metamask-extension/pull/14942))
-- Make the accounts menu accessible ([#14936](https://github.com/MetaMask/metamask-extension/pull/14936))
-- MV3: Fix dynamic file list injection on service worker reload ([#14795](https://github.com/MetaMask/metamask-extension/pull/14795))
-- fix animated qr in dark mode ([#14900](https://github.com/MetaMask/metamask-extension/pull/14900))
-- Empty balance while switching network ([#14354](https://github.com/MetaMask/metamask-extension/pull/14354))
-- Fix for: Invalid transaction envelope type: specified type "0x0" but including...requires type: "0x2" ([#14823](https://github.com/MetaMask/metamask-extension/pull/14823))
-- Fix contact address pet name  ([#14613](https://github.com/MetaMask/metamask-extension/pull/14613))
-- Fix to infinite loading on approve screen ([#14756](https://github.com/MetaMask/metamask-extension/pull/14756))
-- Allow locally hosted RPC and Block Explorer Urls with `wallet_addEthereumChain` ([#14272](https://github.com/MetaMask/metamask-extension/pull/14272))
-- Update ui/pages/settings/settings.component.js
-- Changed to address to optional for TransactionDecoding component
-- Changed networks tab to explicitly pass in false and fix implicit type casting
-- Changed custom nonce min to a number from a string
-- Changed transaction decoding component to put keys on data items
-- Changed update nickname popover to remove proptype errors
-- Changed seedPhraseBackedUp to always a boolean
-- Changed asset option prop type requirements
+
+### Fixed
+- Fix German translation for `statusConnected` ([#14997](https://github.com/MetaMask/metamask-extension/pull/14997))
+- Fix Account Search functionality returning inconsistent results ([#14914](https://github.com/MetaMask/metamask-extension/pull/14914))
+- Fix Notifications icon color on the Account menu ([#14941](https://github.com/MetaMask/metamask-extension/pull/14941))
+- Fix broken UI for Network Settings page on small browser sizes ([#14857](https://github.com/MetaMask/metamask-extension/pull/14857))
+- Fix scanner for animated QR codes on dark mode, by removing bottom black line from the QR ([#14900](https://github.com/MetaMask/metamask-extension/pull/14900))
+- Fix displaying wrong balance on the first seconds after switching network ([#14354](https://github.com/MetaMask/metamask-extension/pull/14354))
+- Fix Contact name display on Edit tx page ([#14613](https://github.com/MetaMask/metamask-extension/pull/14613))
+- Fix infinite loading when transferring non-standard ERC721 (without name and/or symbol) ([#14756](https://github.com/MetaMask/metamask-extension/pull/14756))
 
 ## [10.16.0]
 ### Added
