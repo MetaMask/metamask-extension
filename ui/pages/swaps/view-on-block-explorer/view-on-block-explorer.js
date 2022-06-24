@@ -18,7 +18,8 @@ export default function ViewOnBlockExplorer({
     <Box marginTop={6} className="view-on-block-explorer">
       <a
         href="#"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
           trackEvent({
             event: 'Clicked Block Explorer Link',
             category: EVENT.CATEGORIES.SWAPS,

@@ -25,7 +25,8 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
     <Box marginBottom={3} className="create-new-swap">
       <a
         href="#"
-        onClick={async () => {
+        onClick={async (e) => {
+          e.preventDefault();
           trackEvent({
             event: 'Make Another Swap',
             category: EVENT.CATEGORIES.SWAPS,
