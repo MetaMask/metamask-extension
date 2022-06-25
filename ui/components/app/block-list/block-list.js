@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetBlockList } from '../../../store/actions';
-
 import Button from '../../ui/button';
+import { Block } from '../block';
 
 const BlockList = () => {
   const dispatch = useDispatch();
   const blocks = useSelector((state) => state.metamask.blocks);
+  const [isHex, setIsHex] = useState(true);
+
+  console.log('block-list.js', { blocks });
 
   return (
     <div className="block-list">
@@ -14,27 +17,22 @@ const BlockList = () => {
         <Button
           type="secondary"
           rounded
-          disabled
           onClick={() => dispatch(resetBlockList())}
         >
           Reset Block List
         </Button>
-        <Button type="secondary" rounded>
-          Display numbers as decimals
+        <Button type="secondary" rounded onClick={() => setIsHex(!isHex)}>
+          {isHex
+            ? 'Display numbers as decimals'
+            : 'Display numbers as hexidecimals'}
         </Button>
       </div>
-      {blocks.map((block, i) => {
-        return (
-          <div className="block-list__block" key={`block-${i}`}>
-            <span>{`Number: ${block.number}`}</span>
-            <span>{`Hash: ${block.hash}`}</span>
-            <span>{`Nonce: ${block.nonce}`}</span>
-            <span>{`GasLimit: ${block.gasLimit}`}</span>
-            <span>{`GasUsed: ${block.gasUsed}`}</span>
-            <span>{`Transaction Count: ${block.transactions.length}`}</span>
-          </div>
-        );
-      })}
+      {blocks
+        ? blocks.map((block) => {
+            const props = { ...block, isHex };
+            return <Block key={block.number} {...props} />;
+          })
+        : null}
     </div>
   );
 };

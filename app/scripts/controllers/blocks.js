@@ -7,7 +7,6 @@ export default class BlockController {
     const { blockTracker, provider } = opts;
     const query = pify(new EthQuery(provider));
 
-
     const initState = { blocks: [] };
     this.store = new ObservableStore(initState);
 
@@ -32,7 +31,7 @@ export default class BlockController {
 
   resetBlockList = () => {
     this.store.updateState({
-      blocks: {},
+      blocks: [],
     });
   };
 }
