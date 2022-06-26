@@ -18,7 +18,7 @@ export default class BlockController {
     const { blockTracker, provider, preferencesStore } = opts;
     const query = pify(new EthQuery(provider));
 
-    const initState = { blocks: [], base: 'hex' };
+    const initState = { blocks: [], numericBase: 'hex' };
     // this.hexButtonState = preferencesStore.getState().hexButtonState;
 
     this.store = new ObservableStore(initState);
@@ -47,9 +47,10 @@ export default class BlockController {
     this.store.updateState({ records });
   };
 
-  setNumericBase(base) {
+  setNumericBase(numericBase) {
+    console.log('block controller setting numeric base to', { numericBase });
     this.store.updateState({
-      base,
+      numericBase,
     });
   }
 

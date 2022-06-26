@@ -20,6 +20,7 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
   getNewTokensImported,
+  // TODO: delete
   getIsHexValuesEnabled,
 } from '../../selectors';
 
@@ -41,6 +42,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
+  // TODO: delete
   setIsHexValuesEnabled,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
@@ -140,6 +142,7 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
+    // TODO: delete
     isHexValuesEnabled: getIsHexValuesEnabled(state),
   };
 };
@@ -183,6 +186,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
+  // TODO: delete
   setIsHexValuesEnabled: (val) => {
     dispatch(setIsHexValuesEnabled(val));
   },

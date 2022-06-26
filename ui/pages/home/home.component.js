@@ -544,13 +544,10 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
+      // TODO: delete 633
       isHexValuesEnabled,
       setIsHexValuesEnabled,
     } = this.props;
-
-    console.log('home', { props: this.props });
-
-    console.log('home', { isHexValuesEnabled, setIsHexValuesEnabled });
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;

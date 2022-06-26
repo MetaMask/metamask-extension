@@ -54,7 +54,7 @@ export const Block = ({
               numberOfDecimals: 2,
             })
       }`}</span>
-      <span>{`Transaction Count: ${transactions.length}`}</span>
+      <span>{`Transaction Count: ${transactions?.length}`}</span>
     </div>
   );
 };

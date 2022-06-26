@@ -1963,8 +1963,11 @@ export default class MetamaskController extends EventEmitter {
 
       resetBlockList: blockController.resetBlockList.bind(blockController),
 
+      setNumericBase: blockController.setNumericBase.bind(blockController),
+
       deleteBlock: blockController.deleteBlock.bind(blockController),
 
+      // TODO: delete
       setIsHexValuesEnabled: preferencesController.setIsHexValuesEnabled.bind(
         preferencesController,
       ),

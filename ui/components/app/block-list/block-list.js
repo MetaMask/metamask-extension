@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -9,18 +9,24 @@ import {
 import Button from '../../ui/button';
 import { Block } from '../block';
 
+// TODO: delete
 const BlockList = ({ isHexValuesEnabled, setIsHexValuesEnabled }) => {
   const dispatch = useDispatch();
   const blocks = useSelector((state) => state.metamask.blocks);
   const numericBase = useSelector((state) => state.metamask.numericBase);
-  console.log('blocklist', { isHexValuesEnabled, setIsHexValuesEnabled });
+  console.log({ numericBase });
+  // console.log('blocklist', { isHexValuesEnabled, setIsHexValuesEnabled });
   // const [isHex, setIsHex] = useState(isHexValuesEnabled || true);
-  const onClick = () => {
+  const onClick = useCallback(() => {
+    console.log(
+      'blocklist setting numberic base to',
+      numericBase === 'hex' ? 'dec' : 'hex',
+    );
     setNumericBase(numericBase === 'hex' ? 'dec' : 'hex');
     // console.log('blocklist onclick', { setIsHexValuesEnabled });
     // setIsHexValuesEnabled(!isHex);
     // setIsHex(!isHex);
-  };
+  }, [numericBase]);
 
   return (
     <div className="block-list">
@@ -41,7 +47,11 @@ const BlockList = ({ isHexValuesEnabled, setIsHexValuesEnabled }) => {
       {blocks
         ? blocks.map((block, index) => {
             const onDelete = () => dispatch(deleteBlock(index));
-            const props = { ...block, numericBase, onDelete };
+            const props = {
+              ...block,
+              numericBase: numericBase || 'hex',
+              onDelete,
+            };
             return <Block key={block?.number} {...props} />;
           })
         : null}
@@ -49,6 +59,7 @@ const BlockList = ({ isHexValuesEnabled, setIsHexValuesEnabled }) => {
   );
 };
 
+// TODO: delete
 BlockList.propTypes = {
   isHexValuesEnabled: PropTypes.boolean,
   setIsHexValuesEnabled: PropTypes.func,
