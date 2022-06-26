@@ -1,9 +1,12 @@
 import React from 'react';
 import { useInsightSnap } from '../../../../hooks/useInsightSnap';
+import { useSimulation } from '../../../../hooks/useSimulation';
 import { Markdown } from './markdown.component';
 
 export const SnapInsight = ({ transaction }) => {
-  const data = useInsightSnap(transaction);
+  console.log('transaction', { transaction });
+  // const data = useInsightSnap(transaction);
+  const data = useSimulation(transaction);
   console.log(data);
 
   return (

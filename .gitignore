@@ -49,3 +49,5 @@ notes.txt
 
 # TypeScript
 tsout/
+
+.env
