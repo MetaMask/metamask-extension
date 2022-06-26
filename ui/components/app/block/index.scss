@@ -6,6 +6,10 @@
   padding: 24px;
   margin-top: 12px;
 
+  .delete-block {
+    background-color: darkred;
+  }
+
   span {
     overflow: hidden;
     text-overflow: ellipsis;

@@ -144,6 +144,8 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
+    isHexValuesEnabled: PropTypes.boolean,
+    setIsHexValuesEnabled: PropTypes.func,
   };
 
   state = {
@@ -542,7 +544,13 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
+      isHexValuesEnabled,
+      setIsHexValuesEnabled,
     } = this.props;
+
+    console.log('home', { props: this.props });
+
+    console.log('home', { isHexValuesEnabled, setIsHexValuesEnabled });
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
@@ -624,7 +632,10 @@ export default class Home extends PureComponent {
                 data-testid="home__activity-tab"
                 name="Block Info"
               >
-                <BlockList />
+                <BlockList
+                  isHexValuesEnabled={isHexValuesEnabled}
+                  setIsHexValuesEnabled={setIsHexValuesEnabled}
+                />
               </Tab>
             </Tabs>
             <div className="home__support">

@@ -9,44 +9,48 @@ export const Block = ({
   gasLimit,
   gasUsed,
   transactions,
-  isHex,
+  numericBase,
+  onDelete,
 }) => {
   return (
     <div className="block" key={number}>
+      <span className="delete-block">
+        <button onClick={onDelete}>Delete</button>
+      </span>
       <span>{`Number: ${
-        isHex
+        numericBase
           ? number
           : conversionUtil(number, {
-              fromNumericBase: isHex ? 'hex' : 'dec',
-              toNumericBase: isHex ? 'hex' : 'dec',
+              fromNumericBase: numericBase,
+              toNumericBase: numericBase,
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`Hash: ${hash}`}</span>
       <span>{`Nonce: ${
-        isHex
+        numericBase
           ? nonce
           : conversionUtil(nonce, {
-              fromNumericBase: isHex ? 'hex' : 'dec',
-              toNumericBase: isHex ? 'hex' : 'dec',
+              fromNumericBase: numericBase,
+              toNumericBase: numericBase,
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`GasLimit: ${
-        isHex
+        numericBase
           ? gasLimit
           : conversionUtil(gasLimit, {
-              fromNumericBase: isHex ? 'hex' : 'dec',
-              toNumericBase: isHex ? 'hex' : 'dec',
+              fromNumericBase: numericBase,
+              toNumericBase: numericBase,
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`GasUsed: ${
-        isHex
+        numericBase
           ? gasUsed
           : conversionUtil(gasUsed, {
-              fromNumericBase: isHex ? 'hex' : 'dec',
-              toNumericBase: isHex ? 'hex' : 'dec',
+              fromNumericBase: numericBase,
+              toNumericBase: numericBase,
               numberOfDecimals: 2,
             })
       }`}</span>
@@ -62,5 +66,6 @@ Block.propTypes = {
   gasLimit: PropTypes.string,
   gasUsed: PropTypes.string,
   transactions: PropTypes.arrayOf(PropTypes.string),
-  isHex: PropTypes.bool,
+  numericBase: PropTypes.string,
+  onDelete: PropTypes.func,
 };

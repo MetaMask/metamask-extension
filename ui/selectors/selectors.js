@@ -913,6 +913,16 @@ export function getTheme(state) {
 }
 
 /**
+ * To get the `isHexValuesEnabled` value which determines whether values on the block tab are displayed in hexidecimal or decimal
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsHexValuesEnabled(state) {
+  return state.metamask.isHexValuesEnabled;
+}
+
+/**
  * To retrieve the tokenList produced by TokenListcontroller
  *
  * @param {*} state

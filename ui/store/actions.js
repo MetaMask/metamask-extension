@@ -3752,11 +3752,25 @@ export function cancelQRHardwareSignRequest() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
     await promisifiedBackground.cancelQRHardwareSignRequest();
-  }
+  };
 }
 
 export function resetBlockList() {
   return () => {
     return promisifiedBackground.resetBlockList();
   };
+}
+
+export function deleteBlock(index) {
+  return () => {
+    return promisifiedBackground.deleteBlock(index);
+  };
+}
+
+export async function setIsHexValuesEnabled(val) {
+  console.log('actions calling update hex button state', {
+    hexButtonState: val,
+    promisifiedBackground,
+  });
+  await promisifiedBackground.setIsHexValuesEnabled(val);
 }
