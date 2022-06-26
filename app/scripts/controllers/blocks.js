@@ -22,7 +22,6 @@ export default class BlockController {
     blockTracker.addListener('latest', async (blockNumber) => {
       const { blocks } = this.store.getState();
       const block = await query.getBlockByNumber(blockNumber, false);
-      console.log({ block });
       blocks.push(block);
       this.store.updateState({
         blocks,

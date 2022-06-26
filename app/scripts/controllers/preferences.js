@@ -176,7 +176,6 @@ export default class PreferencesController {
    * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
    */
   setTheme(val) {
-    console.log('preferences', { theme: val });
     this.store.updateState({ theme: val });
   }
 

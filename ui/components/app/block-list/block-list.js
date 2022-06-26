@@ -82,10 +82,7 @@ const BlockList = () => {
             { name: 'Transaction Count', value: 'tx-count' },
           ]}
           selectedOption={sort}
-          onChange={(value) => {
-            console.log('setting sort', { value });
-            setSort(value);
-          }}
+          onChange={(value) => setSort(value)}
         />
       </div>
       {blocks
