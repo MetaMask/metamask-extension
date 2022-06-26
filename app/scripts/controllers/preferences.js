@@ -69,8 +69,6 @@ export default class PreferencesController {
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
       theme: 'light',
-      // TODO: delete
-      isHexValuesEnabled: true,
       ...opts.initState,
     };
 
@@ -341,17 +339,6 @@ export default class PreferencesController {
    */
   getSelectedAddress() {
     return this.store.getState().selectedAddress;
-  }
-
-  // TODO: delete
-  setIsHexValuesEnabled(val) {
-    console.log('preferences', { isHexValuesEnabled: val });
-    this.store.updateState({ isHexValuesEnabled: val });
-  }
-
-  // TODO: delete
-  getIsHexValuesEnabled() {
-    return this.store.getState().isHexValuesEnabled;
   }
 
   /**

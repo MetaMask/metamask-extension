@@ -3763,7 +3763,6 @@ export function resetBlockList() {
 
 export function setNumericBase(numericBase) {
   return () => {
-    console.log('actions setting numeric base', { numericBase });
     return promisifiedBackground.setNumericBase(numericBase);
   };
 }
@@ -3772,13 +3771,4 @@ export function deleteBlock(index) {
   return () => {
     return promisifiedBackground.deleteBlock(index);
   };
-}
-
-// TODO: delete
-export async function setIsHexValuesEnabled(val) {
-  console.log('actions calling update hex button state', {
-    hexButtonState: val,
-    promisifiedBackground,
-  });
-  await promisifiedBackground.setIsHexValuesEnabled(val);
 }

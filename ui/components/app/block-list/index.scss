@@ -11,4 +11,13 @@
       margin-right: 8px;
     }
   }
+
+  &__dropdown {
+   margin-top: 12px;
+
+   &_label {
+    color: var(--color-text-default);
+    margin-right:8px;
+   }
+  }
 }

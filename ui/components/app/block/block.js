@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
+import Button from '../../ui/button';
 
 export const Block = ({
   number,
@@ -14,47 +15,49 @@ export const Block = ({
 }) => {
   return (
     <div className="block" key={number}>
-      <span className="delete-block">
-        <button onClick={onDelete}>Delete</button>
-      </span>
       <span>{`Number: ${
-        numericBase
+        numericBase === 'hex'
           ? number
           : conversionUtil(number, {
-              fromNumericBase: numericBase,
-              toNumericBase: numericBase,
+              fromNumericBase: 'hex',
+              toNumericBase: 'dec',
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`Hash: ${hash}`}</span>
       <span>{`Nonce: ${
-        numericBase
+        numericBase === 'hex'
           ? nonce
           : conversionUtil(nonce, {
-              fromNumericBase: numericBase,
-              toNumericBase: numericBase,
+              fromNumericBase: 'hex',
+              toNumericBase: 'dec',
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`GasLimit: ${
-        numericBase
+        numericBase === 'hex'
           ? gasLimit
           : conversionUtil(gasLimit, {
-              fromNumericBase: numericBase,
-              toNumericBase: numericBase,
+              fromNumericBase: 'hex',
+              toNumericBase: 'dec',
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`GasUsed: ${
-        numericBase
+        numericBase === 'hex'
           ? gasUsed
           : conversionUtil(gasUsed, {
-              fromNumericBase: numericBase,
-              toNumericBase: numericBase,
+              fromNumericBase: 'hex',
+              toNumericBase: 'dec',
               numberOfDecimals: 2,
             })
       }`}</span>
       <span>{`Transaction Count: ${transactions?.length}`}</span>
+      <span>
+        <Button type="danger" onClick={onDelete}>
+          Delete
+        </Button>
+      </span>
     </div>
   );
 };

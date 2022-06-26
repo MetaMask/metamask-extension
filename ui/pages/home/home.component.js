@@ -144,8 +144,6 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    isHexValuesEnabled: PropTypes.boolean,
-    setIsHexValuesEnabled: PropTypes.func,
   };
 
   state = {
@@ -544,9 +542,6 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
-      // TODO: delete 633
-      isHexValuesEnabled,
-      setIsHexValuesEnabled,
     } = this.props;
 
     if (forgottenPassword) {
@@ -629,10 +624,7 @@ export default class Home extends PureComponent {
                 data-testid="home__activity-tab"
                 name="Block Info"
               >
-                <BlockList
-                  isHexValuesEnabled={isHexValuesEnabled}
-                  setIsHexValuesEnabled={setIsHexValuesEnabled}
-                />
+                <BlockList />
               </Tab>
             </Tabs>
             <div className="home__support">

@@ -4,22 +4,10 @@ import { ObservableStore } from '@metamask/obs-store';
 
 export default class BlockController {
   constructor(opts = {}) {
-    // const { initState = {}, preferencesStore } = opts;
-    // const state = {
-    //   ...defaultState,
-    //   alertEnabledness: {
-    //     ...defaultState.alertEnabledness,
-    //     ...initState.alertEnabledness,
-    //   },
-    // };
-
-    // this.store = new ObservableStore(state);
-
-    const { blockTracker, provider, preferencesStore } = opts;
+    const { blockTracker, provider } = opts;
     const query = pify(new EthQuery(provider));
 
     const initState = { blocks: [], numericBase: 'hex' };
-    // this.hexButtonState = preferencesStore.getState().hexButtonState;
 
     this.store = new ObservableStore(initState);
 
@@ -42,20 +30,13 @@ export default class BlockController {
     });
   }
 
-  setHexButtonState = (records) => {
-    console.log('blockcontroller setting hex button state', { records });
-    this.store.updateState({ records });
-  };
-
   setNumericBase(numericBase) {
-    console.log('block controller setting numeric base to', { numericBase });
     this.store.updateState({
       numericBase,
     });
   }
 
   resetBlockList = () => {
-    console.log('blockcontroller resetting block list');
     this.store.updateState({
       blocks: [],
     });

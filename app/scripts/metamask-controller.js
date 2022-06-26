@@ -551,7 +551,6 @@ export default class MetamaskController extends EventEmitter {
     this.blockController = new BlockController({
       blockTracker: this.blockTracker,
       provider: this.provider,
-      preferencesStore: this.preferencesController.store,
     });
 
     this.onboardingController = new OnboardingController({
@@ -1966,11 +1965,6 @@ export default class MetamaskController extends EventEmitter {
       setNumericBase: blockController.setNumericBase.bind(blockController),
 
       deleteBlock: blockController.deleteBlock.bind(blockController),
-
-      // TODO: delete
-      setIsHexValuesEnabled: preferencesController.setIsHexValuesEnabled.bind(
-        preferencesController,
-      ),
 
       /** Token Detection V2 */
       addDetectedTokens: process.env.TOKEN_DETECTION_V2
