@@ -583,6 +583,48 @@ describe('Send Slice', () => {
           );
         });
       });
+
+      it('should set the correct token transfers', () => {
+        const tokenTransferTxState = {
+          ...initialState,
+          status: SEND_STATUSES.VALID,
+          transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          account: {
+            address: '0x6784e8507A1A46443f7bDc8f8cA39bdA92A675A6',
+          },
+          asset: {
+            details: {
+              address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            },
+            type: 'TOKEN',
+          },
+          recipient: {
+            address: '4F90e18605Fd46F9F9Fab0e225D88e1ACf5F5324',
+          },
+          amount: {
+            value: '0x1',
+          },
+          gas: {
+            maxFeePerGas: '0x2540be400', // 10 GWEI
+            maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
+            gasLimit: '0x5208', // 21000
+          },
+          eip1559support: true,
+        };
+
+        const action = {
+          type: 'send/updateDraftTransaction',
+        };
+
+        const result = sendReducer(tokenTransferTxState, action);
+
+        expect(result.draftTransaction.txParams.data).toStrictEqual(
+          '0xa9059cbb0000000000000000000000004f90e18605fd46f9f9fab0e225d88e1acf5f53240000000000000000000000000000000000000000000000000000000000000001',
+        );
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+        );
+      });
     });
 
     describe('useDefaultGas', () => {
