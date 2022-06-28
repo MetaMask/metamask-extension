@@ -246,9 +246,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -266,7 +282,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type beta prod
+          command: yarn build --build-type beta dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -290,7 +306,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type flask prod
+          command: yarn build --build-type flask dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
