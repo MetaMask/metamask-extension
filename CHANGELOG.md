@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.16.1]
+### Uncategorized
+- Revert v10.16.0 ([#15063](https://github.com/MetaMask/metamask-extension/pull/15063))
+- This reverts commit f09ab8889148c406551dea1643966e3331fde4aa, reversing ([#14912](https://github.com/MetaMask/metamask-extension/pull/14912))
+
 ## [10.15.1]
 ### Fixed
 - Fix Ledger connection failures that can occur after remove all hardware wallet accounts and reconnecting  ([#14993](https://github.com/MetaMask/metamask-extension/pull/14993))
@@ -2969,7 +2974,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...HEAD
+[10.16.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...v10.16.1
 [10.15.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.15.1
 [10.15.0]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...v10.15.0
 [10.14.7]: https://github.com/MetaMask/metamask-extension/compare/v10.14.6...v10.14.7
