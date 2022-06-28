@@ -52,7 +52,6 @@ export default function ConfirmApprove({
   tokenId,
   userAddress,
   toAddress,
-  tokenAddress,
   transaction,
   ethTransactionTotal,
   fiatTransactionTotal,
@@ -174,7 +173,6 @@ export default function ConfirmApprove({
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}
-              tokenAddress={tokenAddress}
               showCustomizeGasModal={approveTransaction}
               showEditApprovalPermissionModal={({
                 /* eslint-disable no-shadow */
@@ -270,7 +268,6 @@ export default function ConfirmApprove({
 ConfirmApprove.propTypes = {
   assetStandard: PropTypes.string,
   assetName: PropTypes.string,
-  tokenAddress: PropTypes.string,
   userBalance: PropTypes.string,
   tokenSymbol: PropTypes.string,
   decimals: PropTypes.string,

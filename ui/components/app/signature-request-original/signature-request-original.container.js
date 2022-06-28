@@ -3,16 +3,14 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { goHome, cancelMsgs, showModal } from '../../../store/actions';
+import { goHome } from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
   getSubjectMetadata,
   doesAddressRequireLedgerHidConnection,
-  unconfirmedMessagesHashSelector,
-  getTotalUnapprovedMessagesCount,
 } from '../../../selectors';
-import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
+import { getAccountByAddress } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -31,8 +29,6 @@ function mapStateToProps(state, ownProps) {
     from,
   );
   const isLedgerWallet = isAddressLedger(state, from);
-  const messagesList = unconfirmedMessagesHashSelector(state);
-  const messagesCount = getTotalUnapprovedMessagesCount(state);
 
   return {
     requester: null,
@@ -45,8 +41,6 @@ function mapStateToProps(state, ownProps) {
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     subjectMetadata: getSubjectMetadata(state),
-    messagesList,
-    messagesCount,
   };
 }
 
@@ -54,19 +48,6 @@ function mapDispatchToProps(dispatch) {
   return {
     goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    showRejectTransactionsConfirmationModal: ({
-      onSubmit,
-      unapprovedTxCount: messagesCount,
-    }) => {
-      return dispatch(
-        showModal({
-          name: 'REJECT_TRANSACTIONS',
-          onSubmit,
-          unapprovedTxCount: messagesCount,
-        }),
-      );
-    },
-    cancelAll: (messagesList) => dispatch(cancelMsgs(messagesList)),
   };
 }
 
@@ -81,7 +62,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
   } = ownProps;
 
-  const { allAccounts, messagesList, ...otherStateProps } = stateProps;
+  const { allAccounts, ...otherStateProps } = stateProps;
 
   const {
     type,
@@ -89,8 +70,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
-
-  const { cancelAll: dispatchCancelAll } = dispatchProps;
 
   let cancel;
   let sign;
@@ -113,7 +92,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
     cancel,
     sign,
-    cancelAll: () => dispatchCancelAll(valuesFor(messagesList)),
   };
 }
 

@@ -168,11 +168,7 @@ export default function CollectiblesItems({
               </Typography>
             </Box>
             <Box alignItems={ALIGN_ITEMS.FLEX_END}>
-              <i
-                className={`collectibles-items__collection__icon-chevron fa fa-chevron-${
-                  isExpanded ? 'down' : 'right'
-                }`}
-              />
+              <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
             </Box>
           </Box>
         </button>

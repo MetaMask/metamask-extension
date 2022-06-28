@@ -13,7 +13,6 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
@@ -23,9 +22,6 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getNotifications,
-  ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -39,9 +35,6 @@ import {
 import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-///: END:ONLY_INCLUDE_IN
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -998,53 +991,15 @@ export function enableSnap(snapId) {
   };
 }
 
-export function removeSnap(snapId) {
+export function removeSnap(snap) {
   return async (dispatch) => {
-    await promisifiedBackground.removeSnap(snapId);
+    await promisifiedBackground.removeSnap(snap);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export async function removeSnapError(msgData) {
   return promisifiedBackground.removeSnapError(msgData);
-}
-
-export function dismissNotifications(ids) {
-  return async (dispatch) => {
-    await promisifiedBackground.dismissNotifications(ids);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function deleteExpiredNotifications() {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const notifications = getNotifications(state);
-
-    const notificationIdsToDelete = notifications
-      .filter((notification) => {
-        const expirationTime = new Date(
-          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
-        );
-
-        return Boolean(
-          notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
-        );
-      })
-      .map(({ id }) => id);
-    if (notificationIdsToDelete.length) {
-      await promisifiedBackground.dismissNotifications(notificationIdsToDelete);
-      await forceUpdateMetamaskState(dispatch);
-    }
-  };
-}
-
-export function markNotificationsAsRead(ids) {
-  return async (dispatch) => {
-    await promisifiedBackground.markNotificationsAsRead(ids);
-    await forceUpdateMetamaskState(dispatch);
-  };
 }
 ///: END:ONLY_INCLUDE_IN
 
@@ -1063,96 +1018,6 @@ export function cancelMsg(msgData) {
     dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
-  };
-}
-
-/**
- * Cancels all of the given messages
- *
- * @param {Array<object>} msgDataList - a list of msg data objects
- * @returns {function(*): Promise<void>}
- */
-export function cancelMsgs(msgDataList) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const msgIds = msgDataList.map((id) => id);
-      const cancellations = msgDataList.map(
-        ({ id, type }) =>
-          new Promise((resolve, reject) => {
-            switch (type) {
-              case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-                background.cancelTypedMessage(id, (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.PERSONAL_SIGN:
-                background.cancelPersonalMessage(id, (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.ETH_DECRYPT:
-                background.cancelDecryptMessage(id, (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
-                background.cancelEncryptionPublicKeyMsg(id, (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.ETH_SIGN:
-                background.cancelMessage(id, (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              default:
-                reject(
-                  new Error(
-                    `MetaMask Message Signature: Unknown message type: ${id}`,
-                  ),
-                );
-            }
-          }),
-      );
-
-      await Promise.all(cancellations);
-      const newState = await updateMetamaskStateFromBackground();
-      dispatch(updateMetamaskState(newState));
-
-      msgIds.forEach((id) => {
-        dispatch(completedTx(id));
-      });
-    } catch (err) {
-      log.error(err);
-    } finally {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        closeNotificationPopup();
-      } else {
-        dispatch(hideLoadingIndication());
-      }
-    }
   };
 }
 
@@ -3094,13 +2959,6 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   };
 }
 
-export function setNewTokensImported(newTokensImported) {
-  return {
-    type: actionConstants.SET_NEW_TOKENS_IMPORTED,
-    value: newTokensImported,
-  };
-}
-
 export function setLastActiveTime() {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
@@ -3556,16 +3414,36 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
-export function fetchSmartTransactionFees(
+export function fetchSmartTransactionFees(unsignedTransaction) {
+  return async (dispatch) => {
+    try {
+      return await promisifiedBackground.fetchSmartTransactionFees(
+        unsignedTransaction,
+      );
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function estimateSmartTransactionsGas(
   unsignedTransaction,
   approveTxParams,
 ) {
+  if (approveTxParams) {
+    approveTxParams.value = '0x0';
+  }
   return async (dispatch) => {
-    if (approveTxParams) {
-      approveTxParams.value = '0x0';
-    }
     try {
-      return await promisifiedBackground.fetchSmartTransactionFees(
+      await promisifiedBackground.estimateSmartTransactionsGas(
         unsignedTransaction,
         approveTxParams,
       );

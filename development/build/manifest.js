@@ -2,9 +2,7 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const { mergeWith, cloneDeep } = require('lodash');
 
-const baseManifest = process.env.ENABLE_MV3
-  ? require('../../app/manifest/v3/_base.json')
-  : require('../../app/manifest/v2/_base.json');
+const baseManifest = require('../../app/manifest/_base.json');
 const { BuildType } = require('../lib/build-type');
 
 const { createTask, composeSeries } = require('./task');
@@ -26,7 +24,7 @@ function createManifestTasks({
             '..',
             '..',
             'app',
-            process.env.ENABLE_MV3 ? 'manifest/v3' : 'manifest/v2',
+            'manifest',
             `${platform}.json`,
           ),
         );

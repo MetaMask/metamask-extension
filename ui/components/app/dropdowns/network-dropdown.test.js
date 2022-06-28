@@ -19,7 +19,6 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
-        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: true,
         },
@@ -51,7 +50,6 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
-        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: true,
         },
@@ -158,7 +156,6 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
-        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: false,
         },

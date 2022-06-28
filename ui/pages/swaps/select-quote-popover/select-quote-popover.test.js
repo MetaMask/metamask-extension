@@ -10,7 +10,6 @@ const createProps = (customProps = {}) => {
     swapToSymbol: 'ETH',
     initialAggId: 'initialAggId',
     onQuoteDetailsIsOpened: jest.fn(),
-    hideEstimatedGasFee: false,
     ...customProps,
   };
 };

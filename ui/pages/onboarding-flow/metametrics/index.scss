@@ -1,10 +1,5 @@
 .onboarding-metametrics {
-  @media screen and (min-width: $break-large) {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+  width: 600px;
 
   ul {
     margin: 24px 0 0 0;
@@ -34,21 +29,13 @@
   }
 
   &__buttons {
-    margin-top: 24px;
-    width: 100%;
-
-    @media screen and (min-width: $break-large) {
-      margin-top: 40px;
-      justify-content: space-between;
-      display: flex;
-    }
+    margin: 24px auto 0 auto;
+    justify-content: space-between;
+    display: flex;
 
     button {
       margin-bottom: 24px;
-
-      @media screen and (min-width: $break-large) {
-        width: 200px;
-      }
+      width: 200px;
     }
   }
 }

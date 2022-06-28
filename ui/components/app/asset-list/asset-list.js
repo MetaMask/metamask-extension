@@ -1,8 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import ImportTokenLink from '../import-token-link';
 import TokenList from '../token-list';
+import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -10,7 +12,7 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getShouldShowFiat,
   getNativeCurrencyImage,
-  getDetectedTokensInCurrentNetwork,
+  getIsMainnet,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -25,14 +27,10 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import DetectedToken from '../detected-token/detected-token';
-import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
-
-  const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-
+  const history = useHistory();
   const selectedAccountBalance = useSelector(
     (state) => getCurrentAccountWithSendEtherInfo(state).balance,
   );
@@ -66,7 +64,7 @@ const AssetList = ({ onClickAsset }) => {
   });
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
+  const isMainnet = useSelector(getIsMainnet) || process.env.IN_TEST;
 
   return (
     <>
@@ -94,12 +92,7 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      {process.env.TOKEN_DETECTION_V2
-        ? detectedTokens.length > 0 && (
-            <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
-          )
-        : null}
-      <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
+      <Box marginTop={4}>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Typography
             color={COLORS.TEXT_ALTERNATIVE}
@@ -109,11 +102,21 @@ const AssetList = ({ onClickAsset }) => {
             {t('missingToken')}
           </Typography>
         </Box>
-        <ImportTokenLink />
+        <ImportTokenLink
+          isMainnet={isMainnet}
+          onClick={() => {
+            history.push(IMPORT_TOKEN_ROUTE);
+            trackEvent({
+              event: 'Clicked "Add Token"',
+              category: EVENT.CATEGORIES.NAVIGATION,
+              properties: {
+                action: 'Token Menu',
+                legacy_event: true,
+              },
+            });
+          }}
+        />
       </Box>
-      {showDetectedTokens && (
-        <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
-      )}
     </>
   );
 };

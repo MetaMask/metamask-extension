@@ -10,7 +10,6 @@ import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
   FONT_WEIGHT,
-  TEXT_ALIGN,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
@@ -125,11 +124,7 @@ export default function SrpInput({ onChange, srpText }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Typography
-          align={TEXT_ALIGN.LEFT}
-          variant={TYPOGRAPHY.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
           {srpText}
         </Typography>
       </label>
@@ -184,6 +179,8 @@ export default function SrpInput({ onChange, srpText }) {
                   if (newSrp.trim().match(/\s/u)) {
                     event.preventDefault();
                     onSrpPaste(newSrp);
+                  } else {
+                    onSrpWordChange(index, newSrp);
                   }
                 }}
               />

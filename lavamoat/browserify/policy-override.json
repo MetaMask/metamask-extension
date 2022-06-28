@@ -87,6 +87,11 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/iframe-execution-environment-service>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/snap-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true

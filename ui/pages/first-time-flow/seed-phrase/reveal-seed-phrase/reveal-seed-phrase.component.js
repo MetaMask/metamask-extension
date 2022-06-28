@@ -12,7 +12,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import { exportAsFile } from '../../../../helpers/utils/util';
 import { EVENT } from '../../../../../shared/constants/metametrics';
-import { returnToOnboardingInitiatorTab } from '../../onboarding-initiator-util';
+import { returnToOnboardingInitiator } from '../../onboarding-initiator-util';
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -79,7 +79,7 @@ export default class RevealSeedPhrase extends PureComponent {
     await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
 
     if (onboardingInitiator) {
-      await returnToOnboardingInitiatorTab(onboardingInitiator);
+      await returnToOnboardingInitiator(onboardingInitiator);
     }
     history.replace(DEFAULT_ROUTE);
   };

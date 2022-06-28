@@ -320,7 +320,7 @@
 
       margin-top: 8px;
       margin-bottom: 12px;
-      color: var(--color-text-default);
+      color: var(--color-icon-default);
     }
   }
 
@@ -331,7 +331,7 @@
   &__content-description {
     @include H6;
 
-    color: var(--color-text-default);
+    color: var(--color-icon-default);
     padding-top: 5px;
 
     a {

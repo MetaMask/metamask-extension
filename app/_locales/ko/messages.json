@@ -192,6 +192,9 @@
   "affirmAgree": {
     "message": "동의함"
   },
+  "aggregatorFeeCost": {
+    "message": "애그리게이터 네트워크 수수료"
+  },
   "airgapVault": {
     "message": "에어갭 볼트"
   },
@@ -248,6 +251,12 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
+  },
+  "approvalAndAggregatorTxFeeCost": {
+    "message": "승인 및 애그리게이터 네트워크 수수료"
+  },
+  "approvalTxGasCost": {
+    "message": "승인 Tx 가스 비용"
   },
   "approve": {
     "message": "지출 한도 승인"
@@ -416,10 +425,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Wyre로 $1 구매"
+    "message": "Wyre로 ETH 구매"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre를 사용하면 체크카드를 이용하여 $1 를 MetaMask 계정에 바로 예치할 수 있습니다."
+    "message": "Wyre를 사용하면 체크카드를 이용하여 ETH를 MetaMask 계정에 바로 예치할 수 있습니다."
   },
   "bytes": {
     "message": "바이트"
@@ -1164,6 +1173,10 @@
   },
   "externalExtension": {
     "message": "외부 확장"
+  },
+  "extraApprovalGas": {
+    "message": "+$1의 승인 가스",
+    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "실패"
@@ -3083,6 +3096,15 @@
   "stxFallbackUnavailable": {
     "message": "스마트 거래를 사용할 수 없을 때도 토큰 스왑은 가능합니다."
   },
+  "stxPendingFinalizing": {
+    "message": "마무리 중..."
+  },
+  "stxPendingOptimizingGas": {
+    "message": "가스비 최적화 중..."
+  },
+  "stxPendingPrivatelySubmitting": {
+    "message": "스왑을 비공개로 제출하는 중..."
+  },
   "stxSubDescription": {
     "message": "*스마트 거래는 비공개로 거래를 제출하기 위해 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 거래는 공개적으로 브로드캐스트될 것입니다."
   },
@@ -3170,6 +3192,10 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapCompleteIn": {
+    "message": "스왑 완료까지 남은 시간:",
+    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인합니다."

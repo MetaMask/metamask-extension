@@ -8,10 +8,10 @@ export default {
   title: 'Components/App/DetectedToken/DetectedTokenAggregators',
   id: __filename,
   argTypes: {
-    aggregators: { control: 'array' },
+    aggregatorsList: { control: 'array' },
   },
   args: {
-    aggregators1: [
+    aggregatorsList1: [
       'Aave',
       'Bancor',
       'CMC',
@@ -25,15 +25,15 @@ export default {
       'Zerion',
       '0x',
     ],
-    aggregators2: ['Aave', 'Bancor'],
+    aggregatorsList2: ['Aave', 'Bancor'],
   },
 };
 
 const Template = (args) => {
   return (
     <Box display={DISPLAY.GRID}>
-      <DetectedTokenAggregators aggregators={args.aggregators1} />
-      <DetectedTokenAggregators aggregators={args.aggregators2} />
+      <DetectedTokenAggregators aggregatorsList={args.aggregatorsList1} />
+      <DetectedTokenAggregators aggregatorsList={args.aggregatorsList2} />
     </Box>
   );
 };

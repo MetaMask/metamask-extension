@@ -1,12 +1,29 @@
 .import-srp {
-  margin-bottom: 24px;
+  width: 840px;
+
+  @media screen and (max-width: 349px) {
+    width: 300px;
+  }
+
+  @media screen and (min-width: 350px) and (max-width: 460px) {
+    width: 357px;
+  }
+
+  @media screen and (min-width: 461px) and (max-width: $break-small) {
+    width: 450px;
+  }
+
+  @media screen and (min-width: $break-small) and (max-width: 840px) {
+    width: 580px;
+  }
 
   &__header {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    margin-bottom: 24px;
+    margin: 20px auto;
+    max-width: 500px;
   }
 
   &__description {
@@ -33,11 +50,17 @@
     align-items: center;
     text-align: left;
     margin: auto;
+
+    &--link {
+      @include H6;
+
+      margin-bottom: 12px;
+    }
   }
 
   &__confirm-button {
-    max-width: 327px;
+    width: 327px;
     margin: auto;
-    margin-top: 24px;
+    margin-top: 59px;
   }
 }

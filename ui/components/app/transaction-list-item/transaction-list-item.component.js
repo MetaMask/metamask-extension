@@ -39,7 +39,6 @@ import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import SiteOrigin from '../../ui/site-origin';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -192,13 +191,16 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
             />
-            {subtitleContainsOrigin ? (
-              <SiteOrigin siteOrigin={subtitle} />
-            ) : (
-              <span className="transaction-list-item__address" title={subtitle}>
-                {subtitle}
-              </span>
-            )}
+            <span
+              className={
+                subtitleContainsOrigin
+                  ? 'transaction-list-item__origin'
+                  : 'transaction-list-item__address'
+              }
+              title={subtitle}
+            >
+              {subtitle}
+            </span>
           </h3>
         }
         rightContent={

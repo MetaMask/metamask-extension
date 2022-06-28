@@ -365,50 +365,6 @@ function createScriptTasks({
   }
 }
 
-// Function generates app-init.js for browsers chrome, brave and opera.
-// It dynamically injects list of files generated in the build.
-async function bundleMV3AppInitialiser({
-  jsBundles,
-  browserPlatforms,
-  buildType,
-  devMode,
-  ignoredFiles,
-  testing,
-  policyOnly,
-  shouldLintFenceFiles,
-}) {
-  const label = 'app-init';
-  // TODO: remove this filter for firefox once MV3 is supported in it
-  const mv3BrowserPlatforms = browserPlatforms.filter(
-    (platform) => platform !== 'firefox',
-  );
-  const fileList = jsBundles.reduce(
-    (result, file) => `${result}'${file}',\n    `,
-    '',
-  );
-
-  await createNormalBundle({
-    browserPlatforms: mv3BrowserPlatforms,
-    buildType,
-    destFilepath: 'app-init.js',
-    devMode,
-    entryFilepath: './app/scripts/app-init.js',
-    ignoredFiles,
-    label,
-    testing,
-    policyOnly,
-    shouldLintFenceFiles,
-  })();
-
-  mv3BrowserPlatforms.forEach((browser) => {
-    const appInitFile = `./dist/${browser}/app-init.js`;
-    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    const fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-    writeFileSync(appInitFile, fileOutput);
-  });
-  console.log(`Bundle end: service worker app-init.js`);
-}
-
 function createFactoredBuild({
   applyLavaMoat,
   browserPlatforms,
@@ -521,7 +477,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', async () => {
+    events.on('bundleDone', () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -567,22 +523,6 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
             });
-            if (process.env.ENABLE_MV3) {
-              const jsBundles = [
-                ...commonSet.values(),
-                ...groupSet.values(),
-              ].map((label) => `./${label}.js`);
-              await bundleMV3AppInitialiser({
-                jsBundles,
-                browserPlatforms,
-                buildType,
-                devMode,
-                ignoredFiles,
-                testing,
-                policyOnly,
-                shouldLintFenceFiles,
-              });
-            }
             break;
           }
           case 'content-script': {

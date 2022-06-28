@@ -1,4 +1,4 @@
-import { endowmentPermissionBuilders } from '@metamask/snap-controllers';
+import { endowmentPermissionBuilders } from '@metamask/controllers';
 import {
   restrictedMethodPermissionBuilders,
   selectHooks,

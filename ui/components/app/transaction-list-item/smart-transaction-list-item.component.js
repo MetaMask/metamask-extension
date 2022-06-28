@@ -14,7 +14,6 @@ import {
 
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
-import SiteOrigin from '../../ui/site-origin';
 
 export default function SmartTransactionListItem({
   smartTransaction,
@@ -61,11 +60,9 @@ export default function SmartTransactionListItem({
               date={date}
               status={displayedStatusKey}
             />
-            <SiteOrigin
-              className="transaction-list-item__origin"
-              siteOrigin={subtitle}
-              title={subtitle}
-            />
+            <span className="transaction-list-item__origin" title={subtitle}>
+              {subtitle}
+            </span>
           </h3>
         }
       >
