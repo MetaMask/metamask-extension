@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.16.1]
-### Uncategorized
-- Revert v10.16.0 ([#15063](https://github.com/MetaMask/metamask-extension/pull/15063))
-- This reverts commit f09ab8889148c406551dea1643966e3331fde4aa, reversing ([#14912](https://github.com/MetaMask/metamask-extension/pull/14912))
+### Changed
+- This release is a patch for v10.15.2, so all changes in v10.16.0 have been temporarily reverted. They will be restored in a future v16 release. ([#15063](https://github.com/MetaMask/metamask-extension/pull/15063))
+
+### Fixed
+- Fix bug that could cause an incorrect recipient address after pasting an address, without a 0x prefix, in the send flow while sending a token ([#15064](https://github.com/MetaMask/metamask-extension/pull/15064)
+
 
 ## [10.15.1]
 ### Fixed
