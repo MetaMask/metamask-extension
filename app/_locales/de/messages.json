@@ -235,7 +235,7 @@
     "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
-    "message": "Erlauben Sie dieser Site zu:"
+    "message": "Erlauben Sie dieser Seite zu:"
   },
   "allowWithdrawAndSpend": {
     "message": "$1 erlauben, bis zu dem folgenden Betrag abzuheben und auszugeben:",
@@ -2297,7 +2297,7 @@
     "message": "Diese Erweiterungen können Informationen sehen und ändern"
   },
   "onboardingPinExtensionBillboardDescription2": {
-    "message": "auf dieser Site."
+    "message": "auf dieser Seite."
   },
   "onboardingPinExtensionBillboardTitle": {
     "message": "Erweiterungen"
@@ -2828,7 +2828,7 @@
     "message": "Typ auswählen"
   },
   "selectingAllWillAllow": {
-    "message": "Wenn Sie alle auswählen, erlauben Sie dieser Site, alle Ihre aktuellen Konten anzusehen. Stellen Sie sicher, dass Sie dieser Site vertrauen."
+    "message": "Wenn Sie alle auswählen, erlauben Sie dieser Seite, alle Ihre aktuellen Konten anzusehen. Stellen Sie sicher, dass Sie dieser Seite vertrauen."
   },
   "send": {
     "message": "Senden"
@@ -3544,7 +3544,7 @@
     "message": "Dadurch wird das ausgewählte Netzwerk innerhalb von MetaMask auf ein zuvor hinzugefügtes Netzwerk umgeschaltet:"
   },
   "switchEthereumChainConfirmationTitle": {
-    "message": "Dieser Site das Wechseln eines Netzwerks erlauben?"
+    "message": "Dieser Seite das Wechseln eines Netzwerks erlauben?"
   },
   "switchNetwork": {
     "message": "Netzwerk wechseln"
