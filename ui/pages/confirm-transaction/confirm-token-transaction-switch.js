@@ -72,6 +72,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
         path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`}
         render={() => (
           <ConfirmApprove
+            isSetApproveForAll
             assetStandard={assetStandard}
             assetName={assetName}
             userBalance={userBalance}

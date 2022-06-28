@@ -230,6 +230,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allOfYour": {
+    "message": "All of your"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -265,6 +268,10 @@
   },
   "approve": {
     "message": "Approve spend limit"
+  },
+  "approveAllTokensTitle": {
+    "message": "Give permission to access all of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Approve & Install"
@@ -1286,6 +1293,9 @@
   },
   "functionApprove": {
     "message": "Function: Approve"
+  },
+  "functionSetApprovalForAll": {
+    "message": "Function: SetApprovalForAll"
   },
   "functionType": {
     "message": "Function Type"
@@ -2695,6 +2705,14 @@
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
+  },
+  "revokeAllTokensTitle": {
+    "message": "Revoke permission to access all of your $1?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "By revoking permission, the following $1 will no longer be able to access your $2",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"

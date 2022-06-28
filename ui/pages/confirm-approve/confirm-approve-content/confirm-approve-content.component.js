@@ -71,6 +71,8 @@ export default class ConfirmApproveContent extends Component {
     assetName: PropTypes.string,
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
+    isSetApproveForAll: PropTypes.bool,
+    setApproveForAllArg: PropTypes.bool,
   };
 
   state = {
@@ -184,7 +186,7 @@ export default class ConfirmApproveContent extends Component {
 
   renderERC721OrERC1155PermissionContent() {
     const { t } = this.context;
-    const { origin, toAddress, isContract } = this.props;
+    const { origin, toAddress, isContract, isSetApproveForAll } = this.props;
 
     const titleTokenDescription = this.getTitleTokenDescription();
 
@@ -201,6 +203,7 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
+            {isSetApproveForAll ? `${t('allOfYour')} ` : null}
             {titleTokenDescription}
           </div>
         </div>
@@ -299,11 +302,18 @@ export default class ConfirmApproveContent extends Component {
 
   renderDataContent() {
     const { t } = this.context;
-    const { data } = this.props;
+    const { data, isSetApproveForAll, setApproveForAllArg } = this.props;
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
-          {t('functionApprove')}
+          {isSetApproveForAll
+            ? t('functionSetApprovalForAll')
+            : t('functionApprove')}
+        </div>
+        <div className="confirm-approve-content__small-text">
+          {isSetApproveForAll && setApproveForAllArg !== undefined
+            ? `${t('parameters')}: ${setApproveForAllArg}`
+            : null}
         </div>
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
@@ -509,6 +519,41 @@ export default class ConfirmApproveContent extends Component {
     return titleTokenDescription;
   }
 
+  renderTitle() {
+    const { t } = this.context;
+    const { isSetApproveForAll, setApproveForAllArg } = this.props;
+    const titleTokenDescription = this.getTitleTokenDescription();
+
+    let title = t('allowSpendToken', [titleTokenDescription]);
+
+    if (isSetApproveForAll) {
+      title = t('approveAllTokensTitle', [titleTokenDescription]);
+      if (setApproveForAllArg === false) {
+        title = t('revokeAllTokensTitle', [titleTokenDescription]);
+      }
+    }
+    return title;
+  }
+
+  renderDescription() {
+    const { t } = this.context;
+    const { isContract, isSetApproveForAll, setApproveForAllArg } = this.props;
+    const grantee = isContract
+      ? t('contract').toLowerCase()
+      : t('account').toLowerCase();
+
+    let description = t('trustSiteApprovePermission', [grantee]);
+
+    if (isSetApproveForAll && setApproveForAllArg === false) {
+      description = t('revokeApproveForAllDescription', [
+        grantee,
+        this.getTitleTokenDescription(),
+      ]);
+    }
+
+    return description;
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -533,8 +578,6 @@ export default class ConfirmApproveContent extends Component {
       assetStandard,
     } = this.props;
     const { showFullTxDetails } = this.state;
-
-    const titleTokenDescription = this.getTitleTokenDescription();
 
     return (
       <div
@@ -575,14 +618,10 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {t('allowSpendToken', [titleTokenDescription])}
+          {this.renderTitle()}
         </div>
         <div className="confirm-approve-content__description">
-          {t('trustSiteApprovePermission', [
-            isContract
-              ? t('contract').toLowerCase()
-              : t('account').toLowerCase(),
-          ])}
+          {this.renderDescription()}
         </div>
         <Box className="confirm-approve-content__address-display-content">
           <Box display={DISPLAY.FLEX}>
