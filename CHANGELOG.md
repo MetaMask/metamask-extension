@@ -16,7 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consolidate all Error Messages in one style component ([#14945](https://github.com/MetaMask/metamask-extension/pull/14945))
 - Improve accessibility by allowing keyboard navigation on Accounts menu ([#14936](https://github.com/MetaMask/metamask-extension/pull/14936))
 - Allow using locally hosted RPCs and Block Explorer Urls when adding an Ethereum Chain programmatically ([#14272](https://github.com/MetaMask/metamask-extension/pull/14272))
-- [FLASK] snaps-skunkworks@0.16.0 ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+- **[FLASK] BREAKING:** Snaps [are now required](https://github.com/MetaMask/snaps-skunkworks/discussions/590) to export `onRpcRequest` to receive RPC requests ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+  - All existing snaps will have to be updated to conform to this new standard.
+- **[FLASK] BREAKING:** Snap state [is now encrypted](https://github.com/MetaMask/snaps-skunkworks/discussions/590) by default ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+  - Breaks existing installed snaps that use `snap_manageState`. All such Snaps must be reinstalled.
 
 ### Fixed
 - Fix German translation for `statusConnected` ([#14997](https://github.com/MetaMask/metamask-extension/pull/14997))
@@ -27,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix displaying wrong balance on the first seconds after switching network ([#14354](https://github.com/MetaMask/metamask-extension/pull/14354))
 - Fix Contact name display on Edit tx page ([#14613](https://github.com/MetaMask/metamask-extension/pull/14613))
 - Fix infinite loading when transferring non-standard ERC721 (without name and/or symbol) ([#14756](https://github.com/MetaMask/metamask-extension/pull/14756))
+- **[FLASK]:** Fix multiple bugs related to snap installation ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
 
 ## [10.16.0]
 ### Added
