@@ -88,11 +88,16 @@ setBackgroundConnection({
 
 describe('Send Slice', () => {
   let getTokenStandardAndDetailsStub;
+  let addUnapprovedTransactionAndRouteToConfirmationPageStub;
   beforeEach(() => {
     jest.useFakeTimers();
     getTokenStandardAndDetailsStub = jest
       .spyOn(Actions, 'getTokenStandardAndDetails')
       .mockImplementation(() => Promise.resolve({ standard: 'ERC20' }));
+    addUnapprovedTransactionAndRouteToConfirmationPageStub = jest.spyOn(
+      Actions,
+      'addUnapprovedTransactionAndRouteToConfirmationPage',
+    );
     jest
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
@@ -1923,6 +1928,60 @@ describe('Send Slice', () => {
             'sendFlow - user clicked next and transaction should be added to controller',
         });
         expect(actionResult[1].type).toStrictEqual('SHOW_CONF_TX_PAGE');
+      });
+
+      describe('with token transfers', () => {
+        it('should pass the correct transaction parameters to addUnapprovedTransactionAndRouteToConfirmationPage', async () => {
+          const tokenTransferTxState = {
+            metamask: {
+              unapprovedTxs: {
+                1: {
+                  id: 1,
+                  txParams: {
+                    value: 'oldTxValue',
+                  },
+                },
+              },
+            },
+            send: {
+              ...signTransactionState.send,
+              stage: SEND_STAGES.DRAFT,
+              id: 1,
+              account: {
+                address: '0x6784e8507A1A46443f7bDc8f8cA39bdA92A675A6',
+              },
+              asset: {
+                details: {
+                  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                },
+                type: 'TOKEN',
+              },
+              recipient: {
+                address: '4F90e18605Fd46F9F9Fab0e225D88e1ACf5F5324',
+              },
+              amount: {
+                value: '0x1',
+              },
+            },
+          };
+
+          jest.mock('../../store/actions.js');
+
+          const store = mockStore(tokenTransferTxState);
+
+          await store.dispatch(signTransaction());
+
+          expect(
+            addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
+              .calls[0][0].data,
+          ).toStrictEqual(
+            '0xa9059cbb0000000000000000000000004f90e18605fd46f9f9fab0e225d88e1acf5f53240000000000000000000000000000000000000000000000000000000000000001',
+          );
+          expect(
+            addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
+              .calls[0][0].to,
+          ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
+        });
       });
 
       it('should create actions for updateTransaction rejecting', async () => {
