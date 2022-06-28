@@ -6,7 +6,6 @@ import TransactionBreakdown from '../transaction-breakdown';
 import TransactionActivityLog from '../transaction-activity-log';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import TransactionStatus from '../transaction-status/transaction-status.component';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 describe('TransactionListItemDetails Component', () => {
@@ -41,7 +40,6 @@ describe('TransactionListItemDetails Component', () => {
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -88,7 +86,6 @@ describe('TransactionListItemDetails Component', () => {
         showSpeedUp
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -130,7 +127,6 @@ describe('TransactionListItemDetails Component', () => {
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -175,7 +171,6 @@ describe('TransactionListItemDetails Component', () => {
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
-        transactionStatus={TransactionStatus}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );

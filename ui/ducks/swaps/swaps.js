@@ -31,6 +31,7 @@ import {
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
   fetchSmartTransactionFees,
+  estimateSmartTransactionsGas,
   cancelSmartTransaction,
   getTransactions,
 } from '../../store/actions';
@@ -80,11 +81,10 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
-  SLIPPAGE,
 } from '../../../shared/constants/swaps';
 import {
   TRANSACTION_TYPES,
-  IN_PROGRESS_TRANSACTION_STATUSES,
+  TRANSACTION_STATUSES,
   SMART_TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
@@ -109,7 +109,7 @@ const initialState = {
   fromTokenInputValue: '',
   fromTokenError: null,
   isFeatureFlagLoaded: false,
-  maxSlippage: SLIPPAGE.DEFAULT,
+  maxSlippage: 3,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
@@ -445,14 +445,13 @@ export const getSmartTransactionEstimatedGas = (state) => {
   return state.metamask.smartTransactionsState?.estimatedGas;
 };
 
-export const getSwapsNetworkConfig = (state) => {
+export const getSwapsRefreshStates = (state) => {
   const {
     swapsQuoteRefreshTime,
     swapsQuotePrefetchingRefreshTime,
     swapsStxGetTransactionsRefreshTime,
     swapsStxBatchStatusRefreshTime,
     swapsStxStatusDeadline,
-    swapsStxMaxFeeMultiplier,
   } = state.metamask.swapsState;
   return {
     quoteRefreshTime: swapsQuoteRefreshTime,
@@ -460,7 +459,6 @@ export const getSwapsNetworkConfig = (state) => {
     stxGetTransactionsRefreshTime: swapsStxGetTransactionsRefreshTime,
     stxBatchStatusRefreshTime: swapsStxBatchStatusRefreshTime,
     stxStatusDeadline: swapsStxStatusDeadline,
-    stxMaxFeeMultiplier: swapsStxMaxFeeMultiplier,
   };
 };
 
@@ -556,20 +554,6 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
-const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
-  if (transactions?.length <= 0) {
-    return;
-  }
-  for (const transaction of transactions) {
-    if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
-      dispatch(
-        setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_IN_PROGRESS),
-      );
-      break;
-    }
-  }
-};
-
 export const fetchSwapsLivenessAndFeatureFlags = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
@@ -582,12 +566,17 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(fetchSmartTransactionsLiveness());
-        const transactions = await getTransactions({
+        const pendingTransactions = await getTransactions({
           searchCriteria: {
+            status: TRANSACTION_STATUSES.PENDING,
             from: state.metamask?.selectedAddress,
           },
         });
-        disableStxIfRegularTxInProgress(dispatch, transactions);
+        if (pendingTransactions?.length > 0) {
+          dispatch(
+            setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_PENDING),
+          );
+        }
       }
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,
@@ -734,7 +723,7 @@ export const fetchQuotesAndSetQuoteState = (
         token_to: toTokenSymbol,
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
-        custom_slippage: maxSlippage !== SLIPPAGE.DEFAULT,
+        custom_slippage: maxSlippage !== 2,
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
@@ -788,7 +777,7 @@ export const fetchQuotesAndSetQuoteState = (
             token_to: toTokenSymbol,
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
-            custom_slippage: maxSlippage !== SLIPPAGE.DEFAULT,
+            custom_slippage: maxSlippage !== 2,
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
@@ -813,7 +802,7 @@ export const fetchQuotesAndSetQuoteState = (
             ),
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
-            custom_slippage: maxSlippage !== SLIPPAGE.DEFAULT,
+            custom_slippage: maxSlippage !== 2,
             response_time: Date.now() - fetchStartTime,
             best_quote_source: newSelectedQuote.aggregator,
             available_quotes: Object.values(fetchedQuotes)?.length,
@@ -857,12 +846,12 @@ export const signAndSendSwapsSmartTransaction = ({
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
-    const swapsNetworkConfig = getSwapsNetworkConfig(state);
+    const swapsRefreshStates = getSwapsRefreshStates(state);
     const chainId = getCurrentChainId(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsNetworkConfig?.stxBatchStatusRefreshTime,
+        swapsRefreshStates?.stxBatchStatusRefreshTime,
       ),
     );
 
@@ -923,44 +912,36 @@ export const signAndSendSwapsSmartTransaction = ({
 
     const approveTxParams = getApproveTxParams(state);
     let approvalTxUuid;
-    let updatedApproveTxParams;
     try {
       if (approveTxParams) {
-        updatedApproveTxParams = {
+        const updatedApproveTxParams = {
           ...approveTxParams,
           value: '0x0',
         };
-      }
-      const fees = await dispatch(
-        fetchSwapsSmartTransactionFees(
-          unsignedTransaction,
-          updatedApproveTxParams,
-        ),
-      );
-      if (!fees) {
-        log.error('"fetchSwapsSmartTransactionFees" failed');
-        dispatch(setSwapsSTXSubmitLoading(false));
-        dispatch(setCurrentSmartTransactionsError(stxErrorTypes.UNAVAILABLE));
-        return;
-      }
-      if (approveTxParams) {
+        const smartTransactionApprovalFees = await dispatch(
+          fetchSwapsSmartTransactionFees(updatedApproveTxParams),
+        );
         updatedApproveTxParams.gas = `0x${decimalToHex(
-          fees.approvalTxFees?.gasLimit || 0,
+          smartTransactionApprovalFees?.gasLimit || 0,
         )}`;
         approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
             unsignedTransaction: updatedApproveTxParams,
-            smartTransactionFees: fees.approvalTxFees,
+            smartTransactionFees: smartTransactionApprovalFees,
           }),
         );
       }
+
+      const smartTransactionFees = await dispatch(
+        fetchSwapsSmartTransactionFees(unsignedTransaction),
+      );
       unsignedTransaction.gas = `0x${decimalToHex(
-        fees.tradeTxFees?.gasLimit || 0,
+        smartTransactionFees?.gasLimit || 0,
       )}`;
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
-          smartTransactionFees: fees.tradeTxFees,
+          smartTransactionFees,
         }),
       );
 
@@ -1312,18 +1293,13 @@ export function fetchMetaSwapsGasPriceEstimates() {
   };
 }
 
-export function fetchSwapsSmartTransactionFees(
-  unsignedTransaction,
-  approveTxParams,
-) {
+export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
   return async (dispatch, getState) => {
     const {
       swaps: { isFeatureFlagLoaded },
     } = getState();
     try {
-      return await dispatch(
-        fetchSmartTransactionFees(unsignedTransaction, approveTxParams),
-      );
+      return await dispatch(fetchSmartTransactionFees(unsignedTransaction));
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
@@ -1331,6 +1307,30 @@ export function fetchSwapsSmartTransactionFees(
       }
     }
     return null;
+  };
+}
+
+export function estimateSwapsSmartTransactionsGas(
+  unsignedTransaction,
+  approveTxParams,
+) {
+  return async (dispatch, getState) => {
+    const {
+      swaps: { isFeatureFlagLoaded, swapsSTXLoading },
+    } = getState();
+    if (swapsSTXLoading) {
+      return;
+    }
+    try {
+      await dispatch(
+        estimateSmartTransactionsGas(unsignedTransaction, approveTxParams),
+      );
+    } catch (e) {
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
+    }
   };
 }
 

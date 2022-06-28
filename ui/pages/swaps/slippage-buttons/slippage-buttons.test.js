@@ -7,7 +7,7 @@ const createProps = (customProps = {}) => {
   return {
     onSelect: jest.fn(),
     maxAllowedSlippage: 15,
-    currentSlippage: 3,
+    currentSlippage: 2,
     smartTransactionsEnabled: false,
     ...customProps,
   };

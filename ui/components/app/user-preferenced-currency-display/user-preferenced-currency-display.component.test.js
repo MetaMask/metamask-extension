@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import CurrencyDisplay from '../../ui/currency-display';
 import * as currencyHook from '../../../hooks/useCurrencyDisplay';
 import * as currencyPrefHook from '../../../hooks/useUserPreferencedCurrency';
-import UserPreferencedCurrencyDisplay from '.';
+import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.component';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {

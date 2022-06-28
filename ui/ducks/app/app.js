@@ -59,7 +59,6 @@ export default function reduceApp(state = {}, action) {
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
     sendInputCurrencySwitched: false,
-    newTokensImported: '',
     ...state,
   };
 
@@ -306,12 +305,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         newNetworkAdded: action.value,
-      };
-
-    case actionConstants.SET_NEW_TOKENS_IMPORTED:
-      return {
-        ...appState,
-        newTokensImported: action.value,
       };
 
     case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:

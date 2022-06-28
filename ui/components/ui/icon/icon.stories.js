@@ -41,11 +41,10 @@ import IconTokenSearch from './icon-token-search';
 
 const validColors = [
   'var(--color-icon-default)',
-  'var(--color-icon-alternative)',
   'var(--color-icon-muted)',
   'var(--color-overlay-inverse)',
   'var(--color-primary-default)',
-  'var(--color-warning-default)',
+  'var(--color-secondary-default)',
   'var(--color-error-default)',
   'var(--color-warning-default)',
   'var(--color-success-default)',

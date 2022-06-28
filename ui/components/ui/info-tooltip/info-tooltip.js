@@ -17,7 +17,7 @@ export default function InfoTooltip({
   containerClassName,
   wrapperClassName,
   wide,
-  iconFillColor = 'var(--color-icon-alternative)',
+  iconFillColor = 'var(--color-icon-default)',
 }) {
   return (
     <div className="info-tooltip">

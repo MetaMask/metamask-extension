@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import Box from '../../components/ui/box';
+import Chip from '../../components/ui/chip';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import SiteIcon from '../../components/ui/site-icon';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -24,7 +25,6 @@ import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
-import SiteOrigin from '../../components/ui/site-origin';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
 
@@ -208,10 +208,9 @@ export default function ConfirmationPage() {
             name={originMetadata.hostname}
             size={36}
           />
-          <SiteOrigin
-            chip
-            siteOrigin={stripHttpsScheme(originMetadata.origin)}
-            title={stripHttpsScheme(originMetadata.origin)}
+          <Chip
+            label={stripHttpsScheme(originMetadata.origin)}
+            borderColor={COLORS.BORDER_DEFAULT}
           />
         </Box>
         <MetaMaskTemplateRenderer sections={templatedValues.content} />

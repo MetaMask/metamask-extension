@@ -420,12 +420,11 @@ export async function fetchAggregatorMetadata(chainId) {
 
 export async function fetchTopAssets(chainId) {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
-  const response =
-    (await fetchWithCache(
-      topAssetsUrl,
-      { method: 'GET', headers: clientIdHeader },
-      { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    )) || [];
+  const response = await fetchWithCache(
+    topAssetsUrl,
+    { method: 'GET', headers: clientIdHeader },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+  );
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
     if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
       return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
@@ -501,7 +500,6 @@ export const getFeeForSmartTransaction = ({
   chainId,
   currentCurrency,
   conversionRate,
-  USDConversionRate,
   nativeCurrencySymbol,
   feeInWeiDec,
 }) => {
@@ -524,7 +522,7 @@ export const getFeeForSmartTransaction = ({
     feeInUsd = getValueFromWeiHex({
       value: feeInWeiHex,
       toCurrency: USD_CURRENCY_CODE,
-      conversionRate: USDConversionRate,
+      conversionRate,
       numberOfDecimals: 2,
     });
   }
@@ -545,7 +543,6 @@ export function getRenderableNetworkFeesForQuote({
   gasPrice,
   currentCurrency,
   conversionRate,
-  USDConversionRate,
   tradeValue,
   sourceSymbol,
   sourceAmount,
@@ -588,7 +585,7 @@ export function getRenderableNetworkFeesForQuote({
     feeInUsd = getValueFromWeiHex({
       value: totalWeiCost,
       toCurrency: USD_CURRENCY_CODE,
-      conversionRate: USDConversionRate,
+      conversionRate,
       numberOfDecimals: 2,
     });
   }
@@ -756,12 +753,6 @@ export function getSwapsTokensReceivedFromTxMeta(
       !txMeta.preTxBalance
     ) {
       return null;
-    }
-
-    if (txMeta.swapMetaData && txMeta.preTxBalance === txMeta.postTxBalance) {
-      // If preTxBalance and postTxBalance are equal, postTxBalance hasn't been updated on time
-      // because of the RPC provider delay, so we return an estimated receiving amount instead.
-      return txMeta.swapMetaData.token_to_amount;
     }
 
     let approvalTxGasCost = '0x0';
@@ -942,13 +933,13 @@ export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
 export const stxErrorTypes = {
   UNAVAILABLE: 'unavailable',
   NOT_ENOUGH_FUNDS: 'not_enough_funds',
-  REGULAR_TX_IN_PROGRESS: 'regular_tx_pending',
+  REGULAR_TX_PENDING: 'regular_tx_pending',
 };
 
 export const getTranslatedStxErrorMessage = (errorType, t) => {
   switch (errorType) {
     case stxErrorTypes.UNAVAILABLE:
-    case stxErrorTypes.REGULAR_TX_IN_PROGRESS:
+    case stxErrorTypes.REGULAR_TX_PENDING:
       return t('stxErrorUnavailable');
     case stxErrorTypes.NOT_ENOUGH_FUNDS:
       return t('stxErrorNotEnoughFunds');

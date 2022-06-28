@@ -35,11 +35,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography
-          variant={TYPOGRAPHY.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
-          className="recovery-phrase__header"
-        >
+        <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
           {t('seedPhraseWriteDownHeader')}
         </Typography>
       </Box>
@@ -53,6 +49,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         </Typography>
       </Box>
       <Box
+        justifyContent={JUSTIFY_CONTENT.SPACE_EVENLY}
         textAlign={TEXT_ALIGN.LEFT}
         marginBottom={4}
         className="recovery-phrase__tips"

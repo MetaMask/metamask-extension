@@ -1,7 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const { PAGES } = require('../webdriver/driver');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Error', function () {
   it('can pop up a snap error and see the error', async function () {
@@ -29,7 +28,7 @@ describe('Test Snap Error', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3');
         await driver.fill('.snapId2', 'npm:@metamask/test-snap-error');
         await driver.clickElement({
           text: 'Connect Error Snap',

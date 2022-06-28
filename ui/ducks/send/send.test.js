@@ -194,7 +194,9 @@ describe('Send Slice', () => {
         };
         const result = sendReducer(initialState, action);
 
-        expect(result.userInputHexData).toStrictEqual(action.payload);
+        expect(result.draftTransaction.userInputHexData).toStrictEqual(
+          action.payload,
+        );
       });
     });
 
@@ -215,6 +217,9 @@ describe('Send Slice', () => {
         );
 
         expect(result.gas.gasLimit).toStrictEqual(action.payload);
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload,
+        );
       });
 
       it('should recalculate gasTotal', () => {
@@ -380,6 +385,203 @@ describe('Send Slice', () => {
 
         expect(result.stage).toStrictEqual(SEND_STAGES.DRAFT);
         expect(result.recipient.address).toStrictEqual(action.payload.address);
+      });
+    });
+
+    describe('updateDraftTransaction', () => {
+      describe('with LEGACY transactions', () => {
+        it('should properly set fields', () => {
+          const detailsForDraftTransactionState = {
+            ...initialState,
+            status: SEND_STATUSES.VALID,
+            transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+            account: {
+              address: '0xCurrentAddress',
+            },
+            asset: {
+              type: '',
+            },
+            recipient: {
+              address: '0xRecipientAddress',
+            },
+            amount: {
+              value: '0x1',
+            },
+            gas: {
+              gasPrice: '0x3b9aca00', // 1000000000
+              gasLimit: '0x5208', // 21000
+            },
+          };
+
+          const action = {
+            type: 'send/updateDraftTransaction',
+          };
+
+          const result = sendReducer(detailsForDraftTransactionState, action);
+
+          expect(result.draftTransaction.txParams.to).toStrictEqual(
+            detailsForDraftTransactionState.recipient.address,
+          );
+          expect(result.draftTransaction.txParams.value).toStrictEqual(
+            detailsForDraftTransactionState.amount.value,
+          );
+          expect(result.draftTransaction.txParams.gas).toStrictEqual(
+            detailsForDraftTransactionState.gas.gasLimit,
+          );
+          expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+            detailsForDraftTransactionState.gas.gasPrice,
+          );
+        });
+
+        it('should update the draftTransaction txParams recipient to token address when asset is type TOKEN', () => {
+          const detailsForDraftTransactionState = {
+            ...initialState,
+            status: SEND_STATUSES.VALID,
+            transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+            account: {
+              address: '0xCurrentAddress',
+            },
+            asset: {
+              type: ASSET_TYPES.TOKEN,
+              details: {
+                address: '0xTokenAddress',
+              },
+            },
+            amount: {
+              value: '0x1',
+            },
+            gas: {
+              gasPrice: '0x3b9aca00', // 1000000000
+              gasLimit: '0x5208', // 21000
+            },
+          };
+
+          const action = {
+            type: 'send/updateDraftTransaction',
+          };
+
+          const result = sendReducer(detailsForDraftTransactionState, action);
+
+          expect(result.draftTransaction.txParams.to).toStrictEqual(
+            detailsForDraftTransactionState.asset.details.address,
+          );
+          expect(result.draftTransaction.txParams.value).toStrictEqual('0x0');
+          expect(result.draftTransaction.txParams.gas).toStrictEqual(
+            detailsForDraftTransactionState.gas.gasLimit,
+          );
+          expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+            detailsForDraftTransactionState.gas.gasPrice,
+          );
+          expect(result.draftTransaction.txParams.data).toStrictEqual(
+            '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
+          );
+        });
+      });
+
+      describe('with FEE_MARKET transactions', () => {
+        it('should properly set fields', () => {
+          const detailsForDraftTransactionState = {
+            ...initialState,
+            status: SEND_STATUSES.VALID,
+            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+            account: {
+              address: '0xCurrentAddress',
+            },
+            asset: {
+              type: '',
+            },
+            recipient: {
+              address: '0xRecipientAddress',
+            },
+            amount: {
+              value: '0x1',
+            },
+            gas: {
+              maxFeePerGas: '0x2540be400', // 10 GWEI
+              maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
+              gasLimit: '0x5208', // 21000
+            },
+            eip1559support: true,
+          };
+
+          const action = {
+            type: 'send/updateDraftTransaction',
+          };
+
+          const result = sendReducer(detailsForDraftTransactionState, action);
+
+          expect(result.draftTransaction.txParams.to).toStrictEqual(
+            detailsForDraftTransactionState.recipient.address,
+          );
+          expect(result.draftTransaction.txParams.value).toStrictEqual(
+            detailsForDraftTransactionState.amount.value,
+          );
+          expect(result.draftTransaction.txParams.gas).toStrictEqual(
+            detailsForDraftTransactionState.gas.gasLimit,
+          );
+          expect(result.draftTransaction.txParams.gasPrice).toBeUndefined();
+          expect(result.draftTransaction.txParams.maxFeePerGas).toStrictEqual(
+            detailsForDraftTransactionState.gas.maxFeePerGas,
+          );
+          expect(
+            result.draftTransaction.txParams.maxPriorityFeePerGas,
+          ).toStrictEqual(
+            detailsForDraftTransactionState.gas.maxPriorityFeePerGas,
+          );
+        });
+
+        it('should update the draftTransaction txParams recipient to token address when asset is type TOKEN', () => {
+          const detailsForDraftTransactionState = {
+            ...initialState,
+            status: SEND_STATUSES.VALID,
+            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+            account: {
+              address: '0xCurrentAddress',
+            },
+            asset: {
+              type: ASSET_TYPES.TOKEN,
+              details: {
+                address: '0xTokenAddress',
+              },
+            },
+            amount: {
+              value: '0x1',
+            },
+            gas: {
+              maxFeePerGas: '0x2540be400', // 10 GWEI
+              maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
+              gasLimit: '0x5208', // 21000
+            },
+            eip1559support: true,
+          };
+
+          const action = {
+            type: 'send/updateDraftTransaction',
+          };
+
+          const result = sendReducer(detailsForDraftTransactionState, action);
+
+          expect(result.draftTransaction.txParams.to).toStrictEqual(
+            detailsForDraftTransactionState.asset.details.address,
+          );
+          expect(result.draftTransaction.txParams.value).toStrictEqual('0x0');
+          expect(result.draftTransaction.txParams.gas).toStrictEqual(
+            detailsForDraftTransactionState.gas.gasLimit,
+          );
+
+          expect(result.draftTransaction.txParams.maxFeePerGas).toStrictEqual(
+            detailsForDraftTransactionState.gas.maxFeePerGas,
+          );
+          expect(
+            result.draftTransaction.txParams.maxPriorityFeePerGas,
+          ).toStrictEqual(
+            detailsForDraftTransactionState.gas.maxPriorityFeePerGas,
+          );
+          expect(result.draftTransaction.txParams.gasPrice).toBeUndefined();
+          expect(result.draftTransaction.txParams.data).toStrictEqual(
+            '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
+          );
+        });
       });
     });
 
@@ -1098,7 +1300,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
         };
         const store = mockStore(sendState);
@@ -1152,7 +1356,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
         };
 
@@ -1206,7 +1412,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
         };
 
@@ -1254,7 +1462,9 @@ describe('Send Slice', () => {
           amount: {
             value: '',
           },
-          userInputHexData: '',
+          draftTransaction: {
+            userInputHexData: '',
+          },
         },
       };
 
@@ -1556,7 +1766,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
         };
 
@@ -1615,7 +1827,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
         };
 
@@ -1667,7 +1881,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
         };
 
@@ -1739,6 +1955,7 @@ describe('Send Slice', () => {
             amount: {
               value: '0x1',
             },
+            draftTransaction: {},
           },
         };
 
@@ -1818,7 +2035,9 @@ describe('Send Slice', () => {
               mode: '',
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
           metamask: {
             provider: {
@@ -1865,7 +2084,9 @@ describe('Send Slice', () => {
               mode: AMOUNT_MODES.MAX,
               value: '',
             },
-            userInputHexData: '',
+            draftTransaction: {
+              userInputHexData: '',
+            },
           },
           metamask: {
             provider: {
@@ -1900,12 +2121,10 @@ describe('Send Slice', () => {
         send: {
           asset: {},
           stage: '',
+          draftTransaction: {},
           recipient: {},
           amount: {},
           account: {},
-          gas: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
         },
       };
 
@@ -1940,7 +2159,12 @@ describe('Send Slice', () => {
           send: {
             ...signTransactionState.send,
             stage: SEND_STAGES.EDIT,
-            id: 1,
+            draftTransaction: {
+              id: 1,
+              txParams: {
+                value: 'newTxValue',
+              },
+            },
           },
         };
 
@@ -2034,6 +2258,19 @@ describe('Send Slice', () => {
         expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
 
         expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          action.payload.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual(
+          action.payload.amount,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          action.payload.gasPrice,
+        );
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload.gasLimit,
+        );
       });
 
       it('should set up the appropriate state for editing a collectible asset transaction', async () => {
@@ -2077,8 +2314,9 @@ describe('Send Slice', () => {
             amount: {
               value: '',
             },
-            userInputHexData: '',
-
+            draftTransaction: {
+              userInputHexData: '',
+            },
             recipient: {
               address: 'Address',
               nickname: 'NickName',
@@ -2170,6 +2408,19 @@ describe('Send Slice', () => {
         expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
 
         expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          action.payload.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual(
+          action.payload.amount,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          action.payload.gasPrice,
+        );
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload.gasLimit,
+        );
       });
     });
 
@@ -2214,7 +2465,9 @@ describe('Send Slice', () => {
           amount: {
             value: '',
           },
-          userInputHexData: '',
+          draftTransaction: {
+            userInputHexData: '',
+          },
           recipient: {
             address: 'Address',
             nickname: 'NickName',
@@ -2309,6 +2562,19 @@ describe('Send Slice', () => {
       expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
 
       expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+      expect(result.draftTransaction.txParams.to).toStrictEqual(
+        action.payload.address,
+      );
+      expect(result.draftTransaction.txParams.value).toStrictEqual(
+        action.payload.amount,
+      );
+      expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+        action.payload.gasPrice,
+      );
+      expect(result.draftTransaction.txParams.gas).toStrictEqual(
+        action.payload.gasLimit,
+      );
     });
   });
 
@@ -2508,7 +2774,10 @@ describe('Send Slice', () => {
           getDraftTransactionID({
             send: {
               ...initialState,
-              id: 'ID',
+              draftTransaction: {
+                ...initialState.draftTransaction,
+                id: 'ID',
+              },
             },
           }),
         ).toBe('ID');
@@ -2520,7 +2789,10 @@ describe('Send Slice', () => {
           getSendHexData({
             send: {
               ...initialState,
-              userInputHexData: '0x0',
+              draftTransaction: {
+                ...initialState.draftTransaction,
+                userInputHexData: '0x0',
+              },
             },
           }),
         ).toBe('0x0');

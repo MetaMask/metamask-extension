@@ -14,7 +14,6 @@ import NicknamePopovers from '../../../modals/nickname-popovers';
 import Typography from '../../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
-import SiteOrigin from '../../../../ui/site-origin';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -86,10 +85,7 @@ const ConfirmPageContainerSummary = (props) => {
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
       {origin === ORIGIN_METAMASK ? null : (
-        <SiteOrigin
-          className="confirm-page-container-summary__origin"
-          siteOrigin={origin}
-        />
+        <div className="confirm-page-container-summary__origin">{origin}</div>
       )}
       <div className="confirm-page-container-summary__action-row">
         <div className="confirm-page-container-summary__action">

@@ -1,6 +1,6 @@
 # Using the TREZOR simulator
 
-You can install the TREZOR emulator and use it with MetaMask.
+You can install the TREZOR emulator and use it with Metamask.
 Here is how:
 
 ## 1 - Install the TREZOR Bridge

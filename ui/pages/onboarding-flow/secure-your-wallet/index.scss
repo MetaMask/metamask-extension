@@ -3,29 +3,17 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  max-width: 1000px;
+  max-height: 1300px;
 
-  &__video {
-    max-width: 100%;
-    border-radius: 8px;
+  &__details {
+    max-width: 550px;
+    padding-inline-end: 10px;
   }
 
   &__actions {
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-
-    @media screen and (min-width: $break-large) {
-      flex-direction: row;
-    }
-
     button {
-      margin-bottom: 16px;
-
-      @media screen and (min-width: $break-large) {
-        + button {
-          margin-left: 16px;
-        }
-      }
+      margin: 16px;
     }
   }
 
@@ -33,7 +21,7 @@
     list-style: disc inside;
 
     li {
-      @include H4;
+      font-size: 18px;
     }
   }
 
@@ -41,10 +29,6 @@
     background-color: var(--color-primary-muted);
     padding: 12px;
     border-radius: 10px;
-
-    @media screen and (min-width: $break-large) {
-      margin-inline-end: 43px;
-    }
   }
 }
 

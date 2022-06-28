@@ -86,8 +86,7 @@
     &-rounded-button {
       @include H8;
 
-      padding: 8px;
-      min-width: 75px;
+      padding: 0 16px;
       margin-right: 8px;
     }
 

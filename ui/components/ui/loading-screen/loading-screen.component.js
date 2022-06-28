@@ -35,7 +35,7 @@ class LoadingScreen extends Component {
         <div className="loading-overlay__container">
           {this.props.showLoadingSpinner && (
             <Spinner
-              color="var(--color-warning-default)"
+              color="var(--color-secondary-default)"
               className="loading-overlay__spinner"
             />
           )}

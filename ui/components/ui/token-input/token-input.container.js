@@ -5,14 +5,13 @@ import TokenInput from './token-input.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { currentCurrency, tokens },
+    metamask: { currentCurrency },
   } = state;
 
   return {
     currentCurrency,
     tokenExchangeRates: getTokenExchangeRates(state),
     hideConversion: !getShouldShowFiat(state),
-    tokens,
   };
 };
 

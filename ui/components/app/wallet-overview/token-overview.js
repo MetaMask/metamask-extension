@@ -120,7 +120,7 @@ const TokenOverview = ({ className, token }) => {
                   event: 'Swaps Opened',
                   category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
+                    source: 'Token View',
                     active_currency: token.symbol,
                   },
                 });

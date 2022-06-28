@@ -24,7 +24,10 @@ const SnapListTab = () => {
   const snaps = useSelector(getSnaps);
   const settingsRef = useRef();
   const onClick = (snap) => {
-    history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`);
+    const route = `${SNAPS_VIEW_ROUTE}/${window.btoa(
+      unescape(encodeURIComponent(snap.id)),
+    )}`;
+    history.push(route);
   };
   const onToggle = (snap) => {
     if (snap.enabled) {

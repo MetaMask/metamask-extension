@@ -117,29 +117,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   },
 );
 
-export const unconfirmedMessagesHashSelector = createSelector(
-  unapprovedMsgsSelector,
-  unapprovedPersonalMsgsSelector,
-  unapprovedDecryptMsgsSelector,
-  unapprovedEncryptionPublicKeyMsgsSelector,
-  unapprovedTypedMessagesSelector,
-  (
-    unapprovedMsgs = {},
-    unapprovedPersonalMsgs = {},
-    unapprovedDecryptMsgs = {},
-    unapprovedEncryptionPublicKeyMsgs = {},
-    unapprovedTypedMessages = {},
-  ) => {
-    return {
-      ...unapprovedMsgs,
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
-  },
-);
-
 const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount;
 const unapprovedPersonalMsgCountSelector = (state) =>
   state.metamask.unapprovedPersonalMsgCount;

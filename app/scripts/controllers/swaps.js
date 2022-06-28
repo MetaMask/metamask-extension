@@ -19,11 +19,6 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import {
-  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
-  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-} from '../../../shared/constants/smartTransactions';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
@@ -46,6 +41,8 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
+const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
+const FALLBACK_SMART_TRANSACTIONS_DEADLINE = 180;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -89,9 +86,8 @@ const initialState = {
     saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
     swapsFeatureFlags: {},
   },
 };
@@ -133,13 +129,13 @@ export default class SwapsController {
     });
   }
 
-  async fetchSwapsNetworkConfig(chainId) {
+  async fetchSwapsRefreshRates(chainId) {
     const response = await fetchWithCache(
       getBaseApi('network', chainId),
       { method: 'GET' },
       { cacheRefreshTime: 600000 },
     );
-    const { refreshRates, parameters = {} } = response || {};
+    const { refreshRates } = response || {};
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
@@ -156,39 +152,35 @@ export default class SwapsController {
       stxGetTransactions: refreshRates.stxGetTransactions * 1000,
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
-      stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
     };
   }
 
-  // Sets the network config from the MetaSwap API.
-  async _setSwapsNetworkConfig() {
+  // Sets the refresh rate for quote updates from the MetaSwap API
+  async _setSwapsRefreshRates() {
     const chainId = this._getCurrentChainId();
-    let swapsNetworkConfig;
+    let swapsRefreshRates;
     try {
-      swapsNetworkConfig = await this.fetchSwapsNetworkConfig(chainId);
+      swapsRefreshRates = await this.fetchSwapsRefreshRates(chainId);
     } catch (e) {
-      console.error('Request for Swaps network config failed: ', e);
+      console.error('Request for swaps quote refresh time failed: ', e);
     }
     const { swapsState: latestSwapsState } = this.store.getState();
     this.store.updateState({
       swapsState: {
         ...latestSwapsState,
         swapsQuoteRefreshTime:
-          swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
         swapsQuotePrefetchingRefreshTime:
-          swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
         swapsStxGetTransactionsRefreshTime:
-          swapsNetworkConfig?.stxGetTransactions ||
-          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+          swapsRefreshRates?.stxGetTransactions ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
         swapsStxBatchStatusRefreshTime:
-          swapsNetworkConfig?.stxBatchStatus ||
-          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+          swapsRefreshRates?.stxBatchStatus ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
         swapsStxStatusDeadline:
-          swapsNetworkConfig?.stxStatusDeadline ||
+          swapsRefreshRates?.stxStatusDeadline ||
           FALLBACK_SMART_TRANSACTIONS_DEADLINE,
-        swapsStxMaxFeeMultiplier:
-          swapsNetworkConfig?.stxMaxFeeMultiplier ||
-          FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
       },
     });
   }
@@ -261,7 +253,7 @@ export default class SwapsController {
       this._fetchTradesInfo(fetchParams, {
         ...fetchParamsMetaData,
       }),
-      this._setSwapsNetworkConfig(),
+      this._setSwapsRefreshRates(),
     ]);
 
     const {

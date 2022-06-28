@@ -67,5 +67,5 @@ UserPreferencedCurrencyDisplay.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
-  showFiat: PropTypes.bool,
+  showFiat: PropTypes.boolean,
 };

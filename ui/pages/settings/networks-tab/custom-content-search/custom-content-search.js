@@ -32,7 +32,7 @@ export default function CustomContentSearch({
     if (searchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');
     } else {
-      setSearchIconColor('var(--color-icon-alternative)');
+      setSearchIconColor('var(--color-icon-default)');
     }
 
     const fuseSearchResult = networksSearchFuse.search(searchQuery);

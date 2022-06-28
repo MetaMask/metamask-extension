@@ -16,12 +16,6 @@ export default {
     iconName: {
       control: 'text',
     },
-    title: {
-      control: 'text',
-    },
-    chip: {
-      control: 'boolean',
-    },
   },
 };
 
@@ -31,8 +25,6 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   siteOrigin: 'https://metamask.io',
-  title: 'https://metamask.io',
   iconName: 'MetaMask',
   iconSrc: './metamark.svg',
-  chip: true,
 };

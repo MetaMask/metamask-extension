@@ -80,22 +80,23 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <InfoTooltip
           contentText={
             <div className="edit-gas-fee-button__tooltip">
-              {transaction?.origin && (
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.TEXT_ALTERNATIVE}
-                >
-                  {t('dappSuggestedTooltip', [transaction.origin])}
-                </Typography>
-              )}
-              <Typography variant={TYPOGRAPHY.H7}>
-                <b>{t('maxBaseFee')}</b> {maxFeePerGas}
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
+                {t('dappSuggestedTooltip', [transaction.origin])}
               </Typography>
               <Typography variant={TYPOGRAPHY.H7}>
-                <b>{t('maxPriorityFee')}</b> {maxPriorityFeePerGas}
+                <b>{t('maxBaseFee')}</b>
+                {maxFeePerGas}
               </Typography>
               <Typography variant={TYPOGRAPHY.H7}>
-                <b>{t('gasLimit')}</b> {gasLimit}
+                <b>{t('maxPriorityFee')}</b>
+                {maxPriorityFeePerGas}
+              </Typography>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <b>{t('gasLimit')}</b>
+                {gasLimit}
               </Typography>
             </div>
           }

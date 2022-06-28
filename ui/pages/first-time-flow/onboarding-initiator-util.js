@@ -1,17 +1,25 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 
-export const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
-  let tab;
-  try {
-    tab = await browser.tabs.update(onboardingInitiator.id, {
-      active: true,
-    });
-  } catch (error) {
-    log.debug(
-      `An error occurred while updating tabs in returnToOnboardingInitiatorTab: ${error.message}`,
+const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
+  const tab = await new Promise((resolve) => {
+    browser.tabs.update(
+      onboardingInitiator.tabId,
+      { active: true },
+      // eslint-disable-next-line no-shadow
+      (tab) => {
+        if (tab) {
+          resolve(tab);
+        } else {
+          // silence console message about unchecked error
+          if (browser.runtime.lastError) {
+            log.debug(browser.runtime.lastError);
+          }
+          resolve();
+        }
+      },
     );
-  }
+  });
 
   if (tab) {
     window.close();
@@ -20,7 +28,29 @@ export const returnToOnboardingInitiatorTab = async (onboardingInitiator) => {
     log.warn(
       `Setting current tab to onboarding initiator has failed; falling back to redirect`,
     );
+    window.location.assign(onboardingInitiator.location);
+  }
+};
 
+export const returnToOnboardingInitiator = async (onboardingInitiator) => {
+  const tab = await new Promise((resolve) => {
+    // eslint-disable-next-line no-shadow
+    browser.tabs.get(onboardingInitiator.tabId, (tab) => {
+      if (tab) {
+        resolve(tab);
+      } else {
+        // silence console message about unchecked error
+        if (browser.runtime.lastError) {
+          log.debug(browser.runtime.lastError);
+        }
+        resolve();
+      }
+    });
+  });
+
+  if (tab) {
+    await returnToOnboardingInitiatorTab(onboardingInitiator);
+  } else {
     window.location.assign(onboardingInitiator.location);
   }
 };
