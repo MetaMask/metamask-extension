@@ -220,6 +220,7 @@ export default function CollectibleDetails({ collectible }) {
                 <Typography
                   color={COLORS.TEXT_ALTERNATIVE}
                   variant={TYPOGRAPHY.H6}
+                  overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                   boxProps={{ margin: 0, marginBottom: 4 }}
                 >
                   {description}
