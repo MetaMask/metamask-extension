@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '../../ui/typography';
 import classnames from 'classnames';
+import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
