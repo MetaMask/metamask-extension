@@ -640,9 +640,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    this.workerController = new IframeExecutionService({
+    this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.6',
+        'https://metamask.github.io/iframe-execution-environment/0.5.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -669,19 +669,24 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
-      terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
-        this.workerController,
+      terminateAllSnaps: this.snapExecutionService.terminateAllSnaps.bind(
+        this.snapExecutionService,
       ),
-      terminateSnap: this.workerController.terminateSnap.bind(
-        this.workerController,
+      terminateSnap: this.snapExecutionService.terminateSnap.bind(
+        this.snapExecutionService,
       ),
-      executeSnap: this.workerController.executeSnap.bind(
-        this.workerController,
+      executeSnap: this.snapExecutionService.executeSnap.bind(
+        this.snapExecutionService,
       ),
-      getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
-        this.workerController,
+      getRpcMessageHandler: this.snapExecutionService.getRpcMessageHandler.bind(
+        this.snapExecutionService,
       ),
       closeAllConnections: this.removeAllConnections.bind(this),
+      // Prefix subject with appKeyType to generate separate keys for separate uses
+      getAppKey: async (subject, appKeyType) => {
+        await this.appStateController.getUnlockPromise(true);
+        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
+      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
     });

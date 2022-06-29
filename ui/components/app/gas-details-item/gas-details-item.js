@@ -90,8 +90,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       subTitle={
         <GasTiming
-          maxPriorityFeePerGas={maxPriorityFeePerGas}
-          maxFeePerGas={maxFeePerGas}
+          maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
+          maxFeePerGas={maxFeePerGas.toString()}
         />
       }
     />

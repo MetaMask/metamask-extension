@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * @deprecated - Please use ActionableMessage type danger
+ * @see ActionableMessage
+ * @param {Object} props
+ * @param {string} props.errorMessage
+ * @param {string} props.errorKey
+ * @param {Object} context
+ */
 const ErrorMessage = (props, context) => {
   const { errorMessage, errorKey } = props;
   const error = errorKey ? context.t(errorKey) : errorMessage;

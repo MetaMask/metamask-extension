@@ -38,6 +38,7 @@ import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
+import SearchIcon from './search-icon';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -127,6 +128,7 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconSpeechBubbles {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
+        <IconItem Component={<SearchIcon {...args} />} />
       </div>
     </Box>
     <Typography

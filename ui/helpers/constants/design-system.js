@@ -11,6 +11,7 @@ export const COLORS = {
   TEXT_ALTERNATIVE: 'text-alternative',
   TEXT_MUTED: 'text-muted',
   ICON_DEFAULT: 'icon-default',
+  ICON_ALTERNATIVE: 'text-alternative',
   ICON_MUTED: 'icon-muted',
   BORDER_DEFAULT: 'border-default',
   BORDER_MUTED: 'border-muted',
