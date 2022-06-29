@@ -1,3 +1,4 @@
+import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
@@ -13,16 +14,35 @@ const USER_PROMPTED_EVENT_NAME_MAP = {
   eth_requestAccounts: EVENT_NAMES.PERMISSIONS_REQUESTED,
 };
 
+// The inpage provider invokes some methods upon being injected into the page.
+// We do not want to collect this data, as it is not triggered by dapps.
+const BLOCKED_METHODS = [
+  MESSAGE_TYPE.SEND_METADATA,
+  MESSAGE_TYPE.GET_PROVIDER_STATE,
+];
+
 const samplingTimeouts = {};
 
+/**
+ * Invokes provided fn at most once in every rate milliseconds, uses key to log
+ * the timeout for rate limiting.
+ *
+ * @param {number} rate - Number of milliseconds to block invocation of fn for.
+ * @param {string} key - Key to store timeout id at.
+ * @param {Function} fn - Function to invoke if not rate limited at time of
+ *  invocation.
+ */
 function rateLimit(rate, key, fn) {
-  if (samplingTimeouts[key] === 'undefined') {
+  if (typeof samplingTimeouts[key] === 'undefined') {
+    console.log('not rate limited!', key);
     fn();
     // Only record one call to this method every sixty seconds to avoid
     // overloading network requests.
     samplingTimeouts[key] = setTimeout(() => {
       delete samplingTimeouts[key];
     }, rate);
+  } else {
+    console.log('rate limited', key);
   }
 }
 /**
@@ -47,11 +67,16 @@ export default function createRPCMethodTrackingMiddleware({
     const startTime = Date.now();
     const { origin } = req;
 
-    console.log(req);
-
     next((callback) => {
       const endTime = Date.now();
-      if (!getMetricsState().participateInMetaMetrics) {
+      if (
+        // Skip if the user isn't participating in metametrics
+        getMetricsState().participateInMetaMetrics === false ||
+        // Skip if one of the methods called at time of inpage provider init
+        BLOCKED_METHODS.includes(req.method) ||
+        // Skip if being called by our own extension UI/background process
+        req.origin === 'metamask'
+      ) {
         return callback();
       }
       const eventName = USER_PROMPTED_EVENT_NAME_MAP[req.method];
