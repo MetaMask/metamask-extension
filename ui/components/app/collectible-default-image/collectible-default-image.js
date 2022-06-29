@@ -19,7 +19,7 @@ export default function CollectibleDefaultImage({
       onClick={handleImageClick}
     >
       <Typography variant={TYPOGRAPHY.H7} className="collectible-default__text">
-        {name ?? t('unknownCollection')} #{tokenId}
+        {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Typography>
     </div>
   );
