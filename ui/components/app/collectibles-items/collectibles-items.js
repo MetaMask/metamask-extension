@@ -202,7 +202,11 @@ export default function CollectiblesItems({
                   key={`collectible-${i}`}
                   className="collectibles-items__item-wrapper"
                 >
-                  <Card padding={0} justifyContent={JUSTIFY_CONTENT.CENTER}>
+                  <Card
+                    padding={0}
+                    justifyContent={JUSTIFY_CONTENT.CENTER}
+                    className="collectibles-items__item-wrapper__card"
+                  >
                     {collectibleImage ? (
                       <div
                         className="collectibles-items__item"

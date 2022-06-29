@@ -13,20 +13,13 @@ export default function CollectibleDefaultImage({
   const t = useI18nContext();
   return (
     <div
-      className={classnames('collectible-default__wrapper', {
-        'collectible-default__clickable': handleImageClick,
+      className={classnames('collectible-default', {
+        'collectible-default--clickable': handleImageClick,
       })}
       onClick={handleImageClick}
     >
-      <img className="collectible-default__image" src="images/empty-nft.png" />
-      <Typography
-        variant={TYPOGRAPHY.H7}
-        className={classnames('collectible-default__text', {
-          'collectible-default__clickable': handleImageClick,
-        })}
-        onClick={handleImageClick}
-      >
-        {name ?? t('unknownCollection')} #{tokenId}
+      <Typography variant={TYPOGRAPHY.H7} className="collectible-default__text">
+        {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Typography>
     </div>
   );
