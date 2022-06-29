@@ -3866,7 +3866,7 @@
     "message": "Ooops! Something went wrong...."
   },
   "unknownCollection": {
-    "message": "Unknown Collection"
+    "message": "Unnamed collection"
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
