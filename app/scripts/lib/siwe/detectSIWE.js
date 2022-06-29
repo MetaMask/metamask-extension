@@ -17,7 +17,7 @@ const msgHexToText = (hex) => {
  * A locally defined object used to provide data to identify a Sign-In With Ethereum (SIWE)(EIP-4361) message and provide the parsed message
  *
  * @typedef localSIWEObject
- * @param {bool} isSIWEMessage - Does the intercepted message conform to the SIWE specification?
+ * @param {boolean} isSIWEMessage - Does the intercepted message conform to the SIWE specification?
  * @param {ParsedMessage} parsedMessage - The data parsed out of the message
  */
 
