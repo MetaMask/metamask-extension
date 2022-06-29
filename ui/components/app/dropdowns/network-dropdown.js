@@ -180,6 +180,7 @@ class NetworkDropdown extends Component {
           />
           <span
             className="network-name-item"
+            data-testid={`${nickname}-network-item`}
             style={{
               color: isCurrentRpcTarget
                 ? 'var(--color-text-default)'
@@ -253,6 +254,7 @@ class NetworkDropdown extends Component {
         />
         <span
           className="network-name-item"
+          data-testid={`${network}-network-item`}
           style={{
             color:
               providerType === network
