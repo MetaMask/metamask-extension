@@ -15,6 +15,16 @@ const USER_PROMPTED_EVENT_NAME_MAP = {
 
 const samplingTimeouts = {};
 
+function rateLimit(rate, key, fn) {
+  if (samplingTimeouts[key] === 'undefined') {
+    fn();
+    // Only record one call to this method every sixty seconds to avoid
+    // overloading network requests.
+    samplingTimeouts[key] = setTimeout(() => {
+      delete samplingTimeouts[key];
+    }, rate);
+  }
+}
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -37,48 +47,56 @@ export default function createRPCMethodTrackingMiddleware({
     const startTime = Date.now();
     const { origin } = req;
 
+    console.log(req);
+
     next((callback) => {
       const endTime = Date.now();
       if (!getMetricsState().participateInMetaMetrics) {
         return callback();
       }
-      if (USER_PROMPTED_EVENT_NAME_MAP[req.method]) {
+      const eventName = USER_PROMPTED_EVENT_NAME_MAP[req.method];
+
+      if (eventName) {
         const userRejected = res.error?.code === 4001;
-        trackEvent({
-          event: USER_PROMPTED_EVENT_NAME_MAP[req.method],
-          category: EVENT.CATEGORIES.INPAGE_PROVIDER,
-          referrer: {
-            url: origin,
+        rateLimit(
+          // Rate limit only if dealing with permissions requests
+          eventName === EVENT_NAMES.PERMISSIONS_REQUESTED ? 0 : SECOND * 60,
+          eventName,
+          () => {
+            trackEvent({
+              event: USER_PROMPTED_EVENT_NAME_MAP[req.method],
+              category: EVENT.CATEGORIES.INPAGE_PROVIDER,
+              referrer: {
+                url: origin,
+              },
+              properties: {
+                method: req.method,
+                status: userRejected ? 'rejected' : 'approved',
+                error_code: res.error?.code,
+                error_message: res.error?.message,
+                has_result: typeof res.result !== 'undefined',
+                duration: endTime - startTime,
+              },
+            });
           },
-          properties: {
-            method: req.method,
-            status: userRejected ? 'rejected' : 'approved',
-            error_code: res.error?.code,
-            error_message: res.error?.message,
-            has_result: typeof res.result !== 'undefined',
-            duration: endTime - startTime,
-          },
+        );
+      } else {
+        rateLimit(SECOND * 60, req.method, () => {
+          trackEvent({
+            event: 'Provider Method Called',
+            category: EVENT.CATEGORIES.INPAGE_PROVIDER,
+            referrer: {
+              url: origin,
+            },
+            properties: {
+              method: req.method,
+              error_code: res.error?.code,
+              error_message: res.error?.message,
+              has_result: typeof res.result !== 'undefined',
+              duration: endTime - startTime,
+            },
+          });
         });
-      } else if (typeof samplingTimeouts[req.method] === 'undefined') {
-        trackEvent({
-          event: 'Provider Method Called',
-          category: EVENT.CATEGORIES.INPAGE_PROVIDER,
-          referrer: {
-            url: origin,
-          },
-          properties: {
-            method: req.method,
-            error_code: res.error?.code,
-            error_message: res.error?.message,
-            has_result: typeof res.result !== 'undefined',
-            duration: endTime - startTime,
-          },
-        });
-        // Only record one call to this method every ten seconds to avoid
-        // overloading network requests.
-        samplingTimeouts[req.method] = setTimeout(() => {
-          delete samplingTimeouts[req.method];
-        }, SECOND * 10);
       }
       return callback();
     });
