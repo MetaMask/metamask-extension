@@ -2149,23 +2149,24 @@ describe('Send Slice', () => {
               },
             },
             send: {
-              ...signTransactionState.send,
-              stage: SEND_STAGES.DRAFT,
-              id: 1,
-              account: {
-                address: '0x6784e8507A1A46443f7bDc8f8cA39bdA92A675A6',
-              },
-              asset: {
-                details: {
-                  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+              ...getInitialSendStateWithExistingTxState({
+                id: 1,
+                asset: {
+                  details: {
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                  },
+                  type: 'TOKEN',
                 },
-                type: 'TOKEN',
-              },
-              recipient: {
-                address: '4F90e18605Fd46F9F9Fab0e225D88e1ACf5F5324',
-              },
-              amount: {
-                value: '0x1',
+                recipient: {
+                  address: '4F90e18605Fd46F9F9Fab0e225D88e1ACf5F5324',
+                },
+                amount: {
+                  value: '0x1',
+                },
+              }),
+              stage: SEND_STAGES.DRAFT,
+              selectedAccount: {
+                address: '0x6784e8507A1A46443f7bDc8f8cA39bdA92A675A6',
               },
             },
           };
