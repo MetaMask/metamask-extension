@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import log from 'loglevel';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import ActionableMessage from '../../ui/actionable-message';
 import Popover from '../../ui/popover';
@@ -57,31 +58,56 @@ export default function SignatureRequestSIWE({
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
-  const onSign = (event) => {
-    signPersonalMessage(event);
-    trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      event: 'Confirm',
-      properties: {
-        action: 'SIWE Request',
-        type,
-        version,
-      },
-    });
-  };
 
-  const onCancel = (event) => {
-    cancelPersonalMessage(event);
-    trackEvent({
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      event: 'Cancel',
-      properties: {
-        action: 'SIWE Request',
-        type,
-        version,
-      },
-    });
-  };
+  /**
+   * @todo update MetaMetrics for onSign and onCancel
+   * Currently, we're tracking the events similarily to how we track the events with the SignatureRequest component
+   * in which the action names differ. We want to revisit this to add properties mentioned in the related, internal Slack thread.
+   * We would also want to ensure that we are tracking the event appropriatedly should an error be thrown.
+   * @see {@link ui/components/app/signature-request/signature-request.component.js}
+   * @see {@link https://consensys.slack.com/archives/C031PSFHQER/p1654811895007879?thread_ts=1654805714.261689&cid=C031PSFHQER}
+   */
+  const onSign = useCallback(
+    async (event) => {
+      try {
+        await signPersonalMessage(event);
+      } catch (e) {
+        log.error(e);
+      } finally {
+        trackEvent({
+          category: EVENT.CATEGORIES.TRANSACTIONS,
+          event: 'Confirm',
+          properties: {
+            action: 'SIWE Request',
+            type,
+            version,
+          },
+        });
+      }
+    },
+    [signPersonalMessage, trackEvent, type, version],
+  );
+
+  const onCancel = useCallback(
+    async (event) => {
+      try {
+        await cancelPersonalMessage(event);
+      } catch (e) {
+        log.error(e);
+      } finally {
+        trackEvent({
+          category: EVENT.CATEGORIES.TRANSACTIONS,
+          event: 'Cancel',
+          properties: {
+            action: 'SIWE Request',
+            type,
+            version,
+          },
+        });
+      }
+    },
+    [cancelPersonalMessage, trackEvent, type, version],
+  );
 
   return (
     <div className="signature-request-siwe">
