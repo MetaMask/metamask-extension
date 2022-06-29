@@ -23,7 +23,6 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         title: this.test.title,
       },
       async ({ driver, contractRegistry }) => {
-
         // TODO: /!\ DELETE THIS /!\
         // TODO: This is an example of how the pre-deployed contract addresses can be used
         console.log('\n\n');
