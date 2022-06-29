@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "我同意"
   },
-  "aggregatorFeeCost": {
-    "message": "聚集器网络手续费"
-  },
   "alertDisableTooltip": {
     "message": "这个可以在“设置 > 提醒”中进行更改"
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "批准聚合商网络手续费"
-  },
-  "approvalTxGasCost": {
-    "message": "批准交易燃料成本"
   },
   "approve": {
     "message": "批准消费限额"
@@ -372,10 +363,10 @@
     "message": "购买"
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 ETH"
+    "message": "使用 Wyre 购买 $1"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 ETH 存入您的 MetaMask 账户。"
+    "message": "您可以通过 Wyre 使用信用卡将 $1 存入您的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"
@@ -1016,10 +1007,6 @@
   },
   "externalExtension": {
     "message": "外部扩展"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 批准燃料",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "失败"
