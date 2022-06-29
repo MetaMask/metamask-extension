@@ -112,6 +112,65 @@ const state = {
   ],
   metamask: {
     tokenList: {
+      '0x514910771af9ca656af840dff83e8264ecf986ca': {
+        address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+        symbol: 'LINK',
+        decimals: 18,
+        name: 'ChainLink Token',
+        iconUrl: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+        aggregators: [
+          'Aave',
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        occurrences: 12,
+        unlisted: false
+      },
+      '0xc00e94cb662c3520282e6f5717214004a7f26888': {
+        address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+        symbol: 'COMP',
+        decimals: 18,
+        name: 'Compound',
+        iconUrl: 'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+        aggregators: [
+          'Bancor',
+          'CMC',
+          'Crypto.com',
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'PMM',
+          'Zapper',
+          'Zerion',
+          '0x',
+        ],
+        occurrences: 12,
+        unlisted: false
+      },
+      '0xfffffffff15abf397da76f1dcc1a1604f45126db': {
+        address: '0xfffffffff15abf397da76f1dcc1a1604f45126db',
+        symbol: 'FSW',
+        decimals: 18,
+        name: 'Falconswap',
+        iconUrl: 'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
+        aggregators: [
+          'CoinGecko',
+          '1inch',
+          'Paraswap',
+          'Zapper',
+          'Zerion',
+        ],
+        occurrences: 12,
+        unlisted: false
+      },
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
         address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
         symbol: 'SNX',
@@ -424,6 +483,35 @@ const state = {
         symbol: 'DAU',
         decimals: 18,
       },
+    ],
+    detectedTokens: [
+      {
+        address: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        decimals: 18,
+        symbol: "LINK",
+        image: "https://crypto.com/price/coin-data/icon/LINK/color_icon.png",
+        aggregators:[
+          "coinGecko","oneInch","paraswap","zapper","zerion"
+        ]
+      },
+      {
+        address: "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+        decimals: 18,
+        symbol: "COMP",
+        image: "https://crypto.com/price/coin-data/icon/COMP/color_icon.png",
+        aggregators:[
+          "bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"
+        ]
+      },
+      {
+        address: "0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB",
+        decimals: 18,
+        symbol: "FSW",
+        image: "https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184",
+        aggregators:[
+          "aave", "cmc","coinGecko","oneInch","paraswap","zapper","zerion"
+        ]
+      }
     ],
     pendingTokens: {},
     customNonceValue: '',

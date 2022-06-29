@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FeeCard renders the component with EIP-1559 V2 enabled 1`] = `null`;
-
 exports[`FeeCard renders the component with EIP-1559 enabled 1`] = `null`;
 
 exports[`FeeCard renders the component with initial props 1`] = `null`;

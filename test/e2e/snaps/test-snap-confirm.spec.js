@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Confirm', function () {
   it('can pop up a snap confirm and get its result', async function () {
@@ -29,7 +30,7 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3');
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.fill('.snapId1', 'npm:@metamask/test-snap-confirm');
         await driver.clickElement({
           text: 'Connect To Confirm Snap',
@@ -69,10 +70,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Send Inputs to Hello Snap',
-          tag: 'button',
-        });
+        await driver.clickElement('.sendConfirmButton');
 
         // hit 'approve' on the custom confirm
         await driver.waitUntilXWindowHandles(2, 5000, 10000);

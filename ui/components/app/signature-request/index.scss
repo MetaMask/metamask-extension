@@ -68,6 +68,8 @@
 
   &__info {
     @include H7;
+
+    padding: 0 12px 4px;
   }
 
   &__info--bolded {
@@ -85,6 +87,3 @@
   .identicon {}
 }
 
-.signature-request-footer {
-  flex: 1 1 auto;
-}

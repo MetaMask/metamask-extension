@@ -44,17 +44,11 @@ export default function CurrencyInput({
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
-
-  const shouldUseFiat = () => {
-    if (hideSecondary) {
-      return false;
-    }
-
-    return Boolean(featureSecondary);
-  };
+  const [shouldDisplayFiat, setShouldDisplayFiat] = useState(featureSecondary);
+  const shouldUseFiat = hideSecondary ? false : Boolean(shouldDisplayFiat);
 
   const getDecimalValue = () => {
-    const decimalValueString = shouldUseFiat()
+    const decimalValueString = shouldUseFiat
       ? getValueFromWeiHex({
           value: hexValue,
           toCurrency: secondaryCurrency,
@@ -71,22 +65,15 @@ export default function CurrencyInput({
   };
 
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
-  const [decimalValue, setDecimalValue] = useState(initialDecimalValue);
-
-  useEffect(() => {
-    setNewHexValue(hexValue);
-    const newDecimalValue = getDecimalValue();
-    setDecimalValue(newDecimalValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hexValue]);
 
   const swap = async () => {
     await onPreferenceToggle();
     setSwapped(!isSwapped);
+    setShouldDisplayFiat(!shouldDisplayFiat);
   };
 
   const handleChange = (newDecimalValue) => {
-    const hexValueNew = shouldUseFiat()
+    const hexValueNew = shouldUseFiat
       ? getWeiHexFromDecimalValue({
           value: newDecimalValue,
           fromCurrency: secondaryCurrency,
@@ -101,17 +88,20 @@ export default function CurrencyInput({
         });
 
     setNewHexValue(hexValueNew);
-    setDecimalValue(newDecimalValue);
     onChange(hexValueNew);
     setSwapped(!isSwapped);
   };
 
   useEffect(() => {
-    if (isSwapped) {
-      handleChange(decimalValue);
+    setNewHexValue(hexValue);
+  }, [hexValue]);
+
+  useEffect(() => {
+    if (featureSecondary) {
+      handleChange(initialDecimalValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSwapped]);
+  }, [featureSecondary, initialDecimalValue]);
 
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
@@ -124,7 +114,7 @@ export default function CurrencyInput({
       );
     }
 
-    if (shouldUseFiat()) {
+    if (shouldUseFiat) {
       // Display ETH
       currency = preferredCurrency || ETH;
       numberOfDecimals = 8;
@@ -156,9 +146,9 @@ export default function CurrencyInput({
         onChange,
         onPreferenceToggle,
       }}
-      suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
+      suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
       onChange={handleChange}
-      value={decimalValue}
+      value={initialDecimalValue}
       actionComponent={
         <button className="currency-input__swap-component" onClick={swap}>
           <i className="fa fa-retweet fa-lg" />

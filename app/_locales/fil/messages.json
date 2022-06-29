@@ -122,10 +122,10 @@
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
   "buyWithWyre": {
-    "message": "Bumili ng ETH gamit ang Wyre"
+    "message": "Bumili ng $1 gamit ang Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Binibigyang-daan ka ng Wyre na gumamit ng credit card para magdeposito ng ETH nang direkta sa iyong MetaMask account."
+    "message": "Binibigyang-daan ka ng Wyre na gumamit ng credit card para magdeposito ng $1 nang direkta sa iyong MetaMask account."
   },
   "cancel": {
     "message": "Kanselahin"
