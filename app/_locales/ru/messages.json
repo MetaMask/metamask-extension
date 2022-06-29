@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "Я согласен(-на)"
   },
-  "aggregatorFeeCost": {
-    "message": "Комиссия сети агрегатора"
-  },
   "airgapVault": {
     "message": "Хранилище AirGap"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Комиссия сети за одобрение и для агрегатора"
-  },
-  "approvalTxGasCost": {
-    "message": "Стоимость газа для утверждения транзакции"
   },
   "approve": {
     "message": "Одобрить лимит расходов"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Купить ETH с помощью Wyre"
+    "message": "Купить $1 с помощью Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre позволяет использовать дебетовую карту для внесения ETH прямо на ваш счет MetaMask."
+    "message": "Wyre позволяет использовать дебетовую карту для внесения $1 прямо на ваш счет MetaMask."
   },
   "bytes": {
     "message": "Байты"
@@ -640,7 +631,7 @@
     "message": "Взаимодействие по контракту"
   },
   "convertTokenToNFTDescription": {
-    "message": "Мы обнаружили, что этот актив является NFT. Metamask теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
+    "message": "Мы обнаружили, что этот актив является NFT. MetaMask теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Мы обнаружили, что этот актив был добавлен как NFT. Хотите удалить его из списка токенов?"
@@ -1173,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "Внешнее расширение"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 газа для утверждения",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Не удалось"
@@ -3096,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "Вы по-прежнему можете обменивать свои токены, даже если смарт-транзакции недоступны."
   },
-  "stxPendingFinalizing": {
-    "message": "Завершение..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "Оптимизация газа..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Конфиденциальная отправка ооперации обмена..."
-  },
   "stxSubDescription": {
     "message": "* Смарт-транзакции попытаются несколько раз отправить вашу транзакцию в конфиденциальном порядке. Если все попытки не увенчаются успехом, транзакция будет показана публично, чтобы гарантировать успешное завершение вашего обмена."
   },
@@ -3192,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "Нет доступных токенов, соответствующих $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Обмен завершится через <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердите с помощью аппаратного кошелька"

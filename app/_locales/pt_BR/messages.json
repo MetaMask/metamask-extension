@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "Concordo"
   },
-  "aggregatorFeeCost": {
-    "message": "Taxa de rede do agregador"
-  },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Taxa de aprovação e da rede do agregador"
-  },
-  "approvalTxGasCost": {
-    "message": "Custo em gás da transação de aprovação"
   },
   "approve": {
     "message": "Aprovar limite de gastos"
@@ -372,10 +363,10 @@
     "message": "Comprar"
   },
   "buyWithWyre": {
-    "message": "Comprar ETH com Wyre"
+    "message": "Comprar $1 com Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar ETH diretamente na sua conta da MetaMask."
+    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
   },
   "bytes": {
     "message": "Bytes"
@@ -1030,10 +1021,6 @@
   },
   "externalExtension": {
     "message": "Extensão externa"
-  },
-  "extraApprovalGas": {
-    "message": "+$1 de gás por aprovação",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "Falhou"

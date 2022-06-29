@@ -278,7 +278,7 @@ async function addEthereumChainHandler(
         network: firstValidRPCUrl,
         symbol: ticker,
         block_explorer_url: firstValidBlockExplorerUrl,
-        source: 'dapp',
+        source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
     });
 

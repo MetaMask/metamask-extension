@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "我同意"
   },
-  "aggregatorFeeCost": {
-    "message": "聚合器网络费用"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "批准和聚合器网络费用"
-  },
-  "approvalTxGasCost": {
-    "message": "批准 Tx 燃料成本"
   },
   "approve": {
     "message": "批准消费限额"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 ETH"
+    "message": "使用 Wyre 购买 $1"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用借记卡将 ETH 存入您的 MetaMask 账户。"
+    "message": "您可以通过 Wyre 使用借记卡将 $1 存入您的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"
@@ -1177,10 +1168,6 @@
   "externalExtension": {
     "message": "外部扩展程序"
   },
-  "extraApprovalGas": {
-    "message": "额外的 $1 批准燃料",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "失败"
   },
@@ -1672,7 +1659,7 @@
     "message": "打开和解锁 Ledger Live 应用程序"
   },
   "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 Metamask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
+    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
     "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
   },
   "ledgerDeviceOpenFailureMessage": {
@@ -2171,7 +2158,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
-    "message": "在 Metamask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
+    "message": "在 MetaMask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionTwo": {
@@ -3102,15 +3089,6 @@
   "stxFallbackUnavailable": {
     "message": "即使智能交易不可用，您仍然可以交换代币。"
   },
-  "stxPendingFinalizing": {
-    "message": "最终确定中..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "正在优化燃料......"
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "正在隐秘提交交换......"
-  },
   "stxSubDescription": {
     "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },
@@ -3198,10 +3176,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "没有与 $1 匹配的代币",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "交换将在此时间內完成<",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"

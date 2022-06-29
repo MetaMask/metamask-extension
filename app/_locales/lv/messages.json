@@ -137,10 +137,10 @@
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
   },
   "buyWithWyre": {
-    "message": "Pirkt ETH ar Wyre"
+    "message": "Pirkt $1 ar Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ļauj noguldīt ETH tieši jūsu MetaMask kontā, izmantojot kredītkarti."
+    "message": "Wyre ļauj noguldīt $1 tieši jūsu MetaMask kontā, izmantojot kredītkarti."
   },
   "bytes": {
     "message": "Baiti"

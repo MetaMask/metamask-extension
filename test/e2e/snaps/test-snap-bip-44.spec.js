@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap bip-44', function () {
   it('can pop up bip-44 snap and get private key result', async function () {
@@ -29,7 +30,7 @@ describe('Test Snap bip-44', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/0.1.3/');
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.fill('.snapId3', 'npm:@metamask/test-snap-bip44');
         await driver.clickElement({
           text: 'Connect BIP-44 Snap',

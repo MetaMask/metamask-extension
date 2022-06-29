@@ -192,9 +192,6 @@
   "affirmAgree": {
     "message": "同意する"
   },
-  "aggregatorFeeCost": {
-    "message": "アグリゲーター ネットワーク料金"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -251,12 +248,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "承認およびアグリゲーターネットワークの手数料"
-  },
-  "approvalTxGasCost": {
-    "message": "承認送信のガス代"
   },
   "approve": {
     "message": "使用限度額の承認"
@@ -425,10 +416,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "WyreでETHを購入"
+    "message": "Wyreで $1 を購入"
   },
   "buyWithWyreDescription": {
-    "message": "Wyreを使用すると、デビット カードを使用して、ETHをMetaMaskアカウントに直接デポジットできます。"
+    "message": "Wyreを使用すると、デビット カードを使用して、$1 をMetaMaskアカウントに直接デポジットできます。"
   },
   "bytes": {
     "message": "バイト"
@@ -1173,10 +1164,6 @@
   },
   "externalExtension": {
     "message": "外部拡張機能"
-  },
-  "extraApprovalGas": {
-    "message": "+$1承認ガス",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
   },
   "failed": {
     "message": "失敗しました"
@@ -3096,15 +3083,6 @@
   "stxFallbackUnavailable": {
     "message": "スマートトランザクションが利用できなくても、トークンのスワップは可能です。"
   },
-  "stxPendingFinalizing": {
-    "message": "最終処理中..."
-  },
-  "stxPendingOptimizingGas": {
-    "message": "ガス代を最適化中..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "スワップを非公開で送信中..."
-  },
   "stxSubDescription": {
     "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },
@@ -3192,10 +3170,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1と一致するトークンがありません",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "スワップ完了まで <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"

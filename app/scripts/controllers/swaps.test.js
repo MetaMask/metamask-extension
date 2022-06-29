@@ -13,6 +13,10 @@ import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+} from '../../../shared/constants/smartTransactions';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -134,8 +138,9 @@ const EMPTY_INIT_STATE = {
     swapsFeatureFlags: {},
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
-    swapsStxBatchStatusRefreshTime: 10000,
-    swapsStxGetTransactionsRefreshTime: 10000,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
   },
