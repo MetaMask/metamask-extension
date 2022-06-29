@@ -25,7 +25,8 @@ export default class NewAccountCreateForm extends Component {
       accounts,
     } = this.props;
 
-    const createClick = (_) => {
+    const createClick = (event) => {
+      event.preventDefault();
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
           this.context.trackEvent({
