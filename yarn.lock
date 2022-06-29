@@ -2895,9 +2895,9 @@
     web3-provider-engine "^16.0.3"
 
 "@metamask/design-tokens@^1.6.0", "@metamask/design-tokens@^1.6.5":
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.6.5.tgz#e585b67f73ce301e0218d98ba89e079f7e81c412"
-  integrity sha512-5eCrUHXrIivXX1xx6kwNtM9s/ejhrPYSATSniFc7YKS9z+TkCK4/n52owOBnDIbrL8W3XxQIiaaqQAM+NQad4w==
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.7.0.tgz#fab069c0101da9e25d35ae051df2ff6bb5ff7a38"
+  integrity sha512-ejakgcsnTlLQmMrKb8XixXgExsYuMjlv71lkqJXeT0wa2oe4skVhB2dZul7Y9W4vYvQzTkwsW2NLfaj273eeEw==
 
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
@@ -8029,10 +8029,10 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@^102.0.0:
-  version "102.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-102.0.0.tgz#02844c39ee33d1e88ac8c48fbe28cb8423e970a4"
-  integrity sha512-xer/0g1Oarkjc2e+4nyoLgZT4kJHYhcj3PcxD1nEoGJQYEllTjprN1uDpSb4BkgMGo0ydfIS1VDkszrr/J9OOg==
+chromedriver@^103.0.0:
+  version "103.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-103.0.0.tgz#2ef086d62076e3ff6df6cfb84895d11d2c18d9cf"
+  integrity sha512-7BHf6HWt0PeOHCzWO8qlnD13sARzr5AKTtG8Csn+czsuAsajwPxdLNtry5GPh8HYFyl+i0M+yg3bT43AGfgU9w==
   dependencies:
     "@testim/chrome-version" "^1.1.2"
     axios "^0.27.2"
