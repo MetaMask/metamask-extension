@@ -31,6 +31,10 @@
 
   &__item-wrapper {
     align-self: center;
+
+    &__card {
+      overflow: hidden;
+    }
   }
 
   &__item {
