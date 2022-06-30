@@ -91,3 +91,63 @@ import Box from '../ui/box';
   <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BORDER_DEFAULT</Typography>
 </Box>;
 ```
+
+### Responsive Props
+
+The box component provides a responsive props api in the form of array props. Array props are inspired by [styled-systems array props](https://styled-system.com/guides/array-props). The responsive props follow a mobile first methodology with the first item in the array applying the style to the base level size e.g. `0px` and up. The second item overwrites the first items styles at the next breakpoint.
+
+- All Box props accept the responsive props format
+- To skip a breakpoint use `null` as the skipped item's value e.g. `<Box display={['display', null, ;flex']} />`
+
+```
+// the responsive props
+<Box display={['block', 'flex']} />
+
+// is equivalent to the css
+.box {
+  display: block;
+
+  @media screen and (max-width: $breakpoint-sm) {
+    display: flex;
+  }
+}
+```
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--responsive-props" />
+</Canvas>
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box
+  padding={[2, 4]}
+  gap={[2, 4]}
+  display={['flex']}
+  flexDirection={['column', 'row']}
+  borderColor={COLORS.BORDER_DEFAULT}
+>
+  <Box
+    padding={[4, 8]}
+    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+    borderColor={COLORS.BORDER_MUTED}
+  >
+    responsive
+  </Box>
+  <Box
+    padding={[4, 8]}
+    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+    borderColor={COLORS.BORDER_MUTED}
+  >
+    props
+  </Box>
+  <Box
+    padding={[4, 8]}
+    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+    borderColor={COLORS.BORDER_MUTED}
+  >
+    example
+  </Box>
+</Box>;
+```

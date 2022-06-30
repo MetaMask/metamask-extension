@@ -6,15 +6,17 @@ import {
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
+  SIZES,
   TEXT_ALIGN,
+  FLEX_DIRECTION,
+  FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
 
 import Typography from '../typography';
 
-import Box from './box';
+import Box, { BackgroundColors, BorderColors } from './box';
 
 import README from './README.mdx';
-import { ValidBackgroundColors, ValidBorderColors } from '.';
 
 const sizeKnobOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
@@ -58,17 +60,43 @@ export default {
       table: { category: 'display' },
     },
     backgroundColor: {
-      options: ValidBackgroundColors,
+      options: BackgroundColors,
       control: 'select',
       table: {
         category: 'background',
       },
     },
+    borderStyle: {
+      options: Object.values(BORDER_STYLE),
+      control: 'select',
+      defaultValue: BORDER_STYLE.DASHED,
+      table: { category: 'border' },
+    },
+    borderWidth: {
+      options: sizeKnobOptions,
+      control: 'number',
+      table: { category: 'border' },
+    },
     borderColor: {
-      options: ValidBorderColors,
+      options: BorderColors,
       control: 'select',
       defaultValue: COLORS.BORDER_DEFAULT,
       table: { category: 'border' },
+    },
+    borderRadius: {
+      options: Object.values(SIZES),
+      control: 'select',
+      table: { category: 'border' },
+    },
+    flexWrap: {
+      options: Object.values(FLEX_WRAP),
+      control: 'select',
+      table: { category: 'display' },
+    },
+    flexDirection: {
+      options: Object.values(FLEX_DIRECTION),
+      control: 'select',
+      table: { category: 'display' },
     },
     justifyContent: {
       options: Object.values(JUSTIFY_CONTENT),
@@ -86,7 +114,7 @@ export default {
       options: Object.values(TEXT_ALIGN),
       control: 'select',
       defaultValue: TEXT_ALIGN.LEFT,
-      table: { category: 'left' },
+      table: { category: 'text' },
     },
     margin: {
       options: marginSizeKnobOptions,
@@ -138,18 +166,6 @@ export default {
       control: 'select',
       table: { category: 'padding' },
     },
-    borderStyle: {
-      options: Object.values(BORDER_STYLE),
-      control: 'select',
-      defaultValue: BORDER_STYLE.DASHED,
-      table: { category: 'border' },
-    },
-    borderWidth: {
-      options: sizeKnobOptions,
-      control: 'number',
-      defaultValue: 1,
-      table: { category: 'border' },
-    },
   },
 };
 
@@ -158,7 +174,7 @@ export const DefaultStory = (args) => {
   const children = [];
   for (let $i = 0; $i < items; $i++) {
     children.push(
-      <img width={size} height={size} src="./images/eth_logo.svg" />,
+      <img key={$i} width={size} height={size} src="./images/eth_logo.svg" />,
     );
   }
   return <Box {...rest}>{children}</Box>;
@@ -299,6 +315,48 @@ export const BorderColor = () => {
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.WARNING_DEFAULT
         </Typography>
+      </Box>
+    </>
+  );
+};
+
+export const ResponsiveProps = () => {
+  return (
+    <>
+      <Typography boxProps={{ marginBottom: 4 }}>
+        Responsive props example. Stacks vertically on small screens and aligns
+        horizontally on large screens. Padding is also adjusted between small
+        and large screens
+      </Typography>
+      <Box
+        marginTop="auto"
+        padding={[2, 4]}
+        gap={[2, 4]}
+        display={['flex']}
+        flexDirection={['column', 'row']}
+        borderColor={COLORS.BORDER_DEFAULT}
+      >
+        <Box
+          padding={[4, 8]}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+        >
+          responsive
+        </Box>
+        <Box
+          padding={[4, 8]}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+        >
+          props
+        </Box>
+        <Box
+          padding={[4, 8]}
+          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          borderColor={COLORS.BORDER_MUTED}
+        >
+          example
+        </Box>
       </Box>
     </>
   );
