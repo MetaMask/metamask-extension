@@ -47,6 +47,11 @@ export default function SecureYourWallet() {
     ru: 'Russian',
     tl: 'Tagalog',
     vi: 'Vietnamese',
+    de: 'German',
+    el: 'Greek',
+    fr: 'French',
+    tr: 'Turkish',
+    zh: 'Chinese - China',
   };
 
   const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';

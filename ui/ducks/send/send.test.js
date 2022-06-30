@@ -2644,9 +2644,12 @@ describe('Send Slice', () => {
       });
 
       it('has a selector to get recipient state', () => {
-        expect(getRecipient({ send: initialState })).toMatchObject(
-          initialState.recipient,
-        );
+        expect(
+          getRecipient({
+            send: initialState,
+            metamask: { ensResolutionsByAddress: {} },
+          }),
+        ).toMatchObject(initialState.recipient);
       });
     });
 

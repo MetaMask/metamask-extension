@@ -109,7 +109,6 @@ export default function FeeCard({
                     }
                     containerClassName="fee-card__info-tooltip-content-container"
                     wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
-                    wide
                   />
                 </>
               }

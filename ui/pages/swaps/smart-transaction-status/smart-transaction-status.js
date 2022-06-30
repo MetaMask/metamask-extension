@@ -18,7 +18,12 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
-} from '../../../selectors/selectors';
+  getCurrentChainId,
+  getUSDConversionRate,
+  conversionRateSelector,
+  getCurrentCurrency,
+} from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -44,7 +49,10 @@ import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transac
 
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import { showRemainingTimeInMinAndSec } from '../swaps.util';
+import {
+  showRemainingTimeInMinAndSec,
+  getFeeForSmartTransaction,
+} from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
@@ -76,9 +84,16 @@ export default function SmartTransactionStatus() {
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const chainId = useSelector(getCurrentChainId);
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const conversionRate = useSelector(conversionRateSelector);
+  const USDConversionRate = useSelector(getUSDConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
   let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
+  let cancellationFeeWei;
 
   if (currentSmartTransactions && currentSmartTransactions.length > 0) {
     latestSmartTransaction =
@@ -86,6 +101,8 @@ export default function SmartTransactionStatus() {
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus =
       latestSmartTransaction?.status || SMART_TRANSACTION_STATUSES.PENDING;
+    cancellationFeeWei =
+      latestSmartTransaction?.statusMetadata?.cancellationFeeWei;
   }
 
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
@@ -176,7 +193,7 @@ export default function SmartTransactionStatus() {
   if (isSmartTransactionPending) {
     if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
-    } else if (latestSmartTransaction?.statusMetadata?.cancellationFeeWei > 0) {
+    } else if (cancellationFeeWei > 0) {
       headerText = t('stxPendingPubliclySubmittingSwap');
     }
   }
@@ -226,6 +243,17 @@ export default function SmartTransactionStatus() {
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
+    let feeInFiat;
+    if (cancellationFeeWei > 0) {
+      ({ feeInFiat } = getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        USDConversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: cancellationFeeWei,
+      }));
+    }
     return (
       <Box marginBottom={0}>
         <a
@@ -242,7 +270,9 @@ export default function SmartTransactionStatus() {
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
-          {t('cancelSwap')}
+          {feeInFiat
+            ? t('cancelSwapForFee', [feeInFiat])
+            : t('cancelSwapForFree')}
         </a>
       </Box>
     );
