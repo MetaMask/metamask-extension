@@ -38,7 +38,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
         >
           {t('recoveryPhraseReminderSubText')}
         </Typography>
-        <Box margin={[4, 0, 8, 0]}>
+        <Box marginTop={4} marginBottom={8}>
           <ul className="recovery-phrase-reminder__list">
             <li>
               <Typography

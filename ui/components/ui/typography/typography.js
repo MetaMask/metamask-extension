@@ -58,7 +58,11 @@ export default function Typography({
   overflowWrap,
   title,
   tag,
-  margin = [1, 0],
+  margin,
+  marginTop = 1,
+  marginRight,
+  marginBottom = 1,
+  marginLeft,
   boxProps = {},
   className,
   children,
@@ -90,7 +94,16 @@ export default function Typography({
   }
 
   return (
-    <Box margin={margin} {...boxProps}>
+    <Box
+      {...{
+        margin,
+        marginTop,
+        marginRight,
+        marginBottom,
+        marginLeft,
+        ...boxProps,
+      }}
+    >
       {(boxClassName) => (
         <Tag
           className={classnames(boxClassName, computedClassName)}
@@ -138,10 +151,13 @@ Typography.propTypes = {
    */
   tag: PropTypes.oneOf(ValidTags),
   /**
-   * Adds margin to the Typography component should use valid sizes
-   * 1,2,4,6,8 or an array of those values
+   * Adds margin to the Typography component should use valid size
    */
   margin: MultipleSizes,
+  marginTop: MultipleSizes,
+  marginBottom: MultipleSizes,
+  marginRight: MultipleSizes,
+  marginLeft: MultipleSizes,
   /**
    * Used to pass any valid Box component props such as margin or padding
    * to the Typography component

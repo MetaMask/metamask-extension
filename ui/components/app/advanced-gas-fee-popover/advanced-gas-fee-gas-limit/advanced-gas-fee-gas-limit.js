@@ -65,7 +65,9 @@ const AdvancedGasFeeGasLimit = () => {
       tag={TYPOGRAPHY.Paragraph}
       variant={TYPOGRAPHY.H7}
       className="advanced-gas-fee-gas-limit"
-      margin={[4, 2, 0, 2]}
+      marginTop={4}
+      marginLeft={2}
+      marginRight={4}
     >
       <strong>{t('gasLimitV2')}</strong>
       <span>{gasLimit}</span>
