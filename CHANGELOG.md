@@ -31,6 +31,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Contact name display on Edit tx page ([#14613](https://github.com/MetaMask/metamask-extension/pull/14613))
 - Fix infinite loading when transferring non-standard ERC721 (without name and/or symbol) ([#14756](https://github.com/MetaMask/metamask-extension/pull/14756))
 - **[FLASK]:** Fix multiple bugs related to snap installation ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+## [10.16.2]
+### Changed
+- This release restores the changes from v10.16.0, which was temporarily reverted in v10.16.1.
+
+## [10.16.1]
+### Changed
+- This release is a patch for v10.15.2, so all changes in v10.16.0 have been temporarily reverted. They will be restored in a future v16 release. ([#15063](https://github.com/MetaMask/metamask-extension/pull/15063))
+
+### Fixed
+- Fix bug that could cause an incorrect recipient address after pasting an address, without a 0x prefix, in the send flow while sending a token ([#15064](https://github.com/MetaMask/metamask-extension/pull/15064)
 
 ## [10.16.0]
 ### Added
@@ -3059,6 +3069,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...HEAD
 [10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.17.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...HEAD
+[10.16.2]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...v10.16.2
+[10.16.1]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.16.1
 [10.16.0]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...v10.16.0
 [10.15.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.15.1
 [10.15.0]: https://github.com/MetaMask/metamask-extension/compare/v10.14.7...v10.15.0
