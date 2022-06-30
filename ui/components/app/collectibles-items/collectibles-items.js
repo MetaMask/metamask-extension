@@ -240,7 +240,13 @@ export default function CollectiblesItems({
 
   return (
     <div className="collectibles-items">
-      <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
+      <Box
+        paddingTop={6}
+        paddingBottom={6}
+        paddingLeft={4}
+        paddingRight={4}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
         <>
           {collectionsKeys.map((key) => {
             const {
