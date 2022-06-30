@@ -3865,6 +3865,9 @@
   "unknownCameraErrorTitle": {
     "message": "Ooops! Something went wrong...."
   },
+  "unknownCollection": {
+    "message": "Unnamed collection"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
