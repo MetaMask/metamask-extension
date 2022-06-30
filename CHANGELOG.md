@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Contact name display on Edit tx page ([#14613](https://github.com/MetaMask/metamask-extension/pull/14613))
 - Fix infinite loading when transferring non-standard ERC721 (without name and/or symbol) ([#14756](https://github.com/MetaMask/metamask-extension/pull/14756))
 - **[FLASK]:** Fix multiple bugs related to snap installation ([#14952](https://github.com/MetaMask/metamask-extension/pull/14952))
+
 ## [10.16.2]
 ### Changed
 - This release restores the changes from v10.16.0, which was temporarily reverted in v10.16.1.
@@ -3068,8 +3069,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...HEAD
-[10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.17.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...HEAD
+[10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...v10.17.0
 [10.16.2]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...v10.16.2
 [10.16.1]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.16.1
 [10.16.0]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...v10.16.0
