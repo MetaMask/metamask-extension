@@ -42,6 +42,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
+import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -3728,6 +3729,18 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
+export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+  return async () => {
+    try {
+      await promisifiedBackground.setCustomNetworkListEnabled(
+        customNetworkListEnabled,
+      );
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
@@ -3752,5 +3765,31 @@ export function cancelQRHardwareSignRequest() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
     await promisifiedBackground.cancelQRHardwareSignRequest();
+  };
+}
+
+export function addCustomNetwork(customRpc) {
+  return async (dispatch) => {
+    try {
+      dispatch(setNewCustomNetworkAdded(customRpc));
+      await promisifiedBackground.addCustomNetwork(customRpc);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function requestUserApproval(customRpc, originIsMetaMask) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.requestUserApproval(
+        customRpc,
+        originIsMetaMask,
+      );
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
   };
 }

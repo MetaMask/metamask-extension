@@ -346,4 +346,11 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
     featureFlag: 'COLLECTIBLES_V1',
   },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('showCustomNetworkList'),
+    descriptionMessage: (t) => t('showCustomNetworkListDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#show-custom-network`,
+    icon: 'fa fa-flask',
+  },
 ];
