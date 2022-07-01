@@ -308,6 +308,100 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   });
 };
 
+const completeCreateNewWalletOnboardingFlow = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  if (process.env.ONBOARDING_V2 === '1') {
+    // welcome
+    await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+
+    // metrics
+    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+    // create password
+    await driver.fill('[data-testid="create-password-new"]', password);
+    await driver.fill('[data-testid="create-password-confirm"]', password);
+    await driver.clickElement('[data-testid="create-password-terms"]');
+    await driver.clickElement('[data-testid="create-password-import"]');
+
+    //secure my wallet
+    await driver.clickElement('[data-testid="secure-wallet-recommended"]');
+
+    //reveal SRP
+    await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+
+    const revealedSeedPhrase = await driver.findElement(
+      '[data-testid="recovery-phrase-chips"]',
+    );
+    seedPhrase = await revealedSeedPhrase.getText();
+    assert.equal(seedPhrase.split(' ').length, 12);
+
+    await driver.clickElement('[data-testid="recovery-phrase-next"]');    
+    
+    //confirm SRP
+    const words = seedPhrase.split(' ');
+
+    await driver.fill('[data-testid="recovery-phrase-input-2"]',words[2]);
+    await driver.fill('[data-testid="recovery-phrase-input-3"]',words[3]);
+    await driver.fill('[data-testid="recovery-phrase-input-7"]',words[7]);
+    
+    await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+    // complete
+    await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+    await driver.clickElement('[data-testid="onboarding-complete-done"]');
+
+    // pin extension
+    await driver.clickElement('[data-testid="pin-extension-next"]');
+    await driver.clickElement('[data-testid="pin-extension-done"]');
+  } else {
+    await driver.findElement('.welcome-page__header');
+    await driver.clickElement({
+      text: enLocaleMessages.getStarted.message,
+      tag: 'button',
+    });
+  
+    await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
+
+    await driver.clickElement('.btn-secondary');
+
+    await driver.fill(
+      '.first-time-flow__form #create-password',
+      'correct horse battery staple',
+    );
+    await driver.fill(
+      '.first-time-flow__form #confirm-password',
+      'correct horse battery staple',
+    );
+
+    await driver.clickElement('.first-time-flow__checkbox');
+
+    await driver.clickElement('.first-time-flow__form button');
+
+  let seedPhrase;
+
+    await driver.clickElement('.seed-phrase-intro__left button');
+
+    const byRevealButton =
+      '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button';
+    await driver.findElement(byRevealButton);
+    await driver.clickElement(byRevealButton);
+
+    const revealedSeedPhrase = await driver.findElement(
+      '.reveal-seed-phrase__secret-words',
+    );
+    seedPhrase = await revealedSeedPhrase.getText();
+    assert.equal(seedPhrase.split(' ').length, 12);
+
+    await driver.clickElement({
+      text: enLocaleMessages.next.message,
+      tag: 'button',
+    })
+  }
+  };
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -319,4 +413,5 @@ module.exports = {
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
+  completeCreateNewWalletOnboardingFlow,
 };
