@@ -15,28 +15,37 @@ class GanacheSeeder {
   /**
    * Deploy initial smart contracts that can be used later within the e2e tests.
    *
+   * @param contractName
    */
-  async deploySmartContracts() {
+
+  async deploySmartContract(contractName) {
     if (this.debug) {
       console.log('Deploying smart contracts using GanacheSeeder');
     }
 
-    // Deploy smart contract for human standard token
     const ethersProvider = new ethers.providers.Web3Provider(
       ganache.provider(),
       'any',
     );
-    const hstFactory = new ethers.ContractFactory(
-      contractConfiguration.hst.abi,
-      contractConfiguration.hst.bytecode,
+    const contractFactory = new ethers.ContractFactory(
+      contractConfiguration[contractName].abi,
+      contractConfiguration[contractName].bytecode,
       ethersProvider.getSigner(),
     );
-    const contract = await hstFactory.deploy(
-      contractConfiguration.hst.initialAmount,
-      contractConfiguration.hst.tokenName,
-      contractConfiguration.hst.decimalUnits,
-      contractConfiguration.hst.tokenSymbol,
-    );
+
+    let contract;
+
+    if (contractName === 'hst') {
+      contract = await contractFactory.deploy(
+        contractConfiguration.hst.initialAmount,
+        contractConfiguration.hst.tokenName,
+        contractConfiguration.hst.decimalUnits,
+        contractConfiguration.hst.tokenSymbol,
+      );
+    } else {
+      contract = await contractFactory.deploy();
+    }
+
     await contract.deployTransaction.wait();
 
     if (this.debug) {
@@ -44,11 +53,7 @@ class GanacheSeeder {
         `Contract mined! address: ${contract.address} transactionHash: ${contract.transactionHash}`,
       );
     }
-    const humanStandardTokenContractName = 'hst';
-    this.storeSmartContractAddress(
-      humanStandardTokenContractName,
-      contract.address,
-    );
+    this.storeSmartContractAddress(contractName, contract.address);
   }
 
   /**

@@ -48,7 +48,7 @@ async function withFixtures(options, testSuite) {
     // Deploy initial smart contracts
     const debugGanacheSeeder = true;
     const ganacheSeeder = new GanacheSeeder(debugGanacheSeeder);
-    await ganacheSeeder.deploySmartContracts();
+    await ganacheSeeder.deploySmartContract('hst');
     const contractRegistry = ganacheSeeder.getContractRegistry();
 
     if (ganacheOptions?.concurrent) {
