@@ -81,7 +81,7 @@ export default class MenuDroppoComponent extends Component {
       <div
         style={baseStyle}
         className={`menu-droppo-container ${containerClassName}`}
-        data-testid={`${containerClassName}`}
+        data-testid={containerClassName}
       >
         <style>
           {`
