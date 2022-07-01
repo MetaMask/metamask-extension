@@ -11,7 +11,9 @@ import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
@@ -21,6 +23,9 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getNotifications,
+  ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -31,8 +36,13 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+///: END:ONLY_INCLUDE_IN
+import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -736,6 +746,32 @@ export function updateEditableParams(txId, editableParams) {
   };
 }
 
+/**
+ * Appends new send flow history to a transaction
+ *
+ * @param {string} txId - the id of the transaction to update
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - the new send flow history to append to the
+ *  transaction
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+  return async (dispatch) => {
+    let updatedTransaction;
+    try {
+      updatedTransaction = await promisifiedBackground.updateTransactionSendFlowHistory(
+        txId,
+        sendFlowHistory,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return updatedTransaction;
+  };
+}
+
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
     let updatedTransaction;
@@ -799,25 +835,65 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin, type) {
-  log.debug('background.addUnapprovedTransaction');
-
-  return () => {
-    return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(
+/**
+ * Action to create a new transaction in the controller and route to the
+ * confirmation page. Returns the newly created txMeta in case additional logic
+ * should be applied to the transaction after creation.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
+ *  history of the send flow at time of creation.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export function addUnapprovedTransactionAndRouteToConfirmationPage(
+  txParams,
+  type,
+  sendFlowHistory,
+) {
+  return async (dispatch) => {
+    try {
+      log.debug('background.addUnapprovedTransaction');
+      const txMeta = await promisifiedBackground.addUnapprovedTransaction(
         txParams,
-        origin,
+        ORIGIN_METAMASK,
         type,
-        (err, txMeta) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(txMeta);
-        },
+        sendFlowHistory,
       );
-    });
+      dispatch(showConfTxPage());
+      return txMeta;
+    } catch (error) {
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+    }
+    return null;
   };
+}
+
+/**
+ * Wrapper around the promisifedBackground to create a new unapproved
+ * transaction in the background and return the newly created txMeta.
+ * This method does not show errors or route to a confirmation page and is
+ * used primarily for swaps functionality.
+ *
+ * @param {import('../../shared/constants/transaction').TxParams} txParams -
+ *  The transaction parameters
+ * @param {import(
+ *  '../../shared/constants/transaction'
+ * ).TransactionTypeString} type - The type of the transaction being added.
+ * @returns {import('../../shared/constants/transaction').TransactionMeta}
+ */
+export async function addUnapprovedTransaction(txParams, type) {
+  log.debug('background.addUnapprovedTransaction');
+  const txMeta = await promisifiedBackground.addUnapprovedTransaction(
+    txParams,
+    ORIGIN_METAMASK,
+    type,
+  );
+  return txMeta;
 }
 
 export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
@@ -923,15 +999,53 @@ export function enableSnap(snapId) {
   };
 }
 
-export function removeSnap(snap) {
+export function removeSnap(snapId) {
   return async (dispatch) => {
-    await promisifiedBackground.removeSnap(snap);
+    await promisifiedBackground.removeSnap(snapId);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export async function removeSnapError(msgData) {
   return promisifiedBackground.removeSnapError(msgData);
+}
+
+export function dismissNotifications(ids) {
+  return async (dispatch) => {
+    await promisifiedBackground.dismissNotifications(ids);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function deleteExpiredNotifications() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const notifications = getNotifications(state);
+
+    const notificationIdsToDelete = notifications
+      .filter((notification) => {
+        const expirationTime = new Date(
+          Date.now() - NOTIFICATIONS_EXPIRATION_DELAY,
+        );
+
+        return Boolean(
+          notification.readDate &&
+            new Date(notification.readDate) < expirationTime,
+        );
+      })
+      .map(({ id }) => id);
+    if (notificationIdsToDelete.length) {
+      await promisifiedBackground.dismissNotifications(notificationIdsToDelete);
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+export function markNotificationsAsRead(ids) {
+  return async (dispatch) => {
+    await promisifiedBackground.markNotificationsAsRead(ids);
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 ///: END:ONLY_INCLUDE_IN
 
@@ -950,6 +1064,96 @@ export function cancelMsg(msgData) {
     dispatch(completedTx(msgData.id));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
+  };
+}
+
+/**
+ * Cancels all of the given messages
+ *
+ * @param {Array<object>} msgDataList - a list of msg data objects
+ * @returns {function(*): Promise<void>}
+ */
+export function cancelMsgs(msgDataList) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const msgIds = msgDataList.map((id) => id);
+      const cancellations = msgDataList.map(
+        ({ id, type }) =>
+          new Promise((resolve, reject) => {
+            switch (type) {
+              case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+                background.cancelTypedMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.PERSONAL_SIGN:
+                background.cancelPersonalMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_DECRYPT:
+                background.cancelDecryptMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
+                background.cancelEncryptionPublicKeyMsg(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              case MESSAGE_TYPE.ETH_SIGN:
+                background.cancelMessage(id, (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
+              default:
+                reject(
+                  new Error(
+                    `MetaMask Message Signature: Unknown message type: ${id}`,
+                  ),
+                );
+            }
+          }),
+      );
+
+      await Promise.all(cancellations);
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+
+      msgIds.forEach((id) => {
+        dispatch(completedTx(id));
+      });
+    } catch (err) {
+      log.error(err);
+    } finally {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        closeNotificationPopup();
+      } else {
+        dispatch(hideLoadingIndication());
+      }
+    }
   };
 }
 
@@ -1418,6 +1622,65 @@ export function addToken(
       dispatch(hideLoadingIndication());
     }
   };
+}
+/**
+ * To add detected tokens to state
+ *
+ * @param newDetectedTokens
+ */
+export function addDetectedTokens(newDetectedTokens) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.addDetectedTokens(newDetectedTokens);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To add the tokens user selected to state
+ *
+ * @param tokensToImport
+ */
+export function importTokens(tokensToImport) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.importTokens(tokensToImport);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To add ignored tokens to state
+ *
+ * @param tokensToIgnore
+ */
+export function ignoreTokens(tokensToIgnore) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.ignoreTokens(tokensToIgnore);
+    } catch (error) {
+      log.error(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To fetch the ERC20 tokens with non-zero balance in a single call
+ *
+ * @param tokens
+ */
+export async function getBalancesInSingleCall(tokens) {
+  return await promisifiedBackground.getBalancesInSingleCall(tokens);
 }
 
 export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
@@ -2832,6 +3095,13 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   };
 }
 
+export function setNewTokensImported(newTokensImported) {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED,
+    value: newTokensImported,
+  };
+}
+
 export function setLastActiveTime() {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
@@ -3276,7 +3546,7 @@ export async function setSmartTransactionsOptInStatus(
 ) {
   trackMetaMetricsEvent({
     event: 'STX OptIn',
-    category: 'swaps',
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       stx_enabled: true,
       current_stx_enabled: true,
@@ -3287,36 +3557,16 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
-export function fetchSmartTransactionFees(unsignedTransaction) {
-  return async (dispatch) => {
-    try {
-      return await promisifiedBackground.fetchSmartTransactionFees(
-        unsignedTransaction,
-      );
-    } catch (e) {
-      log.error(e);
-      if (e.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(e.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
-        });
-      }
-      throw e;
-    }
-  };
-}
-
-export function estimateSmartTransactionsGas(
+export function fetchSmartTransactionFees(
   unsignedTransaction,
   approveTxParams,
 ) {
-  if (approveTxParams) {
-    approveTxParams.value = '0x0';
-  }
   return async (dispatch) => {
+    if (approveTxParams) {
+      approveTxParams.value = '0x0';
+    }
     try {
-      await promisifiedBackground.estimateSmartTransactionsGas(
+      return await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
         approveTxParams,
       );
@@ -3479,6 +3729,18 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
+export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+  return async () => {
+    try {
+      await promisifiedBackground.setCustomNetworkListEnabled(
+        customNetworkListEnabled,
+      );
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
@@ -3503,5 +3765,31 @@ export function cancelQRHardwareSignRequest() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
     await promisifiedBackground.cancelQRHardwareSignRequest();
+  };
+}
+
+export function addCustomNetwork(customRpc) {
+  return async (dispatch) => {
+    try {
+      dispatch(setNewCustomNetworkAdded(customRpc));
+      await promisifiedBackground.addCustomNetwork(customRpc);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function requestUserApproval(customRpc, originIsMetaMask) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.requestUserApproval(
+        customRpc,
+        originIsMetaMask,
+      );
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
   };
 }

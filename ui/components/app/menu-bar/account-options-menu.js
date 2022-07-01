@@ -17,6 +17,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
@@ -46,7 +47,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           trackEvent({
             event: 'Clicked Block Explorer Link',
-            category: 'Navigation',
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               link_type: 'Account Tracker',
               action: 'Account Options',
@@ -76,7 +77,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           onClick={() => {
             trackEvent({
               event: 'Clicked Expand View',
-              category: 'Navigation',
+              category: EVENT.CATEGORIES.NAVIGATION,
               properties: {
                 action: 'Account Options',
                 legacy_event: true,
@@ -96,7 +97,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
           trackEvent({
             event: 'Viewed Account Details',
-            category: 'Navigation',
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               action: 'Account Options',
               legacy_event: true,
@@ -113,7 +114,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           trackEvent({
             event: 'Opened Connected Sites',
-            category: 'Navigation',
+            category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               action: 'Account Options',
               legacy_event: true,

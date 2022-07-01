@@ -23,7 +23,10 @@ describe('Dapp interactions', function () {
       {
         dapp: true,
         fixtures: 'imported-account',
-        ganacheOptions,
+        ganacheOptions: {
+          ...ganacheOptions,
+          concurrent: { port: 8546, chainId: 1338 },
+        },
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -44,6 +47,7 @@ describe('Dapp interactions', function () {
         // Trigger Notification
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         await driver.clickElement('#addEthereumChain');
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -60,7 +64,7 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('should connect a second Dapp despite Metamask being locked', async function () {
+  it('should connect a second Dapp despite MetaMask being locked', async function () {
     await withFixtures(
       {
         dapp: true,

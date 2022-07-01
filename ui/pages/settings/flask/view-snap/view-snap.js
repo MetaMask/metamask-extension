@@ -32,14 +32,12 @@ function ViewSnap() {
   const history = useHistory();
   const location = useLocation();
   const { pathname } = location;
-  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  // The snap ID is in URI-encoded form in the last path segment of the URL.
+  const decodedSnapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
   const snaps = useSelector(getSnaps);
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)
-    .find((snapState) => {
-      const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
-      return snapState.id === decoded;
-    });
+    .find((snapState) => snapState.id === decodedSnapId);
 
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
 
@@ -49,7 +47,6 @@ function ViewSnap() {
     }
   }, [history, snap]);
 
-  const authorshipPillUrl = `https://npmjs.com/package/${snap?.manifest.source.location.npm.packageName}`;
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithPermission(state, snap?.permissionName),
   );
@@ -89,10 +86,7 @@ function ViewSnap() {
           </Typography>
           <Box className="view-snap__pill-toggle-container">
             <Box className="view-snap__pill-container" paddingLeft={2}>
-              <SnapsAuthorshipPill
-                packageName={snap.id}
-                url={authorshipPillUrl}
-              />
+              <SnapsAuthorshipPill snapId={snap.id} />
             </Box>
             <Box paddingLeft={4} className="view-snap__toggle-container">
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
@@ -190,7 +184,7 @@ function ViewSnap() {
               <SnapRemoveWarning
                 onCancel={() => setIsShowingRemoveWarning(false)}
                 onSubmit={async () => {
-                  await dispatch(removeSnap(snap));
+                  await dispatch(removeSnap(snap.id));
                 }}
                 snapName={snap.manifest.proposedName}
               />

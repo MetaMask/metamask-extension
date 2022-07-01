@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { util } from '@metamask/controllers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-
 import {
   DISPLAY,
   FONT_WEIGHT,
@@ -17,6 +16,7 @@ import ActionableMessage from '../../components/ui/actionable-message';
 import PageContainer from '../../components/ui/page-container';
 import {
   addCollectibleVerifyOwnership,
+  getTokenStandardAndDetails,
   removeToken,
   setNewCollectibleAddedMessage,
 } from '../../store/actions';
@@ -24,6 +24,9 @@ import FormField from '../../components/ui/form-field';
 import { getIsMainnet, getUseCollectibleDetection } from '../../selectors';
 import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default function AddCollectible() {
   const t = useI18nContext();
@@ -47,12 +50,11 @@ export default function AddCollectible() {
   const [tokenId, setTokenId] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [collectibleAddFailed, setCollectibleAddFailed] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const handleAddCollectible = async () => {
     try {
-      await dispatch(
-        addCollectibleVerifyOwnership(address, tokenId.toString()),
-      );
+      await dispatch(addCollectibleVerifyOwnership(address, tokenId));
     } catch (error) {
       const { message } = error;
       dispatch(setNewCollectibleAddedMessage(message));
@@ -65,6 +67,26 @@ export default function AddCollectible() {
       );
     }
     dispatch(setNewCollectibleAddedMessage('success'));
+
+    const tokenDetails = await getTokenStandardAndDetails(
+      address,
+      null,
+      tokenId.toString(),
+    );
+
+    trackEvent({
+      event: EVENT_NAMES.TOKEN_ADDED,
+      category: 'Wallet',
+      sensitiveProperties: {
+        token_contract_address: address,
+        token_symbol: tokenDetails?.symbol,
+        tokenId: tokenId.toString(),
+        asset_type: ASSET_TYPES.COLLECTIBLE,
+        token_standard: tokenDetails?.standard,
+        source: EVENT.SOURCE.TOKEN.CUSTOM,
+      },
+    });
+
     history.push(DEFAULT_ROUTE);
   };
 
@@ -74,7 +96,7 @@ export default function AddCollectible() {
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!util.isValidHexAddress(address) || !val);
+    setDisabled(!util.isValidHexAddress(address) || !val || isNaN(Number(val)));
     setTokenId(val);
   };
 
@@ -124,7 +146,7 @@ export default function AddCollectible() {
           )}
           <Box margin={4}>
             <FormField
-              id="address"
+              dataTestId="address"
               titleText={t('address')}
               placeholder="0x..."
               value={address}
@@ -136,7 +158,7 @@ export default function AddCollectible() {
               autoFocus
             />
             <FormField
-              id="token-id"
+              dataTestId="token-id"
               titleText={t('tokenId')}
               placeholder={t('nftTokenIdPlaceholder')}
               value={tokenId}
@@ -145,7 +167,6 @@ export default function AddCollectible() {
                 setCollectibleAddFailed(false);
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
-              numeric
             />
           </Box>
         </Box>

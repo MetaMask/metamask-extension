@@ -26,38 +26,4 @@ Source file bundling tasks are implemented in the [`./development/build/scripts.
 
 ## Usage
 
-```text
-Usage: yarn build <entry-task> [options]
-
-Commands:
-  yarn build prod       Create an optimized build for production environments.
-
-  yarn build dev        Create an unoptimized, live-reloaded build for local
-                        development.
-
-  yarn build test       Create an optimized build for running e2e tests.
-
-  yarn build testDev    Create an unoptimized, live-reloaded build for running
-                        e2e tests.
-
-Options:
-  --build-type        The "type" of build to create. One of: "beta", "flask",
-                      "main"
-                                                      [string] [default: "main"]
-  --lint-fence-files  Whether files with code fences should be linted after
-                      fences have been removed by the code fencing transform.
-                      The build will fail if linting fails.
-                      Defaults to `false` if the entry task is `dev` or
-                      `testDev`, and `true` otherwise.
-                                                   [boolean] [default: <varies>]
-  --lockdown          Whether to include SES lockdown files in the extension
-                      bundle. Setting this to `false` is useful e.g. when
-                      linking dependencies that are incompatible with lockdown.
-                                                       [boolean] [default: true]
-  --policy-only       Stops the build after generating the LavaMoat policy,
-                      skipping any writes to disk.
-                                                       [boolean] [deafult: false]
-  --skip-stats        Whether to refrain from logging build progress. Mostly
-                      used internally.
-                                                      [boolean] [default: false]
-```
+See `node ./development/build/index.js --help`

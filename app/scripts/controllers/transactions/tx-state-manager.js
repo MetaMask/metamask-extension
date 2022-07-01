@@ -6,6 +6,7 @@ import createId from '../../../../shared/modules/random-id';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   generateHistoryEntry,
   replayHistory,
@@ -17,6 +18,8 @@ import {
   validateConfirmedExternalTransaction,
 } from './lib/util';
 
+export const ERROR_SUBMITTING =
+  'There was an error when resubmitting this transaction.';
 /**
  * TransactionStatuses reimported from the shared transaction constants file
  *
@@ -92,7 +95,7 @@ export default class TransactionStateManager extends EventEmitter {
     if (
       opts.txParams &&
       typeof opts.origin === 'string' &&
-      opts.origin !== 'metamask'
+      opts.origin !== ORIGIN_METAMASK
     ) {
       if (typeof opts.txParams.gasPrice !== 'undefined') {
         dappSuggestedGasFees = {
@@ -126,6 +129,7 @@ export default class TransactionStateManager extends EventEmitter {
       chainId,
       loadingDefaults: true,
       dappSuggestedGasFees,
+      sendFlowHistory: [],
       ...opts,
     };
   }
@@ -302,9 +306,23 @@ export default class TransactionStateManager extends EventEmitter {
   updateTransaction(txMeta, note) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
-      txMeta.txParams = normalizeAndValidateTxParams(txMeta.txParams, false);
+      try {
+        txMeta.txParams = normalizeAndValidateTxParams(txMeta.txParams, false);
+      } catch (error) {
+        if (txMeta.warning.message === ERROR_SUBMITTING) {
+          this.setTxStatusFailed(txMeta.id, error);
+        } else {
+          throw error;
+        }
+
+        return;
+      }
     }
 
+    this._updateTransactionHistory(txMeta, note);
+  }
+
+  _updateTransactionHistory(txMeta, note) {
     // create txMeta snapshot for history
     const currentState = snapshotFromTxMeta(txMeta);
     // recover previous tx state obj
@@ -549,10 +567,11 @@ export default class TransactionStateManager extends EventEmitter {
       rpc: error.value,
       stack: error.stack,
     };
-    this.updateTransaction(
+    this._updateTransactionHistory(
       txMeta,
       'transactions:tx-state-manager#fail - add error',
     );
+
     this._setTransactionStatus(txId, TRANSACTION_STATUSES.FAILED);
   }
 
@@ -636,7 +655,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     txMeta.status = status;
     try {
-      this.updateTransaction(
+      this._updateTransactionHistory(
         txMeta,
         `txStateManager: setting status to ${status}`,
       );

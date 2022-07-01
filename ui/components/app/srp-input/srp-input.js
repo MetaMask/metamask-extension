@@ -8,14 +8,18 @@ import ActionableMessage from '../../ui/actionable-message';
 import Dropdown from '../../ui/dropdown';
 import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  FONT_WEIGHT,
+  TEXT_ALIGN,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
 
 const defaultNumberOfWords = 12;
 
-export default function SrpInput({ onChange }) {
+export default function SrpInput({ onChange, srpText }) {
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
   const [draftSrp, setDraftSrp] = useState(
@@ -121,8 +125,12 @@ export default function SrpInput({ onChange }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Typography variant={TYPOGRAPHY.H4}>
-          {t('secretRecoveryPhrase')}
+        <Typography
+          align={TEXT_ALIGN.LEFT}
+          variant={TYPOGRAPHY.H4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {srpText}
         </Typography>
       </label>
       <ActionableMessage
@@ -176,8 +184,6 @@ export default function SrpInput({ onChange }) {
                   if (newSrp.trim().match(/\s/u)) {
                     event.preventDefault();
                     onSrpPaste(newSrp);
-                  } else {
-                    onSrpWordChange(index, newSrp);
                   }
                 }}
               />
@@ -232,4 +238,8 @@ SrpInput.propTypes = {
    * Otherwise, this is called with an empty string.
    */
   onChange: PropTypes.func.isRequired,
+  /**
+   * Text to show on the left of the Dropdown component. Wrapped in Typography component.
+   */
+  srpText: PropTypes.string.isRequired,
 };

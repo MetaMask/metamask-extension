@@ -17,6 +17,7 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
 import { useEqualityCheck } from './useEqualityCheck';
 
 /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
@@ -61,19 +62,19 @@ export function getRenderableTokenData(
       symbol,
       false,
     ) || '';
-  let tokenAddress;
-  let tokenIconUrl;
-  if (process.env.TOKEN_DETECTION_V2) {
-    tokenAddress = address?.toLowerCase();
-    tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
-  } else {
-    // token from dynamic api list is fetched when useTokenDetection is true
-    // And since the token.address from allTokens is checksumaddress
-    // token Address have to be changed to lowercase when we are using dynamic list
-    tokenAddress = useTokenDetection ? address?.toLowerCase() : address;
-    tokenIconUrl = useTokenDetection
-      ? tokenList[tokenAddress]?.iconUrl
-      : `images/contract/${tokenList[tokenAddress].iconUrl}`;
+
+  // token from dynamic api list is fetched when useTokenDetection is true
+  // And since the token.address from allTokens is checksumaddress
+  // token Address have to be changed to lowercase when we are using dynamic list
+  const tokenAddress =
+    useTokenDetection || process.env.TOKEN_DETECTION_V2
+      ? address?.toLowerCase()
+      : address;
+
+  let tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
+
+  if (!process.env.TOKEN_DETECTION_V2 && !useTokenDetection && tokenIconUrl) {
+    tokenIconUrl = `images/contract/${tokenIconUrl}`;
   }
   const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
   return {
@@ -96,6 +97,7 @@ export function useTokensToSearch({
   usersTokens = [],
   topTokens = {},
   shuffledTokensList,
+  tokenBucketPriority = TOKEN_BUCKET_PRIORITY.OWNED,
 }) {
   const chainId = useSelector(getCurrentChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
@@ -164,7 +166,20 @@ export function useTokensToSearch({
         tokenList,
         useTokenDetection,
       );
-      if (memoizedTopTokens[token.address.toLowerCase()]) {
+      if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+        if (
+          isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
+          usersTokensAddressMap[token.address.toLowerCase()]
+        ) {
+          tokensToSearchBuckets.owned.push(renderableDataToken);
+        } else if (memoizedTopTokens[token.address.toLowerCase()]) {
+          tokensToSearchBuckets.top[
+            memoizedTopTokens[token.address.toLowerCase()].index
+          ] = renderableDataToken;
+        } else {
+          tokensToSearchBuckets.others.push(renderableDataToken);
+        }
+      } else if (memoizedTopTokens[token.address.toLowerCase()]) {
         tokensToSearchBuckets.top[
           memoizedTopTokens[token.address.toLowerCase()].index
         ] = renderableDataToken;
@@ -184,6 +199,13 @@ export function useTokensToSearch({
       },
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
+    if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+      return [
+        ...tokensToSearchBuckets.owned,
+        ...tokensToSearchBuckets.top,
+        ...tokensToSearchBuckets.others,
+      ];
+    }
     return [
       ...tokensToSearchBuckets.top,
       ...tokensToSearchBuckets.owned,
@@ -200,5 +222,6 @@ export function useTokensToSearch({
     chainId,
     tokenList,
     useTokenDetection,
+    tokenBucketPriority,
   ]);
 }

@@ -555,11 +555,6 @@ describe('MetaMask', function () {
     });
 
     it('displays the token approval data', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__view-full-tx-button',
-      );
-      await driver.delay(regularDelayMs);
-
       const functionType = await driver.findElement(
         '.confirm-approve-content__data .confirm-approve-content__small-text',
       );
@@ -750,11 +745,6 @@ describe('MetaMask', function () {
     });
 
     it('shows the correct recipient', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__view-full-tx-button',
-      );
-      await driver.delay(regularDelayMs);
-
       const permissionInfo = await driver.findElements(
         '.confirm-approve-content__medium-text',
       );

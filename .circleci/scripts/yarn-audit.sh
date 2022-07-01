@@ -6,13 +6,13 @@ set -x
 set -o pipefail
 
 # use `improved-yarn-audit` since that allows for exclude
-# exclude 1002401 until we remove use of 3Box, 1002581 until we can find a better solution
-yarn run improved-yarn-audit --ignore-dev-deps --min-severity moderate --exclude 1002401,1002581,GHSA-93q8-gq69-wqmw,GHSA-257v-vj4p-3w2h,GHSA-qrpm-p2h7-hrv2
-audit_status="$?"
+# exclusions are in .iyarc now
+yarn run improved-yarn-audit \
+    --ignore-dev-deps \
+    --min-severity moderate \
+    --fail-on-missing-exclusions
 
-# Use a bitmask to ignore INFO and LOW severity audit results
-# See here: https://yarnpkg.com/lang/en/docs/cli/audit/
-audit_status="$(( audit_status & 11100 ))"
+audit_status="$?"
 
 if [[ "$audit_status" != 0 ]]
 then

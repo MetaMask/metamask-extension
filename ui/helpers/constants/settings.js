@@ -307,6 +307,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('theme'),
+    descriptionMessage: (t) => t('themeDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#theme`,
+    icon: 'fa fa-flask',
+  },
+  {
     // TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('tokenDetection'),
@@ -338,5 +345,12 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'COLLECTIBLES_V1',
+  },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('showCustomNetworkList'),
+    descriptionMessage: (t) => t('showCustomNetworkListDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#show-custom-network`,
+    icon: 'fa fa-flask',
   },
 ];

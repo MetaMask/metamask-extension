@@ -142,7 +142,7 @@ function generateERC20TransferData({
       .call(
         abi.rawEncode(
           ['address', 'uint256'],
-          [toAddress, addHexPrefix(amount)],
+          [addHexPrefix(toAddress), addHexPrefix(amount)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )
@@ -164,7 +164,7 @@ function generateERC721TransferData({
       .call(
         abi.rawEncode(
           ['address', 'address', 'uint256'],
-          [fromAddress, toAddress, tokenId],
+          [addHexPrefix(fromAddress), addHexPrefix(toAddress), tokenId],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )

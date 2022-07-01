@@ -328,15 +328,14 @@ const NetworksForm = ({
       }
 
       try {
-        safeChainsList = await fetchWithCache(
-          'https://chainid.network/chains.json',
-        );
+        safeChainsList =
+          (await fetchWithCache('https://chainid.network/chains.json')) || [];
       } catch (err) {
         log.warn('Failed to fetch the chainList from chainid.network', err);
         providerError = err;
       }
 
-      if (providerError || !Array.isArray(safeChainsList)) {
+      if (providerError) {
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
@@ -436,12 +435,12 @@ const NetworksForm = ({
       const rpcUrlError = validateRPCUrl(rpcUrl);
       setErrors({
         ...errors,
-        chainId: chainIdError,
         blockExplorerUrl: blockExplorerError,
         rpcUrl: rpcUrlError,
       });
       setWarnings({
         ...warnings,
+        chainId: chainIdError,
         ticker: tickerWarning,
       });
     }
@@ -523,7 +522,6 @@ const NetworksForm = ({
         onConfirm: () => {
           resetForm();
           dispatch(setSelectedSettingsRpcUrl(''));
-          history.push(NETWORKS_ROUTE);
         },
       }),
     );
@@ -552,6 +550,7 @@ const NetworksForm = ({
           iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
+          className="networks-tab__add-network-form__alert"
         />
       ) : null}
       <div
@@ -577,7 +576,7 @@ const NetworksForm = ({
           disabled={viewOnly}
         />
         <FormField
-          error={errors.chainId?.msg || ''}
+          warning={warnings.chainId?.msg || ''}
           onChange={setChainId}
           titleText={t('chainId')}
           value={chainId}

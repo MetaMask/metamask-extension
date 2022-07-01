@@ -2,20 +2,20 @@
   "resources": {
     "@babel/core": {
       "packages": {
-        "<root>": true,
+        "$root$": true,
+        "@babel/preset-env": true,
+        "@babel/preset-react": true,
+        "@babel/plugin-transform-runtime": true,
         "@babel/plugin-proposal-class-properties": true,
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
-        "@babel/plugin-transform-runtime": true,
-        "@babel/preset-env": true,
-        "@babel/preset-react": true,
         "@babel/preset-typescript": true
       }
     },
-    "@eslint/eslintrc": {
+    "eslint>@eslint/eslintrc": {
       "packages": {
-        "<root>": true,
+        "$root$": true,
         "@babel/eslint-parser": true,
         "@babel/eslint-plugin": true,
         "@metamask/eslint-config": true,
@@ -32,57 +32,55 @@
         "eslint-plugin-react-hooks": true
       }
     },
-    "@typescript-eslint/eslint-plugin": {
+    "eslint-plugin-jest": {
       "packages": {
-        "@typescript-eslint/experimental-utils": true,
-        "@typescript-eslint/scope-manager": true,
-        "debug": true,
-        "eslint": true,
-        "ignore": true,
-        "regexpp": true,
-        "semver": true,
-        "tsutils": true,
-        "typescript": true
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils": true,
+        "@typescript-eslint/eslint-plugin": true
       }
     },
-    "@typescript-eslint/experimental-utils": {
+    "eslint-plugin-jest>@typescript-eslint/experimental-utils": {
       "builtin": {
         "path": true
       },
       "packages": {
-        "@typescript-eslint/scope-manager": true,
-        "@typescript-eslint/types": true,
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
-        "eslint-scope": true,
-        "eslint-utils": true
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "eslint>eslint-scope": true
       }
     },
-    "@typescript-eslint/scope-manager": {
+    "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": {
       "packages": {
-        "@typescript-eslint/types": true,
-        "@typescript-eslint/visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils>eslint-visitor-keys": true
       }
     },
-    "@typescript-eslint/visitor-keys": {
+    "@typescript-eslint/eslint-plugin": {
       "packages": {
-        "eslint-visitor-keys": true
+        "typescript": true,
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "@typescript-eslint/eslint-plugin>tsutils": true,
+        "eslint>debug": true,
+        "eslint": true,
+        "semver": true,
+        "globby>ignore": true,
+        "eslint>regexpp": true
       }
     },
-    "eslint-module-utils": {
+    "eslint-plugin-import>eslint-module-utils": {
       "packages": {
-        "@babel/eslint-parser": true,
-        "@typescript-eslint/parser": true,
         "eslint-import-resolver-node": true,
-        "eslint-import-resolver-typescript": true
-      }
-    },
-    "module-deps": {
-      "packages": {
-        "loose-envify": true
+        "@babel/eslint-parser": true
       }
     },
     "node-sass": {
       "native": true
+    },
+    "browserify>module-deps": {
+      "packages": {
+        "loose-envify": true
+      }
     },
     "sass": {
       "env": "unfrozen",
@@ -102,6 +100,36 @@
     "typescript": {
       "globals": {
         "globalThis": true
+      }
+    },
+    "yargs": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "console": true,
+        "Error": true,
+        "process": true
+      }
+    },
+    "yargs>y18n": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "util": true
+      }
+    },
+    "yargs>yargs-parser": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "process": true
       }
     }
   }

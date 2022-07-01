@@ -176,4 +176,49 @@
       margin-left: 44px;
     }
   }
+
+  &__new-tokens-imported-notification {
+    margin-bottom: 4px;
+    margin-inline-start: 8px;
+    padding: 8px;
+
+    @media screen and (min-width: $break-large) {
+      margin-bottom: 50px;
+      margin-inline-end: 8px;
+      left: 70%;
+    }
+
+    &-title,
+    &-message {
+      text-align: start;
+    }
+
+    &-icon {
+      @include H3;
+
+      margin-inline-end: 12px;
+      padding-top: 12px;
+      color: var(--color-success-default);
+    }
+
+    &-close {
+      color: var(--color-icon-default);
+      background: none;
+      margin-inline-start: 32px;
+    }
+  }
+
+  &__new-network-added {
+    border-radius: 10px;
+    text-align: center;
+
+    &__check-circle {
+      color: var(--color-success-default);
+      margin-top: 20px;
+    }
+
+    &__switch-to-button {
+      margin-bottom: 16px;
+    }
+  }
 }
