@@ -52,6 +52,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
+      loading={!balance}
       balance={
         <Tooltip
           position="top"
