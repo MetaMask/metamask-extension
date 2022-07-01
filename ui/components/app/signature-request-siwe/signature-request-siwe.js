@@ -60,53 +60,115 @@ export default function SignatureRequestSIWE({
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
 
   /**
+   * WIP
+   *
    * @todo update MetaMetrics for onSign and onCancel
    * Currently, we're tracking the events similarily to how we track the events with the SignatureRequest component
    * in which the action names differ. We want to revisit this to add properties mentioned in the related, internal Slack thread.
    * We would also want to ensure that we are tracking the event appropriatedly should an error be thrown.
+   *
+   * Follow-up Questions:
+   * 1. Are we utilizing MetaMetrics sensitive_properties?
+   * 2. Are we captureing the "Signature Request" event name elsewhere?
+   * 3. Should we spend time to include account_hardware_type? We might be able to create a selector to perform findKeyringForAddress
+   * 4. Should we add validation_errors? what is this in the context of transactions?
    * @see {@link ui/components/app/signature-request/signature-request.component.js}
    * @see {@link https://consensys.slack.com/archives/C031PSFHQER/p1654811895007879?thread_ts=1654805714.261689&cid=C031PSFHQER}
    */
   const onSign = useCallback(
     async (event) => {
+      let response;
+
       try {
-        await signPersonalMessage(event);
+        response = await signPersonalMessage(event);
       } catch (e) {
         log.error(e);
       } finally {
+        console.log(parsedMessage);
+        console.log(response);
+
         trackEvent({
           category: EVENT.CATEGORIES.TRANSACTIONS,
-          event: 'Confirm',
+          event: 'Signature Signed',
           properties: {
             action: 'SIWE Request',
+
+            // signature_type
             type,
-            version,
+
+            // this is url orrr we could use parsedMessage.domain. this would be without "https://".
+            // e.g.
+            // origin = https://spruceid.github.io. I believe this should be the same as parsedMessage.uri: "https://spruceid.github.io"
+            // parsedMessage.domain = spruceid.github.io
+            url: origin,
+
+            // account type? need to verify
+            // why is version resulting in undefined here, but parsedMessage.version === "1"?
+            version, // is this account type?
+
+            // NEW
+            // chain_id
+            chainId: parsedMessage.chainId,
+
+            // ✓ account_type - [default, imported, undefined, hardware] - version?
+            // account_hardware_type - [ledger, trezor, lattice, qr_code]
+            // ✓ chain_id - [0x1, ...]
+            // ✓ signature_type - [personal_sign, eth_signTypedData, eth_sign, encrypt, decrypt] - type
+            // ✓ url - full url - origin
+            // ? validation_errors (list) - []
           },
         });
       }
     },
-    [signPersonalMessage, trackEvent, type, version],
+    [origin, parsedMessage, signPersonalMessage, trackEvent, type, version],
   );
 
   const onCancel = useCallback(
     async (event) => {
+      let response;
+
       try {
-        await cancelPersonalMessage(event);
+        response = await cancelPersonalMessage(event);
       } catch (e) {
         log.error(e);
       } finally {
+        console.log(parsedMessage);
+        console.log(response);
+
         trackEvent({
           category: EVENT.CATEGORIES.TRANSACTIONS,
-          event: 'Cancel',
+          event: 'Signature Canceled',
           properties: {
             action: 'SIWE Request',
+
+            // signature_type
             type,
-            version,
+
+            // this is url orrr we could use parsedMessage.domain. this would be without "https://".
+            // e.g.
+            // origin = https://spruceid.github.io. I believe this should be the same as parsedMessage.uri: "https://spruceid.github.io"
+            // parsedMessage.domain = spruceid.github.io
+            url: origin,
+
+            // account type? need to verify
+            // why is version resulting in undefined here, but parsedMessage.version === "1"?
+            version, // is this account type?
+
+            // NEW
+            // chain_id
+            chainId: parsedMessage.chainId,
+
+            // ✓ account_type - [default, imported, undefined, hardware] - version?
+            // account_hardware_type - [ledger, trezor, lattice, qr_code]
+            // ✓ chain_id - [0x1, ...]
+            // ✓ signature_type - [personal_sign, eth_signTypedData, eth_sign, encrypt, decrypt] - type
+            // ✓ url - full url - origin
+            // ? validation_errors (list) - []
           },
         });
       }
     },
-    [cancelPersonalMessage, trackEvent, type, version],
+    [cancelPersonalMessage, origin, parsedMessage, trackEvent, type, version],
   );
 
   return (
