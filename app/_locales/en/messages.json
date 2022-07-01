@@ -269,6 +269,9 @@
   "approveAndInstall": {
     "message": "Approve & Install"
   },
+  "approveAndUpdate": {
+    "message": "Approve & Update"
+  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -2996,6 +2999,12 @@
   "snapInstallWarningKeyAccess": {
     "message": "You are granting key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your accounts and assets. Make sure you trust \"$1\" before proceeding.",
     "description": "The parameter is the name of the snap"
+  },
+  "snapUpdate": {
+    "message": "Update Snap"
+  },
+  "snapUpdateExplanation": {
+    "message": "A newer version of this snap is required."
   },
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"

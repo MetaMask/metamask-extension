@@ -5,6 +5,7 @@ import {
   getLastConnectedInfo,
   getPermissionsRequests,
   getSelectedAddress,
+  getSnaps,
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -22,6 +23,7 @@ import {
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
+  CONNECT_SNAP_UPDATE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import { SUBJECT_TYPES } from '../../../shared/constants/app';
@@ -59,6 +61,12 @@ const mapStateToProps = (state, ownProps) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
+  let isUpdatingSnap = false;
+  const { origin: snapId } = targetSubjectMetadata;
+  const existingSnap = getSnaps(state)[snapId];
+  if (existingSnap && existingSnap.version !== targetSubjectMetadata.version) {
+    isUpdatingSnap = true;
+  }
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
@@ -77,6 +85,7 @@ const mapStateToProps = (state, ownProps) => {
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
+  const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   ///: END:ONLY_INCLUDE_IN
 
   let totalPages = 1 + isRequestingAccounts;
@@ -102,7 +111,9 @@ const mapStateToProps = (state, ownProps) => {
     isRequestingAccounts,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     isSnap,
+    isUpdatingSnap,
     snapInstallPath,
+    snapUpdatePath,
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,
