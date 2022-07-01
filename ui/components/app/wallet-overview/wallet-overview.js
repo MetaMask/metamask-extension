@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
-  console.log('balance1', balance);
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
