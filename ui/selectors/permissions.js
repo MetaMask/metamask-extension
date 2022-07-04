@@ -280,6 +280,12 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
+export function getRawPermissionsRequests(state) {
+  return Object.values(state.metamask.pendingApprovals).filter(
+    ({ type }) => type === 'wallet_requestPermissions',
+  );
+}
+
 export function getPermissionsRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(({ type }) => type === 'wallet_requestPermissions')

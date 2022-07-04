@@ -25,6 +25,8 @@ export default function SnapUpdate({
 }) {
   const t = useI18nContext();
 
+  console.log('Request is', request);
+
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const onCancel = useCallback(() => rejectSnapUpdate(request.metadata.id), [
