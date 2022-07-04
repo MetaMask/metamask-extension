@@ -106,7 +106,7 @@ const PriorityFeeInput = () => {
     <Box
       marginTop={4}
       marginLeft={2}
-      marginRight={4}
+      marginRight={2}
       className="priority-fee-input"
     >
       <FormField

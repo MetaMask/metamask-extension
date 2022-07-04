@@ -1,1 +1,1 @@
-export { default, MultipleSizes } from './box';
+export { default, MultipleSizes, MultipleSizesAndAuto } from './box';

@@ -297,8 +297,10 @@ describe('Box', () => {
           <Box display={DISPLAY.BLOCK}>Box display-block</Box>
           <Box display={DISPLAY.FLEX}>Box display-flex</Box>
           <Box display={DISPLAY.GRID}>Box display-grid</Box>
+          <Box display={DISPLAY.INLINE}>Box display-inline</Box>
           <Box display={DISPLAY.INLINE_BLOCK}>Box display-inline-block</Box>
           <Box display={DISPLAY.INLINE_FLEX}>Box display-inline-flex</Box>
+          <Box display={DISPLAY.INLINE_GRID}>Box display-inline-grid</Box>
           <Box display={DISPLAY.LIST_ITEM}>Box display-list-item</Box>
           <Box display={DISPLAY.NONE}>Box display-none</Box>
         </>,
@@ -307,11 +309,17 @@ describe('Box', () => {
       expect(getByText('Box display-block')).toHaveClass('box--display-block');
       expect(getByText('Box display-flex')).toHaveClass('box--display-flex');
       expect(getByText('Box display-grid')).toHaveClass('box--display-grid');
+      expect(getByText('Box display-inline')).toHaveClass(
+        'box--display-inline',
+      );
       expect(getByText('Box display-inline-block')).toHaveClass(
         'box--display-inline-block',
       );
       expect(getByText('Box display-inline-flex')).toHaveClass(
         'box--display-inline-flex',
+      );
+      expect(getByText('Box display-inline-grid')).toHaveClass(
+        'box--display-inline-grid',
       );
       expect(getByText('Box display-list-item')).toHaveClass(
         'box--display-list-item',

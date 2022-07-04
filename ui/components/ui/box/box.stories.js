@@ -182,6 +182,50 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 
+export const Margin = () => {
+  return (
+    <Box borderColor={COLORS.BORDER_MUTED}>
+      <Box
+        margin={2}
+        padding={4}
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={COLORS.BORDER_MUTED}
+      >
+        Static margin
+      </Box>
+      <Box
+        margin={[2, 4, 8, 12]}
+        padding={[4]}
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={COLORS.BORDER_MUTED}
+      >
+        Responsive margin changes based on breakpoint
+      </Box>
+    </Box>
+  );
+};
+
+export const Padding = () => {
+  return (
+    <Box borderColor={COLORS.BORDER_MUTED}>
+      <Box
+        padding={4}
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={COLORS.BORDER_MUTED}
+      >
+        Static padding
+      </Box>
+      <Box
+        padding={[4, 8, 12]}
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={COLORS.BORDER_MUTED}
+      >
+        Responsive padding changes based on breakpoint
+      </Box>
+    </Box>
+  );
+};
+
 export const BackgroundColor = () => {
   return (
     <>
@@ -332,7 +376,7 @@ export const ResponsiveProps = () => {
         marginTop="auto"
         padding={[2, 4]}
         gap={[2, 4]}
-        display={['flex']}
+        display={['flex', null, null, 'none']}
         flexDirection={['column', 'row']}
         borderColor={COLORS.BORDER_DEFAULT}
       >

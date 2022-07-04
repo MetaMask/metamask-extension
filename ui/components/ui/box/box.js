@@ -12,9 +12,10 @@ import {
   TEXT_ALIGN,
   FLEX_DIRECTION,
   FLEX_WRAP,
+  BREAKPOINTS,
 } from '../../../helpers/constants/design-system';
 
-const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 'auto'];
+const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 export const BackgroundColors = [
   COLORS.BACKGROUND_DEFAULT,
   COLORS.BACKGROUND_ALTERNATIVE,
@@ -88,6 +89,7 @@ export const BorderColors = [
 ];
 
 const ValidSize = PropTypes.oneOf(Sizes);
+const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
 const ValidBackgroundColors = PropTypes.oneOf(BackgroundColors);
 const ValidBorderColors = PropTypes.oneOf(BorderColors);
 
@@ -95,6 +97,12 @@ const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
   ValidSize,
   ArrayOfValidSizes,
+]);
+
+const ArrayOfValidSizesAndAuto = PropTypes.arrayOf(ValidSizeAndAuto);
+export const MultipleSizesAndAuto = PropTypes.oneOfType([
+  ValidSizeAndAuto,
+  ArrayOfValidSizesAndAuto,
 ]);
 
 const ArrayOfValidBorderColors = PropTypes.arrayOf(ValidBorderColors);
@@ -144,8 +152,6 @@ function generateClassNames(baseClass, type, value, validatorFn) {
   if (!value) {
     return null;
   }
-  // TODO: Move breakpoints const to design-system file also need to decide on them
-  const BREAKPOINTS = ['base', 'sm', 'md', 'lg', 'xl', 'xxl']; // TODO: error on if array length is bigger than breakpoints.length
   let classesObject = {};
 
   let singleDigit = Array.isArray(value) ? undefined : value;
@@ -306,11 +312,11 @@ Box.propTypes = {
     PropTypes.arrayOf(PropTypes.oneOf(Object.values(FLEX_WRAP))),
   ]),
   gap: MultipleSizes,
-  margin: MultipleSizes,
-  marginTop: MultipleSizes,
-  marginBottom: MultipleSizes,
-  marginRight: MultipleSizes,
-  marginLeft: MultipleSizes,
+  margin: MultipleSizesAndAuto,
+  marginTop: MultipleSizesAndAuto,
+  marginBottom: MultipleSizesAndAuto,
+  marginRight: MultipleSizesAndAuto,
+  marginLeft: MultipleSizesAndAuto,
   padding: MultipleSizes,
   paddingTop: MultipleSizes,
   paddingBottom: MultipleSizes,

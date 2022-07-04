@@ -127,6 +127,7 @@ export const DISPLAY = {
   FLEX: 'flex',
   GRID: 'grid',
   INLINE_BLOCK: 'inline-block',
+  INLINE: 'inline',
   INLINE_FLEX: 'inline-flex',
   INLINE_GRID: 'inline-grid',
   LIST_ITEM: 'list-item',

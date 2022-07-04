@@ -14,42 +14,127 @@ Box is a utility component that can be used for layout or as a base for other UI
 
 ## Component API
 
-| Name            | Description                         | Default            |
-| --------------- | ----------------------------------- | ------------------ |
-| children        | node func                           | -                  |
-| flexDirection   | Object.values(FLEX_DIRECTION)       | FLEX_DIRECTION.ROW |
-| flexWrap        | Object.values(FLEX_WRAP)            | -                  |
-| gap             | 1,2,4,6,8                           | -                  |
-| margin          | 1,2,4,6,8 or array of numbers [1,2] | -                  |
-| marginTop       | 1,2,4,6,8                           | -                  |
-| marginBottom    | 1,2,4,6,8                           | -                  |
-| marginRight     | 1,2,4,6,8                           | -                  |
-| marginLeft      | 1,2,4,6,8                           | -                  |
-| padding         | 1,2,4,6,8 or array of numbers [1,2] | -                  |
-| paddingTop      | 1,2,4,6,8                           | -                  |
-| paddingBottom   | 1,2,4,6,8                           | -                  |
-| paddingRight    | 1,2,4,6,8                           | -                  |
-| paddingLeft     | 1,2,4,6,8                           | -                  |
-| borderColor     | Object.values(COLORS)               | -                  |
-| borderWidth     | number                              | -                  |
-| borderRadius    | Object.values(SIZES)                | -                  |
-| borderStyle     | Object.values(BORDER_STYLE)         | -                  |
-| alignItems      | Object.values(ALIGN_ITEMS)          | -                  |
-| justifyContent  | Object.values(JUSTIFY_CONTENT)      | -                  |
-| textAlign       | Object.values(TEXT_ALIGN)           | -                  |
-| display         | Object.values(DISPLAY)              | -                  |
-| width           | Object.values(BLOCK_SIZES)          | -                  |
-| height          | Object.values(BLOCK_SIZES)          | -                  |
-| backgroundColor | Object.values(COLORS)               | -                  |
-| className       | string                              |                    |
+| Name            | Description                                                                                                                                                                                                                                                                             | Default            |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| children        | The children of the Box component. If `function` type will render the child as the Box node instead of a child of the Box                                                                                                                                                               | -                  |
+| className       | Additional className of the Box component                                                                                                                                                                                                                                               | -                  |
+| margin          | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values [1, 2, 'auto']                                                                                                                                                                                                                   | -                  |
+| marginTop       | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values [1, 2, 'auto']                                                                                                                                                                                                                   | -                  |
+| marginBottom    | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values [1, 2, 'auto']                                                                                                                                                                                                                   | -                  |
+| marginRight     | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values [1, 2, 'auto']                                                                                                                                                                                                                   | -                  |
+| marginLeft      | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values [1, 2, 'auto']                                                                                                                                                                                                                   | -                  |
+| padding         | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| paddingTop      | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| paddingBottom   | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| paddingRight    | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| paddingLeft     | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| display         | [DISPLAY](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L125-L133) values or array of [DISPLAY](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L125-L133) values                 | -                  |
+| flexDirection   | [FLEX_DIRECTION](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L112-L117) values or array of [FLEX_DIRECTION](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L112-L117) values   | FLEX_DIRECTION.ROW |
+| flexWrap        | [FLEX_WRAP](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L119-L123) values or array of [FLEX_WRAP](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L119-L123) values             | -                  |
+| alignItems      | [ALIGN_ITEMS](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L95-L101) values or array of [ALIGN_ITEMS](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L95-L101) values           | -                  |
+| justifyContent  | [JUSTIFY_CONTENT](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L103-L110) values or array of [JUSTIFY_CONTENT](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L103-L110) values | -                  |
+| gap             | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| textAlign       | [TEXT_ALIGN](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L172-L178) values or array of [TEXT_ALIGN](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L172-L178) values           | -                  |
+| width           | [BLOCK_SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L164-L170) values or array of [BLOCK_SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L164-L170) values         | -                  |
+| height          | [BLOCK_SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L164-L170) values or array of [BLOCK_SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L164-L170) values         | -                  |
+| backgroundColor | COLORS values or array of COLORS values                                                                                                                                                                                                                                                 | -                  |
+| borderColor     | COLORS values or array of COLOR values                                                                                                                                                                                                                                                  | -                  |
+| borderWidth     | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
+| borderRadius    | [SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L74-L81) values or array of [SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L74-L81) values                         | -                  |
+| borderStyle     | [BORDER_STYLE](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L83-L88) values or array of [BORDER_STYLE](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L83-L88) values           | -                  |
 
 ## Usage
 
 The following describes the props and example usage for this component.
 
+### Margin
+
+The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, and `marginLeft` can be used to set the margins of the `Box` component. All of the margin props accept [responsive props](#responsive-props) in the form of array props
+
+Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these values
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--margin" />
+</Canvas>
+
+```jsx
+<Box margin={4} />
+<Box marginTop={4} />
+<Box marginRight={4} />
+<Box marginBottom={4} />
+<Box marginLeft={'auto'} />
+
+// Responsive props
+<Box margin={[4, 8]} />
+<Box marginTop={[4, 8]} />
+<Box marginRight={[4, 8]} />
+<Box marginBottom={[4, 8]} />
+<Box marginLeft={['auto', 8]} />
+```
+
+### Padding
+
+The padding props work very similarly to margin. The padding props `padding`, `paddingTop`, `paddingRight`, `paddingBottom`, and `paddingLeft` can be used to set the paddings of the `Box` component. All of the padding props accept [responsive props](#responsive-props) in the form of array props
+
+Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12` or array of these values
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--padding" />
+</Canvas>
+
+```jsx
+<Box padding={4} />
+<Box paddingTop={4} />
+<Box paddingRight={4} />
+<Box paddingBottom={4} />
+<Box paddingLeft={4} />
+
+// Responsive props
+<Box padding={[4, 8]} />
+<Box paddingTop={[4, 8]} />
+<Box paddingRight={[4, 8]} />
+<Box paddingBottom={[4, 8]} />
+<Box paddingLeft={[4, 8]} />
+```
+
+### Display
+
+The `display` prop can be used to set the display of the `Box` component. All of the display props accept [responsive props](#responsive-props) in the form of array props.
+
+Accepted props imported from the design system `DISPLAY` const are:
+
+- `DISPLAY.BLOCK`
+- `DISPLAY.FLEX`
+- `DISPLAY.GRID`
+- `DISPLAY.INLINE_BLOCK`
+- `DISPLAY.INLINE_FLEX`
+- `DISPLAY.INLINE_GRID`
+- `DISPLAY.INLINE`
+- `DISPLAY.LIST_ITEM`
+- `DISPLAY.NONE`
+
+or array of these values.
+
+```jsx
+import { DISPLAY } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+
+
+<Box display={DISPLAY.BLOCK} />
+<Box display={DISPLAY.FLEX} />
+<Box display={DISPLAY.GRID} />
+<Box display={DISPLAY.INLINE_BLOCK} />
+<Box display={DISPLAY.INLINE_FLEX} />
+<Box display={DISPLAY.INLINE} />
+<Box display={DISPLAY.NONE} />
+```
+
 ### Background Color
 
-Use the `backgroundColor` prop along with the `COLORS` object from `ui/helpers/constants/design-system.js` to change background color.
+Use the `backgroundColor` prop along with the `COLORS` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
+
+````jsx
 
 <Canvas>
   <Story id="ui-components-ui-box-box-stories-js--background-color" />
@@ -66,11 +151,11 @@ import Box from '../ui/box';
 <Box backgroundColor={COLORS.BACKGROUND_DEFAULT}>
   <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BACKGROUND_DEFAULT</Typography>
 </Box>;
-```
+````
 
 ### Border Color
 
-Use the `borderColor` prop along with the `COLORS` object from `ui/helpers/constants/design-system.js` to change border color
+Use the `borderColor` prop along with the `COLORS` object from `ui/helpers/constants/design-system.js` to change border color. The `borderColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
 <Canvas>
   <Story id="ui-components-ui-box-box-stories-js--border-color" />

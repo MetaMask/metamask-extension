@@ -9,7 +9,7 @@ import {
   TYPOGRAPHY,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
-import Box, { MultipleSizes } from '../box';
+import Box, { MultipleSizesAndAuto } from '../box';
 
 const { H6, H7, H8, H9 } = TYPOGRAPHY;
 
@@ -153,11 +153,11 @@ Typography.propTypes = {
   /**
    * Adds margin to the Typography component should use valid size
    */
-  margin: MultipleSizes,
-  marginTop: MultipleSizes,
-  marginBottom: MultipleSizes,
-  marginRight: MultipleSizes,
-  marginLeft: MultipleSizes,
+  margin: MultipleSizesAndAuto,
+  marginTop: MultipleSizesAndAuto,
+  marginBottom: MultipleSizesAndAuto,
+  marginRight: MultipleSizesAndAuto,
+  marginLeft: MultipleSizesAndAuto,
   /**
    * Used to pass any valid Box component props such as margin or padding
    * to the Typography component
