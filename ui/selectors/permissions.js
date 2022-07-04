@@ -280,11 +280,13 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-export function getRawPermissionsRequests(state) {
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function getSnapUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals).filter(
-    ({ type }) => type === 'wallet_requestPermissions',
+    ({ type }) => type === 'wallet_updateSnap',
   );
 }
+///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {
   return Object.values(state.metamask.pendingApprovals)

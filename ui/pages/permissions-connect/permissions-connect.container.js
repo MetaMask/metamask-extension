@@ -5,7 +5,7 @@ import {
   getLastConnectedInfo,
   getPermissionsRequests,
   getSelectedAddress,
-  getSnaps,
+  getSnapUpdateRequests,
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -39,9 +39,27 @@ const mapStateToProps = (state, ownProps) => {
   const permissionsRequests = getPermissionsRequests(state);
   const currentAddress = getSelectedAddress(state);
 
-  const permissionsRequest = permissionsRequests.find(
+  let permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,
   );
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  let isUpdatingSnap;
+  if (!permissionsRequest) {
+    permissionsRequest = getSnapUpdateRequests().find(
+      (req) => req.id === permissionsRequestId,
+    );
+    isUpdatingSnap = permissionsRequest.type === 'wallet_updateSnap';
+    const { id, origin: dappOrigin } = permissionsRequest;
+    // reassigning the variable here to fit permissions actions
+    // and also adding metadata property for the same
+    permissionsRequest = permissionsRequest.requestData;
+    // adding a dappOrigin property to display the requesting party for a snap
+    permissionsRequest.dappOrigin = dappOrigin;
+    // need to add metadata property to fit accept & reject permissions actions
+    permissionsRequest.metadata = { id, origin: permissionsRequest.snapId };
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions.eth_accounts,
@@ -61,12 +79,6 @@ const mapStateToProps = (state, ownProps) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
-  let isUpdatingSnap = false;
-  const { origin: snapId } = targetSubjectMetadata;
-  const existingSnap = getSnaps(state)[snapId];
-  if (existingSnap && existingSnap.version !== targetSubjectMetadata.version) {
-    isUpdatingSnap = true;
-  }
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
