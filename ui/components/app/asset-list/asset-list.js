@@ -37,6 +37,8 @@ const AssetList = ({ onClickAsset }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const trackEvent = useContext(MetaMetricsContext);
+  const balance = useSelector(getSelectedAccountCachedBalance);
+  const balanceIsLoading = !balance;
 
   const {
     currency: primaryCurrency,
@@ -76,7 +78,7 @@ const AssetList = ({ onClickAsset }) => {
         }
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-        tokenImage={primaryTokenImage}
+        tokenImage={balanceIsLoading ? null : primaryTokenImage}
         identiconBorder
       />
       <TokenList

@@ -1062,3 +1062,13 @@ export function getDetectedTokensInCurrentNetwork(state) {
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }
+
+/**
+ * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsCustomNetworkListEnabled(state) {
+  return state.metamask.customNetworkListEnabled;
+}

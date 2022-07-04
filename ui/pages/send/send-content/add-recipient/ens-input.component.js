@@ -37,7 +37,6 @@ export default class EnsInput extends Component {
 
   onPaste = (event) => {
     if (event.clipboardData.items?.length) {
-      event.preventDefault();
       const clipboardItem = event.clipboardData.items[0];
       clipboardItem?.getAsString((text) => {
         const input = text.trim();

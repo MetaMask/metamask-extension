@@ -12,6 +12,8 @@ const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
+const ADD_POPULAR_CUSTOM_NETWORK =
+  '/settings/networks/add-popular-custom-network';
 const SNAPS_LIST_ROUTE = '/settings/snaps-list';
 const SNAPS_VIEW_ROUTE = '/settings/snaps-view';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
@@ -113,6 +115,8 @@ const PATH_NAME_MAP = {
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
+  [ADD_POPULAR_CUSTOM_NETWORK]:
+    'Add Network From A List Of Popular Custom Networks',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -224,6 +228,7 @@ export {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,

@@ -7,14 +7,13 @@ import {
   getRecipient,
   getRecipientUserInput,
   getSendStage,
-  initializeSendState,
   resetRecipientInput,
   resetSendState,
   SEND_STAGES,
   updateRecipient,
   updateRecipientUserInput,
 } from '../../ducks/send';
-import { getCurrentChainId, isCustomPriceExcessive } from '../../selectors';
+import { isCustomPriceExcessive } from '../../selectors';
 import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -30,7 +29,6 @@ const sendSliceIsCustomPriceExcessive = (state) =>
 
 export default function SendTransactionScreen() {
   const history = useHistory();
-  const chainId = useSelector(getCurrentChainId);
   const stage = useSelector(getSendStage);
   const gasIsExcessive = useSelector(sendSliceIsCustomPriceExcessive);
   const isUsingMyAccountsForRecipientSearch = useSelector(
@@ -49,11 +47,8 @@ export default function SendTransactionScreen() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (chainId !== undefined) {
-      dispatch(initializeSendState());
-      window.addEventListener('beforeunload', cleanup);
-    }
-  }, [chainId, dispatch, cleanup]);
+    window.addEventListener('beforeunload', cleanup);
+  }, [cleanup]);
 
   useEffect(() => {
     if (location.search === '?scan=true') {
