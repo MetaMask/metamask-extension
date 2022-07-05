@@ -13,6 +13,7 @@ export default function ViewOnBlockExplorer({
 }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
+  const blockExplorerHostName = getURLHostName(blockExplorerUrl);
 
   return (
     <Box marginTop={6} className="view-on-block-explorer">
@@ -25,7 +26,7 @@ export default function ViewOnBlockExplorer({
             properties: {
               link_type: 'Transaction Block Explorer',
               action: 'Swap Transaction',
-              block_explorer_domain: getURLHostName(blockExplorerUrl),
+              block_explorer_domain: blockExplorerHostName,
             },
           });
           global.platform.openTab({ url: blockExplorerUrl });
@@ -33,7 +34,7 @@ export default function ViewOnBlockExplorer({
       >
         {t('viewOnCustomBlockExplorer', [
           t('blockExplorerSwapAction'),
-          getURLHostName(blockExplorerUrl),
+          blockExplorerHostName,
         ])}
       </button>
     </Box>
