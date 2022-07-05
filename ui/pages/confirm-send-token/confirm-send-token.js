@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base/confirm-token-transaction-base';
 import { SEND_ROUTE } from '../../helpers/constants/routes';
-import { editTransaction } from '../../ducks/send';
+import { editExistingTransaction } from '../../ducks/send';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -35,27 +35,17 @@ export default function ConfirmSendToken({
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleEditTransaction = ({
-    txData,
-    tokenData,
-    tokenProps: assetDetails,
-  }) => {
+  const handleEditTransaction = async ({ txData }) => {
     const { id } = txData;
-    dispatch(
-      editTransaction(
-        ASSET_TYPES.TOKEN,
-        id.toString(),
-        tokenData,
-        assetDetails,
-      ),
-    );
+    await dispatch(editExistingTransaction(ASSET_TYPES.TOKEN, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
   };
 
   const handleEdit = (confirmTransactionData) => {
-    handleEditTransaction(confirmTransactionData);
-    history.push(SEND_ROUTE);
+    handleEditTransaction(confirmTransactionData).then(() => {
+      history.push(SEND_ROUTE);
+    });
   };
   const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);

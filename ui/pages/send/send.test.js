@@ -3,11 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { useLocation } from 'react-router-dom';
-import { initialState, SEND_STAGES } from '../../ducks/send';
+import { SEND_STAGES } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
 
 const middleware = [thunk];
@@ -34,7 +35,7 @@ jest.mock(
 );
 
 const baseStore = {
-  send: initialState,
+  send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   ENS: ensInitialState,
   gas: {
     customData: { limit: null, price: null },
@@ -87,7 +88,7 @@ const baseStore = {
 
 describe('Send Page', () => {
   describe('Send Flow Initialization', () => {
-    it('should initialize the send, ENS, and gas slices on render', () => {
+    it('should initialize the ENS slice on render', () => {
       const store = configureMockStore(middleware)(baseStore);
       renderWithProvider(<Send />, store);
       const actions = store.getActions();
@@ -95,9 +96,6 @@ describe('Send Page', () => {
         expect.arrayContaining([
           expect.objectContaining({
             type: 'ENS/enableEnsLookup',
-          }),
-          expect.objectContaining({
-            type: 'send/initializeSendState/pending',
           }),
         ]),
       );
@@ -112,9 +110,6 @@ describe('Send Page', () => {
         expect.arrayContaining([
           expect.objectContaining({
             type: 'ENS/enableEnsLookup',
-          }),
-          expect.objectContaining({
-            type: 'send/initializeSendState/pending',
           }),
           expect.objectContaining({
             type: 'UI_MODAL_OPEN',
