@@ -37,11 +37,16 @@ import {
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
   setNewTokensImported,
+  setRpcTarget,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
+import {
+  setThreeBoxLastUpdated,
+  hideWhatsNewPopup,
+  setNewCustomNetworkAdded,
+} from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -138,6 +143,7 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
+    newCustomNetworkAdded: appState.newCustomNetworkAdded,
   };
 };
 
@@ -179,6 +185,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
+  },
+  setNewCustomNetworkAdded: () => {
+    dispatch(setNewCustomNetworkAdded({}));
+  },
+  setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
+    dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
 });
 

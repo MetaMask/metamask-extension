@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Add memo"
   },
+  "addMoreNetworks": {
+    "message": "add more networks manually"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -1954,6 +1957,9 @@
   "network": {
     "message": "Network:"
   },
+  "networkAddedSuccessfully": {
+    "message": "Network added successfully!"
+  },
   "networkDetails": {
     "message": "Network Details"
   },
@@ -2891,6 +2897,12 @@
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
+  "showCustomNetworkList": {
+    "message": "Show Custom Network List"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Select this to show a list of networks with prefilled details when adding a new network."
+  },
   "showFiatConversionInTestnets": {
     "message": "Show Conversion on test networks"
   },
@@ -2999,6 +3011,9 @@
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
@@ -3562,6 +3577,10 @@
   "switchNetworks": {
     "message": "Switch Networks"
   },
+  "switchToNetwork": {
+    "message": "Switch to $1",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
@@ -3865,6 +3884,9 @@
   "unknownCameraErrorTitle": {
     "message": "Ooops! Something went wrong...."
   },
+  "unknownCollection": {
+    "message": "Unnamed collection"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
@@ -4005,6 +4027,9 @@
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
   },
+  "wantToAddThisNetwork": {
+    "message": "Want to add this network?"
+  },
   "warning": {
     "message": "Warning"
   },
@@ -4066,6 +4091,10 @@
   },
   "yesLetsTry": {
     "message": "Yes, let's try"
+  },
+  "youHaveAddedAll": {
+    "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

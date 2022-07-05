@@ -27,7 +27,11 @@ import {
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
-import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
+import {
+  computeEstimatedGasLimit,
+  initializeSendState,
+  resetSendState,
+} from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -42,6 +46,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
+import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -1442,6 +1447,11 @@ export function updateMetamaskState(newState) {
         type: actionConstants.CHAIN_CHANGED,
         payload: newProvider.chainId,
       });
+      // We dispatch this action to ensure that the send state stays up to date
+      // after the chain changes. This async thunk will fail gracefully in the
+      // event that we are not yet on the send flow with a draftTransaction in
+      // progress.
+      dispatch(initializeSendState({ chainHasChanged: true }));
     }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
@@ -3728,6 +3738,18 @@ export function setEnableEIP1559V2NoticeDismissed() {
   return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
+export function setCustomNetworkListEnabled(customNetworkListEnabled) {
+  return async () => {
+    try {
+      await promisifiedBackground.setCustomNetworkListEnabled(
+        customNetworkListEnabled,
+      );
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
@@ -3752,5 +3774,31 @@ export function cancelQRHardwareSignRequest() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
     await promisifiedBackground.cancelQRHardwareSignRequest();
+  };
+}
+
+export function addCustomNetwork(customRpc) {
+  return async (dispatch) => {
+    try {
+      dispatch(setNewCustomNetworkAdded(customRpc));
+      await promisifiedBackground.addCustomNetwork(customRpc);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function requestUserApproval(customRpc, originIsMetaMask) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.requestUserApproval(
+        customRpc,
+        originIsMetaMask,
+      );
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
   };
 }

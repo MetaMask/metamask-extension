@@ -27,6 +27,7 @@ import {
   ADD_NETWORK_ROUTE,
   SNAPS_LIST_ROUTE,
   SNAPS_VIEW_ROUTE,
+  ADD_POPULAR_CUSTOM_NETWORK,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
@@ -46,6 +47,7 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_NETWORK_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [EXPERIMENTAL_ROUTE]: 'experimental',
+  [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -64,6 +66,9 @@ const mapStateToProps = (state, ownProps) => {
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
   const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
+  const isAddPopularCustomNetwork = Boolean(
+    pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
+  );
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -77,6 +82,8 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isSnapViewPage) {
     backRoute = SNAPS_LIST_ROUTE;
+  } else if (isAddPopularCustomNetwork) {
+    backRoute = NETWORKS_ROUTE;
   }
 
   let initialBreadCrumbRoute;
