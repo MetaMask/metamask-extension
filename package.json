@@ -11,14 +11,13 @@
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
     "start": "yarn build:dev dev --apply-lavamoat=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
-    "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
+    "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=true",
     "dist": "yarn build prod",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build testDev",
     "start:test:mv3": "ENABLE_MV3=true SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build testDev",
-    "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
-    "lavamoat:stats:chrome": "SELENIUM_BROWSER=chrome node test/e2e/lavamoat-stats.js",
+    "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",    
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test",
     "build:test:flask": "yarn build test --build-type flask",
@@ -76,7 +75,8 @@
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:background:auto": "./development/generate-lavamoat-policies.sh",
-    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
+    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto",
+    "lavamoat:stats:chrome": "SELENIUM_BROWSER=chrome node test/e2e/lavamoat-stats.js"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",

@@ -1,6 +1,7 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const proxy = require('selenium-webdriver/proxy');
+const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 /**
  * Proxy host to use for HTTPS requests
@@ -18,13 +19,13 @@ class ChromeDriver {
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
-    // if (process.env.ENABLE_MV3 !== 'false') {
-    args.push('--log-level=0');
-    args.push('--enable-logging');
-    args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
-    // } else {
-    //   args.push('--log-level=3');
-    // }
+    if (isManifestV3()) {
+      args.push('--log-level=0');
+      args.push('--enable-logging');
+      args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
+    } else {
+      args.push('--log-level=3');
+    }
     const options = new chrome.Options().addArguments(args);
     options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
