@@ -18,8 +18,8 @@ describe('Settings Search', function () {
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Token Detection',
-    about: 'Terms of use',
+    experimental: 'Enable Enhanced Gas Fee UI',
+    about: 'Terms of Use',
   };
 
   it('should find element inside the General tab', async function () {

@@ -137,7 +137,7 @@ describe('AdvancedTab Component', () => {
       },
     );
 
-    const autoTimeout = component.find('.settings-page__content-row').at(8);
+    const autoTimeout = component.find('.settings-page__content-row').at(9);
     const textField = autoTimeout.find(TextField);
 
     textField.props().onChange({ target: { value: 1440 } });
@@ -148,14 +148,13 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should toggle show test networks', () => {
-    const testNetworks = component.find('.settings-page__content-row').at(6);
+    const testNetworks = component.find('.settings-page__content-row').at(7);
     const toggleButton = testNetworks.find(ToggleButton);
     toggleButton.first().simulate('toggle');
     expect(toggleTestnet.calledOnce).toStrictEqual(true);
   });
 
   it('should toggle token detection', () => {
-    process.env.TOKEN_DETECTION_V2 = true;
     component = shallow(
       <AdvancedTab
         ipfsGateway=""

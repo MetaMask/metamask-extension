@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "문제가 발생했습니다. 작업을 완료할 수 없습니다."
   },
-  "fakeTokenWarning": {
-    "message": "기존 토큰의 가짜 버전 생성을 포함하여 누구나 토큰을 생성할 수 있습니다. $1에 대해 자세히 알아보기"
-  },
   "fast": {
     "message": "빠름"
   },
@@ -3739,12 +3736,6 @@
   "tokenDetectionAlertMessage": {
     "message": "토큰 감지 기능은 현재 $1. $2에서 사용할 수 있습니다."
   },
-  "tokenDetectionAnnouncement": {
-    "message": "신규! 개선된 토큰 감지는 실험적 기능으로 이더리움 메인넷에서 사용할 수 있습니다. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys의 토큰 API는 타사의 다양한 목록을 모아 하나의 토큰 목록을 작성합니다. 이 API를 끄면 신규 토큰을 감지해서 지갑에 추가하는 기능은 중단되지만 토큰을 검색해서 가져오는 기능은 계속 사용할 수 있습니다."
-  },
   "tokenId": {
     "message": "토큰 ID"
   },
@@ -3978,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "이더리움 사용자를 노리는 피싱 도메인에 대한 경고를 표시합니다"
-  },
-  "useTokenDetection": {
-    "message": "토큰 감지 사용"
-  },
-  "useTokenDetectionDescription": {
-    "message": "당사는 타사 API를 사용하여 지갑으로 전송된 새 토큰을 감지하고 표시합니다. MetaMask가 해당 서비스에서 데이터를 가져오는 것을 원하지 않으면 이 기능을 사용하지 마세요."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "계정으로 전송된 토큰이 자동으로 표시되도록 하려면 타사 서버와의 통신을 통해 토큰 이미지를 불러와야 합니다. 이를 위해 타사 서버는 사용자의 IP 주소에 액세스하게 됩니다."
