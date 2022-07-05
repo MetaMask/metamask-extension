@@ -397,6 +397,21 @@ class Driver {
     );
   }
 
+  async checkBrowserForLavamoatLogs() {
+    const ignoredLogTypes = ['ERROR', 'SEVERE'];
+
+    const browserLogs = await this.driver.manage().logs().get('browser');
+
+    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
+
+    const errorEntries = browserLogs.filter(
+      (entry) => !ignoredLogTypes.includes(entry.level.toString()),
+    );
+    // const errorObjects = errorEntries.map((entry) => entry.toJSON());
+
+    return errorEntries;
+  }
+
   async checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING'];
     const ignoredErrorMessages = [
