@@ -1,3 +1,8 @@
+// This file is used only for manifest version 3
+
+// Represents if importAllScripts has been run
+let scriptsLoaded = false;
+
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -6,39 +11,49 @@ function tryImport(...fileNames) {
     return true;
   } catch (e) {
     console.error(e);
-    return false;
   }
+
+  return false;
 }
 
 function importAllScripts() {
+  // Bail if we've already imported scripts
+  if (scriptsLoaded) {
+    return;
+  }
+
   const startImportScriptsTime = Date.now();
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = true;
 
-  tryImport('./globalthis.js');
-  tryImport('./sentry-install.js');
+  const files = ['./globalthis.js', './sentry-install.js'];
 
   if (applyLavaMoat) {
-    tryImport('./runtime-lavamoat.js');
-    tryImport('./lockdown-more.js');
-    tryImport('./policy-load.js');
+    files.push(
+      './runtime-lavamoat.js',
+      './lockdown-more.js',
+      './policy-load.js',
+    );
   } else {
-    tryImport('./init-globals.js');
-    tryImport('./lockdown-install.js');
-    tryImport('./lockdown-run.js');
-    tryImport('./lockdown-more.js');
-    tryImport('./runtime-cjs.js');
+    files.push(
+      './init-globals.js',
+      './lockdown-install.js',
+      './lockdown-run.js',
+      './lockdown-more.js',
+      './runtime-cjs.js',
+    );
   }
+
+  // Mark scripts as loaded
+  scriptsLoaded = true;
+
+  // The list of files is injected at build time by replacing comment below with comma separated strings of file names
+  // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
   // eslint-disable-next-line
-  self.scriptLoaded = true;
+  files.push(/** FILE NAMES */);
 
-  const fileList = [
-    // The list of files is injected at build time by replacing comment below with comma separated strings of file names
-    // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
-    /** FILE NAMES */
-  ];
-
-  fileList.forEach((fileName) => tryImport(fileName));
+  // Import all required resources
+  tryImport(...files);
 
   // for performance metrics/reference
   console.log(
@@ -48,10 +63,7 @@ function importAllScripts() {
   );
 }
 
-// eslint-disable-next-line
-self.oninstall = () => {
-  importAllScripts();
-};
+self.addEventListener('install', importAllScripts);
 
 /*
  * Message event listener below loads script if they are no longer available.
@@ -59,10 +71,4 @@ self.oninstall = () => {
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
-// eslint-disable-next-line
-chrome.runtime.onMessage.addListener((_1, _2, sendResponse) => {
-  // eslint-disable-next-line
-  if (!self.scriptLoaded) {
-    importAllScripts();
-  }
-});
+chrome.runtime.onMessage.addListener(importAllScripts);

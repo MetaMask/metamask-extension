@@ -26,6 +26,9 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const container = document.getElementById('app-content');
 
+const WORKER_KEEP_ALIVE_INTERVAL = 1000;
+const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
+
 /*
  * As long as UI is open it will keep sending messages to service worker
  * In service worker as this message is received
@@ -34,8 +37,8 @@ const container = document.getElementById('app-content');
  */
 if (isManifestV3()) {
   setInterval(() => {
-    browser.runtime.sendMessage({ name: 'UI_OPEN' });
-  }, 1000);
+    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+  }, WORKER_KEEP_ALIVE_INTERVAL);
 }
 
 start().catch(log.error);
@@ -82,7 +85,7 @@ async function start() {
       extensionPort.onDisconnect.removeListener(disconnectListener);
       // message below will try to activate service worker
       // in MV3 is likely that reason of stream closing is service worker going in-active
-      browser.runtime.sendMessage({ name: 'UI_OPEN' });
+      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
