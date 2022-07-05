@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -29,12 +30,12 @@ import {
   checkNetworkAndAccountSupports1559,
   getPreferences,
   doesAddressRequireLedgerHidConnection,
-  getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
   getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
+  getIsTokenDetectionInactiveOnMainnet,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -50,6 +51,7 @@ import {
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
@@ -119,21 +121,16 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const tokenList = getTokenList(state);
-  const useTokenDetection = getUseTokenDetection(state);
-  let casedTokenList = tokenList;
-  if (!process.env.TOKEN_DETECTION_V2) {
-    casedTokenList = useTokenDetection
-      ? tokenList
-      : Object.keys(tokenList).reduce((acc, base) => {
-          return {
-            ...acc,
-            [base.toLowerCase()]: tokenList[base],
-          };
-        }, {});
-  }
+  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
+    state,
+  );
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : tokenList;
+
   const toName =
     identities[toAddress]?.name ||
-    casedTokenList[toAddress]?.name ||
+    caseInSensitiveTokenList[toAddress]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);

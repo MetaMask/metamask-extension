@@ -1,8 +1,12 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
+import contractMap from '@metamask/contract-metadata';
 import { getTokens } from '../../ducks/metamask/metamask';
-import { getTokenList } from '../../selectors';
+import {
+  getTokenList,
+  getIsTokenDetectionInactiveOnMainnet,
+} from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
@@ -32,14 +36,18 @@ export default function TokenDetailsPage() {
   const t = useContext(I18nContext);
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
+  const isTokenDetectionInactiveInMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
 
   const { address: tokenAddress } = useParams();
-  const tokenMetadata = Object.values(tokenList).find((token) =>
-    isEqualCaseInsensitive(token.address, tokenAddress),
-  );
+  const tokenMetadata = isTokenDetectionInactiveInMainnet
+    ? contractMap[tokenAddress]
+    : tokenList[tokenAddress.toLowerCase()];
   const aggregators = tokenMetadata?.aggregators?.join(', ');
-  const fileName = tokenMetadata?.iconUrl;
-  const imagePath = fileName;
+  const imagePath = isTokenDetectionInactiveInMainnet
+    ? `images/contract/${tokenMetadata?.logo}`
+    : tokenMetadata?.iconUrl;
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
@@ -183,7 +191,7 @@ export default function TokenDetailsPage() {
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
-        {process.env.TOKEN_DETECTION_V2 && aggregators && (
+        {aggregators && (
           <>
             <Typography
               variant={TYPOGRAPHY.H9}

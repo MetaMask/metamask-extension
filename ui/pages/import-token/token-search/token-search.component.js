@@ -18,7 +18,7 @@ export default class TokenSearch extends Component {
   static propTypes = {
     onSearch: PropTypes.func,
     error: PropTypes.string,
-    tokenList: PropTypes.object,
+    caseInSensitiveTokenList: PropTypes.object,
   };
 
   state = {
@@ -27,8 +27,8 @@ export default class TokenSearch extends Component {
 
   constructor(props) {
     super(props);
-    const { tokenList } = this.props;
-    this.tokenList = Object.values(tokenList);
+    const { caseInSensitiveTokenList } = this.props;
+    this.tokenList = Object.values(caseInSensitiveTokenList);
     this.tokenSearchFuse = new Fuse(this.tokenList, {
       shouldSort: true,
       threshold: 0.45,

@@ -14,9 +14,17 @@ function IconFactory(jazzicon) {
   this.cache = {};
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter, tokenList) {
-  if (iconExistsFor(address.toLowerCase(), tokenList)) {
-    return imageElFor(address.toLowerCase(), tokenList);
+IconFactory.prototype.iconForAddress = function (
+  address,
+  diameter,
+  caseInSensitiveTokenList,
+  isTokenDetectionInactiveOnMainnet,
+) {
+  if (iconExistsFor(address, caseInSensitiveTokenList[address.toLowerCase()])) {
+    return imageElFor(
+      caseInSensitiveTokenList[address.toLowerCase()],
+      isTokenDetectionInactiveOnMainnet,
+    );
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -43,18 +51,21 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 // util
 
-function iconExistsFor(address, tokenList) {
+function iconExistsFor(address, tokenMetadata) {
   return (
-    tokenList[address] &&
     isValidHexAddress(address, { allowNonPrefixed: false }) &&
-    tokenList[address].iconUrl
+    tokenMetadata &&
+    (tokenMetadata.iconUrl || tokenMetadata.logo)
   );
 }
 
-function imageElFor(address, tokenList) {
-  const tokenMetadata = tokenList[address];
+function imageElFor(tokenMetadata = {}, isTokenDetectionInactiveOnMainnet) {
   const img = document.createElement('img');
-  img.src = tokenMetadata?.iconUrl;
+  const staticImagePath =
+    isTokenDetectionInactiveOnMainnet && tokenMetadata?.logo;
+  img.src = isTokenDetectionInactiveOnMainnet
+    ? `images/contract/${staticImagePath}`
+    : tokenMetadata?.iconUrl;
   img.style.width = '100%';
   return img;
 }

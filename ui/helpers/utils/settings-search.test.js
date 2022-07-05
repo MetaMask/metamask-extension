@@ -111,15 +111,10 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
-    case 'useTokenDetection':
-      return 'Use token detection';
-    case 'useTokenDetectionDescription':
-      return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.';
     case 'tokenDetection':
       return 'Token detection';
-    case 'tokenDetectionToggleDescription':
-      return 'ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import.';
+    case 'tokenDetectionDescription':
+      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list.";
     case 'enableEIP1559V2':
       return 'Enable enhanced gas fee UI';
     case 'enableEIP1559V2Description':
@@ -172,7 +167,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(14);
     });
 
     it('should get good contact section number', () => {

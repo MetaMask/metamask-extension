@@ -11,7 +11,6 @@ import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
   ADD_COLLECTIBLE_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  EXPERIMENTAL_ROUTE,
   ADVANCED_ROUTE,
 } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
@@ -26,9 +25,6 @@ import Button from '../../components/ui/button';
 import { TOKEN_STANDARDS } from '../../../shared/constants/transaction';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
-
-/*eslint-disable prefer-destructuring*/
-const TOKEN_DETECTION_V2 = process.env.TOKEN_DETECTION_V2;
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
@@ -94,7 +90,7 @@ class ImportToken extends Component {
     /**
      * The list of tokens available for search.
      */
-    tokenList: PropTypes.object,
+    caseInSensitiveTokenList: PropTypes.object,
 
     /**
      * Boolean flag indicating whether token detection is enabled or not.
@@ -113,12 +109,12 @@ class ImportToken extends Component {
      * The currently selected active address.
      */
     selectedAddress: PropTypes.string,
-    isTokenDetectionSupported: PropTypes.bool.isRequired,
+    isDynamicTokenListAvailable: PropTypes.bool.isRequired,
     networkName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
-    tokenList: {},
+    caseInSensitiveTokenList: {},
   };
 
   state = {
@@ -224,10 +220,10 @@ class ImportToken extends Component {
       return;
     }
 
-    const { setPendingTokens, history, tokenList } = this.props;
-    const tokenAddressList = Object.keys(tokenList).map((address) =>
-      address.toLowerCase(),
-    );
+    const { setPendingTokens, history, caseInSensitiveTokenList } = this.props;
+    const tokenAddressList = Object.keys(
+      caseInSensitiveTokenList,
+    ).map((address) => address.toLowerCase());
     const {
       customAddress: address,
       customSymbol: symbol,
@@ -248,10 +244,10 @@ class ImportToken extends Component {
   }
 
   async attemptToAutoFillTokenParams(address) {
-    const { tokenList } = this.props;
+    const { caseInSensitiveTokenList } = this.props;
     const { symbol = '', decimals } = await this.tokenInfoGetter(
       address,
-      tokenList,
+      caseInSensitiveTokenList,
     );
 
     const symbolAutoFilled = Boolean(symbol);
@@ -410,7 +406,7 @@ class ImportToken extends Component {
       collectibleAddressError,
     } = this.state;
 
-    const { chainId, rpcPrefs, isTokenDetectionSupported } = this.props;
+    const { chainId, rpcPrefs, isDynamicTokenListAvailable } = this.props;
     const blockExplorerTokenLink = getTokenTrackerLink(
       customAddress,
       chainId,
@@ -424,37 +420,13 @@ class ImportToken extends Component {
 
     return (
       <div className="import-token__custom-token-form">
-        {TOKEN_DETECTION_V2 ? (
-          <ActionableMessage
-            type={isTokenDetectionSupported ? 'warning' : 'default'}
-            message={t(
-              isTokenDetectionSupported
-                ? 'customTokenWarningInTokenDetectionNetwork'
-                : 'customTokenWarningInNonTokenDetectionNetwork',
-              [
-                <Button
-                  type="link"
-                  key="import-token-fake-token-warning"
-                  className="import-token__link"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-                >
-                  {t('learnScamRisk')}
-                </Button>,
-              ],
-            )}
-            withRightButton
-            useIcon
-            iconFillColor={
-              isTokenDetectionSupported
-                ? 'var(--color-warning-default)'
-                : 'var(--color-info-default)'
-            }
-          />
-        ) : (
-          <ActionableMessage
-            message={this.context.t('fakeTokenWarning', [
+        <ActionableMessage
+          type={isDynamicTokenListAvailable ? 'warning' : 'default'}
+          message={t(
+            isDynamicTokenListAvailable
+              ? 'customTokenWarningInTokenDetectionNetwork'
+              : 'customTokenWarningInNonTokenDetectionNetwork',
+            [
               <Button
                 type="link"
                 key="import-token-fake-token-warning"
@@ -463,15 +435,18 @@ class ImportToken extends Component {
                 target="_blank"
                 href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
               >
-                {this.context.t('learnScamRisk')}
+                {t('learnScamRisk')}
               </Button>,
-            ])}
-            type="warning"
-            withRightButton
-            useIcon
-            iconFillColor="var(--color-warning-default)"
-          />
-        )}
+            ],
+          )}
+          withRightButton
+          useIcon
+          iconFillColor={
+            isDynamicTokenListAvailable
+              ? 'var(--color-warning-default)'
+              : 'var(--color-info-default)'
+          }
+        />
         <TextField
           id="custom-address"
           label={t('tokenContractAddress')}
@@ -563,38 +538,30 @@ class ImportToken extends Component {
 
   renderSearchToken() {
     const { t } = this.context;
-    const { tokenList, history, useTokenDetection, networkName } = this.props;
+    const {
+      caseInSensitiveTokenList,
+      history,
+      useTokenDetection,
+      networkName,
+    } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="import-token__search-token">
         {!useTokenDetection && (
           <ActionableMessage
-            message={
-              TOKEN_DETECTION_V2
-                ? t('tokenDetectionAlertMessage', [
-                    networkName,
-                    <Button
-                      type="link"
-                      key="token-detection-announcement"
-                      className="import-token__link"
-                      onClick={() =>
-                        history.push(`${ADVANCED_ROUTE}#token-description`)
-                      }
-                    >
-                      {t('enableFromSettings')}
-                    </Button>,
-                  ])
-                : this.context.t('tokenDetectionAnnouncement', [
-                    <Button
-                      type="link"
-                      key="token-detection-announcement"
-                      className="import-token__link"
-                      onClick={() => history.push(`${EXPERIMENTAL_ROUTE}`)}
-                    >
-                      {t('enableFromSettings')}
-                    </Button>,
-                  ])
-            }
+            message={t('tokenDetectionAlertMessage', [
+              networkName,
+              <Button
+                type="link"
+                key="token-detection-announcement"
+                className="import-token__link"
+                onClick={() =>
+                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                }
+              >
+                {t('enableFromSettings')}
+              </Button>,
+            ])}
             withRightButton
             useIcon
             iconFillColor="var(--color-primary-default)"
@@ -606,7 +573,7 @@ class ImportToken extends Component {
             this.setState({ searchResults: results })
           }
           error={tokenSelectorError}
-          tokenList={tokenList}
+          caseInSensitiveTokenList={caseInSensitiveTokenList}
         />
         <div className="import-token__token-list">
           <TokenList

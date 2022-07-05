@@ -9,8 +9,7 @@ import {
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
-  getUseTokenDetection,
-  getTokenList,
+  getIsTokenDetectionInactiveOnMainnet,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
@@ -20,7 +19,6 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
 import { useEqualityCheck } from './useEqualityCheck';
 
-/** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
 const shuffledContractMap = shuffle(
   Object.entries(contractMap)
     .map(([address, tokenData]) => ({
@@ -36,8 +34,8 @@ export function getRenderableTokenData(
   conversionRate,
   currentCurrency,
   chainId,
-  tokenList,
-  useTokenDetection,
+  shuffledTokenList,
+  isTokenDetectionInactiveOnMainnet,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
@@ -67,24 +65,18 @@ export function getRenderableTokenData(
       )
     : '';
 
-  // token from dynamic api list is fetched when useTokenDetection is true
-  // And since the token.address from allTokens is checksumaddress
-  // token Address have to be changed to lowercase when we are using dynamic list
-  const tokenAddress =
-    useTokenDetection || process.env.TOKEN_DETECTION_V2
-      ? address?.toLowerCase()
-      : address;
+  const tokenMetadata = shuffledTokenList.find(
+    (tokenData) => tokenData.address === address?.toLowerCase(),
+  );
+  const tokenIconUrl = isTokenDetectionInactiveOnMainnet
+    ? `images/contract/${tokenMetadata?.logo}`
+    : tokenMetadata?.iconUrl;
 
-  let tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
-
-  if (!process.env.TOKEN_DETECTION_V2 && !useTokenDetection && tokenIconUrl) {
-    tokenIconUrl = `images/contract/${tokenIconUrl}`;
-  }
   const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
-    secondaryLabel: name || tokenList[tokenAddress]?.name,
+    secondaryLabel: name || tokenMetadata?.name,
     rightPrimaryLabel:
       string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
@@ -92,7 +84,7 @@ export function getRenderableTokenData(
     identiconAddress: usedIconUrl ? null : address,
     balance,
     decimals,
-    name: name || tokenList[tokenAddress]?.name,
+    name: name || tokenMetadata?.name,
     rawFiat,
   };
 }
@@ -108,15 +100,13 @@ export function useTokensToSearch({
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
-  const tokenList = useSelector(getTokenList, isEqual);
-  const useTokenDetection = useSelector(getUseTokenDetection);
-  let shuffledTokenList = shuffledTokensList;
-  if (!process.env.TOKEN_DETECTION_V2) {
-    // token from dynamic api list is fetched when useTokenDetection is true
-    shuffledTokenList = useTokenDetection
-      ? shuffledTokensList
-      : shuffledContractMap;
-  }
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
+  const shuffledTokenList = isTokenDetectionInactiveOnMainnet
+    ? shuffledContractMap
+    : shuffledTokensList;
+
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
 
@@ -126,8 +116,8 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     chainId,
-    tokenList,
-    useTokenDetection,
+    shuffledTokenList,
+    isTokenDetectionInactiveOnMainnet,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -167,8 +157,8 @@ export function useTokensToSearch({
         conversionRate,
         currentCurrency,
         chainId,
-        tokenList,
-        useTokenDetection,
+        shuffledTokenList,
+        isTokenDetectionInactiveOnMainnet,
       );
       if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
         if (
@@ -224,8 +214,8 @@ export function useTokensToSearch({
     currentCurrency,
     memoizedDefaultToken,
     chainId,
-    tokenList,
-    useTokenDetection,
+    shuffledTokenList,
+    isTokenDetectionInactiveOnMainnet,
     tokenBucketPriority,
   ]);
 }

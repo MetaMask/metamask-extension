@@ -10,8 +10,10 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsTokenDetectionSupported,
   getTokenDetectionSupportNetworkByChainId,
-  getIsMainnet,
+  getIsTokenDetectionInactiveOnMainnet,
+  getIsDynamicTokenListAvailable,
 } from '../../selectors/selectors';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import ImportToken from './import-token.component';
 
 const mapStateToProps = (state) => {
@@ -27,12 +29,16 @@ const mapStateToProps = (state) => {
     },
   } = state;
 
-  const tokenDetectionV2Supported =
-    process.env.TOKEN_DETECTION_V2 && getIsTokenDetectionSupported(state);
+  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
+    state,
+  );
   const showSearchTab =
-    getIsMainnet(state) ||
-    tokenDetectionV2Supported ||
+    getIsTokenDetectionSupported(state) ||
+    isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : tokenList;
 
   return {
     identities,
@@ -42,11 +48,12 @@ const mapStateToProps = (state) => {
     showSearchTab,
     chainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
-    tokenList,
+    caseInSensitiveTokenList,
     useTokenDetection,
     selectedAddress,
-    isTokenDetectionSupported: getIsTokenDetectionSupported(state),
+    isDynamicTokenListAvailable: getIsDynamicTokenListAvailable(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
+    isTokenDetectionInactiveOnMainnet,
   };
 };
 const mapDispatchToProps = (dispatch) => {

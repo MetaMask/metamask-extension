@@ -22,7 +22,7 @@ describe('Settings Tab', () => {
     nativeCurrency: 'eth',
     useNativeCurrencyAsPrimaryCurrency: true,
     selectedAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-    tokenList: {
+    caseInSensitiveTokenList: {
       '0x6b175474e89094c44da98b954eedeac495271d0f': {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'META',

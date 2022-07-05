@@ -11,12 +11,13 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
-  getUseTokenDetection,
+  getIsTokenDetectionInactiveOnMainnet,
   getTokenList,
   getBlockExplorerLinkText,
 } from '../../../selectors';
 
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 
 const NicknamePopover = ({
   address,
@@ -33,7 +34,6 @@ const NicknamePopover = ({
   }, [onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
-  const useTokenDetection = useSelector(getUseTokenDetection);
   const tokenList = useSelector(getTokenList);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
@@ -46,6 +46,12 @@ const NicknamePopover = ({
       url: explorerLink,
     });
   };
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : tokenList;
 
   return (
     <div className="nickname-popover">
@@ -54,8 +60,8 @@ const NicknamePopover = ({
           address={address}
           diameter={36}
           className="nickname-popover__identicon"
-          useTokenDetection={useTokenDetection}
-          tokenList={tokenList}
+          caseInSensitiveTokenList={caseInSensitiveTokenList}
+          isTokenDetectionInactiveOnMainnet={isTokenDetectionInactiveOnMainnet}
         />
         <div className="nickname-popover__address">
           {nickname || shortenAddress(address)}

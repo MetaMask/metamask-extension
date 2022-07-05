@@ -7,9 +7,13 @@ import Button from '../button';
 import TextField from '../text-field';
 
 import { I18nContext } from '../../../contexts/i18n';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 
 import Identicon from '../identicon/identicon.component';
-import { getUseTokenDetection, getTokenList } from '../../../selectors';
+import {
+  getIsTokenDetectionInactiveOnMainnet,
+  getTokenList,
+} from '../../../selectors';
 
 export default function UpdateNicknamePopover({
   address,
@@ -46,8 +50,13 @@ export default function UpdateNicknamePopover({
     onClose();
   };
 
-  const useTokenDetection = useSelector(getUseTokenDetection);
   const tokenList = useSelector(getTokenList);
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : tokenList;
 
   return (
     <Popover
@@ -79,8 +88,8 @@ export default function UpdateNicknamePopover({
           className="update-nickname__content__indenticon"
           address={address}
           diameter={36}
-          useTokenDetection={useTokenDetection}
-          tokenList={tokenList}
+          caseInSensitiveTokenList={caseInSensitiveTokenList}
+          isTokenDetectionInactiveOnMainnet={isTokenDetectionInactiveOnMainnet}
         />
         <label className="update-nickname__content__label--capitalized">
           {t('address')}

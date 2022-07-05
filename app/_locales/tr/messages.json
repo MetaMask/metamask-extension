@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Bir şeyler ters gitti ve işlemi tamamlayamadık"
   },
-  "fakeTokenWarning": {
-    "message": "Mevcut tokenlerin sahteleri de dahil olmak üzere herkes bir token oluşturabilir. $1 hakkında daha fazla bilgi edinin"
-  },
   "fast": {
     "message": "Hızlı"
   },
@@ -3739,12 +3736,6 @@
   "tokenDetectionAlertMessage": {
     "message": "Token algılama şu anda $1 üzerinden kullanılabilir. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Yeni! Deney aşamasında olan bir özellik olarak Ethereum Mainnet'te gelişmiş token algılama mevcut. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys'in token API'si, çeşitli üçüncü taraf token listelerinden token'ların bir listesini toplar. Kapatmak, cüzdanına eklenen yeni token'ları algılamayı durduracak, ancak içe aktarılacak token'ları arama seçeneğini koruyacaktır."
-  },
   "tokenId": {
     "message": "Token Kimliği"
   },
@@ -3978,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Ethereum kullanıcılarını hedefleyen kimlik avı alanları için bir uyarı görüntüler"
-  },
-  "useTokenDetection": {
-    "message": "Token Algılama Kullan"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Cüzdanınıza gönderilen yeni tokenleri algılamak ve görüntülemek için üçüncü taraf API'leri kullanıyoruz. MetaMask tarafından bu hizmetlerden veri çekilmesini istemiyorsanız bunu kapatın."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Hesabına gönderilen token'ların otomatik olarak görüntülenmesi, token'ın görüntülerini almak için üçüncü taraf sunucularla iletişimi içerir. Bu servislerin IP adresine erişimi olacaktır."
