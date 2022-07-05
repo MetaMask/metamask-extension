@@ -430,6 +430,13 @@ async function bundleMV3AppInitialiser({
     }
   });
 
+  if (testing) {
+    const filePath = require.resolve('@lavamoat/lavapack/src/runtime.js');
+    const content = readFileSync(filePath);
+    const fileOutput = content.replace('statsMode = false', 'statsMode = true');
+    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
+  }
+
   console.log(`Bundle end: service worker app-init.js`);
 }
 

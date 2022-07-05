@@ -30,12 +30,16 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps } = argv;
+  const { browser, retries, snaps, mv3 } = argv;
 
   let testDir = path.join(__dirname, 'tests');
 
   if (snaps) {
     testDir = path.join(__dirname, 'snaps');
+  }
+
+  if (mv3) {
+    testDir = path.join(__dirname, 'mv3');
   }
 
   const testFilenames = await fs.readdir(testDir);
