@@ -51,7 +51,7 @@ async function main() {
     path.join(testDir, filename),
   );
 
-  if (!snaps) {
+  if (!snaps && !mv3) {
     testPaths.push(path.join(__dirname, 'metamask-ui.spec.js'));
   }
 
