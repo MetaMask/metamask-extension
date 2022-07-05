@@ -17,6 +17,10 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('mv3', {
+            description: `run mv3 e2e tests`,
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
