@@ -33,7 +33,8 @@ async function measurePage() {
           logString += log;
         } else if (
           log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0 ||
-          log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0
+          log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0 ||
+          log.search(/"name": "Total"/u) >= 0
         ) {
           logString += log;
           inObject = true;
@@ -41,14 +42,10 @@ async function measurePage() {
       });
 
       metrics = parsedLogs.map((pl) => JSON.parse(pl));
-
-      console.log('Metrics: ', metrics);
     });
   } catch (error) {
     // do nothing
   }
-
-  console.log('52');
   return metrics;
 }
 
@@ -103,6 +100,7 @@ async function profilePageLoad() {
 
   metrics['background.js'] = results[0];
   metrics['ui.js'] = results[1];
+  metrics['load_time'] = results[2];
 
   return metrics;
 }
