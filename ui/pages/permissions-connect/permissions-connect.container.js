@@ -54,7 +54,7 @@ const mapStateToProps = (state, ownProps) => {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   let isUpdatingSnap;
   if (!permissionsRequest) {
-    permissionsRequest = getSnapUpdateRequests().find(
+    permissionsRequest = getSnapUpdateRequests(state).find(
       (req) => req.id === permissionsRequestId,
     );
     if (permissionsRequest) {
@@ -66,8 +66,8 @@ const mapStateToProps = (state, ownProps) => {
       permissionsRequest = permissionsRequest.requestData;
       permissionsRequest.dappOrigin = dappOrigin;
       permissionsRequest.metadata = { id, origin: permissionsRequest.snapId };
-
-      const oldPermissions = getPermissions(state, id);
+      permissionsRequest.permissions = permissionsRequest.newPermissions;
+      const oldPermissions = getPermissions(state, permissionsRequest.snapId);
       const currPermissions = {
         ...permissionsRequest.newPermissions,
         ...permissionsRequest.approvedPermissions,
@@ -81,7 +81,7 @@ const mapStateToProps = (state, ownProps) => {
   ///: END:ONLY_INCLUDE_IN
 
   const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions.eth_accounts,
+    permissionsRequest?.permissions?.eth_accounts,
   );
 
   const { metadata = {} } = permissionsRequest || {};
@@ -131,7 +131,7 @@ const mapStateToProps = (state, ownProps) => {
   } else if (pathname === confirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  } else if (pathname === snapInstallPath) {
+  } else if (pathname === snapInstallPath || pathname === snapUpdatePath) {
     page = isRequestingAccounts ? '3' : '2';
     ///: END:ONLY_INCLUDE_IN
   } else {

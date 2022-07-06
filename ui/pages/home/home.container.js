@@ -5,6 +5,7 @@ import {
   activeTabHasPermissions,
   getCurrentEthBalance,
   getFirstPermissionRequest,
+  getFirstSnapUpdateRequest,
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -86,9 +87,14 @@ const mapStateToProps = (state) => {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  const firstPermissionsRequest = getFirstPermissionRequest(state);
-  const firstPermissionsRequestId =
-    firstPermissionsRequest?.metadata.id || null;
+  let firstPermissionsRequest, firstPermissionsRequestId;
+  firstPermissionsRequest = getFirstPermissionRequest(state);
+  if (firstPermissionsRequest) {
+    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+  } else {
+    firstPermissionsRequest = getFirstSnapUpdateRequest(state);
+    firstPermissionsRequestId = firstPermissionsRequest?.id || null;
+  }
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =

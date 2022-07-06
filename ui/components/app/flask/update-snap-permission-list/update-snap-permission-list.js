@@ -20,10 +20,11 @@ export default function UpdateSnapPermissionList({
       const dateObj = new Date(date);
       const [month, day, year] = [
         dateObj.getMonth(),
-        date.getDate(),
-        date.getFullYear(),
+        dateObj.getDate(),
+        dateObj.getFullYear(),
       ];
-      const formattedDate = `${year}-${month}-${day}`;
+      // getMonth is zero-based
+      const formattedDate = `${year}-${month + 1}-${day}`;
 
       return (
         <div className="approved-permission-container" key={approvedPermission}>

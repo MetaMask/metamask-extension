@@ -28,4 +28,8 @@
         }
 
     }
+
+    .approved-permission-subtext, .revoked-permission-subtext {
+        @include H8;
+    }
 }

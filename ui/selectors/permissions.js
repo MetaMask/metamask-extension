@@ -286,6 +286,11 @@ export function getSnapUpdateRequests(state) {
     ({ type }) => type === 'wallet_updateSnap',
   );
 }
+
+export function getFirstSnapUpdateRequest(state) {
+  const requests = getSnapUpdateRequests(state);
+  return requests && requests[0] ? requests[0] : null;
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {
