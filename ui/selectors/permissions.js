@@ -298,3 +298,7 @@ export function getFirstPermissionRequest(state) {
   const requests = getPermissionsRequests(state);
   return requests && requests[0] ? requests[0] : null;
 }
+
+export function getPermissions(state, origin) {
+  return getPermissionSubjects(state)[origin].permissions;
+}

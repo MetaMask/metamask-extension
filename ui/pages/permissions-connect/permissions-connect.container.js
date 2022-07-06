@@ -1,11 +1,19 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { setDiff } from '@metamask/snap-controllers';
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getPermissions,
+  ///: END:ONLY_INCLUDE_IN
   getPermissionsRequests,
   getSelectedAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnapUpdateRequests,
+  ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -49,15 +57,26 @@ const mapStateToProps = (state, ownProps) => {
     permissionsRequest = getSnapUpdateRequests().find(
       (req) => req.id === permissionsRequestId,
     );
-    isUpdatingSnap = permissionsRequest.type === 'wallet_updateSnap';
-    const { id, origin: dappOrigin } = permissionsRequest;
-    // reassigning the variable here to fit permissions actions
-    // and also adding metadata property for the same
-    permissionsRequest = permissionsRequest.requestData;
-    // adding a dappOrigin property to display the requesting party for a snap
-    permissionsRequest.dappOrigin = dappOrigin;
-    // need to add metadata property to fit accept & reject permissions actions
-    permissionsRequest.metadata = { id, origin: permissionsRequest.snapId };
+    if (permissionsRequest) {
+      isUpdatingSnap = true;
+      const { id, origin: dappOrigin } = permissionsRequest;
+      // reassigning the variable here to fit permissions actions
+      // also adding a metadata property for the same
+      // adding a dappOrigin property to display the requesting party for an update
+      permissionsRequest = permissionsRequest.requestData;
+      permissionsRequest.dappOrigin = dappOrigin;
+      permissionsRequest.metadata = { id, origin: permissionsRequest.snapId };
+
+      const oldPermissions = getPermissions(state, id);
+      const currPermissions = {
+        ...permissionsRequest.newPermissions,
+        ...permissionsRequest.approvedPermissions,
+      };
+      permissionsRequest.revokedPermissions = setDiff(
+        oldPermissions,
+        currPermissions,
+      );
+    }
   }
   ///: END:ONLY_INCLUDE_IN
 

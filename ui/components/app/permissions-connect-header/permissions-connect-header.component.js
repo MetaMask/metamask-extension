@@ -45,7 +45,7 @@ export default class PermissionsConnectHeader extends Component {
       siteOrigin,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       isSnapInstall,
-      isSnapUpdate
+      isSnapUpdate,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 

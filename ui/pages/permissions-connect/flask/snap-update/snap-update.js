@@ -25,8 +25,6 @@ export default function SnapUpdate({
 }) {
   const t = useI18nContext();
 
-  console.log('Request is', request);
-
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const onCancel = useCallback(() => rejectSnapUpdate(request.metadata.id), [
@@ -68,9 +66,9 @@ export default function SnapUpdate({
           iconName={targetSubjectMetadata.name}
           headerTitle={t('snapUpdate')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
-          siteOrigin={targetSubjectMetadata.origin}
+          siteOrigin={request.snapId}
           isSnapUpdate
-          snapVersion={targetSubjectMetadata.version}
+          snapVersion={request.newVersion}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
         <Typography
@@ -80,7 +78,16 @@ export default function SnapUpdate({
           variant={TYPOGRAPHY.H7}
           tag="span"
         >
-          {t('snapUpdateExplanation')}
+          {t('snapUpdateExplanation', [`${request.dappOrigin}`])}
+        </Typography>
+        <Typography
+          boxProps={{
+            padding: [4, 4, 0, 4],
+          }}
+          variant={TYPOGRAPHY.H7}
+          tag="span"
+        >
+          {t('snapRequestsPermission')}
         </Typography>
         <PermissionsConnectPermissionList
           permissions={request.permissions || {}}

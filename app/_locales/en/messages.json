@@ -3004,7 +3004,8 @@
     "message": "Update Snap"
   },
   "snapUpdateExplanation": {
-    "message": "A newer version of this snap is required."
+    "message": "$1 needs a newer version of your snap.",
+    "description": "Informs the user that the stated origin requires your snap to be updated."
   },
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
