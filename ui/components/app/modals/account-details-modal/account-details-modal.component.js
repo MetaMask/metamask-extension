@@ -69,7 +69,7 @@ export default class AccountDetailsModal extends Component {
     const openBlockExplorer = () => {
       const accountLink = getAccountLink(address, chainId, rpcPrefs);
       this.context.trackEvent({
-        category: 'Navigation',
+        category: EVENT.CATEGORIES.NAVIGATION,
         event: 'Clicked Block Explorer Link',
         properties: {
           link_type: 'Account Tracker',
