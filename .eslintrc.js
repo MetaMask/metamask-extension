@@ -320,8 +320,6 @@ module.exports = {
       globals: {
         harden: 'readonly',
         Compartment: 'readonly',
-        self: 'readonly',
-        chrome: 'readonly',
       },
     },
     {

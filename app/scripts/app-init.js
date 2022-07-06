@@ -64,6 +64,7 @@ function importAllScripts() {
   );
 }
 
+// eslint-disable-next-line no-undef
 self.addEventListener('install', importAllScripts);
 
 /*
@@ -72,4 +73,5 @@ self.addEventListener('install', importAllScripts);
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
+// eslint-disable-next-line no-undef
 chrome.runtime.onMessage.addListener(importAllScripts);
