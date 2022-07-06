@@ -9,7 +9,6 @@ module.exports = {
   globals: {
     document: 'readonly',
     window: 'readonly',
-    self: 'readonly',
   },
 
   rules: {
