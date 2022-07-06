@@ -398,18 +398,17 @@ class Driver {
   }
 
   async checkBrowserForLavamoatLogs() {
-    const ignoredLogTypes = ['ERROR', 'SEVERE'];
-
-    const browserLogs = await this.driver.manage().logs().get('browser');
+    const browserLogs = (
+      await fs.readFile(
+        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
+      )
+    )
+      .toString('utf-8')
+      .split(/\r?\n/u);
 
     await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
 
-    const errorEntries = browserLogs.filter(
-      (entry) => !ignoredLogTypes.includes(entry.level.toString()),
-    );
-    // const errorObjects = errorEntries.map((entry) => entry.toJSON());
-
-    return errorEntries;
+    return browserLogs;
   }
 
   async checkBrowserForConsoleErrors() {
