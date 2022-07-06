@@ -74,7 +74,7 @@ export default class TransactionListItemDetails extends PureComponent {
       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         event: 'Clicked Block Explorer Link',
         properties: {
           link_type: 'Transaction Block Explorer',

@@ -49,7 +49,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const openBlockExplorer = () => {
     trackEvent({
       event: 'Clicked Block Explorer Link',
-      category: 'Navigation',
+      category: EVENT.CATEGORIES.NAVIGATION,
       properties: {
         link_type: 'Account Tracker',
         action: 'Account Options',
