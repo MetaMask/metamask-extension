@@ -22,6 +22,9 @@ class ChromeDriver {
     const options = new chrome.Options().addArguments(args);
     options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
+    options.setUserPreferences({
+      'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+    });
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);

@@ -33,6 +33,8 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
+import { startNewDraftTransaction } from '../../../ducks/send';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -52,6 +54,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
+      loading={!balance}
       balance={
         <Tooltip
           position="top"
@@ -130,7 +133,11 @@ const EthOverview = ({ className }) => {
                   legacy_event: true,
                 },
               });
-              history.push(SEND_ROUTE);
+              dispatch(
+                startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }),
+              ).then(() => {
+                history.push(SEND_ROUTE);
+              });
             }}
           />
           <IconButton

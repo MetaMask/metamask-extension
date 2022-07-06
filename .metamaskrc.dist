@@ -6,6 +6,7 @@ ONBOARDING_V2=
 SWAPS_USE_DEV_APIS=
 COLLECTIBLES_V1=
 TOKEN_DETECTION_V2=
+ADD_POPULAR_NETWORKS=
 
 ; Set this to '1' to enable support for Sign-In with Ethereum [EIP-4361](https://eips.ethereum.org/EIPS/eip-4361)
 SIWE_V1=

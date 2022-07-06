@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.16.2]
+### Changed
+- This release restores the changes from v10.16.0, which was temporarily reverted in v10.16.1.
+
 ## [10.16.1]
 ### Changed
 - This release is a patch for v10.15.2, so all changes in v10.16.0 have been temporarily reverted. They will be restored in a future v16 release. ([#15063](https://github.com/MetaMask/metamask-extension/pull/15063))
@@ -3038,7 +3042,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...HEAD
+[10.16.2]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...v10.16.2
 [10.16.1]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.16.1
 [10.16.0]: https://github.com/MetaMask/metamask-extension/compare/v10.15.1...v10.16.0
 [10.15.1]: https://github.com/MetaMask/metamask-extension/compare/v10.15.0...v10.15.1
