@@ -62,25 +62,25 @@ function calculateResult(calc) {
     return calculatedResult;
   };
 }
-const calculateSum = (array) => array.reduce((sum, val) => sum + val);
-const calculateAverage = (array) => calculateSum(array) / array.length;
-const minResult = calculateResult((array) => Math.min(...array));
-const maxResult = calculateResult((array) => Math.max(...array));
-const averageResult = calculateResult((array) => calculateAverage(array));
-const standardDeviationResult = calculateResult((array) => {
-  if (array.length === 1) {
-    return 0;
-  }
-  const average = calculateAverage(array);
-  const squareDiffs = array.map((value) => Math.pow(value - average, 2));
-  return Math.sqrt(calculateAverage(squareDiffs));
-});
-// 95% margin of error calculated using Student's t-distribution
-const calculateMarginOfError = (array) =>
-  ttest(array).confidence()[1] - calculateAverage(array);
-const marginOfErrorResult = calculateResult((array) =>
-  array.length === 1 ? 0 : calculateMarginOfError(array),
-);
+// const calculateSum = (array) => array.reduce((sum, val) => sum + val);
+// const calculateAverage = (array) => calculateSum(array) / array.length;
+// const minResult = calculateResult((array) => Math.min(...array));
+// const maxResult = calculateResult((array) => Math.max(...array));
+// const averageResult = calculateResult((array) => calculateAverage(array));
+// const standardDeviationResult = calculateResult((array) => {
+//   if (array.length === 1) {
+//     return 0;
+//   }
+//   const average = calculateAverage(array);
+//   const squareDiffs = array.map((value) => Math.pow(value - average, 2));
+//   return Math.sqrt(calculateAverage(squareDiffs));
+// });
+// // 95% margin of error calculated using Student's t-distribution
+// const calculateMarginOfError = (array) =>
+//   ttest(array).confidence()[1] - calculateAverage(array);
+// const marginOfErrorResult = calculateResult((array) =>
+//   array.length === 1 ? 0 : calculateMarginOfError(array),
+// );
 
 async function profilePageLoad() {
   const results = await measurePage();
