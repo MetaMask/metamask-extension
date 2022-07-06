@@ -94,6 +94,8 @@ async function start() {
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+  const moduleInitStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/lavamoat/flamegraph/index.html`;
+  const moduleInitStatsLink = `<a href="${moduleInitStatsUrl}">Module Init Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -103,6 +105,7 @@ async function start() {
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
+    `module init stats: ${moduleInitStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
