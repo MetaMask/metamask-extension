@@ -288,6 +288,10 @@
   "approvedAsset": {
     "message": "Approved asset"
   },
+  "approvedOn": {
+    "message": "Approved on $1",
+    "description": "Shows approval date for a permission"
+  },
   "areYouDeveloper": {
     "message": "Are you a developer?"
   },
@@ -2441,6 +2445,9 @@
   },
   "permissionRequestCapitalized": {
     "message": "Permission Request"
+  },
+  "permissionRevoked": {
+    "message": "Revoked in this update"
   },
   "permission_accessNetwork": {
     "message": "Access the Internet.",

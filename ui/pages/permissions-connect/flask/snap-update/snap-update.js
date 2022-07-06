@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,6 +15,7 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
+import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
 
 export default function SnapUpdate({
   request,
@@ -89,8 +89,10 @@ export default function SnapUpdate({
         >
           {t('snapRequestsPermission')}
         </Typography>
-        <PermissionsConnectPermissionList
-          permissions={request.permissions || {}}
+        <UpdateSnapPermissionList
+          approvedPermissions={request.approvedPermissions || {}}
+          revokedPermissions={request.revokedPermissions || {}}
+          newPermissions={request.newPermissions || {}}
         />
       </Box>
       <Box

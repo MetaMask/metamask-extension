@@ -1,0 +1,31 @@
+.update-snap-permission-list {
+    width: 100%;
+
+    .approved-permission-container, .revoked-permission-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .approved-permission, .new-permission, .revoked-permission {
+        @include H6;
+
+        width: 100%;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--color-border-default);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        color: var(--color-text-default);
+
+        i {
+            display: block;
+            padding: 16px;
+            min-width: 16px;
+            min-height: 16px;
+            color: var(--color-icon-alternative);
+            font-size: 1rem;
+        }
+
+    }
+}
