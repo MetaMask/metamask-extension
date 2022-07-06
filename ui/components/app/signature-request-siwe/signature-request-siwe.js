@@ -72,6 +72,7 @@ export default function SignatureRequestSIWE({
    * 2. Are we captureing the "Signature Request" event name elsewhere?
    * 3. Should we spend time to include account_hardware_type? We might be able to create a selector to perform findKeyringForAddress
    * 4. Should we add validation_errors? what is this in the context of transactions?
+   * 5. Should we add consistency between event tracking here and the SignatureRequestComponent?
    * @see {@link ui/components/app/signature-request/signature-request.component.js}
    * @see {@link https://consensys.slack.com/archives/C031PSFHQER/p1654811895007879?thread_ts=1654805714.261689&cid=C031PSFHQER}
    */
@@ -96,10 +97,11 @@ export default function SignatureRequestSIWE({
             // signature_type
             type,
 
-            // this is url orrr we could use parsedMessage.domain. this would be without "https://".
+            // Which one should we use? url, parsedMessage.uri, or parsedMessage.domain?
             // e.g.
-            // origin = https://spruceid.github.io. I believe this should be the same as parsedMessage.uri: "https://spruceid.github.io"
-            // parsedMessage.domain = spruceid.github.io
+            // origin = https://spruceid.github.io
+            // parsedMessage.uri: https://spruceid.github.io (maybe the same value as origin?)
+            // parsedMessage.domain = spruceid.github.io (this appears to not include "https://")
             url: origin,
 
             // account type? need to verify
@@ -159,7 +161,7 @@ export default function SignatureRequestSIWE({
             chainId: parsedMessage.chainId,
 
             // ✓ account_type - [default, imported, undefined, hardware] - version?
-            // account_hardware_type - [ledger, trezor, lattice, qr_code]
+            // ? account_hardware_type - [ledger, trezor, lattice, qr_code]
             // ✓ chain_id - [0x1, ...]
             // ✓ signature_type - [personal_sign, eth_signTypedData, eth_sign, encrypt, decrypt] - type
             // ✓ url - full url - origin
