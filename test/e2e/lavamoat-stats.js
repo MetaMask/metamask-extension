@@ -5,7 +5,6 @@ const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const ttest = require('ttest');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
 
@@ -53,15 +52,15 @@ async function measurePage() {
   return metrics;
 }
 
-function calculateResult(calc) {
-  return (result) => {
-    const calculatedResult = {};
-    for (const key of Object.keys(result)) {
-      calculatedResult[key] = calc(result[key]);
-    }
-    return calculatedResult;
-  };
-}
+// function calculateResult(calc) {
+//   return (result) => {
+//     const calculatedResult = {};
+//     for (const key of Object.keys(result)) {
+//       calculatedResult[key] = calc(result[key]);
+//     }
+//     return calculatedResult;
+//   };
+// }
 // const calculateSum = (array) => array.reduce((sum, val) => sum + val);
 // const calculateAverage = (array) => calculateSum(array) / array.length;
 // const minResult = calculateResult((array) => Math.min(...array));
