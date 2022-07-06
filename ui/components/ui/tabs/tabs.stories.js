@@ -34,11 +34,15 @@ function renderTab({ name, content }, index) {
   );
 }
 
-export const Default = (args) => {
-  const { onTabClick, defaultActiveTabName } = args;
+export const DefaultStory = (args) => {
   return (
-    <Tabs defaultActiveTabName={defaultActiveTabName} onTabClick={onTabClick}>
+    <Tabs
+      defaultActiveTabName={args.defaultActiveTabName}
+      onTabClick={args.onTabClick}
+    >
       {args.tabs.map((tabProps, i) => renderTab(tabProps, i))}
     </Tabs>
   );
 };
+
+DefaultStory.storyName = 'Default';
