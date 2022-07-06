@@ -2,12 +2,6 @@ import React from 'react';
 import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 
-const initialTabs = [
-  { name: 'Tab A', content: 'Tab A Content' },
-  { name: 'Tab B', content: 'Tab B Content' },
-  { name: 'Tab C', content: 'Tab C Content' },
-];
-
 export default {
   title: 'Components/UI/Tabs',
   id: __filename,
@@ -24,7 +18,11 @@ export default {
     onTabClick: { action: 'onTabClick' },
   },
   args: {
-    tabs: initialTabs,
+    tabs: [
+      { name: 'Tab A', content: 'Tab A Content' },
+      { name: 'Tab B', content: 'Tab B Content' },
+      { name: 'Tab C', content: 'Tab C Content' },
+    ],
   },
 };
 
@@ -36,7 +34,7 @@ function renderTab({ name, content }, index) {
   );
 }
 
-const Template = (args) => {
+export const Default = (args) => {
   const { onTabClick, defaultActiveTabName } = args;
   return (
     <Tabs defaultActiveTabName={defaultActiveTabName} onTabClick={onTabClick}>
@@ -44,5 +42,3 @@ const Template = (args) => {
     </Tabs>
   );
 };
-
-export const Default = Template.bind({});
