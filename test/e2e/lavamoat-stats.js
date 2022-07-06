@@ -41,14 +41,10 @@ async function measurePage() {
       });
 
       metrics = parsedLogs.map((pl) => JSON.parse(pl));
-
-      console.log('Metrics: ', metrics);
     });
   } catch (error) {
     // do nothing
   }
-
-  console.log('52');
   return metrics;
 }
 
