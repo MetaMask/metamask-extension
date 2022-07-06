@@ -6,40 +6,50 @@ const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const ttest = require('ttest');
-const { retry } = require('../../development/lib/retry');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
-const { PAGES } = require('./webdriver/driver');
-const {exit}=require('process');
-
-const DEFAULT_NUM_SAMPLES = 20;
-const ALL_PAGES = Object.values(PAGES);
 
 async function measurePage() {
   let metrics;
-  await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
-    await driver.delay(tinyDelayMs);
-    await driver.navigate();
-    await driver.findElement('#password');
-    await driver.delay(10000);
-    const logs = await driver.checkBrowserForLavamoatLogs();
+  try {
+    await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
+      await driver.delay(tinyDelayMs);
+      await driver.navigate();
+      await driver.findElement('#password');
+      await driver.delay(1000);
+      const logs = await driver.checkBrowserForLavamoatLogs();
 
-    const filtered = logs.filter((log) => {
-      const regex = /chrome-extension.*\d+:\d+ /u;
-      const message = log.message.replace(regex, '');
-      try {
-        // response looks like it's passed through stringify twice..so we parse twice
-        const parsed = JSON.parse(JSON.parse(message));
-        log.message = parsed;
-        return true;
-      } catch (err) {
-        return false;
-      }
+      let logString = '';
+      let inObject = false;
+
+      const parsedLogs = [];
+
+      logs.forEach((log) => {
+        if (log.indexOf('"version": 1') >= 0) {
+          logString += log;
+          parsedLogs.push(`{${logString}}`);
+          logString = '';
+          inObject = false;
+        } else if (inObject) {
+          logString += log;
+        } else if (
+          log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0 ||
+          log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0
+        ) {
+          logString += log;
+          inObject = true;
+        }
+      });
+
+      metrics = parsedLogs.map((pl) => JSON.parse(pl));
+
+      console.log('Metrics: ', metrics);
     });
+  } catch (error) {
+    // do nothing
+  }
 
-    console.log(filtered);
-    exit(0);
-  });
+  console.log('52');
   return metrics;
 }
 
@@ -72,55 +82,30 @@ const marginOfErrorResult = calculateResult((array) =>
   array.length === 1 ? 0 : calculateMarginOfError(array),
 );
 
-async function profilePageLoad(pages, numSamples, retries) {
-  const results = {};
-  for (const pageName of pages) {
-    const runResults = [];
-    for (let i = 0; i < numSamples; i += 1) {
-      let result;
-      await retry({ retries }, async () => {
-        result = await measurePage(pageName);
-      });
-      runResults.push(result);
-    }
+async function profilePageLoad() {
+  const results = await measurePage();
+  const metrics = {};
 
-    if (runResults.some((result) => result.navigation.lenth > 1)) {
-      throw new Error(`Multiple navigations not supported`);
-    } else if (
-      runResults.some((result) => result.navigation[0].type !== 'navigate')
-    ) {
-      throw new Error(
-        `Navigation type ${
-          runResults.find((result) => result.navigation[0].type !== 'navigate')
-            .navigation[0].type
-        } not supported`,
-      );
-    }
+  // metrics['background.js'] = {
+  //   min: minResult(results[0]),
+  //   max: maxResult(results[0]),
+  //   average: averageResult(results[0]),
+  //   standardDeviation: standardDeviationResult(results[0]),
+  //   marginOfError: marginOfErrorResult(results[0]),
+  // };
 
-    const result = {
-      firstPaint: runResults.map((metrics) => metrics.paint['first-paint']),
-      domContentLoaded: runResults.map(
-        (metrics) =>
-          metrics.navigation[0] && metrics.navigation[0].domContentLoaded,
-      ),
-      load: runResults.map(
-        (metrics) => metrics.navigation[0] && metrics.navigation[0].load,
-      ),
-      domInteractive: runResults.map(
-        (metrics) =>
-          metrics.navigation[0] && metrics.navigation[0].domInteractive,
-      ),
-    };
+  // metrics['ui.js'] = {
+  //   min: minResult(results[1]),
+  //   max: maxResult(results[1]),
+  //   average: averageResult(results[1]),
+  //   standardDeviation: standardDeviationResult(results[1]),
+  //   marginOfError: marginOfErrorResult(results[1]),
+  // };
 
-    results[pageName] = {
-      min: minResult(result),
-      max: maxResult(result),
-      average: averageResult(result),
-      standardDeviation: standardDeviationResult(result),
-      marginOfError: marginOfErrorResult(result),
-    };
-  }
-  return results;
+  metrics['background.js'] = results[0];
+  metrics['ui.js'] = results[1];
+
+  return metrics;
 }
 
 async function isWritable(directory) {
@@ -157,34 +142,15 @@ async function main() {
     '$0 [options]',
     'Run a page load benchmark',
     (_yargs) =>
-      _yargs
-        .option('pages', {
-          array: true,
-          default: ['home'],
-          description:
-            'Set the page(s) to be benchmarked. This flag can accept multiple values (space-separated).',
-          choices: ALL_PAGES,
-        })
-        .option('samples', {
-          default: DEFAULT_NUM_SAMPLES,
-          description: 'The number of times the benchmark should be run.',
-          type: 'number',
-        })
-        .option('out', {
-          description:
-            'Output filename. Output printed to STDOUT of this is omitted.',
-          type: 'string',
-          normalize: true,
-        })
-        .option('retries', {
-          default: 0,
-          description:
-            'Set how many times each benchmark sample should be retried upon failure.',
-          type: 'number',
-        }),
+      _yargs.option('out', {
+        description:
+          'Output filename. Output printed to STDOUT of this is omitted.',
+        type: 'string',
+        normalize: true,
+      }),
   );
 
-  const { pages, samples, out, retries } = argv;
+  const { out } = argv;
 
   let outputDirectory;
   let existingParentDirectory;
@@ -198,7 +164,7 @@ async function main() {
     }
   }
 
-  const results = await profilePageLoad(pages, samples, retries);
+  const results = await profilePageLoad();
 
   if (out) {
     if (outputDirectory !== existingParentDirectory) {
