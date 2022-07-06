@@ -1,6 +1,7 @@
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
+// eslint-disable-next-line
 let scriptsLoaded = false;
 
 // eslint-disable-next-line import/unambiguous

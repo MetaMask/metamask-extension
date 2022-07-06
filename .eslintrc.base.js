@@ -9,6 +9,8 @@ module.exports = {
   globals: {
     document: 'readonly',
     window: 'readonly',
+    self: 'readonly',
+    chrome: 'readonly',
   },
 
   rules: {
