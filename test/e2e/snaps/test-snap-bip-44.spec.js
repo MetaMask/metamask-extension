@@ -34,7 +34,7 @@ describe('Test Snap bip-44', function () {
         await driver.delay(1000);
         await driver.fill('#snapId3', 'npm:@metamask/test-snap-bip44');
 
-        // find and scroll to snapId3
+        // reveal snapId3 by finding and scrolling to #snapId4
         const snapButton = await driver.findElement('#snapId4');
         await driver.scrollToElement(snapButton);
         await driver.delay(500);
