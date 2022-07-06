@@ -31,11 +31,8 @@ describe('Test Snap Confirm', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('.snapId1', 'npm:@metamask/test-snap-confirm');
-        await driver.clickElement({
-          text: 'Connect To Confirm Snap',
-          tag: 'button',
-        });
+        await driver.fill('#snapId1', 'npm:@metamask/test-snap-confirm');
+        await driver.clickElement('#connectHello');
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -70,7 +67,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement('.sendConfirmButton');
+        await driver.clickElement('#sendConfirmButton');
 
         // hit 'approve' on the custom confirm
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -88,7 +85,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        const confirmResult = await driver.findElement('.confirmResult');
+        const confirmResult = await driver.findElement('#confirmResult');
         assert.equal(await confirmResult.getText(), 'true');
       },
     );
