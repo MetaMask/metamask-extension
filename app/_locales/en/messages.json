@@ -77,7 +77,8 @@
     "message": "Request ID:"
   },
   "SIWELabelResources": {
-    "message": "Resources: $1"
+    "message": "Resources: $1",
+    "description": "$1 represents the number of resources"
   },
   "SIWELabelURI": {
     "message": "URI:"
