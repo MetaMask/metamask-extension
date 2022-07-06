@@ -422,23 +422,28 @@ async function bundleMV3AppInitialiser({
 
   postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
 
-  let prevChromeFileContent;
-  watch('./dist/chrome/app-init.js', () => {
-    const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
-    if (chromeFileContent !== prevChromeFileContent) {
-      prevChromeFileContent = chromeFileContent;
-      postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
-    }
-  });
+  if (devMode && !testing) {
+    let prevChromeFileContent;
+    watch('./dist/chrome/app-init.js', () => {
+      const chromeFileContent = readFileSync(
+        './dist/chrome/app-init.js',
+        'utf8',
+      );
+      if (chromeFileContent !== prevChromeFileContent) {
+        prevChromeFileContent = chromeFileContent;
+        postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+      }
+    });
+  }
 
-  // if (testing) {
-  //   const filePath = require.resolve('@lavamoat/lavapack/src/runtime.js');
-  //   const content = readFileSync(filePath);
-  //   const fileOutput = content
-  //     .toString('utf8')
-  //     .replace('statsMode = false', 'statsMode = true');
-  //   writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
-  // }
+  if (testing) {
+    const filePath = require.resolve('@lavamoat/lavapack/src/runtime.js');
+    const content = readFileSync(filePath);
+    const fileOutput = content
+      .toString('utf8')
+      .replace('statsMode = false', 'statsMode = true');
+    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
+  }
 
   console.log(`Bundle end: service worker app-init.js`);
 }
