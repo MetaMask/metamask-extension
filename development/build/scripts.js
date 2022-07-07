@@ -377,6 +377,8 @@ const postProcessServiceWorker = (
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
     let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
     if (!testing) {
+      // Lavamoat is always set to true in testing mode
+      // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
       fileOutput = fileContent.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
