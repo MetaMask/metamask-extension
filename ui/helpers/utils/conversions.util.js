@@ -6,6 +6,7 @@ import {
   subtractCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from './confirm-tx.util';
+
 export function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
