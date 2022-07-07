@@ -370,16 +370,18 @@ const postProcessServiceWorker = (
   mv3BrowserPlatforms,
   fileList,
   applyLavaMoat,
+  testing,
 ) => {
   mv3BrowserPlatforms.forEach((browser) => {
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    const fileOutput = fileContent
-      .replace('/** FILE NAMES */', fileList)
-      .replace(
+    let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    if (!testing) {
+      fileOutput = fileContent.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
+    }
     writeFileSync(appInitFile, fileOutput);
   });
 };
@@ -420,7 +422,12 @@ async function bundleMV3AppInitialiser({
     shouldLintFenceFiles,
   })();
 
-  postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+  postProcessServiceWorker(
+    mv3BrowserPlatforms,
+    fileList,
+    applyLavaMoat,
+    testing,
+  );
 
   if (devMode && !testing) {
     let prevChromeFileContent;
