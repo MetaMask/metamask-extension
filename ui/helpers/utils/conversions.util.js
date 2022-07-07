@@ -1,5 +1,3 @@
-import currencyFormatter from 'currency-formatter';
-import currencies from 'currency-formatter/currencies';
 import { ETH, GWEI, WEI } from '../constants/common';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
@@ -7,7 +5,7 @@ import {
   addCurrencies,
   subtractCurrencies,
 } from '../../../shared/modules/conversion.utils';
-// import { formatCurrency } from './confirm-tx.util';
+import { formatCurrency } from './confirm-tx.util';
 export function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
@@ -201,17 +199,6 @@ export function sumHexWEIsToUnformattedFiat(
     conversionRate,
   );
   return convertedTotal;
-}
-
-export function formatCurrency(value, currencyCode) {
-  const upperCaseCurrencyCode = currencyCode.toUpperCase();
-
-  return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
-    ? currencyFormatter.format(Number(value), {
-        code: upperCaseCurrencyCode,
-        style: 'currency',
-      })
-    : value;
 }
 
 export function sumHexWEIsToRenderableFiat(
