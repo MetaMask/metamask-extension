@@ -30,11 +30,8 @@ describe('Test Snap Error', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('.snapId2', 'npm:@metamask/test-snap-error');
-        await driver.clickElement({
-          text: 'Connect Error Snap',
-          tag: 'button',
-        });
+        await driver.fill('#snapId2', 'npm:@metamask/test-snap-error');
+        await driver.clickElement('#connectError');
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -68,10 +65,7 @@ describe('Test Snap Error', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Send Test to Error Snap',
-          tag: 'button',
-        });
+        await driver.clickElement('#sendError');
 
         await driver.navigate(PAGES.HOME);
 
