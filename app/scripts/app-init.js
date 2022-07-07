@@ -98,6 +98,7 @@ function importAllScripts() {
           startTime: startImportScriptsTime,
           endTime: endImportScriptsTime,
           value: endImportScriptsTime - startImportScriptsTime,
+          version: 1,
         },
         undefined,
         '    ',
