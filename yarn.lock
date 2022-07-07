@@ -2850,10 +2850,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.35.0.tgz#2bf2b8f2b6fdbd5132f0bcfa594b6c02dc71c42e"
   integrity sha512-zfZKwLFOVrQS8vTFoeoNCG9JhqmK4oyembGiGVVpUAYD9BHVZnd9WpicGoUC07ROXLEyQuAK9AJZNBtqwwzfEQ==
 
-"@metamask/controllers@^30.0.0", "@metamask/controllers@^30.0.2":
-  version "30.0.2"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-30.0.2.tgz#0a5512598d2997e34d3542889cae7088fe1fa4b8"
-  integrity sha512-nIUQaaGPzy9whcAvzwHCRsMtw3YWdBv6mUiN9EA2CKdYUesnVj4bpXSSMEso1oEhsNRa2/XTZSb6i+Odo/raJw==
+"@metamask/controllers@^30.0.0", "@metamask/controllers@^30.1.0":
+  version "30.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-30.1.0.tgz#157d0afca156f1f37a89fbb864c4ee5c64d23af0"
+  integrity sha512-480mQafsYKbl0q7YgV820mrPCUtWgLLVH/s8ozNT6/ZVX3sBU0FBhNKeCalewhn0HRfMRnLe8pvHCKIH30k/0w==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
