@@ -30,13 +30,18 @@ describe('Test Snap Notification', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('.snapId5', 'npm:@metamask/test-snap-notification');
-        await driver.clickElement({
-          text: 'Connect Notification Snap',
-          tag: 'button',
-        });
+        await driver.delay(1000);
+
+        // find and scroll down to snapId5
+        const snapButton = await driver.findElement('#snapId5');
+        await driver.scrollToElement(snapButton);
+        await driver.delay(500);
+        await driver.fill('#snapId5', 'npm:@metamask/test-snap-notification');
+
+        // connect the snap
+        await driver.clickElement('#connectNotification');
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -70,10 +75,7 @@ describe('Test Snap Notification', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Send InApp Notification',
-          tag: 'button',
-        });
+        await driver.clickElement('#sendInAppNotification');
 
         // try to go to the MM pages
         await driver.navigate(PAGES.HOME);
