@@ -35,7 +35,7 @@ export default function SrpInput({ onChange, srpText }) {
   const onSrpChange = useCallback(
     (newDraftSrp) => {
       let newSrpError = '';
-      const joinedDraftSrp = newDraftSrp.join(' ');
+      const joinedDraftSrp = newDraftSrp.join(' ').trim();
 
       if (newDraftSrp.some((word) => word !== '')) {
         if (newDraftSrp.some((word) => word === '')) {
