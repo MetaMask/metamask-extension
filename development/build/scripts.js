@@ -376,8 +376,10 @@ const postProcessServiceWorker = (
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
     let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-    if (!testing) {
-      fileOutput = fileContent.replace(
+    if (testing) {
+      fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
+    } else {
+      fileOutput = fileOutput.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
@@ -447,19 +449,6 @@ async function bundleMV3AppInitialiser({
     const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
     writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
-
-    mv3BrowserPlatforms.forEach((browser) => {
-      const appInitFileLocation = `./dist/${browser}/app-init.js`;
-      const appInitFileContent = readFileSync(
-        './app/scripts/app-init.js',
-        'utf8',
-      );
-      const appInitFileOutput = appInitFileContent.replace(
-        'testMode = false',
-        'testMode = true',
-      );
-      writeFileSync(appInitFileLocation, appInitFileOutput);
-    });
   }
 
   console.log(`Bundle end: service worker app-init.js`);
