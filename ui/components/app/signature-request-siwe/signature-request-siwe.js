@@ -69,7 +69,7 @@ export default function SignatureRequestSIWE({
    *
    * Follow-up Questions:
    * 1. Are we utilizing MetaMetrics sensitive_properties?
-   * 2. Are we captureing the "Signature Request" event name elsewhere?
+   * 2. Are we capturing the "Signature Request" event, maybe under a different event name?
    * 3. Should we spend time to include account_hardware_type? We might be able to create a selector to perform findKeyringForAddress
    * 4. Should we add validation_errors? what is this in the context of transactions?
    * 5. Should we add consistency between event tracking here and the SignatureRequestComponent?
