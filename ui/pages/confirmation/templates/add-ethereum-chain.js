@@ -8,6 +8,8 @@ import {
   DISPLAY,
   COLORS,
 } from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 
 const UNRECOGNIZED_CHAIN = {
@@ -113,7 +115,7 @@ async function getAlerts(pendingApproval) {
   return alerts;
 }
 
-function getValues(pendingApproval, t, actions) {
+function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
 
   return {
@@ -279,12 +281,16 @@ function getValues(pendingApproval, t, actions) {
     ],
     approvalText: t('approveButtonText'),
     cancelText: t('cancel'),
-    onApprove: () =>
-      actions.resolvePendingApproval(
+    onApprove: async () => {
+      await actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
-      ),
-
+      );
+      if (originIsMetaMask) {
+        actions.addCustomNetwork(pendingApproval.requestData);
+        history.push(DEFAULT_ROUTE);
+      }
+    },
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,

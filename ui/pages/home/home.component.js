@@ -142,7 +142,7 @@ export default class Home extends PureComponent {
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
     newCustomNetworkAdded: PropTypes.object,
-    setNewCustomNetworkAdded: PropTypes.func,
+    clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
   };
 
@@ -282,7 +282,7 @@ export default class Home extends PureComponent {
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
-      setNewCustomNetworkAdded,
+      clearNewCustomNetworkAdded,
       setRpcTarget,
     } = this.props;
     return (
@@ -504,7 +504,7 @@ export default class Home extends PureComponent {
                     newCustomNetworkAdded.ticker,
                     newCustomNetworkAdded.chainName,
                   );
-                  setNewCustomNetworkAdded();
+                  clearNewCustomNetworkAdded();
                 }}
               >
                 <Typography
@@ -517,7 +517,7 @@ export default class Home extends PureComponent {
               </Button>
               <Button
                 type="secondary"
-                onClick={() => setNewCustomNetworkAdded()}
+                onClick={() => clearNewCustomNetworkAdded()}
               >
                 <Typography
                   variant={TYPOGRAPHY.H6}

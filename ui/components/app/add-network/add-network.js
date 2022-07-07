@@ -28,7 +28,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   MESSAGE_TYPE,
 } from '../../../../shared/constants/app';
-import { requestUserApproval } from '../../../store/actions';
+import { requestAddNetworkApproval } from '../../../store/actions';
 import Popover from '../../ui/popover';
 import ConfirmationPage from '../../../pages/confirmation/confirmation';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
@@ -238,7 +238,7 @@ const AddNetwork = () => {
                     type="inline"
                     className="add-network__add-button"
                     onClick={async () => {
-                      await dispatch(requestUserApproval(item, true));
+                      await dispatch(requestAddNetworkApproval(item, true));
                     }}
                   >
                     {t('add')}
@@ -276,7 +276,7 @@ const AddNetwork = () => {
       )}
       {showPopover && (
         <Popover>
-          <ConfirmationPage />
+          <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
         </Popover>
       )}
     </>
