@@ -765,7 +765,7 @@ function setupBundlerDefaults(
     // Look for TypeScript files when walking the dependency tree
     extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: devMode,
+    fullPaths: devMode || testing,
     // For sourcemaps
     debug: true,
   });
