@@ -379,6 +379,8 @@ const postProcessServiceWorker = (
     if (testing) {
       fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
     } else {
+      // Lavamoat is always set to true in testing mode
+      // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
       fileOutput = fileOutput.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
