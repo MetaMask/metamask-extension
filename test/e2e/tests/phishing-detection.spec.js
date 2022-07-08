@@ -23,7 +23,7 @@ describe('Phishing Detection', function () {
         };
       });
   }
-  async function mockPhistfortPhishingDetection(mockServer) {
+  async function mockPhishfortPhishingDetection(mockServer) {
     await mockServer.forGet(PHISHFORT_CDN_URL).thenCallback(() => {
       return {
         statusCode: 200,
@@ -151,7 +151,7 @@ describe('Phishing Detection', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        testSpecificMock: mockPhistfortPhishingDetection,
+        testSpecificMock: mockPhishfortPhishingDetection,
         dapp: true,
         failOnConsoleError: false,
       },
