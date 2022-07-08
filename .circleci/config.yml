@@ -142,7 +142,7 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
-      - stats-module-init:
+      - stats-module-load-init:
           requires:
             - prep-build-test-mv3
       - job-publish-prerelease:
@@ -154,7 +154,7 @@ workflows:
             - prep-build-storybook
             - prep-build-test-mv3
             - benchmark
-            - stats-module-init
+            - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -661,7 +661,7 @@ jobs:
           paths:
             - test-artifacts
 
-  stats-module-init:
+  stats-module-load-init:
     executor: node-browsers-medium-plus
     steps:
       - checkout
