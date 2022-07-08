@@ -124,7 +124,6 @@ export default function SnapUpdate({
             <PermissionsConnectFooter />
           </Box>
         )}
-
         <PageContainerFooter
           cancelButtonType="default"
           onCancel={onCancel}

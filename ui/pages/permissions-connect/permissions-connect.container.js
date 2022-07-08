@@ -61,7 +61,7 @@ const mapStateToProps = (state, ownProps) => {
       isUpdatingSnap = true;
       const { id, origin: dappOrigin } = permissionsRequest;
       // reassigning the variable here to fit permissions actions
-      // also adding a metadata property for the same
+      // also adding a metadata and permissions property for the same
       // adding a dappOrigin property to display the requesting party for an update
       permissionsRequest = permissionsRequest.requestData;
       permissionsRequest.dappOrigin = dappOrigin;

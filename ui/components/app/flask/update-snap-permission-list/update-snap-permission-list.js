@@ -27,15 +27,15 @@ export default function UpdateSnapPermissionList({
       const formattedDate = `${year}-${month + 1}-${day}`;
 
       return (
-        <div className="approved-permission-container" key={approvedPermission}>
-          <div className="approved-permission">
-            <i className="fas fa-check" />
+        <div className="approved-permission" key={approvedPermission}>
+          <i className="fas fa-check" />
+          <div className="permission-description">
             {label}
-            {rightIcon && <i className={rightIcon} />}
+            <div className="permission-description-subtext">
+              {t('approvedOn', [formattedDate])}
+            </div>
           </div>
-          <div className="approved-permission-subtext">
-            {t('approvedOn', [formattedDate])}
-          </div>
+          {rightIcon && <i className={rightIcon} />}
         </div>
       );
     });
@@ -48,15 +48,15 @@ export default function UpdateSnapPermissionList({
         revokedPermission,
       );
       return (
-        <div className="revoked-permission-container" key={revokedPermission}>
-          <div className="revoked-permission">
-            <i className="fas fa-x" />
+        <div className="revoked-permission" key={revokedPermission}>
+          <i className="fas fa-x" />
+          <div className="permission-description">
             {label}
-            {rightIcon && <i className={rightIcon} />}
+            <div className="permission-description-subtext">
+              {t('permissionRevoked')}
+            </div>
           </div>
-          <div className="revoked-permission-subtext">
-            {t('permissionRevoked')}
-          </div>
+          {rightIcon && <i className={rightIcon} />}
         </div>
       );
     });

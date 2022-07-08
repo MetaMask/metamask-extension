@@ -3007,15 +3007,15 @@
     "message": "You are granting key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your accounts and assets. Make sure you trust \"$1\" before proceeding.",
     "description": "The parameter is the name of the snap"
   },
+  "snapRequestsPermission": {
+    "message": "This snap is requesting the following permissions:"
+  },
   "snapUpdate": {
     "message": "Update Snap"
   },
   "snapUpdateExplanation": {
     "message": "$1 needs a newer version of your snap.",
     "description": "Informs the user that the stated origin requires your snap to be updated."
-  },
-  "snapRequestsPermission": {
-    "message": "This snap is requesting the following permissions:"
   },
   "snaps": {
     "message": "Snaps"
