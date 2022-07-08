@@ -683,7 +683,7 @@ jobs:
             cp -R development/charts/flamegraph test-artifacts/chrome/lavamoat/
       - run:
           name: Run page load benchmark
-          command: yarn lavamoat:stats:chrome --out test-artifacts/chrome/lavamoat/flamegraph/stacks.json
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome/lavamoat/flamegraph/stacks.json
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
