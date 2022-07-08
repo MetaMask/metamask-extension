@@ -27,13 +27,7 @@ describe('Phishing Detection', function () {
     await mockServer.forGet(PHISHFORT_CDN_URL).thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          version: 2,
-          tolerance: 2,
-          fuzzylist: [],
-          whitelist: [],
-          blacklist: ['127.0.0.1'],
-        },
+        json: ['127.0.0.1'],
       };
     });
   }
