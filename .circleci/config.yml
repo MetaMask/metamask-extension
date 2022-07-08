@@ -681,8 +681,8 @@ jobs:
           command: |
             mkdir -p test-artifacts/chrome/mv3
             cp -R development/charts/flamegraph test-artifacts/chrome/mv3/initialisation
-            cp development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
-            cp development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
       - run:
           name: Run page load benchmark
           command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
