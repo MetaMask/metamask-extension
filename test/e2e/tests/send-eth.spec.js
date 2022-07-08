@@ -105,7 +105,7 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
   it('renders the correct recipient on the confirmation screen', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: 'special-settings',
         ganacheOptions,
         title: this.test.title,
       },
