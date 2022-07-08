@@ -94,9 +94,11 @@ async function main() {
   const results = await profilePageLoad();
   const { out } = argv;
 
+  console.log('results = ', results);
+
   if (out) {
     if (results['background.js']) {
-      const backgroundOutPath = `${out}/background/stacks.json`;
+      const backgroundOutPath = `${out}/initialisation/background/stacks.json`;
       const backgroundOutputDirectory = path.dirname(backgroundOutPath);
       const backgroundExistingParentDirectory = await getFirstParentDirectoryThatExists(
         backgroundOutputDirectory,
@@ -113,7 +115,7 @@ async function main() {
       );
     }
     if (results['ui.js']) {
-      const uiOutPath = `${out}/ui/stacks.json`;
+      const uiOutPath = `${out}/initialisation/ui/stacks.json`;
       const uiOutputDirectory = path.dirname(uiOutPath);
       const uiExistingParentDirectory = await getFirstParentDirectoryThatExists(
         uiOutputDirectory,
