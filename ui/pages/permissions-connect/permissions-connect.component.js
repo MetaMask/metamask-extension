@@ -38,7 +38,6 @@ export default class PermissionConnect extends Component {
     snapInstallPath: PropTypes.string.isRequired,
     snapUpdatePath: PropTypes.string.isRequired,
     isSnap: PropTypes.bool.isRequired,
-    isUpdatingSnap: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IN
     totalPages: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
