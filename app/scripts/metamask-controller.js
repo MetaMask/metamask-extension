@@ -666,6 +666,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokePermissions`,
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
         `${this.approvalController.name}:addRequest`,
+        `${this.permissionController.name}:grantPermissions`,
       ],
     });
 
