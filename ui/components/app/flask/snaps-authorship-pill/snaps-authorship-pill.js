@@ -13,10 +13,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const snapIdPrefixes = ['npm:', 'local:'];
 
-const SnapsAuthorshipPill = ({ snapId = '', version, className }) => {
+const SnapsAuthorshipPill = ({ snapId, version, className }) => {
   // @todo Use getSnapPrefix from snaps-skunkworks when possible
-  const snapPrefix = snapIdPrefixes.find((prefix) => snapId.startsWith(prefix));
-  const packageName = snapId.replace(snapPrefix, '');
+  const snapPrefix = snapIdPrefixes.find((prefix) =>
+    snapId?.startsWith(prefix),
+  );
+  const packageName = snapId?.replace(snapPrefix, '');
   const isNPM = snapPrefix === 'npm:';
   const url = isNPM
     ? `https://www.npmjs.com/package/${packageName}`

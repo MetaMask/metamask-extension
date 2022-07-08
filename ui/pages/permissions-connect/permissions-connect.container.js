@@ -52,13 +52,11 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  let isUpdatingSnap;
   if (!permissionsRequest) {
     permissionsRequest = getSnapUpdateRequests(state).find(
       (req) => req.id === permissionsRequestId,
     );
     if (permissionsRequest) {
-      isUpdatingSnap = true;
       const { id, origin: dappOrigin } = permissionsRequest;
       // reassigning the variable here to fit permissions actions
       // also adding a metadata and permissions property for the same
@@ -142,7 +140,6 @@ const mapStateToProps = (state, ownProps) => {
     isRequestingAccounts,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     isSnap,
-    isUpdatingSnap,
     snapInstallPath,
     snapUpdatePath,
     ///: END:ONLY_INCLUDE_IN

@@ -95,7 +95,6 @@ export default class PermissionConnect extends Component {
       snapInstallPath,
       snapUpdatePath,
       isSnap,
-      isUpdatingSnap,
       ///: END:ONLY_INCLUDE_IN
       getCurrentWindowTab,
       getRequestAccountTabIds,
@@ -118,9 +117,9 @@ export default class PermissionConnect extends Component {
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      if (isSnap && !isUpdatingSnap) {
+      if (isSnap && !permissionsRequest.newPermissions) {
         history.push(snapInstallPath);
-      } else if (isSnap && isUpdatingSnap) {
+      } else if (isSnap && permissionsRequest.newPermissions) {
         history.push(snapUpdatePath);
       } else {
         ///: END:ONLY_INCLUDE_IN

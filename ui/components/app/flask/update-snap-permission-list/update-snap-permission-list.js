@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getPermissionDescription } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { formatDate } from '../../../../helpers/utils/util';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -17,15 +18,7 @@ export default function UpdateSnapPermissionList({
         approvedPermission,
       );
       const { date } = approvedPermissions[approvedPermission];
-      const dateObj = new Date(date);
-      const [month, day, year] = [
-        dateObj.getMonth(),
-        dateObj.getDate(),
-        dateObj.getFullYear(),
-      ];
-      // getMonth is zero-based
-      const formattedDate = `${year}-${month + 1}-${day}`;
-
+      const formattedDate = formatDate(date, 'yyyy-MM-dd');
       return (
         <div className="approved-permission" key={approvedPermission}>
           <i className="fas fa-check" />

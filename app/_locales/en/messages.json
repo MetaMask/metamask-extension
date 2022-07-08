@@ -290,7 +290,7 @@
   },
   "approvedOn": {
     "message": "Approved on $1",
-    "description": "Shows approval date for a permission"
+    "description": "$1 is the approval date for a permission"
   },
   "areYouDeveloper": {
     "message": "Are you a developer?"
@@ -3015,7 +3015,7 @@
   },
   "snapUpdateExplanation": {
     "message": "$1 needs a newer version of your snap.",
-    "description": "Informs the user that the stated origin requires your snap to be updated."
+    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snaps"

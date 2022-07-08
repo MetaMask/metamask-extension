@@ -67,7 +67,7 @@ export default function SnapUpdate({
           headerTitle={t('snapUpdate')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={request.snapId}
-          isSnapUpdate
+          isSnapInstallOrUpdate
           snapVersion={request.newVersion}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />

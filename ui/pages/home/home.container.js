@@ -5,7 +5,9 @@ import {
   activeTabHasPermissions,
   getCurrentEthBalance,
   getFirstPermissionRequest,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getFirstSnapUpdateRequest,
+  ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -89,12 +91,14 @@ const mapStateToProps = (state) => {
 
   let firstPermissionsRequest, firstPermissionsRequestId;
   firstPermissionsRequest = getFirstPermissionRequest(state);
-  if (firstPermissionsRequest) {
-    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
-  } else {
+  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.id || null;
   }
+  ///: END:ONLY_INCLUDE_IN
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
