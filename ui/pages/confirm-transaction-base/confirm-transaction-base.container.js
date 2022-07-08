@@ -54,6 +54,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -112,7 +113,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  const toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
+  let toAddress = txParamsToAddress;
+  if (type !== TRANSACTION_TYPES.SIMPLE_SEND) {
+    toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
+  }
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
