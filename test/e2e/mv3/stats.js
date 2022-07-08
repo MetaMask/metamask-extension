@@ -92,23 +92,57 @@ async function main() {
   );
 
   const results = await profilePageLoad();
-
   const { out } = argv;
 
-  let outputDirectory;
-  let existingParentDirectory;
   if (out) {
-    outputDirectory = path.dirname(out);
-    existingParentDirectory = await getFirstParentDirectoryThatExists(
-      outputDirectory,
-    );
-    if (!(await isWritable(existingParentDirectory))) {
-      throw new Error('Specified output file directory is not writable');
+    if (results['background.js']) {
+      const backgroundOutPath = `${out}/background/stacks.json`;
+      const backgroundOutputDirectory = path.dirname(backgroundOutPath);
+      const backgroundExistingParentDirectory = await getFirstParentDirectoryThatExists(
+        backgroundOutputDirectory,
+      );
+      if (!(await isWritable(backgroundExistingParentDirectory))) {
+        throw new Error('Specified output file directory is not writable');
+      }
+      if (backgroundOutputDirectory !== backgroundExistingParentDirectory) {
+        await fs.mkdir(backgroundOutputDirectory, { recursive: true });
+      }
+      await fs.writeFile(
+        backgroundOutPath,
+        JSON.stringify(results['background.js'], null, 2),
+      );
     }
-    if (outputDirectory !== existingParentDirectory) {
-      await fs.mkdir(outputDirectory, { recursive: true });
+    if (results['ui.js']) {
+      const uiOutPath = `${out}/ui/stacks.json`;
+      const uiOutputDirectory = path.dirname(uiOutPath);
+      const uiExistingParentDirectory = await getFirstParentDirectoryThatExists(
+        uiOutputDirectory,
+      );
+      if (!(await isWritable(uiExistingParentDirectory))) {
+        throw new Error('Specified output file directory is not writable');
+      }
+      if (uiOutputDirectory !== uiExistingParentDirectory) {
+        await fs.mkdir(uiOutputDirectory, { recursive: true });
+      }
+      await fs.writeFile(uiOutPath, JSON.stringify(results['ui.js'], null, 2));
     }
-    await fs.writeFile(out, JSON.stringify(results['ui.js'], null, 2));
+    if (results.loadTime) {
+      const loadTimeOutPath = `${out}/load_time/stats.json`;
+      const loadTimeOutputDirectory = path.dirname(loadTimeOutPath);
+      const loadTimeExistingParentDirectory = await getFirstParentDirectoryThatExists(
+        loadTimeOutputDirectory,
+      );
+      if (!(await isWritable(loadTimeExistingParentDirectory))) {
+        throw new Error('Specified output file directory is not writable');
+      }
+      if (loadTimeOutputDirectory !== loadTimeExistingParentDirectory) {
+        await fs.mkdir(loadTimeOutputDirectory, { recursive: true });
+      }
+      await fs.writeFile(
+        loadTimeOutPath,
+        JSON.stringify(results.loadTime, null, 2),
+      );
+    }
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
