@@ -5,8 +5,8 @@ const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { exitWithError } = require('../../development/lib/exit-with-error');
-const { withFixtures, tinyDelayMs } = require('./helpers');
+const { exitWithError } = require('../../../development/lib/exit-with-error');
+const { withFixtures, tinyDelayMs } = require('../helpers');
 
 async function measurePage() {
   let metrics;
@@ -100,7 +100,7 @@ async function profilePageLoad() {
 
   metrics['background.js'] = results[0];
   metrics['ui.js'] = results[1];
-  metrics['load_time'] = results[2];
+  metrics.loadTime = results[2];
 
   return metrics;
 }
