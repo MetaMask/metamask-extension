@@ -98,7 +98,7 @@ async function start() {
   const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">MV3 Background Module Init Stats</a>`;
   const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
   const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">MV3 UI Init Stats</a>`;
-  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/stats.json`;
+  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
   const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
 
   // link to artifacts
