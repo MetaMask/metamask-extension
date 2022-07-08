@@ -31,11 +31,16 @@ describe('Test Snap bip-44', function () {
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('.snapId3', 'npm:@metamask/test-snap-bip44');
-        await driver.clickElement({
-          text: 'Connect BIP-44 Snap',
-          tag: 'button',
-        });
+        await driver.delay(1000);
+        await driver.fill('#snapId3', 'npm:@metamask/test-snap-bip44');
+
+        // reveal snapId3 by finding and scrolling to #snapId4
+        const snapButton = await driver.findElement('#snapId4');
+        await driver.scrollToElement(snapButton);
+        await driver.delay(500);
+
+        // connect the snap
+        await driver.clickElement('#connectBip44');
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -77,14 +82,11 @@ describe('Test Snap bip-44', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Send Test to BIP-44 Snap',
-          tag: 'button',
-        });
+        await driver.clickElement('#sendBip44');
 
         // check the results of the public key test
         await driver.delay(2000);
-        const bip44Result = await driver.findElement('.bip44Result');
+        const bip44Result = await driver.findElement('#bip44Result');
         assert.equal(
           await bip44Result.getText(),
           'Public key: "0x86debb44fb3a984d93f326131d4c1db0bc39644f1a67b673b3ab45941a1cea6a385981755185ac4594b6521e4d1e8d1"',

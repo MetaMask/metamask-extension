@@ -448,11 +448,8 @@ async function bundleMV3AppInitialiser({
   }
 
   if (testing) {
-    const filePath = require.resolve('@lavamoat/lavapack/src/runtime.js');
-    const content = readFileSync(filePath);
-    const fileOutput = content
-      .toString('utf8')
-      .replace('statsMode = false', 'statsMode = true');
+    const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
+    const fileOutput = content.replace('statsMode = false', 'statsMode = true');
     writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
   }
 
@@ -779,7 +776,7 @@ function setupBundlerDefaults(
     // Look for TypeScript files when walking the dependency tree
     extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: devMode,
+    fullPaths: devMode || testing,
     // For sourcemaps
     debug: true,
   });
