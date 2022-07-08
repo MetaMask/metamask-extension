@@ -48,54 +48,9 @@ async function measurePage() {
   return metrics;
 }
 
-// function calculateResult(calc) {
-//   return (result) => {
-//     const calculatedResult = {};
-//     for (const key of Object.keys(result)) {
-//       calculatedResult[key] = calc(result[key]);
-//     }
-//     return calculatedResult;
-//   };
-// }
-// const calculateSum = (array) => array.reduce((sum, val) => sum + val);
-// const calculateAverage = (array) => calculateSum(array) / array.length;
-// const minResult = calculateResult((array) => Math.min(...array));
-// const maxResult = calculateResult((array) => Math.max(...array));
-// const averageResult = calculateResult((array) => calculateAverage(array));
-// const standardDeviationResult = calculateResult((array) => {
-//   if (array.length === 1) {
-//     return 0;
-//   }
-//   const average = calculateAverage(array);
-//   const squareDiffs = array.map((value) => Math.pow(value - average, 2));
-//   return Math.sqrt(calculateAverage(squareDiffs));
-// });
-// // 95% margin of error calculated using Student's t-distribution
-// const calculateMarginOfError = (array) =>
-//   ttest(array).confidence()[1] - calculateAverage(array);
-// const marginOfErrorResult = calculateResult((array) =>
-//   array.length === 1 ? 0 : calculateMarginOfError(array),
-// );
-
 async function profilePageLoad() {
   const results = await measurePage();
   const metrics = {};
-
-  // metrics['background.js'] = {
-  //   min: minResult(results[0]),
-  //   max: maxResult(results[0]),
-  //   average: averageResult(results[0]),
-  //   standardDeviation: standardDeviationResult(results[0]),
-  //   marginOfError: marginOfErrorResult(results[0]),
-  // };
-
-  // metrics['ui.js'] = {
-  //   min: minResult(results[1]),
-  //   max: maxResult(results[1]),
-  //   average: averageResult(results[1]),
-  //   standardDeviation: standardDeviationResult(results[1]),
-  //   marginOfError: marginOfErrorResult(results[1]),
-  // };
 
   metrics['background.js'] = results[0];
   metrics['ui.js'] = results[1];
@@ -165,7 +120,16 @@ async function main() {
     if (outputDirectory !== existingParentDirectory) {
       await fs.mkdir(outputDirectory, { recursive: true });
     }
-    await fs.writeFile(out, JSON.stringify(results, null, 2));
+
+    await fs.writeFile(
+      path.join(out, 'background.json'),
+      JSON.stringify(results['background.js'], null, 2),
+    );
+
+    await fs.writeFile(
+      path.join(out, 'ui.json'),
+      JSON.stringify(results['ui.js'], null, 2),
+    );
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
