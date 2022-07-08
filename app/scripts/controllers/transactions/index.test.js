@@ -2274,6 +2274,7 @@ describe('Transaction Controller', function () {
     });
 
     it('updates editible params when type changes from simple send to token transfer', async function () {
+      providerResultStub.eth_getCode = '0xab';
       // test update gasFees
       await txController.updateEditableParams('1', {
         data:
