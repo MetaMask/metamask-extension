@@ -8,6 +8,7 @@ module.exports = {
     'app/vendor/**',
     'builds/**/*',
     'development/chromereload.js',
+    'development/charts/flamegraph/**',
     'dist/**/*',
     'node_modules/**/*',
   ],
