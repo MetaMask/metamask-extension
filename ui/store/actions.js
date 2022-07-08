@@ -3575,6 +3575,10 @@ export function fetchSmartTransactionFees(
       approveTxParams.value = '0x0';
     }
     try {
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+        payload: null,
+      });
       return await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
         approveTxParams,
@@ -3585,7 +3589,7 @@ export function fetchSmartTransactionFees(
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3647,7 +3651,7 @@ export function signAndSendSmartTransaction({
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3668,7 +3672,7 @@ export function updateSmartTransaction(uuid, txData) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3696,7 +3700,7 @@ export function cancelSmartTransaction(uuid) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;

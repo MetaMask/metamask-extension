@@ -932,10 +932,11 @@ export const signAndSendSwapsSmartTransaction = ({
         };
       }
       const fees = await dispatch(
-        fetchSwapsSmartTransactionFees(
+        fetchSwapsSmartTransactionFees({
           unsignedTransaction,
-          updatedApproveTxParams,
-        ),
+          approveTxParams: updatedApproveTxParams,
+          fallbackOnNotEnoughFunds: true,
+        }),
       );
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
@@ -998,7 +999,7 @@ export const signAndSendSwapsSmartTransaction = ({
       } = getState();
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
-        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+        dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
     }
   };
@@ -1312,10 +1313,11 @@ export function fetchMetaSwapsGasPriceEstimates() {
   };
 }
 
-export function fetchSwapsSmartTransactionFees(
+export function fetchSwapsSmartTransactionFees({
   unsignedTransaction,
   approveTxParams,
-) {
+  fallbackOnNotEnoughFunds = false,
+}) {
   return async (dispatch, getState) => {
     const {
       swaps: { isFeatureFlagLoaded },
@@ -1327,7 +1329,12 @@ export function fetchSwapsSmartTransactionFees(
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
-        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+        if (
+          fallbackOnNotEnoughFunds ||
+          errorObj?.error !== stxErrorTypes.NOT_ENOUGH_FUNDS
+        ) {
+          dispatch(setCurrentSmartTransactionsError(errorObj?.error));
+        }
       }
     }
     return null;
@@ -1344,7 +1351,7 @@ export function cancelSwapsSmartTransaction(uuid) {
       } = getState();
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
-        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+        dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
     }
   };

@@ -44,6 +44,7 @@ import {
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
   getSmartTransactionsEnabled,
+  getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
@@ -90,6 +91,7 @@ import {
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
   addHexes,
+  decWEIToDecETH,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
@@ -185,6 +187,7 @@ export default function ViewQuote() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+  const smartTransactionsError = useSelector(getSmartTransactionsError);
   const currentSmartTransactionsErrorMessageDismissed = useSelector(
     getCurrentSmartTransactionsErrorMessageDismissed,
   );
@@ -448,6 +451,14 @@ export default function ViewQuote() {
       )
     : null;
 
+  let ethBalanceNeededStx;
+  if (smartTransactionsError?.balanceNeededWei) {
+    ethBalanceNeededStx = decWEIToDecETH(
+      smartTransactionsError.balanceNeededWei -
+        smartTransactionsError.currentBalanceWei,
+    );
+  }
+
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
     if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
@@ -498,7 +509,11 @@ export default function ViewQuote() {
   }, [originalApproveAmount, approveAmount]);
 
   const showInsufficientWarning =
-    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
+    (balanceError ||
+      tokenBalanceNeeded ||
+      ethBalanceNeeded ||
+      ethBalanceNeededStx) &&
+    !warningHidden;
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -673,12 +688,11 @@ export default function ViewQuote() {
       }),
     );
   };
-
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
         <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
-          {tokenBalanceNeeded || ethBalanceNeeded}
+          {tokenBalanceNeeded || ethBalanceNeededStx || ethBalanceNeeded}
         </span>,
         tokenBalanceNeeded && !(sourceTokenSymbol === defaultSwapsToken.symbol)
           ? sourceTokenSymbol
@@ -771,13 +785,14 @@ export default function ViewQuote() {
     (networkAndAccountSupports1559 && baseAndPriorityFeePerGas === undefined) ||
     (!networkAndAccountSupports1559 &&
       (gasPrice === null || gasPrice === undefined)) ||
-    (currentSmartTransactionsEnabled && currentSmartTransactionsError);
+    (currentSmartTransactionsEnabled &&
+      (currentSmartTransactionsError || ethBalanceNeededStx));
 
   useEffect(() => {
     if (
       currentSmartTransactionsEnabled &&
       smartTransactionsOptInStatus &&
-      !isSwapButtonDisabled
+      !insufficientTokens
     ) {
       const unsignedTx = {
         from: unsignedTransaction.from,
@@ -789,10 +804,22 @@ export default function ViewQuote() {
       };
       intervalId = setInterval(() => {
         if (!swapsSTXLoading) {
-          dispatch(fetchSwapsSmartTransactionFees(unsignedTx, approveTxParams));
+          dispatch(
+            fetchSwapsSmartTransactionFees({
+              unsignedTransaction: unsignedTx,
+              approveTxParams,
+              fallbackOnNotEnoughFunds: false,
+            }),
+          );
         }
       }, swapsNetworkConfig.stxGetTransactionsRefreshTime);
-      dispatch(fetchSwapsSmartTransactionFees(unsignedTx, approveTxParams));
+      dispatch(
+        fetchSwapsSmartTransactionFees({
+          unsignedTransaction: unsignedTx,
+          approveTxParams,
+          fallbackOnNotEnoughFunds: false,
+        }),
+      );
     } else if (intervalId) {
       clearInterval(intervalId);
     }
@@ -809,7 +836,7 @@ export default function ViewQuote() {
     unsignedTransaction.to,
     chainId,
     swapsNetworkConfig.stxGetTransactionsRefreshTime,
-    isSwapButtonDisabled,
+    insufficientTokens,
   ]);
 
   useEffect(() => {
