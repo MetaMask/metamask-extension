@@ -1,7 +1,6 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const proxy = require('selenium-webdriver/proxy');
-const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 
 /**
  * Proxy host to use for HTTPS requests
@@ -19,7 +18,8 @@ class ChromeDriver {
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
-    if (isManifestV3()) {
+
+    if (process.env.ENABLE_MV3) {
       args.push('--log-level=0');
       args.push('--enable-logging');
       args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);

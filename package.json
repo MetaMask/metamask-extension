@@ -76,7 +76,7 @@
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:background:auto": "./development/generate-lavamoat-policies.sh",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto",
-    "lavamoat:stats:chrome": "SELENIUM_BROWSER=chrome node test/e2e/lavamoat-stats.js"
+    "lavamoat:stats:chrome": "SELENIUM_BROWSER=chrome ENABLE_MV3=true node test/e2e/lavamoat-stats.js"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
