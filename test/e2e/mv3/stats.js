@@ -8,101 +8,45 @@ const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('../helpers');
 
-async function measurePage() {
-  let metrics;
+async function profilePageLoad() {
+  const parsedLogs = {};
   try {
     await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
       await driver.delay(tinyDelayMs);
       await driver.navigate();
-      await driver.findElement('#password');
+      // await driver.findElement('#password');
       await driver.delay(1000);
       const logs = await driver.checkBrowserForLavamoatLogs();
 
       let logString = '';
-      let inObject = false;
-
-      const parsedLogs = [];
+      let inObject = '';
 
       logs.forEach((log) => {
         if (log.indexOf('"version": 1') >= 0) {
           logString += log;
-          parsedLogs.push(`{${logString}}`);
+          parsedLogs[inObject] = JSON.parse(`{${logString}}`);
           logString = '';
-          inObject = false;
+          inObject = '';
         } else if (inObject) {
           logString += log;
         } else if (
-          log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0 ||
-          log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0 ||
-          log.search(/"name": "Total"/u) >= 0
+          log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0
         ) {
           logString += log;
-          inObject = true;
+          inObject = 'background.js';
+        } else if (log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0) {
+          logString += log;
+          inObject = 'ui.js';
+        } else if (log.search(/"name": "Total"/u) >= 0) {
+          logString += log;
+          inObject = 'loadTime';
         }
       });
-
-      metrics = parsedLogs.map((pl) => JSON.parse(pl));
     });
   } catch (error) {
     // do nothing
   }
-  return metrics;
-}
-
-// function calculateResult(calc) {
-//   return (result) => {
-//     const calculatedResult = {};
-//     for (const key of Object.keys(result)) {
-//       calculatedResult[key] = calc(result[key]);
-//     }
-//     return calculatedResult;
-//   };
-// }
-// const calculateSum = (array) => array.reduce((sum, val) => sum + val);
-// const calculateAverage = (array) => calculateSum(array) / array.length;
-// const minResult = calculateResult((array) => Math.min(...array));
-// const maxResult = calculateResult((array) => Math.max(...array));
-// const averageResult = calculateResult((array) => calculateAverage(array));
-// const standardDeviationResult = calculateResult((array) => {
-//   if (array.length === 1) {
-//     return 0;
-//   }
-//   const average = calculateAverage(array);
-//   const squareDiffs = array.map((value) => Math.pow(value - average, 2));
-//   return Math.sqrt(calculateAverage(squareDiffs));
-// });
-// // 95% margin of error calculated using Student's t-distribution
-// const calculateMarginOfError = (array) =>
-//   ttest(array).confidence()[1] - calculateAverage(array);
-// const marginOfErrorResult = calculateResult((array) =>
-//   array.length === 1 ? 0 : calculateMarginOfError(array),
-// );
-
-async function profilePageLoad() {
-  const results = await measurePage();
-  const metrics = {};
-
-  // metrics['background.js'] = {
-  //   min: minResult(results[0]),
-  //   max: maxResult(results[0]),
-  //   average: averageResult(results[0]),
-  //   standardDeviation: standardDeviationResult(results[0]),
-  //   marginOfError: marginOfErrorResult(results[0]),
-  // };
-
-  // metrics['ui.js'] = {
-  //   min: minResult(results[1]),
-  //   max: maxResult(results[1]),
-  //   average: averageResult(results[1]),
-  //   standardDeviation: standardDeviationResult(results[1]),
-  //   marginOfError: marginOfErrorResult(results[1]),
-  // };
-
-  metrics['background.js'] = results[0];
-  metrics['ui.js'] = results[1];
-  metrics.loadTime = results[2];
-
-  return metrics;
+  return parsedLogs;
 }
 
 async function isWritable(directory) {
@@ -147,6 +91,8 @@ async function main() {
       }),
   );
 
+  const results = await profilePageLoad();
+
   const { out } = argv;
 
   let outputDirectory;
@@ -159,15 +105,10 @@ async function main() {
     if (!(await isWritable(existingParentDirectory))) {
       throw new Error('Specified output file directory is not writable');
     }
-  }
-
-  const results = await profilePageLoad();
-
-  if (out) {
     if (outputDirectory !== existingParentDirectory) {
       await fs.mkdir(outputDirectory, { recursive: true });
     }
-    await fs.writeFile(out, JSON.stringify(results, null, 2));
+    await fs.writeFile(out, JSON.stringify(results['ui.js'], null, 2));
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
