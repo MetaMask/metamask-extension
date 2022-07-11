@@ -760,10 +760,8 @@ describe('Send Slice', () => {
 
       it('should set a warning when sending to a token address in the token address list', () => {
         const tokenAssetTypeState = {
-          ...initialState,
-          recipient: {
-            userInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          },
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         };
 
         const action = {
@@ -778,17 +776,17 @@ describe('Send Slice', () => {
 
         const result = sendReducer(tokenAssetTypeState, action);
 
-        expect(result.recipient.warning).toStrictEqual(
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.warning).toStrictEqual(
           KNOWN_RECIPIENT_ADDRESS_WARNING,
         );
       });
 
       it('should set a warning when sending to a token address in the token list', () => {
         const tokenAssetTypeState = {
-          ...initialState,
-          recipient: {
-            userInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          },
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         };
 
         const action = {
@@ -803,17 +801,17 @@ describe('Send Slice', () => {
 
         const result = sendReducer(tokenAssetTypeState, action);
 
-        expect(result.recipient.warning).toStrictEqual(
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.warning).toStrictEqual(
           KNOWN_RECIPIENT_ADDRESS_WARNING,
         );
       });
 
       it('should set a warning when sending to an address that is probably a token contract', () => {
         const tokenAssetTypeState = {
-          ...initialState,
-          recipient: {
-            userInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          },
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         };
 
         const action = {
@@ -829,7 +827,9 @@ describe('Send Slice', () => {
 
         const result = sendReducer(tokenAssetTypeState, action);
 
-        expect(result.recipient.warning).toStrictEqual(
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.warning).toStrictEqual(
           KNOWN_RECIPIENT_ADDRESS_WARNING,
         );
       });
@@ -1730,9 +1730,7 @@ describe('Send Slice', () => {
             },
           },
         },
-        send: {
-          account: {},
-        },
+        send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
       };
 
       it('should create actions for updateRecipientUserInput and checks debounce for validation', async () => {
@@ -2024,22 +2022,7 @@ describe('Send Slice', () => {
               },
             },
           },
-          send: {
-            asset: {
-              type: '',
-            },
-            recipient: {
-              address: 'Address',
-              nickname: 'NickName',
-            },
-            gas: {
-              gasPrice: '0x1',
-            },
-            amount: {
-              value: '0x1',
-            },
-            account: {},
-          },
+          send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
         };
 
         const store = mockStore(updateRecipientState);
@@ -2425,6 +2408,7 @@ describe('Send Slice', () => {
               error: null,
               nickname: '',
               warning: null,
+              recipientWarningAcknowledged: false,
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
@@ -2567,6 +2551,7 @@ describe('Send Slice', () => {
               error: null,
               nickname: '',
               warning: null,
+              recipientWarningAcknowledged: false,
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
@@ -2752,6 +2737,7 @@ describe('Send Slice', () => {
             error: null,
             warning: null,
             nickname: '',
+            recipientWarningAcknowledged: false,
           },
           status: SEND_STATUSES.VALID,
           transactionType: '0x0',
