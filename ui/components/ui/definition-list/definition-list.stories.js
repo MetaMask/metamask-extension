@@ -1,16 +1,10 @@
 import React from 'react';
-import { object, select } from '@storybook/addon-knobs';
 import {
   COLORS,
   SIZES,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import DefinitionList from './definition-list';
-
-export default {
-  title: 'Components/UI/DefinitionList',
-  id: __filename,
-};
 
 const basic = {
   term:
@@ -34,39 +28,93 @@ const tooltips = {
   Ticker: 'The currency symbol of the primary currency for this network',
 };
 
-export const DefaultStory = () => (
-  <DefinitionList
-    dictionary={object('dictionary', basic)}
-    gapSize={select('gapSize', SIZES, SIZES.SM)}
-  />
+export default {
+  title: 'Components/UI/DefinitionList',
+  id: __filename,
+  argTypes: {
+    dictionary: { control: 'object', name: 'Dictionary' },
+    gapSize: {
+      control: 'select',
+      name: 'Gap Size',
+      options: SIZES,
+      defaultValue: SIZES.SM,
+    },
+    tooltips: { control: 'object', name: 'Tooltips' },
+    termTypography: {
+      name: 'Term Typography',
+      variant: {
+        control: 'select',
+        name: 'Term Variant',
+        options: TYPOGRAPHY,
+      },
+      color: {
+        control: 'select',
+        name: 'Term Color',
+        options: COLORS,
+      },
+    },
+    definitionTypography: {
+      name: 'Definition Typography',
+      variant: {
+        control: 'select',
+        name: 'Definition Variant',
+        options: TYPOGRAPHY,
+      },
+      color: {
+        control: 'select',
+        name: 'Term Color',
+        options: COLORS,
+      },
+    },
+  },
+  args: {
+    dictionary: basic,
+    tooltips,
+    termTypography: {
+      variant: TYPOGRAPHY.H6,
+      color: COLORS.TEXT_DEFAULT,
+    },
+    definitionTypography: {
+      variant: TYPOGRAPHY.H6,
+      color: COLORS.TEXT_DEFAULT,
+    },
+  },
+};
+
+export const DefaultStory = (args) => (
+  <DefinitionList dictionary={args.dictionary} gapSize={args.gapSize} />
 );
 
 DefaultStory.storyName = 'Default';
 
-export const WithTooltips = () => (
+export const WithTooltips = (args) => (
   <DefinitionList
-    dictionary={object('dictionary', advanced)}
-    tooltips={object('tooltips', tooltips)}
-    gapSize={select('gapSize', SIZES, SIZES.SM)}
+    dictionary={args.dictionary}
+    tooltips={args.tooltips}
+    gapSize={args.gapSize}
   />
 );
 
-export const WithTypographyControl = () => (
+WithTooltips.args = {
+  dictionary: advanced,
+};
+
+export const WithTypographyControl = (args) => (
   <DefinitionList
-    dictionary={object('dictionary', advanced)}
-    tooltips={object('tooltips', tooltips)}
-    gapSize={select('gapSize', SIZES, SIZES.SM)}
+    dictionary={args.dictionary}
+    tooltips={args.tooltips}
+    gapSize={args.gapSize}
     termTypography={{
-      variant: select('termTypography.variant', TYPOGRAPHY, TYPOGRAPHY.H6),
-      color: select('termTypography.color', COLORS, COLORS.TEXT_DEFAULT),
+      variant: args.termTypography.variant,
+      color: args.termTypography.color,
     }}
     definitionTypography={{
-      variant: select(
-        'definitionTypography.variant',
-        TYPOGRAPHY,
-        TYPOGRAPHY.H6,
-      ),
-      color: select('definitionTypography.color', COLORS, COLORS.TEXT_DEFAULT),
+      variant: args.definitionTypography.variant,
+      color: args.definitionTypography.color,
     }}
   />
 );
+
+WithTypographyControl.args = {
+  dictionary: advanced,
+};
