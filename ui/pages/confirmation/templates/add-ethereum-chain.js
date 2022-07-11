@@ -43,36 +43,63 @@ const UNRECOGNIZED_CHAIN = {
   },
 };
 
-const INVALID_CHAIN = {
-  id: 'INVALID_CHAIN',
-  severity: SEVERITIES.DANGER,
-  content: {
-    element: 'span',
-    children: {
-      element: 'MetaMaskTranslation',
-      props: {
-        translationKey: 'mismatchedChain',
-        variables: [
-          {
-            element: 'a',
-            key: 'mismatchedChainLink',
-            props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
-              target: '__blank',
-              tabIndex: 0,
-            },
-            children: {
-              element: 'MetaMaskTranslation',
+const getMisMatchedChainDataError = (error) => {
+  let severity, baseTransalationKey;
+
+  switch (error) {
+    case 'DECIMALS':
+      severity = SEVERITIES.WARNING;
+      baseTransalationKey = 'mismatchedNetworkDecimals';
+      break;
+    case 'NAME':
+      severity = SEVERITIES.WARNING;
+      baseTransalationKey = 'mismatchedNetworkName';
+      break;
+    case 'SYMBOL':
+      severity = SEVERITIES.DANGER;
+      baseTransalationKey = 'mismatchedNetworkSymbol';
+      break;
+    case 'RPC':
+      severity = SEVERITIES.DANGER;
+      baseTransalationKey = 'mismatchedRpcUrl';
+      break;
+    default:
+      severity = SEVERITIES.DANGER;
+      baseTransalationKey = 'mismatchedChain';
+      break;
+  }
+
+  return {
+    id: 'INVALID_CHAIN',
+    severity,
+    content: {
+      element: 'span',
+      children: {
+        element: 'MetaMaskTranslation',
+        props: {
+          translationKey: baseTransalationKey,
+          variables: [
+            {
+              element: 'a',
+              key: 'mismatchedChainLink',
               props: {
-                translationKey: 'mismatchedChainLinkText',
+                href:
+                  'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+                target: '__blank',
+                tabIndex: 0,
+              },
+              children: {
+                element: 'MetaMaskTranslation',
+                props: {
+                  translationKey: 'mismatchedChainLinkText',
+                },
               },
             },
-          },
-        ],
+          ],
+        },
       },
     },
-  },
+  };
 };
 
 async function getAlerts(pendingApproval) {
@@ -83,7 +110,7 @@ async function getAlerts(pendingApproval) {
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
   );
-  let validated = Boolean(matchedChain);
+  const validated = Boolean(matchedChain);
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   if (originIsMetaMask && validated) {
@@ -91,26 +118,31 @@ async function getAlerts(pendingApproval) {
   }
 
   if (matchedChain) {
+    if (matchedChain.nativeCurrency?.decimals !== 18) {
+      alerts.push(getMisMatchedChainDataError('DECIMALS'));
+    }
     if (
-      matchedChain.nativeCurrency?.decimals !== 18 ||
       matchedChain.name.toLowerCase() !==
-        pendingApproval.requestData.chainName.toLowerCase() ||
+      pendingApproval.requestData.chainName.toLowerCase()
+    ) {
+      alerts.push(getMisMatchedChainDataError('NAME'));
+    }
+    if (
       matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker
     ) {
-      validated = false;
+      alerts.push(getMisMatchedChainDataError('SYMBOL'));
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
     if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
-      validated = false;
+      alerts.push(getMisMatchedChainDataError('RPC'));
     }
   }
 
   if (!matchedChain) {
     alerts.push(UNRECOGNIZED_CHAIN);
-  } else if (!validated) {
-    alerts.push(INVALID_CHAIN);
   }
+
   return alerts;
 }
 
