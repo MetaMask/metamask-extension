@@ -1,14 +1,8 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { setDiff } from '@metamask/snap-controllers';
-///: END:ONLY_INCLUDE_IN
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getPermissions,
-  ///: END:ONLY_INCLUDE_IN
   getPermissionsRequests,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
