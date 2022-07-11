@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.16.2",
+  "version": "10.17.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -16,7 +16,6 @@
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build testDev",
-    "start:test:mv3": "ENABLE_MV3=true SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ENABLE_MV3=true node test/e2e/mv3-stats.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
@@ -33,10 +32,8 @@
     "test:unit:global": "mocha test/unit-global/*.test.js",
     "test:unit:mocha": "mocha './app/**/*.test.js'",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
-    "test:e2e:chrome:mv3": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mv3",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
-    "test:e2e:firefox:mv3": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --mv3",
     "test:e2e:firefox:snaps": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --snaps",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
     "test:coverage:mocha": "nyc --reporter=text --reporter=html yarn test:unit:mocha",

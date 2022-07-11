@@ -4,6 +4,8 @@
 // eslint-disable-next-line
 let scriptsLoaded = false;
 
+// Variable testMode is set to true when preparing test build.
+// This helps in changing service worker execution in test environment.
 const testMode = false;
 
 const loadTimeLogs = [];
@@ -39,6 +41,7 @@ function importAllScripts() {
 
   const files = [];
 
+  // In testMode individual files are imported, this is to help capture load time stats
   const loadFile = (fileName) => {
     if (testMode) {
       tryImport(fileName);
@@ -89,6 +92,7 @@ function importAllScripts() {
     }`,
   );
 
+  // In testMode load time logs are output to console
   if (testMode) {
     console.log(
       `Time for each import: ${JSON.stringify(
