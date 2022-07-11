@@ -16,7 +16,7 @@ const GasDetailsItemTitle = () => {
     <Box display="flex">
       <Box marginRight={1}>{t('gas')}</Box>
       <span className="gas-details-item-title__estimate">
-        {t('transactionDetailGasInfoV2')}
+        ({t('transactionDetailGasInfoV2')})
       </span>
       <InfoTooltip
         contentText={
