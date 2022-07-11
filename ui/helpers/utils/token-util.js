@@ -151,6 +151,10 @@ export function getTokenValueParam(tokenData = {}) {
   return tokenData?.args?._value?.toString();
 }
 
+export function getTokenApprovedParam(tokenData = {}) {
+  return tokenData?.args?._approved;
+}
+
 export function getTokenValue(tokenParams = []) {
   const valueData = tokenParams.find((param) => param.name === '_value');
   return valueData && valueData.value;
