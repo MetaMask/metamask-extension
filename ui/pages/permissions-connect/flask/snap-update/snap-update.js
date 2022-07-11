@@ -78,7 +78,7 @@ export default function SnapUpdate({
           variant={TYPOGRAPHY.H7}
           tag="span"
         >
-          {t('snapUpdateExplanation', [`${request.dappOrigin}`])}
+          {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
         </Typography>
         <Typography
           boxProps={{
@@ -91,7 +91,7 @@ export default function SnapUpdate({
         </Typography>
         <UpdateSnapPermissionList
           approvedPermissions={request.approvedPermissions || {}}
-          revokedPermissions={request.revokedPermissions || {}}
+          revokedPermissions={request.unusedPermissions || {}}
           newPermissions={request.newPermissions || {}}
         />
       </Box>
@@ -100,30 +100,9 @@ export default function SnapUpdate({
         alignItems={ALIGN_ITEMS.CENTER}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        {targetSubjectMetadata.sourceCode ? (
-          <>
-            <div className="source-code">
-              <div className="text">{t('areYouDeveloper')}</div>
-              <div
-                className="link"
-                onClick={() =>
-                  global.platform.openTab({
-                    url: targetSubjectMetadata.sourceCode,
-                  })
-                }
-              >
-                {t('openSourceCode')}
-              </div>
-            </div>
-            <Box paddingBottom={4}>
-              <PermissionsConnectFooter />
-            </Box>
-          </>
-        ) : (
-          <Box className="snap-update__footer--no-source-code" paddingTop={4}>
-            <PermissionsConnectFooter />
-          </Box>
-        )}
+        <Box className="snap-update__footer--no-source-code" paddingTop={4}>
+          <PermissionsConnectFooter />
+        </Box>
         <PageContainerFooter
           cancelButtonType="default"
           onCancel={onCancel}

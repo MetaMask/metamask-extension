@@ -44,39 +44,18 @@ const mapStateToProps = (state, ownProps) => {
     },
     location: { pathname },
   } = ownProps;
-  const permissionsRequests = getPermissionsRequests(state);
+  let permissionsRequests = getPermissionsRequests(state);
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  permissionsRequests = [
+    ...permissionsRequests,
+    ...getSnapUpdateRequests(state),
+  ];
+  ///: END:ONLY_INCLUDE_IN
   const currentAddress = getSelectedAddress(state);
 
-  let permissionsRequest = permissionsRequests.find(
+  const permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  if (!permissionsRequest) {
-    permissionsRequest = getSnapUpdateRequests(state).find(
-      (req) => req.id === permissionsRequestId,
-    );
-    if (permissionsRequest) {
-      const { id, origin: dappOrigin } = permissionsRequest;
-      // reassigning the variable here to fit permissions actions
-      // also adding a metadata and permissions property for the same
-      // adding a dappOrigin property to display the requesting party for an update
-      permissionsRequest = permissionsRequest.requestData;
-      permissionsRequest.dappOrigin = dappOrigin;
-      permissionsRequest.metadata = { id, origin: permissionsRequest.snapId };
-      permissionsRequest.permissions = permissionsRequest.newPermissions;
-      const oldPermissions = getPermissions(state, permissionsRequest.snapId);
-      const currPermissions = {
-        ...permissionsRequest.newPermissions,
-        ...permissionsRequest.approvedPermissions,
-      };
-      permissionsRequest.revokedPermissions = setDiff(
-        oldPermissions,
-        currPermissions,
-      );
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.eth_accounts,

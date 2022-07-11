@@ -96,7 +96,7 @@ const mapStateToProps = (state) => {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapUpdateRequest(state);
-    firstPermissionsRequestId = firstPermissionsRequest?.id || null;
+    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
   ///: END:ONLY_INCLUDE_IN
 

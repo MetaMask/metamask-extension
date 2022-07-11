@@ -282,9 +282,9 @@ export function getLastConnectedInfo(state) {
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnapUpdateRequests(state) {
-  return Object.values(state.metamask.pendingApprovals).filter(
-    ({ type }) => type === 'wallet_updateSnap',
-  );
+  return Object.values(state.metamask.pendingApprovals)
+    .filter(({ type }) => type === 'wallet_updateSnap')
+    .map(({ requestData }) => requestData);
 }
 
 export function getFirstSnapUpdateRequest(state) {
