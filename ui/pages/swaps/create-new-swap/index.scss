@@ -1,0 +1,8 @@
+.create-new-swap {
+  button {
+    @include H5;
+
+    color: var(--color-primary-default);
+    background-color: transparent;
+  }
+}
