@@ -231,7 +231,8 @@
     "message": "Alerts"
   },
   "allOfYour": {
-    "message": "All of your"
+    "message": "All of your $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"

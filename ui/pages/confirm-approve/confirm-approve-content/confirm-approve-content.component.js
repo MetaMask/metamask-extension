@@ -203,8 +203,9 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
-            {isSetApproveForAll ? `${t('allOfYour')} ` : null}
-            {titleTokenDescription}
+            {isSetApproveForAll
+              ? `${t('allOfYour', [titleTokenDescription])} `
+              : titleTokenDescription}
           </div>
         </div>
         <div className="flex-row">
@@ -310,11 +311,11 @@ export default class ConfirmApproveContent extends Component {
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
         </div>
-        <div className="confirm-approve-content__small-text">
-          {isSetApproveForAll && setApproveForAllArg !== undefined
-            ? `${t('parameters')}: ${setApproveForAllArg}`
-            : null}
-        </div>
+        {isSetApproveForAll && setApproveForAllArg !== undefined ? (
+          <div className="confirm-approve-content__small-text">
+            {t('parameters')}: {setApproveForAllArg}
+          </div>
+        ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
         </div>
@@ -524,7 +525,7 @@ export default class ConfirmApproveContent extends Component {
     const { isSetApproveForAll, setApproveForAllArg } = this.props;
     const titleTokenDescription = this.getTitleTokenDescription();
 
-    let title = t('allowSpendToken', [titleTokenDescription]);
+    let title;
 
     if (isSetApproveForAll) {
       title = t('approveAllTokensTitle', [titleTokenDescription]);
@@ -532,7 +533,7 @@ export default class ConfirmApproveContent extends Component {
         title = t('revokeAllTokensTitle', [titleTokenDescription]);
       }
     }
-    return title;
+    return title || t('allowSpendToken', [titleTokenDescription]);
   }
 
   renderDescription() {
