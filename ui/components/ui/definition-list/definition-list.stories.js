@@ -40,44 +40,34 @@ export default {
       defaultValue: SIZES.SM,
     },
     tooltips: { control: 'object', name: 'Tooltips' },
-    termTypography: {
-      name: 'Term Typography',
-      variant: {
-        control: 'select',
-        name: 'Term Variant',
-        options: TYPOGRAPHY,
-      },
-      color: {
-        control: 'select',
-        name: 'Term Color',
-        options: COLORS,
-      },
+    'termTypography.variant': {
+      control: 'select',
+      name: 'Term Variant',
+      options: TYPOGRAPHY,
     },
-    definitionTypography: {
-      name: 'Definition Typography',
-      variant: {
-        control: 'select',
-        name: 'Definition Variant',
-        options: TYPOGRAPHY,
-      },
-      color: {
-        control: 'select',
-        name: 'Term Color',
-        options: COLORS,
-      },
+    'termTypography.color': {
+      control: 'select',
+      name: 'Term Color',
+      options: COLORS,
+    },
+    'definitionTypography.variant': {
+      control: 'select',
+      name: 'Definition Variant',
+      options: TYPOGRAPHY,
+    },
+    'definitionTypography.color': {
+      control: 'select',
+      name: 'Term Color',
+      options: COLORS,
     },
   },
   args: {
     dictionary: basic,
     tooltips,
-    termTypography: {
-      variant: TYPOGRAPHY.H6,
-      color: COLORS.TEXT_DEFAULT,
-    },
-    definitionTypography: {
-      variant: TYPOGRAPHY.H6,
-      color: COLORS.TEXT_DEFAULT,
-    },
+    'termTypography.variant': TYPOGRAPHY.H6,
+    'termTypography.color': COLORS.TEXT_DEFAULT,
+    'definitionTypography.variant': TYPOGRAPHY.H6,
+    'definitionTypography.color': COLORS.TEXT_DEFAULT,
   },
 };
 
@@ -105,12 +95,12 @@ export const WithTypographyControl = (args) => (
     tooltips={args.tooltips}
     gapSize={args.gapSize}
     termTypography={{
-      variant: args.termTypography.variant,
-      color: args.termTypography.color,
+      variant: args['termTypography.variant'],
+      color: args['termTypography.color'],
     }}
     definitionTypography={{
-      variant: args.definitionTypography.variant,
-      color: args.definitionTypography.color,
+      variant: args['definitionTypography.variant'],
+      color: args['definitionTypography.color'],
     }}
   />
 );
