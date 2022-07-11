@@ -118,12 +118,12 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
 
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+          '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
         await driver.fill(
           'textarea[placeholder="Optional',
-          '0xa9059cbb000000000000000000000000c427D562164062a23a5cFf596A4a3208e72Acd28000000000000000000000000000000000000000000000000000000000000000a',
+          '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         );
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
