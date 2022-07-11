@@ -5,7 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [10.18.0]
 ### Uncategorized
+- Auto-generated Changelog
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Update CHANGELOG.md
+- Merge remote-tracking branch 'origin/develop' into master-sync
 - Master sync following v10.17.0 ([#15126](https://github.com/MetaMask/metamask-extension/pull/15126))
 - Disable Seedphrase import button after switching seedphrase length ([#15139](https://github.com/MetaMask/metamask-extension/pull/15139))
 - Snaps E2E Test Upgrades for the new test-snaps UI ([#14980](https://github.com/MetaMask/metamask-extension/pull/14980))
@@ -3094,7 +3101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...HEAD
+[10.18.0]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...v10.18.0
 [10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...v10.17.0
 [10.16.2]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...v10.16.2
 [10.16.1]: https://github.com/MetaMask/metamask-extension/compare/v10.16.0...v10.16.1
