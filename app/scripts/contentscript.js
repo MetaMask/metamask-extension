@@ -367,6 +367,6 @@ function redirectToPhishingWarning(data) {
   window.location.href = `${baseUrl}#${querystring.stringify({
     hostname: window.location.hostname,
     href: window.location.href,
-    newIssueUrl: data.newIssueUrl,
+    newIssueUrl: data?.newIssueUrl,
   })}`;
 }
