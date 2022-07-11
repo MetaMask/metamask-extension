@@ -13,6 +13,10 @@ const {
 } = require('../helpers/file');
 const { withFixtures, tinyDelayMs } = require('./helpers');
 
+/**
+ * The e2e test case is used to capture load and initialisation time statistics for extension in MV3 environment.
+ */
+
 async function profilePageLoad() {
   const parsedLogs = {};
   try {
