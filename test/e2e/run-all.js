@@ -17,10 +17,6 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
-          .option('mv3', {
-            description: `run mv3 e2e tests`,
-            type: 'boolean',
-          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
@@ -34,7 +30,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps, mv3 } = argv;
+  const { browser, retries, snaps } = argv;
 
   let testDir = path.join(__dirname, 'tests');
 
@@ -42,16 +38,12 @@ async function main() {
     testDir = path.join(__dirname, 'snaps');
   }
 
-  if (mv3) {
-    testDir = path.join(__dirname, 'mv3');
-  }
-
   const testFilenames = await fs.readdir(testDir);
   const testPaths = testFilenames.map((filename) =>
     path.join(testDir, filename),
   );
 
-  if (!snaps && !mv3) {
+  if (!snaps) {
     testPaths.push(path.join(__dirname, 'metamask-ui.spec.js'));
   }
 
