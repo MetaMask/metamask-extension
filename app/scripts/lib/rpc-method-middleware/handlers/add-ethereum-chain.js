@@ -1,7 +1,10 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  UNKNOWN_TICKER_SYMBOL,
+} from '../../../../../shared/constants/app';
 import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
@@ -236,9 +239,12 @@ async function addEthereumChainHandler(
       );
     }
   }
-  const ticker = nativeCurrency?.symbol || 'ETH';
+  const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
 
-  if (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6) {
+  if (
+    ticker !== UNKNOWN_TICKER_SYMBOL &&
+    (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
+  ) {
     return end(
       ethErrors.rpc.invalidParams({
         message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,

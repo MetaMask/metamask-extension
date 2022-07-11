@@ -281,7 +281,12 @@ function getValues(pendingApproval, t, actions) {
             [t('blockExplorerUrl')]: pendingApproval.requestData
               .blockExplorerUrl,
           },
-          prefaceKeys: [t('networkName'), t('networkURL'), t('chainId')],
+          prefaceKeys: [
+            t('networkName'),
+            t('networkURL'),
+            t('chainId'),
+            t('currencySymbol'),
+          ],
         },
       },
     ],
