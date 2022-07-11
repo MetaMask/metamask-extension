@@ -74,6 +74,7 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -511,8 +512,11 @@ export default function ViewQuote() {
   const showInsufficientWarning =
     (balanceError ||
       tokenBalanceNeeded ||
-      ethBalanceNeeded ||
-      ethBalanceNeededStx) &&
+      ((!currentSmartTransactionsEnabled || !smartTransactionsOptInStatus) &&
+        ethBalanceNeeded) ||
+      (currentSmartTransactionsEnabled &&
+        smartTransactionsOptInStatus &&
+        ethBalanceNeededStx)) &&
     !warningHidden;
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -786,7 +790,7 @@ export default function ViewQuote() {
     (!networkAndAccountSupports1559 &&
       (gasPrice === null || gasPrice === undefined)) ||
     (currentSmartTransactionsEnabled &&
-      (currentSmartTransactionsError || ethBalanceNeededStx));
+      (currentSmartTransactionsError || smartTransactionsError));
 
   useEffect(() => {
     if (
@@ -861,6 +865,14 @@ export default function ViewQuote() {
     currentSmartTransactionsError,
     submitClicked,
   ]);
+
+  useEffect(() => {
+    // Removes a smart transactions error when the component loads.
+    dispatch({
+      type: SET_SMART_TRANSACTIONS_ERROR,
+      payload: null,
+    });
+  }, [dispatch]);
 
   return (
     <div className="view-quote">

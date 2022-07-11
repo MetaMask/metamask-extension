@@ -3575,14 +3575,15 @@ export function fetchSmartTransactionFees(
       approveTxParams.value = '0x0';
     }
     try {
+      const smartTransactionFees = await promisifiedBackground.fetchSmartTransactionFees(
+        unsignedTransaction,
+        approveTxParams,
+      );
       dispatch({
         type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
         payload: null,
       });
-      return await promisifiedBackground.fetchSmartTransactionFees(
-        unsignedTransaction,
-        approveTxParams,
-      );
+      return smartTransactionFees;
     } catch (e) {
       log.error(e);
       if (e.message.startsWith('Fetch error:')) {
