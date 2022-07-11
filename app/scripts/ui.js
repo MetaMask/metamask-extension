@@ -78,11 +78,13 @@ async function start() {
       }
     };
 
-    // disconnectListener takes care to remove listeners from closed streams
+    // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
     // it also creates new streams and attach event listeners to them
-    const disconnectListener = () => {
+    const resetExtensionStreamAndListeners = () => {
       extensionPort.onMessage.removeListener(messageListener);
-      extensionPort.onDisconnect.removeListener(disconnectListener);
+      extensionPort.onDisconnect.removeListener(
+        resetExtensionStreamAndListeners,
+      );
       // message below will try to activate service worker
       // in MV3 is likely that reason of stream closing is service worker going in-active
       browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
@@ -90,11 +92,11 @@ async function start() {
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
       extensionPort.onMessage.addListener(messageListener);
-      extensionPort.onDisconnect.addListener(disconnectListener);
+      extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
     };
 
     extensionPort.onMessage.addListener(messageListener);
-    extensionPort.onDisconnect.addListener(disconnectListener);
+    extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
   } else {
     initializeUiWithTab(activeTab);
   }
