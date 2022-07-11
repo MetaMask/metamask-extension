@@ -11,7 +11,6 @@ import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
-import SiteIcon from '../../components/ui/site-icon';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   COLORS,
@@ -192,7 +191,7 @@ export default function ConfirmationPage() {
       )}
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
-          <Box justifyContent="center">
+          <Box justifyContent="center" marginTop={2}>
             <NetworkDisplay
               indicatorSize={SIZES.XS}
               labelProps={{ color: COLORS.TEXT_DEFAULT }}
@@ -206,15 +205,12 @@ export default function ConfirmationPage() {
             padding={[1, 4, 4]}
             flexDirection={FLEX_DIRECTION.COLUMN}
           >
-            <SiteIcon
-              icon={originMetadata.iconUrl}
-              name={originMetadata.hostname}
-              size={36}
-            />
             <SiteOrigin
               chip
               siteOrigin={stripHttpsScheme(originMetadata.origin)}
               title={stripHttpsScheme(originMetadata.origin)}
+              iconSrc={originMetadata.iconUrl}
+              iconName={originMetadata.hostname}
             />
           </Box>
         )}
