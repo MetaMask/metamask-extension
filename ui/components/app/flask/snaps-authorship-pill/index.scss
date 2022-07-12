@@ -7,6 +7,12 @@
     padding-right: 8px;
   }
 
+  .chip__label {
+    max-width: 136px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   &:hover,
   &:focus {
     .chip {
