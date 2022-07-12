@@ -1,14 +1,18 @@
 @import "design-system";
 
 .snaps-authorship-pill {
-  display: inline-block;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
 
   .chip {
     padding-right: 8px;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .chip__label {
-    max-width: 136px;
     text-overflow: ellipsis;
     overflow: hidden;
   }

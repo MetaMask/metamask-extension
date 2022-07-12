@@ -1,9 +1,11 @@
 .snap-install {
   box-shadow: none;
 
-  .permissions-connect-permission-list {
+  .headers {
     padding: 0 24px;
+  }
 
+  .permissions-connect-permission-list {
     .permission {
       padding: 8px 0;
     }
