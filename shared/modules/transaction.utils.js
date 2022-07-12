@@ -8,7 +8,7 @@ import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
 /**
- * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
+ * @typedef { 'transfer' | 'approve' | 'setapprovalforall' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
  */
 
 /**
@@ -150,6 +150,7 @@ export async function determineTransactionType(txParams, query) {
 
   const tokenMethodName = [
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
     TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
@@ -181,6 +182,7 @@ export async function determineTransactionType(txParams, query) {
 
 const INFERRABLE_TRANSACTION_TYPES = [
   TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+  TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
   TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
   TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
   TRANSACTION_TYPES.CONTRACT_INTERACTION,
@@ -220,6 +222,7 @@ export async function determineTransactionAssetType(
   // method to get the asset type.
   const isTokenMethod = [
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
   ].find((methodName) => methodName === inferrableType);

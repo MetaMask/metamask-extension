@@ -116,6 +116,7 @@ export function isTokenMethodAction(type) {
   return [
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
     TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ].includes(type);
@@ -216,6 +217,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
+    }
+    case TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL: {
+      return t('setApprovalForAll');
     }
     case TRANSACTION_TYPES.SIMPLE_SEND: {
       return t('sendingNativeAsset', [nativeCurrency]);
