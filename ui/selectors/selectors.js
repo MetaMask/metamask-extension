@@ -1069,7 +1069,7 @@ export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }
 
-/** 
+/**
  * To check if the token detection is OFF and the network is Mainnet
  * so that the user can skip third party token api fetch
  * and use the static tokenlist from contract-metadata
@@ -1107,10 +1107,11 @@ export function getIsTokenDetectionSupported(state) {
 
 /**
  * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
+ *
  * @param {*} state
  * @returns Boolean
  */
- export function getIsCustomNetworkListEnabled(state) {
+export function getIsCustomNetworkListEnabled(state) {
   return state.metamask.customNetworkListEnabled;
 }
 
