@@ -230,6 +230,10 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allOfYour": {
+    "message": "All of your $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -265,6 +269,10 @@
   },
   "approve": {
     "message": "Approve spend limit"
+  },
+  "approveAllTokensTitle": {
+    "message": "Give permission to access all of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Approve & Install"
@@ -1286,6 +1294,9 @@
   },
   "functionApprove": {
     "message": "Function: Approve"
+  },
+  "functionSetApprovalForAll": {
+    "message": "Function: SetApprovalForAll"
   },
   "functionType": {
     "message": "Function Type"
@@ -2696,6 +2707,14 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "revokeAllTokensTitle": {
+    "message": "Revoke permission to access all of your $1?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "By revoking permission, the following $1 will no longer be able to access your $2",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
@@ -2877,6 +2896,13 @@
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
+  },
+  "setApprovalForAll": {
+    "message": "Set Approval for All"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Approve $1 with no spend limit",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Settings"
