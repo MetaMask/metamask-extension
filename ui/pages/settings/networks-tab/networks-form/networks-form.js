@@ -36,6 +36,7 @@ import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { EVENT } from '../../../../../shared/constants/metametrics';
+import { infuraProjectId } from '../../../../../shared/constants/network';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -600,8 +601,8 @@ const NetworksForm = ({
           onChange={setRpcUrl}
           titleText={t('rpcUrl')}
           value={
-            rpcUrl.includes(`/v3/${process.env.INFURA_PROJECT_ID}`)
-              ? rpcUrl.replace(`/v3/${process.env.INFURA_PROJECT_ID}`, '')
+            rpcUrl.includes(`/v3/${infuraProjectId}`)
+              ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
               : rpcUrl
           }
           disabled={viewOnly}
