@@ -2567,8 +2567,10 @@ export function getRecipientUserInput(state) {
 }
 
 export function getRecipientWarningAcknowledgement(state) {
-  return getCurrentDraftTransaction(state).recipient
-    .recipientWarningAcknowledged;
+  return (
+    getCurrentDraftTransaction(state).recipient?.recipientWarningAcknowledged ??
+    false
+  );
 }
 
 // Overall validity and stage selectors
