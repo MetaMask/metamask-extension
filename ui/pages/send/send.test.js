@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
 import { useLocation } from 'react-router-dom';
 import { SEND_STAGES } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
@@ -24,16 +23,20 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock(
-  'ethjs-ens',
-  () =>
-    class MocKENS {
-      async ensLookup() {
-        return '';
-      }
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers');
+  return {
+    ...originalModule,
+    ethers: {
+      ...originalModule.ethers,
+      providers: {
+        Web3Provider: jest.fn().mockImplementation(() => {
+          return {};
+        }),
+      },
     },
-);
-
+  };
+});
 const baseStore = {
   send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   ENS: ensInitialState,
