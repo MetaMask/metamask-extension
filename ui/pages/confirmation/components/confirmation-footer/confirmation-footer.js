@@ -8,7 +8,7 @@ export default function ConfirmationFooter({
   approveText,
   cancelText,
   alerts,
-  approveDisabled,
+  disableApprove,
 }) {
   return (
     <div className="confirmation-footer">
@@ -17,7 +17,7 @@ export default function ConfirmationFooter({
         <Button type="secondary" onClick={onCancel}>
           {cancelText}
         </Button>
-        <Button type="primary" onClick={onApprove} disabled={approveDisabled}>
+        <Button type="primary" onClick={onApprove} disabled={disableApprove}>
           {approveText}
         </Button>
       </div>
@@ -31,4 +31,5 @@ ConfirmationFooter.propTypes = {
   onCancel: PropTypes.func.isRequired,
   approveText: PropTypes.string.isRequired,
   cancelText: PropTypes.string.isRequired,
+  disableApprove: PropTypes.bool,
 };

@@ -148,17 +148,19 @@ async function addEthereumChainHandler(
 
   const existingNetwork = findCustomRpcBy({ chainId: _chainId });
 
-  if (existingNetwork) {
+  if (existingNetwork && existingNetwork.rpcUrl === firstValidRPCUrl) {
     // If the network already exists, the request is considered successful
     res.result = null;
 
     const currentChainId = getCurrentChainId();
 
     // TODO ALLOW users to add a new RPC provider with same chainId but not if the suggested ticker symbol is different;
-    if (currentChainId === _chainId) {
+    if (
+      currentChainId === _chainId &&
+      existingNetwork.rpcUrl === firstValidRPCUrl
+    ) {
       return end();
     }
-
     // Ask the user to switch the network
     try {
       await updateRpcTarget(
@@ -170,7 +172,6 @@ async function addEthereumChainHandler(
             chainId: existingNetwork.chainId,
             nickname: existingNetwork.nickname,
             ticker: existingNetwork.ticker,
-            // TODO add data indicating whether the ticker doesn't match another network with same chainId (should disable approval)
           },
         }),
       );
@@ -242,6 +243,7 @@ async function addEthereumChainHandler(
       );
     }
   }
+
   const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
 
   if (
@@ -253,6 +255,15 @@ async function addEthereumChainHandler(
         message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
       }),
     );
+  }
+  // if the chainId is the same as an existing network but the ticker is different we want to block this action
+  // as it is potentially malicious and confusing
+  let disableApprove;
+  if (
+    existingNetwork.chainId === _chainId &&
+    existingNetwork.ticker !== ticker
+  ) {
+    disableApprove = true;
   }
 
   try {
@@ -266,6 +277,7 @@ async function addEthereumChainHandler(
           chainName: _chainName,
           rpcUrl: firstValidRPCUrl,
           ticker,
+          disableApprove,
         },
       }),
     );
