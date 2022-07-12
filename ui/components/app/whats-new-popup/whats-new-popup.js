@@ -54,6 +54,10 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 12: true });
       history.push(EXPERIMENTAL_ROUTE);
     },
+    13: () => {
+      updateViewedNotifications({ 13: true });
+      history.push(EXPERIMENTAL_ROUTE);
+    },
   };
 
   return actionFunctions[id];
