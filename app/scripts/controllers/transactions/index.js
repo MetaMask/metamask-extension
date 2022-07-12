@@ -1216,6 +1216,7 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
+      originalType: originalTxMeta.type,
     });
 
     if (estimatedBaseFee) {
@@ -2121,6 +2122,7 @@ export default class TransactionController extends EventEmitter {
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,
+      transaction_speed_up: type === TRANSACTION_TYPES.RETRY && true,
     };
 
     const sensitiveProperties = {
