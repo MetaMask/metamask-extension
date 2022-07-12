@@ -148,33 +148,35 @@ export async function determineTransactionType(txParams, query) {
     log.debug('Failed to parse transaction data.', error, data);
   }
 
-  const tokenMethodName = [
-    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-    TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
-  ].find((methodName) => isEqualCaseInsensitive(methodName, name));
-
   let result;
-  if (data && tokenMethodName) {
-    result = tokenMethodName;
-  } else if (data && !to) {
-    result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
-  }
-
   let contractCode;
 
-  if (!result) {
+  if (data && !to) {
+    result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
+  } else {
     const {
       contractCode: resultCode,
       isContractAddress,
     } = await readAddressAsContract(query, to);
 
     contractCode = resultCode;
-    result = isContractAddress
-      ? TRANSACTION_TYPES.CONTRACT_INTERACTION
-      : TRANSACTION_TYPES.SIMPLE_SEND;
+
+    if (isContractAddress) {
+      const tokenMethodName = [
+        TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+        TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
+        TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+        TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+        TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
+      ].find((methodName) => isEqualCaseInsensitive(methodName, name));
+
+      result =
+        data && tokenMethodName
+          ? tokenMethodName
+          : TRANSACTION_TYPES.CONTRACT_INTERACTION;
+    } else {
+      result = TRANSACTION_TYPES.SIMPLE_SEND;
+    }
   }
 
   return { type: result, getCodeResponse: contractCode };
