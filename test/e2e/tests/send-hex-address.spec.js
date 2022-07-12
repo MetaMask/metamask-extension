@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
@@ -198,6 +198,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           );
           return sendDialogMsgs.length === 1;
         }, 10000);
+        await driver.delay(tinyDelayMs);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -296,6 +297,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           );
           return sendDialogMsgs.length === 1;
         }, 10000);
+        await driver.delay(tinyDelayMs);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
