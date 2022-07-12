@@ -268,11 +268,11 @@ function getValues(pendingApproval, t, actions) {
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
             [t('networkURL')]: pendingApproval.requestData.rpcUrl.includes(
-              'infura.io',
+              `/v3/${process.env.INFURA_PROJECT_ID}`,
             )
-              ? pendingApproval.requestData.rpcUrl.substring(
-                  0,
-                  pendingApproval.requestData.rpcUrl.indexOf('infura.io') + 9,
+              ? pendingApproval.requestData.rpcUrl.replace(
+                  `/v3/${process.env.INFURA_PROJECT_ID}`,
+                  '',
                 )
               : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),

@@ -600,8 +600,8 @@ const NetworksForm = ({
           onChange={setRpcUrl}
           titleText={t('rpcUrl')}
           value={
-            rpcUrl.includes('infura.io')
-              ? rpcUrl.substring(0, rpcUrl.indexOf('infura.io') + 9)
+            rpcUrl.includes(`/v3/${process.env.INFURA_PROJECT_ID}`)
+              ? rpcUrl.replace(`/v3/${process.env.INFURA_PROJECT_ID}`, '')
               : rpcUrl
           }
           disabled={viewOnly}
