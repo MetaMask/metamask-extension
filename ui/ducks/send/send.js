@@ -1163,6 +1163,12 @@ const slice = createSlice({
       draftTransaction.recipient.warning = action.payload;
     },
 
+    updateDraftTransactionStatus: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.status = action.payload;
+    },
+
     acknowledgeRecipientWarning: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
@@ -1836,6 +1842,7 @@ export function updateRecipient({ address, nickname }) {
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
     dispatch(actions.updateRecipientWarning('loading'));
+    dispatch(actions.updateDraftTransactionStatus(SEND_STATUSES.INVALID));
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
     const draftTransaction =
