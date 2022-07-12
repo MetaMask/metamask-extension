@@ -153,6 +153,8 @@ async function addEthereumChainHandler(
     res.result = null;
 
     const currentChainId = getCurrentChainId();
+
+    // TODO ALLOW users to add a new RPC provider with same chainId but not if the suggested ticker symbol is different;
     if (currentChainId === _chainId) {
       return end();
     }
@@ -168,6 +170,7 @@ async function addEthereumChainHandler(
             chainId: existingNetwork.chainId,
             nickname: existingNetwork.nickname,
             ticker: existingNetwork.ticker,
+            // TODO add data indicating whether the ticker doesn't match another network with same chainId (should disable approval)
           },
         }),
       );

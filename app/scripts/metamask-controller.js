@@ -3640,6 +3640,9 @@ export default class MetamaskController extends EventEmitter {
         ),
 
         // Custom RPC-related
+        getFrequentRpcListDetail: this.preferencesController.getFrequentRpcListDetail.bind(
+          this.preferencesController,
+        ),
         addCustomRpc: async ({
           chainId,
           blockExplorerUrl,

@@ -217,6 +217,7 @@ export default function ConfirmationPage() {
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
       </div>
       <ConfirmationFooter
+        approveDisabled={true}
         alerts={
           alertState[pendingConfirmation.id] &&
           Object.values(alertState[pendingConfirmation.id])
