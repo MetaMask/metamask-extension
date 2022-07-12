@@ -267,7 +267,14 @@ function getValues(pendingApproval, t, actions) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl,
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl.includes(
+              'infura.io',
+            )
+              ? pendingApproval.requestData.rpcUrl.substring(
+                  0,
+                  pendingApproval.requestData.rpcUrl.indexOf('infura.io') + 9,
+                )
+              : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]: pendingApproval.requestData
