@@ -20,10 +20,23 @@ const UNRECOGNIZED_CHAIN = {
       element: 'MetaMaskTranslation',
       props: {
         translationKey: 'unrecognizedChain',
+      },
+    },
+  },
+};
+
+const MISMATCHED_CHAIN_RECOMMENDATION = {
+  id: 'MISMATCHED_CHAIN_RECOMMENDATION',
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedChainRecommendation',
         variables: [
           {
             element: 'a',
-            key: 'unrecognizedChainLink',
+            key: 'mismatchedChainLink',
             props: {
               href:
                 'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
@@ -33,7 +46,7 @@ const UNRECOGNIZED_CHAIN = {
             children: {
               element: 'MetaMaskTranslation',
               props: {
-                translationKey: 'unrecognizedChainLinkText',
+                translationKey: 'mismatchedChainLinkText',
               },
             },
           },
@@ -43,14 +56,10 @@ const UNRECOGNIZED_CHAIN = {
   },
 };
 
-const getMisMatchedChainDataError = (error) => {
+const getMisMatchedChainDataError = (errorType) => {
   let severity, baseTransalationKey;
 
-  switch (error) {
-    case 'DECIMALS':
-      severity = SEVERITIES.WARNING;
-      baseTransalationKey = 'mismatchedNetworkDecimals';
-      break;
+  switch (errorType) {
     case 'NAME':
       severity = SEVERITIES.WARNING;
       baseTransalationKey = 'mismatchedNetworkName';
@@ -70,7 +79,7 @@ const getMisMatchedChainDataError = (error) => {
   }
 
   return {
-    id: 'INVALID_CHAIN',
+    id: `INVALID_CHAIN_${errorType}`,
     severity,
     content: {
       element: 'span',
@@ -78,24 +87,6 @@ const getMisMatchedChainDataError = (error) => {
         element: 'MetaMaskTranslation',
         props: {
           translationKey: baseTransalationKey,
-          variables: [
-            {
-              element: 'a',
-              key: 'mismatchedChainLink',
-              props: {
-                href:
-                  'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
-                target: '__blank',
-                tabIndex: 0,
-              },
-              children: {
-                element: 'MetaMaskTranslation',
-                props: {
-                  translationKey: 'mismatchedChainLinkText',
-                },
-              },
-            },
-          ],
         },
       },
     },
@@ -118,9 +109,6 @@ async function getAlerts(pendingApproval) {
   }
 
   if (matchedChain) {
-    if (matchedChain.nativeCurrency?.decimals !== 18) {
-      alerts.push(getMisMatchedChainDataError('DECIMALS'));
-    }
     if (
       matchedChain.name.toLowerCase() !==
       pendingApproval.requestData.chainName.toLowerCase()
@@ -141,6 +129,10 @@ async function getAlerts(pendingApproval) {
 
   if (!matchedChain) {
     alerts.push(UNRECOGNIZED_CHAIN);
+  }
+
+  if (alerts.length) {
+    alerts.push(MISMATCHED_CHAIN_RECOMMENDATION);
   }
 
   return alerts;
