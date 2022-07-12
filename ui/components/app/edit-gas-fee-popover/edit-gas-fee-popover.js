@@ -8,7 +8,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import Box from '../../ui/box';
 import ErrorMessage from '../../ui/error-message';
-import I18nValue from '../../ui/i18n-value';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography/typography';
 
@@ -60,15 +59,13 @@ const EditGasFeePopover = () => {
               )}
               <div className="edit-gas-fee-popover__content__header">
                 <span className="edit-gas-fee-popover__content__header-option">
-                  <I18nValue messageKey="gasOption" />
+                  {t('gasOption')}
                 </span>
                 <span className="edit-gas-fee-popover__content__header-time">
-                  {editGasMode !== EDIT_GAS_MODES.SWAPS && (
-                    <I18nValue messageKey="time" />
-                  )}
+                  {editGasMode !== EDIT_GAS_MODES.SWAPS && t('time')}
                 </span>
                 <span className="edit-gas-fee-popover__content__header-max-fee">
-                  <I18nValue messageKey="maxFee" />
+                  {t('maxFee')}
                 </span>
               </div>
               {(editGasMode === EDIT_GAS_MODES.CANCEL ||
@@ -97,19 +94,16 @@ const EditGasFeePopover = () => {
                 tag={TYPOGRAPHY.Paragraph}
                 variant={TYPOGRAPHY.H7}
               >
-                <I18nValue
-                  messageKey="learmMoreAboutGas"
-                  options={[
-                    <a
-                      key="learnMoreLink"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas"
-                    >
-                      <I18nValue messageKey="learnMore" />
-                    </a>,
-                  ]}
-                />
+                {t('learmMoreAboutGas', [
+                  <a
+                    key="learnMoreLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas"
+                  >
+                    {t('learnMore')}
+                  </a>,
+                ])}
               </Typography>
             </Box>
           </div>
