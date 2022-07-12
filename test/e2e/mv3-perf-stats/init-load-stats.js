@@ -81,7 +81,7 @@ async function main() {
   const logCategories = [
     { key: 'background', dirPath: 'initialisation/background/stacks.json' },
     { key: 'ui', dirPath: 'initialisation/ui/stacks.json' },
-    { key: 'loadTime', dirPath: 'initialisation/load_time/stats.json' },
+    { key: 'loadTime', dirPath: 'load_time/stats.json' },
   ];
 
   if (out) {
