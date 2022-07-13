@@ -1741,7 +1741,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(5);
 
         expect(actionResult[0].type).toStrictEqual(
           'send/updateRecipientWarning',
@@ -2030,7 +2030,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(10);
+        expect(actionResult).toHaveLength(11);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
