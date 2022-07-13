@@ -91,10 +91,11 @@ export default function SendTransactionScreen() {
         userInput={userInput}
         className="send__to-row"
         onChange={(address) => dispatch(updateRecipientUserInput(address))}
-        onValidAddressTyped={(address) => {
+        onValidAddressTyped={async (address) => {
           dispatch(
             addHistoryEntry(`sendFlow - Valid address typed ${address}`),
           );
+          await dispatch(updateRecipientUserInput(address));
           dispatch(updateRecipient({ address, nickname: '' }));
         }}
         internalSearch={isUsingMyAccountsForRecipientSearch}
@@ -106,7 +107,6 @@ export default function SendTransactionScreen() {
               `sendFlow - User pasted ${text} into address field`,
             ),
           );
-          return dispatch(updateRecipient({ address: text, nickname: '' }));
         }}
         onReset={() => dispatch(resetRecipientInput())}
         scanQrCode={() => {
