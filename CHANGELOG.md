@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.18.0]
-### Uncategorized
-- Bump @metamask/design-tokens from 1.6.5 to 1.7.0 ([#15017](https://github.com/MetaMask/metamask-extension/pull/15017))
-
 ### Added
 - Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010)) 
 
