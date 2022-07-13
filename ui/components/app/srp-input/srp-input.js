@@ -19,7 +19,7 @@ const { isValidMnemonic } = ethers.utils;
 
 const defaultNumberOfWords = 12;
 
-const isLowerCase = (draftSrp) => {
+const hasUpperCase = (draftSrp) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
@@ -44,7 +44,7 @@ export default function SrpInput({ onChange, srpText }) {
       if (newDraftSrp.some((word) => word !== '')) {
         if (newDraftSrp.some((word) => word === '')) {
           newSrpError = t('seedPhraseReq');
-        } else if (isLowerCase(joinedDraftSrp)) {
+        } else if (hasUpperCase(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhraseCaseSensitive');
         } else if (!isValidMnemonic(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhrase');
