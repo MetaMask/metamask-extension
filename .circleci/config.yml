@@ -139,12 +139,8 @@ workflows:
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
-      - stats-module-temp:
-          requires:
-            - test-lint
       - job-publish-prerelease:
           requires:
-            - stats-module-temp
             - prep-deps
             - prep-build
             - prep-build-beta
@@ -639,16 +635,6 @@ jobs:
           root: .
           paths:
             - test-artifacts
-
-  stats-module-temp:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run page load benchmark
-          command: ./.circleci/scripts/bundle-stats-commit.sh
 
   job-publish-prerelease:
     executor: node-browsers
