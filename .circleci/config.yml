@@ -649,13 +649,6 @@ jobs:
       - run:
           name: Run page load benchmark
           command: ./.circleci/scripts/bundle-stats-commit.sh
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - persist_to_workspace:
-          root: .
-          paths:
-            - test-artifacts
 
   job-publish-prerelease:
     executor: node-browsers
