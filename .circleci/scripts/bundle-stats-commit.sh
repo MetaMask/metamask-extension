@@ -30,7 +30,7 @@ printf '%s\n' 'Commit the manifest version and changelog if the manifest has cha
 
 if [[ "${CIRCLE_BRANCH/-/ }" ]]
 then
-    printf "${CIRCLE_BRANCH/-/ }"
+    printf "%s" "${CIRCLE_BRANCH/-/ }"
     exit 0
 fi
 
