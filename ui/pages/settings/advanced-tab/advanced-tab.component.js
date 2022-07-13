@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { exportAsFile } from '../../../helpers/utils/util';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
@@ -22,6 +21,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import { exportAsFile } from '../../../../shared/modules/export-utils';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -58,6 +58,8 @@ export default class AdvancedTab extends PureComponent {
     userHasALedgerAccount: PropTypes.bool.isRequired,
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
+    backupUserData: PropTypes.func.isRequired,
+    restoreUserData: PropTypes.func.isRequired,
   };
 
   state = {
@@ -66,6 +68,8 @@ export default class AdvancedTab extends PureComponent {
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
     showLedgerTransportWarning: false,
+    showResultMessage: false,
+    restoreSuccessful: true,
   };
 
   settingsRefs = Array(
@@ -110,6 +114,126 @@ export default class AdvancedTab extends PureComponent {
               }}
             >
               {t('syncWithMobile')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  async getTextFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new window.FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        resolve(text);
+      };
+
+      reader.onerror = (e) => {
+        reject(e);
+      };
+
+      reader.readAsText(file);
+    });
+  }
+
+  async handleFileUpload(event) {
+    /**
+     * we need this to be able to access event.target after
+     * the event handler has been called. [Synthetic Event Pooling, pre React 17]
+     *
+     * @see https://fb.me/react-event-pooling
+     */
+    event.persist();
+    const file = event.target.files[0];
+    const jsonString = await this.getTextFromFile(file);
+    /**
+     * so that we can restore same file again if we want to.
+     * chrome blocks uploading same file twice.
+     *
+     */
+    event.target.value = '';
+    const result = await this.props.restoreUserData(jsonString);
+    this.setState({
+      showResultMessage: true,
+      restoreSuccessful: result,
+    });
+  }
+
+  renderRestoreUserData() {
+    const { t } = this.context;
+    const { showResultMessage, restoreSuccessful } = this.state;
+
+    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 14;
+    return (
+      <div
+        ref={this.settingsRefs[settingsRefIndex]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-data-restore"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('restoreUserData')}</span>
+          <span className="settings-page__content-description">
+            {t('restoreUserDataDescription')}
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <label
+              htmlFor="restore-file"
+              className="button btn btn--rounded btn-secondary btn--large settings-page__button"
+            >
+              {t('restore')}
+            </label>
+            <input
+              id="restore-file"
+              style={{ visibility: 'hidden' }}
+              type="file"
+              accept=".json"
+              onChange={(e) => this.handleFileUpload(e)}
+            />
+          </div>
+          {showResultMessage && (
+            <span
+              className={classnames({
+                'settings-page__content-description': restoreSuccessful,
+                'settings-page__error-text': !restoreSuccessful,
+              })}
+            >
+              {restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')}
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  renderUserDataBackup() {
+    const { t } = this.context;
+    // if
+    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 13;
+    return (
+      <div
+        ref={this.settingsRefs[settingsRefIndex]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-data-backup"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('backupUserData')}</span>
+          <span className="settings-page__content-description">
+            {t('backupUserDataDescription')}
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="secondary"
+              large
+              onClick={() => {
+                this.props.backupUserData();
+              }}
+            >
+              {t('backup')}
             </Button>
           </div>
         </div>
@@ -730,6 +854,8 @@ export default class AdvancedTab extends PureComponent {
         {this.renderToggleTestNetworks()}
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
+        {this.renderUserDataBackup()}
+        {this.renderRestoreUserData()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}

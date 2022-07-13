@@ -8,17 +8,34 @@ const {
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
-const stateLogsExist = async () => {
+const backupExists = async () => {
+  const date = new Date();
+
+  const prependZero = (num, maxLength) => {
+    return num.toString().padStart(maxLength, '0');
+  };
+
+  const prefixZero = (num) => prependZero(num, 2);
+
+  /*
+   * userData.YYYY_MM_DD_HH_mm_SS e.g userData.2022_01_13_13_45_56
+   * */
+  const userDataFileName = `userData.${date.getFullYear()}_${prefixZero(
+    date.getMonth() + 1,
+  )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
+    date.getMinutes(),
+  )}_${prefixZero(date.getDay())}.json`;
+
   try {
-    const stateLogs = `${downloadsFolder}/MetaMask State Logs.json`;
-    await fs.access(stateLogs);
+    const backup = `${downloadsFolder}/${userDataFileName}`;
+    await fs.access(backup);
     return true;
   } catch (e) {
     return false;
   }
 };
 
-describe('State logs', function () {
+describe('Backup', function () {
   const ganacheOptions = {
     accounts: [
       {
@@ -28,7 +45,7 @@ describe('State logs', function () {
       },
     ],
   };
-  it('should download state logs for the account', async function () {
+  it('should create backup for the account', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -42,19 +59,19 @@ describe('State logs', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Download State Logs
+        // Download user settings
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
-          text: 'Download State Logs',
+          text: 'Backup',
           tag: 'button',
         });
 
         // Verify download
         let fileExists;
         await driver.wait(async () => {
-          fileExists = await stateLogsExist();
+          fileExists = await backupExists();
           return fileExists === true;
         }, 10000);
         assert.equal(fileExists, true);

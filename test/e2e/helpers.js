@@ -1,4 +1,5 @@
 const path = require('path');
+const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
@@ -16,6 +17,11 @@ const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
 const dappBasePort = 8080;
+
+const createDownloadFolder = async (downloadsFolder) => {
+  await fs.rm(downloadsFolder, { recursive: true, force: true });
+  await fs.mkdir(downloadsFolder, { recursive: true });
+};
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
@@ -330,4 +336,5 @@ module.exports = {
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
+  createDownloadFolder,
 };

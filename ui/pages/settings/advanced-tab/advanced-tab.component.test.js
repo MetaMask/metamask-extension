@@ -31,6 +31,8 @@ describe('AdvancedTab Component', () => {
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
         userHasALedgerAccount
+        backupUserData={() => undefined}
+        restoreUserData={() => undefined}
       />,
       {
         context: {
@@ -41,7 +43,69 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render correctly when threeBoxFeatureFlag', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(13);
+    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+  });
+
+  it('should render backup button', () => {
+    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+
+    expect(
+      component
+        .find('.settings-page__content-row')
+        .at(9)
+        .find('.settings-page__content-item'),
+    ).toHaveLength(2);
+
+    expect(
+      component
+        .find('.settings-page__content-row')
+        .at(9)
+        .find('.settings-page__content-item')
+        .at(0)
+        .find('.settings-page__content-description')
+        .props().children,
+    ).toStrictEqual('_backupUserDataDescription');
+
+    expect(
+      component
+        .find('.settings-page__content-row')
+        .at(9)
+        .find('.settings-page__content-item')
+        .at(1)
+        .find('Button')
+        .props().children,
+    ).toStrictEqual('_backup');
+  });
+
+  it('should render restore button', () => {
+    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+
+    expect(
+      component
+        .find('.settings-page__content-row')
+        .at(10)
+        .find('.settings-page__content-item'),
+    ).toHaveLength(2);
+
+    expect(
+      component
+        .find('.settings-page__content-row')
+        .at(10)
+        .find('.settings-page__content-item')
+        .at(0)
+        .find('.settings-page__content-description')
+        .props().children,
+    ).toStrictEqual('_restoreUserDataDescription');
+
+    expect(
+      component
+        .find('.settings-page__content-row')
+        .at(10)
+        .find('.settings-page__content-item')
+        .at(1)
+        .find('label')
+        .props().children,
+    ).toStrictEqual('_restore');
   });
 
   it('should update autoLockTimeLimit', () => {
@@ -63,6 +127,8 @@ describe('AdvancedTab Component', () => {
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
         userHasALedgerAccount
+        backupUserData={() => undefined}
+        restoreUserData={() => undefined}
       />,
       {
         context: {
@@ -108,6 +174,8 @@ describe('AdvancedTab Component', () => {
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
         userHasALedgerAccount
+        backupUserData={() => undefined}
+        restoreUserData={() => undefined}
       />,
       {
         context: {
@@ -145,6 +213,8 @@ describe('AdvancedTab Component', () => {
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
         userHasALedgerAccount
+        backupUserData={() => undefined}
+        restoreUserData={() => undefined}
       />,
       {
         context: {

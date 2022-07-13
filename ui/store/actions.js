@@ -778,6 +778,35 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
   };
 }
 
+export function backupUserData() {
+  return async (dispatch) => {
+    let backedupData;
+    try {
+      backedupData = await promisifiedBackground.backupUserData();
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return backedupData;
+  };
+}
+
+export function restoreUserData(jsonString) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.restoreUserData(jsonString);
+    } catch (error) {
+      dispatch(txError(error));
+      log.error(error.message);
+      throw error;
+    }
+
+    return true;
+  };
+}
+
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
     let updatedTransaction;
