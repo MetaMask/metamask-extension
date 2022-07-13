@@ -100,6 +100,7 @@ import {
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
+  clearSmartTransactionFees,
 } from '../../../store/actions';
 import {
   countDecimals,
@@ -465,6 +466,10 @@ export default function BuildQuote({
     dispatch(setReviewSwapClickedTimestamp());
     trackBuildQuotePageLoadedEvent();
   }, [dispatch, trackBuildQuotePageLoadedEvent]);
+
+  useEffect(() => {
+    clearSmartTransactionFees();
+  }, []);
 
   const BlockExplorerLink = () => {
     return (

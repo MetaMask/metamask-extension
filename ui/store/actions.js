@@ -3566,6 +3566,10 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
+export function clearSmartTransactionFees() {
+  promisifiedBackground.clearSmartTransactionFees();
+}
+
 export function fetchSmartTransactionFees(
   unsignedTransaction,
   approveTxParams,

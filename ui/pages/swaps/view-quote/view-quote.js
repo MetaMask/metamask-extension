@@ -790,7 +790,10 @@ export default function ViewQuote() {
     (!networkAndAccountSupports1559 &&
       (gasPrice === null || gasPrice === undefined)) ||
     (currentSmartTransactionsEnabled &&
-      (currentSmartTransactionsError || smartTransactionsError));
+      (currentSmartTransactionsError || smartTransactionsError)) ||
+    (currentSmartTransactionsEnabled &&
+      smartTransactionsOptInStatus &&
+      !smartTransactionFees?.tradeTxFees);
 
   useEffect(() => {
     if (
@@ -930,7 +933,8 @@ export default function ViewQuote() {
         />
         {currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&
-          !smartTransactionFees?.tradeTxFees && (
+          !smartTransactionFees?.tradeTxFees &&
+          !showInsufficientWarning && (
             <Box marginTop={0} marginBottom={10}>
               <PulseLoader />
             </Box>
