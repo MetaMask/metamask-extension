@@ -3011,13 +3011,13 @@
     "@metamask/safe-event-emitter" "^2.0.0"
     through2 "^2.0.3"
 
-"@metamask/phishing-warning@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/phishing-warning/-/phishing-warning-1.1.0.tgz#0d5764327c413dd1900db786e295bd729530ca66"
-  integrity sha512-39N7lU9fdkXZKHn/hbkiEhv1oJ3mabPjYMk22582a7XzdBD5wgxDf5qHsXXQlOq+uI3lBU9VVKD7K7Z2lcgapw==
+"@metamask/phishing-warning@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@metamask/phishing-warning/-/phishing-warning-1.2.1.tgz#75554f8653a32c8d101c5b315707dd7990daf156"
+  integrity sha512-VfQLwiQmXg9YrJzBmDKN6eknNEkxYEAssTpoObVrDYiS91LjuDU59IjoIc1SN9IzDNxIP6ZI95dOculsm/o4qw==
   dependencies:
     "@metamask/design-tokens" "^1.6.0"
-    "@metamask/post-message-stream" "^4.0.0"
+    "@metamask/post-message-stream" "^5.1.0"
     globalthis "1.0.1"
     obj-multiplex "^1.0.0"
     pump "^3.0.0"
@@ -3028,6 +3028,14 @@
   resolved "https://registry.yarnpkg.com/@metamask/post-message-stream/-/post-message-stream-4.0.0.tgz#72f120e562346ca86ccc9b3684023ad44265f0df"
   integrity sha512-r0JcoWXNuHycProx8ClxiIElJY/GVb/0/WWXTMsZu7qDejLo52VNXlwfydCdVjbMXeoT2nK1Yt3d5gjmHy5BWw==
   dependencies:
+    readable-stream "2.3.3"
+
+"@metamask/post-message-stream@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/post-message-stream/-/post-message-stream-5.1.0.tgz#3e9a2ed11b540b3868a0a28ffa8ec5a6e5fca29d"
+  integrity sha512-BQi/H67iM7wdtmvoPfgW9bazk/WjvRhXRa5lQ1FpgDlASv1bsCDJaQQ83Q3BwYyisnpnjgJRuC/2bRmas0LMxA==
+  dependencies:
+    "@metamask/utils" "^2.0.0"
     readable-stream "2.3.3"
 
 "@metamask/providers@^9.0.0":
