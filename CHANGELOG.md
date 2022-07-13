@@ -8,36 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.18.0]
 ### Uncategorized
-- Auto-generated Changelog
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Update CHANGELOG.md
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Master sync following v10.17.0 ([#15126](https://github.com/MetaMask/metamask-extension/pull/15126))
-- Disable Seedphrase import button after switching seedphrase length ([#15139](https://github.com/MetaMask/metamask-extension/pull/15139))
-- Snaps E2E Test Upgrades for the new test-snaps UI ([#14980](https://github.com/MetaMask/metamask-extension/pull/14980))
-- The Japanese word for sign is "署名" ([#15078](https://github.com/MetaMask/metamask-extension/pull/15078))
 - Add feature flag to prevent add popular networks from being available on prod ([#15117](https://github.com/MetaMask/metamask-extension/pull/15117))
-- Bump minimum Node.js version to 16 ([#15131](https://github.com/MetaMask/metamask-extension/pull/15131))
-- Update Optimism ChainID from Kovan to Goerli ([#15119](https://github.com/MetaMask/metamask-extension/pull/15119))
-- fix Chinese translation ([#14994](https://github.com/MetaMask/metamask-extension/pull/14994))
-- State logs e2e ([#15123](https://github.com/MetaMask/metamask-extension/pull/15123))
-- Send to hex-prefixed address e2e tests ([#15111](https://github.com/MetaMask/metamask-extension/pull/15111))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Update wallet-overview.js ([#15125](https://github.com/MetaMask/metamask-extension/pull/15125))
-- Remove global transaction state from send flow ([#14777](https://github.com/MetaMask/metamask-extension/pull/14777))
-- Ensure native asset icon does not display incorrectly when switching networks and balance is loading ([#15116](https://github.com/MetaMask/metamask-extension/pull/15116))
-- Master Sync PR following v10.16.2 ([#15108](https://github.com/MetaMask/metamask-extension/pull/15108))
 - Adding popular custom network integration ([#14557](https://github.com/MetaMask/metamask-extension/pull/14557))
-- Add fallback image/card for NFTs when image was not fetched correctly or does not exist ([#15034](https://github.com/MetaMask/metamask-extension/pull/15034))
-- Merge remote-tracking branch 'origin/develop' into master-sync
 - Bump @metamask/design-tokens from 1.6.5 to 1.7.0 ([#15017](https://github.com/MetaMask/metamask-extension/pull/15017))
-- Master Sync after v10.16.1 ([#15079](https://github.com/MetaMask/metamask-extension/pull/15079))
-- Update CHANGELOG.md
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Remove change from cb77f94 that breaks ens inputs in send flow ([#15069](https://github.com/MetaMask/metamask-extension/pull/15069))
-- Fix tokenIds larger than MAX_SAFE_INTEGER converted to scientific notation and failing to import ([#15016](https://github.com/MetaMask/metamask-extension/pull/15016))
-- Chromedriver v103 ([#15015](https://github.com/MetaMask/metamask-extension/pull/15015))
+
+### Added
+- Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010)) 
+
+### Changed
+- Update Optimism ChainID from Kovan to Goerli ([#15119](https://github.com/MetaMask/metamask-extension/pull/15119))
+
+### Fixed
+- Fix one of the possible causes for "Sending to a random cached address", by removing the global transaction state from the Send flow ([#14777](https://github.com/MetaMask/metamask-extension/pull/14777))
+- Fix Chinese translation for the message of Importing repeated tokens ([#14994](https://github.com/MetaMask/metamask-extension/pull/14994))
+- Fix Japanese translation for the word Sign ([#15078](https://github.com/MetaMask/metamask-extension/pull/15078))
+- Fix partially the error "Seedphrase is invalid" by disabling Seedphrase Import button after switching the Seedphrase length ([#15139](https://github.com/MetaMask/metamask-extension/pull/15139))
 
 ## [10.17.0]
 ### Added
