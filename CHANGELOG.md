@@ -8,8 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.18.0]
 ### Uncategorized
-- Add feature flag to prevent add popular networks from being available on prod ([#15117](https://github.com/MetaMask/metamask-extension/pull/15117))
-- Adding popular custom network integration ([#14557](https://github.com/MetaMask/metamask-extension/pull/14557))
 - Bump @metamask/design-tokens from 1.6.5 to 1.7.0 ([#15017](https://github.com/MetaMask/metamask-extension/pull/15017))
 
 ### Added
