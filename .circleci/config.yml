@@ -139,6 +139,7 @@ workflows:
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
+      - stats-module-temp:
       - job-publish-prerelease:
           requires:
             - stats-module-temp
