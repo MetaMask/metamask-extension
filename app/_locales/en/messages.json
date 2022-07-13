@@ -292,9 +292,6 @@
     "message": "Approved on $1",
     "description": "$1 is the approval date for a permission"
   },
-  "areYouDeveloper": {
-    "message": "Are you a developer?"
-  },
   "areYouSure": {
     "message": "Are you sure?"
   },
@@ -2370,9 +2367,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Check the source code"
   },
   "optional": {
     "message": "Optional"
