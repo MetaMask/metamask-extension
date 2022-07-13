@@ -261,6 +261,7 @@ async function addEthereumChainHandler(
       }),
     );
 
+    const rpcUrlOrigin = new URL(firstValidRPCUrl).origin;
     sendMetrics({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,
@@ -274,13 +275,13 @@ async function addEthereumChainHandler(
         // property included in all events. For RPC type networks
         // the MetaMetrics controller uses the rpcUrl for the network
         // property.
-        network: firstValidRPCUrl,
+        network: rpcUrlOrigin,
         symbol: ticker,
         block_explorer_url: firstValidBlockExplorerUrl,
         source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
       sensitiveProperties: {
-        rpc_url: firstValidRPCUrl,
+        rpc_url: rpcUrlOrigin,
       },
     });
 
