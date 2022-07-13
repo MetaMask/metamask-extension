@@ -870,12 +870,14 @@ export default function ViewQuote() {
   ]);
 
   useEffect(() => {
-    // Removes a smart transactions error when the component loads.
-    dispatch({
-      type: SET_SMART_TRANSACTIONS_ERROR,
-      payload: null,
-    });
-  }, [dispatch]);
+    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+      // Removes a smart transactions error when the component loads.
+      dispatch({
+        type: SET_SMART_TRANSACTIONS_ERROR,
+        payload: null,
+      });
+    }
+  }, [currentSmartTransactionsEnabled, smartTransactionsOptInStatus, dispatch]);
 
   return (
     <div className="view-quote">
