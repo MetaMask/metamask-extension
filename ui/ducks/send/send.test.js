@@ -500,33 +500,6 @@ describe('Send Slice', () => {
         expect(draftTransaction.recipient.error).toBeNull();
       });
 
-      it('should nullify old known address error when asset types is not TOKEN', () => {
-        const recipientErrorState = getInitialSendStateWithExistingTxState({
-          recipient: {
-            warning: KNOWN_RECIPIENT_ADDRESS_WARNING,
-          },
-          asset: {
-            type: ASSET_TYPES.TOKEN,
-          },
-        });
-
-        const action = {
-          type: 'send/updateAsset',
-          payload: {
-            type: 'New Type',
-          },
-        };
-
-        const result = sendReducer(recipientErrorState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.recipient.warning).not.toStrictEqual(
-          KNOWN_RECIPIENT_ADDRESS_WARNING,
-        );
-        expect(draftTransaction.recipient.warning).toBeNull();
-      });
-
       it('should update asset type and details to TOKEN payload', () => {
         const action = {
           type: 'send/updateAsset',
@@ -1749,19 +1722,23 @@ describe('Send Slice', () => {
         expect(actionResult[0].payload).toStrictEqual('loading');
 
         expect(actionResult[1].type).toStrictEqual(
+          'send/updateDraftTransactionStatus',
+        );
+
+        expect(actionResult[2].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[1].payload).toStrictEqual(newUserRecipientInput);
+        expect(actionResult[2].payload).toStrictEqual(newUserRecipientInput);
 
-        expect(actionResult[2]).toMatchObject({
+        expect(actionResult[3]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: `sendFlow - user typed ${newUserRecipientInput} into recipient input field`,
         });
 
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(actionResult[3].payload).toStrictEqual({
+        expect(actionResult[4].payload).toStrictEqual({
           chainId: '',
           tokens: [],
           useTokenDetection: true,
@@ -2039,23 +2016,27 @@ describe('Send Slice', () => {
           'send/updateRecipientWarning',
         );
         expect(actionResult[2].type).toStrictEqual(
+          'send/updateDraftTransactionStatus',
+        );
+
+        expect(actionResult[3].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[3].payload).toStrictEqual(
+        expect(actionResult[4].payload).toStrictEqual(
           'sendFlow - user typed  into recipient input field',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(actionResult[5].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[6].type).toStrictEqual(
+        expect(actionResult[6].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[7].type).toStrictEqual(
+        expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[8].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[9].type).toStrictEqual(
+        expect(actionResult[9].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[10].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
