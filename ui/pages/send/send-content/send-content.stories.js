@@ -1,26 +1,73 @@
 import React from 'react';
-import { boolean, text } from '@storybook/addon-knobs';
 
 import SendContent from './send-content.component';
 
 export default {
   title: 'Pages/Send/SendContent',
   id: __filename,
+  argsTypes: {
+    showHexData: {
+      control: 'boolean',
+    },
+    isOwnedAccount: {
+      control: 'boolean',
+    },
+    contact: {
+      control: 'object',
+    },
+    noGasPrice: {
+      control: 'boolean',
+    },
+    isEthGasPrice: {
+      control: 'boolean',
+    },
+
+    gasIsExcessive: {
+      control: 'boolean',
+    },
+    networkOrAccountNotSupports1559: {
+      control: 'boolean',
+    },
+    getIsBalanceInsufficient: {
+      control: 'boolean',
+    },
+    error: {
+      control: 'text',
+    },
+    warning: {
+      control: 'text',
+    },
+    to: {
+      control: 'text',
+    },
+    assetError: {
+      control: 'text',
+    },
+    asset: {
+      control: 'object',
+    },
+  },
 };
 
-export const DefaultStory = () => {
-  return (
-    <SendContent
-      showHexData={boolean('Show Hex Data', false)}
-      isOwnedAccount={boolean('Is In Address Book', true)}
-      noGasPrice={boolean('No Gas Price', false)}
-      isEthGasPrice={boolean('Backup Gas Price', false)}
-      gasIsExcessive={boolean('Gas Is Excessive', false)}
-      // Get error and warning message from messages.json
-      error={text('Error', 'connecting')}
-      warning={text('Warning', 'connecting')}
-    />
-  );
+export const DefaultStory = (args) => {
+  return <SendContent {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  showHexData: false,
+  isOwnedAccount: true,
+  noGasPrice: false,
+  isEthGasPrice: false,
+  gasIsExcessive: false,
+  error: 'connecting',
+  warning: 'connecting',
+  asset: {
+    type: 'NATIVE',
+  },
+  contact: { name: 'testName' },
+  networkOrAccountNotSupports1559: false,
+  getIsBalanceInsufficient: false,
+  to: 'string to',
+  assetError: 'newAccountDetectedDialogMessage',
+};
