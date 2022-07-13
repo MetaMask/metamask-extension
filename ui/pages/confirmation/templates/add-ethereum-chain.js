@@ -268,7 +268,7 @@ function getValues(pendingApproval, t, actions) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl.includes(
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl?.includes(
               `/v3/${infuraProjectId}`,
             )
               ? pendingApproval.requestData.rpcUrl.replace(

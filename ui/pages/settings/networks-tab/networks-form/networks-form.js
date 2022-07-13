@@ -610,7 +610,7 @@ const NetworksForm = ({
           onChange={setRpcUrl}
           titleText={t('rpcUrl')}
           value={
-            rpcUrl.includes(`/v3/${infuraProjectId}`)
+            rpcUrl?.includes(`/v3/${infuraProjectId}`)
               ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
               : rpcUrl
           }
