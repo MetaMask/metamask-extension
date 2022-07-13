@@ -267,9 +267,8 @@ async function addEthereumChainHandler(
       referrer: {
         url: origin,
       },
-      sensitiveProperties: {
+      properties: {
         chain_id: _chainId,
-        rpc_url: firstValidRPCUrl,
         network_name: _chainName,
         // Including network to override the default network
         // property included in all events. For RPC type networks
@@ -279,6 +278,9 @@ async function addEthereumChainHandler(
         symbol: ticker,
         block_explorer_url: firstValidBlockExplorerUrl,
         source: EVENT.SOURCE.TRANSACTION.DAPP,
+      },
+      sensitiveProperties: {
+        rpc_url: firstValidRPCUrl,
       },
     });
 
