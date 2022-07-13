@@ -1,10 +1,16 @@
 import React from 'react';
+import README from './README.mdx';
 import HexToDecimal from './hex-to-decimal.component';
 
 export default {
   title: 'Components/UI/HexToDecimal',
   id: __filename,
   component: HexToDecimal,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   argsTypes: {
     text: {
       control: 'text',

@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import Alert from '.';
+import { Alert } from '.';
 
 describe('Alert', () => {
   let wrapper;

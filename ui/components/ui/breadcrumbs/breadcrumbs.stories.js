@@ -1,10 +1,16 @@
 import React from 'react';
+import README from './README.mdx';
 import Breadcrumbs from './breadcrumbs.component';
 
 export default {
   title: 'Components/UI/Breadcrumbs ',
   id: __filename,
   component: Breadcrumbs,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   argsTypes: {
     currentIndex: {
       control: 'number',

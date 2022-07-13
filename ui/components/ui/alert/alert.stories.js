@@ -1,10 +1,16 @@
 import React from 'react';
-import Alert from '.';
+import README from './README.mdx';
+import { Alert } from '.';
 
 export default {
   title: 'Components/UI/Alert',
   id: __filename,
   component: Alert,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   argsTypes: {
     visible: {
       control: 'boolean',
