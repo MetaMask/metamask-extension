@@ -115,7 +115,7 @@ export default class AddRecipient extends Component {
         recipient.nickname,
         'validated user input',
       );
-    } else if (ensResolution) {
+    } else if (ensResolution && !recipient.error) {
       content = this.renderExplicitAddress(
         ensResolution,
         addressBookEntryName || userInput,

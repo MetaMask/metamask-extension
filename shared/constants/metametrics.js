@@ -305,6 +305,10 @@ export const EVENT = {
     WALLET: 'Wallet',
   },
   SOURCE: {
+    NETWORK: {
+      POPULAR_NETWORK_LIST: 'popular_network_list',
+      CUSTOM_NETWORK_FORM: 'custom_network_form',
+    },
     SWAPS: {
       MAIN_VIEW: 'Main View',
       TOKEN_VIEW: 'Token View',
