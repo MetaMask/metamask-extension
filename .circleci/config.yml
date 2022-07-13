@@ -139,8 +139,11 @@ workflows:
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
+      - stats-module-temp:
+          requires:
       - job-publish-prerelease:
           requires:
+            - stats-module-temp
             - prep-deps
             - prep-build
             - prep-build-beta
@@ -628,6 +631,23 @@ jobs:
           name: Run page load benchmark
           command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3 |
             ./.circleci/scripts/bundle-stats-commit.sh
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+
+  stats-module-temp:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run page load benchmark
+          command: ./.circleci/scripts/bundle-stats-commit.sh
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
