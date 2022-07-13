@@ -44,10 +44,9 @@ export default function SrpInput({ onChange, srpText }) {
       if (newDraftSrp.some((word) => word !== '')) {
         if (newDraftSrp.some((word) => word === '')) {
           newSrpError = t('seedPhraseReq');
-        } else if (
-          isLowerCase(joinedDraftSrp) ||
-          !isValidMnemonic(joinedDraftSrp)
-        ) {
+        } else if (isLowerCase(joinedDraftSrp)) {
+          newSrpError = t('invalidSeedPhraseCaseSensitive');
+        } else if (!isValidMnemonic(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhrase');
         }
       }
