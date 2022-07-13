@@ -28,9 +28,16 @@ fi
 
 printf '%s\n' 'Commit the manifest version and changelog if the manifest has changed'
 
-if [[ "${CIRCLE_BRANCH/-/ }" ]]
+if [[ "${CIRCLE_BRANCH}" == "bundlesize_stats_over_time" ]]
 then
+    printf '123'
     printf '%s' "${CIRCLE_BRANCH}"
+    exit 0
+fi
+
+if [[ "${CIRCLE_BRANCH}" == "bundlesize_stats_over_time" ]]
+then
+    printf '456'
     exit 0
 fi
 
