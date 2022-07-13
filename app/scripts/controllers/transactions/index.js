@@ -1456,6 +1456,31 @@ export default class TransactionController extends EventEmitter {
       if (error.message.toLowerCase().includes('known transaction')) {
         txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
         txHash = addHexPrefix(txHash);
+      } else if (
+        error.message.includes(
+          '[ethjs-query] while formatting outputs from RPC',
+        )
+      ) {
+        // fix for ganache and hardhat users
+        // error ends up wrapped in a string & inside .value because of
+        // https://github.com/ethjs/ethjs-rpc/blob/master/src/index.js#L52
+        // https://github.com/ethjs/ethjs-query/blob/master/src/index.js#L78
+        let unwrapped;
+        try {
+          let errorJson = error.message
+            .substring(
+              error.message.indexOf('{'),
+              error.message.indexOf(',"code"'),
+            )
+            .concat('}}}');
+          errorJson = JSON.parse(errorJson);
+          unwrapped = new Error(errorJson.value.data.message);
+          unwrapped.code = errorJson.value.code;
+        } catch (e) {
+          // tried my best. Heres the original disaster of an error.
+          throw error;
+        }
+        throw unwrapped;
       } else {
         throw error;
       }
