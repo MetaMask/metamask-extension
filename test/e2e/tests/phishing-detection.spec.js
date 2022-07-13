@@ -157,10 +157,8 @@ describe('Phishing Detection', function () {
         const newIssueLink = await driver.findElement({
           text: 'please file an issue',
         });
-        assert.equal(
-          await newIssueLink.getAttribute('href'),
-          PHISHFORT_CDN_URL,
-        );
+        await newIssueLink.click();
+        assert.ok(/https:\/\/github\.com\.*/u.test(await driver.getCurrentUrl()));
       },
     );
   });
