@@ -36,38 +36,12 @@ export default {
     gapSize: {
       control: 'select',
       name: 'Gap Size',
-      options: SIZES,
-      defaultValue: SIZES.SM,
-    },
-    tooltips: { control: 'object', name: 'Tooltips' },
-    'termTypography.variant': {
-      control: 'select',
-      name: 'Term Variant',
-      options: TYPOGRAPHY,
-    },
-    'termTypography.color': {
-      control: 'select',
-      name: 'Term Color',
-      options: COLORS,
-    },
-    'definitionTypography.variant': {
-      control: 'select',
-      name: 'Definition Variant',
-      options: TYPOGRAPHY,
-    },
-    'definitionTypography.color': {
-      control: 'select',
-      name: 'Term Color',
-      options: COLORS,
+      options: Object.values(SIZES),
     },
   },
   args: {
     dictionary: basic,
-    tooltips,
-    'termTypography.variant': TYPOGRAPHY.H6,
-    'termTypography.color': COLORS.TEXT_DEFAULT,
-    'definitionTypography.variant': TYPOGRAPHY.H6,
-    'definitionTypography.color': COLORS.TEXT_DEFAULT,
+    gapSize: SIZES.SM,
   },
 };
 
@@ -87,6 +61,10 @@ export const WithTooltips = (args) => (
 
 WithTooltips.args = {
   dictionary: advanced,
+  tooltips,
+};
+WithTooltips.argTypes = {
+  tooltips: { control: 'object', name: 'Tooltips' },
 };
 
 export const WithTypographyControl = (args) => (
@@ -95,16 +73,46 @@ export const WithTypographyControl = (args) => (
     tooltips={args.tooltips}
     gapSize={args.gapSize}
     termTypography={{
-      variant: args['termTypography.variant'],
-      color: args['termTypography.color'],
+      variant: args.termTypographyVariant,
+      color: args.termTypographyColor,
+      children: <div></div>,
     }}
     definitionTypography={{
-      variant: args['definitionTypography.variant'],
-      color: args['definitionTypography.color'],
+      variant: args.definitionTypographyVariant,
+      color: args.definitionTypographyColor,
+      children: <div></div>,
     }}
   />
 );
 
 WithTypographyControl.args = {
   dictionary: advanced,
+  termTypographyVariant: TYPOGRAPHY.H6,
+  termTypographyColor: COLORS.TEXT_DEFAULT,
+  definitionTypographyVariant: TYPOGRAPHY.H6,
+  definitionTypographyColor: COLORS.TEXT_DEFAULT,
+};
+
+WithTypographyControl.argTypes = {
+  tooltips,
+  termTypographyVariant: {
+    control: 'select',
+    name: 'Term Variant',
+    options: Object.values(TYPOGRAPHY),
+  },
+  termTypographyColor: {
+    control: 'select',
+    name: 'Term Color',
+    options: Object.values(COLORS),
+  },
+  definitionTypographyVariant: {
+    control: 'select',
+    name: 'Definition Variant',
+    options: Object.values(TYPOGRAPHY),
+  },
+  definitionTypographyColor: {
+    control: 'select',
+    name: 'Definition Color',
+    options: Object.values(COLORS),
+  },
 };
