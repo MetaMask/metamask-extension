@@ -2,12 +2,21 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
+/**
+ * These types determine how the method tracking middleware handles incoming
+ * requests based on the method name. There are three options right now but
+ * the types could be expanded to cover other options in the future.
+ */
 const RATE_LIMIT_TYPES = {
   RATE_LIMITED: 'rate_limited',
   BLOCKED: 'blocked',
   NON_RATE_LIMITED: 'non_rate_limited',
 };
 
+/**
+ * This object maps a method name to a RATE_LIMIT_TYPE. If not in this map the
+ * default is 'RATE_LIMITED'
+ */
 const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_SIGN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
@@ -23,6 +32,11 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
 };
 
+/**
+ * For events with user interaction (approve / reject | cancel) this map will
+ * return an object with APPROVED, REJECTED and REQUESTED keys that map to the
+ * appropriate event names.
+ */
 const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.ETH_SIGN]: {
     APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
@@ -79,13 +93,18 @@ const rateLimitTimeouts = {};
  * signature requests
  *
  * @param {object} opts - options for the rpc method tracking middleware
- * @param {Function} opts.trackEvent - trackEvent method from MetaMetricsController
- * @param {Function} opts.getMetricsState - get the state of MetaMetricsController
+ * @param {Function} opts.trackEvent - trackEvent method from
+ *  MetaMetricsController
+ * @param {Function} opts.getMetricsState - get the state of
+ *  MetaMetricsController
+ * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
+ *  allowing another set of events to be tracked.
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
+  rateLimitSeconds = 60,
 }) {
   return function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -95,7 +114,8 @@ export default function createRPCMethodTrackingMiddleware({
     const { origin, method } = req;
 
     // Determine what type of rate limit to apply based on method
-    const rateLimitType = RATE_LIMIT_MAP[method];
+    const rateLimitType =
+      RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RATE_LIMITED;
 
     // If the rateLimitType is RATE_LIMITED check the rateLimitTimeouts
     const rateLimited =
@@ -151,10 +171,8 @@ export default function createRPCMethodTrackingMiddleware({
 
       rateLimitTimeouts[method] = setTimeout(() => {
         delete rateLimitTimeouts[method];
-      }, SECOND * 60);
+      }, SECOND * rateLimitSeconds);
     }
-
-    // Capture the initial request by the dapp
 
     next((callback) => {
       if (shouldTrackEvent === false || typeof eventType === 'undefined') {
