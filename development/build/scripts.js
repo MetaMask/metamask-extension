@@ -370,16 +370,20 @@ const postProcessServiceWorker = (
   mv3BrowserPlatforms,
   fileList,
   applyLavaMoat,
+  testing,
 ) => {
   mv3BrowserPlatforms.forEach((browser) => {
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    const fileOutput = fileContent
-      .replace('/** FILE NAMES */', fileList)
-      .replace(
+    let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    if (!testing) {
+      // Lavamoat is always set to true in testing mode
+      // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
+      fileOutput = fileContent.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
+    }
     writeFileSync(appInitFile, fileOutput);
   });
 };
@@ -420,16 +424,32 @@ async function bundleMV3AppInitialiser({
     shouldLintFenceFiles,
   })();
 
-  postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+  postProcessServiceWorker(
+    mv3BrowserPlatforms,
+    fileList,
+    applyLavaMoat,
+    testing,
+  );
 
-  let prevChromeFileContent;
-  watch('./dist/chrome/app-init.js', () => {
-    const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
-    if (chromeFileContent !== prevChromeFileContent) {
-      prevChromeFileContent = chromeFileContent;
-      postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
-    }
-  });
+  if (devMode && !testing) {
+    let prevChromeFileContent;
+    watch('./dist/chrome/app-init.js', () => {
+      const chromeFileContent = readFileSync(
+        './dist/chrome/app-init.js',
+        'utf8',
+      );
+      if (chromeFileContent !== prevChromeFileContent) {
+        prevChromeFileContent = chromeFileContent;
+        postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+      }
+    });
+  }
+
+  if (testing) {
+    const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
+    const fileOutput = content.replace('statsMode = false', 'statsMode = true');
+    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
+  }
 
   console.log(`Bundle end: service worker app-init.js`);
 }
