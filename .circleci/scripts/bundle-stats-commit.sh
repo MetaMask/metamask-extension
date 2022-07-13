@@ -28,24 +28,23 @@ fi
 
 printf '%s\n' 'Commit the manifest version and changelog if the manifest has changed'
 
-if [[ "${CIRCLE_BRANCH}" == "bundlesize_stats_over_time" ]]
+if [[ "${CIRCLE_BRANCH}" != "bundlesize_stats_over_time" ]]
 then
-    printf '123'
-    printf '%s' "${CIRCLE_BRANCH}"
+    printf 'This is not develop branch'
     exit 0
 fi
 
-if [[ "${CIRCLE_BRANCH}" == "bundlesize_stats_over_time" ]]
-then
-    printf '456'
-    exit 0
-fi
+
+mkdir temp
 
 git \
     -c user.name='MetaMask Bot' \
     -c user.email='metamaskbot@users.noreply.github.com' \
-    commit --message "${CIRCLE_BRANCH/-/ }" \
-        CHANGELOG.md package.json
+    clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
+
+cp -R test-artifacts/chrome/mv3/bundle_size.json temp/stats
+
+git commit --message "Bundle size at commit: ${CIRCLE_SHA1}"
 
 repo_slug="$CIRCLE_PROJECT_USERNAME/extension_bundlesize_stats"
 git push "https://$GITHUB_TOKEN_USER:$GITHUB_TOKEN@github.com/$repo_slug" main
