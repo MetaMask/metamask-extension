@@ -140,6 +140,8 @@ workflows:
           requires:
             - prep-build-test-mv3
       - stats-module-temp:
+          requires:
+            - test-lint
       - job-publish-prerelease:
           requires:
             - stats-module-temp
