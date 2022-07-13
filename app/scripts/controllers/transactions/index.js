@@ -1453,7 +1453,8 @@ export default class TransactionController extends EventEmitter {
     try {
       txHash = await this.query.sendRawTransaction(rawTx);
     } catch (error) {
-      const ethjsQueryErrorPrefix = "[ethjs-query] while formatting outputs from RPC";
+      const ethjsQueryErrorPrefix =
+        '[ethjs-query] while formatting outputs from RPC ';
       if (error.message.toLowerCase().includes('known transaction')) {
         txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
         txHash = addHexPrefix(txHash);
@@ -1464,8 +1465,14 @@ export default class TransactionController extends EventEmitter {
         // https://github.com/ethjs/ethjs-query/blob/master/src/index.js#L78
         let unwrapped;
         try {
-          const withoutPrefix = error.message.replace(ethjsQueryErrorPrefix, "");
-          const errorJsonString = withoutPrefix.substring(1, withoutPrefix.length - 1);
+          const withoutPrefix = error.message.replace(
+            ethjsQueryErrorPrefix,
+            '',
+          );
+          const errorJsonString = withoutPrefix.substring(
+            1,
+            withoutPrefix.length - 1,
+          );
           const errorJson = JSON.parse(errorJsonString);
           unwrapped = new Error(errorJson.value.data.message);
           unwrapped.code = errorJson.value.data.code;
