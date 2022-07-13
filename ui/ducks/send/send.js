@@ -954,14 +954,6 @@ const slice = createSlice({
           // are no longer valid when sending native currency.
           draftTransaction.recipient.error = null;
         }
-
-        if (
-          draftTransaction.recipient.warning === KNOWN_RECIPIENT_ADDRESS_WARNING
-        ) {
-          // Warning related to sending tokens to a known contract address
-          // are no longer valid when sending native currency.
-          draftTransaction.recipient.warning = null;
-        }
       }
       // if amount mode is MAX update amount to max of new asset, otherwise set
       // to zero. This will revalidate the send amount field.
