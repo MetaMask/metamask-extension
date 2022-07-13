@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { MILLISECOND } from '../../../../shared/constants/time';
 
-export function Alert(props) {
+function Alert(props) {
   const [visible, setVisible] = useState(false);
   const [className, setClassName] = useState('');
   const lastVisible = usePrevious(props.visible);

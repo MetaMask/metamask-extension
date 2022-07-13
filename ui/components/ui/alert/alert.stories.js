@@ -1,6 +1,6 @@
 import React from 'react';
 import README from './README.mdx';
-import { Alert } from '.';
+import Alert from '.';
 
 export default {
   title: 'Components/UI/Alert',

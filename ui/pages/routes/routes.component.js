@@ -27,7 +27,7 @@ import LoadingNetwork from '../../components/app/loading-network-screen';
 import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
 import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
-import { Alert } from '../../components/ui/alert';
+import Alert from '../../components/ui/alert';
 import AppHeader from '../../components/app/app-header';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
