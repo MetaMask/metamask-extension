@@ -2071,14 +2071,16 @@ export default class MetamaskController extends EventEmitter {
       referrer: {
         url: rpcUrl,
       },
-      sensitiveProperties: {
+      properties: {
         chain_id: chainId,
-        rpc_url: rpcUrl,
         network_name: chainName,
         network: rpcUrl,
         symbol: ticker,
         block_explorer_url: blockExplorerUrl,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
+      },
+      sensitiveProperties: {
+        rpc_url: rpcUrl,
       },
     });
   }

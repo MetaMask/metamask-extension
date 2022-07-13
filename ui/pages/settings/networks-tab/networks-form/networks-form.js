@@ -511,14 +511,16 @@ const NetworksForm = ({
           referrer: {
             url: rpcUrl,
           },
-          sensitiveProperties: {
+          properties: {
             chain_id: chainId,
-            rpc_url: rpcUrl,
             network_name: networkName,
             network: rpcUrl,
             symbol: ticker,
             block_explorer_url: blockExplorerUrl,
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          },
+          sensitiveProperties: {
+            rpc_url: rpcUrl,
           },
         });
         dispatch(setNewNetworkAdded(networkName));
