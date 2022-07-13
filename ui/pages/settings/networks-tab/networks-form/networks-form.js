@@ -36,7 +36,10 @@ import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { EVENT } from '../../../../../shared/constants/metametrics';
-import { infuraProjectId } from '../../../../../shared/constants/network';
+import {
+  infuraProjectId,
+  FEATURED_RPCS,
+} from '../../../../../shared/constants/network';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -97,6 +100,9 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const chainIdMatchesFeaturedRPC = FEATURED_RPCS.some(
+    (featuredRpc) => Number(featuredRpc.chainId) === Number(chainId),
+  );
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -556,10 +562,13 @@ const NetworksForm = ({
   };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
+  const chainIdErrorOnFeaturedRpcDuringEdit =
+    selectedNetwork?.rpcUrl && warnings.chainId && chainIdMatchesFeaturedRPC;
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||
     stateUnchanged ||
+    chainIdErrorOnFeaturedRpcDuringEdit ||
     !rpcUrl ||
     !chainId ||
     !ticker;
