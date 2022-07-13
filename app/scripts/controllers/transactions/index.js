@@ -1453,29 +1453,22 @@ export default class TransactionController extends EventEmitter {
     try {
       txHash = await this.query.sendRawTransaction(rawTx);
     } catch (error) {
+      const ethjsQueryErrorPrefix = "[ethjs-query] while formatting outputs from RPC";
       if (error.message.toLowerCase().includes('known transaction')) {
         txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
         txHash = addHexPrefix(txHash);
-      } else if (
-        error.message.includes(
-          '[ethjs-query] while formatting outputs from RPC',
-        )
-      ) {
+      } else if (error.message.includes(ethjsQueryErrorPrefix)) {
         // fix for ganache and hardhat users
         // error ends up wrapped in a string & inside .value because of
         // https://github.com/ethjs/ethjs-rpc/blob/master/src/index.js#L52
         // https://github.com/ethjs/ethjs-query/blob/master/src/index.js#L78
         let unwrapped;
         try {
-          let errorJson = error.message
-            .substring(
-              error.message.indexOf('{'),
-              error.message.indexOf(',"code"'),
-            )
-            .concat('}}}');
-          errorJson = JSON.parse(errorJson);
+          const withoutPrefix = error.message.replace(ethjsQueryErrorPrefix, "");
+          const errorJsonString = withoutPrefix.substring(1, withoutPrefix.length - 1);
+          const errorJson = JSON.parse(errorJsonString);
           unwrapped = new Error(errorJson.value.data.message);
-          unwrapped.code = errorJson.value.code;
+          unwrapped.code = errorJson.value.data.code;
         } catch (e) {
           // tried my best. Heres the original disaster of an error.
           throw error;
