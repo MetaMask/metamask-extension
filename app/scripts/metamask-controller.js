@@ -58,6 +58,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
+import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -3311,9 +3312,13 @@ export default class MetamaskController extends EventEmitter {
     if (sender.url) {
       const { hostname } = new URL(sender.url);
       // Check if new connection is blocked if phishing detection is on
-      if (usePhishDetect && this.phishingController.test(hostname)?.result) {
-        log.debug('MetaMask - sending phishing warning for', hostname);
-        this.sendPhishingWarning(connectionStream, hostname);
+      const phishingTestResponse = this.phishingController.test(hostname);
+      if (usePhishDetect && phishingTestResponse?.result) {
+        this.sendPhishingWarning(
+          connectionStream,
+          hostname,
+          phishingTestResponse,
+        );
         return;
       }
     }
@@ -3391,11 +3396,15 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
    * @param {string} hostname - The hostname that triggered the suspicion.
+   * @param {object} phishingTestResponse - Result of calling `phishingController.test`,
+   * which is the result of calling eth-phishing-detects detector.check method https://github.com/MetaMask/eth-phishing-detect/blob/master/src/detector.js#L55-L112
    */
-  sendPhishingWarning(connectionStream, hostname) {
+  sendPhishingWarning(connectionStream, hostname, phishingTestResponse) {
+    const newIssueUrl = PHISHING_NEW_ISSUE_URLS[phishingTestResponse?.name];
+
     const mux = setupMultiplex(connectionStream);
     const phishingStream = mux.createStream('phishing');
-    phishingStream.write({ hostname });
+    phishingStream.write({ hostname, newIssueUrl });
   }
 
   /**

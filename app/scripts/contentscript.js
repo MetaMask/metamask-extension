@@ -358,12 +358,15 @@ function blockedDomainCheck() {
 
 /**
  * Redirects the current page to a phishing information page
+ *
+ * @param data
  */
-function redirectToPhishingWarning() {
+function redirectToPhishingWarning(data) {
   console.debug('MetaMask: Routing to Phishing Warning page.');
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
   window.location.href = `${baseUrl}#${querystring.stringify({
     hostname: window.location.hostname,
     href: window.location.href,
+    newIssueUrl: data?.newIssueUrl,
   })}`;
 }

@@ -251,7 +251,7 @@
     "@metamask/eslint-config-nodejs": "^9.0.0",
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/forwarder": "^1.1.0",
-    "@metamask/phishing-warning": "^1.1.0",
+    "@metamask/phishing-warning": "^1.2.1",
     "@metamask/test-dapp": "^5.1.1",
     "@sentry/cli": "^1.58.0",
     "@storybook/addon-a11y": "^6.3.12",
