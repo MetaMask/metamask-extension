@@ -302,7 +302,7 @@ class Driver {
     await this.driver.get(url);
     return newHandle;
   }
-  
+
   async getCurrentUrl() {
     return await this.driver.getCurrentUrl();
   }
