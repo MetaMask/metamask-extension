@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { getCollectibles } from '../ducks/metamask/metamask';
-import { ERC1155, ERC721, ERC20 } from '../helpers/constants/common';
 import {
   calcTokenAmount,
   getAssetDetails,
