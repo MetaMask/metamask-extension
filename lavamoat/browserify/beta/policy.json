@@ -3168,43 +3168,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/post-message-stream": {
-      "globals": {
-        "addEventListener": true,
-        "location.origin": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
-        "@metamask/post-message-stream>readable-stream>string_decoder": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "vinyl>cloneable-readable>process-nextick-args": true
-      }
-    },
-    "@metamask/post-message-stream>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/post-message-stream>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/post-message-stream>readable-stream>safe-buffer": true
-      }
-    },
     "@metamask/providers>@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -3314,7 +3277,6 @@
     "@metamask/snap-controllers": {
       "globals": {
         "URL": true,
-        "Worker": true,
         "clearTimeout": true,
         "console.error": true,
         "console.info": true,
@@ -3327,13 +3289,13 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/controllers": true,
-        "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
+        "@metamask/snap-controllers>@metamask/controllers": true,
         "@metamask/snap-controllers>@metamask/execution-environments": true,
         "@metamask/snap-controllers>@metamask/obs-store": true,
+        "@metamask/snap-controllers>@metamask/post-message-stream": true,
         "@metamask/snap-controllers>ajv": true,
         "@metamask/snap-controllers>concat-stream": true,
         "@metamask/snap-controllers>gunzip-maybe": true,
@@ -3364,6 +3326,54 @@
         "browserify>buffer": true
       }
     },
+    "@metamask/snap-controllers>@metamask/controllers": {
+      "globals": {
+        "Headers": true,
+        "URL": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@metamask/contract-metadata": true,
+        "@metamask/controllers>abort-controller": true,
+        "@metamask/controllers>async-mutex": true,
+        "@metamask/controllers>eth-phishing-detect": true,
+        "@metamask/controllers>isomorphic-fetch": true,
+        "@metamask/controllers>multiformats": true,
+        "@metamask/controllers>web3-provider-engine": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/snap-controllers>nanoid": true,
+        "@storybook/api>fast-deep-equal": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "deep-freeze-strict": true,
+        "eth-ens-namehash": true,
+        "eth-json-rpc-infura": true,
+        "eth-keyring-controller": true,
+        "eth-method-registry": true,
+        "eth-query": true,
+        "eth-rpc-errors": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "ethereumjs-wallet": true,
+        "ethers": true,
+        "ethjs>ethjs-unit": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "jsonschema": true,
+        "punycode": true,
+        "single-call-balance-checker-abi": true,
+        "uuid": true,
+        "web3": true
+      }
+    },
     "@metamask/snap-controllers>@metamask/obs-store": {
       "packages": {
         "@metamask/snap-controllers>@metamask/obs-store>through2": true,
@@ -3373,10 +3383,69 @@
     },
     "@metamask/snap-controllers>@metamask/obs-store>through2": {
       "packages": {
+        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": true,
         "browserify>process": true,
         "browserify>util": true,
-        "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": true,
+        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": true,
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
+        "@storybook/api>util-deprecate": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/post-message-stream": {
+      "globals": {
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "location.origin": true,
+        "onmessage": "write",
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
+        "@storybook/api>util-deprecate": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "vinyl>cloneable-readable>process-nextick-args": true
+      }
+    },
+    "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/snap-controllers>ajv": {
@@ -3485,8 +3554,38 @@
         "setTimeout": true
       },
       "packages": {
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
-        "readable-stream": true
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true
+      }
+    },
+    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream": {
+      "packages": {
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>process-nextick-args": true,
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
+        "@storybook/api>util-deprecate": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true
+      }
+    },
+    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>process-nextick-args": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/snap-controllers>nanoid": {
@@ -5710,73 +5809,6 @@
     "ethjs-contract>js-sha3": {
       "packages": {
         "browserify>process": true
-      }
-    },
-    "ethjs-ens": {
-      "packages": {
-        "ethereum-ens-network-map": true,
-        "ethjs-ens>eth-ens-namehash": true,
-        "ethjs-ens>ethjs-contract": true,
-        "ethjs-ens>ethjs-query": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash": {
-      "globals": {
-        "name": "write"
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs-ens>eth-ens-namehash>idna-uts46": true,
-        "ethjs-ens>eth-ens-namehash>js-sha3": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>idna-uts46": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>punycode": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-contract": {
-      "packages": {
-        "ethjs-contract>ethjs-abi": true,
-        "ethjs-ens>ethjs-contract>ethjs-filter": true,
-        "ethjs-ens>ethjs-contract>js-sha3": true,
-        "ethjs>ethjs-util": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-query": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format": true,
-        "ethjs-ens>ethjs-query>ethjs-rpc": true
-      }
-    },
-    "ethjs-ens>ethjs-query>ethjs-format": {
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format>ethjs-schema": true,
-        "ethjs>ethjs-util": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn": true
       }
     },
     "ethjs-query": {
