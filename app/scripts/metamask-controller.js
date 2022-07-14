@@ -2065,7 +2065,12 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    const rpcUrlOrigin = new URL(rpcUrl).origin;
+    let rpcUrlOrigin;
+    try {
+      rpcUrlOrigin = new URL(rpcUrl).origin;
+    } catch {
+      // ignore
+    }
     this.metaMetricsController.trackEvent({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,

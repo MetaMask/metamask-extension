@@ -512,7 +512,12 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
-        const rpcUrlOrigin = new URL(rpcUrl).origin;
+        let rpcUrlOrigin;
+        try {
+          rpcUrlOrigin = new URL(rpcUrl).origin;
+        } catch {
+          // error
+        }
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,

@@ -261,7 +261,13 @@ async function addEthereumChainHandler(
       }),
     );
 
-    const rpcUrlOrigin = new URL(firstValidRPCUrl).origin;
+    let rpcUrlOrigin;
+    try {
+      rpcUrlOrigin = new URL(firstValidRPCUrl).origin;
+    } catch {
+      // ignore
+    }
+
     sendMetrics({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,
