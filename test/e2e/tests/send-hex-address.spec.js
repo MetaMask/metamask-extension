@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  veryLargeDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
@@ -123,6 +119,16 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 });
 
 describe('Send ERC20 to a 40 character hexadecimal address', function () {
+  async function mockTstToken(server) {
+    await server
+      .forGet('https://token-api.metaswap.codefi.network/token/0x539')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
   const ganacheOptions = {
     accounts: [
       {
@@ -141,7 +147,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        await mockTstToken(mockServer);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -179,7 +186,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           windowHandles,
         );
         await driver.clickElement({ text: 'Add Token', tag: 'button' });
-        await driver.delay(veryLargeDelayMs * 4);
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
@@ -241,7 +247,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        await mockTstToken(mockServer);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -279,7 +286,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           windowHandles,
         );
         await driver.clickElement({ text: 'Add Token', tag: 'button' });
-        await driver.delay(veryLargeDelayMs * 4);
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
