@@ -26,15 +26,4 @@ describe('Alert', () => {
     const errorText = wrapper.find('.msg');
     expect(errorText.text()).toStrictEqual(errorMessage);
   });
-
-  it('calls component method when componentWillReceiveProps is called', () => {
-    const animateInSpy = sinon.stub(wrapper.instance(), 'animateIn');
-    const animateOutSpy = sinon.stub(wrapper.instance(), 'animateOut');
-
-    wrapper.setProps({ visible: true });
-    expect(animateInSpy.calledOnce).toStrictEqual(true);
-
-    wrapper.setProps({ visible: false });
-    expect(animateOutSpy.calledOnce).toStrictEqual(true);
-  });
 });
