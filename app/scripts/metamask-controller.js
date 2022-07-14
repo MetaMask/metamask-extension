@@ -148,6 +148,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
+import { satisfies as satisfiesSemver } from 'semver';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -637,7 +638,8 @@ export default class MetamaskController extends EventEmitter {
       name: 'SnapController',
       allowedEvents: [
         'ExecutionService:unhandledError',
-        'ExecutionService:unresponsive',
+        'ExecutionService:outboundRequest',
+        'ExecutionService:outboundResponse',
       ],
       allowedActions: [
         `${this.permissionController.name}:getEndowments`,
@@ -647,8 +649,16 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
+        'ExecutionService:executeSnap',
+        'ExecutionService:getRpcRequestHandler',
+        'ExecutionService:terminateSnap',
+        'ExecutionService:terminateAllSnaps'
       ],
     });
+
+    const SNAP_BLOCKLIST = [
+      { id: 'npm:@consensys/starknet-snap', versionRange: '<1.1.11', reason: '' },
+    ];
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
@@ -657,6 +667,22 @@ export default class MetamaskController extends EventEmitter {
       getAppKey: async (subject, appKeyType) => {
         await this.appStateController.getUnlockPromise(true);
         return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
+      },
+      checkBlockList: async (snapsToCheck) => {
+        return Object.entries(snapsToCheck).reduce((acc, [snapId, version]) => {
+          const blockInfo = SNAP_BLOCKLIST.find(
+            (blocked) => blocked.id === snapId && satisfiesSemver(version, blocked.versionRange),
+          );
+
+          const cur = blockInfo
+            ? {
+                blocked: true,
+                reason: blockInfo.reason,
+                infoUrl: blockInfo.infoUrl,
+              }
+            : { blocked: false };
+          return { ...acc, [snapId]: cur };
+        }, {});
       },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -1100,9 +1126,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
-        getSnapRpcHandler: this.controllerMessenger.call.bind(
+        handleSnapRpcRequest: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:getRpcMessageHandler',
+          'SnapController:handleRpcRequest',
         ),
         getSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -1226,7 +1252,7 @@ export default class MetamaskController extends EventEmitter {
     // Record Snap metadata whenever a Snap is added to state.
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapAdded`,
-      (snapId, snap, svgIcon = null) => {
+      (snap, svgIcon = null) => {
         const {
           manifest: { proposedName },
           version,
@@ -1234,7 +1260,7 @@ export default class MetamaskController extends EventEmitter {
         this.subjectMetadataController.addSubjectMetadata({
           subjectType: SUBJECT_TYPES.SNAP,
           name: proposedName,
-          origin: snapId,
+          origin: snap.id,
           version,
           svgIcon,
         });
@@ -1243,12 +1269,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
-      (snapId) => {
+      (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
           event: 'Snap Installed',
           category: EVENT.CATEGORIES.SNAPS,
           properties: {
-            snap_id: snapId,
+            snap_id: truncatedSnap.id,
+            version: truncatedSnap.version
           },
         });
       },
@@ -1256,12 +1283,12 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapTerminated`,
-      (snapId) => {
+      (truncatedSnap) => {
         const approvals = Object.values(
           this.approvalController.state.pendingApprovals,
         ).filter(
           (approval) =>
-            approval.origin === snapId &&
+            approval.origin === truncatedSnap.id &&
             approval.type === MESSAGE_TYPE.SNAP_CONFIRM,
         );
         for (const approval of approvals) {
