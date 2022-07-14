@@ -2,9 +2,6 @@ import React from 'react';
 import { store } from '../../../.storybook/preview';
 import ConfirmSendEther from '.';
 
-// transaction id for redux dispatcher
-
-
 const options = [];
 const state = store.getState();
 const { identities } = state.metamask;
@@ -34,7 +31,7 @@ export default {
   },
 };
 export const DefaultStory = (args) => {
-  return <ConfirmSendEther {...args}/>;
+  return <ConfirmSendEther {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
