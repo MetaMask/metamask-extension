@@ -49,7 +49,7 @@ function createZipTask(platform, buildType, version) {
       gulp.src(`dist/${platform}/**`),
       // sort files and set `mtime` to epoch to ensure zip build is deterministic
       sort(),
-      gulpZip(`${path}.zip`, { modifiedTime: new Date(0) }),
+      gulpZip(`${path}.zip`, { modifiedTime: new Date('2016-07-14T00:00:00') }),
       gulp.dest('builds'),
     );
   };
