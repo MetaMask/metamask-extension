@@ -36,12 +36,15 @@ fi
 
 pwd
 
+ls
+
 mkdir temp
 
-git \
-    -c user.name='MetaMask Bot' \
-    -c user.email='metamaskbot@users.noreply.github.com' \
-    clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
+git config --global user.email "metamaskbot@users.noreply.github.com"
+
+git config --global user.name "MetaMask Bot"
+
+git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
 cp -R test-artifacts/chrome/mv3/bundle_size.json temp/stats
 
