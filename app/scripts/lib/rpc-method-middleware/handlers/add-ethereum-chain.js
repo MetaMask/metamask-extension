@@ -19,6 +19,7 @@ const addEthereumChain = {
   hookNames: {
     addCustomRpc: true,
     getCurrentChainId: true,
+    getCurrentRpcUrl: true,
     findCustomRpcBy: true,
     updateRpcTarget: true,
     requestUserApproval: true,
@@ -35,6 +36,7 @@ async function addEthereumChainHandler(
   {
     addCustomRpc,
     getCurrentChainId,
+    getCurrentRpcUrl,
     findCustomRpcBy,
     updateRpcTarget,
     requestUserApproval,
@@ -148,19 +150,21 @@ async function addEthereumChainHandler(
 
   const existingNetwork = findCustomRpcBy({ chainId: _chainId });
 
+  // if the request is to add a network that is already added and configured
+  // with the same RPC gateway we shouldn't try to add it again.
   if (existingNetwork && existingNetwork.rpcUrl === firstValidRPCUrl) {
     // If the network already exists, the request is considered successful
     res.result = null;
 
     const currentChainId = getCurrentChainId();
+    const currentRpcUrl = getCurrentRpcUrl();
 
-    // TODO ALLOW users to add a new RPC provider with same chainId but not if the suggested ticker symbol is different;
-    if (
-      currentChainId === _chainId &&
-      existingNetwork.rpcUrl === firstValidRPCUrl
-    ) {
+    // If the current chainId and rpcUrl matches that of the incoming request
+    // We don't need to proceed further.
+    if (currentChainId === _chainId && currentRpcUrl === firstValidRPCUrl) {
       return end();
     }
+    // If this network is already added with but is not the currently selected network
     // Ask the user to switch the network
     try {
       await updateRpcTarget(
@@ -258,12 +262,16 @@ async function addEthereumChainHandler(
   }
   // if the chainId is the same as an existing network but the ticker is different we want to block this action
   // as it is potentially malicious and confusing
-  let disableApprove;
   if (
+    existingNetwork &&
     existingNetwork.chainId === _chainId &&
     existingNetwork.ticker !== ticker
   ) {
-    disableApprove = true;
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
+      }),
+    );
   }
 
   try {
@@ -277,7 +285,6 @@ async function addEthereumChainHandler(
           chainName: _chainName,
           rpcUrl: firstValidRPCUrl,
           ticker,
-          disableApprove,
         },
       }),
     );

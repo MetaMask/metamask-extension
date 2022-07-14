@@ -72,10 +72,6 @@ const getMisMatchedChainDataError = (errorType) => {
       severity = SEVERITIES.DANGER;
       baseTranslationKey = 'mismatchedRpcUrl';
       break;
-    case 'SYMBOL_CHAINID':
-      severity = SEVERITIES.DANGER;
-      baseTranslationKey = 'mismatchedSymbolAndChainId';
-      break;
     default:
       severity = SEVERITIES.DANGER;
       baseTranslationKey = 'mismatchedChain';
@@ -98,9 +94,6 @@ const getMisMatchedChainDataError = (errorType) => {
 };
 
 async function getAlerts(pendingApproval) {
-  if (pendingApproval.requestData.disableApprove) {
-    return [getMisMatchedChainDataError('SYMBOL_CHAINID')];
-  }
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
@@ -108,10 +101,9 @@ async function getAlerts(pendingApproval) {
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
   );
-  const validated = Boolean(matchedChain);
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
-  if (originIsMetaMask && validated) {
+  if (originIsMetaMask && Boolean(matchedChain)) {
     return [];
   }
 

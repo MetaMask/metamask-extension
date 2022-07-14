@@ -1929,9 +1929,6 @@
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
-  "mismatchedSymbolAndChainId": {
-    "message": "There is already a network added with this same chainId but a different currency symbol. We require the currency symbol be the same for all networks with the same chainId when using this API. If you wish to proceed you can add this alternative RPC provider manually."
-  },
   "missingNFT": {
     "message": "Don't see your NFT?"
   },
