@@ -285,6 +285,7 @@ export const EVENT_NAMES = {
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PROVIDER_METHOD_CALLED: 'Provider Method Called',
   SIGNATURE_APPROVED: 'Signature Approved',
   SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',

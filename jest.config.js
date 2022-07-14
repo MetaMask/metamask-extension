@@ -1,7 +1,7 @@
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
-    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddlware.test.js',
+    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
     '<rootDir>/shared/**/*.js',
     '<rootDir>/ui/**/*.js',
   ],
@@ -22,7 +22,7 @@ module.exports = {
       statements: 100,
     },
     './app/scripts/lib/createRPCMethodTrackingMiddleware.js': {
-      branches: 100,
+      branches: 95.65,
       functions: 100,
       lines: 100,
       statements: 100,
@@ -41,7 +41,7 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
-    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddlware.test.js',
+    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
   ],
   testTimeout: 2500,
   transform: {

@@ -51,7 +51,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
   describe('before participateInMetaMetrics is set', () => {
     it('should not track an event for a signature request', async () => {
       const req = {
-        method: 'eth_sign',
+        method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
       };
 
@@ -72,7 +72,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it('should not track an event for a signature request', async () => {
       const req = {
-        method: 'eth_sign',
+        method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
       };
 
@@ -93,7 +93,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event`, () => {
       const req = {
-        method: 'eth_sign',
+        method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
       };
 
@@ -105,15 +105,15 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(1);
       expect(trackEvent.mock.calls[0][0]).toMatchObject({
         category: 'inpage_provider',
-        event: 'Signature Requested',
-        properties: { signature_type: 'eth_sign' },
+        event: EVENT_NAMES.SIGNATURE_REQUESTED,
+        properties: { signature_type: MESSAGE_TYPE.ETH_SIGN },
         referrer: { url: 'some.dapp' },
       });
     });
 
     it(`should track a ${EVENT_NAMES.SIGNATURE_APPROVED} event if the user approves`, async () => {
       const req = {
-        method: 'eth_signTypedData_v4',
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
         origin: 'some.dapp',
       };
 
@@ -126,15 +126,15 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
-        event: 'Signature Approved',
-        properties: { signature_type: 'eth_signTypedData_v4' },
+        event: EVENT_NAMES.SIGNATURE_APPROVED,
+        properties: { signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4 },
         referrer: { url: 'some.dapp' },
       });
     });
 
     it(`should track a ${EVENT_NAMES.SIGNATURE_REJECTED} event if the user approves`, async () => {
       const req = {
-        method: 'personal_sign',
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
       };
 
@@ -147,8 +147,27 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
-        event: 'Signature Rejected',
-        properties: { signature_type: 'personal_sign' },
+        event: EVENT_NAMES.SIGNATURE_REJECTED,
+        properties: { signature_type: MESSAGE_TYPE.PERSONAL_SIGN },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${EVENT_NAMES.PERMISSIONS_APPROVED} event if the user approves`, async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS,
+        origin: 'some.dapp',
+      };
+
+      const res = {};
+      const { next, executeMiddlewareStack } = getNext();
+      handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.PERMISSIONS_APPROVED,
+        properties: { method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS },
         referrer: { url: 'some.dapp' },
       });
     });
