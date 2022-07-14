@@ -826,6 +826,7 @@ function getAllowedAnnouncementIds(state) {
     10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     12: true,
+    13: true,
   };
 }
 
