@@ -48,6 +48,10 @@ git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
 cp -R test-artifacts/chrome/mv3/bundle_size.json temp/stats
 
+cd temp
+
+git add .
+
 git commit --message "Bundle size at commit: ${CIRCLE_SHA1}"
 
 repo_slug="$CIRCLE_PROJECT_USERNAME/extension_bundlesize_stats"
