@@ -795,7 +795,7 @@ export default class ConfirmTransactionBase extends Component {
     });
   }
 
-  handleSubmit(functionType) {
+  handleSubmit() {
     const {
       sendTransaction,
       clearConfirmTransaction,
@@ -806,8 +806,10 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       baseFeePerGas,
+      methodData,
     } = this.props;
     const { submitting } = this.state;
+    const { name } = methodData;
 
     if (submitting) {
       return;
@@ -817,8 +819,8 @@ export default class ConfirmTransactionBase extends Component {
       txData.estimatedBaseFee = baseFeePerGas;
     }
 
-    if (functionType) {
-      txData.contractMethodName = functionType;
+    if (name) {
+      txData.contractMethodName = name;
     }
 
     if (maxFeePerGas) {
@@ -1108,7 +1110,7 @@ export default class ConfirmTransactionBase extends Component {
           onEdit={() => this.handleEdit()}
           onCancelAll={() => this.handleCancelAll()}
           onCancel={() => this.handleCancel()}
-          onSubmit={() => this.handleSubmit(functionType)}
+          onSubmit={() => this.handleSubmit()}
           hideSenderToRecipient={hideSenderToRecipient}
           origin={txData.origin}
           ethGasPriceWarning={ethGasPriceWarning}
