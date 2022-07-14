@@ -937,6 +937,13 @@ const slice = createSlice({
       draftTransaction.asset.type = asset.type;
       draftTransaction.asset.balance = asset.balance;
       draftTransaction.asset.error = asset.error;
+
+      // If an asset update occurs that changes the type from 'NATIVE' to
+      // 'NATIVE' then this is likely the initial asset set of an edit
+      // transaction. We don't need to set the amount to zero in this case.
+      // The only times where an update would occur of this nature that we
+      // would want to set the amount to zero is on a network or account change
+      // but that update is handled elsewhere.
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
@@ -1963,6 +1970,9 @@ export function updateSendAsset(
       getSelectedAddress(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === ASSET_TYPES.NATIVE) {
+      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTx = unapprovedTxs[draftTransaction.id];
+
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${
@@ -1981,6 +1991,16 @@ export function updateSendAsset(
           initialAssetSet,
         }),
       );
+
+      // If there is an unapprovedTx in background state and its type was a token method,
+      // then the user will not want to send any hex data now that they have change the
+      // transaction from being a token transfer to a simple send.
+      if (
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
+      ) {
+        await dispatch(actions.updateUserInputHexData(''));
+      }
     } else {
       await dispatch(showLoadingIndication());
       const details = {
@@ -2206,6 +2226,27 @@ export function signTransaction() {
         ),
       };
 
+      // If, after edit, we are sending the native asset,
+      //   and if the send duck hex data was reset on this edit,
+      //   and if the hex data from the tx's background state matches
+      //   one of the special token methods that we handle,
+      //   then we conclude that the user does not want to send hex data,
+      //   and ensure it gets reset in the background state as well.
+      const sendingNativeAsset =
+        draftTransaction.asset.type === ASSET_TYPES.NATIVE;
+      const userInputHexDataHasBeenReset =
+        draftTransaction.userInputHexData === '';
+      const priorHexDataMatchesSpecialTokenTxSignatures =
+        parseStandardTokenTransactionData(editingTx.txParams.data) !==
+        undefined;
+      if (
+        sendingNativeAsset &&
+        userInputHexDataHasBeenReset &&
+        priorHexDataMatchesSpecialTokenTxSignatures
+      ) {
+        editingTx.txParams.data = '';
+      }
+
       await dispatch(
         addHistoryEntry(
           `sendFlow - user clicked next and transaction should be updated in controller`,
@@ -2217,8 +2258,10 @@ export function signTransaction() {
           draftTransaction.history,
         ),
       );
-      dispatch(updateEditableParams(draftTransaction.id, editingTx.txParams));
-      dispatch(
+      await dispatch(
+        updateEditableParams(draftTransaction.id, editingTx.txParams),
+      );
+      await dispatch(
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
