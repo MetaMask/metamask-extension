@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
-import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
-import DropdownInputPair from '../dropdown-input-pair';
-import DropdownSearchList from '../dropdown-search-list';
+import React from 'react';
+import BuildQuote from './build-quote';
 
 const tokens = [
   {
@@ -128,77 +125,34 @@ const tokensToSearch = tokens.map((token) => ({
 export default {
   title: 'Pages/Swaps/BuildQuote',
   id: __filename,
+  argTypes: {
+    ethBalance: {
+      control: { type: 'text' },
+    },
+    selectedAccountAddress: {
+      control: { type: 'text' },
+    },
+    selectedFromTokenIsNull: {
+      control: { type: 'boolean' },
+    },
+    loading: {
+      control: { type: 'boolean' },
+    },
+    shuffledTokensList: { control: 'object' },
+  },
+  args: {
+    ethBalance: '0x8',
+    selectedAccountAddress: 'selectedAccountAddress',
+    selectedFromTokenIsNull: false,
+    loading: false,
+    shuffledTokensList: [],
+  },
 };
 
-export const DefaultStory = () => {
-  const [inputValue, onInputChange] = useState(null);
-  const [selectedFromToken, setSelectedFromToken] = useState(null);
-  const formattedSwapFromFiatValue = `$${(Number(inputValue) * 4).toFixed(2)}`;
-  const loading = boolean('loading', false);
-  const selectedFromTokenIsNull = boolean('selectedFromTokenIsNull', false);
+export const DefaultStory = (args) => {
   return (
     <>
-      <h1>NOT ACTUAL COMPONENT</h1>
-
-      <div
-        style={{
-          height: '415px',
-          width: '357px',
-          border: '1px solid grey',
-          paddingLeft: '24px',
-          paddingRight: '24px',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="build-quote">
-          <div className="build-quote__dropdown-input-pair-header">
-            <div className="build-quote__input-label">Swap from</div>
-            <div
-              className="build-quote__max-button"
-              onClick={action('clickedMax')}
-            >
-              Max
-            </div>
-          </div>
-          <DropdownInputPair
-            itemsToSearch={tokensToSearch}
-            onInputChange={onInputChange}
-            inputValue={inputValue}
-            leftValue={formattedSwapFromFiatValue}
-            onSelect={setSelectedFromToken}
-            selectedItem={selectedFromTokenIsNull ? null : selectedFromToken}
-            maxListItems={30}
-            loading={loading}
-            hideItemIf={(tokenListItem) => tokenListItem.decimals !== 18}
-            selectPlaceHolderText="Select"
-          />
-          <div className="build-quote__swap-arrows-row">
-            <button className="build-quote__swap-arrows">
-              <i className="fa fa-arrow-up" title="swapSwapSwitch" />
-              <i className="fa fa-arrow-down" title="swapSwapSwitch" />
-            </button>
-          </div>
-          <div className="build-quote__dropdown-swap-to-header">
-            <div className="build-quote__input-label">Swap to</div>
-          </div>
-          <DropdownSearchList
-            itemsToSearch={tokensToSearch}
-            listContainerClassName="build-quote__open-to-dropdown"
-            searchPlaceholderText="Search for a token"
-            fuseSearchKeys={[
-              { name: 'name', weight: 0.499 },
-              { name: 'symbol', weight: 0.499 },
-              { name: 'address', weight: 0.002 },
-            ]}
-            maxListItems={30}
-            onSelect={action('onToSelect')}
-            selectPlaceHolderText="Select a token"
-            loading={loading}
-            hideRightLabels
-            defaultToAll
-          />
-        </div>
-      </div>
+      <BuildQuote {...args} itemsToSearch={tokensToSearch} />
     </>
   );
 };
