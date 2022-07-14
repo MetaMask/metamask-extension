@@ -652,18 +652,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
-      terminateAllSnaps: this.snapExecutionService.terminateAllSnaps.bind(
-        this.snapExecutionService,
-      ),
-      terminateSnap: this.snapExecutionService.terminateSnap.bind(
-        this.snapExecutionService,
-      ),
-      executeSnap: this.snapExecutionService.executeSnap.bind(
-        this.snapExecutionService,
-      ),
-      getRpcMessageHandler: this.snapExecutionService.getRpcMessageHandler.bind(
-        this.snapExecutionService,
-      ),
       closeAllConnections: this.removeAllConnections.bind(this),
       // Prefix subject with appKeyType to generate separate keys for separate uses
       getAppKey: async (subject, appKeyType) => {
