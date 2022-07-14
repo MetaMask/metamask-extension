@@ -4902,6 +4902,14 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
+    "enzyme>object-inspect": {
+      "globals": {
+        "HTMLElement": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "eslint-plugin-react>array-includes>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -5187,7 +5195,6 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "console.warn": true,
         "fetch": true,
         "open": true,
         "setInterval": true,
@@ -5216,6 +5223,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
+        "console.log": true,
         "console.warn": true,
         "setTimeout": true
       },
@@ -5226,19 +5234,21 @@
         "@ethereumjs/tx": true,
         "bn.js": true,
         "browserify>buffer": true,
+        "browserify>process": true,
         "eth-lattice-keyring>gridplus-sdk>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "eth-lattice-keyring>gridplus-sdk>borc": true,
+        "eth-lattice-keyring>gridplus-sdk>dotenv": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
         "eth-lattice-keyring>gridplus-sdk>rlp": true,
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
+        "eth-lattice-keyring>gridplus-sdk>superagent": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
         "ethers>@ethersproject/keccak256>js-sha3": true,
         "ethers>@ethersproject/sha2>hash.js": true,
-        "lodash": true,
-        "pubnub>superagent": true
+        "lodash": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
@@ -5267,6 +5277,17 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>dotenv": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "browserify": true,
+        "browserify>os-browserify": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
@@ -5304,6 +5325,28 @@
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
         "3box>ethers>elliptic": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>superagent": {
+      "globals": {
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "eth-lattice-keyring>gridplus-sdk>superagent>qs": true,
+        "eth-rpc-errors>fast-safe-stringify": true,
+        "pubnub>superagent>component-emitter": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>superagent>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -6114,73 +6157,7 @@
         "browserify>process": true
       }
     },
-    "ethjs-ens": {
-      "packages": {
-        "ethereum-ens-network-map": true,
-        "ethjs-ens>eth-ens-namehash": true,
-        "ethjs-ens>ethjs-contract": true,
-        "ethjs-ens>ethjs-query": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash": {
-      "globals": {
-        "name": "write"
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs-ens>eth-ens-namehash>idna-uts46": true,
-        "ethjs-ens>eth-ens-namehash>js-sha3": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>idna-uts46": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>punycode": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-contract": {
-      "packages": {
-        "ethjs-contract>ethjs-abi": true,
-        "ethjs-ens>ethjs-contract>ethjs-filter": true,
-        "ethjs-ens>ethjs-contract>js-sha3": true,
-        "ethjs>ethjs-util": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-query": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format": true,
-        "ethjs-ens>ethjs-query>ethjs-rpc": true
-      }
-    },
-    "ethjs-ens>ethjs-query>ethjs-format": {
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format>ethjs-schema": true,
-        "ethjs>ethjs-util": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn": true
-      }
-    },
+    "@metamask/metamask-eth-abis": true,
     "ethjs-query": {
       "globals": {
         "console": true
@@ -6497,21 +6474,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "pubnub>superagent": {
-      "globals": {
-        "ActiveXObject": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.trace": true,
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "pubnub>superagent>component-emitter": true
       }
     },
     "pump": {
@@ -7020,6 +6982,13 @@
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
         "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "enzyme>object-inspect": true,
+        "eslint-plugin-react>array-includes>get-intrinsic": true,
         "string.prototype.matchall>call-bind": true
       }
     },
