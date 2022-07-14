@@ -626,8 +626,10 @@ jobs:
             cp -R development/charts/table test-artifacts/chrome/mv3/load_time
       - run:
           name: Run page load benchmark
-          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3 |
-            ./.circleci/scripts/bundle-stats-commit.sh
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
+      - run:
+          name: Record bundle size at commit
+          command: ./.circleci/scripts/bundle-stats-commit.sh
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
