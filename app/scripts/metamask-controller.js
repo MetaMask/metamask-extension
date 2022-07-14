@@ -657,7 +657,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     const SNAP_BLOCKLIST = [
-      { id: 'npm:@consensys/starknet-snap', versionRange: '<1.1.11', reason: '' },
+      { id: 'npm:@consensys/starknet-snap', versionRange: '<0.1.11', reason: '' },
     ];
 
     this.snapController = new SnapController({
@@ -671,7 +671,7 @@ export default class MetamaskController extends EventEmitter {
       checkBlockList: async (snapsToCheck) => {
         return Object.entries(snapsToCheck).reduce((acc, [snapId, version]) => {
           const blockInfo = SNAP_BLOCKLIST.find(
-            (blocked) => blocked.id === snapId && satisfiesSemver(version, blocked.versionRange),
+            (blocked) => blocked.id === snapId && satisfiesSemver(version, blocked.versionRange, { includePrerelease: true}),
           );
 
           const cur = blockInfo
