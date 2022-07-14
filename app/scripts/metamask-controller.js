@@ -652,12 +652,15 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
-        'ExecutionService:terminateAllSnaps'
+        'ExecutionService:terminateAllSnaps',
       ],
     });
 
     const SNAP_BLOCKLIST = [
-      { id: 'npm:@consensys/starknet-snap', versionRange: '<0.1.11', reason: '' },
+      {
+        id: 'npm:@consensys/starknet-snap',
+        versionRange: '<0.1.11',
+      },
     ];
 
     this.snapController = new SnapController({
@@ -669,20 +672,27 @@ export default class MetamaskController extends EventEmitter {
         return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
       },
       checkBlockList: async (snapsToCheck) => {
-        return Object.entries(snapsToCheck).reduce((acc, [snapId, version]) => {
-          const blockInfo = SNAP_BLOCKLIST.find(
-            (blocked) => blocked.id === snapId && satisfiesSemver(version, blocked.versionRange, { includePrerelease: true}),
-          );
+        return Object.entries(snapsToCheck).reduce(
+          (acc, [snapId, snapVersion]) => {
+            const blockInfo = SNAP_BLOCKLIST.find(
+              (blocked) =>
+                blocked.id === snapId &&
+                satisfiesSemver(snapVersion, blocked.versionRange, {
+                  includePrerelease: true,
+                }),
+            );
 
-          const cur = blockInfo
-            ? {
-                blocked: true,
-                reason: blockInfo.reason,
-                infoUrl: blockInfo.infoUrl,
-              }
-            : { blocked: false };
-          return { ...acc, [snapId]: cur };
-        }, {});
+            const cur = blockInfo
+              ? {
+                  blocked: true,
+                  reason: blockInfo.reason,
+                  infoUrl: blockInfo.infoUrl,
+                }
+              : { blocked: false };
+            return { ...acc, [snapId]: cur };
+          },
+          {},
+        );
       },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -1275,7 +1285,7 @@ export default class MetamaskController extends EventEmitter {
           category: EVENT.CATEGORIES.SNAPS,
           properties: {
             snap_id: truncatedSnap.id,
-            version: truncatedSnap.version
+            version: truncatedSnap.version,
           },
         });
       },
