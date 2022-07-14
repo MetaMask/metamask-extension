@@ -166,6 +166,20 @@ async function initialize(remotePort) {
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode, remotePort);
   await loadPhishingWarningPage();
+
+  if (chrome.runtime.getManifest().manifest_version == 3) {
+    await chrome.scripting.unregisterContentScripts();
+    const scripts = [
+      {
+        id: 'content-script',
+        js: [chrome.runtime.getURL('inpage.js')],
+        matches: ['<all_urls>'],
+        world: 'MAIN',
+        runAt: 'document_start',
+      },
+    ];
+    chrome.scripting.registerContentScripts(scripts);
+  }
   log.info('MetaMask initialization complete.');
 }
 
