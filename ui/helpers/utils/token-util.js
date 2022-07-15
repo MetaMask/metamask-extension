@@ -43,7 +43,7 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress, tokenList) {
   return tokenAddress && tokenList[tokenAddress.toLowerCase()];
 }
 
