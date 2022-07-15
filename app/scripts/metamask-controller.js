@@ -297,7 +297,7 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
         onCollectibleAdded: ({ address, symbol, tokenId, standard, source }) =>
-        this.metaMetricsController.trackEvent({
+          this.metaMetricsController.trackEvent({
             event: EVENT_NAMES.NFT_ADDED,
             category: EVENT.CATEGORIES.WALLET,
             properties: {
@@ -309,7 +309,7 @@ export default class MetamaskController extends EventEmitter {
             },
             sensitiveProperties: {
               tokenId,
-            }
+            },
           }),
       },
       {},
