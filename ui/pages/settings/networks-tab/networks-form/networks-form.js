@@ -512,22 +512,28 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
+        let rpcUrlOrigin;
+        try {
+          rpcUrlOrigin = new URL(rpcUrl).origin;
+        } catch {
+          // error
+        }
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,
           referrer: {
-            url: rpcUrl,
+            url: rpcUrlOrigin,
           },
           properties: {
             chain_id: chainId,
             network_name: networkName,
-            network: rpcUrl,
+            network: rpcUrlOrigin,
             symbol: ticker,
             block_explorer_url: blockExplorerUrl,
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
           },
           sensitiveProperties: {
-            rpc_url: rpcUrl,
+            rpc_url: rpcUrlOrigin,
           },
         });
         dispatch(setNewNetworkAdded(networkName));
