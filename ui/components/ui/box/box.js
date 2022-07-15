@@ -153,18 +153,23 @@ function generateClassNames(baseClass, type, value, validatorFn) {
     return null;
   }
   const classesObject = {};
-
-  let singleDigit = Array.isArray(value) ? undefined : value;
-  // single digit exists or array has only one item
-  if (singleDigit || value.length === 1) {
-    // if it is an array with only one item assign it to singleDigit
-    if (value.length === 1) {
-      singleDigit = value[0];
-    }
+  // if value is an array with single item e.g. marginTop={[1]}
+  const singleArrayItemProp =
+    Array.isArray(value) && value.length === 1 ? value[0] : undefined;
+  // if value single value e.g. marginTop={1}
+  const singleValueProp =
+    (!Array.isArray(value) && typeof value === 'string') ||
+    typeof value === 'number'
+      ? value
+      : undefined;
+  // single digit equals single value or single array item
+  const singleValue = singleValueProp || singleArrayItemProp;
+  // 0 is an acceptable value but is falsy in js
+  if (singleValue || singleValue === 0) {
     // add base style without any breakpoint prefixes to classObject
-    classesObject[`${baseClass}--${type}-${singleDigit}`] = validatorFn(
+    classesObject[`${baseClass}--${type}-${singleValue}`] = validatorFn(
       type,
-      singleDigit,
+      singleValue,
     );
   } else {
     // If array with more than one item

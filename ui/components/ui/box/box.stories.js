@@ -374,6 +374,7 @@ export const ResponsiveProps = () => {
       </Typography>
       <Box
         marginTop="auto"
+        marginBottom={[0]}
         padding={[2, 4]}
         gap={[2, 4]}
         display={['flex', null, null, 'none']}
