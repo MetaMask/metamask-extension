@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { memoize } from 'lodash';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
@@ -15,6 +16,7 @@ import {
   BREAKPOINTS,
 } from '../../../helpers/constants/design-system';
 
+const BASE_CLASS_NAME = 'box';
 const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 export const BackgroundColors = [
   COLORS.BACKGROUND_DEFAULT,
@@ -140,73 +142,81 @@ function isValidString(type, value) {
  * Also accepts responsive props in the form of an array
  * Maps responsive props to mobile first breakpoints
  *
- * @param {string} baseClass - The root or base class name
  * @param {string} type - The style declaration type "margin", "margin-top", "padding", "display" etc
  * @param {array || number || string} value - prop value being passed in array props are responsive props
  * @param {*} validatorFn - The validation function for each type of value
  * @returns
  */
 
-function generateClassNames(baseClass, type, value, validatorFn) {
-  // if value does not exist return null
-  if (!value) {
-    return null;
-  }
-  const classesObject = {};
-  // if value is an array with single item e.g. marginTop={[1]}
-  const singleArrayItemProp =
-    Array.isArray(value) && value.length === 1 ? value[0] : undefined;
-  // if value single value e.g. marginTop={1}
-  const singleValueProp =
-    (!Array.isArray(value) && typeof value === 'string') ||
-    typeof value === 'number'
-      ? value
-      : undefined;
-  // single digit equals single value or single array item
-  const singleValue = singleValueProp || singleArrayItemProp;
-  // 0 is an acceptable value but is falsy in js
-  if (singleValue || singleValue === 0) {
-    // add base style without any breakpoint prefixes to classObject
-    classesObject[`${baseClass}--${type}-${singleValue}`] = validatorFn(
-      type,
-      singleValue,
-    );
-  } else {
-    // If array with more than one item
-    switch (value.length) {
-      case 4:
-        // add base/sm/md/lg
-        classesObject[`${baseClass}--${type}-${value[0]}`] =
-          value[0] && validatorFn(type, value[0]);
-        classesObject[`${baseClass}--${BREAKPOINTS[1]}:${type}-${value[1]}`] =
-          value[1] && validatorFn(type, value[1]);
-        classesObject[`${baseClass}--${BREAKPOINTS[2]}:${type}-${value[2]}`] =
-          value[2] && validatorFn(type, value[2]);
-        classesObject[`${baseClass}--${BREAKPOINTS[3]}:${type}-${value[3]}`] =
-          value[3] && validatorFn(type, value[3]);
-        break;
-      case 3:
-        // add base/sm/md
-        classesObject[`${baseClass}--${type}-${value[0]}`] =
-          value[0] && validatorFn(type, value[0]);
-        classesObject[`${baseClass}--${BREAKPOINTS[1]}:${type}-${value[1]}`] =
-          value[1] && validatorFn(type, value[1]);
-        classesObject[`${baseClass}--${BREAKPOINTS[2]}:${type}-${value[2]}`] =
-          value[2] && validatorFn(type, value[2]);
-        break;
-      case 2:
-        // add base/sm
-        classesObject[`${baseClass}--${type}-${value[0]}`] =
-          value[0] && validatorFn(type, value[0]);
-        classesObject[`${baseClass}--${BREAKPOINTS[1]}:${type}-${value[1]}`] =
-          value[1] && validatorFn(type, value[1]);
-        break;
-      default:
-        console.log(`Invalid array prop length: ${value.length}`);
+const generateClassNames = memoize(
+  (type, value, validatorFn) => {
+    // if value does not exist return null
+    if (!value) {
+      return null;
     }
-  }
-  return classesObject;
-}
+    const classesObject = {};
+    // if value is an array with single item e.g. marginTop={[1]}
+    const singleArrayItemProp =
+      Array.isArray(value) && value.length === 1 ? value[0] : undefined;
+    // if value single value e.g. marginTop={1}
+    const singleValueProp =
+      (!Array.isArray(value) && typeof value === 'string') ||
+      typeof value === 'number'
+        ? value
+        : undefined;
+    // single digit equals single value or single array item
+    const singleValue = singleValueProp || singleArrayItemProp;
+    // 0 is an acceptable value but is falsy in js
+    if (singleValue || singleValue === 0) {
+      // add base style without any breakpoint prefixes to classObject
+      classesObject[`${BASE_CLASS_NAME}--${type}-${singleValue}`] = validatorFn(
+        type,
+        singleValue,
+      );
+    } else {
+      // If array with more than one item
+      switch (value.length) {
+        case 4:
+          // add base/sm/md/lg
+          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+            value[0] && validatorFn(type, value[0]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+          ] = value[1] && validatorFn(type, value[1]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
+          ] = value[2] && validatorFn(type, value[2]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[3]}:${type}-${value[3]}`
+          ] = value[3] && validatorFn(type, value[3]);
+          break;
+        case 3:
+          // add base/sm/md
+          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+            value[0] && validatorFn(type, value[0]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+          ] = value[1] && validatorFn(type, value[1]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
+          ] = value[2] && validatorFn(type, value[2]);
+          break;
+        case 2:
+          // add base/sm
+          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+            value[0] && validatorFn(type, value[0]);
+          classesObject[
+            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+          ] = value[1] && validatorFn(type, value[1]);
+          break;
+        default:
+          console.log(`Invalid array prop length: ${value.length}`);
+      }
+    }
+    return classesObject;
+  },
+  (type, value) => [type, value],
+);
 
 export default function Box({
   padding,
@@ -237,61 +247,42 @@ export default function Box({
   backgroundColor,
 }) {
   const boxClassName = classnames(
-    'box',
+    BASE_CLASS_NAME,
     className,
     // Margin
-    margin && generateClassNames('box', 'margin', margin, isValidSize),
-    marginTop &&
-      generateClassNames('box', 'margin-top', marginTop, isValidSize),
-    marginRight &&
-      generateClassNames('box', 'margin-right', marginRight, isValidSize),
+    margin && generateClassNames('margin', margin, isValidSize),
+    marginTop && generateClassNames('margin-top', marginTop, isValidSize),
+    marginRight && generateClassNames('margin-right', marginRight, isValidSize),
     marginBottom &&
-      generateClassNames('box', 'margin-bottom', marginBottom, isValidSize),
-    marginLeft &&
-      generateClassNames('box', 'margin-left', marginLeft, isValidSize),
+      generateClassNames('margin-bottom', marginBottom, isValidSize),
+    marginLeft && generateClassNames('margin-left', marginLeft, isValidSize),
     // Padding
-    padding && generateClassNames('box', 'padding', padding, isValidSize),
-    paddingTop &&
-      generateClassNames('box', 'padding-top', paddingTop, isValidSize),
+    padding && generateClassNames('padding', padding, isValidSize),
+    paddingTop && generateClassNames('padding-top', paddingTop, isValidSize),
     paddingRight &&
-      generateClassNames('box', 'padding-right', paddingRight, isValidSize),
+      generateClassNames('padding-right', paddingRight, isValidSize),
     paddingBottom &&
-      generateClassNames('box', 'padding-bottom', paddingBottom, isValidSize),
-    paddingLeft &&
-      generateClassNames('box', 'padding-left', paddingLeft, isValidSize),
-    display && generateClassNames('box', 'display', display, isValidString),
-    gap && generateClassNames('box', 'gap', gap, isValidSize),
+      generateClassNames('padding-bottom', paddingBottom, isValidSize),
+    paddingLeft && generateClassNames('padding-left', paddingLeft, isValidSize),
+    display && generateClassNames('display', display, isValidString),
+    gap && generateClassNames('gap', gap, isValidSize),
     flexDirection &&
-      generateClassNames('box', 'flex-direction', flexDirection, isValidString),
-    flexWrap && generateClassNames('box', 'flex-wrap', flexWrap, isValidString),
+      generateClassNames('flex-direction', flexDirection, isValidString),
+    flexWrap && generateClassNames('flex-wrap', flexWrap, isValidString),
     justifyContent &&
-      generateClassNames(
-        'box',
-        'justify-content',
-        justifyContent,
-        isValidString,
-      ),
-    alignItems &&
-      generateClassNames('box', 'align-items', alignItems, isValidString),
-    textAlign &&
-      generateClassNames('box', 'text-align', textAlign, isValidString),
-    width && generateClassNames('box', 'width', width, isValidString),
-    height && generateClassNames('box', 'height', height, isValidString),
+      generateClassNames('justify-content', justifyContent, isValidString),
+    alignItems && generateClassNames('align-items', alignItems, isValidString),
+    textAlign && generateClassNames('text-align', textAlign, isValidString),
+    width && generateClassNames('width', width, isValidString),
+    height && generateClassNames('height', height, isValidString),
     backgroundColor &&
-      generateClassNames(
-        'box',
-        'background-color',
-        backgroundColor,
-        isValidString,
-      ),
-    borderRadius &&
-      generateClassNames('box', 'rounded', borderRadius, isValidString),
+      generateClassNames('background-color', backgroundColor, isValidString),
+    borderRadius && generateClassNames('rounded', borderRadius, isValidString),
     borderStyle &&
-      generateClassNames('box', 'border-style', borderStyle, isValidString),
+      generateClassNames('border-style', borderStyle, isValidString),
     borderColor &&
-      generateClassNames('box', 'border-color', borderColor, isValidString),
-    borderWidth &&
-      generateClassNames('box', 'border-width', borderWidth, isValidSize),
+      generateClassNames('border-color', borderColor, isValidString),
+    borderWidth && generateClassNames('border-width', borderWidth, isValidSize),
     {
       // Auto applied classes
       // ---Borders---
