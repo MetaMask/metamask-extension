@@ -152,7 +152,7 @@ function generateClassNames(baseClass, type, value, validatorFn) {
   if (!value) {
     return null;
   }
-  let classesObject = {};
+  const classesObject = {};
 
   let singleDigit = Array.isArray(value) ? undefined : value;
   // single digit exists or array has only one item
@@ -162,12 +162,10 @@ function generateClassNames(baseClass, type, value, validatorFn) {
       singleDigit = value[0];
     }
     // add base style without any breakpoint prefixes to classObject
-    classesObject = {
-      ...classesObject,
-      [`${baseClass}--${type}-${singleDigit}`]: validatorFn
-        ? validatorFn(type, singleDigit)
-        : true,
-    };
+    classesObject[`${baseClass}--${type}-${singleDigit}`] = validatorFn(
+      type,
+      singleDigit,
+    );
   } else {
     // If array with more than one item
     for (let i = 0; i < value.length; i++) {
@@ -175,20 +173,15 @@ function generateClassNames(baseClass, type, value, validatorFn) {
       if (value[i] !== null) {
         // First value is always the base value so don't apply any breakpoint prefixes
         if (i === 0) {
-          classesObject = {
-            ...classesObject,
-            [`${baseClass}--${type}-${value[i]}`]: validatorFn
-              ? validatorFn(type, value[i])
-              : true,
-          };
+          classesObject[`${baseClass}--${type}-${value[i]}`] = validatorFn(
+            type,
+            value[i],
+          );
         } else {
           // Apply breakpoint prefixes according to index in array [base(no prefix), sm:, md:, lg:, etc]
-          classesObject = {
-            ...classesObject,
-            [`${baseClass}--${BREAKPOINTS[i]}:${type}-${value[i]}`]: validatorFn
-              ? validatorFn(type, value[i])
-              : true,
-          };
+          classesObject[
+            `${baseClass}--${BREAKPOINTS[i]}:${type}-${value[i]}`
+          ] = validatorFn(type, value[i]);
         }
       }
     }

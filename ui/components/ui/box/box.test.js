@@ -114,11 +114,19 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--lg:margin-left-4');
     });
   });
-  describe('padding', () => {
-    it('should render the Box with the padding class', () => {
-      const { getByText } = render(<Box padding={1}>Box content</Box>);
 
+  describe('padding', () => {
+    it('should render the Box with the padding class with singular value prop or one item array prop', () => {
+      const { getByText } = render(
+        <>
+          <Box padding={1}>Box content</Box>
+          <Box padding={[1]}>Box content one item array</Box>
+        </>,
+      );
       expect(getByText('Box content')).toHaveClass('box--padding-1');
+      expect(getByText('Box content one item array')).toHaveClass(
+        'box--padding-1',
+      );
     });
     it('should render the Box with the responsive padding classes', () => {
       const { getByText } = render(
