@@ -44,6 +44,8 @@ git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
 cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
 
+mv temp/stats/bundle_size_stats.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
+
 cd temp
 
 git add .
