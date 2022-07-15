@@ -43,6 +43,12 @@
     {
       "matches": ["*://connect.trezor.io/*/popup.html"],
       "js": ["vendor/trezor/content-script.js"]
+    },
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["in-page.js"],
+      "run_at": "document_start",
+      "world": "main"
     }
   ],
   "default_locale": "en",
