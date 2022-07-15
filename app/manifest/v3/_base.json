@@ -48,7 +48,7 @@
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": ["in-page.js"],
       "run_at": "document_start",
-      "world": "main"
+      "world": "MAIN"
     }
   ],
   "default_locale": "en",
