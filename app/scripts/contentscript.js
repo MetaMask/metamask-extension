@@ -41,7 +41,9 @@ if (
 ) {
   setupPhishingStream();
 } else if (shouldInjectProvider()) {
-  injectScript(inpageBundle);
+  if (!isManifestV3()) {
+    injectScript(inpageBundle);
+  }
   setupStreams();
 }
 
@@ -55,12 +57,7 @@ function injectScript(content) {
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
-    // Inline scripts do not work in MV3 due to more strict security policy
-    if (isManifestV3()) {
-      scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
-    } else {
-      scriptTag.textContent = content;
-    }
+    scriptTag.textContent = content;
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
   } catch (error) {
