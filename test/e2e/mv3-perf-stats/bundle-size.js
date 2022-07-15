@@ -109,6 +109,17 @@ async function main() {
         await fs.mkdir(outputDirectory, { recursive: true });
       }
       await fs.writeFile(outPath, JSON.stringify(result, null, 2));
+      await fs.writeFile(
+        `${out}/bundle_size_stats.json`,
+        JSON.stringify(
+          {
+            background: backgroundBundleSize,
+            ui: uiBundleSize,
+          },
+          null,
+          2,
+        ),
+      );
     } else {
       console.log(JSON.stringify(result, null, 2));
     }

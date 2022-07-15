@@ -34,10 +34,6 @@ then
     exit 0
 fi
 
-pwd
-
-ls
-
 mkdir temp
 
 git config --global user.email "metamaskbot@users.noreply.github.com"
@@ -46,7 +42,7 @@ git config --global user.name "MetaMask Bot"
 
 git clone git@github.com:MetaMask/extension_bundlesize_stats.git temp
 
-cp -R test-artifacts/chrome/mv3/bundle_size.json temp/stats
+cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
 
 cd temp
 
@@ -56,3 +52,7 @@ git commit --message "Bundle size at commit: ${CIRCLE_SHA1}"
 
 repo_slug="$CIRCLE_PROJECT_USERNAME/extension_bundlesize_stats"
 git push "https://$GITHUB_TOKEN_USER:$GITHUB_TOKEN@github.com/$repo_slug" main
+
+cd ..
+
+rm -rf temp
