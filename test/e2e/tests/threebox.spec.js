@@ -84,11 +84,10 @@ describe('Threebox', function () {
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
-        await driver.waitForSelector('[data-test-id="jazz_icon"]');
-        // finds the jazzicon toggle turned on
         await driver.findElement(
-          '.settings-page__content-item__identicon__item__icon--active',
+          '[data-test-id="jazz_icon"] .settings-page__content-item__identicon__item__icon--active',
         );
+        // finds the jazzicon toggle turned on
 
         const jazziconText = await driver.findElement({
           tag: 'h6',
