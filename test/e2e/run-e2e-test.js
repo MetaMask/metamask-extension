@@ -83,7 +83,7 @@ async function main() {
       '--timeout',
       testTimeoutInMilliseconds,
       e2eTestPath,
-      '--exit'
+      '--exit',
     ]);
   });
 }
