@@ -1909,9 +1909,6 @@
   "metametricsTitle": {
     "message": "Join 6M+ users to improve MetaMask"
   },
-  "mismatchedChain": {
-    "message": "The network details for this chain ID do not match our records"
-  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3957,10 +3954,6 @@
   "unrecognizedChain": {
     "message": "This custom network is not recognized",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "verify the network details",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "Sending collectible (ERC-721) tokens is not currently supported",

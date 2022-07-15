@@ -56,41 +56,46 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
   },
 };
 
-const getMisMatchedChainDataError = (errorType) => {
-  let severity, baseTranslationKey;
-
-  switch (errorType) {
-    case 'NAME':
-      severity = SEVERITIES.WARNING;
-      baseTranslationKey = 'mismatchedNetworkName';
-      break;
-    case 'SYMBOL':
-      severity = SEVERITIES.DANGER;
-      baseTranslationKey = 'mismatchedNetworkSymbol';
-      break;
-    case 'RPC':
-      severity = SEVERITIES.DANGER;
-      baseTranslationKey = 'mismatchedRpcUrl';
-      break;
-    default:
-      severity = SEVERITIES.DANGER;
-      baseTranslationKey = 'mismatchedChain';
-      break;
-  }
-
-  return {
-    id: `INVALID_CHAIN_${errorType}`,
-    severity,
-    content: {
-      element: 'span',
-      children: {
-        element: 'MetaMaskTranslation',
-        props: {
-          translationKey: baseTranslationKey,
-        },
+const MISMATCHED_NETWORK_NAME = {
+  id: 'MISMATCHED_NETWORK_NAME',
+  severity: SEVERITIES.WARNING,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedNetworkName',
       },
     },
-  };
+  },
+};
+
+const MISMATCHED_NETWORK_SYMBOL = {
+  id: 'MISMATCHED_NETWORK_SYMBOL',
+  severity: SEVERITIES.DANGER,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedNetworkSymbol',
+      },
+    },
+  },
+};
+
+const MISMATCHED_NETWORK_RPC = {
+  id: 'MISMATCHED_NETWORK_RPC',
+  severity: SEVERITIES.DANGER,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedRpcUrl',
+      },
+    },
+  },
 };
 
 async function getAlerts(pendingApproval) {
@@ -112,17 +117,17 @@ async function getAlerts(pendingApproval) {
       matchedChain.name.toLowerCase() !==
       pendingApproval.requestData.chainName.toLowerCase()
     ) {
-      alerts.push(getMisMatchedChainDataError('NAME'));
+      alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
       matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker
     ) {
-      alerts.push(getMisMatchedChainDataError('SYMBOL'));
+      alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
     if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
-      alerts.push(getMisMatchedChainDataError('RPC'));
+      alerts.push(MISMATCHED_NETWORK_RPC);
     }
   }
 
