@@ -28,7 +28,7 @@ fi
 
 printf '%s\n' 'Commit the manifest version and changelog if the manifest has changed'
 
-if [[ "${CIRCLE_BRANCH}" != "bundlesize_stats_over_time" ]]
+if [[ "${CIRCLE_BRANCH}" != "develop" ]]
 then
     printf 'This is not develop branch'
     exit 0
