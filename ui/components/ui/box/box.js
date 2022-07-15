@@ -173,22 +173,36 @@ function generateClassNames(baseClass, type, value, validatorFn) {
     );
   } else {
     // If array with more than one item
-    for (let i = 0; i < value.length; i++) {
-      // Omit any null values to skip breakpoints
-      if (value[i] !== null) {
-        // First value is always the base value so don't apply any breakpoint prefixes
-        if (i === 0) {
-          classesObject[`${baseClass}--${type}-${value[i]}`] = validatorFn(
-            type,
-            value[i],
-          );
-        } else {
-          // Apply breakpoint prefixes according to index in array [base(no prefix), sm:, md:, lg:, etc]
-          classesObject[
-            `${baseClass}--${BREAKPOINTS[i]}:${type}-${value[i]}`
-          ] = validatorFn(type, value[i]);
-        }
-      }
+    switch (value.length) {
+      case 4:
+        // add base/sm/md/lg
+        classesObject[`${baseClass}--${type}-${value[0]}`] =
+          value[0] && validatorFn(type, value[0]);
+        classesObject[`${baseClass}--${BREAKPOINTS[1]}:${type}-${value[1]}`] =
+          value[1] && validatorFn(type, value[1]);
+        classesObject[`${baseClass}--${BREAKPOINTS[2]}:${type}-${value[2]}`] =
+          value[2] && validatorFn(type, value[2]);
+        classesObject[`${baseClass}--${BREAKPOINTS[3]}:${type}-${value[3]}`] =
+          value[3] && validatorFn(type, value[3]);
+        break;
+      case 3:
+        // add base/sm/md
+        classesObject[`${baseClass}--${type}-${value[0]}`] =
+          value[0] && validatorFn(type, value[0]);
+        classesObject[`${baseClass}--${BREAKPOINTS[1]}:${type}-${value[1]}`] =
+          value[1] && validatorFn(type, value[1]);
+        classesObject[`${baseClass}--${BREAKPOINTS[2]}:${type}-${value[2]}`] =
+          value[2] && validatorFn(type, value[2]);
+        break;
+      case 2:
+        // add base/sm
+        classesObject[`${baseClass}--${type}-${value[0]}`] =
+          value[0] && validatorFn(type, value[0]);
+        classesObject[`${baseClass}--${BREAKPOINTS[1]}:${type}-${value[1]}`] =
+          value[1] && validatorFn(type, value[1]);
+        break;
+      default:
+        console.log(`Invalid array prop length: ${value.length}`);
     }
   }
   return classesObject;
