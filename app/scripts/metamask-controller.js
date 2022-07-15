@@ -87,7 +87,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
-import { EVENT } from '../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
@@ -297,13 +297,19 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
         onCollectibleAdded: ({ address, symbol, tokenId, standard, source }) =>
-          this.metaMetricsController.trackEvent({
-            token_contract_address: address,
-            token_symbol: symbol,
-            tokenId,
-            asset_type: ASSET_TYPES.COLLECTIBLE,
-            token_standard: standard,
-            source,
+        this.metaMetricsController.trackEvent({
+            event: EVENT_NAMES.NFT_ADDED,
+            category: EVENT.CATEGORIES.WALLET,
+            properties: {
+              token_contract_address: address,
+              token_symbol: symbol,
+              asset_type: ASSET_TYPES.COLLECTIBLE,
+              token_standard: standard,
+              source,
+            },
+            sensitiveProperties: {
+              tokenId,
+            }
           }),
       },
       {},
