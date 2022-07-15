@@ -89,7 +89,10 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-import { sumHexes } from '../../helpers/utils/transactions.util';
+import {
+  isSmartContractAddress,
+  sumHexes,
+} from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import { TOKEN_STANDARDS, ETH } from '../../helpers/constants/common';
@@ -1852,19 +1855,23 @@ export function updateRecipientUserInput(userInput) {
     const inputIsValidHexAddress = isValidHexAddress(userInput);
     let isProbablyAnAssetContract = false;
     if (inputIsValidHexAddress) {
-      const { symbol, decimals } = getTokenMetadata(userInput, tokenMap) || {};
+      const smartContractAddress = await isSmartContractAddress(userInput);
+      if (smartContractAddress) {
+        const { symbol, decimals } =
+          getTokenMetadata(userInput, tokenMap) || {};
 
-      isProbablyAnAssetContract = symbol && decimals !== undefined;
+        isProbablyAnAssetContract = symbol && decimals !== undefined;
 
-      if (!isProbablyAnAssetContract) {
-        try {
-          const { standard } = await getTokenStandardAndDetails(
-            userInput,
-            sendingAddress,
-          );
-          isProbablyAnAssetContract = Boolean(standard);
-        } catch (e) {
-          console.log(e);
+        if (!isProbablyAnAssetContract) {
+          try {
+            const { standard } = await getTokenStandardAndDetails(
+              userInput,
+              sendingAddress,
+            );
+            isProbablyAnAssetContract = Boolean(standard);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
@@ -1987,16 +1994,24 @@ export function updateSendAsset(
         )),
       };
       await dispatch(hideLoadingIndication());
-      const balance = addHexPrefix(
-        calcTokenAmount(details.balance, details.decimals).toString(16),
-      );
+
       const asset = {
         type,
         details,
-        balance,
         error: null,
       };
-      if (
+
+      if (details.standard === TOKEN_STANDARDS.ERC20) {
+        asset.balance = addHexPrefix(
+          calcTokenAmount(details.balance, details.decimals).toString(16),
+        );
+
+        await dispatch(
+          addHistoryEntry(
+            `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
+          ),
+        );
+      } else if (
         details.standard === TOKEN_STANDARDS.ERC1155 &&
         type === ASSET_TYPES.COLLECTIBLE
       ) {
@@ -2046,13 +2061,6 @@ export function updateSendAsset(
             ),
           );
         }
-      } else {
-        await dispatch(
-          addHistoryEntry(
-            `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
-          ),
-        );
-        // do nothing extra.
       }
 
       await dispatch(actions.updateAsset(asset));
