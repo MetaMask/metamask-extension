@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
-import { SEND_STAGES } from '../../ducks/send';
+import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
@@ -11,6 +11,20 @@ import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks'
 import Send from './send';
 
 const middleware = [thunk];
+
+jest.mock('../../ducks/send/send', () => {
+  const original = jest.requireActual('../../ducks/send/send');
+  return {
+    ...original,
+    // We don't really need to start a draft transaction, and the mock store
+    // does not update as a result of action calls so instead we just ensure
+    // that the action WOULD be called.
+    startNewDraftTransaction: jest.fn(() => ({
+      type: 'TEST_START_NEW_DRAFT',
+      payload: null,
+    })),
+  };
+});
 
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');
@@ -162,6 +176,25 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { queryByText } = renderWithProvider(<Send />, store);
       expect(queryByText('Next')).toBeNull();
+    });
+
+    it('should render correctly even when a draftTransaction does not exist', () => {
+      const modifiedStore = {
+        ...baseStore,
+        send: {
+          ...baseStore.send,
+          currentTransactionUUID: null,
+        },
+      };
+      const store = configureMockStore(middleware)(modifiedStore);
+      const { getByPlaceholderText } = renderWithProvider(<Send />, store);
+      // Ensure that the send flow renders on the add recipient screen when
+      // there is no draft transaction.
+      expect(
+        getByPlaceholderText('Search, public address (0x), or ENS'),
+      ).toBeTruthy();
+      // Ensure we start a new draft transaction when its missing.
+      expect(startNewDraftTransaction).toHaveBeenCalledTimes(1);
     });
   });
 

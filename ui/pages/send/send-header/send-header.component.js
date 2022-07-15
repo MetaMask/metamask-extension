@@ -5,6 +5,7 @@ import PageContainerHeader from '../../../components/ui/page-container/page-cont
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getDraftTransactionExists,
   getSendAsset,
   getSendStage,
   resetSendState,
@@ -19,15 +20,19 @@ export default function SendHeader() {
   const stage = useSelector(getSendStage);
   const asset = useSelector(getSendAsset);
   const t = useI18nContext();
-
+  const draftTransactionExists = useSelector(getDraftTransactionExists);
   const onClose = () => {
     dispatch(resetSendState());
     history.push(mostRecentOverviewPage);
   };
 
-  let title = asset.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');
+  let title = asset?.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');
 
-  if (stage === SEND_STAGES.ADD_RECIPIENT || stage === SEND_STAGES.INACTIVE) {
+  if (
+    draftTransactionExists === false ||
+    stage === SEND_STAGES.ADD_RECIPIENT ||
+    stage === SEND_STAGES.INACTIVE
+  ) {
     title = t('sendTo');
   } else if (stage === SEND_STAGES.EDIT) {
     title = t('edit');

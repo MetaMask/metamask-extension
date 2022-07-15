@@ -1078,8 +1078,10 @@ const slice = createSlice({
     updateGasLimit: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
-      slice.caseReducers.calculateGasTotal(state);
+      if (draftTransaction) {
+        draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
+        slice.caseReducers.calculateGasTotal(state);
+      }
     },
     /**
      * sets the layer 1 fees total (for a multi-layer fee network)
@@ -2324,6 +2326,19 @@ export function getCurrentTransactionUUID(state) {
  */
 export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
+}
+
+/**
+ * Selector that returns true if a draft transaction exists.
+ *
+ * @type {Selector<boolean>}
+ */
+export function getDraftTransactionExists(state) {
+  const draftTransaction = getCurrentDraftTransaction(state);
+  if (Object.keys(draftTransaction).length === 0) {
+    return false;
+  }
+  return true;
 }
 
 // Gas selectors
