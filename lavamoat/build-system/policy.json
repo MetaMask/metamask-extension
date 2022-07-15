@@ -6019,7 +6019,6 @@
         "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "sass>chokidar>braces": true,
-        "sass>chokidar>fsevents": true,
         "sass>chokidar>is-binary-path": true,
         "watchify>anymatch": true
       }

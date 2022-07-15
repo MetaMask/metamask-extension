@@ -5339,14 +5339,9 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>process": true,
-        "eth-lattice-keyring>gridplus-sdk>superagent>qs": true,
         "eth-rpc-errors>fast-safe-stringify": true,
+        "nock>qs": true,
         "pubnub>superagent>component-emitter": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>superagent>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -6157,74 +6152,6 @@
         "browserify>process": true
       }
     },
-
-    "ethjs-ens": {
-      "packages": {
-        "ethereum-ens-network-map": true,
-        "ethjs-ens>eth-ens-namehash": true,
-        "ethjs-ens>ethjs-contract": true,
-        "ethjs-ens>ethjs-query": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash": {
-      "globals": {
-        "name": "write"
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs-ens>eth-ens-namehash>idna-uts46": true,
-        "ethjs-ens>eth-ens-namehash>js-sha3": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>idna-uts46": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>punycode": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-contract": {
-      "packages": {
-        "ethjs-contract>ethjs-abi": true,
-        "ethjs-ens>ethjs-contract>ethjs-filter": true,
-        "ethjs-ens>ethjs-contract>js-sha3": true,
-        "ethjs>ethjs-util": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-query": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format": true,
-        "ethjs-ens>ethjs-query>ethjs-rpc": true
-      }
-    },
-    "ethjs-ens>ethjs-query>ethjs-format": {
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format>ethjs-schema": true,
-        "ethjs>ethjs-util": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn": true
-      }
-    },
     "ethjs-query": {
       "globals": {
         "console": true
@@ -6462,6 +6389,11 @@
         "nock>deep-equal>is-date-object": true,
         "nock>deep-equal>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
+      }
+    },
+    "nock>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
       }
     },
     "node-fetch": {
