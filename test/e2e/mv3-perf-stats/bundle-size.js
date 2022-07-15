@@ -115,6 +115,7 @@ async function main() {
           {
             background: backgroundBundleSize,
             ui: uiBundleSize,
+            time: new Date().getTime(),
           },
           null,
           2,
