@@ -2190,6 +2190,16 @@
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
   },
+  "notifications13ActionText": {
+    "message": "Show custom network list"
+  },
+  "notifications13Description": {
+    "message": "You can now add the following popular custom networks easily: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon! To enable this feature, go to Settings -> Experimental and turn \"Show custom network list\" on!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Add Popular Networks"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2890,6 +2900,10 @@
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sendingToTokenContractWarning": {
+    "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "setAdvancedPrivacySettings": {
     "message": "Set advanced privacy settings"

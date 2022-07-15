@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   SEVERITIES,
   TYPOGRAPHY,
@@ -267,7 +268,14 @@ function getValues(pendingApproval, t, actions) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl,
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl?.includes(
+              `/v3/${infuraProjectId}`,
+            )
+              ? pendingApproval.requestData.rpcUrl.replace(
+                  `/v3/${infuraProjectId}`,
+                  '',
+                )
+              : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]: pendingApproval.requestData

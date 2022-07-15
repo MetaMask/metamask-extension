@@ -20,6 +20,7 @@
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test",
     "build:test:flask": "yarn build test --build-type flask",
+    "build:test:mv3": "ENABLE_MV3=true yarn build test",
     "test": "yarn lint && yarn test:unit && yarn test:unit:jest",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",

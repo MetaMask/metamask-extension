@@ -56,7 +56,7 @@ export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 
-const infuraProjectId = process.env.INFURA_PROJECT_ID;
+export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({ network, excludeProjectId = false }) =>
   `https://${network}.infura.io/v3/${excludeProjectId ? '' : infuraProjectId}`;
 

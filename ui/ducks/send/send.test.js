@@ -87,6 +87,11 @@ jest.mock('./send', () => {
   };
 });
 
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  debounce: (fn) => fn,
+}));
+
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
   addUnapprovedTransaction: jest.fn((_w, _x, _y, _z, cb) => {
@@ -495,33 +500,6 @@ describe('Send Slice', () => {
         expect(draftTransaction.recipient.error).toBeNull();
       });
 
-      it('should nullify old known address error when asset types is not TOKEN', () => {
-        const recipientErrorState = getInitialSendStateWithExistingTxState({
-          recipient: {
-            warning: KNOWN_RECIPIENT_ADDRESS_WARNING,
-          },
-          asset: {
-            type: ASSET_TYPES.TOKEN,
-          },
-        });
-
-        const action = {
-          type: 'send/updateAsset',
-          payload: {
-            type: 'New Type',
-          },
-        };
-
-        const result = sendReducer(recipientErrorState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.recipient.warning).not.toStrictEqual(
-          KNOWN_RECIPIENT_ADDRESS_WARNING,
-        );
-        expect(draftTransaction.recipient.warning).toBeNull();
-      });
-
       it('should update asset type and details to TOKEN payload', () => {
         const action = {
           type: 'send/updateAsset',
@@ -626,6 +604,12 @@ describe('Send Slice', () => {
               error: 'someError',
               warning: 'someWarning',
             },
+            amount: {},
+            gas: {
+              gasLimit: '0x0',
+              minimumGasLimit: '0x0',
+            },
+            asset: {},
           }),
           recipientInput: '',
           recipientMode: RECIPIENT_SEARCH_MODES.MY_ACCOUNTS,
@@ -744,6 +728,82 @@ describe('Send Slice', () => {
 
         expect(draftTransaction.recipient.error).toStrictEqual(
           'contractAddressError',
+        );
+      });
+
+      it('should set a warning when sending to a token address in the token address list', () => {
+        const tokenAssetTypeState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        };
+
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '0x4',
+            tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.warning).toStrictEqual(
+          KNOWN_RECIPIENT_ADDRESS_WARNING,
+        );
+      });
+
+      it('should set a warning when sending to a token address in the token list', () => {
+        const tokenAssetTypeState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        };
+
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '0x4',
+            tokens: [{ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }],
+            useTokenDetection: true,
+            tokenAddressList: [],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.warning).toStrictEqual(
+          KNOWN_RECIPIENT_ADDRESS_WARNING,
+        );
+      });
+
+      it('should set a warning when sending to an address that is probably a token contract', () => {
+        const tokenAssetTypeState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        };
+
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '0x4',
+            tokens: [{ address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }],
+            useTokenDetection: true,
+            tokenAddressList: ['0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'],
+            isProbablyAnAssetContract: true,
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.warning).toStrictEqual(
+          KNOWN_RECIPIENT_ADDRESS_WARNING,
         );
       });
     });
@@ -1643,11 +1703,10 @@ describe('Send Slice', () => {
             },
           },
         },
+        send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
       };
 
       it('should create actions for updateRecipientUserInput and checks debounce for validation', async () => {
-        const clock = sinon.useFakeTimers();
-
         const store = mockStore(updateRecipientUserInputState);
         const newUserRecipientInput = 'newUserRecipientInput';
 
@@ -1655,29 +1714,35 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(1);
+        expect(actionResult).toHaveLength(5);
+
         expect(actionResult[0].type).toStrictEqual(
+          'send/updateRecipientWarning',
+        );
+        expect(actionResult[0].payload).toStrictEqual('loading');
+
+        expect(actionResult[1].type).toStrictEqual(
+          'send/updateDraftTransactionStatus',
+        );
+
+        expect(actionResult[2].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[0].payload).toStrictEqual(newUserRecipientInput);
+        expect(actionResult[2].payload).toStrictEqual(newUserRecipientInput);
 
-        clock.tick(300); // debounce
-
-        const actionResultAfterDebounce = store.getActions();
-        expect(actionResultAfterDebounce).toHaveLength(3);
-
-        expect(actionResultAfterDebounce[1]).toMatchObject({
+        expect(actionResult[3]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: `sendFlow - user typed ${newUserRecipientInput} into recipient input field`,
         });
 
-        expect(actionResultAfterDebounce[2].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(actionResultAfterDebounce[2].payload).toStrictEqual({
+        expect(actionResult[4].payload).toStrictEqual({
           chainId: '',
           tokens: [],
           useTokenDetection: true,
+          isProbablyAnAssetContract: false,
           userInput: newUserRecipientInput,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
@@ -1934,21 +1999,7 @@ describe('Send Slice', () => {
               },
             },
           },
-          send: {
-            asset: {
-              type: '',
-            },
-            recipient: {
-              address: 'Address',
-              nickname: 'NickName',
-            },
-            gas: {
-              gasPrice: '0x1',
-            },
-            amount: {
-              value: '0x1',
-            },
-          },
+          send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
         };
 
         const store = mockStore(updateRecipientState);
@@ -1956,24 +2007,36 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(11);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
         });
         expect(actionResult[1].type).toStrictEqual(
+          'send/updateRecipientWarning',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'send/updateDraftTransactionStatus',
+        );
+
+        expect(actionResult[3].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
-        expect(actionResult[1].payload).toStrictEqual('');
-        expect(actionResult[2].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[4].payload).toStrictEqual(
+          'sendFlow - user typed  into recipient input field',
+        );
+        expect(actionResult[5].type).toStrictEqual(
+          'send/validateRecipientUserInput',
+        );
+        expect(actionResult[6].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[8].type).toStrictEqual(
           'send/computeEstimatedGasLimit/rejected',
         );
-        expect(actionResult[5].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[6].type).toStrictEqual(
+        expect(actionResult[9].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[10].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -2326,6 +2389,7 @@ describe('Send Slice', () => {
               error: null,
               nickname: '',
               warning: null,
+              recipientWarningAcknowledged: false,
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
@@ -2468,6 +2532,7 @@ describe('Send Slice', () => {
               error: null,
               nickname: '',
               warning: null,
+              recipientWarningAcknowledged: false,
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
@@ -2653,6 +2718,7 @@ describe('Send Slice', () => {
             error: null,
             warning: null,
             nickname: '',
+            recipientWarningAcknowledged: false,
           },
           status: SEND_STATUSES.VALID,
           transactionType: '0x0',
