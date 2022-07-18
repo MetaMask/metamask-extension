@@ -256,6 +256,8 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * transaction contract method.
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
+ * @property {string} originalType - The current original type of the
+ *  transaction.
  * @property {TransactionStatusString} status - The current status of the
  *  transaction.
  * @property {string} metamaskNetworkId - The transaction's network ID, used
