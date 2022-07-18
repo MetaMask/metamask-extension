@@ -30,8 +30,7 @@ export default function SendHeader() {
 
   if (
     draftTransactionExists === false ||
-    stage === SEND_STAGES.ADD_RECIPIENT ||
-    stage === SEND_STAGES.INACTIVE
+    [SEND_STAGES.ADD_RECIPIENT, SEND_STAGES.INACTIVE].includes(stage)
   ) {
     title = t('sendTo');
   } else if (stage === SEND_STAGES.EDIT) {
