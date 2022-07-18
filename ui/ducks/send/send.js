@@ -1971,7 +1971,7 @@ export function updateSendAsset(
     const account = getTargetAccount(state, sendingAddress);
     if (type === ASSET_TYPES.NATIVE) {
       const unapprovedTxs = getUnapprovedTxs(state);
-      const unapprovedTx = unapprovedTxs[draftTransaction.id];
+      const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
 
       await dispatch(
         addHistoryEntry(
