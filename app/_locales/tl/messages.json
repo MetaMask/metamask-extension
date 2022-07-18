@@ -466,9 +466,6 @@
     "message": "Sa $1 na transaksyon ang singil sa gas ay dapat tumaas nang hindi bababa sa 10% para ito ay makilala ng network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Kanselahin ang pagpapalit"
-  },
   "cancellationGasFee": {
     "message": "Bayarin sa Gasolina para sa Pagkansela"
   },

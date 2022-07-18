@@ -640,9 +640,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    this.workerController = new IframeExecutionService({
+    this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.4.6',
+        'https://metamask.github.io/iframe-execution-environment/0.5.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -669,19 +669,24 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
-      terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
-        this.workerController,
+      terminateAllSnaps: this.snapExecutionService.terminateAllSnaps.bind(
+        this.snapExecutionService,
       ),
-      terminateSnap: this.workerController.terminateSnap.bind(
-        this.workerController,
+      terminateSnap: this.snapExecutionService.terminateSnap.bind(
+        this.snapExecutionService,
       ),
-      executeSnap: this.workerController.executeSnap.bind(
-        this.workerController,
+      executeSnap: this.snapExecutionService.executeSnap.bind(
+        this.snapExecutionService,
       ),
-      getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
-        this.workerController,
+      getRpcMessageHandler: this.snapExecutionService.getRpcMessageHandler.bind(
+        this.snapExecutionService,
       ),
       closeAllConnections: this.removeAllConnections.bind(this),
+      // Prefix subject with appKeyType to generate separate keys for separate uses
+      getAppKey: async (subject, appKeyType) => {
+        await this.appStateController.getUnlockPromise(true);
+        return this.getAppKeyForSubject(`${appKeyType}:${subject}`);
+      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
     });
@@ -1567,7 +1572,8 @@ export default class MetamaskController extends EventEmitter {
       setCustomRpc: this.setCustomRpc.bind(this),
       updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
       delCustomRpc: this.delCustomRpc.bind(this),
-
+      addCustomNetwork: this.addCustomNetwork.bind(this),
+      requestUserApproval: this.requestUserApproval.bind(this),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,
@@ -1604,7 +1610,9 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-
+      setCustomNetworkListEnabled: preferencesController.setCustomNetworkListEnabled.bind(
+        preferencesController,
+      ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -2019,6 +2027,68 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  async requestUserApproval(customRpc, originIsMetaMask) {
+    try {
+      await this.approvalController.addAndShowApprovalRequest({
+        origin: 'metamask',
+        type: 'wallet_addEthereumChain',
+        requestData: {
+          chainId: customRpc.chainId,
+          blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
+          chainName: customRpc.nickname,
+          rpcUrl: customRpc.rpcUrl,
+          ticker: customRpc.ticker,
+          imageUrl: customRpc.rpcPrefs.imageUrl,
+        },
+      });
+    } catch (error) {
+      if (
+        !(originIsMetaMask && error.message === 'User rejected the request.')
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  async addCustomNetwork(customRpc) {
+    const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
+
+    await this.preferencesController.addToFrequentRpcList(
+      rpcUrl,
+      chainId,
+      ticker,
+      chainName,
+      {
+        blockExplorerUrl,
+      },
+    );
+
+    let rpcUrlOrigin;
+    try {
+      rpcUrlOrigin = new URL(rpcUrl).origin;
+    } catch {
+      // ignore
+    }
+    this.metaMetricsController.trackEvent({
+      event: 'Custom Network Added',
+      category: EVENT.CATEGORIES.NETWORK,
+      referrer: {
+        url: rpcUrlOrigin,
+      },
+      properties: {
+        chain_id: chainId,
+        network_name: chainName,
+        network: rpcUrlOrigin,
+        symbol: ticker,
+        block_explorer_url: blockExplorerUrl,
+        source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
+      },
+      sensitiveProperties: {
+        rpc_url: rpcUrlOrigin,
+      },
+    });
   }
 
   /**
@@ -2668,8 +2738,14 @@ export default class MetamaskController extends EventEmitter {
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
 
+    const keyring = await this.keyringController.getKeyringForAccount(address);
     // Remove account from the keyring
     await this.keyringController.removeAccount(address);
+    const updatedKeyringAccounts = keyring ? await keyring.getAccounts() : {};
+    if (updatedKeyringAccounts?.length === 0) {
+      keyring.destroy?.();
+    }
+
     return address;
   }
 

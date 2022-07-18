@@ -466,9 +466,6 @@
     "message": "トランザクションを$1するには、ネットワークに認識されるようにガス代を 10% 以上増額する必要があります。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "スワップをキャンセル"
-  },
   "cancellationGasFee": {
     "message": "キャンセルのガス代"
   },
@@ -4064,7 +4061,7 @@
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"
   },
   "youSign": {
-    "message": "著名しています"
+    "message": "署名しています"
   },
   "yourPrivateSeedPhrase": {
     "message": "秘密のシークレットリカバリーフレーズ"

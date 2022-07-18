@@ -466,9 +466,6 @@
     "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "取消交换"
-  },
   "cancellationGasFee": {
     "message": "取消燃料费用"
   },
@@ -1649,7 +1646,7 @@
     "message": "已知合约地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有可能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
   "kovan": {
     "message": "Kovan 测试网络"

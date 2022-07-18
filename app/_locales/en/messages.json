@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Add memo"
   },
+  "addMoreNetworks": {
+    "message": "add more networks manually"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allOfYour": {
+    "message": "All of your $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "Approve spend limit"
+  },
+  "approveAllTokensTitle": {
+    "message": "Give permission to access all of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Approve & Install"
@@ -466,8 +477,12 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Cancel swap"
+  "cancelSwapForFee": {
+    "message": "Cancel swap for ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Cancel swap for free"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -1280,6 +1295,9 @@
   "functionApprove": {
     "message": "Function: Approve"
   },
+  "functionSetApprovalForAll": {
+    "message": "Function: SetApprovalForAll"
+  },
   "functionType": {
     "message": "Function Type"
   },
@@ -1950,6 +1968,9 @@
   "network": {
     "message": "Network:"
   },
+  "networkAddedSuccessfully": {
+    "message": "Network added successfully!"
+  },
   "networkDetails": {
     "message": "Network Details"
   },
@@ -2168,6 +2189,16 @@
   },
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "Show custom network list"
+  },
+  "notifications13Description": {
+    "message": "You can now add the following popular custom networks easily: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon! To enable this feature, go to Settings -> Experimental and turn \"Show custom network list\" on!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Add Popular Networks"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
@@ -2686,6 +2717,14 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "revokeAllTokensTitle": {
+    "message": "Revoke permission to access all of your $1?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "By revoking permission, the following $1 will no longer be able to access your $2",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rinkeby Test Network"
   },
@@ -2862,11 +2901,22 @@
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "Set advanced privacy settings"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
+  },
+  "setApprovalForAll": {
+    "message": "Set Approval for All"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Approve $1 with no spend limit",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Settings"
@@ -2886,6 +2936,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
+  },
+  "showCustomNetworkList": {
+    "message": "Show Custom Network List"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Select this to show a list of networks with prefilled details when adding a new network."
   },
   "showFiatConversionInTestnets": {
     "message": "Show Conversion on test networks"
@@ -2995,6 +3051,9 @@
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
@@ -3146,7 +3205,7 @@
     "message": "Swap would have failed"
   },
   "stxCancelledDescription": {
-    "message": "Your transaction would have failed and was canceled to protect you from paying unnecessary gas fees."
+    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary gas fees."
   },
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
@@ -3212,10 +3271,10 @@
     "message": "A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing."
   },
   "stxUserCancelled": {
-    "message": "Swap canceled"
+    "message": "Swap cancelled"
   },
   "stxUserCancelledDescription": {
-    "message": "Your transaction has been canceled and you did not pay any unnecessary gas fees."
+    "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
   },
   "stxYouCanOptOut": {
     "message": "You can opt-out in advanced settings any time."
@@ -3558,6 +3617,10 @@
   "switchNetworks": {
     "message": "Switch Networks"
   },
+  "switchToNetwork": {
+    "message": "Switch to $1",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
@@ -3861,6 +3924,9 @@
   "unknownCameraErrorTitle": {
     "message": "Ooops! Something went wrong...."
   },
+  "unknownCollection": {
+    "message": "Unnamed collection"
+  },
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
@@ -4001,6 +4067,9 @@
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
   },
+  "wantToAddThisNetwork": {
+    "message": "Want to add this network?"
+  },
   "warning": {
     "message": "Warning"
   },
@@ -4062,6 +4131,10 @@
   },
   "yesLetsTry": {
     "message": "Yes, let's try"
+  },
+  "youHaveAddedAll": {
+    "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

@@ -8,7 +8,10 @@ import {
   updateCustomNonce,
   getNextNonce,
 } from '../../store/actions';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
+import {
+  calcTokenAmount,
+  getTokenApprovedParam,
+} from '../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { GasFeeContextProvider } from '../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
@@ -34,6 +37,7 @@ import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
 import { ERC20, ERC1155, ERC721 } from '../../helpers/constants/common';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -57,6 +61,7 @@ export default function ConfirmApprove({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
   const { txParams: { data: transactionData } = {} } = transaction;
@@ -150,6 +155,11 @@ export default function ConfirmApprove({
       })
     : null;
 
+  const parsedTransactionData = parseStandardTokenTransactionData(
+    transactionData,
+  );
+  const setApproveForAllArg = getTokenApprovedParam(parsedTransactionData);
+
   return tokenSymbol === undefined && assetName === undefined ? (
     <Loading />
   ) : (
@@ -162,6 +172,8 @@ export default function ConfirmApprove({
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
+              isSetApproveForAll={isSetApproveForAll}
+              setApproveForAllArg={setApproveForAllArg}
               decimals={decimals}
               siteImage={siteImage}
               setCustomAmount={setCustomPermissionAmount}
@@ -290,4 +302,5 @@ ConfirmApprove.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexTransactionTotal: PropTypes.string,
+  isSetApproveForAll: PropTypes.bool,
 };

@@ -26,9 +26,7 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   DISPLAY,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   COLORS,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 
 import {
@@ -143,6 +141,9 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
+    newCustomNetworkAdded: PropTypes.object,
+    setNewCustomNetworkAdded: PropTypes.func,
+    setRpcTarget: PropTypes.func,
   };
 
   state = {
@@ -280,6 +281,9 @@ export default class Home extends PureComponent {
       setNewCollectibleAddedMessage,
       newTokensImported,
       setNewTokensImported,
+      newCustomNetworkAdded,
+      setNewCustomNetworkAdded,
+      setRpcTarget,
     } = this.props;
     return (
       <MultipleNotifications>
@@ -479,6 +483,53 @@ export default class Home extends PureComponent {
             key="home-infuraBlockedNotification"
           />
         ) : null}
+        {Object.keys(newCustomNetworkAdded).length !== 0 && (
+          <Popover className="home__new-network-added">
+            <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
+            <Typography
+              variant={TYPOGRAPHY.H4}
+              margin={[5, 9, 0, 9]}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('networkAddedSuccessfully')}
+            </Typography>
+            <Box margin={[8, 8, 5, 8]}>
+              <Button
+                type="primary"
+                className="home__new-network-added__switch-to-button"
+                onClick={() => {
+                  setRpcTarget(
+                    newCustomNetworkAdded.rpcUrl,
+                    newCustomNetworkAdded.chainId,
+                    newCustomNetworkAdded.ticker,
+                    newCustomNetworkAdded.chainName,
+                  );
+                  setNewCustomNetworkAdded();
+                }}
+              >
+                <Typography
+                  variant={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                  color={COLORS.PRIMARY_INVERSE}
+                >
+                  {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
+                </Typography>
+              </Button>
+              <Button
+                type="secondary"
+                onClick={() => setNewCustomNetworkAdded()}
+              >
+                <Typography
+                  variant={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                  color={COLORS.PRIMARY_DEFAULT}
+                >
+                  {t('dismiss')}
+                </Typography>
+              </Button>
+            </Box>
+          </Popover>
+        )}
       </MultipleNotifications>
     );
   }

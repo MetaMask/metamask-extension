@@ -782,12 +782,20 @@ describe('MetaMaskController', function () {
   describe('#removeAccount', function () {
     let ret;
     const addressToRemove = '0x1';
+    let mockKeyring;
 
     beforeEach(async function () {
+      mockKeyring = {
+        getAccounts: sinon.stub().returns(Promise.resolve([])),
+        destroy: sinon.stub(),
+      };
       sinon.stub(metamaskController.preferencesController, 'removeAddress');
       sinon.stub(metamaskController.accountTracker, 'removeAccount');
       sinon.stub(metamaskController.keyringController, 'removeAccount');
       sinon.stub(metamaskController, 'removeAllAccountPermissions');
+      sinon
+        .stub(metamaskController.keyringController, 'getKeyringForAccount')
+        .returns(Promise.resolve(mockKeyring));
 
       ret = await metamaskController.removeAccount(addressToRemove);
     });
@@ -797,6 +805,9 @@ describe('MetaMaskController', function () {
       metamaskController.accountTracker.removeAccount.restore();
       metamaskController.preferencesController.removeAddress.restore();
       metamaskController.removeAllAccountPermissions.restore();
+
+      mockKeyring.getAccounts.resetHistory();
+      mockKeyring.destroy.resetHistory();
     });
 
     it('should call preferencesController.removeAddress', async function () {
@@ -829,6 +840,16 @@ describe('MetaMaskController', function () {
     });
     it('should return address', async function () {
       assert.equal(ret, '0x1');
+    });
+    it('should call keyringController.getKeyringForAccount', async function () {
+      assert(
+        metamaskController.keyringController.getKeyringForAccount.calledWith(
+          addressToRemove,
+        ),
+      );
+    });
+    it('should call keyring.destroy', async function () {
+      assert(mockKeyring.destroy.calledOnce);
     });
   });
 

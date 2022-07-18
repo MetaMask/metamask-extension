@@ -826,6 +826,7 @@ function getAllowedAnnouncementIds(state) {
     10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     12: true,
+    13: true,
   };
 }
 
@@ -1061,4 +1062,14 @@ export function getDetectedTokensInCurrentNetwork(state) {
  */
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
+}
+
+/**
+ * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsCustomNetworkListEnabled(state) {
+  return state.metamask.customNetworkListEnabled;
 }

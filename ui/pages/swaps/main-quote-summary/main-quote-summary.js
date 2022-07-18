@@ -93,7 +93,6 @@ export default function MainQuoteSummary({
               position="bottom"
               html={amountToDisplay}
               disabled={ellipsedAmountToDisplay === amountToDisplay}
-              theme="white"
             >
               <span
                 className="main-quote-summary__quote-large-number"
