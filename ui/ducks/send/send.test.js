@@ -458,8 +458,10 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            type: 'new type',
-            balance: 'new balance',
+            asset: {
+              type: 'new type',
+              balance: 'new balance',
+            },
           },
         };
 
@@ -467,9 +469,11 @@ describe('Send Slice', () => {
 
         const draftTransaction = getTestUUIDTx(result);
 
-        expect(draftTransaction.asset.type).toStrictEqual(action.payload.type);
+        expect(draftTransaction.asset.type).toStrictEqual(
+          action.payload.asset.type,
+        );
         expect(draftTransaction.asset.balance).toStrictEqual(
-          action.payload.balance,
+          action.payload.asset.balance,
         );
       });
 
@@ -486,7 +490,9 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            type: 'New Type',
+            asset: {
+              type: 'New Type',
+            },
           },
         };
 
@@ -504,11 +510,13 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            type: ASSET_TYPES.TOKEN,
-            details: {
-              address: '0xTokenAddress',
-              decimals: 0,
-              symbol: 'TKN',
+            asset: {
+              type: ASSET_TYPES.TOKEN,
+              details: {
+                address: '0xTokenAddress',
+                decimals: 0,
+                symbol: 'TKN',
+              },
             },
           },
         };
@@ -520,9 +528,11 @@ describe('Send Slice', () => {
 
         const draftTransaction = getTestUUIDTx(result);
 
-        expect(draftTransaction.asset.type).toStrictEqual(action.payload.type);
+        expect(draftTransaction.asset.type).toStrictEqual(
+          action.payload.asset.type,
+        );
         expect(draftTransaction.asset.details).toStrictEqual(
-          action.payload.details,
+          action.payload.asset.details,
         );
       });
     });
@@ -1563,10 +1573,13 @@ describe('Send Slice', () => {
         });
         expect(actionResult[1].type).toStrictEqual('send/updateAsset');
         expect(actionResult[1].payload).toStrictEqual({
-          type: ASSET_TYPES.NATIVE,
-          balance: '0x0',
-          error: null,
-          details: null,
+          asset: {
+            type: ASSET_TYPES.NATIVE,
+            balance: '0x0',
+            error: null,
+            details: null,
+          },
+          initialAssetSet: false,
         });
 
         expect(actionResult[2].type).toStrictEqual(
@@ -1616,16 +1629,19 @@ describe('Send Slice', () => {
           payload: `sendFlow - user set asset to ERC20 token with symbol TokenSymbol and address tokenAddress`,
         });
         expect(actionResult[3].payload).toStrictEqual({
-          type: ASSET_TYPES.TOKEN,
-          details: {
-            address: 'tokenAddress',
-            symbol: 'TokenSymbol',
-            decimals: 18,
-            standard: 'ERC20',
+          asset: {
+            type: ASSET_TYPES.TOKEN,
+            details: {
+              address: 'tokenAddress',
+              symbol: 'TokenSymbol',
+              decimals: 18,
+              standard: 'ERC20',
+              balance: '0x0',
+            },
             balance: '0x0',
+            error: null,
           },
-          balance: '0x0',
-          error: null,
+          initialAssetSet: false,
         });
 
         expect(actionResult[4].type).toStrictEqual(
@@ -2550,15 +2566,18 @@ describe('Send Slice', () => {
         expect(actionResult[5]).toStrictEqual({
           type: 'send/updateAsset',
           payload: {
-            balance: '0x1',
-            details: {
-              address: '0xCollectibleAddress',
+            asset: {
               balance: '0x1',
-              standard: TOKEN_STANDARDS.ERC721,
-              tokenId: '15000',
+              details: {
+                address: '0xCollectibleAddress',
+                balance: '0x1',
+                standard: TOKEN_STANDARDS.ERC721,
+                tokenId: '15000',
+              },
+              error: null,
+              type: ASSET_TYPES.COLLECTIBLE,
             },
-            error: null,
-            type: ASSET_TYPES.COLLECTIBLE,
+            initialAssetSet: true,
           },
         });
         expect(actionResult[6].type).toStrictEqual(
@@ -2736,16 +2755,19 @@ describe('Send Slice', () => {
       expect(actionResult[5]).toStrictEqual({
         type: 'send/updateAsset',
         payload: {
-          balance: '0x0',
-          type: ASSET_TYPES.TOKEN,
-          error: null,
-          details: {
+          asset: {
             balance: '0x0',
-            address: '0xTokenAddress',
-            decimals: 18,
-            symbol: 'SYMB',
-            standard: 'ERC20',
+            type: ASSET_TYPES.TOKEN,
+            error: null,
+            details: {
+              balance: '0x0',
+              address: '0xTokenAddress',
+              decimals: 18,
+              symbol: 'SYMB',
+              standard: 'ERC20',
+            },
           },
+          initialAssetSet: true,
         },
       });
       expect(actionResult[6].type).toStrictEqual(

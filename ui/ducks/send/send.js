@@ -924,31 +924,23 @@ const slice = createSlice({
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
-     * @param {UpdateAssetPayload} action - The asest to set in the
+     * @param {UpdateAssetPayload} action - The asset to set in the
      *  draftTransaction.
      * @returns {void}
      */
     updateAsset: (state, action) => {
+      const { asset, initialAssetSet } = action.payload;
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
-      // If an asset update occurs that changes the type from 'NATIVE' to
-      // 'NATIVE' then this is likely the initial asset set of an edit
-      // transaction. We don't need to set the amount to zero in this case.
-      // The only times where an update would occur of this nature that we
-      // would want to set the amount to zero is on a network or account change
-      // but that update is handled elsewhere.
-      const skipAmountUpdate =
-        action.payload.type === ASSET_TYPES.NATIVE &&
-        draftTransaction.asset.type === ASSET_TYPES.NATIVE;
-      draftTransaction.asset.type = action.payload.type;
-      draftTransaction.asset.balance = action.payload.balance;
-      draftTransaction.asset.error = action.payload.error;
+      draftTransaction.asset.type = asset.type;
+      draftTransaction.asset.balance = asset.balance;
+      draftTransaction.asset.error = asset.error;
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
       ) {
-        draftTransaction.asset.details = action.payload.details;
+        draftTransaction.asset.details = asset.details;
       } else {
         // clear the details object when sending native currency
         draftTransaction.asset.details = null;
@@ -962,7 +954,7 @@ const slice = createSlice({
       // to zero. This will revalidate the send amount field.
       if (state.amountMode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
-      } else if (skipAmountUpdate === false) {
+      } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
       }
       // validate send state
@@ -1702,7 +1694,7 @@ export function editExistingTransaction(assetType, transactionId) {
       await dispatch(
         updateSendAsset(
           { type: ASSET_TYPES.NATIVE },
-          { skipComputeEstimatedGasLimit: true },
+          { initialAssetSet: true },
         ),
       );
     } else {
@@ -1759,7 +1751,7 @@ export function editExistingTransaction(assetType, transactionId) {
                 : {}),
             },
           },
-          { skipComputeEstimatedGasLimit: true },
+          { initialAssetSet: true },
         ),
       );
     }
@@ -1958,7 +1950,7 @@ export function updateSendAmount(amount) {
  */
 export function updateSendAsset(
   { type, details: providedDetails },
-  { skipComputeEstimatedGasLimit = false } = {},
+  { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
     const state = getState();
@@ -1979,10 +1971,13 @@ export function updateSendAsset(
       );
       await dispatch(
         actions.updateAsset({
-          type,
-          details: null,
-          balance: account.balance,
-          error: null,
+          asset: {
+            type,
+            details: null,
+            balance: account.balance,
+            error: null,
+          },
+          initialAssetSet,
         }),
       );
     } else {
@@ -2065,9 +2060,9 @@ export function updateSendAsset(
         }
       }
 
-      await dispatch(actions.updateAsset(asset));
+      await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (skipComputeEstimatedGasLimit === false) {
+    if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
