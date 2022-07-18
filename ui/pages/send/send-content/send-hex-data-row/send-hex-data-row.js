@@ -21,7 +21,7 @@ const SendHexDataRow = () => {
   return (
     <>
       <SendRowWrapper
-        label={`${t('hexData')}`}
+        label={t('hexData')}
         showError={showHexDataError}
         errorType="hexData"
       >
