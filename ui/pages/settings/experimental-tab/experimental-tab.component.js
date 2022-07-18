@@ -26,6 +26,8 @@ export default class ExperimentalTab extends PureComponent {
     setEIP1559V2Enabled: PropTypes.func,
     theme: PropTypes.string,
     setTheme: PropTypes.func,
+    customNetworkListEnabled: PropTypes.bool,
+    setCustomNetworkListEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -215,9 +217,9 @@ export default class ExperimentalTab extends PureComponent {
               onToggle={(value) => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable OpenSea',
+                  event: 'Enable/Disable Advanced Gas UI',
                   properties: {
-                    action: 'Enabled/Disable OpenSea',
+                    action: 'Enable/Disable Advanced Gas UI',
                     legacy_event: true,
                   },
                 });
@@ -263,7 +265,7 @@ export default class ExperimentalTab extends PureComponent {
     };
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">
@@ -284,6 +286,45 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderCustomNetworkListToggle() {
+    const { t } = this.context;
+    const {
+      customNetworkListEnabled,
+      setCustomNetworkListEnabled,
+    } = this.props;
+
+    return (
+      <div ref={this.settingsRefs[5]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('showCustomNetworkList')}</span>
+          <div className="settings-page__content-description">
+            {t('showCustomNetworkListDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={customNetworkListEnabled}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Enabled/Disable CustomNetworkList',
+                  properties: {
+                    action: 'Enabled/Disable CustomNetworkList',
+                    legacy_event: true,
+                  },
+                });
+                setCustomNetworkListEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
@@ -295,6 +336,7 @@ export default class ExperimentalTab extends PureComponent {
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
         {this.renderTheme()}
+        {this.renderCustomNetworkListToggle()}
       </div>
     );
   }

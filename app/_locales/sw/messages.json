@@ -134,10 +134,10 @@
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
   "buyWithWyre": {
-    "message": "Nunua ETH kwa kutumia Wyre"
+    "message": "Nunua $1 kwa kutumia Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre inakuwezesha kutumia kadi ya benki kuweka ETH moja kwa moja kwenye akaunti yako ya MetaMask."
+    "message": "Wyre inakuwezesha kutumia kadi ya benki kuweka $1 moja kwa moja kwenye akaunti yako ya MetaMask."
   },
   "cancel": {
     "message": "Ghairi"

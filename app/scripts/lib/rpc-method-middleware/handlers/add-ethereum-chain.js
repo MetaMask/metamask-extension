@@ -77,14 +77,27 @@ async function addEthereumChainHandler(
     );
   }
 
+  const isLocalhost = (strUrl) => {
+    try {
+      const url = new URL(strUrl);
+      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    } catch (error) {
+      return false;
+    }
+  };
+
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => validUrl.isHttpsUri(rpcUrl))
+    ? rpcUrls.find(
+        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
+      )
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find(
+          (blockExplorerUrl) =>
+            isLocalhost(blockExplorerUrl) ||
+            validUrl.isHttpsUri(blockExplorerUrl),
         )
       : null;
 
@@ -248,24 +261,33 @@ async function addEthereumChainHandler(
       }),
     );
 
+    let rpcUrlOrigin;
+    try {
+      rpcUrlOrigin = new URL(firstValidRPCUrl).origin;
+    } catch {
+      // ignore
+    }
+
     sendMetrics({
       event: 'Custom Network Added',
       category: EVENT.CATEGORIES.NETWORK,
       referrer: {
         url: origin,
       },
-      sensitiveProperties: {
+      properties: {
         chain_id: _chainId,
-        rpc_url: firstValidRPCUrl,
         network_name: _chainName,
         // Including network to override the default network
         // property included in all events. For RPC type networks
         // the MetaMetrics controller uses the rpcUrl for the network
         // property.
-        network: firstValidRPCUrl,
+        network: rpcUrlOrigin,
         symbol: ticker,
         block_explorer_url: firstValidBlockExplorerUrl,
-        source: 'dapp',
+        source: EVENT.SOURCE.TRANSACTION.DAPP,
+      },
+      sensitiveProperties: {
+        rpc_url: rpcUrlOrigin,
       },
     });
 

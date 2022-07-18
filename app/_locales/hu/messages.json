@@ -137,7 +137,7 @@
     "message": "Az ön böngészője nem támogatott..."
   },
   "buyWithWyre": {
-    "message": "Vásároljon ETH-t a Wyre-rel"
+    "message": "Vásároljon $1 -t a Wyre-rel"
   },
   "buyWithWyreDescription": {
     "message": "A Wyre segítségével egyensen a MetaMaks fiókjában tehet letétbe ETH-t."

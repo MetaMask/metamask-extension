@@ -131,10 +131,10 @@
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
   "buyWithWyre": {
-    "message": "ETH በ Wyre ይግዙ"
+    "message": "$1 በ Wyre ይግዙ"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ክሬዲት ካርድ ተጠቅመው ETH በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
+    "message": "Wyre ክሬዲት ካርድ ተጠቅመው $1 በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
   },
   "bytes": {
     "message": "ባይት"

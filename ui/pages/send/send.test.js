@@ -1,13 +1,13 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
 import { useLocation } from 'react-router-dom';
-import { initialState, SEND_STAGES } from '../../ducks/send';
+import { SEND_STAGES } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
 
 const middleware = [thunk];
@@ -23,18 +23,22 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock(
-  'ethjs-ens',
-  () =>
-    class MocKENS {
-      async ensLookup() {
-        return '';
-      }
+jest.mock('ethers', () => {
+  const originalModule = jest.requireActual('ethers');
+  return {
+    ...originalModule,
+    ethers: {
+      ...originalModule.ethers,
+      providers: {
+        Web3Provider: jest.fn().mockImplementation(() => {
+          return {};
+        }),
+      },
     },
-);
-
+  };
+});
 const baseStore = {
-  send: initialState,
+  send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   ENS: ensInitialState,
   gas: {
     customData: { limit: null, price: null },
@@ -79,6 +83,25 @@ const baseStore = {
       '0x0': { balance: '0x0', address: '0x0' },
     },
     identities: { '0x0': { address: '0x0' } },
+    tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
+    tokenList: {
+      '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
+        name: 'BitBase',
+        symbol: 'BTBS',
+        decimals: 18,
+        address: '0x32E6C34Cd57087aBBD59B5A4AECC4cB495924356',
+        iconUrl: 'BTBS.svg',
+        occurrences: null,
+      },
+      '0x3fa400483487a489ec9b1db29c4129063eec4654': {
+        name: 'Cryptokek.com',
+        symbol: 'KEK',
+        decimals: 18,
+        address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
+        iconUrl: 'cryptokek.svg',
+        occurrences: null,
+      },
+    },
   },
   appState: {
     sendInputCurrencySwitched: false,
@@ -87,7 +110,7 @@ const baseStore = {
 
 describe('Send Page', () => {
   describe('Send Flow Initialization', () => {
-    it('should initialize the send, ENS, and gas slices on render', () => {
+    it('should initialize the ENS slice on render', () => {
       const store = configureMockStore(middleware)(baseStore);
       renderWithProvider(<Send />, store);
       const actions = store.getActions();
@@ -95,9 +118,6 @@ describe('Send Page', () => {
         expect.arrayContaining([
           expect.objectContaining({
             type: 'ENS/enableEnsLookup',
-          }),
-          expect.objectContaining({
-            type: 'send/initializeSendState/pending',
           }),
         ]),
       );
@@ -112,9 +132,6 @@ describe('Send Page', () => {
         expect.arrayContaining([
           expect.objectContaining({
             type: 'ENS/enableEnsLookup',
-          }),
-          expect.objectContaining({
-            type: 'send/initializeSendState/pending',
           }),
           expect.objectContaining({
             type: 'UI_MODAL_OPEN',
