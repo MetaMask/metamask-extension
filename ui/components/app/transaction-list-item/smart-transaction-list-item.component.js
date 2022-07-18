@@ -44,7 +44,7 @@ export default function SmartTransactionListItem({
     sourceTokenSymbol,
     destinationTokenSymbol,
   ]);
-  const subtitle = 'metamask nidhi';
+  const subtitle = 'metamask';
   const date = formatDateWithYearContext(time);
   let displayedStatusKey;
   if (status === SMART_TRANSACTION_STATUSES.PENDING) {
@@ -56,10 +56,6 @@ export default function SmartTransactionListItem({
     smartTransaction.cancellable && !cancelSwapLinkClicked;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
   const toggleShowDetails = useCallback(() => {
-    console.log(
-      'crystal',
-      smartTransaction,transactionGroup
-    );
     setShowDetails((prev) => !prev);
   }, []);
   return (
@@ -90,7 +86,6 @@ export default function SmartTransactionListItem({
         {displayedStatusKey === TRANSACTION_GROUP_STATUSES.PENDING &&
           showCancelSwapLink && (
             <div className="transaction-list-item__pending-actions">
-              Yoo Nidhi
               <CancelButton
                 transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
