@@ -95,7 +95,7 @@ import {
 
 import {
   resetSwapsPostFetchState,
-  removeToken,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
@@ -359,7 +359,12 @@ export default function BuildQuote({
   const onToSelect = useCallback(
     (token) => {
       if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(removeToken(toAddress));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
