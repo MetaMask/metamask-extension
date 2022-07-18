@@ -1,4 +1,4 @@
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
@@ -135,7 +135,7 @@ export default function createRPCMethodTrackingMiddleware({
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
-      origin !== 'metamask' &&
+      origin !== ORIGIN_METAMASK &&
       // Don't track if this is a blocked method
       rateLimitType !== RATE_LIMIT_TYPES.BLOCKED &&
       // Don't track if the rate limit has been hit

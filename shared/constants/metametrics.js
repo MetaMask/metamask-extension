@@ -280,7 +280,7 @@ export const EVENT_NAMES = {
   ENCRYPTION_PUBLIC_KEY_REJECTED: 'Encryption Public Key Rejected',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
   DECRYPTION_APPROVED: 'Decryption Approved',
-  DECRYPTION_REJECTED: 'Decryption Requested',
+  DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
