@@ -1,43 +1,14 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureStore from '../../../../store/store';
-import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import { AMOUNT_MODES } from '../../../../ducks/send';
-import { GAS_LIMITS } from '../../../../../shared/constants/gas';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
 import SendHexDataRow from './send-hex-data-row';
 
 const renderComponent = () => {
   const store = configureStore({
     metamask: { identities: [], provider: {} },
-    send: {
-      userInputHexData: {
-        input: '',
-        error: null,
-      },
-      asset: {
-        type: ASSET_TYPES.NATIVE,
-      },
-      history: [],
-      amount: {
-        mode: AMOUNT_MODES.INPUT,
-        value: '0x0',
-        error: null,
-      },
-      gas: {
-        isGasEstimateLoading: true,
-        gasEstimatePollToken: null,
-        isCustomGasSet: false,
-        gasLimit: '0x0',
-        gasPrice: '0x0',
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
-        gasPriceEstimate: '0x0',
-        gasTotal: '0x0',
-        minimumGasLimit: GAS_LIMITS.SIMPLE,
-        error: null,
-      },
-    },
+    send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   });
   return renderWithProvider(<SendHexDataRow />, store);
 };

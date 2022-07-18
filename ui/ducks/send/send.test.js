@@ -2421,7 +2421,10 @@ describe('Send Slice', () => {
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
-            userInputHexData: '',
+            userInputHexData: {
+              error: null,
+              input: '',
+            },
           },
         });
 
@@ -2564,8 +2567,11 @@ describe('Send Slice', () => {
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
-            userInputHexData:
-              editTransactionState.metamask.unapprovedTxs[1].txParams.data,
+            userInputHexData: {
+              error: null,
+              input:
+                editTransactionState.metamask.unapprovedTxs[1].txParams.data,
+            },
           },
         });
         expect(actionResult[2].type).toStrictEqual('SHOW_LOADING_INDICATION');
@@ -2753,8 +2759,10 @@ describe('Send Slice', () => {
           },
           status: SEND_STATUSES.VALID,
           transactionType: '0x0',
-          userInputHexData:
-            editTransactionState.metamask.unapprovedTxs[1].txParams.data,
+          userInputHexData: {
+            error: null,
+            input: editTransactionState.metamask.unapprovedTxs[1].txParams.data,
+          },
         },
       });
       expect(actionResult[2].type).toStrictEqual('SHOW_LOADING_INDICATION');
