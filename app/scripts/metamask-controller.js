@@ -626,7 +626,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.5.1',
+        'https://metamask.github.io/iframe-execution-environment/0.5.2',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
