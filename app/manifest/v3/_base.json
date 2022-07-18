@@ -46,7 +46,7 @@
     },
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["in-page.js"],
+      "js": ["inpage.js"],
       "run_at": "document_start",
       "world": "MAIN"
     }
