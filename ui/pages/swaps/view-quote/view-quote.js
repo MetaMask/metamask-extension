@@ -195,8 +195,8 @@ export default function ViewQuote() {
       (currentSmartTransactionsError !== 'not_enough_funds' ||
         currentSmartTransactionsErrorMessageDismissed)
     );
-  const smartTransactionFees = useSelector(getSmartTransactionFees);
-  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
+  const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
