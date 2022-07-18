@@ -119,6 +119,16 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 });
 
 describe('Send ERC20 to a 40 character hexadecimal address', function () {
+  async function mockTstToken(server) {
+    await server
+      .forGet('https://token-api.metaswap.codefi.network/token/0x539')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
   const ganacheOptions = {
     accounts: [
       {
@@ -137,7 +147,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        await mockTstToken(mockServer);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -198,6 +209,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           );
           return sendDialogMsgs.length === 1;
         }, 10000);
+        await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -235,7 +247,8 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, mockServer }) => {
+        await mockTstToken(mockServer);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -296,6 +309,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           );
           return sendDialogMsgs.length === 1;
         }, 10000);
+        await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
