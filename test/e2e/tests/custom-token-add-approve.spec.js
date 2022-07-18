@@ -6,7 +6,7 @@ const {
   getWindowHandles,
 } = require('../helpers');
 
-describe('Create token, approve token and approve token without gas', function () {
+describe.skip('Create token, approve token and approve token without gas', function () {
   describe('Add a custom token from a dapp', function () {
     const ganacheOptions = {
       accounts: [
