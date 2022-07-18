@@ -1,3 +1,4 @@
+/* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 
 const {
