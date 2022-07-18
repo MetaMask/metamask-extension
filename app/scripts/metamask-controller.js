@@ -3642,6 +3642,9 @@ export default class MetamaskController extends EventEmitter {
         getCurrentChainId: this.networkController.getCurrentChainId.bind(
           this.networkController,
         ),
+        getCurrentRpcUrl: this.networkController.getCurrentRpcUrl.bind(
+          this.networkController,
+        ),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
