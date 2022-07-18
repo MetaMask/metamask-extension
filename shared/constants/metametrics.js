@@ -283,6 +283,7 @@ export const EVENT_NAMES = {
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_HIDDEN: 'Token Hidden',
+  NFT_ADDED: 'NFT Added',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
