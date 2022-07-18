@@ -2,7 +2,7 @@
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
-let scriptsLoaded = false;
+let scriptsLoadedInitiated = false;
 
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
@@ -19,9 +19,10 @@ function tryImport(...fileNames) {
 
 function importAllScripts() {
   // Bail if we've already imported scripts
-  if (scriptsLoaded) {
+  if (scriptsLoadedInitiated) {
     return;
   }
+  scriptsLoadedInitiated = true;
 
   const startImportScriptsTime = Date.now();
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
@@ -44,9 +45,6 @@ function importAllScripts() {
       './runtime-cjs.js',
     );
   }
-
-  // Mark scripts as loaded
-  scriptsLoaded = true;
 
   // The list of files is injected at build time by replacing comment below with comma separated strings of file names
   // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
