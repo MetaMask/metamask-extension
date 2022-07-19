@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
-import { getUseTokenDetection, getTokenList } from '../../selectors';
+import { getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
@@ -32,7 +32,6 @@ export default function TokenDetailsPage() {
   const t = useContext(I18nContext);
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
-  const useTokenDetection = useSelector(getUseTokenDetection);
 
   const { address: tokenAddress } = useParams();
   const tokenMetadata = Object.values(tokenList).find((token) =>
@@ -40,10 +39,7 @@ export default function TokenDetailsPage() {
   );
   const aggregators = tokenMetadata?.aggregators?.join(', ');
   const fileName = tokenMetadata?.iconUrl;
-  let imagePath = fileName;
-  if (!process.env.TOKEN_DETECTION_V2) {
-    imagePath = useTokenDetection ? fileName : `images/contract/${fileName}`;
-  }
+  const imagePath = fileName;
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
