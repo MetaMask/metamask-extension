@@ -1646,7 +1646,7 @@
     "message": "已知合约地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有可能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
   "kovan": {
     "message": "Kovan 测试网络"
@@ -1887,10 +1887,6 @@
   },
   "metametricsTitle": {
     "message": "和600多万用户一起改进 MetaMask"
-  },
-  "mismatchedChain": {
-    "message": "此链 ID 的网络信息与我们的记录不符。我们建议您在继续操作之前 $1。",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
@@ -3873,10 +3869,6 @@
   "unrecognizedChain": {
     "message": "这个自定义网络无法识别。我们建议您在继续操作之前 $1",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "验证网络信息",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "当前不支持发送可收藏的 (ERC-721) 代币",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ERC20 } from '../../../helpers/constants/common';
+import { ERC20 } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 export default {

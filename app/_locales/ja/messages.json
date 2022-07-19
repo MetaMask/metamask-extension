@@ -1888,10 +1888,6 @@
   "metametricsTitle": {
     "message": "6百万人以上のユーザーと共に、MetaMaskの改善にご協力ください"
   },
-  "mismatchedChain": {
-    "message": "このチェーンIDのネットワーク詳細が、レコードと一致しません。続行する前に$1をお勧めします。",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3874,10 +3870,6 @@
     "message": "このカスタムネットワークは認識されません。続行する前に$1をお勧めします",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedChainLinkText": {
-    "message": "ネットワークの詳細の確認",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
-  },
   "unsendableAsset": {
     "message": "コレクティブル (ERC-721) トークンの送信は現在サポートされていません",
     "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
@@ -4061,7 +4053,7 @@
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"
   },
   "youSign": {
-    "message": "著名しています"
+    "message": "署名しています"
   },
   "yourPrivateSeedPhrase": {
     "message": "秘密のシークレットリカバリーフレーズ"

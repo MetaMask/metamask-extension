@@ -292,6 +292,7 @@ export const EVENT_NAMES = {
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_HIDDEN: 'Token Hidden',
+  NFT_ADDED: 'NFT Added',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
@@ -314,6 +315,10 @@ export const EVENT = {
     WALLET: 'Wallet',
   },
   SOURCE: {
+    NETWORK: {
+      POPULAR_NETWORK_LIST: 'popular_network_list',
+      CUSTOM_NETWORK_FORM: 'custom_network_form',
+    },
     SWAPS: {
       MAIN_VIEW: 'Main View',
       TOKEN_VIEW: 'Token View',
