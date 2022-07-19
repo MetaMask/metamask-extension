@@ -84,22 +84,30 @@ describe('Threebox', function () {
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
+        // finds the jazzicon toggle turned on
         await driver.findElement(
           '[data-test-id="jazz_icon"] .settings-page__content-item__identicon__item__icon--active',
         );
-        // finds the jazzicon toggle turned on
 
         const jazziconText = await driver.findElement({
           tag: 'h6',
           text: 'Jazzicons',
         });
-        assert.equal(await jazziconText.getText(), 'Jazzicons');
+        assert.equal(
+          await jazziconText.getText(),
+          'Jazzicons',
+          'Text for icon should be Jazzicons',
+        );
 
         const blockiesText = await driver.findElement({
           tag: 'h6',
           text: 'Blockies',
         });
-        assert.equal(await blockiesText.getText(), 'Blockies');
+        assert.equal(
+          await blockiesText.getText(),
+          'Blockies',
+          'Text for icon should be Blockies',
+        );
 
         // finds the restored address in the contact list
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
