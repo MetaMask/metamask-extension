@@ -338,6 +338,7 @@ export default class ConfirmTransactionBase extends Component {
     };
 
     const hasSimulationError = Boolean(txData.simulationFails);
+
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
