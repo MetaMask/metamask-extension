@@ -1,4 +1,3 @@
-import querystring from 'querystring';
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
@@ -363,10 +362,10 @@ function blockedDomainCheck() {
  */
 function redirectToPhishingWarning(data = {}) {
   console.debug('MetaMask: Routing to Phishing Warning page.');
+  const { hostname, href } = window.location;
+  const { newIssueUrl } = data;
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
-  window.location.href = `${baseUrl}#${querystring.stringify({
-    hostname: window.location.hostname,
-    href: window.location.href,
-    newIssueUrl: data.newIssueUrl,
-  })}`;
+
+  const querystring = new URLSearchParams({ hostname, href, newIssueUrl });
+  window.location.href = `${baseUrl}#${querystring}`;
 }
