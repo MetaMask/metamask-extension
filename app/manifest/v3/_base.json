@@ -72,11 +72,5 @@
     "*://*.eth/",
     "notifications"
   ],
-  "short_name": "__MSG_appName__",
-  "web_accessible_resources": [
-    {
-      "resources": ["inpage.js", "phishing.html"],
-      "matches": ["http://*/*", "https://*/*"]
-    }
-  ]
+  "short_name": "__MSG_appName__"
 }
