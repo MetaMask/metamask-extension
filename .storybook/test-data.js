@@ -560,18 +560,18 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'ropsten',
+      type: 'rinkeby',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x3',
+      chainId: '0x4',
     },
     previousProviderStore: {
-      type: 'ropsten',
+      type: 'rinkeby',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x3',
+      chainId: '0x4',
     },
     network: '3',
     accounts: {
