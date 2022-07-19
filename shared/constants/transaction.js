@@ -256,8 +256,9 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * transaction contract method.
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
- * @property {string} originalType - The current original type of the
- *  transaction.
+ * @property {string} originalType - When we speed up a transaction,
+ *  we set the type as Retry and we lose information about type of transaction
+ *  that is being set up, so we use original type to track that information.
  * @property {TransactionStatusString} status - The current status of the
  *  transaction.
  * @property {string} metamaskNetworkId - The transaction's network ID, used
