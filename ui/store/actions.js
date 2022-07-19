@@ -27,7 +27,11 @@ import {
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
-import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
+import {
+  computeEstimatedGasLimit,
+  initializeSendState,
+  resetSendState,
+} from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -1443,6 +1447,11 @@ export function updateMetamaskState(newState) {
         type: actionConstants.CHAIN_CHANGED,
         payload: newProvider.chainId,
       });
+      // We dispatch this action to ensure that the send state stays up to date
+      // after the chain changes. This async thunk will fail gracefully in the
+      // event that we are not yet on the send flow with a draftTransaction in
+      // progress.
+      dispatch(initializeSendState({ chainHasChanged: true }));
     }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
@@ -1645,10 +1654,10 @@ export function addDetectedTokens(newDetectedTokens) {
  *
  * @param tokensToImport
  */
-export function importTokens(tokensToImport) {
+export function addImportedTokens(tokensToImport) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.importTokens(tokensToImport);
+      await promisifiedBackground.addImportedTokens(tokensToImport);
     } catch (error) {
       log.error(error);
     } finally {
@@ -1658,18 +1667,32 @@ export function importTokens(tokensToImport) {
 }
 
 /**
- * To add ignored tokens to state
+ * To add ignored token addresses to state
  *
- * @param tokensToIgnore
+ * @param options
+ * @param options.tokensToIgnore
+ * @param options.dontShowLoadingIndicator
  */
-export function ignoreTokens(tokensToIgnore) {
+export function ignoreTokens({
+  tokensToIgnore,
+  dontShowLoadingIndicator = false,
+}) {
+  const _tokensToIgnore = Array.isArray(tokensToIgnore)
+    ? tokensToIgnore
+    : [tokensToIgnore];
+
   return async (dispatch) => {
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
     try {
-      await promisifiedBackground.ignoreTokens(tokensToIgnore);
+      await promisifiedBackground.ignoreTokens(_tokensToIgnore);
     } catch (error) {
       log.error(error);
+      dispatch(displayWarning(error.message));
     } finally {
       await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -1828,21 +1851,6 @@ export async function getTokenStandardAndDetails(
     userAddress,
     tokenId,
   );
-}
-
-export function removeToken(address) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await promisifiedBackground.removeToken(address);
-    } catch (error) {
-      log.error(error);
-      dispatch(displayWarning(error.message));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
 }
 
 export function addTokens(tokens) {

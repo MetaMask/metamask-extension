@@ -20,7 +20,6 @@ import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
-import I18nValue from '../../ui/i18n-value';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
@@ -106,14 +105,9 @@ const CancelSpeedupPopover = () => {
           variant={TYPOGRAPHY.H6}
           margin={[0, 0, 2, 0]}
         >
-          <I18nValue
-            messageKey="cancelSpeedUpLabel"
-            options={[
-              <strong key="cancelSpeedupReplace">
-                <I18nValue messageKey="replace" />
-              </strong>,
-            ]}
-          />
+          {t('cancelSpeedUpLabel', [
+            <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
+          ])}
           <InfoTooltip
             position="top"
             contentText={
@@ -151,7 +145,7 @@ const CancelSpeedupPopover = () => {
           </Box>
         </Box>
         <Button type="primary" onClick={submitTransactionChange}>
-          <I18nValue messageKey="submit" />
+          {t('submit')}
         </Button>
       </div>
     </Popover>

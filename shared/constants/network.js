@@ -7,6 +7,7 @@ export const MAINNET = 'mainnet';
 export const GOERLI = 'goerli';
 export const LOCALHOST = 'localhost';
 export const NETWORK_TYPE_RPC = 'rpc';
+export const HOMESTEAD = 'homestead';
 
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
@@ -23,7 +24,7 @@ export const KOVAN_CHAIN_ID = '0x2a';
 export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
 export const OPTIMISM_CHAIN_ID = '0xa';
-export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
+export const OPTIMISM_TESTNET_CHAIN_ID = '0x1a4';
 export const POLYGON_CHAIN_ID = '0x89';
 export const AVALANCHE_CHAIN_ID = '0xa86a';
 export const FANTOM_CHAIN_ID = '0xfa';
@@ -55,7 +56,7 @@ export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
 
-const infuraProjectId = process.env.INFURA_PROJECT_ID;
+export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({ network, excludeProjectId = false }) =>
   `https://${network}.infura.io/v3/${excludeProjectId ? '' : infuraProjectId}`;
 
@@ -190,6 +191,13 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [HARMONY_CHAIN_ID]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [OPTIMISM_CHAIN_ID]: OPTIMISM_TOKEN_IMAGE_URL,
   [PALM_CHAIN_ID]: PALM_TOKEN_IMAGE_URL,
+};
+
+export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
+  [ROPSTEN_NETWORK_ID]: ROPSTEN,
+  [RINKEBY_NETWORK_ID]: RINKEBY,
+  [GOERLI_NETWORK_ID]: GOERLI,
+  [MAINNET_NETWORK_ID]: HOMESTEAD,
 };
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
