@@ -1,7 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { isEqual } from 'lodash';
 import Jazzicon from '../jazzicon';
+
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
 
@@ -11,7 +13,7 @@ const getStyles = (diameter) => ({
   borderRadius: diameter / 2,
 });
 
-export default class Identicon extends PureComponent {
+export default class Identicon extends Component {
   static propTypes = {
     /**
      * Adds blue border around the Identicon used for selected account.
@@ -132,6 +134,10 @@ export default class Identicon extends PureComponent {
         <BlockieIdenticon address={address} diameter={diameter} alt={alt} />
       </div>
     );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(nextProps, this.props);
   }
 
   render() {
