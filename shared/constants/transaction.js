@@ -15,6 +15,8 @@ import { MESSAGE_TYPE } from './app';
  *  to ensure that the receiver is an address capable of handling with the token being sent.
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
+ * @property {'setapprovalforall'} TOKEN_METHOD_SET_APPROVAL_FOR_ALL - A token transaction requesting an
+ *  allowance of all of a user's token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
  * @property {'simpleSend'} SIMPLE_SEND - A transaction sending a network's native asset to a recipient
  * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
@@ -66,6 +68,7 @@ export const TRANSACTION_TYPES = {
   TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
   TOKEN_METHOD_TRANSFER: 'transfer',
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  TOKEN_METHOD_SET_APPROVAL_FOR_ALL: 'setapprovalforall',
 };
 
 /**
@@ -351,4 +354,37 @@ export const ASSET_TYPES = {
   TOKEN: 'TOKEN',
   COLLECTIBLE: 'COLLECTIBLE',
   UNKNOWN: 'UNKNOWN',
+};
+
+export const ERC20 = 'ERC20';
+export const ERC721 = 'ERC721';
+export const ERC1155 = 'ERC1155';
+
+/**
+ * @typedef {Object} TokenStandards
+ * @property {'ERC20'} ERC20 - A token that conforms to the ERC20 standard.
+ * @property {'ERC721'} ERC721 - A token that conforms to the ERC721 standard.
+ * @property {'ERC1155'} ERC1155 - A token that conforms to the ERC1155
+ *  standard.
+ * @property {'NONE'} NONE - Not a token, but rather the base asset of the
+ *  selected chain.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above statuses
+ *
+ * @typedef {TokenStandards[keyof TokenStandards]} TokenStandardStrings
+ */
+
+/**
+ * Describes the standard which a token conforms to.
+ *
+ * @type {TokenStandards}
+ */
+export const TOKEN_STANDARDS = {
+  ERC20,
+  ERC721,
+  ERC1155,
+  NONE: 'NONE',
 };

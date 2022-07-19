@@ -30,6 +30,9 @@
       "notifications": {
         "12": {
           "isShown": true
+        },
+        "13": {
+          "isShown": true
         }
       }
     },
