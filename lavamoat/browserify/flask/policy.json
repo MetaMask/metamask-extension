@@ -3289,7 +3289,6 @@
       },
       "packages": {
         "@metamask/controllers": true,
-        "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
