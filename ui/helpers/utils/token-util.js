@@ -43,7 +43,7 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress, tokenList) {
   const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
     return {
       ...acc,
@@ -149,6 +149,10 @@ export function getTokenAddressParam(tokenData = {}) {
  */
 export function getTokenValueParam(tokenData = {}) {
   return tokenData?.args?._value?.toString();
+}
+
+export function getTokenApprovedParam(tokenData = {}) {
+  return tokenData?.args?._approved;
 }
 
 export function getTokenValue(tokenParams = []) {

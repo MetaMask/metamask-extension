@@ -16,6 +16,10 @@
     align-items: center;
   }
 
+  &__left-url-icon {
+    margin-right: 8px;
+  };
+
   @each $variant, $color in design-system.$color-map {
     &--border-color-#{$variant} {
       border-color: var($color);
@@ -66,5 +70,9 @@
 
   &--max-content {
     width: max-content;
+  }
+
+  &--display-inline-block {
+    display: inline-block;
   }
 }

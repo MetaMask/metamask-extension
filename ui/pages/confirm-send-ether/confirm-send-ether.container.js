@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { editTransaction } from '../../ducks/send';
+import { editExistingTransaction } from '../../ducks/send';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import ConfirmSendEther from './confirm-send-ether.component';
@@ -20,7 +20,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     editTransaction: async (txData) => {
       const { id } = txData;
-      await dispatch(editTransaction(ASSET_TYPES.NATIVE, id.toString()));
+      await dispatch(
+        editExistingTransaction(ASSET_TYPES.NATIVE, id.toString()),
+      );
       dispatch(clearConfirmTransaction());
     },
   };
