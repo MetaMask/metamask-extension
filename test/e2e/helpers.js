@@ -24,6 +24,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     ganacheOptions,
+    smartContract,
     driverOptions,
     dappOptions,
     title,
@@ -47,12 +48,14 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
+    let contractRegistry;
 
-    // Deploy initial smart contracts
-    const debugGanacheSeeder = true;
-    const ganacheSeeder = new GanacheSeeder(debugGanacheSeeder);
-    await ganacheSeeder.deploySmartContract('hst');
-    const contractRegistry = ganacheSeeder.getContractRegistry();
+    if (smartContract) {
+      const debugGanacheSeeder = true;
+      const ganacheSeeder = new GanacheSeeder(debugGanacheSeeder);
+      await ganacheSeeder.deploySmartContract(smartContract);
+      contractRegistry = ganacheSeeder.getContractRegistry();
+    }
 
     if (ganacheOptions?.concurrent) {
       const { port, chainId } = ganacheOptions.concurrent;

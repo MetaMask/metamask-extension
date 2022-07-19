@@ -50,7 +50,7 @@ class GanacheSeeder {
 
     if (this.debug) {
       console.log(
-        `Contract mined! address: ${contract.address} transactionHash: ${contract.transactionHash}`,
+        `Contract mined! address: ${contract.address} transactionHash: ${contract.deployTransaction.hash}`,
       );
     }
     this.storeSmartContractAddress(contractName, contract.address);
