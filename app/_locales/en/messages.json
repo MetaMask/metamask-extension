@@ -1638,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "Invalid Secret Recovery Phrase"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
   "ipfsGateway": {
     "message": "IPFS Gateway"
   },
