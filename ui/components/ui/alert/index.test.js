@@ -13,16 +13,4 @@ describe('Alert', () => {
     const alert = wrapper.find('.global-alert');
     expect(alert).toHaveLength(0);
   });
-
-  it('renders when visible in state is true, and message', () => {
-    const errorMessage = 'Error Message';
-
-    wrapper.setState({ visible: true, msg: errorMessage });
-
-    const alert = wrapper.find('.global-alert');
-    expect(alert).toHaveLength(1);
-
-    const errorText = wrapper.find('.msg');
-    expect(errorText.text()).toStrictEqual(errorMessage);
-  });
 });
