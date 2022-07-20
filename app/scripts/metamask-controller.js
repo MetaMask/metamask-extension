@@ -91,7 +91,10 @@ import {
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
-import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
+import {
+  getTokenIdParam,
+  getTokenValueParam,
+} from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import {
@@ -866,7 +869,11 @@ export default class MetamaskController extends EventEmitter {
           } = txMeta.txParams;
           const { chainId } = txMeta;
           const transactionData = parseStandardTokenTransactionData(data);
-          const tokenAmountOrTokenId = getTokenValueParam(transactionData);
+          // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
+          // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
+          const transactionDataTokenId =
+            getTokenIdParam(transactionData) ??
+            getTokenValueParam(transactionData);
           const { allCollectibles } = this.collectiblesController.state;
 
           // check if its a known collectible
@@ -875,7 +882,7 @@ export default class MetamaskController extends EventEmitter {
           ].find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
-              tokenId === tokenAmountOrTokenId,
+              tokenId === transactionDataTokenId,
           );
 
           // if it is we check and update ownership status.

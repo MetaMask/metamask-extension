@@ -7,6 +7,7 @@ import {
   calcTokenAmount,
   getAssetDetails,
   getTokenAddressParam,
+  getTokenIdParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
@@ -86,7 +87,9 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     toAddress = getTokenAddressParam(tokenData);
     if (assetStandard === ERC721 || assetStandard === ERC1155) {
       assetName = name;
-      tokenId = getTokenValueParam(tokenData);
+      // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
+      // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
+      tokenId = getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
     }
     if (assetStandard === ERC20) {
       userBalance = balance;

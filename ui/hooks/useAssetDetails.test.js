@@ -114,10 +114,12 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC721 token', async () => {
     const tokenAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
     const toAddress = '000000000000000000000000000000000000dead';
-    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000c`;
+    const tokenId = 12;
+    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000${tokenId.toString(
+      16,
+    )}`;
 
     const symbol = 'BAYC';
-    const tokenId = '12';
     const name = 'BoredApeYachtClub';
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
@@ -146,7 +148,7 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId,
+      tokenId: tokenId.toString(),
       tokenImage: image,
       tokenSymbol: symbol,
       tokenValue: undefined,
@@ -158,9 +160,11 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC1155 token', async () => {
     const tokenAddress = '0x76BE3b62873462d2142405439777e971754E8E77';
     const toAddress = '000000000000000000000000000000000000dead';
-    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000322000000000000000000000000000000000000000000000000000000000000009c00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000`;
+    const tokenId = 802;
+    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000${tokenId.toString(
+      16,
+    )}000000000000000000000000000000000000000000000000000000000000009c00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000`;
 
-    const tokenId = '121';
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
     const standard = ERC1155;
@@ -186,7 +190,7 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: undefined,
+      tokenId: tokenId.toString(),
       tokenImage: image,
       tokenSymbol: '',
       tokenValue: undefined,

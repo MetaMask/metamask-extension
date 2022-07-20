@@ -8,6 +8,7 @@ import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   getTokenAddressParam,
+  getTokenIdParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
 import {
@@ -138,16 +139,17 @@ export function useTransactionDisplayData(transactionGroup) {
     isTokenCategory,
   );
 
-  // If this is an ERC20 token transaction this value is equal to the amount sent
-  // If it is an ERC721 token transaction it is the tokenId being sent
-  const tokenAmountOrTokenId = getTokenValueParam(tokenData);
+  // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
+  // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
+  const transactionDataTokenId =
+    getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
 
   const collectible =
     isTokenCategory &&
     knownCollectibles.find(
       ({ address, tokenId }) =>
         isEqualCaseInsensitive(address, recipientAddress) &&
-        tokenId === tokenAmountOrTokenId,
+        tokenId === transactionDataTokenId,
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
