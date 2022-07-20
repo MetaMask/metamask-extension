@@ -1994,7 +1994,8 @@ export function updateSendAsset(
       // then the user will not want to send any hex data now that they have change the
       if (
         unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
       ) {
         await dispatch(actions.updateUserInputHexData(''));
       }
