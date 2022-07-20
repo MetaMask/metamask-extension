@@ -72,7 +72,7 @@ export const UI_NOTIFICATIONS = {
   },
 };
 
-export const getTranslatedUINoficiations = (t, locale) => {
+export const getTranslatedUINotifications = (t, locale) => {
   const formattedLocale = locale.replace('_', '-');
   return {
     1: {

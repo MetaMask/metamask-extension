@@ -20,38 +20,19 @@ const UNRECOGNIZED_CHAIN = {
       element: 'MetaMaskTranslation',
       props: {
         translationKey: 'unrecognizedChain',
-        variables: [
-          {
-            element: 'a',
-            key: 'unrecognizedChainLink',
-            props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
-              target: '__blank',
-              tabIndex: 0,
-            },
-            children: {
-              element: 'MetaMaskTranslation',
-              props: {
-                translationKey: 'unrecognizedChainLinkText',
-              },
-            },
-          },
-        ],
       },
     },
   },
 };
 
-const INVALID_CHAIN = {
-  id: 'INVALID_CHAIN',
-  severity: SEVERITIES.DANGER,
+const MISMATCHED_CHAIN_RECOMMENDATION = {
+  id: 'MISMATCHED_CHAIN_RECOMMENDATION',
   content: {
     element: 'span',
     children: {
       element: 'MetaMaskTranslation',
       props: {
-        translationKey: 'mismatchedChain',
+        translationKey: 'mismatchedChainRecommendation',
         variables: [
           {
             element: 'a',
@@ -75,6 +56,48 @@ const INVALID_CHAIN = {
   },
 };
 
+const MISMATCHED_NETWORK_NAME = {
+  id: 'MISMATCHED_NETWORK_NAME',
+  severity: SEVERITIES.WARNING,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedNetworkName',
+      },
+    },
+  },
+};
+
+const MISMATCHED_NETWORK_SYMBOL = {
+  id: 'MISMATCHED_NETWORK_SYMBOL',
+  severity: SEVERITIES.DANGER,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedNetworkSymbol',
+      },
+    },
+  },
+};
+
+const MISMATCHED_NETWORK_RPC = {
+  id: 'MISMATCHED_NETWORK_RPC',
+  severity: SEVERITIES.DANGER,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedRpcUrl',
+      },
+    },
+  },
+};
+
 async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
@@ -83,34 +106,39 @@ async function getAlerts(pendingApproval) {
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
   );
-  let validated = Boolean(matchedChain);
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
-  if (originIsMetaMask && validated) {
+  if (originIsMetaMask && Boolean(matchedChain)) {
     return [];
   }
 
   if (matchedChain) {
     if (
-      matchedChain.nativeCurrency?.decimals !== 18 ||
       matchedChain.name.toLowerCase() !==
-        pendingApproval.requestData.chainName.toLowerCase() ||
+      pendingApproval.requestData.chainName.toLowerCase()
+    ) {
+      alerts.push(MISMATCHED_NETWORK_NAME);
+    }
+    if (
       matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker
     ) {
-      validated = false;
+      alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
     if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
-      validated = false;
+      alerts.push(MISMATCHED_NETWORK_RPC);
     }
   }
 
   if (!matchedChain) {
     alerts.push(UNRECOGNIZED_CHAIN);
-  } else if (!validated) {
-    alerts.push(INVALID_CHAIN);
   }
+
+  if (alerts.length) {
+    alerts.push(MISMATCHED_CHAIN_RECOMMENDATION);
+  }
+
   return alerts;
 }
 
@@ -281,7 +309,12 @@ function getValues(pendingApproval, t, actions) {
             [t('blockExplorerUrl')]: pendingApproval.requestData
               .blockExplorerUrl,
           },
-          prefaceKeys: [t('networkName'), t('networkURL'), t('chainId')],
+          prefaceKeys: [
+            t('networkName'),
+            t('networkURL'),
+            t('chainId'),
+            t('currencySymbol'),
+          ],
         },
       },
     ],

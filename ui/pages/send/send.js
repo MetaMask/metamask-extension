@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useEffect, useCallback, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   addHistoryEntry,
+  getDraftTransactionExists,
   getIsUsingMyAccountForRecipientSearch,
   getRecipient,
   getRecipientUserInput,
@@ -10,6 +11,7 @@ import {
   resetRecipientInput,
   resetSendState,
   SEND_STAGES,
+  startNewDraftTransaction,
   updateRecipient,
   updateRecipientUserInput,
 } from '../../ducks/send';
@@ -18,6 +20,7 @@ import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { EVENT } from '../../../shared/constants/metametrics';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
@@ -29,6 +32,7 @@ const sendSliceIsCustomPriceExcessive = (state) =>
 
 export default function SendTransactionScreen() {
   const history = useHistory();
+  const startedNewDraftTransaction = useRef(false);
   const stage = useSelector(getSendStage);
   const gasIsExcessive = useSelector(sendSliceIsCustomPriceExcessive);
   const isUsingMyAccountsForRecipientSearch = useSelector(
@@ -37,6 +41,7 @@ export default function SendTransactionScreen() {
   const recipient = useSelector(getRecipient);
   const showHexData = useSelector(getSendHexDataFeatureFlagState);
   const userInput = useSelector(getRecipientUserInput);
+  const draftTransactionExists = useSelector(getDraftTransactionExists);
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -45,6 +50,23 @@ export default function SendTransactionScreen() {
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
   }, [dispatch]);
+
+  /**
+   * It is possible to route to this page directly, either by typing in the url
+   * or by clicking the browser back button after progressing to the confirm
+   * screen. In the case where a draft transaction does not yet exist, this
+   * hook is responsible for creating it. We will assume that this is a native
+   * asset send.
+   */
+  useEffect(() => {
+    if (
+      draftTransactionExists === false &&
+      startedNewDraftTransaction.current === false
+    ) {
+      startedNewDraftTransaction.current = true;
+      dispatch(startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }));
+    }
+  }, [draftTransactionExists, dispatch]);
 
   useEffect(() => {
     window.addEventListener('beforeunload', cleanup);
@@ -70,7 +92,10 @@ export default function SendTransactionScreen() {
 
   let content;
 
-  if ([SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(stage)) {
+  if (
+    draftTransactionExists &&
+    [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(stage)
+  ) {
     content = (
       <>
         <SendContent

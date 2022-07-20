@@ -19,9 +19,6 @@ describe('Test Snap Notification', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        driverOptions: {
-          type: 'flask',
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
