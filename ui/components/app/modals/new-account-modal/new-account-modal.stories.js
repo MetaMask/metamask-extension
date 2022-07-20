@@ -2,7 +2,7 @@ import React from 'react';
 import NewAccountModal from './new-account-modal.component';
 
 export default {
-  title: 'Components/UI/NewAccountModal', // title should follow the folder structure location of the component. Don't use spaces.
+  title: 'Components/App/Modals/NewAccountModal',
   id: __filename,
 };
 

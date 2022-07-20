@@ -49,6 +49,7 @@ class HideTokenConfirmationModal extends Component {
   render() {
     const { token, hideToken, hideModal, history } = this.props;
     const { symbol, address, image } = token;
+
     return (
       <div className="hide-token-confirmation">
         <div className="hide-token-confirmation__container">

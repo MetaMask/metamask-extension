@@ -2,11 +2,11 @@ import React from 'react';
 import GasSlider from '.';
 
 export default {
-  title: 'Components/UI/GasSlider', // title should follow the folder structure location of the component. Don't use spaces.
+  title: 'Components/UI/GasSlider',
   id: __filename,
   argTypes: {
     onChange: {
-      control: 'func',
+      action: 'onChange',
     },
     lowLabel: {
       control: 'text',
