@@ -990,9 +990,6 @@
   "transactionError": {
     "message": "Operacijos klaida. Sutarties kodo numetimo išimtis."
   },
-  "transactionErrorNoContract": {
-    "message": "Mėginama iškviesti funkciją nekontaktiniu adresu."
-  },
   "transactionErrored": {
     "message": "Įvyko operacijos klaida"
   },

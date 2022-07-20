@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Devam etmeden önce doğru Gizli Kurtarma İfadesini kullandığından emin ol. Bunu geri alamazsın."
   },
-  "restartMetamask": {
-    "message": "MetaMask'i yeniden başlat"
-  },
   "restore": {
     "message": "Geri Yükle"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Tutarı Gönder"
-  },
-  "sendBugReport": {
-    "message": "Bize bir hata raporu gönder."
   },
   "sendSpecifiedTokens": {
     "message": "$1 Gönder",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Cüzdanınızı doğrudan bilgisayara bağlayın. Kayıt defterinizin kilidini açın ve Ethereum uygulamasını açın. Donanım cüzdanı cihazınızın kullanımı hakkında daha fazla bilgi için $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Bu mesajı almaya devam mı ediyorsun?"
   },
   "storePhrase": {
     "message": "Bu ifadeyi 1Password gibi bir parola yöneticisinde saklayın."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "İşlem Hatası. Sözleşme kodundan istisna atıldı."
   },
-  "transactionErrorNoContract": {
-    "message": "Sözleşmeli olmayan bir adreste bir fonksiyon çağrılmaya çalışıldı."
-  },
   "transactionErrored": {
     "message": "İşlem bir hatayla karşılaştı."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
   },
   "troubleTokenBalances": {
     "message": "Token bakiyeleriniz yüklenirken sorun yaşadık. Burada görüntüleyebilirsiniz ",

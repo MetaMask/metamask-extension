@@ -974,9 +974,6 @@
   "transactionError": {
     "message": "Eroare de tranzacție. Excepție lansată în codul contractului."
   },
-  "transactionErrorNoContract": {
-    "message": "Se încearcă apelarea unei funcții pe o adresă non-contract."
-  },
   "transactionErrored": {
     "message": "Tranzacția a întâlnit o eroare."
   },

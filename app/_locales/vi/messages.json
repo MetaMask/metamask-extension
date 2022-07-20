@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Đảm bảo bạn đang sử dụng đúng Cụm từ khôi phục bí mật trước khi tiếp tục vì bạn sẽ không thể hoàn tác."
   },
-  "restartMetamask": {
-    "message": "Khởi động lại MetaMask"
-  },
   "restore": {
     "message": "Khôi phục"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Gửi khoản tiền"
-  },
-  "sendBugReport": {
-    "message": "Gửi báo cáo lỗi."
   },
   "sendSpecifiedTokens": {
     "message": "Gửi $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Kết nối ví của bạn trực tiếp với máy tính.  Mở khóa Ledger của bạn và mở ứng dụng Ethereum. Để biết thêm thông tin về cách sử dụng thiết bị ví cứng của bạn, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Vẫn nhận được thông báo này?"
   },
   "storePhrase": {
     "message": "Lưu trữ cụm mật khẩu này trong trình quản lý mật khẩu chẳng hạn như 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Lỗi giao dịch. Đã xảy ra ngoại lệ trong mã hợp đồng."
   },
-  "transactionErrorNoContract": {
-    "message": "Đang cố gắng gọi một hàm trên địa chỉ không có hợp đồng."
-  },
   "transactionErrored": {
     "message": "Giao dịch đã gặp lỗi."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Chúng tôi đã gặp phải sự cố khi kết nối với $1 của bạn, hãy thử xem lại $2 và thử lại.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask đã gặp sự cố khi khởi động. Lỗi này có thể xảy ra không liên tục, vì vậy hãy thử khởi động lại tiện ích."
   },
   "troubleTokenBalances": {
     "message": "Chúng tôi đã gặp phải vấn đề khi tải số dư token của bạn. Bạn có thể xem số dư ",

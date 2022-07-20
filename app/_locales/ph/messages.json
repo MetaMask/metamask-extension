@@ -2082,9 +2082,6 @@
   "transactionError": {
     "message": "Error sa Transaksyon. Nagkaroon ng exception sa code ng kontrata."
   },
-  "transactionErrorNoContract": {
-    "message": "Sinusubukang i-call ang isang function sa isang address na hindi kontrata."
-  },
   "transactionErrored": {
     "message": "Nagkaroon ng error sa transaksyon."
   },

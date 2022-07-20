@@ -3099,9 +3099,6 @@
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
-  "transactionErrorNoContract": {
-    "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
   "transactionErrored": {
     "message": "La transacción encontró un error."
   },

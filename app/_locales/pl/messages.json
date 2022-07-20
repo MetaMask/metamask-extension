@@ -978,9 +978,6 @@
   "transactionError": {
     "message": "Błąd transakcji. Wyjątek w kodzie kontraktu."
   },
-  "transactionErrorNoContract": {
-    "message": "Próba wywołania funkcji na adresie, który nie jest adresem kontraktu."
-  },
   "transactionErrored": {
     "message": "Wystąpił błąd podczas wykonywania transakcji."
   },

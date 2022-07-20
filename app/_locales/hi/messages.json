@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "आगे बढ़ने से पहले ये सुनिश्चित करें कि आप सही सीक्रेट रिकवरी फ़्रेज़ का इस्तेमाल कर रहे हैं। इसे आप अनडू नहीं कर पाएंगे।"
   },
-  "restartMetamask": {
-    "message": "मेटामास्क को पुनरारंभ करें"
-  },
   "restore": {
     "message": "पुनर्स्थापित करें"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "राशि भेजें"
-  },
-  "sendBugReport": {
-    "message": "हमें एक बग रिपोर्ट भेजें।"
   },
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "अपने वॉलेट को सीधे अपने कंप्यूटर से कनेक्ट करें। अपने Ledger को अनलॉक करें और Ethereum ऐप खोलें। अपने हार्डवेयर वॉलेट डिवाइस के उपयोग के बारे में अधिक जानकारी के लिए, $1।",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "अभी भी यह संदेश मिल रहा है?"
   },
   "storePhrase": {
     "message": "इस फ्रेज को 1Password जैसे किसी पासवर्ड मैनेजर में संग्रहीत करें।"
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "लेनदेन में त्रुटि। अनुबंध कोड में अपवाद प्राप्त हुआ।"
   },
-  "transactionErrorNoContract": {
-    "message": "एक गैर-अनुबंध वाले पते पर एक फंक्शन को कॉल करने की कोशिश की जा रही है।"
-  },
   "transactionErrored": {
     "message": "लेनदेन में त्रुटि हुई।"
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "हमें आपके $1 से कनेक्ट करने में परेशानी हुई, $2 की समीक्षा करने का प्रयास करें और दोबारा कोशिश करें।",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "मेटामास्क को शुरू करने में दिक्कत हुई। यह त्रुटि रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को पुनरारंभ करने का प्रयास करें।"
   },
   "troubleTokenBalances": {
     "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",

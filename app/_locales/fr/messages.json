@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Vérifiez que vous avez saisi correctement la phrase de récupération secrète avant de continuer. Vous ne pourrez pas annuler cette action."
   },
-  "restartMetamask": {
-    "message": "Redémarrer MetaMask"
-  },
   "restore": {
     "message": "Restaurer"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Envoyer le montant"
-  },
-  "sendBugReport": {
-    "message": "Envoyez-nous un rapport de bogue."
   },
   "sendSpecifiedTokens": {
     "message": "Envoyer $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum. Pour en savoir plus sur l’utilisation de votre portefeuille matériel, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Vous recevez toujours ce message ?"
   },
   "storePhrase": {
     "message": "Stockez cette phrase dans un gestionnaire de mots de passe comme 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Erreur de transaction. Une exception a été rencontrée dans l’exécution du code du contrat."
   },
-  "transactionErrorNoContract": {
-    "message": "Tentative d’appel de fonction sur une adresse qui n’apparaît pas dans le contrat."
-  },
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Nous avons eu des difficultés à nous connecter à votre $1. Essayez de vérifier votre $2 et réessayez.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
   },
   "troubleTokenBalances": {
     "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",

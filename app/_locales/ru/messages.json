@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Прежде чем продолжить, убедитесь, что вы используете правильную секретную фразу восстановления. Вы не сможете отменить это."
   },
-  "restartMetamask": {
-    "message": "Перезапустить MetaMask"
-  },
   "restore": {
     "message": "Восстановить"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Сумма для отправки"
-  },
-  "sendBugReport": {
-    "message": "Отправьте нам сообщение об ошибке."
   },
   "sendSpecifiedTokens": {
     "message": "Отправить $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Подключите кошелек напрямую к компьютеру. Разблокируйте леджер и откройте приложение Ethereum. Для получения дополнительной информации об использовании аппаратного кошелька $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Все еще получаете это сообщение?"
   },
   "storePhrase": {
     "message": "Сохраните эту фразу в диспетчере паролей, например, в 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."
   },
-  "transactionErrorNoContract": {
-    "message": "Попытка вызвать функцию на неконтрактном адресе."
-  },
   "transactionErrored": {
     "message": "Транзакция обнаружила ошибку."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Не удалось подключиться к вашему $1, попробуйте проверить $2 и повторите попытку.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
   },
   "troubleTokenBalances": {
     "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",

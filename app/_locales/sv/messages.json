@@ -965,9 +965,6 @@
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
   },
-  "transactionErrorNoContract": {
-    "message": "Försöker åberopa en funktion på en icke-kontraktsadress."
-  },
   "transactionErrored": {
     "message": "Transaktionen påträffade ett fel."
   },

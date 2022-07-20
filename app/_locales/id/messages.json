@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Pastikan Anda menggunakan Frasa Pemulihan Rahasia yang benar sebelum melanjutkan. Anda tidak dapat membatalkan tindakan ini."
   },
-  "restartMetamask": {
-    "message": "Mulai ulang MetaMask"
-  },
   "restore": {
     "message": "Pulihkan"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Kirim Jumlah"
-  },
-  "sendBugReport": {
-    "message": "Kirimi kami laporan bug."
   },
   "sendSpecifiedTokens": {
     "message": "Kirim $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Hubungkan dompet Anda langsung ke komputer.  Buka Ledger dan buka aplikasi Ethereum. Untuk selengkapnya seputar penggunaan perangkat dompet perangkat keras Anda, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Masih menerima pesan ini?"
   },
   "storePhrase": {
     "message": "Simpan frasa ini dalam pengelola kata sandi seperti 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Kesalahan Transaksi. Pengecualian diberikan dalam kode kontrak."
   },
-  "transactionErrorNoContract": {
-    "message": "Mencoba memanggil fungsi pada alamat non-kontrak."
-  },
   "transactionErrored": {
     "message": "Transaksi mengalami kesalahan."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Kami mengalami masalah saat mencoba terhubung ke $1 Anda, tinjau kembali $2 dan coba lagi.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
   },
   "troubleTokenBalances": {
     "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",

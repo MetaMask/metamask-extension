@@ -968,9 +968,6 @@
   "transactionError": {
     "message": "Hitilafu ya muamala. Kighairi kimerushwa kwenye msimbo wa mkataba."
   },
-  "transactionErrorNoContract": {
-    "message": "Inajaribu kuita shughuli kwenye anwani isiyo ya mkataba."
-  },
   "transactionErrored": {
     "message": "Muamala umepata hitilafu."
   },

@@ -959,9 +959,6 @@
   "transactionError": {
     "message": "Transaktionsfejl. Undtagelse smidt i kontraktskode."
   },
-  "transactionErrorNoContract": {
-    "message": "Forsøger at hidkalde en funktion på en ikke-kontrakt adresse."
-  },
   "transactionErrored": {
     "message": "Transaktionen stødte på en fejl."
   },

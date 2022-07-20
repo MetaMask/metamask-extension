@@ -980,9 +980,6 @@
   "transactionError": {
     "message": "Tehingu tõrge. Lepingukoodis ilmnes erand."
   },
-  "transactionErrorNoContract": {
-    "message": "Mittelepingulisel aadressil asuva funktsiooni kutsumine."
-  },
   "transactionErrored": {
     "message": "Tehingul ilmnes tõrge."
   },

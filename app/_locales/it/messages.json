@@ -1651,9 +1651,6 @@
   "transactionError": {
     "message": "Errore Transazione. Eccceziona generata nel codice del contratto."
   },
-  "transactionErrorNoContract": {
-    "message": "Stai provando a chiamare una funzione ad un indirizzo che non è un contratto."
-  },
   "transactionErrored": {
     "message": "La transazione ha riscontrato un errore."
   },

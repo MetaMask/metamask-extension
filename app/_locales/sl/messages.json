@@ -978,9 +978,6 @@
   "transactionError": {
     "message": "Napaka pri transakciji. Izjema sprožena v kodi pogodbe."
   },
-  "transactionErrorNoContract": {
-    "message": "Poskus klica funkcije na naslovu, ki ni pogodba."
-  },
   "transactionErrored": {
     "message": "Napaka pri transakciji."
   },

@@ -987,9 +987,6 @@
   "transactionError": {
     "message": "Tapahtumavirhe. Poikkeus havaittu sopimuskoodissa."
   },
-  "transactionErrorNoContract": {
-    "message": "Yritetään kutsua funktiota ei-sopimusosoitteesta."
-  },
   "transactionErrored": {
     "message": "Tapahtumissa tapahtui virhe."
   },

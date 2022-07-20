@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Tiyakin na ginagamit mo ang wastong Secret Recovery Phrase bago magpatuloy. Hindi mo na ito maaaring pawalang-bisa."
   },
-  "restartMetamask": {
-    "message": "I-restart ang MetaMask"
-  },
   "restore": {
     "message": "I-restore"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Halaga ng Ipapadala"
-  },
-  "sendBugReport": {
-    "message": "Padalhan kami ng ulat ng bug."
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Direktang ikonekta ang iyong wallet sa iyong computer. I-unlock ang iyong Ledger at buksan ang Ethereum app. Para sa higit pa sa paggamit ng iyong hardware wallet device, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Nakukuha pa rin ang mensaheng ito?"
   },
   "storePhrase": {
     "message": "I-store ang phrase na ito sa isang password manager gaya ng 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Error sa Transaksyon. Nagkaroon ng exception sa code ng kontrata."
   },
-  "transactionErrorNoContract": {
-    "message": "Sinusubukang i-call ang isang function sa isang address na hindi kontrata."
-  },
   "transactionErrored": {
     "message": "Nagkaroon ng error sa transaksyon."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Nagkaproblema kami sa pagkonekta sa iyong $1, subukang suriin ang $2 at subukan ulit.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Nagkaproblema ang MetaMask sa pagsisimula. Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
   },
   "troubleTokenBalances": {
     "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",

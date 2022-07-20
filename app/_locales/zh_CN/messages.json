@@ -3041,9 +3041,6 @@
   "transactionError": {
     "message": "交易出错。合约代码执行异常。"
   },
-  "transactionErrorNoContract": {
-    "message": "试图在一个非合约地址上调用一个函数。"
-  },
   "transactionErrored": {
     "message": "交易出现错误。"
   },

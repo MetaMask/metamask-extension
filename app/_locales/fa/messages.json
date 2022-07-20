@@ -990,9 +990,6 @@
   "transactionError": {
     "message": "خطا معامله. استثناء در کود قرارداد گذاشته شده است."
   },
-  "transactionErrorNoContract": {
-    "message": "در حال تلاش برای درخواست یک عملکرد مرتبط به آدرس غیر-قرارداد"
-  },
   "transactionErrored": {
     "message": "معامله با خطا مواجه شد."
   },

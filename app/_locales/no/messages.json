@@ -965,9 +965,6 @@
   "transactionError": {
     "message": "Transaksjonsfeil. Unntak kastet i kontraktskode."
   },
-  "transactionErrorNoContract": {
-    "message": "Prøver å kontakte en funksjon på en adresse uten kontrakt."
-  },
   "transactionErrored": {
     "message": "Det oppsto en feil under transaksjonen."
   },

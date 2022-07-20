@@ -967,9 +967,6 @@
   "transactionError": {
     "message": "Ralat Transaksi. Pengecualian diberi dalam kod kontrak."
   },
-  "transactionErrorNoContract": {
-    "message": "Cuba memanggil fungsi untuk alamat bukan kontrak."
-  },
   "transactionErrored": {
     "message": "Transaksi berdepan ralat."
   },

@@ -980,9 +980,6 @@
   "transactionError": {
     "message": "Tranzakciós hiba.  Kivétel van a szerződés kódjában."
   },
-  "transactionErrorNoContract": {
-    "message": "Nem-szerződéses címen próbál egy funkciót meghívni."
-  },
   "transactionErrored": {
     "message": "Hiba történt a tranzakció során."
   },

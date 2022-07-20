@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή Μυστική Φράση Ανάκτησης πριν συνεχίσετε. Αυτή η ενέργεια είναι μη αναστρέψιμη."
   },
-  "restartMetamask": {
-    "message": "Επανεκκίνηση MetaMask"
-  },
   "restore": {
     "message": "Επαναφορά"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Αποστολή Ποσού"
-  },
-  "sendBugReport": {
-    "message": "Στείλτε μας μια αναφορά σφάλματος."
   },
   "sendSpecifiedTokens": {
     "message": "Αποστολή $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Συνδέστε το πορτοφόλι σας απευθείας στον υπολογιστή σας. Ξεκλειδώστε το Ledger και ανοίξτε την εφαρμογή Ethereum. Για περισσότερες πληροφορίες σχετικά με τη χρήση της συσκευής πορτοφολιού σας, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Λαμβάνετε ακόμα αυτό το μήνυμα;"
   },
   "storePhrase": {
     "message": "Αποθηκεύστε αυτήν τη φράση σε έναν διαχειριστή κωδικών πρόσβασης όπως το 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό της σύμβασης."
   },
-  "transactionErrorNoContract": {
-    "message": "Προσπάθεια κλήσης λειτουργίας σε διεύθυνση μη συμβολαίου."
-  },
   "transactionErrored": {
     "message": "Η συναλλαγή αντιμετώπισε ένα σφάλμα."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Είχαμε πρόβλημα να συνδεθούμε με το $1 σας, δοκιμάστε να ξαναδείτε το $2 και προσπαθήστε ξανά.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση. Αυτό το σφάλμα μπορεί να είναι τυχαίο, γι' αυτό προσπαθήστε να επανεκκινήσετε την επέκταση."
   },
   "troubleTokenBalances": {
     "message": "Είχαμε πρόβλημα να φορτώσουμε τα υπόλοιπα του διακριτικού σας. Μπορείτε να τα δείτε ",

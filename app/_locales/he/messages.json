@@ -984,9 +984,6 @@
   "transactionError": {
     "message": "תקלה בעסקה. שגיאה אירעה בקוד החוזה."
   },
-  "transactionErrorNoContract": {
-    "message": "מנסה לקרוא לפונקציה בכתובת ללא חוזה."
-  },
   "transactionErrored": {
     "message": "העסקה נתקלה בשגיאה."
   },

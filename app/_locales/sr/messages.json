@@ -975,9 +975,6 @@
   "transactionError": {
     "message": "Greška prilikom transakcije. Izuzetak ubačen u kod ugovora."
   },
-  "transactionErrorNoContract": {
-    "message": "Pokušavamo da pozovemo funkciju preko ne-ugovorne adrese."
-  },
   "transactionErrored": {
     "message": "Transakcija je naišla na grešku"
   },

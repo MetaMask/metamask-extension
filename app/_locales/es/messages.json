@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Asegúrese de usar la frase de recuperación secreta correcta antes de continuar. No podrá deshacer esto."
   },
-  "restartMetamask": {
-    "message": "Reiniciar MetaMask"
-  },
   "restore": {
     "message": "Restaurar"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Enviar monto"
-  },
-  "sendBugReport": {
-    "message": "Envíenos un informe de error."
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Conecte la cartera directamente al equipo.  Desbloquee su Ledger y abra la aplicación de Ethereum. Para más información sobre el uso de su dispositivo de cartera de hardware, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "¿Sigue recibiendo este mensaje?"
   },
   "storePhrase": {
     "message": "Guarde esta frase en un administrador de contraseñas como 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
   },
-  "transactionErrorNoContract": {
-    "message": "Intentando llamar a una función en una dirección sin contrato."
-  },
   "transactionErrored": {
     "message": "La transacción encontró un error."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Tuvimos problemas al conectar su $1. Pruebe revisar $2 e inténtelo de nuevo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask tuvo problemas para iniciar. Este error podría ser intermitente, así que intente reiniciar la extensión."
   },
   "troubleTokenBalances": {
     "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos ",

@@ -986,9 +986,6 @@
   "transactionError": {
     "message": "Darījuma kļūda. Līguma kodā uzrādās izņēmums."
   },
-  "transactionErrorNoContract": {
-    "message": "Mēģināt izsaukt funkciju, izmantojot adresi, kas nav norādīta līgumā."
-  },
   "transactionErrored": {
     "message": "Darījumā radusies kļūda."
   },

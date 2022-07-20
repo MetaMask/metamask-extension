@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "続行する前に、正しい秘密のリカバリーフレーズを使用していることを確認してください。これは元に戻せません。"
   },
-  "restartMetamask": {
-    "message": "MetaMask を再起動"
-  },
   "restore": {
     "message": "復元"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "送金額"
-  },
-  "sendBugReport": {
-    "message": "バグレポートをお送りください。"
   },
   "sendSpecifiedTokens": {
     "message": "$1を送金",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "コンピューターにウォレットを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。ハードウェアウォレットデバイスの使い方の詳細については、$1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "まだこのメッセージが表示されますか？"
   },
   "storePhrase": {
     "message": "このフレーズを1Passwordのようなパスワードマネージャーに保存します。"
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "トランザクションエラー。コントラクトコードで例外がスローされました。"
   },
-  "transactionErrorNoContract": {
-    "message": "コントラクト外アドレスに対して関数の呼び出しを試みています。"
-  },
   "transactionErrored": {
     "message": "トランザクションでエラーが発生しました。"
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "$1に接続できませんでした。$2を確認してから、もう一度実行してください。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
   },
   "troubleTokenBalances": {
     "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",

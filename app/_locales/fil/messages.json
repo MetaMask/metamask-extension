@@ -893,9 +893,6 @@
   "transactionError": {
     "message": "May Error sa Transaksyon. May exception sa contract code."
   },
-  "transactionErrorNoContract": {
-    "message": "Subukang mag-call ng function sa isang non-contract na address."
-  },
   "transactionErrored": {
     "message": "Nagkaroon ng error ang transaksyon."
   },

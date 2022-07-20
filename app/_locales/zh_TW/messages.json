@@ -969,9 +969,6 @@
   "transactionError": {
     "message": "交易失敗。合約代碼拋出錯誤資訊"
   },
-  "transactionErrorNoContract": {
-    "message": "合約位址錯誤"
-  },
   "transactionErrored": {
     "message": "交易錯誤"
   },

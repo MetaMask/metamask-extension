@@ -975,9 +975,6 @@
   "transactionError": {
     "message": "የግብይት ስህተት። በኮንትራት ኮድ የሚላኩ ልዩ ሁኔታዎች አሉ።"
   },
-  "transactionErrorNoContract": {
-    "message": "ከኮንትራት ውጭ ያለ አድራሻ ተግባር ለመደወል መሞከር።"
-  },
   "transactionErrored": {
     "message": "ግብይቱ እንከን አጋጥሞታል።"
   },

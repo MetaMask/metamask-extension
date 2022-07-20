@@ -991,9 +991,6 @@
   "transactionError": {
     "message": "خطأ في المعاملة. استثناء تم طرحه في التعليمات البرمجية للعقد."
   },
-  "transactionErrorNoContract": {
-    "message": "جاري محاولة استدعاء وظيفة على عنوان غير ملتزم بعقد."
-  },
   "transactionErrored": {
     "message": "لقد حدث خطأ ما أثناء معالجة المعاملة."
   },

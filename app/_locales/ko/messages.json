@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "계속하기 전에 비밀 복구 구문이 정확한지 확인하세요. 이 작업은 취소할 수 없습니다."
   },
-  "restartMetamask": {
-    "message": "MetaMask 재시작"
-  },
   "restore": {
     "message": "복구"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "송금"
-  },
-  "sendBugReport": {
-    "message": "버그 리포트 전송"
   },
   "sendSpecifiedTokens": {
     "message": "$1 보내기",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "지갑을 컴퓨터에 바로 연결합니다.  Ledger를 잠금 해제하고 이더리움 앱을 엽니다. 하드웨어 지갑 장치를 사용하는 방법에 관한 자세한 내용은 $1 링크를 참조하세요.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "아직 이 메시지가 표시되시나요?"
   },
   "storePhrase": {
     "message": "이 구문을 1Password 같은 비밀번호 관리자에 저장하세요."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "거래 오류입니다. 계약 코드에서 예외가 반환되었습니다."
   },
-  "transactionErrorNoContract": {
-    "message": "비계약 주소에서 함수를 호출하고 있습니다."
-  },
   "transactionErrored": {
     "message": "거래에서 오류가 발생했습니다."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "$1 연결 도중 문제가 발생했습니다. $2을(를) 검토하고 다시 시도해 보세요.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
   },
   "troubleTokenBalances": {
     "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",

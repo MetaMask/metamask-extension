@@ -959,9 +959,6 @@
   "transactionError": {
     "message": "Error de Transacció. Excepció llançada en el codi de contracte."
   },
-  "transactionErrorNoContract": {
-    "message": "Provant d'invocar una funció o una adreça no contractada"
-  },
   "transactionErrored": {
     "message": "La transacció ha tingut un error."
   },

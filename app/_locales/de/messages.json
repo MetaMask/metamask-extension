@@ -2645,9 +2645,6 @@
   "resetWalletWarning": {
     "message": "Vergewissern Sie sich, dass Sie die richtige geheime Wiederherstellungsphrase verwenden, bevor Sie fortfahren. Sie können dies nicht mehr rückgängig machen."
   },
-  "restartMetamask": {
-    "message": "MetaMask neu starten"
-  },
   "restore": {
     "message": "Wiederherstellen"
   },
@@ -2831,9 +2828,6 @@
   },
   "sendAmount": {
     "message": "Betrag senden"
-  },
-  "sendBugReport": {
-    "message": "Übermitteln Sie uns einen Fehlerbericht."
   },
   "sendSpecifiedTokens": {
     "message": "$1 senden",
@@ -3107,9 +3101,6 @@
   "step2LedgerWalletMsg": {
     "message": "Verbinden Sie Ihre Wallet direkt mit Ihrem Computer.  Entsperren Sie Ihren Ledger und öffnen Sie die Ethereum-App. Für weitere Informationen zur Verwendung Ihres Hardware-Wallet-Geräts, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stillGettingMessage": {
-    "message": "Erhalten Sie diese Meldung immer noch?"
   },
   "storePhrase": {
     "message": "Speichern Sie diesen Schlüssel in einem Passwortmanager wie 1Password."
@@ -3752,9 +3743,6 @@
   "transactionError": {
     "message": "Transaktionsfehler. Fehler in Vertragscode eingefügt."
   },
-  "transactionErrorNoContract": {
-    "message": "Das Abrufen einer Funktion bei einer Nicht-Vertragsadresse wird versucht."
-  },
   "transactionErrored": {
     "message": "Bei der Transaktion ist ein Fehler aufgetreten."
   },
@@ -3803,9 +3791,6 @@
   "troubleConnectingToWallet": {
     "message": "Wir hatten Probleme mit der Verbindung zu Ihrem $1, versuchen Sie, $2 zu überprüfen und versuchen es erneut.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleStarting": {
-    "message": "Beim Starten von MetaMask ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
   },
   "troubleTokenBalances": {
     "message": "Wir haben Schwierigkeiten dein Tokenguthaben zu laden. Du kannst es hier anzeigen lassen",

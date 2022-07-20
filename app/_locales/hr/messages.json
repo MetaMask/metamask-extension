@@ -980,9 +980,6 @@
   "transactionError": {
     "message": "Greška transakcije. Iznimka u kôdu ugovora."
   },
-  "transactionErrorNoContract": {
-    "message": "Pokušava se pozvati funkcija na neugovornoj adresi."
-  },
   "transactionErrored": {
     "message": "Došlo je do greške prilikom transakcije."
   },

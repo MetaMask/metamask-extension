@@ -986,9 +986,6 @@
   "transactionError": {
     "message": "Грешка при транзакцията. Беше върнато изключение в кода на договора."
   },
-  "transactionErrorNoContract": {
-    "message": "Опит за извикване на функция на извъндоговорния адрес."
-  },
   "transactionErrored": {
     "message": "Възникна грешка в транзакцията."
   },

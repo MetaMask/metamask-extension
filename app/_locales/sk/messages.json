@@ -947,9 +947,6 @@
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
   },
-  "transactionErrorNoContract": {
-    "message": "Pokúša sa zavolať funkciu na nezmluvnú adresu."
-  },
   "transactionErrored": {
     "message": "Pri transakcii sa vyskytla chyba."
   },

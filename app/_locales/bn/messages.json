@@ -990,9 +990,6 @@
   "transactionError": {
     "message": "লেনদেনের ত্রুটি। কন্ট্র্যাক্ট কোডে ব্যতিক্রম দেখাচ্ছে।"
   },
-  "transactionErrorNoContract": {
-    "message": "একটি অ-পরিচিতির ঠিকানায় একটি কল করার চেষ্টা করছে।"
-  },
   "transactionErrored": {
     "message": "লেনদেনে একটি ত্রুটি হয়েছে।"
   },
