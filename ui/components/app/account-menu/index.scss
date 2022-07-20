@@ -37,8 +37,8 @@
     width: 100%;
 
     @media screen and (max-width: $break-small) {
-      padding: 14px;
-      height: 54px;
+      padding: 0 14px;
+      height: 48px;
     }
 
     &--clickable {
@@ -134,7 +134,7 @@
     scrollbar-width: auto;
 
     @media screen and (max-width: $break-small) {
-      max-height: 156px;
+      max-height: 200px;
     }
 
     .keyring-label {
