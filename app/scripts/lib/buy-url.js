@@ -9,7 +9,6 @@ import {
   ROPSTEN_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
   TRANSAK_API_KEY,
@@ -17,7 +16,7 @@ import {
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * Create a Wyre purchase URL.

@@ -13,10 +13,13 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
-import { ERC20, ERC721 } from '../../helpers/constants/common';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  ERC20,
+  ERC721,
+} from '../../../shared/constants/transaction';
 
 export default function ConfirmSendToken({
   assetStandard,
