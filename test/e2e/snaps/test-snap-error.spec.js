@@ -19,7 +19,6 @@ describe('Test Snap Error', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        driverOptions: { type: 'flask' },
       },
       async ({ driver }) => {
         await driver.navigate();

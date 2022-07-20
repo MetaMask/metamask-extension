@@ -1,3 +1,4 @@
+import { draftTransactionInitialState } from '../ui/ducks/send';
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -1506,6 +1507,12 @@ const state = {
     gas: { error: 'gas' },
     amount: {
       error: 'amount',
+    },
+    currentTransactionUUID: 'test-uuid',
+    draftTransactions: {
+      'test-uuid': {
+        ...draftTransactionInitialState,
+      },
     },
   },
   confirmTransaction: {

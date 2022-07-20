@@ -1,14 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import ENS from 'ethjs-ens';
 import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
+import { ethers } from 'ethers';
 
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   MAINNET_NETWORK_ID,
+  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
@@ -42,7 +43,7 @@ export const ensInitialState = initialState;
 
 const name = 'ENS';
 
-let ens = null;
+let provider = null;
 
 const slice = createSlice({
   name,
@@ -81,6 +82,8 @@ const slice = createSlice({
         if (isValidDomainName(address) && isConfusing(address)) {
           state.warning = CONFUSING_ENS_ERROR;
         }
+      } else {
+        state.error = ENS_NO_ADDRESS_FOR_NAME;
       }
     },
     enableEnsLookup: (state, action) => {
@@ -112,7 +115,7 @@ const slice = createSlice({
     builder.addCase(CHAIN_CHANGED, (state, action) => {
       if (action.payload !== state.currentChainId) {
         state.stage = 'UNINITIALIZED';
-        ens = null;
+        provider = null;
       }
     });
   },
@@ -135,12 +138,18 @@ export function initializeEnsSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const networkIsSupported = Boolean(networkMap[network]);
+    const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
+    const ensAddress = networkMap[network];
+    const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
-      ens = new ENS({ provider: global.ethereumProvider, network });
+      provider = new ethers.providers.Web3Provider(global.ethereumProvider, {
+        chainId: parseInt(network, 10),
+        name: networkName,
+        ensAddress,
+      });
       dispatch(enableEnsLookup(network));
     } else {
-      ens = null;
+      provider = null;
       dispatch(disableEnsLookup());
     }
   };
@@ -168,7 +177,7 @@ export function lookupEnsName(ensName) {
       let address;
       let error;
       try {
-        address = await ens.lookup(trimmedEnsName);
+        address = await provider.resolveName(trimmedEnsName);
       } catch (err) {
         error = err;
       }
