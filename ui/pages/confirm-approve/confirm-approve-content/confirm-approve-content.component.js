@@ -28,7 +28,11 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import { ERC1155, ERC20, ERC721 } from '../../../helpers/constants/common';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '../../../../shared/constants/transaction';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -102,7 +106,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            {!supportsEIP1559V2 && (
+            {supportsEIP1559V2 && title === t('transactionFee') ? null : (
               <>
                 <div className="confirm-approve-content__card-header__symbol">
                   {symbol}
@@ -313,7 +317,7 @@ export default class ConfirmApproveContent extends Component {
         </div>
         {isSetApproveForAll && setApproveForAllArg !== undefined ? (
           <div className="confirm-approve-content__small-text">
-            {t('parameters')}: {setApproveForAllArg}
+            {`${t('parameters')}: ${setApproveForAllArg}`}
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
