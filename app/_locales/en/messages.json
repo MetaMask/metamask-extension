@@ -2470,11 +2470,11 @@
   "permissionRequest": {
     "message": "Permission request"
   },
-  "permissionRequested": {
-    "message": "Requested now"
-  },
   "permissionRequestCapitalized": {
     "message": "Permission Request"
+  },
+  "permissionRequested": {
+    "message": "Requested now"
   },
   "permissionRevoked": {
     "message": "Revoked in this update"
