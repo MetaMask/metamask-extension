@@ -963,7 +963,7 @@ export default function ViewQuote() {
             : t('swap')
         }
         hideCancel
-        disabled={isSwapButtonDisabled}
+        disabled={Boolean(isSwapButtonDisabled)}
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder
       />
