@@ -43,15 +43,11 @@ import {
 import {
   addHexes,
   subtractHexWEIsToDec,
-  hexWEIToDecGWEI,
   getValueFromWeiHex,
   sumHexWEIsToRenderableFiat,
 } from '../../../../helpers/utils/conversions.util';
 import { formatETHFee } from '../../../../helpers/utils/formatters';
-import {
-  calcGasTotal,
-  isBalanceSufficient,
-} from '../../../../pages/send/send.utils';
+import { isBalanceSufficient } from '../../../../pages/send/send.utils';
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import {
   ASSET_TYPES,
@@ -59,6 +55,10 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../../shared/constants/gas';
 import { updateGasFees } from '../../../../ducks/metamask/metamask';
+import {
+  calcGasTotal,
+  hexWEIToDecGWEI,
+} from '../../../../../shared/lib/transactions-controller-utils';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {

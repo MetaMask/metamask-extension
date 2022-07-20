@@ -8,10 +8,7 @@ import {
   updateCustomNonce,
   getNextNonce,
 } from '../../store/actions';
-import {
-  calcTokenAmount,
-  getTokenApprovedParam,
-} from '../../helpers/utils/token-util';
+import { getTokenApprovedParam } from '../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { GasFeeContextProvider } from '../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
@@ -38,6 +35,7 @@ import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popov
 import Loading from '../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 

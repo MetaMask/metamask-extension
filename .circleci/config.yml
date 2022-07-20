@@ -669,9 +669,6 @@ jobs:
           path: coverage
           destination: coverage
       - store_artifacts:
-          path: jest-coverage
-          destination: jest-coverage
-      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -731,22 +728,11 @@ jobs:
       - run:
           name: test:coverage:mocha
           command: yarn test:coverage:mocha
-      - run:
-          name: test:coverage:jest
-          command: yarn test:coverage:jest
-      - run:
-          name: Validate coverage thresholds
-          command: |
-            if ! git diff --exit-code jest.config.js development/jest.config.js; then
-              echo "Detected changes in coverage thresholds"
-              exit 1
-            fi
       - persist_to_workspace:
           root: .
           paths:
             - .nyc_output
             - coverage
-            - jest-coverage
   test-unit-global:
     executor: node-browsers
     steps:

@@ -6,12 +6,12 @@ import {
   EDIT_GAS_MODES,
 } from '../../../shared/constants/gas';
 import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
+import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 import {
   bnGreaterThan,
   isNullish,
   roundToDecimalPlacesRemovingExtraZeroes,
 } from './util';
-import { hexWEIToDecGWEI } from './conversions.util';
 
 export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   gasUsed,

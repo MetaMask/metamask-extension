@@ -265,6 +265,7 @@ module.exports = {
         'test/helpers/*.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
+        'app/scripts/constants/error-utils.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       parserOptions: {

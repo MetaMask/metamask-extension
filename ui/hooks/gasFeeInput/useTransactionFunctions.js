@@ -1,11 +1,9 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
-import {
-  decimalToHex,
-  decGWEIToHexWEI,
-} from '../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,

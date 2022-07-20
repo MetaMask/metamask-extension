@@ -4,11 +4,7 @@ import { useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { SECONDARY } from '../../helpers/constants/common';
 import { getMaximumGasTotalInHexWei } from '../../../shared/modules/gas.utils';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexWEIToDecGWEI,
-} from '../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
@@ -17,6 +13,10 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import {
+  decimalToHex,
+  hexWEIToDecGWEI,
+} from '../../../shared/lib/transactions-controller-utils';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
 const getMaxFeePerGasFromTransaction = (transaction, gasFeeEstimates) => {

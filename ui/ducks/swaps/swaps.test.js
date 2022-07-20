@@ -2,7 +2,7 @@ import nock from 'nock';
 
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
-import { setStorageItem } from '../../helpers/utils/storage-helpers';
+import { setStorageItem } from '../../../app/scripts/constants/storage-helpers';
 import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,

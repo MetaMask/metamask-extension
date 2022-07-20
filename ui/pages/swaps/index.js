@@ -87,10 +87,10 @@ import { EVENT } from '../../../shared/constants/metametrics';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   fetchTokens,
   fetchTopAssets,
-  getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
   stxErrorTypes,
 } from './swaps.util';

@@ -8,9 +8,9 @@ import {
   conversionLessThan,
 } from '../../../shared/modules/conversion.utils';
 
-import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -18,7 +18,6 @@ import {
 
 export {
   addGasBuffer,
-  calcGasTotal,
   getAssetTransferData,
   generateERC20TransferData,
   generateERC721TransferData,
@@ -26,14 +25,6 @@ export {
   isTokenBalanceSufficient,
   ellipsify,
 };
-
-function calcGasTotal(gasLimit = '0', gasPrice = '0') {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  });
-}
 
 function isBalanceSufficient({
   amount = '0x0',
