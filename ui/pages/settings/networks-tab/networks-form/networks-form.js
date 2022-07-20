@@ -36,6 +36,10 @@ import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  infuraProjectId,
+  FEATURED_RPCS,
+} from '../../../../../shared/constants/network';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -96,6 +100,9 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const chainIdMatchesFeaturedRPC = FEATURED_RPCS.some(
+    (featuredRpc) => Number(featuredRpc.chainId) === Number(chainId),
+  );
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -505,22 +512,28 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
+        let rpcUrlOrigin;
+        try {
+          rpcUrlOrigin = new URL(rpcUrl).origin;
+        } catch {
+          // error
+        }
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,
           referrer: {
-            url: rpcUrl,
+            url: rpcUrlOrigin,
           },
           properties: {
             chain_id: chainId,
             network_name: networkName,
-            network: rpcUrl,
+            network: rpcUrlOrigin,
             symbol: ticker,
             block_explorer_url: blockExplorerUrl,
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
           },
           sensitiveProperties: {
-            rpc_url: rpcUrl,
+            rpc_url: rpcUrlOrigin,
           },
         });
         dispatch(setNewNetworkAdded(networkName));
@@ -555,10 +568,13 @@ const NetworksForm = ({
   };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
+  const chainIdErrorOnFeaturedRpcDuringEdit =
+    selectedNetwork?.rpcUrl && warnings.chainId && chainIdMatchesFeaturedRPC;
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||
     stateUnchanged ||
+    chainIdErrorOnFeaturedRpcDuringEdit ||
     !rpcUrl ||
     !chainId ||
     !ticker;
@@ -599,7 +615,11 @@ const NetworksForm = ({
           error={errors.rpcUrl?.msg || ''}
           onChange={setRpcUrl}
           titleText={t('rpcUrl')}
-          value={rpcUrl}
+          value={
+            rpcUrl?.includes(`/v3/${infuraProjectId}`)
+              ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
+              : rpcUrl
+          }
           disabled={viewOnly}
         />
         <FormField

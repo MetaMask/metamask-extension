@@ -76,7 +76,7 @@ import {
 import {
   resetBackgroundSwapsState,
   setSwapsTokens,
-  removeToken,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
@@ -214,7 +214,12 @@ export default function Swap() {
         destinationTokenAddedForSwap &&
         (!isAwaitingSwapRoute || conversionError)
       ) {
-        dispatch(removeToken(destinationTokenInfo?.address));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: destinationTokenInfo?.address,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
     };
   }, [
