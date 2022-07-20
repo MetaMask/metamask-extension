@@ -938,12 +938,6 @@ const slice = createSlice({
       draftTransaction.asset.balance = asset.balance;
       draftTransaction.asset.error = asset.error;
 
-      // If an asset update occurs that changes the type from 'NATIVE' to
-      // 'NATIVE' then this is likely the initial asset set of an edit
-      // transaction. We don't need to set the amount to zero in this case.
-      // The only times where an update would occur of this nature that we
-      // would want to set the amount to zero is on a network or account change
-      // but that update is handled elsewhere.
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
