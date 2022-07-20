@@ -21,12 +21,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         title: this.test.title,
       },
       async ({ driver, contractRegistry }) => {
-        // TODO: /!\ DELETE THIS /!\
-        // TODO: This is an example of how the pre-deployed contract addresses can be used
-        console.log('\n\n');
-        console.log('SMART CONTRACT ADDRESS FROM CONTRACT REGISTRY: ');
-        console.log(contractRegistry.getContractAddress('hst'));
-        console.log('\n\n');
+        console.log(contractRegistry.getContractAddress(smartContract));
 
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
