@@ -276,9 +276,18 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
+  ENCRYPTION_PUBLIC_KEY_APPROVED: 'Encryption Public Key Approved',
+  ENCRYPTION_PUBLIC_KEY_REJECTED: 'Encryption Public Key Rejected',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  DECRYPTION_APPROVED: 'Decryption Approved',
+  DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
+  PERMISSIONS_APPROVED: 'Permissions Approved',
+  PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PROVIDER_METHOD_CALLED: 'Provider Method Called',
+  SIGNATURE_APPROVED: 'Signature Approved',
+  SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
