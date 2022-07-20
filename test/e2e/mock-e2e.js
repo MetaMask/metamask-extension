@@ -26,6 +26,28 @@ async function setupMocking(server, testSpecificMock) {
   });
 
   await server
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [
+            {
+              id: 1,
+              created_at: null,
+              text_signature: 'deposit()',
+              hex_signature: null,
+              bytes_signature: null,
+            },
+          ],
+        },
+      };
+    });
+
+  await server
     .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
     .thenCallback(() => {
       return {
