@@ -2,7 +2,7 @@ import React from 'react';
 import GasSlider from '.';
 
 export default {
-  title: 'Components/UI/GasSlider',
+  title: 'Components/App/GasCustomization/GasSlider',
   id: __filename,
   argTypes: {
     onChange: {
