@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { getPermissionDescription } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatDate } from '../../../../helpers/utils/util';
+import Typography from '../../../ui/typography/typography';
+import { COLORS } from '../../../../helpers/constants/design-system';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -24,9 +26,13 @@ export default function UpdateSnapPermissionList({
           <i className="fas fa-check" />
           <div className="permission-description">
             {label}
-            <div className="permission-description-subtext">
+            <Typography
+              color={COLORS.TEXT_ALTERNATIVE}
+              className="permission-description-subtext"
+              boxProps={{ paddingTop: 1 }}
+            >
               {t('approvedOn', [formattedDate])}
-            </div>
+            </Typography>
           </div>
           {rightIcon && <i className={rightIcon} />}
         </div>
@@ -45,9 +51,13 @@ export default function UpdateSnapPermissionList({
           <i className="fas fa-x" />
           <div className="permission-description">
             {label}
-            <div className="permission-description-subtext">
+            <Typography
+              color={COLORS.TEXT_ALTERNATIVE}
+              boxProps={{ paddingTop: 1 }}
+              className="permission-description-subtext"
+            >
               {t('permissionRevoked')}
-            </div>
+            </Typography>
           </div>
           {rightIcon && <i className={rightIcon} />}
         </div>
@@ -78,7 +88,16 @@ export default function UpdateSnapPermissionList({
 }
 
 UpdateSnapPermissionList.propTypes = {
+  /**
+   * Permissions that have already been approved
+   */
   approvedPermissions: PropTypes.object.isRequired,
+  /**
+   * Previously used permissions that are now revoked
+   */
   revokedPermissions: PropTypes.object.isRequired,
+  /**
+   * New permissions that are being requested
+   */
   newPermissions: PropTypes.object.isRequired,
 };

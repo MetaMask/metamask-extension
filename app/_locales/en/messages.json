@@ -275,10 +275,10 @@
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
-    "message": "Approve & Install"
+    "message": "Approve & install"
   },
   "approveAndUpdate": {
-    "message": "Approve & Update"
+    "message": "Approve & update"
   },
   "approveButtonText": {
     "message": "Approve"
