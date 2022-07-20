@@ -2229,27 +2229,6 @@ export function signTransaction() {
         ),
       };
 
-      // If, after edit, we are sending the native asset,
-      //   and if the send duck hex data was reset on this edit,
-      //   and if the hex data from the tx's background state matches
-      //   one of the special token methods that we handle,
-      //   then we conclude that the user does not want to send hex data,
-      //   and ensure it gets reset in the background state as well.
-      const sendingNativeAsset =
-        draftTransaction.asset.type === ASSET_TYPES.NATIVE;
-      const userInputHexDataHasBeenReset =
-        draftTransaction.userInputHexData === '';
-      const priorHexDataMatchesSpecialTokenTxSignatures =
-        parseStandardTokenTransactionData(editingTx.txParams.data) !==
-        undefined;
-      if (
-        sendingNativeAsset &&
-        userInputHexDataHasBeenReset &&
-        priorHexDataMatchesSpecialTokenTxSignatures
-      ) {
-        editingTx.txParams.data = '';
-      }
-
       await dispatch(
         addHistoryEntry(
           `sendFlow - user clicked next and transaction should be updated in controller`,
