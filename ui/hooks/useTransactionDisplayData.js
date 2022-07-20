@@ -222,6 +222,12 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveSpendLimit', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
+  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL) {
+    category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
+    prefix = '';
+    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
   } else if (type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
     category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);

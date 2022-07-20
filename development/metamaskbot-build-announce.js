@@ -95,6 +95,7 @@ async function start() {
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
   const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
+<<<<<<< HEAD
   const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
   const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
   const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
@@ -102,6 +103,13 @@ async function start() {
   const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
+=======
+  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">MV3 Background Module Init Stats</a>`;
+  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
+  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">MV3 UI Init Stats</a>`;
+  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
+  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+>>>>>>> 45cecf385d1f982104bc2665ef6e850ccc290876
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -114,7 +122,10 @@ async function start() {
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,
     `mv3: ${moduleLoadStatsLink}`,
+<<<<<<< HEAD
     `mv3: ${bundleSizeStatsLink}`,
+=======
+>>>>>>> 45cecf385d1f982104bc2665ef6e850ccc290876
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,

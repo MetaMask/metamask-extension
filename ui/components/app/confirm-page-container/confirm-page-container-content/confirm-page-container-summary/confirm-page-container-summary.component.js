@@ -53,7 +53,8 @@ const ConfirmPageContainerSummary = (props) => {
     contractAddress =
       transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
       transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
         ? tokenAddress
         : toAddress;
   }

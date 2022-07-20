@@ -36,7 +36,6 @@ const metamaskrc = require('rc')('metamask', {
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
   PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
-  ADD_POPULAR_NETWORKS: process.env.ADD_POPULAR_NETWORKS,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
@@ -379,7 +378,7 @@ const postProcessServiceWorker = (
     if (testing) {
       fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
     } else {
-      // Lavamoat is always set to true in testing mode
+      // Setting applyLavaMoat to true in testing mode
       // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
       fileOutput = fileOutput.replace(
         'const applyLavaMoat = true;',
@@ -433,6 +432,8 @@ async function bundleMV3AppInitialiser({
     testing,
   );
 
+  // If the application is running in development mode, we watch service worker file to
+  // in case the file is changes we need to process it again to replace "/** FILE NAMES */", "testMode" etc.
   if (devMode && !testing) {
     let prevChromeFileContent;
     watch('./dist/chrome/app-init.js', () => {
@@ -447,6 +448,8 @@ async function bundleMV3AppInitialiser({
     });
   }
 
+  // Code below is used to set statsMode to true when testing in MV3
+  // This is used to capture module initialisation stats using lavamoat.
   if (testing) {
     const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
@@ -963,7 +966,6 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
-    ADD_POPULAR_NETWORKS: metamaskrc.ADD_POPULAR_NETWORKS === '1',
   };
 }
 

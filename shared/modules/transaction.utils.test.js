@@ -111,13 +111,23 @@ describe('Transaction.utils', function () {
     const genericProvider = createTestProviderTools().provider;
     const query = new EthQuery(genericProvider);
 
-    it('should return a simple send type when to is truthy but data is falsy', async function () {
+    it('should return a simple send type when to is truthy and is not a contract address', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0x',
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
       const result = await determineTransactionType(
         {
           to: '0xabc',
           data: '',
         },
-        query,
+        new EthQuery(_provider),
       );
       expect(result).toMatchObject({
         type: TRANSACTION_TYPES.SIMPLE_SEND,
@@ -125,33 +135,78 @@ describe('Transaction.utils', function () {
       });
     });
 
-    it('should return a token transfer type when data is for the respective method call', async function () {
+    it('should return a token transfer type when the recipient is a contract and data is for the respective method call', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0xab',
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
       const result = await determineTransactionType(
         {
-          to: '0xabc',
+          to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data:
             '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         },
-        query,
+        new EthQuery(_provider),
       );
       expect(result).toMatchObject({
         type: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-        getCodeResponse: undefined,
+        getCodeResponse: '0xab',
       });
     });
 
-    it('should return a token approve type when data is for the respective method call', async function () {
+    it('should NOT return a token transfer type when the recipient is not a contract but the data matches the respective method call', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0x',
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
       const result = await determineTransactionType(
         {
-          to: '0xabc',
+          to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+          data:
+            '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+        },
+        new EthQuery(_provider),
+      );
+      expect(result).toMatchObject({
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        getCodeResponse: '0x',
+      });
+    });
+
+    it('should return a token approve type when when the recipient is a contract and data is for the respective method call', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0xab',
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
+      const result = await determineTransactionType(
+        {
+          to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data:
             '0x095ea7b30000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C9700000000000000000000000000000000000000000000000000000000000000005',
         },
-        query,
+        new EthQuery(_provider),
       );
       expect(result).toMatchObject({
         type: TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-        getCodeResponse: undefined,
+        getCodeResponse: '0xab',
       });
     });
 
@@ -184,12 +239,22 @@ describe('Transaction.utils', function () {
     });
 
     it('should return a simple send type with a null getCodeResponse when to is truthy and there is data and but getCode returns an error', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: null,
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
       const result = await determineTransactionType(
         {
-          to: '0xabc',
+          to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
           data: '0xabd',
         },
-        query,
+        new EthQuery(_provider),
       );
       expect(result).toMatchObject({
         type: TRANSACTION_TYPES.SIMPLE_SEND,

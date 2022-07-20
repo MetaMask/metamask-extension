@@ -90,6 +90,7 @@ const CONFIRM_SEND_ETHER_PATH = '/send-ether';
 const CONFIRM_SEND_TOKEN_PATH = '/send-token';
 const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
 const CONFIRM_APPROVE_PATH = '/approve';
+const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
 const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
 const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
@@ -145,6 +146,7 @@ const PATH_NAME_MAP = {
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`]: 'Confirm Send Token Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`]: 'Confirm Deploy Contract Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`]: 'Confirm Approve Transaction Page',
+  [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`]: 'Confirm Set Approval For All Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`]: 'Confirm Transfer From Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`]: 'Confirm Safe Transfer From Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${SIGNATURE_REQUEST_PATH}`]: 'Signature Request Page',
@@ -206,6 +208,7 @@ export {
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_APPROVE_PATH,
+  CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,

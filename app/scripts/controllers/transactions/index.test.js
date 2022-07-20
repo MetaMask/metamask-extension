@@ -17,6 +17,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
   ASSET_TYPES,
+  TOKEN_STANDARDS,
 } from '../../../../shared/constants/transaction';
 
 import { SECOND } from '../../../../shared/constants/time';
@@ -26,7 +27,6 @@ import {
 } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { TOKEN_STANDARDS } from '../../../../ui/helpers/constants/common';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import TransactionController from '.';
 
@@ -2274,6 +2274,7 @@ describe('Transaction Controller', function () {
     });
 
     it('updates editible params when type changes from simple send to token transfer', async function () {
+      providerResultStub.eth_getCode = '0xab';
       // test update gasFees
       await txController.updateEditableParams('1', {
         data:
