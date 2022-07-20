@@ -204,7 +204,7 @@ export default class ConfirmApproveContent extends Component {
           </div>
           <div className="confirm-approve-content__medium-text">
             {isSetApproveForAll
-              ? `${t('allOfYour', [titleTokenDescription])} `
+              ? t('allOfYour', [titleTokenDescription])
               : titleTokenDescription}
           </div>
         </div>
