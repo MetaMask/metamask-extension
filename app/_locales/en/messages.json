@@ -3961,6 +3961,10 @@
     "message": "This custom network is not recognized",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
+  "unrecognizedProtocol": {
+    "message": "$1 (Unrecognized protocol)",
+    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
+  },
   "unsendableAsset": {
     "message": "Sending collectible (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
