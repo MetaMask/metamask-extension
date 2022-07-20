@@ -375,10 +375,12 @@ const postProcessServiceWorker = (
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
     let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-    if (!testing) {
-      // Lavamoat is always set to true in testing mode
+    if (testing) {
+      fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
+    } else {
+      // Setting applyLavaMoat to true in testing mode
       // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
-      fileOutput = fileContent.replace(
+      fileOutput = fileOutput.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
@@ -430,6 +432,8 @@ async function bundleMV3AppInitialiser({
     testing,
   );
 
+  // If the application is running in development mode, we watch service worker file to
+  // in case the file is changes we need to process it again to replace "/** FILE NAMES */", "testMode" etc.
   if (devMode && !testing) {
     let prevChromeFileContent;
     watch('./dist/chrome/app-init.js', () => {
@@ -444,6 +448,8 @@ async function bundleMV3AppInitialiser({
     });
   }
 
+  // Code below is used to set statsMode to true when testing in MV3
+  // This is used to capture module initialisation stats using lavamoat.
   if (testing) {
     const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
