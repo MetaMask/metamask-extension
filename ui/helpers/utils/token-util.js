@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import BigNumber from 'bignumber.js';
 import {
   conversionUtil,
   multiplyCurrencies,
@@ -8,6 +7,8 @@ import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { ERC20 } from '../../../shared/constants/transaction';
+import { ERC1155, ERC721 } from '../../../shared/constants/transaction';
+import { getTokenValueParam } from '../../../app/scripts/constants/metamask-controller-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -112,16 +113,6 @@ export function tokenInfoGetter() {
 
     return tokens[address];
   };
-}
-
-export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
-}
-
-export function calcTokenValue(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).times(multiplier);
 }
 
 /**

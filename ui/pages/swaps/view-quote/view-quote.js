@@ -65,8 +65,6 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
-
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
@@ -82,18 +80,10 @@ import {
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  calcTokenAmount,
-  calcTokenValue,
-  getTokenValueParam,
-} from '../../../helpers/utils/token-util';
-import {
-  decimalToHex,
   decGWEIToHexWEI,
-  hexWEIToDecGWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
-import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
@@ -111,6 +101,15 @@ import Box from '../../../components/ui/box';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
+import { getTokenValueParam } from '../../../../app/scripts/constants/metamask-controller-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+  decimalToHex,
+  hexWEIToDecGWEI,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../app/scripts/constants/transactions-controller-utils';
+import { calcTokenValue } from '../../../../app/scripts/constants/swaps-utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;

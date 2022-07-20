@@ -23,6 +23,11 @@ import {
   AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
+  fetchTradesInfo,
+  shouldEnableDirectWrapping,
+} from '../../../app/scripts/constants/swaps-utils';
+import { getSwapsTokensReceivedFromTxMeta } from '../../../app/scripts/constants/transactions-controller-utils';
+import {
   TOKENS,
   EXPECTED_TOKENS_RESULT,
   MOCK_TRADE_RESPONSE_2,
@@ -30,7 +35,6 @@ import {
   TOP_ASSETS,
 } from './swaps-util-test-constants';
 import {
-  fetchTradesInfo,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
@@ -38,12 +42,10 @@ import {
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
   countDecimals,
-  shouldEnableDirectWrapping,
   showRemainingTimeInMinAndSec,
-  getSwapsTokensReceivedFromTxMeta,
 } from './swaps.util';
 
-jest.mock('../../helpers/utils/storage-helpers.js', () => ({
+jest.mock('../../../app/scripts/constants/storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));

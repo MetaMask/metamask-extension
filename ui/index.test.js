@@ -1,4 +1,4 @@
-import { setupLocale } from '.';
+import { setupLocale } from '../app/scripts/constants/error-utils';
 
 const enMessages = {
   troubleStarting: {
@@ -29,7 +29,7 @@ const esMessages = {
   },
 };
 
-jest.mock('./helpers/utils/i18n-helper', () => ({
+jest.mock('../app/scripts/constants/error-utils', () => ({
   fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));

@@ -3,12 +3,8 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyUrl from '../../app/scripts/lib/buy-url';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import switchDirection from '../helpers/utils/switch-direction';
+import switchDirection from '../../app/scripts/constants/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -18,7 +14,6 @@ import {
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
-import { decimalToHex } from '../helpers/utils/conversions.util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
@@ -47,6 +42,11 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
+import { decimalToHex } from '../../app/scripts/constants/transactions-controller-utils';
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../../app/scripts/constants/error-utils';
 import * as actionConstants from './actionConstants';
 
 let background = null;

@@ -17,12 +17,12 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { SUPPORT_LINK } from '../../ui/helpers/constants/common';
-import { getErrorHtml } from '../../ui/helpers/utils/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import { SUPPORT_LINK } from './constants/ui-utils';
+import { getErrorHtml } from './constants/error-utils';
 
 start().catch(log.error);
 

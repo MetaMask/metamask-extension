@@ -7,10 +7,9 @@ import {
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
-  getTokenAddressParam,
   getTokenIdParam,
-  getTokenValueParam,
 } from '../helpers/utils/token-util';
+import { getTokenAddressParam } from '../helpers/utils/token-util';
 import {
   formatDateWithYearContext,
   shortenAddress,
@@ -29,6 +28,7 @@ import {
 } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { getTokenValueParam } from '../../app/scripts/constants/metamask-controller-utils';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';

@@ -10,8 +10,7 @@ import {
   COLORS,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-
-import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import fetchWithCache from '../../../../app/scripts/constants/fetch-with-cache';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',

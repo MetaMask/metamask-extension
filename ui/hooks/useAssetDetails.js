@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCollectibles } from '../ducks/metamask/metamask';
-import { getAssetDetails } from '../helpers/utils/token-util';
+import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
+import { getTokenValueParam } from '../../app/scripts/constants/metamask-controller-utils';
+import { calcTokenAmount } from '../../app/scripts/constants/transactions-controller-utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import { getCollectibles } from '../ducks/metamask/metamask';
+import {
+  getAssetDetails,
+  getTokenAddressParam,
+} from '../helpers/utils/token-util';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
 import { usePrevious } from './usePrevious';
 

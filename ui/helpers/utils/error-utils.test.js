@@ -1,10 +1,13 @@
-import { SUPPORT_LINK } from '../constants/common';
-import { getErrorHtml } from './error-utils';
-import { fetchLocale } from './i18n-helper';
+import {
+  fetchLocale,
+  getErrorHtml,
+} from '../../../app/scripts/constants/error-utils';
+import { SUPPORT_LINK } from '../../../app/scripts/constants/ui-utils';
 
-jest.mock('./i18n-helper', () => ({
-  fetchLocale: jest.fn(),
+jest.mock('../../../app/scripts/constants/error-utils', () => ({
   loadRelativeTimeFormatLocaleData: jest.fn(),
+  fetchLocale: jest.fn(),
+  getErrorHtml: jest.fn(),
 }));
 
 describe('Error utils Tests', () => {
