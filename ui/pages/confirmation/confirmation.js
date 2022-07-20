@@ -202,7 +202,10 @@ export default function ConfirmationPage() {
           <Box
             alignItems="center"
             marginTop={1}
-            padding={[1, 4, 4]}
+            paddingTop={1}
+            paddingRight={4}
+            paddingLeft={4}
+            paddingBottom={4}
             flexDirection={FLEX_DIRECTION.COLUMN}
           >
             <SiteOrigin
