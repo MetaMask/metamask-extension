@@ -1,33 +1,54 @@
 import React, { useState } from 'react';
-import { action } from '@storybook/addon-actions';
-import { text } from '@storybook/addon-knobs';
 import Button from '../button';
 import NicknamePopover from '.';
 
 export default {
   title: 'Components/UI/NicknamePopover',
   id: __filename,
+  argTypes: {
+    address: {
+      control: { type: 'text' },
+      name: 'Address',
+    },
+    onClosePopover: {
+      action: 'Close Nickname Popover',
+    },
+    onAdd: {
+      action: 'Add Nickname Popover',
+    },
+    onOpenPopover: {
+      action: 'Open Nickname Popover',
+    },
+  },
+  args: {
+    address: '0x5e6DaAD1BE117e26590F9eEcD509336ABFBe5966',
+  },
 };
 
-export const DefaultStory = () => {
+export const DefaultStory = (args) => {
   const [showNicknamePopover, setShowNicknamePopover] = useState(false);
 
   return (
-    <div>
-      <Button onClick={() => setShowNicknamePopover(true)}>
+    <>
+      <Button
+        onClick={() => {
+          args.onOpenPopover();
+          setShowNicknamePopover(true);
+        }}
+      >
         Open Nickname Popover
       </Button>
       {showNicknamePopover && (
         <NicknamePopover
-          address={text(
-            'Address',
-            '0x5e6DaAD1BE117e26590F9eEcD509336ABFBe5966',
-          )}
-          onClose={() => setShowNicknamePopover(false)}
-          onAdd={action('add NicknamePopover')}
+          address={args.address}
+          onClose={() => {
+            args.onClosePopover();
+            setShowNicknamePopover(false);
+          }}
+          onAdd={args.onAdd}
         />
       )}
-    </div>
+    </>
   );
 };
 
