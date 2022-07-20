@@ -745,7 +745,7 @@ export function updateEditableParams(txId, editableParams) {
       log.error(error.message);
       throw error;
     }
-
+    await forceUpdateMetamaskState(dispatch);
     return updatedTransaction;
   };
 }
