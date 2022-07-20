@@ -1992,9 +1992,12 @@ export function updateSendAsset(
         }),
       );
 
-      // If there is an unapprovedTx in background state and its type was a token method,
+      // This is meant to handle cases where we are editing an unapprovedTx from the background state
+      // and its type is a token method. In such a case, the hex data will be the necessary hex data
+      // for calling the contract transfer method.
+      // Now that we are updating the transaction to be a send of a native asset type, we should
+      // set the hex data of the transaction being editing to be empty.
       // then the user will not want to send any hex data now that they have change the
-      // transaction from being a token transfer to a simple send.
       if (
         unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
         unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
