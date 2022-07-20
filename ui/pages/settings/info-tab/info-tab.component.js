@@ -1,15 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
-import {
-  SUPPORT_LINK,
-  SUPPORT_REQUEST_LINK,
-} from '../../../helpers/constants/common';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { SUPPORT_LINK } from '../../../../app/scripts/constants/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {

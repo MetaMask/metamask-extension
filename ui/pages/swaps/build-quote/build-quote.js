@@ -71,11 +71,7 @@ import {
   getHardwareWalletType,
 } from '../../../selectors';
 
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../../helpers/utils/conversions.util';
-import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -105,10 +101,12 @@ import {
   countDecimals,
   fetchTokenPrice,
   fetchTokenBalance,
-  shouldEnableDirectWrapping,
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../../app/scripts/constants/metamask-controller-utils';
+import { calcTokenAmount } from '../../../../app/scripts/constants/transactions-controller-utils';
+import { shouldEnableDirectWrapping } from '../../../../app/scripts/constants/swaps-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },

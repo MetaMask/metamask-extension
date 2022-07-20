@@ -20,7 +20,6 @@ import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
-import { decimalToHex } from '../../../../helpers/utils/conversions.util';
 import {
   setSelectedSettingsRpcUrl,
   updateAndSetCustomRpc,
@@ -32,7 +31,7 @@ import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
 } from '../../../../helpers/constants/routes';
-import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
+import fetchWithCache from '../../../../../app/scripts/constants/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { EVENT } from '../../../../../shared/constants/metametrics';
@@ -40,6 +39,7 @@ import {
   infuraProjectId,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
+import { decimalToHex } from '../../../../../app/scripts/constants/transactions-controller-utils';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display

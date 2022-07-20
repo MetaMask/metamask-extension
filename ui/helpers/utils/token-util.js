@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import BigNumber from 'bignumber.js';
 import {
   conversionUtil,
   multiplyCurrencies,
@@ -8,6 +7,7 @@ import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { ERC1155, ERC721 } from '../../../shared/constants/transaction';
+import { getTokenValueParam } from '../../../app/scripts/constants/metamask-controller-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -114,16 +114,6 @@ export function tokenInfoGetter() {
   };
 }
 
-export function calcTokenAmount(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
-}
-
-export function calcTokenValue(value, decimals) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).times(multiplier);
-}
-
 /**
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following
@@ -147,10 +137,6 @@ export function getTokenAddressParam(tokenData = {}) {
  * @param {Object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A decimal string value.
  */
-export function getTokenValueParam(tokenData = {}) {
-  return tokenData?.args?._value?.toString();
-}
-
 export function getTokenApprovedParam(tokenData = {}) {
   return tokenData?.args?._approved;
 }

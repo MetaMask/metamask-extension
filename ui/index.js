@@ -1,6 +1,6 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import { clone, memoize } from 'lodash';
+import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
@@ -9,13 +9,10 @@ import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import switchDirection from '../app/scripts/constants/switch-direction';
+import { setupLocale } from '../app/scripts/constants/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
-import {
-  fetchLocale,
-  loadRelativeTimeFormatLocaleData,
-} from './helpers/utils/i18n-helper';
-import switchDirection from './helpers/utils/switch-direction';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
@@ -45,22 +42,6 @@ export default function launchMetamaskUi(opts, cb) {
     });
   });
 }
-
-const _setupLocale = async (currentLocale) => {
-  const currentLocaleMessages = currentLocale
-    ? await fetchLocale(currentLocale)
-    : {};
-  const enLocaleMessages = await fetchLocale('en');
-
-  await loadRelativeTimeFormatLocaleData('en');
-  if (currentLocale) {
-    await loadRelativeTimeFormatLocaleData(currentLocale);
-  }
-
-  return { currentLocaleMessages, enLocaleMessages };
-};
-
-export const setupLocale = memoize(_setupLocale);
 
 async function startApp(metamaskState, backgroundConnection, opts) {
   // parse opts

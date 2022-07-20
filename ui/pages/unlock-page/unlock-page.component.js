@@ -5,9 +5,9 @@ import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
-import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { EVENT } from '../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../app/scripts/constants/ui-utils';
 
 export default class UnlockPage extends Component {
   static contextTypes = {

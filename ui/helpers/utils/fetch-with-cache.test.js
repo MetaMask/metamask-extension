@@ -1,14 +1,18 @@
 import nock from 'nock';
 import sinon from 'sinon';
 
-import { getStorageItem, setStorageItem } from './storage-helpers';
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../../app/scripts/constants/storage-helpers';
 
-jest.mock('./storage-helpers.js', () => ({
+jest.mock('../../../app/scripts/constants/storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));
 
-const fetchWithCache = require('./fetch-with-cache').default;
+const fetchWithCache = require('../../../app/scripts/constants/fetch-with-cache')
+  .default;
 
 describe('Fetch with cache', () => {
   afterEach(() => {
