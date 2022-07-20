@@ -95,9 +95,10 @@ import {
 } from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
-import { TOKEN_STANDARDS, ETH } from '../../helpers/constants/common';
+import { ETH } from '../../helpers/constants/common';
 import {
   ASSET_TYPES,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
