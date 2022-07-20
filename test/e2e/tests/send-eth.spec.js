@@ -20,9 +20,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, contractRegistry }) => {
-        console.log(contractRegistry.getContractAddress(smartContract));
-
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
