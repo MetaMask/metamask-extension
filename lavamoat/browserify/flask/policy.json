@@ -4785,7 +4785,6 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "console.warn": true,
         "fetch": true,
         "open": true,
         "setInterval": true,
@@ -4814,40 +4813,29 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
-        "console.warn": true,
+        "AggregateError": true,
+        "Buffer": true,
+        "DO_NOT_EXPORT_CRC": true,
+        "FinalizationRegistry": true,
+        "HTMLElement": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "WeakRef": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console": true,
+        "crypto": true,
+        "define": true,
+        "intToBuffer": true,
+        "location": true,
+        "msCrypto": true,
         "setTimeout": true
       },
       "packages": {
-        "3box>ethers>elliptic": true,
-        "@ethereumjs/common": true,
-        "@ethereumjs/common>crc-32": true,
-        "@ethereumjs/tx": true,
-        "bn.js": true,
         "browserify>buffer": true,
-        "eth-lattice-keyring>gridplus-sdk>bech32": true,
-        "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
-        "eth-lattice-keyring>gridplus-sdk>bitwise": true,
-        "eth-lattice-keyring>gridplus-sdk>borc": true,
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
-        "eth-lattice-keyring>gridplus-sdk>rlp": true,
-        "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethers>@ethersproject/keccak256>js-sha3": true,
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "lodash": true,
-        "pubnub>superagent": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>bitwise": {
-      "packages": {
-        "browserify>buffer": true
+        "browserify>process": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc": {
@@ -4865,43 +4853,6 @@
       "globals": {
         "crypto": true,
         "define": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
-      "globals": {
-        "intToBuffer": true
-      },
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": true,
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true,
-        "ethers>@ethersproject/keccak256>js-sha3": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "browserify>buffer>ieee754": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>secp256k1": {
-      "packages": {
-        "3box>ethers>elliptic": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -5712,73 +5663,6 @@
         "browserify>process": true
       }
     },
-    "ethjs-ens": {
-      "packages": {
-        "ethereum-ens-network-map": true,
-        "ethjs-ens>eth-ens-namehash": true,
-        "ethjs-ens>ethjs-contract": true,
-        "ethjs-ens>ethjs-query": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash": {
-      "globals": {
-        "name": "write"
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs-ens>eth-ens-namehash>idna-uts46": true,
-        "ethjs-ens>eth-ens-namehash>js-sha3": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>idna-uts46": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>punycode": true
-      }
-    },
-    "ethjs-ens>eth-ens-namehash>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-contract": {
-      "packages": {
-        "ethjs-contract>ethjs-abi": true,
-        "ethjs-ens>ethjs-contract>ethjs-filter": true,
-        "ethjs-ens>ethjs-contract>js-sha3": true,
-        "ethjs>ethjs-util": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>ethjs-filter": {
-      "globals": {
-        "clearInterval": true,
-        "setInterval": true
-      }
-    },
-    "ethjs-ens>ethjs-contract>js-sha3": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "ethjs-ens>ethjs-query": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format": true,
-        "ethjs-ens>ethjs-query>ethjs-rpc": true
-      }
-    },
-    "ethjs-ens>ethjs-query>ethjs-format": {
-      "packages": {
-        "ethjs-ens>ethjs-query>ethjs-format>ethjs-schema": true,
-        "ethjs>ethjs-util": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn": true
-      }
-    },
     "ethjs-query": {
       "globals": {
         "console": true
@@ -6095,21 +5979,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "pubnub>superagent": {
-      "globals": {
-        "ActiveXObject": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.trace": true,
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "pubnub>superagent>component-emitter": true
       }
     },
     "pump": {
