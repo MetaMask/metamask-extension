@@ -2470,6 +2470,9 @@
   "permissionRequest": {
     "message": "Permission request"
   },
+  "permissionRequested": {
+    "message": "Requested now"
+  },
   "permissionRequestCapitalized": {
     "message": "Permission Request"
   },

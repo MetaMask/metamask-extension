@@ -71,7 +71,16 @@ export default function UpdateSnapPermissionList({
       return (
         <div className="new-permission" key={newPermission}>
           <i className="fas fa-arrow-right" />
-          {label}
+          <div className="permission-description">
+            {label}
+            <Typography
+              color={COLORS.TEXT_ALTERNATIVE}
+              boxProps={{ paddingTop: 1 }}
+              className="permission-description-subtext"
+            >
+              {t('permissionRequested')}
+            </Typography>
+          </div>
           {rightIcon && <i className={rightIcon} />}
         </div>
       );
