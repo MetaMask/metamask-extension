@@ -453,6 +453,7 @@ export default class ConfirmApproveContent extends Component {
       chainId,
       assetStandard,
       tokenSymbol,
+      isSetApproveForAll,
     } = this.props;
     const { t } = this.context;
     let titleTokenDescription = t('token');
@@ -479,7 +480,10 @@ export default class ConfirmApproveContent extends Component {
       titleTokenDescription = unknownTokenLink;
     }
 
-    if (assetStandard === ERC20 || (tokenSymbol && !tokenId)) {
+    if (
+      assetStandard === ERC20 ||
+      (tokenSymbol && !tokenId && !isSetApproveForAll)
+    ) {
       titleTokenDescription = tokenSymbol;
     } else if (
       assetStandard === ERC721 ||
@@ -488,9 +492,9 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : null;
+      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
       if (assetName || tokenSymbol) {
-        titleTokenDescription = `${assetName ?? tokenSymbol} ${tokenIdWrapped}`;
+        titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
       } else {
         const unknownNFTBlockExplorerLink = getTokenTrackerLink(
           tokenAddress,
