@@ -1014,6 +1014,8 @@ export function getIsAdvancedGasFeeDefault(state) {
 }
 
 /**
+ * To get the name of the network that support token detection based in chainId.
+ *
  * @param state
  * @returns string e.g. ethereum, bsc or polygon
  */
@@ -1033,7 +1035,7 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
   }
 };
 /**
- * To check for the chainId that supports token detection ,
+ * To check if teh chainId supports token detection ,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
  *
  * @param {*} state
@@ -1092,17 +1094,25 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
  * @returns Boolean
  */
 export function getIsTokenDetectionSupported(state) {
-  const chainId = getCurrentChainId(state);
   const useTokenDetection = getUseTokenDetection(state);
-  return (
-    useTokenDetection &&
-    [
-      MAINNET_CHAIN_ID,
-      BSC_CHAIN_ID,
-      POLYGON_CHAIN_ID,
-      AVALANCHE_CHAIN_ID,
-    ].includes(chainId)
-  );
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return useTokenDetection && isDynamicTokenListAvailable;
+}
+
+/**
+ * To check if the token detection is OFF for the token detection supported networks
+ * and the network is not Mainnet
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isMainnet = getIsMainnet(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
 }
 
 /**

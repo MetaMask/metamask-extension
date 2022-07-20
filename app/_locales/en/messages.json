@@ -828,6 +828,9 @@
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Before manually importing a token, make sure you trust it. Learn about $1."
   },
+  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
+    "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
+  },
   "customerSupport": {
     "message": "customer support"
   },
@@ -1621,6 +1624,9 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "inYourSettings": {
+    "message": "in your Settings"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -3837,6 +3843,9 @@
   },
   "tokenList": {
     "message": "Token lists:"
+  },
+  "tokenScamSecurityRisk": {
+    "message": "token scams and security risks"
   },
   "tokenSymbol": {
     "message": "Token symbol"

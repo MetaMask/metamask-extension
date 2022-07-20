@@ -12,6 +12,7 @@ import {
   getTokenDetectionSupportNetworkByChainId,
   getIsTokenDetectionInactiveOnMainnet,
   getIsDynamicTokenListAvailable,
+  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
 } from '../../selectors/selectors';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import ImportToken from './import-token.component';
@@ -54,6 +55,9 @@ const mapStateToProps = (state) => {
     isDynamicTokenListAvailable: getIsDynamicTokenListAvailable(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
     isTokenDetectionInactiveOnMainnet,
+    tokenDetectionInactiveOnNonMainnetSupportedNetwork: getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(
+      state,
+    ),
   };
 };
 const mapDispatchToProps = (dispatch) => {

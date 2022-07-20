@@ -110,6 +110,8 @@ class ImportToken extends Component {
      */
     selectedAddress: PropTypes.string,
     isDynamicTokenListAvailable: PropTypes.bool.isRequired,
+    tokenDetectionInactiveOnNonMainnetSupportedNetwork:
+      PropTypes.bool.isRequired,
     networkName: PropTypes.string.isRequired,
   };
 
@@ -406,7 +408,13 @@ class ImportToken extends Component {
       collectibleAddressError,
     } = this.state;
 
-    const { chainId, rpcPrefs, isDynamicTokenListAvailable } = this.props;
+    const {
+      chainId,
+      rpcPrefs,
+      isDynamicTokenListAvailable,
+      tokenDetectionInactiveOnNonMainnetSupportedNetwork,
+      history,
+    } = this.props;
     const blockExplorerTokenLink = getTokenTrackerLink(
       customAddress,
       chainId,
@@ -420,33 +428,64 @@ class ImportToken extends Component {
 
     return (
       <div className="import-token__custom-token-form">
-        <ActionableMessage
-          type={isDynamicTokenListAvailable ? 'warning' : 'default'}
-          message={t(
-            isDynamicTokenListAvailable
-              ? 'customTokenWarningInTokenDetectionNetwork'
-              : 'customTokenWarningInNonTokenDetectionNetwork',
-            [
+        {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+          <ActionableMessage
+            type="warning"
+            message={t('customTokenWarningInTokenDetectionNetworkWithTDOFF', [
               <Button
                 type="link"
-                key="import-token-fake-token-warning"
+                key="import-token-security-risk"
                 className="import-token__link"
                 rel="noopener noreferrer"
                 target="_blank"
                 href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
               >
-                {t('learnScamRisk')}
+                {t('tokenScamSecurityRisk')}
               </Button>,
-            ],
-          )}
-          withRightButton
-          useIcon
-          iconFillColor={
-            isDynamicTokenListAvailable
-              ? 'var(--color-warning-default)'
-              : 'var(--color-info-default)'
-          }
-        />
+              <Button
+                type="link"
+                key="import-token-token-detection-announcement"
+                className="import-token__link"
+                onClick={() =>
+                  history.push(`${ADVANCED_ROUTE}#token-description`)
+                }
+              >
+                {t('inYourSettings')}
+              </Button>,
+            ])}
+            withRightButton
+            useIcon
+            iconFillColor="var(--color-warning-default)"
+          />
+        ) : (
+          <ActionableMessage
+            type={isDynamicTokenListAvailable ? 'warning' : 'default'}
+            message={t(
+              isDynamicTokenListAvailable
+                ? 'customTokenWarningInTokenDetectionNetwork'
+                : 'customTokenWarningInNonTokenDetectionNetwork',
+              [
+                <Button
+                  type="link"
+                  key="import-token-fake-token-warning"
+                  className="import-token__link"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                >
+                  {t('learnScamRisk')}
+                </Button>,
+              ],
+            )}
+            withRightButton
+            useIcon
+            iconFillColor={
+              isDynamicTokenListAvailable
+                ? 'var(--color-warning-default)'
+                : 'var(--color-info-default)'
+            }
+          />
+        )}
         <TextField
           id="custom-address"
           label={t('tokenContractAddress')}
