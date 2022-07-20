@@ -11,6 +11,7 @@ describe('MV3 - load times in ms', function () {
       },
     ],
   };
+  const loadingTimes = {};
   it('should measure the time for loading a new account', async function () {
     await withFixtures(
       {
@@ -19,7 +20,6 @@ describe('MV3 - load times in ms', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        const loadingTimes = {};
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -38,7 +38,6 @@ describe('MV3 - load times in ms', function () {
         loadingTimes.createAccount =
           timestampAfterAction - timestampBeforeAction;
 
-        console.log(loadingTimes);
         assert.equal(
           Object.prototype.hasOwnProperty.call(loadingTimes, 'createAccount'),
           true,
@@ -105,9 +104,9 @@ describe('MV3 - load times in ms', function () {
         inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
-        // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
+        const timestampBeforeAction = new Date();
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
@@ -118,10 +117,14 @@ describe('MV3 - load times in ms', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
-          text: '-1 ETH',
-        });
+        await driver.waitForSelector('.transaction-status--confirmed');
+        const timestampAfterAction = new Date();
+        loadingTimes.sendTx = timestampAfterAction - timestampBeforeAction;
+
+        assert.equal(
+          Object.prototype.hasOwnProperty.call(loadingTimes, 'sendTx'),
+          true,
+        );
       },
     );
   });
