@@ -94,6 +94,7 @@ import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -1088,6 +1089,16 @@ export default class MetamaskController extends EventEmitter {
       this.onboardingController.store.getState().completedOnboarding
     ) {
       this.submitPassword(password);
+    }
+
+    // Log them in if possible
+    if (isManifestV3()) {
+      chrome.storage.local.get(['decryptedKey']).then(({ key }) => {
+        console.log('MV3: Checking for decrypted key:', key);
+        if (key) {
+          this.keyringController.submitDecryptedKey(key);
+        }
+      });
     }
 
     // Lazily update the store with the current extension environment
@@ -2311,6 +2322,17 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     await this.keyringController.submitPassword(password);
+
+    // Store the decrypted key in the event that the service worker gets
+    // terminated but we want to keep the user logged in
+    if (isManifestV3()) {
+      const decryptedKey = this.keyringController.getDecryptedKey();
+      console.log(
+        'MV3: Setting decrypted key into chrome storage: ',
+        decryptedKey,
+      );
+      await chrome.storage.local.set({ decryptedKey });
+    }
 
     try {
       await this.blockTracker.checkForLatestBlock();
