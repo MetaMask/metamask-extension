@@ -27,6 +27,8 @@ import {
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_APPROVAL_AMOUNT_TYPE,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
@@ -2073,9 +2075,14 @@ export default class TransactionController extends EventEmitter {
       TRANSACTION_TYPES.SWAP,
       TRANSACTION_TYPES.SWAP_APPROVAL,
     ].includes(type);
-
-    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    const customTokenAmount = transactions[id]?.customTokenAmount;
+    const dappProposedTokenAmount = transactions[id]?.dappProposedTokenAmount;
+    const currentTokenBalance = transactions[id]?.currentTokenBalance;
+    const originalApprovalAmount = transactions[id]?.originalApprovalAmount;
+    const finalApprovalAmount = transactions[id]?.finalApprovalAmount;
+    let transactionApprovalAmountType;
     let transactionContractMethod;
+    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
     } else if (type === TRANSACTION_TYPES.RETRY) {
@@ -2085,6 +2092,21 @@ export default class TransactionController extends EventEmitter {
     } else if (contractInteractionTypes) {
       transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
       transactionContractMethod = transactions[id]?.contractMethodName;
+      if (
+        transactionContractMethod === 'Approve' &&
+        tokenStandard === TOKEN_STANDARDS.ERC20
+      ) {
+        if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.REVOKE;
+        } else if (customTokenAmount) {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM;
+        } else if (dappProposedTokenAmount) {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED;
+        }
+      }
     }
 
     const replacedTxMeta = this._getTransaction(replacedById);
@@ -2104,6 +2126,30 @@ export default class TransactionController extends EventEmitter {
         transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.RETRY;
       }
     }
+    
+    const transactionApprovalAmountVsProposedRation =
+      transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM &&
+      originalApprovalAmount &&
+      finalApprovalAmount
+        ? `${new BigNumber(originalApprovalAmount, 10)
+            .div(finalApprovalAmount, 10)
+            .times(100)
+            .round(2)}`
+        : null;
+
+    const transactionApprovalAmountVsBalanceRation =
+      (transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM ||
+        transactionApprovalAmountType ===
+          TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED) &&
+      dappProposedTokenAmount &&
+      currentTokenBalance
+        ? `${new BigNumber(dappProposedTokenAmount, 16)
+            .div(currentTokenBalance, 10)
+            .times(100)
+            .round(2)}`
+        : null;
 
     const properties = {
       chain_id: chainId,
@@ -2119,6 +2165,7 @@ export default class TransactionController extends EventEmitter {
       token_standard: tokenStandard,
       transaction_type: transactionType,
       transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
+      transaction_approval_amount_type: transactionApprovalAmountType,
     };
 
     const sensitiveProperties = {
@@ -2130,6 +2177,8 @@ export default class TransactionController extends EventEmitter {
       gas_limit: gasLimit,
       transaction_contract_method: transactionContractMethod,
       transaction_replaced: transactionReplaced,
+      transaction_approval_amount_vs_balance_ratio: transactionApprovalAmountVsBalanceRation,
+      transaction_approval_amount_vs_proposed_ratio: transactionApprovalAmountVsProposedRation,
       ...extraParams,
       ...gasParamsInGwei,
     };
