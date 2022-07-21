@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
 import * as tokenUtils from '../helpers/utils/token-util';
-import { ERC1155, ERC20, ERC721 } from '../helpers/constants/common';
+import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
 import { useAssetDetails } from './useAssetDetails';
 
 const renderUseAssetDetails = ({

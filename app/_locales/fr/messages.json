@@ -1888,10 +1888,6 @@
   "metametricsTitle": {
     "message": "Rejoignez plus de 6 M d’utilisateurs pour améliorer MetaMask"
   },
-  "mismatchedChain": {
-    "message": "Les détails du réseau pour cet ID de chaîne ne correspondent pas à nos registres. Nous vous recommandons de $1 avant de poursuivre.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3873,10 +3869,6 @@
   "unrecognizedChain": {
     "message": "Ce réseau personnalisé n’est pas reconnu. Nous vous recommandons de $1 avant de continuer",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "vérifier les détails du réseau",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "L’envoi de jetons collectibles (ERC-721) n’est pas pris en charge actuellement",

@@ -78,7 +78,11 @@ class RestoreVaultPage extends Component {
             <Typography color={COLORS.TEXT_DEFAULT}>
               {t('resetWalletSubHeader')}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT} margin={[4, 0]}>
+            <Typography
+              color={COLORS.TEXT_DEFAULT}
+              marginTop={4}
+              marginBottom={4}
+            >
               {t('resetWalletUsingSRP', [
                 <Button
                   type="link"
@@ -112,7 +116,7 @@ class RestoreVaultPage extends Component {
                 </Button>,
               ])}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT} margin={[0, 0, 4]}>
+            <Typography color={COLORS.TEXT_DEFAULT} margin={0} marginBottom={4}>
               {t('resetWalletWarning')}
             </Typography>
             <CreateNewVault

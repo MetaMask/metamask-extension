@@ -462,7 +462,10 @@ export default class TransactionController extends EventEmitter {
     };
 
     // only update what is defined
-    editableParams.txParams = pickBy(editableParams.txParams);
+    editableParams.txParams = pickBy(
+      editableParams.txParams,
+      (prop) => prop !== undefined,
+    );
 
     // update transaction type in case it has changes
     const transactionBeforeEdit = this._getTransaction(txId);
