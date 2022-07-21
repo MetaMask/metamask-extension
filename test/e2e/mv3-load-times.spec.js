@@ -1,5 +1,31 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('./helpers');
+const path = require('path');
+const { promises: fs } = require('fs');
+const { exitWithError } = require('../../development/lib/exit-with-error');
+const {
+  isWritable,
+  getFirstParentDirectoryThatExists,
+} = require('../helpers/file');
+
+async function exportResults(data) {
+  if (data) {
+    const outPath = 'user_actions/stats.json';
+    const outputDirectory = path.dirname(outPath);
+    const existingParentDirectory = await getFirstParentDirectoryThatExists(
+      outputDirectory,
+    );
+    if (!(await isWritable(existingParentDirectory))) {
+      throw new Error('Specified output file directory is not writable');
+    }
+    if (outputDirectory !== existingParentDirectory) {
+      await fs.mkdir(outputDirectory, { recursive: true });
+    }
+    await fs.writeFile(outPath, JSON.stringify(data, null, 2));
+  } else {
+    console.log(JSON.stringify(data, null, 2));
+  }
+}
 
 describe('MV3 - load times in ms', function () {
   const ganacheOptions = {
@@ -115,6 +141,10 @@ describe('MV3 - load times in ms', function () {
         await driver.waitForSelector('.transaction-status--confirmed');
         const timestampAfterAction = new Date();
         loadingTimes.sendTx = timestampAfterAction - timestampBeforeAction;
+        
+        exportResults(loadingTimes).catch((error) => {
+          exitWithError(error);
+        });
       },
     );
   });

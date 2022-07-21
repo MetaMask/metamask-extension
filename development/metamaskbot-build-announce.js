@@ -100,6 +100,7 @@ async function start() {
   const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">MV3 UI Init Stats</a>`;
   const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
   const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  const e2eActionsStatsLink = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/user_actions/stats.json`
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -112,6 +113,7 @@ async function start() {
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,
     `mv3: ${moduleLoadStatsLink}`,
+    `mv3: ${e2eActionsStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
