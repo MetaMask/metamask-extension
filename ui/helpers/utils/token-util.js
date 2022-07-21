@@ -248,14 +248,32 @@ export async function getAssetDetails(
     throw new Error('Unable to detect valid token data');
   }
 
-  // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
-  // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
+  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
   let tokenId =
     getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
 
   const toAddress = getTokenAddressParam(tokenData);
 
   let tokenDetails;
+
+  // if a tokenId is present check if there is a collectible in state matching the address/tokenId
+  // and avoid unnecessary network requests to query token details we already have
+  if (existingCollectibles?.length && tokenId) {
+    const existingCollectible = existingCollectibles.find(
+      ({ address, tokenId: _tokenId }) =>
+        isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
+    );
+
+    if (existingCollectible) {
+      return {
+        toAddress,
+        ...existingCollectible,
+      };
+    }
+  }
+
   try {
     tokenDetails = await getTokenStandardAndDetails(
       tokenAddress,
@@ -279,23 +297,8 @@ export async function getAssetDetails(
   const decimals =
     tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
 
-  if (tokenDetails?.standard) {
-    const { standard } = tokenDetails;
-    if (standard === ERC721 || standard === ERC1155) {
-      const existingCollectible = existingCollectibles.find(
-        ({ address, tokenId: _tokenId }) =>
-          isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
-      );
-
-      if (existingCollectible) {
-        return {
-          ...existingCollectible,
-          standard,
-        };
-      }
-    } else if (standard === ERC20) {
-      tokenId = undefined;
-    }
+  if (tokenDetails?.standard === ERC20) {
+    tokenId = undefined;
   }
 
   // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId

@@ -139,8 +139,9 @@ export function useTransactionDisplayData(transactionGroup) {
     isTokenCategory,
   );
 
-  // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
-  // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
+  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
   const transactionDataTokenId =
     getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
 
