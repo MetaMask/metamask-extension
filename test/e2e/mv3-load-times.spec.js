@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('./helpers');
 const path = require('path');
 const { promises: fs } = require('fs');
 const { exitWithError } = require('../../development/lib/exit-with-error');
@@ -7,6 +6,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
+const { convertToHexValue, withFixtures } = require('./helpers');
 
 async function exportResults(data) {
   if (data) {
@@ -141,7 +141,7 @@ describe('MV3 - load times in ms', function () {
         await driver.waitForSelector('.transaction-status--confirmed');
         const timestampAfterAction = new Date();
         loadingTimes.sendTx = timestampAfterAction - timestampBeforeAction;
-        
+
         exportResults(loadingTimes).catch((error) => {
           exitWithError(error);
         });
