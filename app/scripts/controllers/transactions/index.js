@@ -2095,11 +2095,9 @@ export default class TransactionController extends EventEmitter {
       TRANSACTION_TYPES.SWAP_APPROVAL,
     ].includes(type);
 
-    let transactionType;
+    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
-    } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
-      transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
     } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
       transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     } else if (contractInteractionTypes) {
