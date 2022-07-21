@@ -23,7 +23,7 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import { TOKEN_STANDARDS } from '../../helpers/constants/common';
+import { TOKEN_STANDARDS } from '../../../shared/constants/transaction';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 

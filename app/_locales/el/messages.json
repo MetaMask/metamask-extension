@@ -1888,10 +1888,6 @@
   "metametricsTitle": {
     "message": "Συμμετάσχετε σε 6εκ+ χρήστες για να βελτιώσετε το MetaMask"
   },
-  "mismatchedChain": {
-    "message": "Οι λεπτομέρειες δικτύου για αυτό το αναγνωριστικό αλυσίδας δεν ταιριάζουν με τις εγγραφές μας. Σας συνιστούμε να $1 πριν συνεχίσετε.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3873,10 +3869,6 @@
   "unrecognizedChain": {
     "message": "Αυτό το προσαρμοσμένο δίκτυο δεν αναγνωρίζεται. Σας συνιστούμε να $1 πριν προχωρήσετε",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "επαληθεύστε τα στοιχεία δικτύου",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "Η αποστολή συλλεκτικών (ERC-721) δεν υποστηρίζεται προς το παρόν",

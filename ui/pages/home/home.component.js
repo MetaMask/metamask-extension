@@ -488,12 +488,15 @@ export default class Home extends PureComponent {
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Typography
               variant={TYPOGRAPHY.H4}
-              margin={[5, 9, 0, 9]}
+              marginTop={5}
+              marginRight={9}
+              marginLeft={9}
+              marginBottom={0}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('networkAddedSuccessfully')}
             </Typography>
-            <Box margin={[8, 8, 5, 8]}>
+            <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
               <Button
                 type="primary"
                 className="home__new-network-added__switch-to-button"

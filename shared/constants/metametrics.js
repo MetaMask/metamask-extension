@@ -276,13 +276,23 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
+  ENCRYPTION_PUBLIC_KEY_APPROVED: 'Encryption Public Key Approved',
+  ENCRYPTION_PUBLIC_KEY_REJECTED: 'Encryption Public Key Rejected',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  DECRYPTION_APPROVED: 'Decryption Approved',
+  DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
+  PERMISSIONS_APPROVED: 'Permissions Approved',
+  PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PROVIDER_METHOD_CALLED: 'Provider Method Called',
+  SIGNATURE_APPROVED: 'Signature Approved',
+  SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_HIDDEN: 'Token Hidden',
+  NFT_ADDED: 'NFT Added',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
@@ -305,6 +315,10 @@ export const EVENT = {
     WALLET: 'Wallet',
   },
   SOURCE: {
+    NETWORK: {
+      POPULAR_NETWORK_LIST: 'popular_network_list',
+      CUSTOM_NETWORK_FORM: 'custom_network_form',
+    },
     SWAPS: {
       MAIN_VIEW: 'Main View',
       TOKEN_VIEW: 'Token View',

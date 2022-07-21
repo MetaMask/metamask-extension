@@ -69,6 +69,7 @@ import {
   calcTokenAmount,
   getTokenAddressParam,
   getTokenValueParam,
+  getTokenMetadata,
 } from '../../helpers/utils/token-util';
 import {
   checkExistingAddresses,
@@ -88,12 +89,16 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-import { sumHexes } from '../../helpers/utils/transactions.util';
+import {
+  isSmartContractAddress,
+  sumHexes,
+} from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
-import { TOKEN_STANDARDS, ETH } from '../../helpers/constants/common';
+import { ETH } from '../../helpers/constants/common';
 import {
   ASSET_TYPES,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
@@ -382,6 +387,7 @@ export const draftTransactionInitialState = {
     error: null,
     nickname: '',
     warning: null,
+    recipientWarningAcknowledged: false,
   },
   status: SEND_STATUSES.VALID,
   transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
@@ -919,31 +925,24 @@ const slice = createSlice({
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
-     * @param {UpdateAssetPayload} action - The asest to set in the
+     * @param {UpdateAssetPayload} action - The asset to set in the
      *  draftTransaction.
      * @returns {void}
      */
     updateAsset: (state, action) => {
+      const { asset, initialAssetSet } = action.payload;
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
-      // If an asset update occurs that changes the type from 'NATIVE' to
-      // 'NATIVE' then this is likely the initial asset set of an edit
-      // transaction. We don't need to set the amount to zero in this case.
-      // The only times where an update would occur of this nature that we
-      // would want to set the amount to zero is on a network or account change
-      // but that update is handled elsewhere.
-      const skipAmountUpdate =
-        action.payload.type === ASSET_TYPES.NATIVE &&
-        draftTransaction.asset.type === ASSET_TYPES.NATIVE;
-      draftTransaction.asset.type = action.payload.type;
-      draftTransaction.asset.balance = action.payload.balance;
-      draftTransaction.asset.error = action.payload.error;
+      draftTransaction.asset.type = asset.type;
+      draftTransaction.asset.balance = asset.balance;
+      draftTransaction.asset.error = asset.error;
+
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
       ) {
-        draftTransaction.asset.details = action.payload.details;
+        draftTransaction.asset.details = asset.details;
       } else {
         // clear the details object when sending native currency
         draftTransaction.asset.details = null;
@@ -952,20 +951,12 @@ const slice = createSlice({
           // are no longer valid when sending native currency.
           draftTransaction.recipient.error = null;
         }
-
-        if (
-          draftTransaction.recipient.warning === KNOWN_RECIPIENT_ADDRESS_WARNING
-        ) {
-          // Warning related to sending tokens to a known contract address
-          // are no longer valid when sending native currency.
-          draftTransaction.recipient.warning = null;
-        }
       }
       // if amount mode is MAX update amount to max of new asset, otherwise set
       // to zero. This will revalidate the send amount field.
       if (state.amountMode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
-      } else if (skipAmountUpdate === false) {
+      } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
       }
       // validate send state
@@ -1084,8 +1075,10 @@ const slice = createSlice({
     updateGasLimit: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
-      slice.caseReducers.calculateGasTotal(state);
+      if (draftTransaction) {
+        draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
+        slice.caseReducers.calculateGasTotal(state);
+      }
     },
     /**
      * sets the layer 1 fees total (for a multi-layer fee network)
@@ -1154,6 +1147,26 @@ const slice = createSlice({
       state.recipientInput = '';
       state.recipientMode = action.payload;
     },
+
+    updateRecipientWarning: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.warning = action.payload;
+    },
+
+    updateDraftTransactionStatus: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.status = action.payload;
+    },
+
+    acknowledgeRecipientWarning: (state) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.recipientWarningAcknowledged = true;
+      slice.caseReducers.validateSendState(state);
+    },
+
     /**
      * Updates the value of the recipientInput key with what the user has
      * typed into the recipient input field in the UI.
@@ -1316,10 +1329,13 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const isSendingToken =
-            draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-            draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE;
-          const { chainId, tokens, tokenAddressList } = action.payload;
+          const {
+            chainId,
+            tokens,
+            tokenAddressList,
+            isProbablyAnAssetContract,
+          } = action.payload;
+
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
@@ -1331,10 +1347,9 @@ const slice = createSlice({
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
           } else if (
-            isSendingToken &&
             isOriginContractAddress(
               state.recipientInput,
-              draftTransaction.asset.details.address,
+              draftTransaction.asset?.details?.address,
             )
           ) {
             draftTransaction.recipient.error = CONTRACT_ADDRESS_ERROR;
@@ -1342,12 +1357,12 @@ const slice = createSlice({
             draftTransaction.recipient.error = null;
           }
           if (
-            isSendingToken &&
-            isValidHexAddress(state.recipientInput) &&
-            (tokenAddressList.find((address) =>
-              isEqualCaseInsensitive(address, state.recipientInput),
-            ) ||
-              checkExistingAddresses(state.recipientInput, tokens))
+            (isValidHexAddress(state.recipientInput) &&
+              (tokenAddressList.find((address) =>
+                isEqualCaseInsensitive(address, state.recipientInput),
+              ) ||
+                checkExistingAddresses(state.recipientInput, tokens))) ||
+            isProbablyAnAssetContract
           ) {
             draftTransaction.recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
           } else {
@@ -1355,6 +1370,7 @@ const slice = createSlice({
           }
         }
       }
+      slice.caseReducers.validateSendState(state);
     },
     /**
      * Checks if the draftTransaction is currently valid. The following list of
@@ -1390,6 +1406,12 @@ const slice = createSlice({
         case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
           new BigNumber(state.gasLimitMinimum),
         ):
+          draftTransaction.status = SEND_STATUSES.INVALID;
+          break;
+        case draftTransaction.recipient.warning === 'loading':
+        case draftTransaction.recipient.warning ===
+          KNOWN_RECIPIENT_ADDRESS_WARNING &&
+          draftTransaction.recipient.recipientWarningAcknowledged === false:
           draftTransaction.status = SEND_STATUSES.INVALID;
           break;
         default:
@@ -1589,9 +1611,16 @@ const {
   validateRecipientUserInput,
   updateRecipientSearchMode,
   addHistoryEntry,
+  acknowledgeRecipientWarning,
 } = actions;
 
-export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
+export {
+  useDefaultGas,
+  useCustomGas,
+  updateGasLimit,
+  addHistoryEntry,
+  acknowledgeRecipientWarning,
+};
 
 // Action Creators
 
@@ -1601,14 +1630,18 @@ export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
  * passing in both the dispatch method and the payload to dispatch, which makes
  * it only applicable for use within action creators.
  */
-const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
-  dispatch(
-    addHistoryEntry(
-      `sendFlow - user typed ${payload.userInput} into recipient input field`,
-    ),
-  );
-  dispatch(validateRecipientUserInput(payload));
-}, 300);
+const debouncedValidateRecipientUserInput = debounce(
+  (dispatch, payload, resolve) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user typed ${payload.userInput} into recipient input field`,
+      ),
+    );
+    dispatch(validateRecipientUserInput(payload));
+    resolve();
+  },
+  300,
+);
 
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
@@ -1663,7 +1696,7 @@ export function editExistingTransaction(assetType, transactionId) {
       await dispatch(
         updateSendAsset(
           { type: ASSET_TYPES.NATIVE },
-          { skipComputeEstimatedGasLimit: true },
+          { initialAssetSet: true },
         ),
       );
     } else {
@@ -1720,7 +1753,7 @@ export function editExistingTransaction(assetType, transactionId) {
                 : {}),
             },
           },
-          { skipComputeEstimatedGasLimit: true },
+          { initialAssetSet: true },
         ),
       );
     }
@@ -1799,18 +1832,59 @@ export function updateRecipient({ address, nickname }) {
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
+    dispatch(actions.updateRecipientWarning('loading'));
+    dispatch(actions.updateDraftTransactionStatus(SEND_STATUSES.INVALID));
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
+    const draftTransaction =
+      state[name].draftTransactions[state[name].currentTransactionUUID];
+    const sendingAddress =
+      draftTransaction.fromAccount?.address ??
+      state[name].selectedAccount.address ??
+      getSelectedAddress(state);
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
-    const tokenAddressList = Object.keys(getTokenList(state));
-    debouncedValidateRecipientUserInput(dispatch, {
-      userInput,
-      chainId,
-      tokens,
-      useTokenDetection,
-      tokenAddressList,
+    const tokenMap = getTokenList(state);
+    const tokenAddressList = Object.keys(tokenMap);
+
+    const inputIsValidHexAddress = isValidHexAddress(userInput);
+    let isProbablyAnAssetContract = false;
+    if (inputIsValidHexAddress) {
+      const smartContractAddress = await isSmartContractAddress(userInput);
+      if (smartContractAddress) {
+        const { symbol, decimals } =
+          getTokenMetadata(userInput, tokenMap) || {};
+
+        isProbablyAnAssetContract = symbol && decimals !== undefined;
+
+        if (!isProbablyAnAssetContract) {
+          try {
+            const { standard } = await getTokenStandardAndDetails(
+              userInput,
+              sendingAddress,
+            );
+            isProbablyAnAssetContract = Boolean(standard);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    }
+
+    return new Promise((resolve) => {
+      debouncedValidateRecipientUserInput(
+        dispatch,
+        {
+          userInput,
+          chainId,
+          tokens,
+          useTokenDetection,
+          tokenAddressList,
+          isProbablyAnAssetContract,
+        },
+        resolve,
+      );
     });
   };
 }
@@ -1878,7 +1952,7 @@ export function updateSendAmount(amount) {
  */
 export function updateSendAsset(
   { type, details: providedDetails },
-  { skipComputeEstimatedGasLimit = false } = {},
+  { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
     const state = getState();
@@ -1890,6 +1964,9 @@ export function updateSendAsset(
       getSelectedAddress(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === ASSET_TYPES.NATIVE) {
+      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
+
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${
@@ -1899,12 +1976,29 @@ export function updateSendAsset(
       );
       await dispatch(
         actions.updateAsset({
-          type,
-          details: null,
-          balance: account.balance,
-          error: null,
+          asset: {
+            type,
+            details: null,
+            balance: account.balance,
+            error: null,
+          },
+          initialAssetSet,
         }),
       );
+
+      // This is meant to handle cases where we are editing an unapprovedTx from the background state
+      // and its type is a token method. In such a case, the hex data will be the necessary hex data
+      // for calling the contract transfer method.
+      // Now that we are updating the transaction to be a send of a native asset type, we should
+      // set the hex data of the transaction being editing to be empty.
+      // then the user will not want to send any hex data now that they have change the
+      if (
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
+      ) {
+        await dispatch(actions.updateUserInputHexData(''));
+      }
     } else {
       await dispatch(showLoadingIndication());
       const details = {
@@ -1916,16 +2010,24 @@ export function updateSendAsset(
         )),
       };
       await dispatch(hideLoadingIndication());
-      const balance = addHexPrefix(
-        calcTokenAmount(details.balance, details.decimals).toString(16),
-      );
+
       const asset = {
         type,
         details,
-        balance,
         error: null,
       };
-      if (
+
+      if (details.standard === TOKEN_STANDARDS.ERC20) {
+        asset.balance = addHexPrefix(
+          calcTokenAmount(details.balance, details.decimals).toString(16),
+        );
+
+        await dispatch(
+          addHistoryEntry(
+            `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
+          ),
+        );
+      } else if (
         details.standard === TOKEN_STANDARDS.ERC1155 &&
         type === ASSET_TYPES.COLLECTIBLE
       ) {
@@ -1975,18 +2077,11 @@ export function updateSendAsset(
             ),
           );
         }
-      } else {
-        await dispatch(
-          addHistoryEntry(
-            `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
-          ),
-        );
-        // do nothing extra.
       }
 
-      await dispatch(actions.updateAsset(asset));
+      await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (skipComputeEstimatedGasLimit === false) {
+    if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
@@ -2008,6 +2103,7 @@ export function updateSendHexData(hexData) {
     await dispatch(
       addHistoryEntry(`sendFlow - user added custom hexData ${hexData}`),
     );
+
     await dispatch(actions.updateUserInputHexData(hexData));
     const state = getState();
     const draftTransaction =
@@ -2139,8 +2235,10 @@ export function signTransaction() {
           draftTransaction.history,
         ),
       );
-      dispatch(updateEditableParams(draftTransaction.id, editingTx.txParams));
-      dispatch(
+      await dispatch(
+        updateEditableParams(draftTransaction.id, editingTx.txParams),
+      );
+      await dispatch(
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
@@ -2252,6 +2350,19 @@ export function getCurrentTransactionUUID(state) {
  */
 export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
+}
+
+/**
+ * Selector that returns true if a draft transaction exists.
+ *
+ * @type {Selector<boolean>}
+ */
+export function getDraftTransactionExists(state) {
+  const draftTransaction = getCurrentDraftTransaction(state);
+  if (Object.keys(draftTransaction).length === 0) {
+    return false;
+  }
+  return true;
 }
 
 // Gas selectors
@@ -2484,6 +2595,13 @@ export function getIsUsingMyAccountForRecipientSearch(state) {
  */
 export function getRecipientUserInput(state) {
   return state[name].recipientInput;
+}
+
+export function getRecipientWarningAcknowledgement(state) {
+  return (
+    getCurrentDraftTransaction(state).recipient?.recipientWarningAcknowledged ??
+    false
+  );
 }
 
 // Overall validity and stage selectors

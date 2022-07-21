@@ -5,9 +5,9 @@ import {
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
-import { ERC1155, ERC721 } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { ERC1155, ERC721 } from '../../../shared/constants/transaction';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -43,7 +43,7 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress, tokenList) {
   const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
     return {
       ...acc,
@@ -149,6 +149,10 @@ export function getTokenAddressParam(tokenData = {}) {
  */
 export function getTokenValueParam(tokenData = {}) {
   return tokenData?.args?._value?.toString();
+}
+
+export function getTokenApprovedParam(tokenData = {}) {
+  return tokenData?.args?._approved;
 }
 
 export function getTokenValue(tokenParams = []) {

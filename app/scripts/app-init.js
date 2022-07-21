@@ -4,11 +4,27 @@
 // eslint-disable-next-line
 let scriptsLoadedInitiated = false;
 
+// Variable testMode is set to true when preparing test build.
+// This helps in changing service worker execution in test environment.
+const testMode = false;
+
+const loadTimeLogs = [];
+
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
+    const startTime = new Date().getTime();
     // eslint-disable-next-line
     importScripts(...fileNames);
+    const endTime = new Date().getTime();
+    loadTimeLogs.push({
+      name: fileNames[0],
+      value: endTime - startTime,
+      children: [],
+      startTime,
+      endTime,
+    });
+
     return true;
   } catch (e) {
     console.error(e);
@@ -24,35 +40,48 @@ function importAllScripts() {
   }
   scriptsLoadedInitiated = true;
 
+  const files = [];
+
+  // In testMode individual files are imported, this is to help capture load time stats
+  const loadFile = (fileName) => {
+    if (testMode) {
+      tryImport(fileName);
+    } else {
+      files.push(fileName);
+    }
+  };
+
   const startImportScriptsTime = Date.now();
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = true;
 
-  const files = ['./globalthis.js', './sentry-install.js'];
+  loadFile('./globalthis.js');
+  loadFile('./sentry-install.js');
 
   if (applyLavaMoat) {
-    files.push(
-      './runtime-lavamoat.js',
-      './lockdown-more.js',
-      './policy-load.js',
-    );
+    loadFile('./runtime-lavamoat.js');
+    loadFile('./lockdown-more.js');
+    loadFile('./policy-load.js');
   } else {
-    files.push(
-      './init-globals.js',
-      './lockdown-install.js',
-      './lockdown-run.js',
-      './lockdown-more.js',
-      './runtime-cjs.js',
-    );
+    loadFile('./init-globals.js');
+    loadFile('./lockdown-install.js');
+    loadFile('./lockdown-run.js');
+    loadFile('./lockdown-more.js');
+    loadFile('./runtime-cjs.js');
   }
 
-  // The list of files is injected at build time by replacing comment below with comma separated strings of file names
-  // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
-  // eslint-disable-next-line
-  files.push(/** FILE NAMES */);
+  const fileList = [
+    // The list of files is injected at build time by replacing comment below with comma separated strings of file names
+    // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
+    /** FILE NAMES */
+  ];
+
+  fileList.forEach((fileName) => loadFile(fileName));
 
   // Import all required resources
   tryImport(...files);
+
+  const endImportScriptsTime = Date.now();
 
   // for performance metrics/reference
   console.log(
@@ -60,6 +89,24 @@ function importAllScripts() {
       (Date.now() - startImportScriptsTime) / 1000
     }`,
   );
+
+  // In testMode load time logs are output to console
+  if (testMode) {
+    console.log(
+      `Time for each import: ${JSON.stringify(
+        {
+          name: 'Total',
+          children: loadTimeLogs,
+          startTime: startImportScriptsTime,
+          endTime: endImportScriptsTime,
+          value: endImportScriptsTime - startImportScriptsTime,
+          version: 1,
+        },
+        undefined,
+        '    ',
+      )}`,
+    );
+  }
 }
 
 // eslint-disable-next-line no-undef
