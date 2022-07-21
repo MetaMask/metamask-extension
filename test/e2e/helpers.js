@@ -9,6 +9,7 @@ const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { ensureXServerIsRunning } = require('./x-server');
+const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -23,6 +24,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     ganacheOptions,
+    smartContract,
     driverOptions,
     dappOptions,
     title,
@@ -46,6 +48,14 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
+    let contractRegistry;
+
+    if (smartContract) {
+      const ganacheSeeder = new GanacheSeeder(true);
+      await ganacheSeeder.deploySmartContract(smartContract);
+      contractRegistry = ganacheSeeder.getContractRegistry();
+    }
+
     if (ganacheOptions?.concurrent) {
       const { port, chainId } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
@@ -100,6 +110,7 @@ async function withFixtures(options, testSuite) {
     await testSuite({
       driver,
       mockServer,
+      contractRegistry,
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
