@@ -219,7 +219,11 @@ function createScriptTasks({
   const { dev, test, testDev, prod } = core;
   return { dev, test, testDev, prod };
 
-  function createTasksForScriptBundles({ taskPrefix, devMode, testing }) {
+  function createTasksForScriptBundles({
+    taskPrefix,
+    devMode = false,
+    testing = false,
+  }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
@@ -401,6 +405,7 @@ async function createManifestV3AppInitializationBundle({
   policyOnly,
   shouldLintFenceFiles,
   applyLavaMoat,
+  version,
 }) {
   const label = 'app-init';
   // TODO: remove this filter for firefox once MV3 is supported in it
@@ -423,6 +428,7 @@ async function createManifestV3AppInitializationBundle({
     testing,
     policyOnly,
     shouldLintFenceFiles,
+    version,
   })();
 
   postProcessServiceWorker(
@@ -632,6 +638,7 @@ function createFactoredBuild({
                 policyOnly,
                 shouldLintFenceFiles,
                 applyLavaMoat,
+                version,
               });
             }
             break;
