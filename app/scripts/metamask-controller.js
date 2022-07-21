@@ -1299,8 +1299,8 @@ export default class MetamaskController extends EventEmitter {
           category: EVENT.CATEGORIES.SNAPS,
           properties: {
             snap_id: newSnap.id,
-            oldVersion,
-            newVersion: newSnap.version,
+            old_version: oldVersion,
+            new_version: newSnap.version,
           },
         });
       },
