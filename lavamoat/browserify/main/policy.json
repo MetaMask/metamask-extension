@@ -2481,8 +2481,8 @@
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
         "@material-ui/core>popper.js": true,
+        "@material-ui/core>prop-types": true,
         "@material-ui/core>react-transition-group": true,
-        "prop-types": true,
         "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
@@ -2506,9 +2506,9 @@
         "@material-ui/core>@material-ui/styles>jss-plugin-props-sort": true,
         "@material-ui/core>@material-ui/styles>jss-plugin-rule-value-function": true,
         "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer": true,
+        "@material-ui/core>@material-ui/styles>prop-types": true,
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
-        "prop-types": true,
         "react": true,
         "react-redux>hoist-non-react-statics": true
       }
@@ -2578,21 +2578,48 @@
         "document": true
       }
     },
+    "@material-ui/core>@material-ui/styles>prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
+      }
+    },
     "@material-ui/core>@material-ui/system": {
       "globals": {
         "console.error": true
       },
       "packages": {
         "@babel/runtime": true,
-        "@material-ui/core>@material-ui/utils": true,
-        "prop-types": true
+        "@material-ui/core>@material-ui/system>prop-types": true,
+        "@material-ui/core>@material-ui/utils": true
+      }
+    },
+    "@material-ui/core>@material-ui/system>prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
       }
     },
     "@material-ui/core>@material-ui/utils": {
       "packages": {
         "@babel/runtime": true,
-        "prop-types": true,
+        "@material-ui/core>@material-ui/utils>prop-types": true,
         "prop-types>react-is": true
+      }
+    },
+    "@material-ui/core>@material-ui/utils>prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -2612,6 +2639,15 @@
         "setTimeout": true
       }
     },
+    "@material-ui/core>prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
+      }
+    },
     "@material-ui/core>react-transition-group": {
       "globals": {
         "Element": true,
@@ -2619,7 +2655,7 @@
       },
       "packages": {
         "@material-ui/core>react-transition-group>dom-helpers": true,
-        "prop-types": true,
+        "@material-ui/core>react-transition-group>prop-types": true,
         "react": true,
         "react-dom": true
       }
@@ -2627,6 +2663,15 @@
     "@material-ui/core>react-transition-group>dom-helpers": {
       "packages": {
         "@babel/runtime": true
+      }
+    },
+    "@material-ui/core>react-transition-group>prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
       }
     },
     "@metamask/controllers": {
@@ -2655,10 +2700,10 @@
         "@metamask/controllers>nanoid": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
-        "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
         "eth-keyring-controller": true,
@@ -3234,7 +3279,7 @@
     },
     "@metamask/rpc-methods>@metamask/utils": {
       "packages": {
-        "@storybook/api>fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3303,9 +3348,9 @@
         "@metamask/snap-controllers>nanoid": true,
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
-        "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
+        "eslint>fast-deep-equal": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true,
@@ -3402,7 +3447,7 @@
     },
     "@metamask/snap-controllers>ajv": {
       "packages": {
-        "@storybook/api>fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
@@ -5881,7 +5926,13 @@
     },
     "globalthis>define-properties": {
       "packages": {
+        "globalthis>define-properties>has-property-descriptors": true,
         "nock>deep-equal>object-keys": true
+      }
+    },
+    "globalthis>define-properties>has-property-descriptors": {
+      "packages": {
+        "eslint-plugin-react>array-includes>get-intrinsic": true
       }
     },
     "json-rpc-engine": {
@@ -5999,7 +6050,23 @@
         "nock>deep-equal>is-arguments": true,
         "nock>deep-equal>is-date-object": true,
         "nock>deep-equal>object-keys": true,
-        "string.prototype.matchall>regexp.prototype.flags": true
+        "nock>deep-equal>regexp.prototype.flags": true
+      }
+    },
+    "nock>deep-equal>is-date-object": {
+      "packages": {
+        "nock>deep-equal>is-date-object>has-tostringtag": true
+      }
+    },
+    "nock>deep-equal>is-date-object>has-tostringtag": {
+      "packages": {
+        "string.prototype.matchall>has-symbols": true
+      }
+    },
+    "nock>deep-equal>regexp.prototype.flags": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true
       }
     },
     "node-fetch": {
@@ -6310,17 +6377,26 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "prop-types": true,
         "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
         "react-redux>hoist-non-react-statics": true,
+        "react-redux>prop-types": true,
         "redux": true
       }
     },
     "react-redux>hoist-non-react-statics": {
       "packages": {
         "prop-types>react-is": true
+      }
+    },
+    "react-redux>prop-types": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "prop-types>react-is": true,
+        "react>object-assign": true
       }
     },
     "react-responsive-carousel": {
@@ -6597,12 +6673,6 @@
       "packages": {
         "eslint-plugin-react>array-includes>get-intrinsic": true,
         "mocha>object.assign>function-bind": true
-      }
-    },
-    "string.prototype.matchall>regexp.prototype.flags": {
-      "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true
       }
     },
     "stylelint>write-file-atomic>typedarray-to-buffer": {
