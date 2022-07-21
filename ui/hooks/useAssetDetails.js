@@ -1,15 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
-import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { getCollectibles } from '../ducks/metamask/metamask';
-import {
-  calcTokenAmount,
-  getAssetDetails,
-  getTokenAddressParam,
-  getTokenIdParam,
-  getTokenValueParam,
-} from '../helpers/utils/token-util';
+import { getAssetDetails } from '../helpers/utils/token-util';
 import { hideLoadingIndication, showLoadingIndication } from '../store/actions';
 import { usePrevious } from './usePrevious';
 
@@ -56,17 +48,6 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     collectibles,
   ]);
 
-  let assetStandard,
-    assetName,
-    assetAddress,
-    tokenSymbol,
-    decimals,
-    tokenImage,
-    userBalance,
-    toAddress,
-    tokenAmount,
-    tokenId;
-
   if (currentAsset) {
     const {
       standard,
@@ -74,34 +55,25 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       image,
       name,
       balance,
-      tokenId: _tokenId,
-      toAddress: _toAddress,
-      tokenAmount: _tokenAmount,
-      decimals: _decimals,
+      tokenId,
+      toAddress,
+      tokenAmount,
+      decimals,
     } = currentAsset;
 
-    assetStandard = standard;
-    assetAddress = tokenAddress;
-    tokenSymbol = symbol ?? '';
-    tokenImage = image;
-    tokenId = _tokenId;
-    toAddress = _toAddress;
-    tokenAmount = _tokenAmount;
-    decimals = _decimals;
-    userBalance = balance;
-    assetName = name;
+    return {
+      toAddress,
+      tokenId,
+      decimals,
+      tokenAmount,
+      assetAddress: tokenAddress,
+      assetStandard: standard,
+      tokenSymbol: symbol ?? '',
+      tokenImage: image,
+      userBalance: balance,
+      assetName: name,
+    };
   }
 
-  return {
-    toAddress,
-    tokenId,
-    decimals,
-    tokenAmount,
-    assetAddress,
-    assetStandard,
-    tokenSymbol,
-    tokenImage,
-    userBalance,
-    assetName,
-  };
+  return {};
 }

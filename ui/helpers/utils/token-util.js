@@ -7,7 +7,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { ERC1155, ERC721 } from '../../../shared/constants/transaction';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -250,46 +250,41 @@ export async function getAssetDetails(
 
   // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
   // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
-  const transactionDataTokenId =
+  const tokenId =
     getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
 
-  const tokenAmount = getTokenValueParam(tokenData);
+  const toAddress = getTokenAddressParam(tokenData);
+
   let tokenDetails;
   try {
     tokenDetails = await getTokenStandardAndDetails(
       tokenAddress,
       currentUserAddress,
-      transactionDataTokenId,
+      tokenId,
     );
   } catch (error) {
     log.warn(error);
-    return {};
+    // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
+    return { toAddress, tokenId };
   }
 
-  // assetStandard = standard;
-  // assetAddress = tokenAddress;
-  // tokenSymbol = symbol ?? '';
-  // tokenImage = image;
+  const tokenAmount =
+    tokenData &&
+    tokenDetails?.decimals &&
+    calcTokenAmount(
+      getTokenValueParam(tokenData),
+      tokenDetails?.decimals,
+    ).toString(10);
 
-  const toAddress = getTokenAddressParam(tokenData);
-  // if (assetStandard === ERC721 || assetStandard === ERC1155) {
-  //   assetName = name;
-  // }
-  // if (assetStandard === ERC20) {
-  //   userBalance = balance;
-  //   decimals = Number(currentAssetDecimals?.toString(10));
-  //   tokenAmount =
-  //     tokenData &&
-  //     calcTokenAmount(getTokenValueParam(tokenData), decimals).toString(10);
-  // }
+  const decimals =
+    tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
 
   if (tokenDetails?.standard) {
     const { standard } = tokenDetails;
     if (standard === ERC721 || standard === ERC1155) {
       const existingCollectible = existingCollectibles.find(
-        ({ address, tokenId }) =>
-          isEqualCaseInsensitive(tokenAddress, address) &&
-          tokenId === transactionDataTokenId,
+        ({ address, tokenId: _tokenId }) =>
+          isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
       );
 
       if (existingCollectible) {
@@ -298,39 +293,15 @@ export async function getAssetDetails(
           standard,
         };
       }
-    } else if (standard === ERC20) {
-      tokenAmount =
-        tokenData &&
-        calcTokenAmount(
-          getTokenValueParam(tokenData),
-          tokenDetails?.decimals,
-        ).toString(10);
     }
-
-    // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
-    // console.log(
-    //   `{
-    //   tokenAmount,
-    //   toAddress,
-    //   tokenId: transactionDataTokenId.toString(),
-    //   ...tokenDetails,
-    // }`,
-    //   {
-    //     tokenAmount,
-    //     toAddress,
-    //     tokenId: transactionDataTokenId.toString(),
-    //     ...tokenDetails,
-    //   },
-    // );
-    return {
-      tokenAmount,
-      toAddress,
-      tokenId: transactionDataTokenId?.toString(),
-      decimals:
-        tokenDetails.decimals && Number(tokenDetails.decimals?.toString(10)),
-      ...tokenDetails,
-    };
   }
 
-  return {};
+  // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
+  return {
+    tokenAmount,
+    toAddress,
+    decimals,
+    tokenId,
+    ...tokenDetails,
+  };
 }

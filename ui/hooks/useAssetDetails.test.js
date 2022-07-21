@@ -53,7 +53,7 @@ describe('useAssetDetails', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toEqual(
+    expect(result.current).toStrictEqual(
       expect.objectContaining({
         assetAddress: tokenAddress,
         tokenSymbol: '',
