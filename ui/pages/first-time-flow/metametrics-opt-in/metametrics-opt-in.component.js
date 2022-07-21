@@ -105,29 +105,7 @@ export default class MetaMetricsOptIn extends Component {
               onCancel={async () => {
                 await setParticipateInMetaMetrics(false);
 
-                try {
-                  if (
-                    participateInMetaMetrics === null ||
-                    participateInMetaMetrics === true
-                  ) {
-                    await trackEvent(
-                      {
-                        category: EVENT.CATEGORIES.ONBOARDING,
-                        event: 'Metrics Opt Out',
-                        properties: {
-                          action: 'Metrics Option',
-                          legacy_event: true,
-                        },
-                      },
-                      {
-                        isOptIn: true,
-                        flushImmediately: true,
-                      },
-                    );
-                  }
-                } finally {
-                  history.push(nextRoute);
-                }
+                history.push(nextRoute);
               }}
               cancelText={t('noThanks')}
               hideCancel={false}
