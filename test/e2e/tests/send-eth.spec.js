@@ -11,13 +11,11 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       },
     ],
   };
-  const smartContract = 'hst';
   it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',
         ganacheOptions,
-        smartContract,
         title: this.test.title,
       },
       async ({ driver }) => {
