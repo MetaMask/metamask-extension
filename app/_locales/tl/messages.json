@@ -282,9 +282,6 @@
   "approvedAsset": {
     "message": "Aprubadong asset"
   },
-  "areYouDeveloper": {
-    "message": "Isa ka bang developer?"
-  },
   "areYouSure": {
     "message": "Sigurado ka ba?"
   },
@@ -2343,9 +2340,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Buksan ang MetaMask sa buong screen para ikonekta ang ledger mo sa pamamagitan ng WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Suriin ang code ng pinagmulan"
   },
   "optional": {
     "message": "Opsyonal"

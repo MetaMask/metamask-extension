@@ -282,9 +282,6 @@
   "approvedAsset": {
     "message": "승인된 자산"
   },
-  "areYouDeveloper": {
-    "message": "개발자이신가요?"
-  },
   "areYouSure": {
     "message": "확실한가요?"
   },
@@ -2343,9 +2340,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "전체 화면에서 MetaMask를 열어 WebHID를 통해 Ledger를 연결합니다.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "소스 코드를 확인하세요"
   },
   "optional": {
     "message": "옵션"

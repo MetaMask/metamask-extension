@@ -282,9 +282,6 @@
   "approvedAsset": {
     "message": "承認済みのアセット"
   },
-  "areYouDeveloper": {
-    "message": "開発者の方ですか？"
-  },
   "areYouSure": {
     "message": "よろしいですか？"
   },
@@ -2343,9 +2340,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "WebHIDでLedgerを接続するには、MetaMaskを全画面モードで開いてください。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "ソースコードを確認"
   },
   "optional": {
     "message": "任意"

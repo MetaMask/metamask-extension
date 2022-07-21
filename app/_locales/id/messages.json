@@ -282,9 +282,6 @@
   "approvedAsset": {
     "message": "Aset yang disetujui"
   },
-  "areYouDeveloper": {
-    "message": "Anda seorang pengembang?"
-  },
   "areYouSure": {
     "message": "Anda yakin?"
   },
@@ -2343,9 +2340,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Buka MetaMask dalam layar penuh untuk menghubungkan ledger Anda melalui WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Periksa kode sumbernya"
   },
   "optional": {
     "message": "Opsional"

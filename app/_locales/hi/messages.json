@@ -282,9 +282,6 @@
   "approvedAsset": {
     "message": "स्वीकृत एसेट"
   },
-  "areYouDeveloper": {
-    "message": "क्या आप एक डेवलपर हैं?"
-  },
   "areYouSure": {
     "message": "क्या आप सुनिश्चित हैं?"
   },
@@ -2343,9 +2340,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "अपने लेजर को WebHID के माध्यम से कनेक्ट करने के लिए MetaMask को पूर्ण स्क्रीन में खोलें।",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "सोर्स कोड जांचें"
   },
   "optional": {
     "message": "वैकल्पिक"
