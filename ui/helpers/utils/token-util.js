@@ -7,7 +7,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { ERC20 } from '../../../shared/constants/transaction';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
