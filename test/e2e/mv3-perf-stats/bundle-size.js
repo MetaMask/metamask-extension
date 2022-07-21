@@ -54,77 +54,64 @@ async function main() {
   const backgroundFileList = [];
   const uiFileList = [];
 
-  fs.readdir(distFolder).then(async (files) => {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (CommonFileRegex.test(file)) {
-        const stats = await fs.stat(`${distFolder}/${file}`);
-        backgroundFileList.push({ name: file, size: stats.size });
-        uiFileList.push({ name: file, size: stats.size });
-      } else if (
-        backgroundFiles.includes(file) ||
-        BackgroundFileRegex.test(file)
-      ) {
-        const stats = await fs.stat(`${distFolder}/${file}`);
-        backgroundFileList.push({ name: file, size: stats.size });
-      } else if (uiFiles.includes(file) || UIFileRegex.test(file)) {
-        const stats = await fs.stat(`${distFolder}/${file}`);
-        uiFileList.push({ name: file, size: stats.size });
-      }
+  const files = await fs.readdir(distFolder);
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (CommonFileRegex.test(file)) {
+      const stats = await fs.stat(`${distFolder}/${file}`);
+      backgroundFileList.push({ name: file, size: stats.size });
+      uiFileList.push({ name: file, size: stats.size });
+    } else if (
+      backgroundFiles.includes(file) ||
+      BackgroundFileRegex.test(file)
+    ) {
+      const stats = await fs.stat(`${distFolder}/${file}`);
+      backgroundFileList.push({ name: file, size: stats.size });
+    } else if (uiFiles.includes(file) || UIFileRegex.test(file)) {
+      const stats = await fs.stat(`${distFolder}/${file}`);
+      uiFileList.push({ name: file, size: stats.size });
     }
+  }
 
-    const backgroundBundleSize = backgroundFileList.reduce(
-      (result, file) => result + file.size,
-      0,
+  const backgroundBundleSize = backgroundFileList.reduce(
+    (result, file) => result + file.size,
+    0,
+  );
+
+  const uiBundleSize = uiFileList.reduce(
+    (result, file) => result + file.size,
+    0,
+  );
+
+  const result = {
+    background: {
+      name: 'background',
+      size: backgroundBundleSize,
+      fileList: backgroundFileList,
+    },
+    ui: {
+      name: 'ui',
+      size: uiBundleSize,
+      fileList: uiFileList,
+    },
+  };
+
+  if (out) {
+    const outPath = `${out}/bundle_size.json`;
+    const outputDirectory = path.dirname(outPath);
+    const existingParentDirectory = await getFirstParentDirectoryThatExists(
+      outputDirectory,
     );
-
-    const uiBundleSize = uiFileList.reduce(
-      (result, file) => result + file.size,
-      0,
-    );
-
-    const result = {
-      background: {
-        name: 'background',
-        size: backgroundBundleSize,
-        fileList: backgroundFileList,
-      },
-      ui: {
-        name: 'ui',
-        size: uiBundleSize,
-        fileList: uiFileList,
-      },
-    };
-
-    if (out) {
-      const outPath = `${out}/bundle_size.json`;
-      const outputDirectory = path.dirname(outPath);
-      const existingParentDirectory = await getFirstParentDirectoryThatExists(
-        outputDirectory,
-      );
-      if (!(await isWritable(existingParentDirectory))) {
-        throw new Error('Specified output file directory is not writable');
-      }
-      if (outputDirectory !== existingParentDirectory) {
-        await fs.mkdir(outputDirectory, { recursive: true });
-      }
-      await fs.writeFile(outPath, JSON.stringify(result, null, 2));
-      await fs.writeFile(
-        `${out}/bundle_size_stats.json`,
-        JSON.stringify(
-          {
-            background: backgroundBundleSize,
-            ui: uiBundleSize,
-            timestamp: new Date().getTime(),
-          },
-          null,
-          2,
-        ),
-      );
-    } else {
-      console.log(JSON.stringify(result, null, 2));
+    if (!(await isWritable(existingParentDirectory))) {
+      throw new Error('Specified output file directory is not writable');
     }
-  });
+    if (outputDirectory !== existingParentDirectory) {
+      await fs.mkdir(outputDirectory, { recursive: true });
+    }
+    await fs.writeFile(outPath, JSON.stringify(result, null, 2));
+  } else {
+    console.log(JSON.stringify(result, null, 2));
+  }
 }
 
 main().catch((error) => {

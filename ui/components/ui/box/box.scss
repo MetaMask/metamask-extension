@@ -15,11 +15,31 @@ $attributesToApplyExtraProperties: margin;
         #{$attribute}: utilities.get-spacing($size);
       }
     }
+    // breakpoint classes
+    @each $breakpoint, $min-width in $screen-sizes-map {
+      @each $size in design-system.$sizes-numeric {
+        @media screen and (min-width: $min-width) {
+          &--#{$breakpoint}\:#{$attribute}-#{$size} {
+            #{$attribute}: utilities.get-spacing($size);
+          }
+        }
+      }
+    }
 
     @each $size in design-system.$sizes-numeric {
       @each $direction in design-system.$directions {
         &--#{$attribute}-#{$direction}-#{$size} {
           #{$attribute}-#{$direction}: utilities.get-spacing($size);
+        }
+      }
+      // breakpoint classes
+      @each $breakpoint, $min-width in $screen-sizes-map {
+        @each $direction in design-system.$directions {
+          @media screen and (min-width: $min-width) {
+            &--#{$breakpoint}\:#{$attribute}-#{$direction}-#{$size} {
+              #{$attribute}-#{$direction}: utilities.get-spacing($size);
+            }
+          }
         }
       }
     }
@@ -29,10 +49,31 @@ $attributesToApplyExtraProperties: margin;
         &--#{$attribute}-#{$property} {
           #{$attribute}: $property;
         }
+      }
 
+      @each $property in $extraProperties {
         @each $direction in design-system.$directions {
           &--#{$attribute}-#{$direction}-#{$property} {
             #{$attribute}-#{$direction}: $property;
+          }
+        }
+      }
+
+      // breakpoint classes
+      @each $breakpoint, $min-width in $screen-sizes-map {
+        @each $property in $extraProperties {
+          @media screen and (min-width: $min-width) {
+            &--#{$breakpoint}\:#{$attribute}-#{$property} {
+              #{$attribute}: $property;
+            }
+          }
+
+          @each $direction in design-system.$directions {
+            @media screen and (min-width: $min-width) {
+              &--#{$breakpoint}\:#{$attribute}-#{$direction}-#{$property} {
+                #{$attribute}-#{$direction}: $property;
+              }
+            }
           }
         }
       }
@@ -41,20 +82,50 @@ $attributesToApplyExtraProperties: margin;
 
   // Borders
   @each $size in design-system.$sizes-numeric {
-    &--border-size-#{$size} {
+    &--border-width-#{$size} {
       border-width: #{$size}px;
     }
   }
-
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $size in design-system.$sizes-numeric {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:border-width-#{$size} {
+          border-width: #{$size}px;
+        }
+      }
+    }
+  }
+  // border-color
   @each $variant, $color in design-system.$color-map {
     &--border-color-#{$variant} {
       border-color: var($color);
     }
   }
-
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $variant, $color in design-system.$color-map {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:border-color-#{$variant} {
+          border-color: var($color);
+        }
+      }
+    }
+  }
+  // border-style
   @each $border-style in design-system.$border-style {
     &--border-style-#{$border-style} {
       border-style: $border-style;
+    }
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $border-style in design-system.$border-style {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:border-style-#{$border-style} {
+          border-style: $border-style;
+        }
+      }
     }
   }
 
@@ -82,10 +153,49 @@ $attributesToApplyExtraProperties: margin;
     border-radius: 0.75rem;
   }
 
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:rounded-none {
+        border-radius: 0;
+      }
+
+      &--#{$breakpoint}\:rounded-xs {
+        border-radius: 0.125rem;
+      }
+
+      &--#{$breakpoint}\:rounded-sm {
+        border-radius: 0.25rem;
+      }
+
+      &--#{$breakpoint}\:rounded-md {
+        border-radius: 0.375rem;
+      }
+
+      &--#{$breakpoint}\:rounded-lg {
+        border-radius: 0.5rem;
+      }
+
+      &--#{$breakpoint}\:rounded-xl {
+        border-radius: 0.75rem;
+      }
+    }
+  }
+
   // Display and Flex/Grid alignment
   @each $display in design-system.$display {
     &--display-#{$display} {
       display: $display;
+    }
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $display in design-system.$display {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:display-#{$display} {
+          display: $display;
+        }
+      }
     }
   }
 
@@ -94,10 +204,30 @@ $attributesToApplyExtraProperties: margin;
       align-items: $alignment;
     }
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $alignment in design-system.$align-items {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:align-items-#{$alignment} {
+          align-items: $alignment;
+        }
+      }
+    }
+  }
 
   @each $justification in design-system.$justify-content {
     &--justify-content-#{$justification} {
       justify-content: $justification;
+    }
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $justification in design-system.$justify-content {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:justify-content-#{$justification} {
+          justify-content: $justification;
+        }
+      }
     }
   }
 
@@ -106,10 +236,30 @@ $attributesToApplyExtraProperties: margin;
       flex-direction: $direction;
     }
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $direction in design-system.$flex-direction {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:flex-direction-#{$direction} {
+          flex-direction: $direction;
+        }
+      }
+    }
+  }
 
   @each $wrap in design-system.$flex-wrap {
     &--flex-wrap-#{$wrap} {
       flex-wrap: $wrap;
+    }
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $wrap in design-system.$flex-wrap {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:flex-wrap-#{$wrap} {
+          flex-wrap: $wrap;
+        }
+      }
     }
   }
 
@@ -117,9 +267,25 @@ $attributesToApplyExtraProperties: margin;
   &--width-full {
     width: 100%;
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:width-full {
+        width: 100%;
+      }
+    }
+  }
 
   &--height-full {
     height: 100%;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-full {
+        height: 100%;
+      }
+    }
   }
 
   @each $fraction, $value in design-system.$fractions {
@@ -131,29 +297,90 @@ $attributesToApplyExtraProperties: margin;
       height: $value;
     }
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $fraction, $value in design-system.$fractions {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:width-#{$fraction} {
+          width: $value;
+        }
+        &--#{$breakpoint}\:height-#{$fraction} {
+          height: $value;
+        }
+      }
+    }
+  }
 
   &--height-screen {
     height: 100vh;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-screen {
+        height: 100vh;
+      }
+    }
   }
 
   &--width-screen {
     width: 100vw;
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:width-screen {
+        width: 100vw;
+      }
+    }
+  }
 
   &--height-max {
     height: max-content;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-max {
+        height: max-content;
+      }
+    }
   }
 
   &--width-max {
     width: max-content;
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-max {
+        height: max-content;
+      }
+    }
+  }
 
   &--height-min {
     height: min-content;
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-min {
+        height: min-content;
+      }
+    }
+  }
 
   &--width-min {
     width: min-content;
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:width-min {
+        width: min-content;
+      }
+    }
   }
 
   // text
@@ -162,11 +389,31 @@ $attributesToApplyExtraProperties: margin;
       text-align: $alignment;
     }
   }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $alignment in design-system.$text-align {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\:text-align-#{$alignment} {
+          text-align: $alignment;
+        }
+      }
+    }
+  }
 
   // background
   @each $variant, $color in design-system.$color-map {
     &--background-color-#{$variant} {
       background-color: var($color);
+    }
+  }
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @each $variant, $color in design-system.$color-map {
+      @media screen and (min-width: $min-width) {
+        &--#{$breakpoint}\background-color-#{$variant} {
+          background-color: var($color);
+        }
+      }
     }
   }
 }
