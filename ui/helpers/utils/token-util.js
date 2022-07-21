@@ -251,9 +251,9 @@ export async function getAssetDetails(
   // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
   // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
   const transactionDataTokenId =
-    getTokenIdParam(tokenData).toString() ?? getTokenValueParam(tokenData);
+    getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
 
-  const tokenAmount = getTokenValueParam(token);
+  const tokenAmount = getTokenValueParam(tokenData);
   let tokenDetails;
   try {
     tokenDetails = await getTokenStandardAndDetails(
@@ -308,24 +308,24 @@ export async function getAssetDetails(
     }
 
     // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
-    console.log(
-      `{
-      tokenAmount,
-      toAddress,
-      tokenId: transactionDataTokenId.toString(),
-      ...tokenDetails,
-    }`,
-      {
-        tokenAmount,
-        toAddress,
-        tokenId: transactionDataTokenId.toString(),
-        ...tokenDetails,
-      },
-    );
+    // console.log(
+    //   `{
+    //   tokenAmount,
+    //   toAddress,
+    //   tokenId: transactionDataTokenId.toString(),
+    //   ...tokenDetails,
+    // }`,
+    //   {
+    //     tokenAmount,
+    //     toAddress,
+    //     tokenId: transactionDataTokenId.toString(),
+    //     ...tokenDetails,
+    //   },
+    // );
     return {
       tokenAmount,
       toAddress,
-      tokenId: transactionDataTokenId.toString(),
+      tokenId: transactionDataTokenId?.toString(),
       decimals:
         tokenDetails.decimals && Number(tokenDetails.decimals?.toString(10)),
       ...tokenDetails,

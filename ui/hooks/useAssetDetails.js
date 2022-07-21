@@ -56,16 +56,16 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     collectibles,
   ]);
 
-  // let assetStandard,
-  //   assetName,
-  //   assetAddress,
-  //   tokenSymbol,
-  //   decimals,
-  //   tokenImage,
-  //   userBalance,
-  //   toAddress,
-  //   tokenAmount,
-  //   tokenId;
+  let assetStandard,
+    assetName,
+    assetAddress,
+    tokenSymbol,
+    decimals,
+    tokenImage,
+    userBalance,
+    toAddress,
+    tokenAmount,
+    tokenId;
 
   if (currentAsset) {
     const {
@@ -74,34 +74,34 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       image,
       name,
       balance,
-      tokenId,
-      toAddress,
-      tokenAmount,
-      decimals,
+      tokenId: _tokenId,
+      toAddress: _toAddress,
+      tokenAmount: _tokenAmount,
+      decimals: _decimals,
     } = currentAsset;
 
-    // assetStandard = standard;
-    // assetAddress = tokenAddress;
-    // tokenSymbol = symbol ?? '';
-    // tokenImage = image;
-    // tokenId = tokenId;
-    // toAddress = toAddress;
-    // userBalance = balance;
-    // assetName = name;
-    // tokenAmount = tokenAmount;
-    // decimals = Number(currentAssetDecimals?.toString(10));
-
-    return {
-      toAddress,
-      tokenId,
-      decimals,
-      tokenAmount,
-      assetAddress: tokenAddress,
-      assetStandard: standard,
-      tokenSymbol: symbol ?? '',
-      tokenImage: image,
-      userBalance: balance,
-      assetName: name,
-    };
+    assetStandard = standard;
+    assetAddress = tokenAddress;
+    tokenSymbol = symbol ?? '';
+    tokenImage = image;
+    tokenId = _tokenId;
+    toAddress = _toAddress;
+    tokenAmount = _tokenAmount;
+    decimals = _decimals;
+    userBalance = balance;
+    assetName = name;
   }
+
+  return {
+    toAddress,
+    tokenId,
+    decimals,
+    tokenAmount,
+    assetAddress,
+    assetStandard,
+    tokenSymbol,
+    tokenImage,
+    userBalance,
+    assetName,
+  };
 }
