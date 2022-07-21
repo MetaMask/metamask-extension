@@ -51,8 +51,7 @@ async function withFixtures(options, testSuite) {
     let contractRegistry;
 
     if (smartContract) {
-      const debugGanacheSeeder = true;
-      const ganacheSeeder = new GanacheSeeder(debugGanacheSeeder);
+      const ganacheSeeder = new GanacheSeeder(true);
       await ganacheSeeder.deploySmartContract(smartContract);
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
