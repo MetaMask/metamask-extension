@@ -54,7 +54,7 @@ async function main() {
   const backgroundFileList = [];
   const uiFileList = [];
 
-  const files = fs.readdir(distFolder);
+  const files = await fs.readdir(distFolder);
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     if (CommonFileRegex.test(file)) {
