@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
-import * as tokenUtils from '../helpers/utils/token-util';
+import * as Actions from '../store/actions';
 import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
 import { useAssetDetails } from './useAssetDetails';
 
@@ -33,12 +33,14 @@ const renderUseAssetDetails = ({
 };
 
 describe('useAssetDetails', () => {
-  let getAssetDetailsStub;
+  let getTokenStandardAndDetailsStub;
+
   beforeEach(() => {
-    getAssetDetailsStub = jest
-      .spyOn(tokenUtils, 'getAssetDetails')
+    getTokenStandardAndDetailsStub = jest
+      .spyOn(Actions, 'getTokenStandardAndDetails')
       .mockImplementation(() => Promise.resolve({}));
   });
+
   it('should return object with tokenSymbol set to an empty string, when getAssetDetails returns and empty object', async () => {
     const toAddress = '000000000000000000000000000000000000dead';
     const tokenAddress = '0x1';
@@ -65,7 +67,6 @@ describe('useAssetDetails', () => {
     const userAddress = '0xf04a5cc80b1e94c69b48f5ee68a08cd2f09a7c3e';
     const tokenAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
     const toAddress = '000000000000000000000000000000000000dead';
-    const tokenAmount = '0.0000000000000005';
     const transactionData = `0xa9059cbb000000000000000000000000${toAddress}00000000000000000000000000000000000000000000000000000000000001f4`;
 
     const standard = ERC20;
@@ -73,14 +74,12 @@ describe('useAssetDetails', () => {
     const balance = '1';
     const decimals = 18;
 
-    getAssetDetailsStub.mockImplementation(() =>
+    getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
-        symbol,
         balance,
+        symbol,
         decimals,
-        tokenAmount,
-        toAddress: `0x${toAddress}`,
       }),
     );
 
@@ -120,14 +119,12 @@ describe('useAssetDetails', () => {
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
     const standard = ERC721;
 
-    getAssetDetailsStub.mockImplementation(() =>
+    getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
         symbol,
         name,
-        tokenId,
         image,
-        toAddress: `0x${toAddress}`,
       }),
     );
 
@@ -166,12 +163,10 @@ describe('useAssetDetails', () => {
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
     const standard = ERC1155;
 
-    getAssetDetailsStub.mockImplementation(() =>
+    getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
-        tokenId,
         image,
-        toAddress: `0x${toAddress}`,
       }),
     );
 

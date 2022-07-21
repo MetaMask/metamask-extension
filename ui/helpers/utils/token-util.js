@@ -7,7 +7,7 @@ import {
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC1155, ERC721 } from '../../../shared/constants/transaction';
+import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -250,7 +250,7 @@ export async function getAssetDetails(
 
   // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
   // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
-  const tokenId =
+  let tokenId =
     getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
 
   const toAddress = getTokenAddressParam(tokenData);
@@ -293,6 +293,8 @@ export async function getAssetDetails(
           standard,
         };
       }
+    } else if (standard === ERC20) {
+      tokenId = undefined;
     }
   }
 
