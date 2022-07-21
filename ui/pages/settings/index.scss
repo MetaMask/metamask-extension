@@ -70,7 +70,7 @@
       &__list {
         background: var(--color-background-default);
         box-sizing: border-box;
-        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
         border-radius: 6px;
         position: absolute;
         width: 100%;
