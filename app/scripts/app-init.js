@@ -5,9 +5,7 @@
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
 
-// Variable testMode is set to true when preparing test build.
-// This helps in changing service worker execution in test environment.
-const testMode = false;
+const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
 
@@ -53,12 +51,13 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
-  const applyLavaMoat = true;
+  const applyLavaMoat = process.env.APPLY_LAVAMOAT;
 
   loadFile('./globalthis.js');
   loadFile('./sentry-install.js');
 
-  if (applyLavaMoat) {
+  // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
+  if (testMode || applyLavaMoat) {
     loadFile('./runtime-lavamoat.js');
     loadFile('./lockdown-more.js');
     loadFile('./policy-load.js');
@@ -70,12 +69,9 @@ function importAllScripts() {
     loadFile('./runtime-cjs.js');
   }
 
-  const fileList = [
-    // The list of files is injected at build time by replacing comment below with comma separated strings of file names
-    // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
-    /** FILE NAMES */
-  ];
-
+  // This environment variable is set to a string of comma-separated relative file paths.
+  const rawFileList = process.env.FILE_NAMES;
+  const fileList = rawFileList.split(',');
   fileList.forEach((fileName) => loadFile(fileName));
 
   // Import all required resources
