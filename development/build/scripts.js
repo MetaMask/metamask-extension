@@ -665,11 +665,9 @@ function createNormalBundle({
   destFilepath,
   devMode,
   entryFilepath,
-  extraEntries = [],
   ignoredFiles,
   label,
   policyOnly,
-  modulesToExpose,
   shouldLintFenceFiles,
   testing,
   version,
@@ -703,14 +701,7 @@ function createNormalBundle({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...extraEntries];
-    if (entryFilepath) {
-      bundlerOpts.entries.push(entryFilepath);
-    }
-
-    if (modulesToExpose) {
-      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
-    }
+    bundlerOpts.entries = [entryFilepath];
 
     // instrument pipeline
     events.on('configurePipeline', ({ pipeline }) => {
