@@ -28,7 +28,11 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import { ERC1155, ERC20, ERC721 } from '../../../helpers/constants/common';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '../../../../shared/constants/transaction';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -204,7 +208,7 @@ export default class ConfirmApproveContent extends Component {
           </div>
           <div className="confirm-approve-content__medium-text">
             {isSetApproveForAll
-              ? `${t('allOfYour', [titleTokenDescription])} `
+              ? t('allOfYour', [titleTokenDescription])
               : titleTokenDescription}
           </div>
         </div>
@@ -453,6 +457,7 @@ export default class ConfirmApproveContent extends Component {
       chainId,
       assetStandard,
       tokenSymbol,
+      isSetApproveForAll,
     } = this.props;
     const { t } = this.context;
     let titleTokenDescription = t('token');
@@ -479,7 +484,10 @@ export default class ConfirmApproveContent extends Component {
       titleTokenDescription = unknownTokenLink;
     }
 
-    if (assetStandard === ERC20 || (tokenSymbol && !tokenId)) {
+    if (
+      assetStandard === ERC20 ||
+      (tokenSymbol && !tokenId && !isSetApproveForAll)
+    ) {
       titleTokenDescription = tokenSymbol;
     } else if (
       assetStandard === ERC721 ||
@@ -488,9 +496,9 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : null;
+      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
       if (assetName || tokenSymbol) {
-        titleTokenDescription = `${assetName ?? tokenSymbol} ${tokenIdWrapped}`;
+        titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
       } else {
         const unknownNFTBlockExplorerLink = getTokenTrackerLink(
           tokenAddress,

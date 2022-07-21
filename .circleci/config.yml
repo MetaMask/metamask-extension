@@ -136,6 +136,9 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
+      - stats-module-load-init:
+          requires:
+            - prep-build-test-mv3
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -143,7 +146,9 @@ workflows:
             - prep-build-beta
             - prep-build-flask
             - prep-build-storybook
+            - prep-build-test-mv3
             - benchmark
+            - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
           filters:
@@ -588,6 +593,40 @@ jobs:
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+
+  stats-module-load-init:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Run page load benchmark
+          command: |
+            mkdir -p test-artifacts/chrome/mv3
+            cp -R development/charts/flamegraph test-artifacts/chrome/mv3/initialisation
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
+            cp -R development/charts/table test-artifacts/chrome/mv3/load_time
+      - run:
+          name: Run page load benchmark
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

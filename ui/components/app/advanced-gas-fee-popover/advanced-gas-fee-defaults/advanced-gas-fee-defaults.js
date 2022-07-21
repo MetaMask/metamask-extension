@@ -78,7 +78,9 @@ const AdvancedGasFeeDefaults = () => {
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.ROW}
-      margin={[4, 2, 0, 2]}
+      marginTop={4}
+      marginLeft={2}
+      marginRight={2}
       className="advanced-gas-fee-defaults"
     >
       <label className="advanced-gas-fee-defaults__label">

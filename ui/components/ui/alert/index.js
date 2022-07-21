@@ -1,56 +1,49 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePrevious } from '../../../hooks/usePrevious';
 import { MILLISECOND } from '../../../../shared/constants/time';
 
-class Alert extends Component {
-  state = {
-    visible: false,
-    msg: false,
-    className: '',
-  };
+function Alert(props) {
+  const [visible, setVisible] = useState(false);
+  const [className, setClassName] = useState('');
+  const lastVisible = usePrevious(props.visible);
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible) {
-      this.animateIn(nextProps.msg);
-    } else if (this.props.visible && !nextProps.visible) {
-      this.animateOut();
+  useEffect(() => {
+    const animateIn = () => {
+      setClassName('visible');
+      setVisible(true);
+    };
+
+    const animateOut = () => {
+      setClassName('hidden');
+
+      setTimeout((_) => {
+        setVisible(false);
+      }, MILLISECOND * 500);
+    };
+
+    if (!lastVisible && props.visible) {
+      animateIn(props.msg);
+    } else if (lastVisible && !props.visible) {
+      animateOut();
     }
-  }
+  }, [lastVisible, props.msg, props.visible]);
 
-  animateIn(msg) {
-    this.setState({
-      msg,
-      visible: true,
-      className: 'visible',
-    });
-  }
-
-  animateOut() {
-    this.setState({
-      msg: null,
-      className: 'hidden',
-    });
-
-    setTimeout((_) => {
-      this.setState({ visible: false });
-    }, MILLISECOND * 500);
-  }
-
-  render() {
-    if (this.state.visible) {
-      return (
-        <div className={classnames('global-alert', this.state.className)}>
-          <a className="msg">{this.state.msg}</a>
-        </div>
-      );
-    }
+  if (!visible) {
     return null;
   }
+
+  return (
+    <div className={classnames('global-alert', className)}>
+      <a className="msg">{props.msg}</a>
+    </div>
+  );
 }
 
 Alert.propTypes = {
   visible: PropTypes.bool.isRequired,
-  msg: PropTypes.string /* eslint-disable-line react/no-unused-prop-types */,
+  msg: PropTypes.string,
 };
+
 export default Alert;
