@@ -38,7 +38,7 @@
 
     @media screen and (max-width: $break-small) {
       padding: 0 14px;
-      height: 48px;
+      height: 40px;
     }
 
     &--clickable {
@@ -65,7 +65,11 @@
     }
 
     &__text {
-      @include Paragraph;
+      @include H6;
+
+      @include screen-md-min {
+        @include Paragraph;
+      }
 
       color: var(--color-text-default);
     }
@@ -121,10 +125,6 @@
     position: relative;
     flex-direction: column;
     z-index: 200;
-
-    @media (max-height: 600px) {
-      max-height: 236px;
-    }
   }
 
   &__accounts {
@@ -134,7 +134,7 @@
     scrollbar-width: auto;
 
     @media screen and (max-width: $break-small) {
-      max-height: 200px;
+      max-height: 240px;
     }
 
     .keyring-label {
@@ -231,7 +231,11 @@
   }
 
   &__name {
-    @include H4;
+    @include H6;
+
+    @include screen-md-min {
+      @include Paragraph;
+    }
 
     color: var(--color-text-default);
     text-overflow: ellipsis;
