@@ -37,11 +37,6 @@ describe('MV3 - load times in ms', function () {
         const timestampAfterAction = new Date();
         loadingTimes.createAccount =
           timestampAfterAction - timestampBeforeAction;
-
-        assert.equal(
-          Object.prototype.hasOwnProperty.call(loadingTimes, 'createAccount'),
-          true,
-        );
       },
     );
   });
@@ -120,11 +115,6 @@ describe('MV3 - load times in ms', function () {
         await driver.waitForSelector('.transaction-status--confirmed');
         const timestampAfterAction = new Date();
         loadingTimes.sendTx = timestampAfterAction - timestampBeforeAction;
-
-        assert.equal(
-          Object.prototype.hasOwnProperty.call(loadingTimes, 'sendTx'),
-          true,
-        );
       },
     );
   });
