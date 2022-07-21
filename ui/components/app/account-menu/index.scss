@@ -133,8 +133,14 @@
     max-height: 256px;
     scrollbar-width: auto;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       max-height: 240px;
+    }
+
+    // If window is smaller than extension popover height
+    // reduce scrollable accounts window height
+    @media screen and (max-height: 600px) {
+      max-height: 130px;
     }
 
     .keyring-label {
