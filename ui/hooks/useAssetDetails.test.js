@@ -39,7 +39,7 @@ describe('useAssetDetails', () => {
       .spyOn(tokenUtils, 'getAssetDetails')
       .mockImplementation(() => Promise.resolve({}));
   });
-  it('should return object with tokenSymbol set to and empty string, when getAssetDetails returns and empty object', async () => {
+  it('should return object with tokenSymbol set to an empty string, when getAssetDetails returns and empty object', async () => {
     const toAddress = '000000000000000000000000000000000000dead';
     const tokenAddress = '0x1';
 
@@ -53,25 +53,19 @@ describe('useAssetDetails', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toStrictEqual({
-      assetAddress: tokenAddress,
-      assetName: undefined,
-      assetStandard: undefined,
-      decimals: undefined,
-      toAddress: `0x${toAddress}`,
-      tokenAmount: undefined,
-      tokenId: undefined,
-      tokenImage: undefined,
-      tokenSymbol: '',
-      tokenValue: undefined,
-      userBalance: undefined,
-    });
+    expect(result.current).toEqual(
+      expect.objectContaining({
+        assetAddress: tokenAddress,
+        tokenSymbol: '',
+      }),
+    );
   });
 
   it('should return object with correct tokenValues for an ERC20 token', async () => {
     const userAddress = '0xf04a5cc80b1e94c69b48f5ee68a08cd2f09a7c3e';
     const tokenAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
     const toAddress = '000000000000000000000000000000000000dead';
+    const tokenAmount = '0.0000000000000005';
     const transactionData = `0xa9059cbb000000000000000000000000${toAddress}00000000000000000000000000000000000000000000000000000000000001f4`;
 
     const standard = ERC20;
@@ -85,6 +79,8 @@ describe('useAssetDetails', () => {
         symbol,
         balance,
         decimals,
+        tokenAmount,
+        toAddress: `0x${toAddress}`,
       }),
     );
 
@@ -106,7 +102,6 @@ describe('useAssetDetails', () => {
       tokenId: undefined,
       tokenImage: undefined,
       tokenSymbol: symbol,
-      tokenValue: undefined,
       userBalance: balance,
     });
   });
@@ -114,10 +109,10 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC721 token', async () => {
     const tokenAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
     const toAddress = '000000000000000000000000000000000000dead';
-    const tokenId = 12;
-    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000${tokenId.toString(
-      16,
-    )}`;
+    const tokenId = '12';
+    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000${Number(
+      tokenId,
+    ).toString(16)}`;
 
     const symbol = 'BAYC';
     const name = 'BoredApeYachtClub';
@@ -132,6 +127,7 @@ describe('useAssetDetails', () => {
         name,
         tokenId,
         image,
+        toAddress: `0x${toAddress}`,
       }),
     );
 
@@ -148,10 +144,9 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: tokenId.toString(),
+      tokenId,
       tokenImage: image,
       tokenSymbol: symbol,
-      tokenValue: undefined,
       userBalance: undefined,
       tokenAmount: undefined,
     });
@@ -160,8 +155,10 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC1155 token', async () => {
     const tokenAddress = '0x76BE3b62873462d2142405439777e971754E8E77';
     const toAddress = '000000000000000000000000000000000000dead';
-    const tokenId = 802;
-    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000${tokenId.toString(
+    const tokenId = '802';
+    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000${Number(
+      tokenId,
+    ).toString(
       16,
     )}000000000000000000000000000000000000000000000000000000000000009c00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000`;
 
@@ -174,6 +171,7 @@ describe('useAssetDetails', () => {
         standard,
         tokenId,
         image,
+        toAddress: `0x${toAddress}`,
       }),
     );
 
@@ -190,10 +188,9 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: tokenId.toString(),
+      tokenId,
       tokenImage: image,
       tokenSymbol: '',
-      tokenValue: undefined,
       userBalance: undefined,
       tokenAmount: undefined,
     });

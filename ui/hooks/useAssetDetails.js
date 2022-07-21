@@ -56,17 +56,16 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     collectibles,
   ]);
 
-  let assetStandard,
-    assetName,
-    assetAddress,
-    tokenSymbol,
-    decimals,
-    tokenImage,
-    userBalance,
-    tokenValue,
-    toAddress,
-    tokenAmount,
-    tokenId;
+  // let assetStandard,
+  //   assetName,
+  //   assetAddress,
+  //   tokenSymbol,
+  //   decimals,
+  //   tokenImage,
+  //   userBalance,
+  //   toAddress,
+  //   tokenAmount,
+  //   tokenId;
 
   if (currentAsset) {
     const {
@@ -75,42 +74,34 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       image,
       name,
       balance,
-      decimals: currentAssetDecimals,
+      tokenId,
+      toAddress,
+      tokenAmount,
+      decimals,
     } = currentAsset;
 
-    const tokenData = parseStandardTokenTransactionData(transactionData);
-    assetStandard = standard;
-    assetAddress = tokenAddress;
-    tokenSymbol = symbol ?? '';
-    tokenImage = image;
+    // assetStandard = standard;
+    // assetAddress = tokenAddress;
+    // tokenSymbol = symbol ?? '';
+    // tokenImage = image;
+    // tokenId = tokenId;
+    // toAddress = toAddress;
+    // userBalance = balance;
+    // assetName = name;
+    // tokenAmount = tokenAmount;
+    // decimals = Number(currentAssetDecimals?.toString(10));
 
-    toAddress = getTokenAddressParam(tokenData);
-    if (assetStandard === ERC721 || assetStandard === ERC1155) {
-      assetName = name;
-      // in the past I've seen the tokenId value show up in the _value param of the parsed tokenData
-      // not seeing this any more, but in an abundance of caution I will leave it as a fallback here.
-      tokenId = getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
-    }
-    if (assetStandard === ERC20) {
-      userBalance = balance;
-      decimals = Number(currentAssetDecimals?.toString(10));
-      tokenAmount =
-        tokenData &&
-        calcTokenAmount(getTokenValueParam(tokenData), decimals).toString(10);
-    }
+    return {
+      toAddress,
+      tokenId,
+      decimals,
+      tokenAmount,
+      assetAddress: tokenAddress,
+      assetStandard: standard,
+      tokenSymbol: symbol ?? '',
+      tokenImage: image,
+      userBalance: balance,
+      assetName: name,
+    };
   }
-
-  return {
-    assetStandard,
-    assetName,
-    assetAddress,
-    userBalance,
-    tokenSymbol,
-    decimals,
-    tokenImage,
-    tokenValue,
-    toAddress,
-    tokenAmount,
-    tokenId,
-  };
 }
