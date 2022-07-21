@@ -341,6 +341,12 @@ export default class MetamaskController extends EventEmitter {
         },
       ));
 
+    this.captureException = (...args) => {
+      return this.getState()?.metamask?.participateInMetaMetrics
+        ? captureException(...args)
+        : undefined;
+    };
+
     this.metaMetricsController = new MetaMetricsController({
       segment,
       preferencesStore: this.preferencesController.store,
@@ -357,7 +363,7 @@ export default class MetamaskController extends EventEmitter {
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
-      captureException,
+      captureException: this.captureException.bind(this),
     });
 
     this.on('update', (update) => {
@@ -595,7 +601,7 @@ export default class MetamaskController extends EventEmitter {
               this.accountTracker.store.getState().accounts || {},
             ).length;
 
-            captureException(
+            this.captureException(
               new Error(
                 `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${identitiesCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
               ),
