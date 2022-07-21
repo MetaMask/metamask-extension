@@ -225,7 +225,7 @@ export default function BuildQuote({
   const tokensToSearchSwapTo = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
-    shuffledTokensList: [],
+    shuffledTokensList,
     tokenBucketPriority: TOKEN_BUCKET_PRIORITY.TOP,
   });
   const selectedToToken =
