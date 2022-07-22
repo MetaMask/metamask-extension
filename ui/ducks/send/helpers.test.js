@@ -2,11 +2,11 @@ import { ethers } from 'ethers';
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   ASSET_TYPES,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import { getInitialSendStateWithExistingTxState } from '../../../test/jest/mocks';
-import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 import {
   generateERC20TransferData,
   generateERC721TransferData,
