@@ -2007,6 +2007,7 @@ export default class TransactionController extends EventEmitter {
         estimateUsed,
       },
       defaultGasEstimates,
+      originalType,
       metamaskNetworkId: network,
     } = txMeta;
     const { transactions } = this.store.getState();
@@ -2101,7 +2102,7 @@ export default class TransactionController extends EventEmitter {
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
     } else if (type === TRANSACTION_TYPES.RETRY) {
-      transactionType = TRANSACTION_TYPES.RETRY;
+      transactionType = originalType;
     } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
       transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     } else if (contractInteractionTypes) {
