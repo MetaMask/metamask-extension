@@ -252,6 +252,8 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {number} id - An internally unique tx identifier.
  * @property {number} time - Time the transaction was first suggested, in unix
  *  epoch time (ms).
+ * @property {string} contractMethodName - A string representing a name of
+ * transaction contract method.
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
  * @property {TransactionStatusString} status - The current status of the
