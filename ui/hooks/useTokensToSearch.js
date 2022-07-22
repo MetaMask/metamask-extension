@@ -40,11 +40,16 @@ export function getRenderableTokenData(
   useTokenDetection,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
+  let contractExchangeRate;
+  if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
+    contractExchangeRate = 1;
+  } else if (string && conversionRate > 0) {
+    // This condition improves performance significantly.
+    contractExchangeRate = contractExchangeRates[toChecksumHexAddress(address)];
+  }
   const formattedFiat =
     getTokenFiatAmount(
-      isSwapsDefaultTokenSymbol(symbol, chainId)
-        ? 1
-        : contractExchangeRates[toChecksumHexAddress(address)],
+      contractExchangeRate,
       conversionRate,
       currentCurrency,
       string,
