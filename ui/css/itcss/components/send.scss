@@ -15,7 +15,7 @@
 
 .send-screen-card {
   background-color: var(--color-background-default);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -49,7 +49,7 @@
   width: 70px;
   height: 70px;
   border: 1px solid var(--color-border-muted);
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   position: absolute;
   top: -35px;
   z-index: 25;
@@ -184,7 +184,7 @@
   height: 307px;
   background-color: var(--color-background-default);
   opacity: 1;
-  box-shadow: var(--color-border-muted) 0 0 5px;
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   z-index: 1050;
   padding: 13px 19px;
   border-radius: 4px;
@@ -200,7 +200,7 @@
   transform: rotate(45deg);
   left: 107px;
   top: 294px;
-  box-shadow: 2px 2px 2px var(--color-border-muted);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
 }
 
 .customize-gas-tooltip-container input[type='number']::-webkit-inner-spin-button {
@@ -326,7 +326,7 @@
     width: 498px;
     height: 605px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -406,7 +406,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -617,7 +617,7 @@
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
       background-color: var(--color-background-default);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -705,7 +705,7 @@
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
       background-color: var(--color-background-default);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
       top: 65px;
       left: 0;
       box-sizing: content-box;
@@ -864,7 +864,7 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column;
 

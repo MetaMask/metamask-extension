@@ -95,11 +95,13 @@ async function start() {
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
   const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
-  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">MV3 Background Module Init Stats</a>`;
+  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
   const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
-  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">MV3 UI Init Stats</a>`;
+  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
   const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
   const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
   const e2eActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/user_actions/stats.json`;
   const e2eActionsStatsLink = `<a href="${e2eActionsStatsUrl}">E2e Actions Stats</a>`;
 
@@ -114,6 +116,7 @@ async function start() {
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,
     `mv3: ${moduleLoadStatsLink}`,
+    `mv3: ${bundleSizeStatsLink}`,
     `mv3: ${e2eActionsStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,

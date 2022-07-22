@@ -165,7 +165,8 @@ export default function CollectiblesItems({
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
-                margin={[0, 0, 0, 2]}
+                marginTop={0}
+                marginBottom={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
                   collectibles.length
@@ -239,7 +240,13 @@ export default function CollectiblesItems({
 
   return (
     <div className="collectibles-items">
-      <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
+      <Box
+        paddingTop={6}
+        paddingBottom={6}
+        paddingLeft={4}
+        paddingRight={4}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
         <>
           {collectionsKeys.map((key) => {
             const {
