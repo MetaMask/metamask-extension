@@ -50,7 +50,7 @@
       width: 460px;
       background: var(--color-background-default);
       border: 1px solid var(--color-border-muted);
-      box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
       border-radius: 8px;
       height: 620px;
     }
