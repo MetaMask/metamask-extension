@@ -17,7 +17,7 @@
     "build:dev": "node development/build/index.js",
     "start:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
-    "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ENABLE_MV3=true node test/e2e/mv3/stats.js",
+    "mv3:stats:chrome": "SELENIUM_BROWSER=chrome ENABLE_MV3=true node test/e2e/mv3/mv3-perf-stats/index.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test",
     "build:test:flask": "yarn build test --build-type flask",
