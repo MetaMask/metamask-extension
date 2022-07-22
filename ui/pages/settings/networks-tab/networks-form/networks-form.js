@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
+import { addHexPrefix } from 'ethereumjs-util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   isPrefixedFormattedHexString,
@@ -518,6 +519,7 @@ const NetworksForm = ({
         } catch {
           // error
         }
+        console.log(chainId);
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,
@@ -525,7 +527,7 @@ const NetworksForm = ({
             url: rpcUrlOrigin,
           },
           properties: {
-            chain_id: chainId,
+            chain_id: addHexPrefix(chainId.toString(16)),
             network_name: networkName,
             network: rpcUrlOrigin,
             symbol: ticker,
