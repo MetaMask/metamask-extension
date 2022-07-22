@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`BaseAvatar should render correctly 1`] = `
-<div>
-  <div
-    class="box base-avatar  --size-xs box--flex-direction-row"
-  />
-</div>
-`;
