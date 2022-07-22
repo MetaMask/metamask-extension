@@ -388,9 +388,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
         // log error so we dont break the pipeline
         if (!dataPersistenceFailing) {
           dataPersistenceFailing = true;
-          if (state.data.metamask.participateInMetaMetrics) {
-            captureException(err);
-          }
+          captureException(err);
         }
         log.error('error setting state in local store:', err);
       }
