@@ -96,6 +96,7 @@
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
+        "eslint>debug": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "typescript": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
@@ -146,6 +147,11 @@
       },
       "globals": {
         "Buffer": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "packages": {
+        "string.prototype.matchall>has-symbols": true
       }
     },
     "tsutils": {
