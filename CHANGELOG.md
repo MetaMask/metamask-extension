@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.18.0]
 ### Added
 - Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010)) 
+- Add warning when performing a Send directly to a token contract([#13588](https://github.com/MetaMask/metamask-extension/pull/13588))
 
 ### Changed
 - Update Optimism ChainID from Kovan to Goerli ([#15119](https://github.com/MetaMask/metamask-extension/pull/15119))
@@ -18,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix Chinese translation for the message of Importing repeated tokens ([#14994](https://github.com/MetaMask/metamask-extension/pull/14994))
 - Fix Japanese translation for the word Sign ([#15078](https://github.com/MetaMask/metamask-extension/pull/15078))
 - Fix partially the error "Seedphrase is invalid" by disabling Seedphrase Import button after switching the Seedphrase length ([#15139](https://github.com/MetaMask/metamask-extension/pull/15139))
+- Fix Edit Transaction flow by ensuring that changing a tx from a Transfer to a Send resets data and updates tx type ([#15248](https://github.com/MetaMask/metamask-extension/pull/15248))
+- Fix UI on Import Seedphrase page by disabling Import button, if any of the characters of the Seedphrase is in uppercase ([#15186](https://github.com/MetaMask/metamask-extension/pull/15186))
 
 ## [10.17.0]
 ### Added
