@@ -1,11 +1,11 @@
 import React from 'react';
 import README from './README.mdx';
-import AvatarBase from './avatar-base';
+import BaseAvatar from './base-avatar';
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarBase',
+  title: 'Components/ComponentLibrary/BaseAvatar',
   id: __filename,
-  component: AvatarBase,
+  component: BaseAvatar,
   parameters: {
     docs: {
       page: README,
@@ -19,10 +19,10 @@ export default {
   },
 };
 
-export const DefaultAvatarBase = (args) => {
-  return <AvatarBase {...args} />;
+export const DefaultBaseAvatar = (args) => {
+  return <BaseAvatar {...args} />;
 };
-DefaultAvatarBase.storyName = 'Default';
-DefaultAvatarBase.args = {
+DefaultBaseAvatar.storyName = 'Default';
+DefaultBaseAvatar.args = {
   size: 'xs',
 };
