@@ -937,6 +937,7 @@ const slice = createSlice({
       draftTransaction.asset.type = asset.type;
       draftTransaction.asset.balance = asset.balance;
       draftTransaction.asset.error = asset.error;
+
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
@@ -1963,6 +1964,9 @@ export function updateSendAsset(
       getSelectedAddress(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === ASSET_TYPES.NATIVE) {
+      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
+
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${
@@ -1981,6 +1985,20 @@ export function updateSendAsset(
           initialAssetSet,
         }),
       );
+
+      // This is meant to handle cases where we are editing an unapprovedTx from the background state
+      // and its type is a token method. In such a case, the hex data will be the necessary hex data
+      // for calling the contract transfer method.
+      // Now that we are updating the transaction to be a send of a native asset type, we should
+      // set the hex data of the transaction being editing to be empty.
+      // then the user will not want to send any hex data now that they have change the
+      if (
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
+      ) {
+        await dispatch(actions.updateUserInputHexData(''));
+      }
     } else {
       await dispatch(showLoadingIndication());
       const details = {
@@ -2217,8 +2235,10 @@ export function signTransaction() {
           draftTransaction.history,
         ),
       );
-      dispatch(updateEditableParams(draftTransaction.id, editingTx.txParams));
-      dispatch(
+      await dispatch(
+        updateEditableParams(draftTransaction.id, editingTx.txParams),
+      );
+      await dispatch(
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {

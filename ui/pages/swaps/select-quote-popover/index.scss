@@ -98,7 +98,7 @@
     &--selected {
       color: var(--color-primary-inverse);
       background: linear-gradient(90deg, var(--color-primary-default) 0%, var(--color-primary-alternative) 101.32%);
-      box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
+      box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
       border-radius: 8px;
       height: 64px;
 
