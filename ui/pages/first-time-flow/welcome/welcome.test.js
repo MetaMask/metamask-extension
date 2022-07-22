@@ -15,7 +15,7 @@ describe('Welcome', () => {
     sinon.restore();
   });
 
-  it('routes to select action when participateInMetaMetrics is not initialized', () => {
+  it('routes to the metametrics screen when participateInMetaMetrics is not initialized', () => {
     const props = {
       history: {
         push: sinon.spy(),
@@ -32,11 +32,11 @@ describe('Welcome', () => {
     );
     getStartedButton.simulate('click');
     expect(props.history.push.getCall(0).args[0]).toStrictEqual(
-      '/initialize/select-action',
+      '/initialize/metametrics-opt-in',
     );
   });
 
-  it('routes to correct password when participateInMetaMetrics is initialized', () => {
+  it('routes to select action when participateInMetaMetrics is initialized', () => {
     const props = {
       welcomeScreenSeen: true,
       participateInMetaMetrics: false,
@@ -55,7 +55,7 @@ describe('Welcome', () => {
     );
     getStartedButton.simulate('click');
     expect(props.history.push.getCall(0).args[0]).toStrictEqual(
-      '/initialize/create-password',
+      '/initialize/select-action',
     );
   });
 });
