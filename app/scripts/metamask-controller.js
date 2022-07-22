@@ -97,6 +97,7 @@ import {
 } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -2220,9 +2221,17 @@ export default class MetamaskController extends EventEmitter {
       frequentRpcList,
       identities,
       selectedAddress,
+      useTokenDetection,
     } = this.preferencesController.store.getState();
 
+    const isTokenDetectionInactiveInMainnet =
+      !useTokenDetection &&
+      this.networkController.store.getState().provider.chainId ===
+        MAINNET_CHAIN_ID;
     const { tokenList } = this.tokenListController.state;
+    const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
+      ? STATIC_MAINNET_TOKEN_LIST
+      : tokenList;
 
     const preferences = {
       currentLocale,
@@ -2246,7 +2255,10 @@ export default class MetamaskController extends EventEmitter {
         ].filter((asset) => {
           if (asset.isERC721 === undefined) {
             // the tokenList will be holding only erc20 tokens
-            if (tokenList[asset.address.toLowerCase()] !== undefined) {
+            if (
+              caseInSensitiveTokenList[asset.address?.toLowerCase()] !==
+              undefined
+            ) {
               return true;
             }
           } else if (asset.isERC721 === false) {

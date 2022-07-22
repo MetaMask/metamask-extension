@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
-import contractMap from '@metamask/contract-metadata';
 import { getTokens } from '../../ducks/metamask/metamask';
 import {
   getTokenList,
@@ -14,6 +13,7 @@ import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 import { showModal } from '../../store/actions';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
@@ -42,7 +42,7 @@ export default function TokenDetailsPage() {
 
   const { address: tokenAddress } = useParams();
   const tokenMetadata = isTokenDetectionInactiveInMainnet
-    ? contractMap[tokenAddress]
+    ? STATIC_MAINNET_TOKEN_LIST[tokenAddress.toLowerCase()]
     : tokenList[tokenAddress.toLowerCase()];
   const aggregators = tokenMetadata?.aggregators?.join(', ');
   const imagePath = isTokenDetectionInactiveInMainnet

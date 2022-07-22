@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import contractMap from '@metamask/contract-metadata';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   checkExistingAddresses,
@@ -23,6 +22,7 @@ import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import { TOKEN_STANDARDS } from '../../../shared/constants/transaction';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 
@@ -276,7 +276,7 @@ class ImportToken extends Component {
     });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
-    const isMainnetToken = Object.keys(contractMap).some(
+    const isMainnetToken = Object.keys(STATIC_MAINNET_TOKEN_LIST).some(
       (key) => key.toLowerCase() === customAddress.toLowerCase(),
     );
 
