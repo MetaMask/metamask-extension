@@ -2098,6 +2098,8 @@ export default class TransactionController extends EventEmitter {
     let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
+    } else if (type === TRANSACTION_TYPES.RETRY) {
+      transactionType = TRANSACTION_TYPES.RETRY;
     } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
       transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     } else if (contractInteractionTypes) {
