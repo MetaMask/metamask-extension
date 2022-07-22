@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;

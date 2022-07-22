@@ -5,7 +5,7 @@
   width: 320px;
   border-radius: 4px;
   background: var(--color-background-default);
-  box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
+  box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
   min-width: 150px;
   color: var(--color-text-default);
 
