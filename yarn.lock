@@ -2853,10 +2853,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/design-tokens@^1.6.0", "@metamask/design-tokens@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.8.0.tgz#072f455d23e4650ee81681ef066a99a56a9b573a"
-  integrity sha512-EO0WaMRPcegh2EPWdmAqtFX0aZ7hO0NyJasUQyVrYeN1XNGUC2WzXfqwaI0wSV79NE/WEE3c9g5se+MQMExLew==
+"@metamask/design-tokens@^1.6.0", "@metamask/design-tokens@^1.6.5":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.7.0.tgz#fab069c0101da9e25d35ae051df2ff6bb5ff7a38"
+  integrity sha512-ejakgcsnTlLQmMrKb8XixXgExsYuMjlv71lkqJXeT0wa2oe4skVhB2dZul7Y9W4vYvQzTkwsW2NLfaj273eeEw==
 
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
@@ -5237,6 +5237,19 @@
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
+
+"@weizman/securely@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@weizman/securely/-/securely-1.0.0.tgz#06886b82a696f0e0a0a184a6a00e18c8adb8c5a3"
+  integrity sha512-V1yTYtpRYQPH2jjYs6DfioQw1eYMqIOsFfYG7thpIoETbXw8d1QhXpQbvi8Ldwy/gmLzdwsVHtwfvVnU7pjaog==
+
+"@weizman/snow@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@weizman/snow/-/snow-1.0.1.tgz#0c56f1acf98bb612ffa9b64f3e030411308a872b"
+  integrity sha512-//c0XETm7O4RHU/rG5DNlZLEWDXLi4nXRMq8+OSfdKDR3uxbkOSZpXkcQPDDk+F87qn/YWFrhzjf1CuM27gMww==
+  dependencies:
+    "@weizman/securely" "^1.0.0"
+    is-cross-origin "^1.0.1"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -15122,6 +15135,13 @@ is-core-module@^2.2.0, is-core-module@^2.4.0:
   integrity sha512-TXCMSDsEHMEEZ6eCA8rwRDbLu55MRGmrctljsBX/2v1d9/GzqHOxW5c5oPSgrUt2vBFXebu9rGqckXGPWOlYpg==
   dependencies:
     has "^1.0.3"
+
+is-cross-origin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-cross-origin/-/is-cross-origin-1.0.1.tgz#b73ee0bbcf9f640a4c4f17bcf3cc229e3dae11e8"
+  integrity sha512-l0VqOliZJ0tJTFkNGa1kJilL9q+wCKw2wLX6qoXVtWUFKiqXvLaf4kAu4+9xAg6QJGKc41CDaFYSxmO9Iw1vuw==
+  dependencies:
+    is-window "^1.0.2"
 
 is-data-descriptor@^0.1.4:
   version "0.1.4"
