@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import { INITIALIZE_SELECT_ACTION_ROUTE } from '../../../helpers/constants/routes';
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {
     history: PropTypes.object,
     setParticipateInMetaMetrics: PropTypes.func,
-    nextRoute: PropTypes.string,
     firstTimeSelectionMetaMetricsName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool,
   };
@@ -21,7 +21,6 @@ export default class MetaMetricsOptIn extends Component {
   render() {
     const { trackEvent, t } = this.context;
     const {
-      nextRoute,
       history,
       setParticipateInMetaMetrics,
       firstTimeSelectionMetaMetricsName,
@@ -105,29 +104,7 @@ export default class MetaMetricsOptIn extends Component {
               onCancel={async () => {
                 await setParticipateInMetaMetrics(false);
 
-                try {
-                  if (
-                    participateInMetaMetrics === null ||
-                    participateInMetaMetrics === true
-                  ) {
-                    await trackEvent(
-                      {
-                        category: EVENT.CATEGORIES.ONBOARDING,
-                        event: 'Metrics Opt Out',
-                        properties: {
-                          action: 'Metrics Option',
-                          legacy_event: true,
-                        },
-                      },
-                      {
-                        isOptIn: true,
-                        flushImmediately: true,
-                      },
-                    );
-                  }
-                } finally {
-                  history.push(nextRoute);
-                }
+                history.push(INITIALIZE_SELECT_ACTION_ROUTE);
               }}
               cancelText={t('noThanks')}
               hideCancel={false}
@@ -177,7 +154,7 @@ export default class MetaMetricsOptIn extends Component {
                   );
                   await Promise.all(metrics);
                 } finally {
-                  history.push(nextRoute);
+                  history.push(INITIALIZE_SELECT_ACTION_ROUTE);
                 }
               }}
               submitText={t('affirmAgree')}
