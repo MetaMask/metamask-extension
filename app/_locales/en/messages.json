@@ -3043,10 +3043,10 @@
     "message": "Install Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "To confirm you understand, check the box."
+    "message": "To confirm that you understand, check the box."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "To confirm that you understand, check the box."
+    "message": "To confirm that you understand, check all the boxes."
   },
   "snapInstallWarningKeyAccess": {
     "message": "You are granting $2 key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your $2 accounts and assets. Make sure you trust \"$1\" before proceeding.",
