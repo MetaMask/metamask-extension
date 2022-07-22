@@ -51,17 +51,10 @@ export function getRenderableTokenData(
       symbol,
       true,
     ) || '';
-  const rawFiat =
-    getTokenFiatAmount(
-      isSwapsDefaultTokenSymbol(symbol, chainId)
-        ? 1
-        : contractExchangeRates[toChecksumHexAddress(address)],
-      conversionRate,
-      currentCurrency,
-      string,
-      symbol,
-      false,
-    ) || '';
+  const rawFiat = formattedFiat
+    ? // eslint-disable-next-line require-unicode-regexp
+      new BigNumber(formattedFiat.replace(/[^0-9.,]+/g, ''))
+    : '';
 
   // token from dynamic api list is fetched when useTokenDetection is true
   // And since the token.address from allTokens is checksumaddress
@@ -214,10 +207,10 @@ export function useTokensToSearch({
   }, [
     memoizedTokensToSearch,
     memoizedUsersToken,
+    memoizedTopTokens,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    memoizedTopTokens,
     memoizedDefaultToken,
     chainId,
     tokenList,
