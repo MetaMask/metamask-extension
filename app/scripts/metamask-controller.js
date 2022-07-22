@@ -1294,6 +1294,21 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapUpdated`,
+      (newSnap, oldVersion) => {
+        this.metaMetricsController.trackEvent({
+          event: 'Snap Updated',
+          category: EVENT.CATEGORIES.SNAPS,
+          properties: {
+            snap_id: newSnap.id,
+            old_version: oldVersion,
+            new_version: newSnap.version,
+          },
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapTerminated`,
       (truncatedSnap) => {
         const approvals = Object.values(

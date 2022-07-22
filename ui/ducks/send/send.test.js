@@ -17,6 +17,7 @@ import {
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   ASSET_TYPES,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
@@ -26,7 +27,6 @@ import {
   generateERC721TransferData,
 } from '../../pages/send/send.utils';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
-import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,

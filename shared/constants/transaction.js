@@ -252,6 +252,8 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {number} id - An internally unique tx identifier.
  * @property {number} time - Time the transaction was first suggested, in unix
  *  epoch time (ms).
+ * @property {string} contractMethodName - A string representing a name of
+ * transaction contract method.
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
  * @property {TransactionStatusString} status - The current status of the
@@ -354,4 +356,37 @@ export const ASSET_TYPES = {
   TOKEN: 'TOKEN',
   COLLECTIBLE: 'COLLECTIBLE',
   UNKNOWN: 'UNKNOWN',
+};
+
+export const ERC20 = 'ERC20';
+export const ERC721 = 'ERC721';
+export const ERC1155 = 'ERC1155';
+
+/**
+ * @typedef {Object} TokenStandards
+ * @property {'ERC20'} ERC20 - A token that conforms to the ERC20 standard.
+ * @property {'ERC721'} ERC721 - A token that conforms to the ERC721 standard.
+ * @property {'ERC1155'} ERC1155 - A token that conforms to the ERC1155
+ *  standard.
+ * @property {'NONE'} NONE - Not a token, but rather the base asset of the
+ *  selected chain.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above statuses
+ *
+ * @typedef {TokenStandards[keyof TokenStandards]} TokenStandardStrings
+ */
+
+/**
+ * Describes the standard which a token conforms to.
+ *
+ * @type {TokenStandards}
+ */
+export const TOKEN_STANDARDS = {
+  ERC20,
+  ERC721,
+  ERC1155,
+  NONE: 'NONE',
 };

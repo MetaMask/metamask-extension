@@ -462,7 +462,10 @@ export default class TransactionController extends EventEmitter {
     };
 
     // only update what is defined
-    editableParams.txParams = pickBy(editableParams.txParams);
+    editableParams.txParams = pickBy(
+      editableParams.txParams,
+      (prop) => prop !== undefined,
+    );
 
     // update transaction type in case it has changes
     const transactionBeforeEdit = this._getTransaction(txId);
@@ -1988,6 +1991,7 @@ export default class TransactionController extends EventEmitter {
 
   async _buildEventFragmentProperties(txMeta, extraParams) {
     const {
+      id,
       type,
       time,
       status,
@@ -2004,6 +2008,7 @@ export default class TransactionController extends EventEmitter {
       defaultGasEstimates,
       metamaskNetworkId: network,
     } = txMeta;
+    const { transactions } = this.store.getState();
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
     const { assetType, tokenStandard } = await determineTransactionAssetType(
@@ -2078,12 +2083,39 @@ export default class TransactionController extends EventEmitter {
       eip1559Version = eip1559V2Enabled ? '2' : '1';
     }
 
+    const contractInteractionTypes = [
+      TRANSACTION_TYPES.CONTRACT_INTERACTION,
+      TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+      TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
+      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
+      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+      TRANSACTION_TYPES.SMART,
+      TRANSACTION_TYPES.SWAP,
+      TRANSACTION_TYPES.SWAP_APPROVAL,
+    ].includes(type);
+
+    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    if (type === TRANSACTION_TYPES.CANCEL) {
+      transactionType = TRANSACTION_TYPES.CANCEL;
+    } else if (type === TRANSACTION_TYPES.RETRY) {
+      transactionType = TRANSACTION_TYPES.RETRY;
+    } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
+      transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
+    } else if (contractInteractionTypes) {
+      transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
+    }
+
+    let transactionContractMethod;
+    if (transactionType === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+      transactionContractMethod = transactions[id]?.contractMethodName;
+    }
+
     const properties = {
       chain_id: chainId,
       referrer,
       source,
       network,
-      type,
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
       gas_edit_attempted: 'none',
@@ -2091,6 +2123,7 @@ export default class TransactionController extends EventEmitter {
       device_model: await this.getDeviceModel(this.getSelectedAddress()),
       asset_type: assetType,
       token_standard: tokenStandard,
+      transaction_type: transactionType,
     };
 
     const sensitiveProperties = {
@@ -2100,6 +2133,7 @@ export default class TransactionController extends EventEmitter {
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       first_seen: time,
       gas_limit: gasLimit,
+      transaction_contract_method: transactionContractMethod,
       ...extraParams,
       ...gasParamsInGwei,
     };

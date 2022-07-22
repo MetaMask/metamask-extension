@@ -196,22 +196,22 @@ function createScriptTasks({
   // internal tasks
   const core = {
     // dev tasks (live reload)
-    dev: createTasksForBuildJsExtension({
+    dev: createTasksForScriptBundles({
       taskPrefix: 'scripts:core:dev',
       devMode: true,
     }),
-    testDev: createTasksForBuildJsExtension({
+    testDev: createTasksForScriptBundles({
       taskPrefix: 'scripts:core:test-live',
       devMode: true,
       testing: true,
     }),
     // built for CI tests
-    test: createTasksForBuildJsExtension({
+    test: createTasksForScriptBundles({
       taskPrefix: 'scripts:core:test',
       testing: true,
     }),
     // production
-    prod: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:prod' }),
+    prod: createTasksForScriptBundles({ taskPrefix: 'scripts:core:prod' }),
   };
 
   // high level tasks
@@ -219,7 +219,11 @@ function createScriptTasks({
   const { dev, test, testDev, prod } = core;
   return { dev, test, testDev, prod };
 
-  function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
+  function createTasksForScriptBundles({
+    taskPrefix,
+    devMode = false,
+    testing = false,
+  }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
@@ -246,19 +250,19 @@ function createScriptTasks({
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
-      createTaskForBundleContentscript({ devMode, testing }),
+      createContentscriptBundle({ devMode, testing }),
     );
 
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createTaskForBundleDisableConsole({ devMode, testing }),
+      createDisableConsoleBundle({ devMode, testing }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createTaskForBundleSentry({ devMode, testing }),
+      createSentryBundle({ devMode, testing }),
     );
 
     // task for initiating browser livereload
@@ -296,7 +300,7 @@ function createScriptTasks({
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createTaskForBundleDisableConsole({ devMode, testing }) {
+  function createDisableConsoleBundle({ devMode, testing }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
@@ -313,7 +317,7 @@ function createScriptTasks({
     });
   }
 
-  function createTaskForBundleSentry({ devMode, testing }) {
+  function createSentryBundle({ devMode, testing }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
@@ -331,7 +335,7 @@ function createScriptTasks({
   }
 
   // the "contentscript" bundle contains the "inpage" bundle
-  function createTaskForBundleContentscript({ devMode, testing }) {
+  function createContentscriptBundle({ devMode, testing }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
     return composeSeries(
@@ -375,10 +379,12 @@ const postProcessServiceWorker = (
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
     let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-    if (!testing) {
-      // Lavamoat is always set to true in testing mode
+    if (testing) {
+      fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
+    } else {
+      // Setting applyLavaMoat to true in testing mode
       // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
-      fileOutput = fileContent.replace(
+      fileOutput = fileOutput.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
@@ -389,7 +395,7 @@ const postProcessServiceWorker = (
 
 // Function generates app-init.js for browsers chrome, brave and opera.
 // It dynamically injects list of files generated in the build.
-async function bundleMV3AppInitialiser({
+async function createManifestV3AppInitializationBundle({
   jsBundles,
   browserPlatforms,
   buildType,
@@ -399,6 +405,7 @@ async function bundleMV3AppInitialiser({
   policyOnly,
   shouldLintFenceFiles,
   applyLavaMoat,
+  version,
 }) {
   const label = 'app-init';
   // TODO: remove this filter for firefox once MV3 is supported in it
@@ -421,6 +428,7 @@ async function bundleMV3AppInitialiser({
     testing,
     policyOnly,
     shouldLintFenceFiles,
+    version,
   })();
 
   postProcessServiceWorker(
@@ -430,6 +438,8 @@ async function bundleMV3AppInitialiser({
     testing,
   );
 
+  // If the application is running in development mode, we watch service worker file to
+  // in case the file is changes we need to process it again to replace "/** FILE NAMES */", "testMode" etc.
   if (devMode && !testing) {
     let prevChromeFileContent;
     watch('./dist/chrome/app-init.js', () => {
@@ -444,6 +454,8 @@ async function bundleMV3AppInitialiser({
     });
   }
 
+  // Code below is used to set statsMode to true when testing in MV3
+  // This is used to capture module initialisation stats using lavamoat.
   if (testing) {
     const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
@@ -616,7 +628,7 @@ function createFactoredBuild({
                 ...commonSet.values(),
                 ...groupSet.values(),
               ].map((label) => `./${label}.js`);
-              await bundleMV3AppInitialiser({
+              await createManifestV3AppInitializationBundle({
                 jsBundles,
                 browserPlatforms,
                 buildType,
@@ -626,6 +638,7 @@ function createFactoredBuild({
                 policyOnly,
                 shouldLintFenceFiles,
                 applyLavaMoat,
+                version,
               });
             }
             break;
@@ -649,7 +662,7 @@ function createFactoredBuild({
       }
     });
 
-    await bundleIt(buildConfiguration, { reloadOnChange });
+    await createBundle(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -659,11 +672,9 @@ function createNormalBundle({
   destFilepath,
   devMode,
   entryFilepath,
-  extraEntries = [],
   ignoredFiles,
   label,
   policyOnly,
-  modulesToExpose,
   shouldLintFenceFiles,
   testing,
   version,
@@ -697,14 +708,7 @@ function createNormalBundle({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...extraEntries];
-    if (entryFilepath) {
-      bundlerOpts.entries.push(entryFilepath);
-    }
-
-    if (modulesToExpose) {
-      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
-    }
+    bundlerOpts.entries = [entryFilepath];
 
     // instrument pipeline
     events.on('configurePipeline', ({ pipeline }) => {
@@ -720,7 +724,7 @@ function createNormalBundle({
       });
     });
 
-    await bundleIt(buildConfiguration, { reloadOnChange });
+    await createBundle(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -773,7 +777,7 @@ function setupBundlerDefaults(
     // Look for TypeScript files when walking the dependency tree
     extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: devMode,
+    fullPaths: devMode || testing,
     // For sourcemaps
     debug: true,
   });
@@ -875,7 +879,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
   });
 }
 
-async function bundleIt(buildConfiguration, { reloadOnChange }) {
+async function createBundle(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
 

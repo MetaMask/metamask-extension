@@ -11,8 +11,10 @@ import {
 import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-import { TOKEN_STANDARDS } from '../../../helpers/constants/common';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+} from '../../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
