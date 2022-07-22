@@ -6,7 +6,7 @@ import BaseAvatar from './base-avatar';
 
 describe('BaseAvatar', () => {
   it('should render correctly', () => {
-    const { container } = renderWithProvider(<BaseAvatar />);
+    const { container } = renderWithProvider(<BaseAvatar size="xs" />);
     expect(container).toMatchSnapshot();
   });
 });

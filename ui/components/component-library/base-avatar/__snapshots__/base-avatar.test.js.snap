@@ -3,7 +3,7 @@
 exports[`BaseAvatar should render correctly 1`] = `
 <div>
   <div
-    class="box base-avatar  --size-undefined box--flex-direction-row"
+    class="box base-avatar  --size-xs box--flex-direction-row"
   />
 </div>
 `;
