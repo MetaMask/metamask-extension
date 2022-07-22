@@ -32,6 +32,7 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    updateRecipientUserInput: PropTypes.func,
   };
 
   constructor(props) {
@@ -70,6 +71,7 @@ export default class AddRecipient extends Component {
       `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
     );
     this.props.updateRecipient({ address, nickname });
+    this.props.updateRecipientUserInput(address);
   };
 
   searchForContacts = () => {

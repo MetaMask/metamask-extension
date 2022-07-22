@@ -25,6 +25,7 @@ import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
+import { addCustomNetwork } from '../../store/actions';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
 
@@ -130,6 +131,7 @@ export default function ConfirmationPage() {
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [stayOnPage, setStayOnPage] = useState(false);
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
@@ -146,11 +148,11 @@ export default function ConfirmationPage() {
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
     if (pendingConfirmations.length === 0) {
-      history.push(DEFAULT_ROUTE);
+      !stayOnPage && history.push(DEFAULT_ROUTE);
     } else if (pendingConfirmations.length <= currentPendingConfirmation) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
-  }, [pendingConfirmations, history, currentPendingConfirmation]);
+  }, [pendingConfirmations, history, currentPendingConfirmation, stayOnPage]);
   if (!pendingConfirmation) {
     return null;
   }
@@ -197,23 +199,25 @@ export default function ConfirmationPage() {
             />
           </Box>
         ) : null}
-        <Box
-          alignItems="center"
-          marginTop={1}
-          padding={[1, 4, 4]}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-        >
-          <SiteIcon
-            icon={originMetadata.iconUrl}
-            name={originMetadata.hostname}
-            size={36}
-          />
-          <SiteOrigin
-            chip
-            siteOrigin={stripHttpsScheme(originMetadata.origin)}
-            title={stripHttpsScheme(originMetadata.origin)}
-          />
-        </Box>
+        {pendingConfirmation.origin === 'metamask' ? null : (
+          <Box
+            alignItems="center"
+            marginTop={1}
+            padding={[1, 4, 4]}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+          >
+            <SiteIcon
+              icon={originMetadata.iconUrl}
+              name={originMetadata.hostname}
+              size={36}
+            />
+            <SiteOrigin
+              chip
+              siteOrigin={stripHttpsScheme(originMetadata.origin)}
+              title={stripHttpsScheme(originMetadata.origin)}
+            />
+          </Box>
+        )}
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
       </div>
       <ConfirmationFooter
@@ -234,8 +238,15 @@ export default function ConfirmationPage() {
               </Callout>
             ))
         }
-        onApprove={templatedValues.onApprove}
-        onCancel={templatedValues.onCancel}
+        onApprove={() => {
+          templatedValues.onApprove.apply();
+          pendingConfirmation.origin === 'metamask' &&
+            dispatch(addCustomNetwork(pendingConfirmation.requestData));
+        }}
+        onCancel={() => {
+          templatedValues.onCancel.apply();
+          pendingConfirmation.origin === 'metamask' && setStayOnPage(true);
+        }}
         approveText={templatedValues.approvalText}
         cancelText={templatedValues.cancelText}
       />

@@ -16,6 +16,32 @@ describe('SendContent Component', () => {
     gasIsExcessive: false,
     networkAndAccountSupports1559: true,
     asset: { type: 'NATIVE' },
+    recipient: {
+      mode: 'CONTACT_LIST',
+      userInput: '0x31A2764925BD47CCBd57b2F277702dB46e9C5F66',
+      address: '0x31A2764925BD47CCBd57b2F277702dB46e9C5F66',
+      nickname: 'John Doe',
+      error: null,
+      warning: null,
+    },
+    tokenAddressList: {
+      '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
+        name: 'BitBase',
+        symbol: 'BTBS',
+        decimals: 18,
+        address: '0x32E6C34Cd57087aBBD59B5A4AECC4cB495924356',
+        iconUrl: 'BTBS.svg',
+        occurrences: null,
+      },
+      '0x3fa400483487a489ec9b1db29c4129063eec4654': {
+        name: 'Cryptokek.com',
+        symbol: 'KEK',
+        decimals: 18,
+        address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
+        iconUrl: 'cryptokek.svg',
+        occurrences: null,
+      },
+    },
   };
 
   beforeEach(() => {
@@ -150,7 +176,7 @@ describe('SendContent Component', () => {
       true,
     );
     expect(
-      PageContainerContentChild.childAt(1).find(
+      PageContainerContentChild.childAt(2).find(
         'send-v2__asset-dropdown__single-asset',
       ),
     ).toHaveLength(0);
