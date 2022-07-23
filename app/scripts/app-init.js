@@ -1,16 +1,12 @@
 // This file is used only for manifest version 3
 
-// Represents if importAllScripts has been run
-// eslint-disable-next-line
-let scriptsLoadedInitiated = false;
-
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
+// eslint-disable-next-line
 const testMode = false;
 
 const loadTimeLogs = [];
 
-// eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
     const startTime = new Date().getTime();
@@ -34,12 +30,6 @@ function tryImport(...fileNames) {
 }
 
 function importAllScripts() {
-  // Bail if we've already imported scripts
-  if (scriptsLoadedInitiated) {
-    return;
-  }
-  scriptsLoadedInitiated = true;
-
   const files = [];
 
   // In testMode individual files are imported, this is to help capture load time stats
@@ -109,8 +99,7 @@ function importAllScripts() {
   }
 }
 
-// eslint-disable-next-line no-undef
-self.addEventListener('install', importAllScripts);
+importAllScripts();
 
 /*
  * Message event listener below loads script if they are no longer available.
@@ -118,5 +107,5 @@ self.addEventListener('install', importAllScripts);
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
-// eslint-disable-next-line no-undef
-chrome.runtime.onMessage.addListener(importAllScripts);
+// eslint-disable-next-line
+chrome.runtime.onMessage.addListener(() => {});
