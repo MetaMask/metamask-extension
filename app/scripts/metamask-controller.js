@@ -88,7 +88,10 @@ import {
 import { EVENT } from '../../shared/constants/metametrics';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
-import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
+import {
+  getTokenIdParam,
+  getTokenValueParam,
+} from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import {
@@ -859,7 +862,12 @@ export default class MetamaskController extends EventEmitter {
           } = txMeta.txParams;
           const { chainId } = txMeta;
           const transactionData = parseStandardTokenTransactionData(data);
-          const tokenAmountOrTokenId = getTokenValueParam(transactionData);
+          // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+          // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+          // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
+          const transactionDataTokenId =
+            getTokenIdParam(transactionData) ??
+            getTokenValueParam(transactionData);
           const { allCollectibles } = this.collectiblesController.state;
 
           // check if its a known collectible
@@ -868,7 +876,7 @@ export default class MetamaskController extends EventEmitter {
           ].find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
-              tokenId === tokenAmountOrTokenId,
+              tokenId === transactionDataTokenId,
           );
 
           // if it is we check and update ownership status.
@@ -2178,7 +2186,7 @@ export default class MetamaskController extends EventEmitter {
    * Collects all the information that we want to share
    * with the mobile client for syncing purposes
    *
-   * @returns {Promise<Object>} Parts of the state that we want to syncx
+   * @returns {Promise<object>} Parts of the state that we want to syncx
    */
   async fetchInfoToSync() {
     // Preferences
