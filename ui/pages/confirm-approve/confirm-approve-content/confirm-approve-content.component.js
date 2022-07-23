@@ -77,6 +77,7 @@ export default class ConfirmApproveContent extends Component {
     assetStandard: PropTypes.string,
     isSetApproveForAll: PropTypes.bool,
     setApproveForAllArg: PropTypes.bool,
+    userAddress: PropTypes.string,
   };
 
   state = {
@@ -208,7 +209,7 @@ export default class ConfirmApproveContent extends Component {
           </div>
           <div className="confirm-approve-content__medium-text">
             {isSetApproveForAll
-              ? `${t('allOfYour', [titleTokenDescription])} `
+              ? t('allOfYour', [titleTokenDescription])
               : titleTokenDescription}
           </div>
         </div>
@@ -458,6 +459,7 @@ export default class ConfirmApproveContent extends Component {
       assetStandard,
       tokenSymbol,
       isSetApproveForAll,
+      userAddress,
     } = this.props;
     const { t } = this.context;
     let titleTokenDescription = t('token');
@@ -466,6 +468,7 @@ export default class ConfirmApproveContent extends Component {
         tokenAddress,
         chainId,
         null,
+        userAddress,
         {
           blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
         },
@@ -504,6 +507,7 @@ export default class ConfirmApproveContent extends Component {
           tokenAddress,
           chainId,
           null,
+          userAddress,
           {
             blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
           },
@@ -585,6 +589,7 @@ export default class ConfirmApproveContent extends Component {
       rpcPrefs,
       isContract,
       assetStandard,
+      userAddress,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -671,7 +676,7 @@ export default class ConfirmApproveContent extends Component {
               className="confirm-approve-content__etherscan-link"
               onClick={() => {
                 const blockExplorerTokenLink = isContract
-                  ? getTokenTrackerLink(toAddress, chainId, null, null, {
+                  ? getTokenTrackerLink(toAddress, chainId, null, userAddress, {
                       blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                     })
                   : getAccountLink(

@@ -3,7 +3,7 @@
   flex-flow: column;
   justify-content: space-between;
   background: var(--color-background-default);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
   border: 1px solid var(--color-border-muted);
   border-radius: 8px;
   min-height: 116px;

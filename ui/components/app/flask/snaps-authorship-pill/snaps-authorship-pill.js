@@ -65,6 +65,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
           variant={TYPOGRAPHY.H7}
           tag="span"
           color={COLORS.TEXT_ALTERNATIVE}
+          title={packageName}
         >
           {packageName}
         </Typography>
