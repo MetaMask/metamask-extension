@@ -116,10 +116,10 @@ export default class PermissionConnect extends Component {
 
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      if (isSnap && !permissionsRequest.newPermissions) {
-        history.push(snapInstallPath);
-      } else if (isSnap && permissionsRequest.newPermissions) {
-        history.push(snapUpdatePath);
+      if (isSnap) {
+        history.push(
+          permissionsRequest.newPermissions ? snapInstallPath : snapUpdatePath,
+        );
       } else {
         ///: END:ONLY_INCLUDE_IN
         history.push(confirmPermissionPath);

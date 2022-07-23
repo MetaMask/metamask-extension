@@ -93,6 +93,8 @@ const mapStateToProps = (state) => {
   firstPermissionsRequest = getFirstPermissionRequest(state);
   firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
 
+  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
+
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapUpdateRequest(state);

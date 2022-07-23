@@ -15,6 +15,10 @@ const snapIdPrefixes = ['npm:', 'local:'];
 
 const SnapsAuthorshipPill = ({ snapId, version, className }) => {
   // @todo Use getSnapPrefix from snaps-skunkworks when possible
+  // We're using optional chaining with snapId, because with the current implementation
+  // of snap update in the snap controller, we do not have reference to snapId when an
+  // update request is rejected because the reference comes from the request itself and not subject metadata
+  // like it is done with snap install
   const snapPrefix = snapIdPrefixes.find((prefix) =>
     snapId?.startsWith(prefix),
   );
