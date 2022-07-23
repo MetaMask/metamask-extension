@@ -99,6 +99,7 @@ export default function Notifications() {
           type="secondary"
           className="notifications__header_button"
           onClick={markAllAsRead}
+          disabled={notifications.length === 0}
         >
           {t('notificationsMarkAllAsRead')}
         </Button>
