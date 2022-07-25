@@ -1007,7 +1007,7 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {Object} txMeta - The txMeta object
    * @param {string} getCodeResponse - The transaction category code response, used for debugging purposes
-   * @returns {Promise<Object>} Object containing the default gas limit, or the simulation failure object
+   * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
   async _getDefaultGasLimit(txMeta, getCodeResponse) {
     const chainId = this._getCurrentChainId();
@@ -2096,6 +2096,7 @@ export default class TransactionController extends EventEmitter {
     ].includes(type);
 
     let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    let transactionContractMethod;
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
     } else if (type === TRANSACTION_TYPES.RETRY) {
@@ -2104,10 +2105,6 @@ export default class TransactionController extends EventEmitter {
       transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     } else if (contractInteractionTypes) {
       transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
-    }
-
-    let transactionContractMethod;
-    if (transactionType === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
       transactionContractMethod = transactions[id]?.contractMethodName;
     }
 
