@@ -18,11 +18,11 @@ export default class BackupController {
     const existingPreferences = this.preferencesController.store.getState();
     const { preferences, addressBook } = JSON.parse(jsonString);
     if (preferences) {
-      const toUpdate = {
-        ...preferences,
-        ...existingPreferences,
-      };
-      this.preferencesController.store.updateState(toUpdate);
+      preferences.identities = existingPreferences.identities;
+      preferences.lostIdentities = existingPreferences.lostIdentities;
+      preferences.selectedAddress = existingPreferences.selectedAddress;
+
+      this.preferencesController.store.updateState(preferences);
     }
 
     if (addressBook) {
