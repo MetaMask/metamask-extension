@@ -443,7 +443,7 @@ export default class SelectHardware extends Component {
               type="secondary"
               onClick={() => window.open("https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f", "_blank")
               }>
-              + {t('addContact')}
+              Tutorial 
             </Button>
           </>
         ),
