@@ -11,6 +11,7 @@ import {
   DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
 } from '../../../../shared/constants/hardware-wallets';
+import { message } from '@truffle/codec/dist/lib/format/utils/exception';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -406,10 +407,49 @@ export default class SelectHardware extends Component {
         ),
       },
       {
-        message: this.context.t('QRHardwareWalletSteps2Description'),
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">CoolWallet</p>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://www.coolwallet.io/", "_blank")
+            }>
+              Buy Now
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => window.open("https://www.coolwallet.io/metamask-step-by-step-guides/", "_blank")
+              }>
+              Tutorial
+            </Button>
+          </>
+        ),
       },
       {
-        message: this.context.t('QRHardwareWalletSteps3Description'),
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">D'Cent</p>
+            <Button
+            className="hw-connect__external-btn-first"
+            type="secondary"
+            onClick={() => window.open("https://dcentwallet.com/", "_blank")
+            }>
+              Buy Now
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              type="secondary"
+              onClick={() => window.open("https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f", "_blank")
+              }>
+              + {t('addContact')}
+            </Button>
+          </>
+        ),
+      },
+      {
+        message: this.context.t('QRHardwareWalletSteps2Description'),
       },
       {
         asset: 'qrcode-wallet-demo',
