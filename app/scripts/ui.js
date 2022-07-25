@@ -66,7 +66,7 @@ async function start() {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
      * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
-     * In case UI is already renderd only stream will be updated.
+     * In case the UI is already rendered, only update the streams.
      */
     const messageListener = (message) => {
       if (message?.name === 'CONNECTION_READY') {
