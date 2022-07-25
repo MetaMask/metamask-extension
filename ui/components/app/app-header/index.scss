@@ -86,4 +86,25 @@
     width: 0;
     justify-content: flex-end;
   }
+
+  .account-menu__icon {
+    position: relative;
+    border: 0;
+    background: none;
+
+    &__notification-count {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      right: 0;
+      bottom: 0;
+      min-width: 16px;
+      min-height: 16px;
+      font-size: 10px;
+      border-radius: 50%;
+      background-color: var(--color-primary-default);
+      color: var(--color-primary-inverse);
+    }
+  }
 }

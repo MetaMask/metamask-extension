@@ -32,6 +32,7 @@ describe('Signature Request', () => {
     history: {
       push: sinon.spy(),
     },
+    hardwareWalletRequiresConnection: false,
     clearConfirmTransaction: sinon.spy(),
     cancelMessage: sinon.spy(),
     cancel: sinon.stub().resolves(),

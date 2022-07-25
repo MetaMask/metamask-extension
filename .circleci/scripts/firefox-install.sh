@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-FIREFOX_VERSION='83.0'
+FIREFOX_VERSION='102.0'
 FIREFOX_BINARY="firefox-${FIREFOX_VERSION}.tar.bz2"
 FIREFOX_BINARY_URL="https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/linux-x86_64/en-US/${FIREFOX_BINARY}"
 FIREFOX_PATH='/opt/firefox'

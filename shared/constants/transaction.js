@@ -15,6 +15,8 @@ import { MESSAGE_TYPE } from './app';
  *  to ensure that the receiver is an address capable of handling with the token being sent.
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
+ * @property {'setapprovalforall'} TOKEN_METHOD_SET_APPROVAL_FOR_ALL - A token transaction requesting an
+ *  allowance of all of a user's token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
  * @property {'simpleSend'} SIMPLE_SEND - A transaction sending a network's native asset to a recipient
  * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
@@ -49,23 +51,24 @@ import { MESSAGE_TYPE } from './app';
  */
 export const TRANSACTION_TYPES = {
   CANCEL: 'cancel',
-  RETRY: 'retry',
-  TOKEN_METHOD_TRANSFER: 'transfer',
-  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
-  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
-  TOKEN_METHOD_APPROVE: 'approve',
-  INCOMING: 'incoming',
-  SIMPLE_SEND: 'simpleSend',
   CONTRACT_INTERACTION: 'contractInteraction',
   DEPLOY_CONTRACT: 'contractDeployment',
-  SWAP: 'swap',
-  SWAP_APPROVAL: 'swapApproval',
-  SMART: 'smart',
-  SIGN: MESSAGE_TYPE.ETH_SIGN,
-  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
   ETH_DECRYPT: MESSAGE_TYPE.ETH_DECRYPT,
   ETH_GET_ENCRYPTION_PUBLIC_KEY: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+  INCOMING: 'incoming',
+  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
+  RETRY: 'retry',
+  SIGN: MESSAGE_TYPE.ETH_SIGN,
+  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  SIMPLE_SEND: 'simpleSend',
+  SMART: 'smart',
+  SWAP: 'swap',
+  SWAP_APPROVAL: 'swapApproval',
+  TOKEN_METHOD_APPROVE: 'approve',
+  TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
+  TOKEN_METHOD_TRANSFER: 'transfer',
+  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  TOKEN_METHOD_SET_APPROVAL_FOR_ALL: 'setapprovalforall',
 };
 
 /**
@@ -214,10 +217,10 @@ export const SMART_TRANSACTION_STATUSES = {
  * @type {TransactionGroupCategories}
  */
 export const TRANSACTION_GROUP_CATEGORIES = {
-  SEND: 'send',
-  RECEIVE: 'receive',
-  INTERACTION: 'interaction',
   APPROVAL: 'approval',
+  INTERACTION: 'interaction',
+  RECEIVE: 'receive',
+  SEND: 'send',
   SIGNATURE_REQUEST: 'signature-request',
   SWAP: 'swap',
 };
@@ -249,6 +252,8 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {number} id - An internally unique tx identifier.
  * @property {number} time - Time the transaction was first suggested, in unix
  *  epoch time (ms).
+ * @property {string} contractMethodName - A string representing a name of
+ * transaction contract method.
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
  * @property {TransactionStatusString} status - The current status of the
@@ -324,16 +329,64 @@ export const TRANSACTION_EVENTS = {
 };
 
 /**
+ * @typedef {Object} AssetTypes
+ * @property {'NATIVE'} NATIVE - The native asset for the current network, such
+ *  as ETH
+ * @property {'TOKEN'} TOKEN - An ERC20 token.
+ * @property {'COLLECTIBLE'} COLLECTIBLE - An ERC721 or ERC1155 token.
+ * @property {'UNKNOWN'} UNKNOWN - A transaction interacting with a contract
+ *  that isn't a token method interaction will be marked as dealing with an
+ *  unknown asset type.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above asset types
+ *
+ * @typedef {AssetTypes[keyof AssetTypes]} AssetTypesString
+ */
+
+/**
  * The types of assets that a user can send
- * 1. NATIVE - The native asset for the current network, such as ETH
- * 2. TOKEN - An ERC20 token.
- * 3. COLLECTIBLE - An ERC721 or ERC1155 token.
- * 4. UNKNOWN - A transaction interacting with a contract that isn't a token
- *  method interaction will be marked as dealing with an unknown asset type.
+ *
+ * @type {AssetTypes}
  */
 export const ASSET_TYPES = {
   NATIVE: 'NATIVE',
   TOKEN: 'TOKEN',
   COLLECTIBLE: 'COLLECTIBLE',
   UNKNOWN: 'UNKNOWN',
+};
+
+export const ERC20 = 'ERC20';
+export const ERC721 = 'ERC721';
+export const ERC1155 = 'ERC1155';
+
+/**
+ * @typedef {Object} TokenStandards
+ * @property {'ERC20'} ERC20 - A token that conforms to the ERC20 standard.
+ * @property {'ERC721'} ERC721 - A token that conforms to the ERC721 standard.
+ * @property {'ERC1155'} ERC1155 - A token that conforms to the ERC1155
+ *  standard.
+ * @property {'NONE'} NONE - Not a token, but rather the base asset of the
+ *  selected chain.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above statuses
+ *
+ * @typedef {TokenStandards[keyof TokenStandards]} TokenStandardStrings
+ */
+
+/**
+ * Describes the standard which a token conforms to.
+ *
+ * @type {TokenStandards}
+ */
+export const TOKEN_STANDARDS = {
+  ERC20,
+  ERC721,
+  ERC1155,
+  NONE: 'NONE',
 };

@@ -6,8 +6,10 @@ const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
+const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { ensureXServerIsRunning } = require('./x-server');
+const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -22,11 +24,13 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     ganacheOptions,
+    smartContract,
     driverOptions,
     dappOptions,
     title,
     failOnConsoleError = true,
     dappPath = undefined,
+    dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
@@ -38,11 +42,20 @@ async function withFixtures(options, testSuite) {
   let secondaryGanacheServer;
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
+  const phishingPageServer = new PhishingWarningPageServer();
 
   let webDriver;
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
+    let contractRegistry;
+
+    if (smartContract) {
+      const ganacheSeeder = new GanacheSeeder(true);
+      await ganacheSeeder.deploySmartContract(smartContract);
+      contractRegistry = ganacheSeeder.getContractRegistry();
+    }
+
     if (ganacheOptions?.concurrent) {
       const { port, chainId } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
@@ -55,14 +68,15 @@ async function withFixtures(options, testSuite) {
     }
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
+    await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
       }
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath) {
-          dappDirectory = path.resolve(__dirname, dappPath);
+        if (dappPath || (dappPaths && dappPaths[i])) {
+          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
         } else {
           dappDirectory = path.resolve(
             __dirname,
@@ -96,6 +110,7 @@ async function withFixtures(options, testSuite) {
     await testSuite({
       driver,
       mockServer,
+      contractRegistry,
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -145,6 +160,9 @@ async function withFixtures(options, testSuite) {
             });
           }
         }
+      }
+      if (phishingPageServer.isRunning()) {
+        await phishingPageServer.quit();
       }
       await mockServer.stop();
     }
@@ -230,11 +248,11 @@ const completeImportSRPOnboardingFlow = async (
       tag: 'button',
     });
 
-    // clicks the "Import Wallet" option
-    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
-
     // clicks the "No thanks" option on the metametrics opt-in screen
     await driver.clickElement('.btn-secondary');
+
+    // clicks the "Import Wallet" option
+    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
 
     // Import Secret Recovery Phrase
     await driver.pasteIntoField(
@@ -272,11 +290,11 @@ const completeImportSRPOnboardingFlowWordByWord = async (
     tag: 'button',
   });
 
-  // clicks the "Import Wallet" option
-  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
-
   // clicks the "No thanks" option on the metametrics opt-in screen
   await driver.clickElement('.btn-secondary');
+
+  // clicks the "Import Wallet" option
+  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
 
   const words = seedPhrase.split(' ');
   for (const word of words) {

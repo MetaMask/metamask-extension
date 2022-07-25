@@ -11,7 +11,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 const NetworkStatusTooltip = ({ children, html, title }) => (
-  <Tooltip position="top" html={html} title={title} theme="tippy-tooltip-info">
+  <Tooltip position="top" html={html} title={title}>
     <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
       {children}
     </Box>

@@ -195,7 +195,7 @@
     color: var(--color-text-default);
     width: 108px;
     height: 97px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     border-radius: 6px;
     border: none;
 

@@ -15,7 +15,7 @@
 
   &--dismissible {
     &#{$self}--first {
-      box-shadow: 0 -5px 5px -5px var(--color-overlay-default);
+      box-shadow: 0 -5px 5px -5px var(--color-shadow-default);
     }
   }
 

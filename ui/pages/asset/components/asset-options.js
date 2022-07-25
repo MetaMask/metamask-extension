@@ -85,14 +85,39 @@ const AssetOptions = ({
   );
 };
 
+const isNotFunc = (p) => {
+  return typeof p !== 'function';
+};
+
 AssetOptions.propTypes = {
   isEthNetwork: PropTypes.bool,
   isNativeAsset: PropTypes.bool,
-  onRemove: PropTypes.func.isRequired,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
-  onViewTokenDetails: PropTypes.func.isRequired,
-  tokenSymbol: PropTypes.string,
+  onRemove: (props) => {
+    if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {
+      throw new Error(
+        'When isNativeAsset is true, onRemove is a required prop',
+      );
+    }
+  },
+  onViewTokenDetails: (props) => {
+    if (props.isNativeAsset === false && isNotFunc(props.onViewTokenDetails)) {
+      throw new Error(
+        'When isNativeAsset is true, onViewTokenDetails is a required prop',
+      );
+    }
+  },
+  tokenSymbol: (props) => {
+    if (
+      props.isNativeAsset === false &&
+      typeof props.tokenSymbol !== 'string'
+    ) {
+      throw new Error(
+        'When isNativeAsset is true, tokenSymbol is a required prop',
+      );
+    }
+  },
 };
 
 export default AssetOptions;
