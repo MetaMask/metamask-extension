@@ -779,7 +779,7 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
 }
 
 export function backupUserData() {
-  return async (dispatch) => {
+  return async () => {
     let backedupData;
     try {
       backedupData = await promisifiedBackground.backupUserData();
@@ -793,7 +793,7 @@ export function backupUserData() {
 }
 
 export function restoreUserData(jsonString) {
-  return async (dispatch) => {
+  return async () => {
     try {
       await promisifiedBackground.restoreUserData(jsonString);
     } catch (error) {
