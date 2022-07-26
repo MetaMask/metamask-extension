@@ -12,8 +12,8 @@ import {
 /**
  * Get the permission subjects object.
  *
- * @param {Object} state - The current state.
- * @returns {Object} The permissions subjects object.
+ * @param {object} state - The current state.
+ * @returns {object} The permissions subjects object.
  */
 export function getPermissionSubjects(state) {
   return state.metamask.subjects || {};
@@ -23,7 +23,7 @@ export function getPermissionSubjects(state) {
  * Selects the permitted accounts from the eth_accounts permission given state
  * and an origin.
  *
- * @param {Object} state - The current state.
+ * @param {object} state - The current state.
  * @param {string} origin - The origin/subject to get the permitted accounts for.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
@@ -37,7 +37,7 @@ export function getPermittedAccounts(state, origin) {
  * Selects the permitted accounts from the eth_accounts permission for the
  * origin of the current tab.
  *
- * @param {Object} state - The current state.
+ * @param {object} state - The current state.
  * @returns {Array<string>} An empty array or an array of accounts.
  */
 export function getPermittedAccountsForCurrentTab(state) {
@@ -47,8 +47,8 @@ export function getPermittedAccountsForCurrentTab(state) {
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
- * @param {Object} state - The current state.
- * @returns {Object} Permitted accounts by origin.
+ * @param {object} state - The current state.
+ * @returns {object} Permitted accounts by origin.
  */
 export function getPermittedAccountsByOrigin(state) {
   const subjects = getPermissionSubjects(state);
@@ -68,8 +68,8 @@ export function getPermittedAccountsByOrigin(state) {
  * - name
  * - icon
  *
- * @param {Object} state - The current state.
- * @returns {Array<Object>} An array of connected subject objects.
+ * @param {object} state - The current state.
+ * @returns {Array<object>} An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(state) {
   const { selectedAddress } = state.metamask;
@@ -124,8 +124,8 @@ export function getSubjectsWithPermission(state, permissionName) {
  * - iconUrl
  * - name
  *
- * @param {Object} state - The current state.
- * @returns {Object} A mapping of addresses to a mapping of origins to
+ * @param {object} state - The current state.
+ * @returns {object} A mapping of addresses to a mapping of origins to
  * connected subject info.
  */
 export function getAddressConnectedSubjectMap(state) {

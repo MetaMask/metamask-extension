@@ -23,12 +23,12 @@ export default class ComposableObservableStore extends ObservableStore {
   /**
    * Create a new store
    *
-   * @param {Object} options
-   * @param {Object} [options.config] - Map of internal state keys to child stores
+   * @param {object} options
+   * @param {object} [options.config] - Map of internal state keys to child stores
    * @param {ControllerMessenger} options.controllerMessenger - The controller
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
-   * @param {Object} [options.state] - The initial store state
+   * @param {object} [options.state] - The initial store state
    * @param {boolean} [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
   constructor({ config, controllerMessenger, state, persist }) {
@@ -79,7 +79,7 @@ export default class ComposableObservableStore extends ObservableStore {
    * Merges all child store state into a single object rather than
    * returning an object keyed by child store class name
    *
-   * @returns {Object} Object containing merged child store state
+   * @returns {object} Object containing merged child store state
    */
   getFlatState() {
     if (!this.config) {

@@ -53,7 +53,7 @@ export default class ReadOnlyNetworkStore {
   /**
    * Set state
    *
-   * @param {Object} state - The state to set
+   * @param {object} state - The state to set
    * @returns {Promise<void>}
    */
   async set(state) {
