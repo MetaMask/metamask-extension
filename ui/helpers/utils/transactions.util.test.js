@@ -87,14 +87,6 @@ describe('Transactions utils', () => {
             },
           ],
         });
-      nock('https://mainnet.infura.io:443', { encodedQueryParams: true })
-        .post('/v3/341eacb578dd44a1a049cbc5f6fd4035')
-        .reply(200, (_, requestBody) => ({
-          id: requestBody.id,
-          jsonrpc: '2.0',
-          result:
-            '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002f6e69636546756e6374696f6e48657265506c7a436c69636b39343332333030383928616464726573732c626f6f6c290000000000000000000000000000000000',
-        }));
       expect(await utils.getMethodDataAsync('0xa22cb465')).toStrictEqual({
         name: 'Set Approval For All',
         params: [{ type: 'address' }, { type: 'bool' }],
