@@ -76,6 +76,7 @@
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
   },
   "resolutions": {
+    "**/secp256k1": "file:./development/vendor/noble-secp256k1-compat-wrapper",
     "acorn": "^7.4.1",
     "**/regenerator-runtime": "^0.13.7",
     "**/caniuse-lite": "1.0.30001265",
@@ -167,6 +168,7 @@
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
     "eth-trezor-keyring": "^0.10.0",
+    "ethereum-cryptography": "^1.1.2",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
@@ -448,7 +450,25 @@
       "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": false,
       "@metamask/rpc-methods>@metamask/key-tree>secp256k1": false,
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
-      "eth-lattice-keyring>secp256k1": false
+      "eth-lattice-keyring>secp256k1": false,
+      "3box>ipfs>ipld-ethereum>ethereumjs-account>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "3box>ipfs>ipld-ethereum>ethereumjs-block>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "3box>ipfs>ipld-ethereum>ethereumjs-tx>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "3box>ipfs>ipld-ethereum>merkle-patricia-tree>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/controllers>ethereumjs-wallet>ethereum-cryptography>keccak": false,
+      "@metamask/controllers>web3-provider-engine>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/controllers>web3-provider-engine>ethereumjs-vm>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/controllers>web3-provider-engine>ethereumjs-vm>merkle-patricia-tree>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "eth-json-rpc-filters>eth-json-rpc-middleware>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "eth-json-rpc-infura>eth-json-rpc-middleware>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>ethereum-cryptography>keccak": false,
+      "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet>ethereum-cryptography>keccak": false,
+      "eth-sig-util>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "eth-trezor-keyring>@metamask/eth-sig-util>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "ethereumjs-abi>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "ethereumjs-wallet>ethereum-cryptography>keccak": false
     }
   }
 }
