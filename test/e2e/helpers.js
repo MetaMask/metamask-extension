@@ -237,11 +237,11 @@ const completeImportSRPOnboardingFlow = async (
       tag: 'button',
     });
 
-    // clicks the "Import Wallet" option
-    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
-
     // clicks the "No thanks" option on the metametrics opt-in screen
     await driver.clickElement('.btn-secondary');
+
+    // clicks the "Import Wallet" option
+    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
 
     // Import Secret Recovery Phrase
     await driver.pasteIntoField(
@@ -279,11 +279,11 @@ const completeImportSRPOnboardingFlowWordByWord = async (
     tag: 'button',
   });
 
-  // clicks the "Import Wallet" option
-  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
-
   // clicks the "No thanks" option on the metametrics opt-in screen
   await driver.clickElement('.btn-secondary');
+
+  // clicks the "Import Wallet" option
+  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
 
   const words = seedPhrase.split(' ');
   for (const word of words) {
