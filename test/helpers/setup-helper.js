@@ -6,7 +6,9 @@ import { JSDOM } from 'jsdom';
 
 process.env.IN_TEST = true;
 
-global.chrome = { runtime: { id: 'testid' } };
+global.chrome = {
+  runtime: { id: 'testid' },
+};
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');

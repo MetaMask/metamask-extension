@@ -71,6 +71,8 @@ async function start() {
     const messageListener = (message) => {
       if (message?.name === 'CONNECTION_READY') {
         if (isUIInitialised) {
+          // Currently when service worker is revived we create new streams
+          // in later version we might try to improve it by reviving same streams.
           updateUiStreams();
         } else {
           initializeUiWithTab(activeTab);

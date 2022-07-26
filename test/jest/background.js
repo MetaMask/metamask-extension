@@ -1,5 +1,5 @@
-import * as actions from '../../ui/store/actions';
+import { _setBackgroundConnection } from '../../ui/store/action-queue';
 
 export const setBackgroundConnection = (backgroundConnection = {}) => {
-  actions._setBackgroundConnection(backgroundConnection);
+  _setBackgroundConnection(backgroundConnection);
 };
