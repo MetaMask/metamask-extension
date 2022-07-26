@@ -28,7 +28,7 @@ fi
 
 printf '%s\n' 'Commit the manifest version and changelog if the manifest has changed'
 
-if [[ "${CIRCLE_BRANCH}" != "develop" ]]
+if [[ "${CIRCLE_BRANCH}" != "bundle_stats_fix" ]]
 then
     printf 'This is not develop branch'
     exit 0
@@ -50,11 +50,11 @@ then
     exit 0
 fi
 
-cp -R test-artifacts/chrome/mv3/bundle_size.json temp/stats
+cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
 
 echo " bundle_size_stats-${CIRCLE_SHA1}.json" >> temp/stats/fileList.txt
 
-mv temp/stats/bundle_size.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
+mv temp/stats/bundle_size_stats.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
 
 cd temp
 
