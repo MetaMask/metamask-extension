@@ -784,7 +784,6 @@ export function backupUserData() {
     try {
       backedupData = await promisifiedBackground.backupUserData();
     } catch (error) {
-      dispatch(txError(error));
       log.error(error.message);
       throw error;
     }
@@ -798,7 +797,6 @@ export function restoreUserData(jsonString) {
     try {
       await promisifiedBackground.restoreUserData(jsonString);
     } catch (error) {
-      dispatch(txError(error));
       log.error(error.message);
       throw error;
     }
