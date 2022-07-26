@@ -137,8 +137,8 @@ const COLLECTIBLES_CONTRACTS = [
 ];
 
 const collectiblesDropdownState = {
-  0x495f947276749ce646f68ac8c248420045cb7b5e: true,
-  0xdc7382eb0bc9c352a4cba23c909bda01e0206414: true,
+  '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
+  '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
 };
 
 const ACCOUNT_1 = '0x123';

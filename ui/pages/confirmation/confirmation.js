@@ -70,7 +70,7 @@ const alertStateReducer = produce((state, action) => {
  *
  * @param {Object} pendingConfirmation - a pending confirmation waiting for
  * user approval
- * @returns {[alertState: Object, dismissAlert: Function]} A tuple with
+ * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
 function useAlertState(pendingConfirmation) {

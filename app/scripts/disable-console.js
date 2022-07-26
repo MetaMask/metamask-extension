@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/unambiguous
 if (
   !(typeof process !== 'undefined' && process.env.METAMASK_DEBUG) &&
-  typeof console !== undefined
+  typeof console !== 'undefined'
 ) {
   console.log = noop;
   console.info = noop;
