@@ -63,5 +63,21 @@ module.exports = {
     // a browser context. For instance, we may import polyfills which change
     // global variables, or we may import stylesheets.
     'import/no-unassigned-import': 'off',
+
+    // import/no-named-as-default-member checks if default imports also have
+    // named exports matching properties used on the default import. Example:
+    // in confirm-seed-phrase-component.test.js we import sinon from 'sinon'
+    // and later access sinon.spy. spy is also exported from sinon directly and
+    // thus triggers the error. Turning this rule off to prevent churn when
+    // upgrading eslint and dependencies. This rule should be evaluated and
+    // if agreeable turned on upstream in @metamask/eslint-config
+    'import/no-named-as-default-member': 'off',
+
+    // This rule is set to off to avoid churn when upgrading eslint and its
+    // dependencies. This rule should be enabled and the failures fixed in
+    // a separate PR. This rule prevents adding file extensions to imports
+    // of the same type. E.G, not adding the '.js' extension to file names when
+    // inside a .js file.
+    'import/extensions': 'off',
   },
 };
