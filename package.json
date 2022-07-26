@@ -81,6 +81,7 @@
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard"
   },
   "resolutions": {
+    "**/secp256k1": "npm:@metamask/noble-secp256k1-compat-wrapper@1.0.3",
     "**/regenerator-runtime": "^0.13.7",
     "**/caniuse-lite": "^1.0.30001312",
     "**/cross-fetch": "^3.1.5",
@@ -193,6 +194,7 @@
     "loglevel": "^1.4.1",
     "luxon": "^1.26.0",
     "nanoid": "^2.1.6",
+    "noble-secp256k1-compat-wrapper": "^1.0.1",
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
     "pify": "^5.0.0",
