@@ -16,7 +16,7 @@ export default class ComposableObservableStore extends ObservableStore {
    * extends one of the two base controllers in the `@metamask/controllers`
    * package.
    *
-   * @type {Record<string, Object>}
+   * @type {Record<string, object>}
    */
   config = {};
 
@@ -43,7 +43,7 @@ export default class ComposableObservableStore extends ObservableStore {
   /**
    * Composes a new internal store subscription structure
    *
-   * @param {Record<string, Object>} config - Describes which stores are being
+   * @param {Record<string, object>} config - Describes which stores are being
    *   composed. The key is the name of the store, and the value is either an
    *   ObserableStore, or a controller that extends one of the two base
    *   controllers in the `@metamask/controllers` package.
