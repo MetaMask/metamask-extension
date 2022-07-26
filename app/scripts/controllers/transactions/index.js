@@ -2123,10 +2123,7 @@ export default class TransactionController extends EventEmitter {
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,
-<<<<<<< HEAD
       transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
-=======
->>>>>>> develop
     };
 
     const sensitiveProperties = {
