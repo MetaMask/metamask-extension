@@ -44,8 +44,7 @@ export default function SnapInstall({
       v.startsWith('snap_getBip44Entropy_'),
     );
 
-  const shouldShowWarning =
-    bip44EntropyPermissions && bip44EntropyPermissions.length > 0;
+  const shouldShowWarning = bip44EntropyPermissions?.length > 0;
 
   const getCoinType = (bip44EntropyPermission) =>
     bip44EntropyPermission?.split('_').slice(-1);
@@ -130,14 +129,17 @@ export default function SnapInstall({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          warnings={bip44EntropyPermissions.map((permission, i) => ({
-            id: `key-access-${i}`,
-            message: t('snapInstallWarningKeyAccess', [
-              targetSubjectMetadata.name,
-              coinTypeToProtocolName(getCoinType(permission)) ||
-                t('unrecognizedProtocol', [getCoinType(permission)]),
-            ]),
-          }))}
+          warnings={bip44EntropyPermissions.map((permission, i) => {
+            const coinType = getCoinType(permission);
+            return {
+              id: `key-access-${i}`,
+              message: t('snapInstallWarningKeyAccess', [
+                targetSubjectMetadata.name,
+                coinTypeToProtocolName(coinType) ||
+                  t('unrecognizedProtocol', [coinType]),
+              ]),
+            };
+          })}
         />
       )}
     </Box>

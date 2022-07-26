@@ -76,7 +76,9 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
       </Typography>
       {warnings.map((warning, i) => (
         <div
-          className={classnames('checkbox-label', { '--first': i === 0 })}
+          className={classnames('checkbox-label', {
+            'checkbox-label--first': i === 0,
+          })}
           key={warning.id}
         >
           <CheckBox
