@@ -70,6 +70,7 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
   getTokenMetadata,
+  getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
   checkExistingAddresses,
@@ -1749,7 +1750,11 @@ export function editExistingTransaction(assetType, transactionId) {
             details: {
               address: transaction.txParams.to,
               ...(assetType === ASSET_TYPES.COLLECTIBLE
-                ? { tokenId: getTokenValueParam(tokenData) }
+                ? {
+                    tokenId:
+                      getTokenIdParam(tokenData) ??
+                      getTokenValueParam(tokenData),
+                  }
                 : {}),
             },
           },
