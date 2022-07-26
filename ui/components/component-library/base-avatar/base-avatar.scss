@@ -1,28 +1,31 @@
 .base-avatar {
-  &.--size-xs {
+  --avatar-size: var(--size, 16px);
+
+  &--size-xs {
     --size: 16px;
   }
 
-  &.--size-sm {
+  &--size-sm {
     --size: 24px;
   }
 
-  &.--size-md {
+  &--size-md {
     --size: 32px;
   }
 
-  &.--size-lg {
+  &--size-lg {
     --size: 40px;
   }
 
-  &.--size-xl {
+  &--size-xl {
     --size: 48px;
   }
-
-  --avatar-size: var(--size, 16px);
 
   height: var(--avatar-size);
   width: var(--avatar-size);
   border-radius: 100%;
-  background-color: var(--color-primary-default);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

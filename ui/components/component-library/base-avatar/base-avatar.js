@@ -2,23 +2,43 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 
-function BaseAvatar(props) {
-  const { size } = props;
-  return (
-    <Box
-      className={classnames('base-avatar', ` --size-${size}`)}
-      data-testid="base-avatar "
-    ></Box>
-  );
-}
+export const BaseAvatar = ({
+  size = SIZES.MD,
+  children,
+  backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
+  borderColor = COLORS.BORDER_DEFAULT,
+  ...props
+}) => (
+  <Box
+    className={classnames('base-avatar', `base-avatar--size-${size}`)}
+    {...{ backgroundColor, borderColor, ...props }}
+  >
+    {children}
+  </Box>
+);
 
 BaseAvatar.propTypes = {
   /**
-   * To control the size i.e height and width of the avatar
-   * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl'
+   * The size of the BaseAvatar.
+   * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl',
    */
-  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+  size: PropTypes.oneOf(Object.values(SIZES)),
+  /**
+   * The children to be rendered inside the BaseAvatar
+   */
+  children: PropTypes.node,
+  /**
+   * The background color of the BaseAvatar
+   */
+  backgroundColor: Box.propTypes.backgroundColor,
+  /**
+   * The background color of the BaseAvatar
+   */
+  borderColor: Box.propTypes.borderColor,
+  /**
+   * BaseAvatar accepts all the props from Box
+   */
+  ...Box.propTypes,
 };
-
-export default BaseAvatar;
