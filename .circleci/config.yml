@@ -600,6 +600,32 @@ jobs:
           root: .
           paths:
             - test-artifacts
+    
+    user-actions-benchmark:
+      executor: node-browsers-medium-plus
+      steps:
+        - checkout
+        - run:
+            name: Re-Install Chrome
+            command: ./.circleci/scripts/chrome-install.sh
+        - attach_workspace:
+            at: .
+        - run:
+            name: Move test build to dist
+            command: mv ./dist-test ./dist
+        - run:
+            name: Move test zips to builds
+            command: mv ./builds-test ./builds
+        - run:
+            name: Run page load benchmark
+            command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
+        - store_artifacts:
+            path: user_actions
+            destination: user_actions
+        - persist_to_workspace:
+            root: .
+            paths:
+              - user_actions
 
   stats-module-load-init:
     executor: node-browsers-medium-plus
