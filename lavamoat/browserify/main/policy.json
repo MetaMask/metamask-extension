@@ -140,9 +140,9 @@
         "3box>ethers>elliptic>brorand": true,
         "3box>ethers>elliptic>hmac-drbg": true,
         "3box>ethers>elliptic>minimalistic-crypto-utils": true,
-        "3box>ethers>hash.js>minimalistic-assert": true,
         "bn.js": true,
-        "ethers>@ethersproject/sha2>hash.js": true,
+        "ethereum-cryptography>hash.js": true,
+        "ethereum-cryptography>hash.js>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -158,8 +158,8 @@
     "3box>ethers>elliptic>hmac-drbg": {
       "packages": {
         "3box>ethers>elliptic>minimalistic-crypto-utils": true,
-        "3box>ethers>hash.js>minimalistic-assert": true,
-        "ethers>@ethersproject/sha2>hash.js": true
+        "ethereum-cryptography>hash.js": true,
+        "ethereum-cryptography>hash.js>minimalistic-assert": true
       }
     },
     "3box>events": {
@@ -487,7 +487,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -798,7 +798,7 @@
         "3box>ipfs>ipld-raw>multihashing-async>murmurhash3js-revisited": true,
         "3box>ipfs>multihashes": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -895,15 +895,15 @@
         "3box>ipfs>protons": true,
         "3box>tweetnacl": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>browserify-aes": true,
+        "ethereum-cryptography>browserify-aes": true,
         "mockttp>node-forge": true
       }
     },
     "3box>ipfs>libp2p-crypto>asn1.js": {
       "packages": {
-        "3box>ethers>hash.js>minimalistic-assert": true,
         "bn.js": true,
         "browserify>buffer": true,
+        "ethereum-cryptography>hash.js>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -921,7 +921,7 @@
         "3box>ipfs>async": true,
         "3box>ipfs>bs58": true,
         "3box>ipfs>libp2p-crypto>libp2p-crypto-secp256k1>multihashing-async": true,
-        "eth-trezor-keyring>hdkey>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "3box>ipfs>libp2p-crypto>libp2p-crypto-secp256k1>multihashing-async": {
@@ -935,7 +935,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -950,7 +950,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -1016,7 +1016,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -1094,7 +1094,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -1128,7 +1128,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -1734,7 +1734,7 @@
         "3box>ipfs>multihashing-async>nodeify": true,
         "browserify>buffer": true,
         "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
+        "ethereum-cryptography>blakejs": true,
         "ethers>@ethersproject/keccak256>js-sha3": true
       }
     },
@@ -2065,8 +2065,8 @@
         "3box>orbit-db>orbit-db-cache>level-js": true,
         "3box>orbit-db>orbit-db-keystore>levelup": true,
         "3box>orbit-db>orbit-db-keystore>lru": true,
-        "eth-trezor-keyring>hdkey>secp256k1": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "ethereumjs-wallet>safe-buffer": true,
+        "ganache>secp256k1": true
       }
     },
     "3box>orbit-db>orbit-db-keystore>levelup": {
@@ -2378,16 +2378,11 @@
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
       "packages": {
-        "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": true,
         "browserify>assert": true,
         "browserify>crypto-browserify": true,
         "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>hdkey>secp256k1": {
-      "packages": {
-        "3box>ethers>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true,
+        "ganache>secp256k1": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
@@ -2772,12 +2767,12 @@
         "@truffle/codec>utf8": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
+        "ethereum-cryptography": true,
+        "ethereum-cryptography>scrypt-js": true,
         "ethereumjs-util": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true
+        "ethereumjs-wallet>randombytes": true
       }
     },
     "@metamask/controllers>ethereumjs-wallet>uuid": {
@@ -2921,8 +2916,8 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
       }
     },
@@ -2933,8 +2928,8 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>safe-buffer": true
       }
@@ -2989,8 +2984,8 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>safe-buffer": true
       }
@@ -3007,8 +3002,8 @@
         "browserify>assert": true,
         "browserify>crypto-browserify": true,
         "eth-trezor-keyring>hdkey>coinstring": true,
-        "eth-trezor-keyring>hdkey>secp256k1": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "ethereumjs-wallet>safe-buffer": true,
+        "ganache>secp256k1": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -3208,8 +3203,7 @@
     "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
-        "crypto": true,
-        "setTimeout": true
+        "crypto": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
@@ -4195,11 +4189,11 @@
         "browserify>crypto-browserify>browserify-cipher": true,
         "browserify>crypto-browserify>browserify-sign": true,
         "browserify>crypto-browserify>create-ecdh": true,
-        "browserify>crypto-browserify>create-hmac": true,
         "browserify>crypto-browserify>diffie-hellman": true,
-        "browserify>crypto-browserify>pbkdf2": true,
         "browserify>crypto-browserify>public-encrypt": true,
         "browserify>crypto-browserify>randomfill": true,
+        "ethereum-cryptography>create-hmac": true,
+        "ethereum-cryptography>pbkdf2": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-wallet>randombytes": true
       }
@@ -4207,8 +4201,8 @@
     "browserify>crypto-browserify>browserify-cipher": {
       "packages": {
         "browserify>crypto-browserify>browserify-cipher>browserify-des": true,
-        "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": true,
-        "ethereumjs-util>ethereum-cryptography>browserify-aes": true
+        "ethereum-cryptography>browserify-aes": true,
+        "ethereum-cryptography>browserify-aes>evp_bytestokey": true
       }
     },
     "browserify>crypto-browserify>browserify-cipher>browserify-des": {
@@ -4221,14 +4215,8 @@
     },
     "browserify>crypto-browserify>browserify-cipher>browserify-des>des.js": {
       "packages": {
-        "3box>ethers>hash.js>minimalistic-assert": true,
+        "ethereum-cryptography>hash.js>minimalistic-assert": true,
         "pumpify>inherits": true
-      }
-    },
-    "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": {
-      "packages": {
-        "ethereumjs-util>create-hash>md5.js": true,
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "browserify>crypto-browserify>browserify-sign": {
@@ -4236,10 +4224,10 @@
         "3box>ethers>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "browserify>crypto-browserify>create-hmac": true,
         "browserify>crypto-browserify>public-encrypt>browserify-rsa": true,
         "browserify>crypto-browserify>public-encrypt>parse-asn1": true,
         "browserify>stream-browserify": true,
+        "ethereum-cryptography>create-hmac": true,
         "ethereumjs-util>create-hash": true,
         "pumpify>inherits": true
       }
@@ -4249,16 +4237,6 @@
         "3box>ethers>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true
-      }
-    },
-    "browserify>crypto-browserify>create-hmac": {
-      "packages": {
-        "addons-linter>sha.js": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>create-hash>cipher-base": true,
-        "ethereumjs-util>create-hash>ripemd160": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "pumpify>inherits": true
       }
     },
     "browserify>crypto-browserify>diffie-hellman": {
@@ -4273,22 +4251,6 @@
       "packages": {
         "3box>ethers>elliptic>brorand": true,
         "bn.js": true
-      }
-    },
-    "browserify>crypto-browserify>pbkdf2": {
-      "globals": {
-        "crypto": true,
-        "process": true,
-        "queueMicrotask": true,
-        "setImmediate": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "addons-linter>sha.js": true,
-        "browserify>process": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>create-hash>ripemd160": true,
-        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "browserify>crypto-browserify>public-encrypt": {
@@ -4311,18 +4273,18 @@
     "browserify>crypto-browserify>public-encrypt>parse-asn1": {
       "packages": {
         "browserify>buffer": true,
-        "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": true,
-        "browserify>crypto-browserify>pbkdf2": true,
         "browserify>crypto-browserify>public-encrypt>parse-asn1>asn1.js": true,
-        "ethereumjs-util>ethereum-cryptography>browserify-aes": true
+        "ethereum-cryptography>browserify-aes": true,
+        "ethereum-cryptography>browserify-aes>evp_bytestokey": true,
+        "ethereum-cryptography>pbkdf2": true
       }
     },
     "browserify>crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
       "packages": {
-        "3box>ethers>hash.js>minimalistic-assert": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>vm-browserify": true,
+        "ethereum-cryptography>hash.js>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -4700,8 +4662,8 @@
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
       }
     },
@@ -4712,8 +4674,8 @@
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>safe-buffer": true
       }
@@ -4740,7 +4702,7 @@
     "eth-keyring-controller>@metamask/bip39": {
       "packages": {
         "browserify>buffer": true,
-        "browserify>crypto-browserify>pbkdf2": true,
+        "ethereum-cryptography>pbkdf2": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-wallet>randombytes": true
       }
@@ -4760,12 +4722,12 @@
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
         "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>uuid": true,
+        "ethereum-cryptography": true,
+        "ethereum-cryptography>scrypt-js": true,
         "ethereumjs-util": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true
+        "ethereumjs-wallet>randombytes": true
       }
     },
     "eth-keyring-controller>@metamask/eth-hd-keyring>ethereumjs-wallet>uuid": {
@@ -4804,12 +4766,12 @@
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
         "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet>uuid": true,
+        "ethereum-cryptography": true,
+        "ethereum-cryptography>scrypt-js": true,
         "ethereumjs-util": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true
+        "ethereumjs-wallet>randombytes": true
       }
     },
     "eth-keyring-controller>eth-simple-keyring>ethereumjs-wallet>uuid": {
@@ -4843,8 +4805,8 @@
         "eth-lattice-keyring>bn.js": true,
         "eth-lattice-keyring>gridplus-sdk": true,
         "eth-lattice-keyring>rlp": true,
-        "eth-lattice-keyring>secp256k1": true,
-        "ethereumjs-util": true
+        "ethereumjs-util": true,
+        "ganache>secp256k1": true
       }
     },
     "eth-lattice-keyring>bn.js": {
@@ -4904,11 +4866,6 @@
         "TextEncoder": true
       }
     },
-    "eth-lattice-keyring>secp256k1": {
-      "packages": {
-        "3box>ethers>elliptic": true
-      }
-    },
     "eth-method-registry": {
       "packages": {
         "ethjs": true
@@ -4941,8 +4898,8 @@
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>safe-buffer": true
       }
@@ -4984,8 +4941,8 @@
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
       }
     },
@@ -5001,8 +4958,8 @@
         "browserify>assert": true,
         "browserify>crypto-browserify": true,
         "eth-trezor-keyring>hdkey>coinstring": true,
-        "eth-trezor-keyring>hdkey>secp256k1": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "ethereumjs-wallet>safe-buffer": true,
+        "ganache>secp256k1": true
       }
     },
     "eth-trezor-keyring>hdkey>coinstring": {
@@ -5010,28 +4967,6 @@
         "browserify>buffer": true,
         "eth-trezor-keyring>hdkey>coinstring>bs58": true,
         "ethereumjs-util>create-hash": true
-      }
-    },
-    "eth-trezor-keyring>hdkey>secp256k1": {
-      "packages": {
-        "3box>ethers>elliptic": true,
-        "bn.js": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-trezor-keyring>hdkey>secp256k1>bip66": true,
-        "eth-trezor-keyring>hdkey>secp256k1>drbg.js": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "eth-trezor-keyring>hdkey>secp256k1>bip66": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "eth-trezor-keyring>hdkey>secp256k1>drbg.js": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>create-hmac": true
       }
     },
     "eth-trezor-keyring>trezor-connect": {
@@ -5062,6 +4997,104 @@
         "eth-trezor-keyring>@metamask/eth-sig-util": true
       }
     },
+    "ethereum-cryptography": {
+      "packages": {
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "ethereum-cryptography>create-hmac": true,
+        "ethereum-cryptography>hash.js": true,
+        "ethereum-cryptography>keccak": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethereumjs-wallet>randombytes": true,
+        "ethereumjs-wallet>safe-buffer": true,
+        "ganache>secp256k1": true
+      }
+    },
+    "ethereum-cryptography>blakejs": {
+      "globals": {
+        "TextEncoder": true,
+        "console.log": true
+      }
+    },
+    "ethereum-cryptography>browserify-aes": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethereum-cryptography>browserify-aes>buffer-xor": true,
+        "ethereum-cryptography>browserify-aes>evp_bytestokey": true,
+        "ethereumjs-util>create-hash>cipher-base": true,
+        "ethereumjs-wallet>safe-buffer": true,
+        "pumpify>inherits": true
+      }
+    },
+    "ethereum-cryptography>browserify-aes>buffer-xor": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "ethereum-cryptography>browserify-aes>evp_bytestokey": {
+      "packages": {
+        "ethereumjs-util>create-hash>md5.js": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "ethereum-cryptography>create-hmac": {
+      "packages": {
+        "addons-linter>sha.js": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>create-hash>cipher-base": true,
+        "ethereumjs-util>create-hash>ripemd160": true,
+        "ethereumjs-wallet>safe-buffer": true,
+        "pumpify>inherits": true
+      }
+    },
+    "ethereum-cryptography>hash.js": {
+      "packages": {
+        "ethereum-cryptography>hash.js>minimalistic-assert": true,
+        "pumpify>inherits": true
+      }
+    },
+    "ethereum-cryptography>keccak": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethereum-cryptography>keccak>readable-stream": true
+      }
+    },
+    "ethereum-cryptography>keccak>readable-stream": {
+      "packages": {
+        "@storybook/api>util-deprecate": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true
+      }
+    },
+    "ethereum-cryptography>pbkdf2": {
+      "globals": {
+        "crypto": true,
+        "process": true,
+        "queueMicrotask": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "addons-linter>sha.js": true,
+        "browserify>process": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>create-hash>ripemd160": true,
+        "ethereumjs-wallet>safe-buffer": true
+      }
+    },
+    "ethereum-cryptography>scrypt-js": {
+      "globals": {
+        "define": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>timers-browserify": true
+      }
+    },
     "ethereumjs-abi": {
       "packages": {
         "bn.js": true,
@@ -5075,9 +5108,9 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
+        "ethereum-cryptography": true,
         "ethereumjs-abi>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
       }
     },
@@ -5093,9 +5126,9 @@
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>bn.js": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>rlp": true
       }
@@ -5157,62 +5190,6 @@
         "pumpify>inherits": true
       }
     },
-    "ethereumjs-util>ethereum-cryptography": {
-      "packages": {
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>create-hmac": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethers>@ethersproject/sha2>hash.js": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>blakejs": {
-      "globals": {
-        "TextEncoder": true,
-        "console.log": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>browserify-aes": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": true,
-        "ethereumjs-util>create-hash>cipher-base": true,
-        "ethereumjs-util>ethereum-cryptography>browserify-aes>buffer-xor": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "pumpify>inherits": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>browserify-aes>buffer-xor": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>keccak": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>secp256k1": {
-      "packages": {
-        "3box>ethers>elliptic": true
-      }
-    },
     "ethereumjs-util>ethjs-util": {
       "packages": {
         "browserify>buffer": true,
@@ -5265,8 +5242,8 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
+        "ethereum-cryptography": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>ethereumjs-util>ethjs-util": true
       }
@@ -5296,7 +5273,7 @@
     "ethereumjs-wallet>scryptsy": {
       "packages": {
         "browserify>buffer": true,
-        "browserify>crypto-browserify>pbkdf2": true
+        "ethereum-cryptography>pbkdf2": true
       }
     },
     "ethereumjs-wallet>uuid": {
@@ -5451,11 +5428,11 @@
     },
     "ethers>@ethersproject/json-wallets": {
       "packages": {
+        "ethereum-cryptography>scrypt-js": true,
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/bytes": true,
         "ethers>@ethersproject/hdnode": true,
         "ethers>@ethersproject/json-wallets>aes-js": true,
-        "ethers>@ethersproject/json-wallets>scrypt-js": true,
         "ethers>@ethersproject/keccak256": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/pbkdf2": true,
@@ -5468,15 +5445,6 @@
     "ethers>@ethersproject/json-wallets>aes-js": {
       "globals": {
         "define": true
-      }
-    },
-    "ethers>@ethersproject/json-wallets>scrypt-js": {
-      "globals": {
-        "define": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>timers-browserify": true
       }
     },
     "ethers>@ethersproject/keccak256": {
@@ -5562,15 +5530,9 @@
     },
     "ethers>@ethersproject/sha2": {
       "packages": {
+        "ethereum-cryptography>hash.js": true,
         "ethers>@ethersproject/bytes": true,
-        "ethers>@ethersproject/logger": true,
-        "ethers>@ethersproject/sha2>hash.js": true
-      }
-    },
-    "ethers>@ethersproject/sha2>hash.js": {
-      "packages": {
-        "3box>ethers>hash.js>minimalistic-assert": true,
-        "pumpify>inherits": true
+        "ethers>@ethersproject/logger": true
       }
     },
     "ethers>@ethersproject/signing-key": {
@@ -5821,6 +5783,21 @@
       "globals": {
         "console": true,
         "define": true
+      }
+    },
+    "ganache>secp256k1": {
+      "packages": {
+        "ganache>secp256k1>ethereum-cryptography": true
+      }
+    },
+    "ganache>secp256k1>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true
       }
     },
     "globalthis>define-properties": {
