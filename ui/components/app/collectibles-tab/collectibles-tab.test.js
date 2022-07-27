@@ -137,8 +137,8 @@ const COLLECTIBLES_CONTRACTS = [
 ];
 
 const collectiblesDropdownState = {
-  0x495f947276749ce646f68ac8c248420045cb7b5e: true,
-  0xdc7382eb0bc9c352a4cba23c909bda01e0206414: true,
+  '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
+  '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
 };
 
 const ACCOUNT_1 = '0x123';
@@ -214,14 +214,16 @@ describe('Collectible Items', () => {
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in setings when user clicks "Turn on NFT detection in Settings"', () => {
+    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
         selectedAddress: ACCOUNT_2,
         collectibles: COLLECTIBLES,
       });
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(
+        `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+      );
     });
     it('should not render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has no collectibles but use collectible autodetection preference is set to true', () => {
       render({

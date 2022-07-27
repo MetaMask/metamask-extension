@@ -43,15 +43,6 @@ async function getMethodFrom4Byte(fourBytePrefix) {
   return fourByteResponse.results[0].text_signature;
 }
 
-function pickShortest(registrySig, fourByteSig) {
-  if (!registrySig) {
-    return fourByteSig;
-  } else if (!fourByteSig) {
-    return registrySig;
-  }
-  return fourByteSig.length < registrySig.length ? fourByteSig : registrySig;
-}
-
 let registry;
 
 /**
@@ -71,18 +62,11 @@ export async function getMethodDataAsync(fourBytePrefix) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    const registrySig = await registry.lookup(fourBytePrefix).catch((e) => {
-      log.error(e);
-      return null;
-    });
-
-    const sig = pickShortest(registrySig, fourByteSig);
-
-    if (!sig) {
+    if (!fourByteSig) {
       return {};
     }
 
-    const parsedResult = registry.parse(sig);
+    const parsedResult = registry.parse(fourByteSig);
 
     return {
       name: parsedResult.name,

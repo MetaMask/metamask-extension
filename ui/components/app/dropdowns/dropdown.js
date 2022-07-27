@@ -18,7 +18,7 @@ export class Dropdown extends Component {
       borderRadius: '4px',
       padding: '8px 16px',
       background: 'var(--color-background-default)',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
       ...innerStyle,
     };
 

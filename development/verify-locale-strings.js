@@ -95,6 +95,7 @@ async function main() {
   }
 }
 
+// eslint-disable-next-line consistent-return
 async function writeLocale(code, locale) {
   try {
     const localeFilePath = getLocalePath(code);
