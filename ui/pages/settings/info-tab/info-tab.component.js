@@ -2,10 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../../../components/ui/button';
-import {
-  SUPPORT_LINK,
-  SUPPORT_REQUEST_LINK,
-} from '../../../helpers/constants/common';
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
   getNumberOfSettingsInSection,
@@ -16,6 +13,7 @@ import {
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from 'shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {

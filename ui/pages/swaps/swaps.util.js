@@ -1,10 +1,8 @@
-import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_CONTRACT_ADDRESSES,
-  SWAPS_WRAPPED_TOKENS_ADDRESSES,
   ETHEREUM,
   POLYGON,
   BSC,
@@ -12,39 +10,34 @@ import {
   AVALANCHE,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
-  GAS_API_BASE_URL,
-  GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
+  SWAPS_WRAPPED_TOKENS_ADDRESSES,
 } from '../../../shared/constants/swaps';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
+import { getValueFromWeiHex } from '../../helpers/utils/conversions.util';
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+  decimalToHex,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../shared/lib/transactions-controller-utils';
 import {
   calcTokenValue,
-  calcTokenAmount,
-} from '../../helpers/utils/token-util';
-import {
   constructTxParams,
-  toPrecisionWithoutTrailingZeros,
-} from '../../helpers/utils/util';
-import {
-  decimalToHex,
-  getValueFromWeiHex,
-} from '../../helpers/utils/conversions.util';
-
-import { subtractCurrencies } from '../../../shared/modules/conversion.utils';
-import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
-import fetchWithCache from '../../helpers/utils/fetch-with-cache';
-
-import { calcGasTotal } from '../send/send.utils';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
-
-const TOKEN_TRANSFER_LOG_TOPIC_HASH =
-  '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+  getBaseApi,
+  QUOTE_VALIDATORS,
+  truthyString,
+  validateData,
+} from '../../../shared/lib/swaps-utils';
+import { SECOND } from 'shared/constants/time';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -243,25 +236,6 @@ const SWAP_GAS_PRICE_VALIDATOR = [
     validator: isValidDecimalNumber,
   },
 ];
-
-function validateData(validators, object, urlUsed, logError = true) {
-  return validators.every(({ property, type, validator }) => {
-    const types = type.split('|');
-
-    const valid =
-      types.some((_type) => typeof object[property] === _type) &&
-      (!validator || validator(object[property]));
-    if (!valid && logError) {
-      log.error(
-        `response to GET ${urlUsed} invalid for property ${property}; value was:`,
-        object[property],
-        '| type was: ',
-        typeof object[property],
-      );
-    }
-    return valid;
-  });
-}
 
 export const shouldEnableDirectWrapping = (
   chainId,
@@ -723,105 +697,6 @@ export function quotesToRenderableData(
       metaMaskFee: fee,
     };
   });
-}
-
-export function getSwapsTokensReceivedFromTxMeta(
-  tokenSymbol,
-  txMeta,
-  tokenAddress,
-  accountAddress,
-  tokenDecimals,
-  approvalTxMeta,
-  chainId,
-) {
-  const txReceipt = txMeta?.txReceipt;
-  const networkAndAccountSupports1559 =
-    txMeta?.txReceipt?.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
-  if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
-    if (
-      !txReceipt ||
-      !txMeta ||
-      !txMeta.postTxBalance ||
-      !txMeta.preTxBalance
-    ) {
-      return null;
-    }
-
-    if (txMeta.swapMetaData && txMeta.preTxBalance === txMeta.postTxBalance) {
-      // If preTxBalance and postTxBalance are equal, postTxBalance hasn't been updated on time
-      // because of the RPC provider delay, so we return an estimated receiving amount instead.
-      return txMeta.swapMetaData.token_to_amount;
-    }
-
-    let approvalTxGasCost = '0x0';
-    if (approvalTxMeta && approvalTxMeta.txReceipt) {
-      approvalTxGasCost = calcGasTotal(
-        approvalTxMeta.txReceipt.gasUsed,
-        networkAndAccountSupports1559
-          ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
-          : approvalTxMeta.txParams.gasPrice,
-      );
-    }
-
-    const gasCost = calcGasTotal(
-      txReceipt.gasUsed,
-      networkAndAccountSupports1559
-        ? txReceipt.effectiveGasPrice
-        : txMeta.txParams.gasPrice,
-    );
-    const totalGasCost = new BigNumber(gasCost, 16)
-      .plus(approvalTxGasCost, 16)
-      .toString(16);
-
-    const preTxBalanceLessGasCost = subtractCurrencies(
-      txMeta.preTxBalance,
-      totalGasCost,
-      {
-        aBase: 16,
-        bBase: 16,
-        toNumericBase: 'hex',
-      },
-    );
-
-    const ethReceived = subtractCurrencies(
-      txMeta.postTxBalance,
-      preTxBalanceLessGasCost,
-      {
-        aBase: 16,
-        bBase: 16,
-        fromDenomination: 'WEI',
-        toDenomination: 'ETH',
-        toNumericBase: 'dec',
-        numberOfDecimals: 6,
-      },
-    );
-    return ethReceived;
-  }
-  const txReceiptLogs = txReceipt?.logs;
-  if (txReceiptLogs && txReceipt?.status !== '0x0') {
-    const tokenTransferLog = txReceiptLogs.find((txReceiptLog) => {
-      const isTokenTransfer =
-        txReceiptLog.topics &&
-        txReceiptLog.topics[0] === TOKEN_TRANSFER_LOG_TOPIC_HASH;
-      const isTransferFromGivenToken = txReceiptLog.address === tokenAddress;
-      const isTransferFromGivenAddress =
-        txReceiptLog.topics &&
-        txReceiptLog.topics[2] &&
-        txReceiptLog.topics[2].match(accountAddress.slice(2));
-      return (
-        isTokenTransfer &&
-        isTransferFromGivenToken &&
-        isTransferFromGivenAddress
-      );
-    });
-    return tokenTransferLog
-      ? toPrecisionWithoutTrailingZeros(
-          calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10),
-          6,
-        )
-      : '';
-  }
-  return null;
 }
 
 export function formatSwapsValueForDisplay(destinationAmount) {

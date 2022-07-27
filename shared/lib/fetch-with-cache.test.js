@@ -3,7 +3,7 @@ import sinon from 'sinon';
 
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
-jest.mock('./storage-helpers.js', () => ({
+jest.mock('./storage-helpers', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
 }));

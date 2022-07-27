@@ -5,13 +5,13 @@ import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
-import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from 'shared/lib/ui-utils';
 
 export default class UnlockPage extends Component {
   static contextTypes = {

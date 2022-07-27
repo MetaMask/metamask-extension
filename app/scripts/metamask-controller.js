@@ -90,11 +90,7 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
-import {
-  getTokenIdParam,
-  getTokenValueParam,
-} from '../../ui/helpers/utils/token-util';
+import { getTokenIdParam } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -154,6 +150,10 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
+import {
+  getTokenValueParam,
+  hexToDecimal,
+} from 'shared/lib/metamask-controller-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
