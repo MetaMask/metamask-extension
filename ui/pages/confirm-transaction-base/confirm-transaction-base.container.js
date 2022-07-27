@@ -34,6 +34,7 @@ import {
   getIsMultiLayerFeeNetwork,
   getEIP1559V2Enabled,
   getIsBuyableChain,
+  getEnsResolutionByAddress,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -53,6 +54,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -80,7 +82,6 @@ const mapStateToProps = (state, ownProps) => {
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
   const {
-    ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
@@ -112,7 +113,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  const toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
+  let toAddress = txParamsToAddress;
+  if (type !== TRANSACTION_TYPES.SIMPLE_SEND) {
+    toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
+  }
 
   const tokenList = getTokenList(state);
   const useTokenDetection = getUseTokenDetection(state);
@@ -137,7 +141,7 @@ const mapStateToProps = (state, ownProps) => {
     addressBook &&
     addressBook[chainId] &&
     addressBook[chainId][checksummedAddress];
-  const toEns = ensResolutionsByAddress[checksummedAddress] || '';
+  const toEns = getEnsResolutionByAddress(state, checksummedAddress);
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
   const supportsEIP1559 =

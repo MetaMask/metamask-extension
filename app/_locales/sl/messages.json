@@ -137,10 +137,10 @@
     "message": "Vaš brskalnik ni podptrt ..."
   },
   "buyWithWyre": {
-    "message": "Kupi ETH z Wyre"
+    "message": "Kupi $1 z Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vam omogoča, da s kreditno kartico nakažete ETH neposredno na svoj račun MetaMask."
+    "message": "Wyre vam omogoča, da s kreditno kartico nakažete $1 neposredno na svoj račun MetaMask."
   },
   "bytes": {
     "message": "Bajti"

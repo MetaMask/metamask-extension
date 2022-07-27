@@ -109,10 +109,15 @@ describe('CurrencyInput Component', () => {
         },
       };
       const store = configureMockStore()(mockStore);
+      const handleChangeSpy = sinon.spy();
 
       const wrapper = mount(
         <Provider store={store}>
-          <CurrencyInput hexValue="f602f2234d0ea" featureSecondary />
+          <CurrencyInput
+            onChange={handleChangeSpy}
+            hexValue="f602f2234d0ea"
+            featureSecondary
+          />
         </Provider>,
       );
 
@@ -140,12 +145,16 @@ describe('CurrencyInput Component', () => {
         },
         hideSecondary: true,
       };
-
       const store = configureMockStore()(mockStore);
+      const handleChangeSpy = sinon.spy();
 
       const wrapper = mount(
         <Provider store={store}>
-          <CurrencyInput hexValue="f602f2234d0ea" featureSecondary />
+          <CurrencyInput
+            onChange={handleChangeSpy}
+            hexValue="f602f2234d0ea"
+            featureSecondary
+          />
         </Provider>,
         {
           context: { t: (str) => `${str}_t` },
@@ -205,7 +214,7 @@ describe('CurrencyInput Component', () => {
       expect(input.props().value).toStrictEqual(0.00432788);
 
       input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(2);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleChangeSpy.calledWith('de0b6b3a7640000')).toStrictEqual(true);
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '$231.06USD',
@@ -234,7 +243,7 @@ describe('CurrencyInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
@@ -307,7 +316,7 @@ describe('CurrencyInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(

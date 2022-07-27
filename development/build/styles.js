@@ -7,6 +7,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('gulp-rtlcss');
 const rename = require('gulp-rename');
 const pump = pify(require('pump'));
+const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
 let sass;
@@ -16,7 +17,7 @@ module.exports = createStyleTasks;
 
 function createStyleTasks({ livereload }) {
   const prod = createTask(
-    'styles:prod',
+    TASKS.STYLES_PROD,
     createScssBuildTask({
       src: 'ui/css/index.scss',
       dest: 'ui/css/output',
@@ -25,7 +26,7 @@ function createStyleTasks({ livereload }) {
   );
 
   const dev = createTask(
-    'styles:dev',
+    TASKS.STYLES_DEV,
     createScssBuildTask({
       src: 'ui/css/index.scss',
       dest: 'ui/css/output',
@@ -34,7 +35,7 @@ function createStyleTasks({ livereload }) {
     }),
   );
 
-  const lint = createTask('lint-scss', function () {
+  const lint = createTask(TASKS.LINT_SCSS, function () {
     return gulp.src('ui/css/itcss/**/*.scss').pipe(
       gulpStylelint({
         reporters: [{ formatter: 'string', console: true }],
