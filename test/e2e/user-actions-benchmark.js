@@ -26,7 +26,6 @@ async function loadAccount() {
     {
       fixtures: 'imported-account',
       ganacheOptions,
-      title: this.test.title,
     },
     async ({ driver }) => {
       await driver.navigate();
@@ -56,7 +55,6 @@ async function confirmTx() {
     {
       fixtures: 'imported-account',
       ganacheOptions,
-      title: this.test.title,
     },
     async ({ driver }) => {
       await driver.navigate();
