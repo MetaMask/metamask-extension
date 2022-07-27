@@ -217,7 +217,13 @@ export default class SelectHardware extends Component {
             <Button
             className="hw-connect__external-btn-first"
             type="secondary"
-            onClick={() => window.open("https://shop.ledger.com/?r=17c4991a03fa", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked Ledger Buy Now',
+              })
+              window.open("https://shop.ledger.com/?r=17c4991a03fa", "_blank")
+            }
             }
           >
            {this.context.t('buyNow')}
@@ -225,7 +231,13 @@ export default class SelectHardware extends Component {
           <Button
             className="hw-connect__external-btn"
             type="secondary"
-            onClick={() => window.open("https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked Ledger Tutorial',
+              })
+              window.open("https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true", "_blank")
+            }
             }
           >
            {this.context.t('tutorial')}
@@ -273,7 +285,13 @@ export default class SelectHardware extends Component {
             <Button
             className="hw-connect__external-btn-first"
             type="secondary"
-            onClick={() => window.open("https://gridplus.io/?afmc=7p", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked GridPlus Buy Now',
+              })
+              window.open("https://gridplus.io/?afmc=7p", "_blank")
+            }
             }
           >
           {this.context.t('buyNow')}
@@ -281,7 +299,13 @@ export default class SelectHardware extends Component {
           <Button
             className="hw-connect__external-btn"
             type="secondary"
-            onClick={() => window.open("https://docs.gridplus.io/setup/metamask", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked GidPlus Tutorial',
+              })
+              window.open("https://docs.gridplus.io/setup/metamask", "_blank")
+            }
             }
           >
            {this.context.t('tutorial')}
@@ -329,7 +353,13 @@ export default class SelectHardware extends Component {
             <Button
             className="hw-connect__external-btn-first"
             type="secondary"
-            onClick={() => window.open("https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked Trezor Buy Now',
+              })
+              window.open("https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009", "_blank")
+            }
             }
           >
            {this.context.t('buyNow')}
@@ -337,7 +367,13 @@ export default class SelectHardware extends Component {
           <Button
             className="hw-connect__external-btn"
             type="secondary"
-            onClick={() => window.open("https://wiki.trezor.io/Apps:MetaMask", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked Trezor Tutorial',
+              })
+              window.open("https://wiki.trezor.io/Apps:MetaMask", "_blank")
+            }
             }
           >
            {this.context.t('tutorial')}
@@ -371,14 +407,26 @@ export default class SelectHardware extends Component {
             <Button
             className="hw-connect__external-btn-first"
             type="secondary"
-            onClick={() => window.open("https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked Keystone Buy Now',
+              })
+              window.open("https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9", "_blank")
+            }
             }>
               {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
-              onClick={() => window.open("https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone", "_blank")
+              onClick={() => {
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Keystone Buy Now',
+                })
+                window.open("https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone", "_blank")
+              }
               }>
               {this.context.t('tutorial')}
             </Button>
@@ -392,14 +440,26 @@ export default class SelectHardware extends Component {
             <Button
             className="hw-connect__external-btn-first"
             type="secondary"
-            onClick={() => window.open("https://airgap.it/", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked AirGap Vault Buy Now',
+              })
+              window.open("https://airgap.it/", "_blank")
+            }
             }>
               {this.context.t('downloadNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
-              onClick={() => window.open("https://support.airgap.it/guides/metamask/", "_blank")
+              onClick={() => {
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked AirGap Vault Tutorial',
+                })
+                window.open("https://support.airgap.it/guides/metamask/", "_blank")
+              }
               }>
               {this.context.t('tutorial')}
             </Button>
@@ -416,7 +476,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Clicked Buy CoolWallet',
+                  event: 'Clicked CoolWallet Buy Now',
                 })
                 window.open("https://www.coolwallet.io/", "_blank")
               }
@@ -426,7 +486,13 @@ export default class SelectHardware extends Component {
             <Button
               className="hw-connect__external-btn"
               type="secondary"
-              onClick={() => window.open("https://www.coolwallet.io/metamask-step-by-step-guides/", "_blank")
+              onClick={() => {
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked CoolWallet Tutorial',
+                })
+                window.open("https://www.coolwallet.io/metamask-step-by-step-guides/", "_blank")
+              }
               }>
               {this.context.t('tutorial')}
             </Button>
@@ -440,14 +506,26 @@ export default class SelectHardware extends Component {
             <Button
             className="hw-connect__external-btn-first"
             type="secondary"
-            onClick={() => window.open("https://dcentwallet.com/", "_blank")
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Clicked DCent Buy Now',
+              })
+              window.open("https://dcentwallet.com/", "_blank")
+            }
             }>
               {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
-              onClick={() => window.open("https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f", "_blank")
+              onClick={() => {
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked DCent Tutorial',
+                })
+                window.open("https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f", "_blank")
+              }
               }>
                 {this.context.t('tutorial')}
             </Button>
