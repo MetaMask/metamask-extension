@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Confirm', function () {
   it('can pop up a snap confirm and get its result', async function () {
@@ -17,9 +18,6 @@ describe('Test Snap Confirm', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        driverOptions: {
-          type: 'flask',
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -29,12 +27,9 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/');
-        await driver.fill('.snapId', 'npm:@metamask/test-snap-confirm');
-        await driver.clickElement({
-          text: 'Connect To Confirm Snap',
-          tag: 'button',
-        });
+        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.fill('#snapId1', 'npm:@metamask/test-snap-confirm');
+        await driver.clickElement('#connectHello');
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -69,10 +64,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Send Inputs to Hello Snap',
-          tag: 'button',
-        });
+        await driver.clickElement('#sendConfirmButton');
 
         // hit 'approve' on the custom confirm
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
@@ -90,7 +82,7 @@ describe('Test Snap Confirm', function () {
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        const confirmResult = await driver.findElement('.sendResults');
+        const confirmResult = await driver.findElement('#confirmResult');
         assert.equal(await confirmResult.getText(), 'true');
       },
     );

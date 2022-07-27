@@ -1,3 +1,4 @@
+import { draftTransactionInitialState } from '../ui/ducks/send';
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -15,99 +16,99 @@ const state = {
   },
   networkList: [
     {
-      blockExplorerUrl: "https://etherscan.io",
-      chainId: "0x1",
+      blockExplorerUrl: 'https://etherscan.io',
+      chainId: '0x1',
       iconColor: 'var(--mainnet)',
       isATestNetwork: false,
-      labelKey: "mainnet",
-      providerType: "mainnet",
-      rpcUrl: "https://mainnet.infura.io/v3/",
-      ticker: "ETH",
+      labelKey: 'mainnet',
+      providerType: 'mainnet',
+      rpcUrl: 'https://mainnet.infura.io/v3/',
+      ticker: 'ETH',
       viewOnly: true,
     },
     {
-      blockExplorerUrl: "https://ropsten.etherscan.io",
-      chainId: "0x3",
+      blockExplorerUrl: 'https://ropsten.etherscan.io',
+      chainId: '0x3',
       iconColor: 'var(--ropsten)',
       isATestNetwork: true,
-      labelKey: "ropsten",
-      providerType: "ropsten",
-      rpcUrl: "https://ropsten.infura.io/v3/",
-      ticker: "ETH",
+      labelKey: 'ropsten',
+      providerType: 'ropsten',
+      rpcUrl: 'https://ropsten.infura.io/v3/',
+      ticker: 'ETH',
       viewOnly: true,
     },
     {
-      blockExplorerUrl: "https://rinkeby.etherscan.io",
-      chainId: "0x4",
+      blockExplorerUrl: 'https://rinkeby.etherscan.io',
+      chainId: '0x4',
       iconColor: 'var(--rinkeby)',
       isATestNetwork: true,
-      labelKey: "rinkeby",
-      providerType: "rinkeby",
-      rpcUrl: "https://rinkeby.infura.io/v3/",
-      ticker: "ETH",
+      labelKey: 'rinkeby',
+      providerType: 'rinkeby',
+      rpcUrl: 'https://rinkeby.infura.io/v3/',
+      ticker: 'ETH',
       viewOnly: true,
     },
     {
-      blockExplorerUrl: "https://goerli.etherscan.io",
-      chainId: "0x5",
+      blockExplorerUrl: 'https://goerli.etherscan.io',
+      chainId: '0x5',
       iconColor: 'var(--goerli)',
       isATestNetwork: true,
-      labelKey: "goerli",
-      providerType: "goerli",
-      rpcUrl: "https://goerli.infura.io/v3/",
-      ticker: "ETH",
+      labelKey: 'goerli',
+      providerType: 'goerli',
+      rpcUrl: 'https://goerli.infura.io/v3/',
+      ticker: 'ETH',
       viewOnly: true,
     },
     {
-      blockExplorerUrl: "https://kovan.etherscan.io",
-      chainId: "0x2a",
+      blockExplorerUrl: 'https://kovan.etherscan.io',
+      chainId: '0x2a',
       iconColor: 'var(--kovan)',
       isATestNetwork: true,
-      labelKey: "kovan",
-      providerType: "kovan",
-      rpcUrl: "https://kovan.infura.io/v3/",
-      ticker: "ETH",
+      labelKey: 'kovan',
+      providerType: 'kovan',
+      rpcUrl: 'https://kovan.infura.io/v3/',
+      ticker: 'ETH',
       viewOnly: true,
     },
     {
-      blockExplorerUrl: "",
-      chainId: "0x539",
+      blockExplorerUrl: '',
+      chainId: '0x539',
       iconColor: 'var(--localhost)',
       isATestNetwork: true,
-      label: "Localhost 8545",
-      providerType: "rpc",
-      rpcUrl: "http://localhost:8545",
-      ticker: "ETH",
+      label: 'Localhost 8545',
+      providerType: 'rpc',
+      rpcUrl: 'http://localhost:8545',
+      ticker: 'ETH',
     },
     {
-      blockExplorerUrl: "https://bscscan.com",
-      chainId: "0x38",
+      blockExplorerUrl: 'https://bscscan.com',
+      chainId: '0x38',
       iconColor: 'var(--localhost)',
       isATestNetwork: false,
-      label: "Binance Smart Chain",
-      providerType: "rpc",
-      rpcUrl: "https://bsc-dataseed.binance.org/",
-      ticker: "BNB",
+      label: 'Binance Smart Chain',
+      providerType: 'rpc',
+      rpcUrl: 'https://bsc-dataseed.binance.org/',
+      ticker: 'BNB',
     },
     {
-      blockExplorerUrl: "https://cchain.explorer.avax.network/",
-      chainId: "0xa86a",
+      blockExplorerUrl: 'https://cchain.explorer.avax.network/',
+      chainId: '0xa86a',
       iconColor: 'var(--localhost)',
       isATestNetwork: false,
-      label: "Avalanche",
-      providerType: "rpc",
-      rpcUrl: "https://api.avax.network/ext/bc/C/rpc",
-      ticker: "AVAX",
+      label: 'Avalanche',
+      providerType: 'rpc',
+      rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+      ticker: 'AVAX',
     },
     {
-      blockExplorerUrl: "https://polygonscan.com",
-      chainId: "0x89",
+      blockExplorerUrl: 'https://polygonscan.com',
+      chainId: '0x89',
       iconColor: 'var(--localhost)',
       isATestNetwork: false,
-      label: "Polygon",
-      providerType: "rpc",
-      rpcUrl: "https://polygon-rpc.com",
-      ticker: "MATIC",
+      label: 'Polygon',
+      providerType: 'rpc',
+      rpcUrl: 'https://polygon-rpc.com',
+      ticker: 'MATIC',
     },
   ],
   metamask: {
@@ -132,7 +133,7 @@ const state = {
           '0x',
         ],
         occurrences: 12,
-        unlisted: false
+        unlisted: false,
       },
       '0xc00e94cb662c3520282e6f5717214004a7f26888': {
         address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
@@ -153,23 +154,18 @@ const state = {
           '0x',
         ],
         occurrences: 12,
-        unlisted: false
+        unlisted: false,
       },
       '0xfffffffff15abf397da76f1dcc1a1604f45126db': {
         address: '0xfffffffff15abf397da76f1dcc1a1604f45126db',
         symbol: 'FSW',
         decimals: 18,
         name: 'Falconswap',
-        iconUrl: 'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
-        aggregators: [
-          'CoinGecko',
-          '1inch',
-          'Paraswap',
-          'Zapper',
-          'Zerion',
-        ],
+        iconUrl:
+          'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
+        aggregators: ['CoinGecko', '1inch', 'Paraswap', 'Zapper', 'Zerion'],
         occurrences: 12,
-        unlisted: false
+        unlisted: false,
       },
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
         address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
@@ -192,70 +188,70 @@ const state = {
           '0x',
         ],
         occurrences: 12,
-        unlisted: false
+        unlisted: false,
       },
       '0x6b175474e89094c44da98b954eedeac495271d0f': {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'META',
         decimals: 18,
         image: 'metamark.svg',
-        unlisted: false
+        unlisted: false,
       },
       '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
         address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
         symbol: '0X',
         decimals: 18,
         image: '0x.svg',
-        unlisted: false
+        unlisted: false,
       },
       '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
         address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         symbol: 'AST',
         decimals: 18,
         image: 'ast.png',
-        unlisted: false
+        unlisted: false,
       },
       '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
         address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
         symbol: 'BAT',
         decimals: 18,
         image: 'BAT_icon.svg',
-        unlisted: false
+        unlisted: false,
       },
       '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1': {
         address: '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1',
         symbol: 'CVL',
         decimals: 18,
         image: 'CVL_token.svg',
-        unlisted: false
+        unlisted: false,
       },
       '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
         address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
         symbol: 'GLA',
         decimals: 18,
         image: 'gladius.svg',
-        unlisted: false
+        unlisted: false,
       },
       '0x467Bccd9d29f223BcE8043b84E8C8B282827790F': {
         address: '0x467Bccd9d29f223BcE8043b84E8C8B282827790F',
         symbol: 'GNO',
         decimals: 18,
         image: 'gnosis.svg',
-        unlisted: false
+        unlisted: false,
       },
       '0xff20817765cb7f73d4bde2e66e067e58d11095c2': {
         address: '0xff20817765cb7f73d4bde2e66e067e58d11095c2',
         symbol: 'OMG',
         decimals: 18,
         image: 'omg.jpg',
-        unlisted: false
+        unlisted: false,
       },
       '0x8e870d67f660d95d5be530380d0ec0bd388289e1': {
         address: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
         symbol: 'WED',
         decimals: 18,
         image: 'wed.png',
-        unlisted: false
+        unlisted: false,
       },
     },
     networkDetails: {
@@ -281,83 +277,84 @@ const state = {
       swapsFeatureIsLive: false,
       swapsQuoteRefreshTime: 60000,
     },
-    "snapStates": {},
-    "snaps": {
-      "local:http://localhost:8080/": {
-        "enabled": true,
-        "id": "local:http://localhost:8080/",
-        "initialPermissions": {
-          "snap_confirm": {}
+    snapStates: {},
+    snaps: {
+      'local:http://localhost:8080/': {
+        enabled: true,
+        id: 'local:http://localhost:8080/',
+        initialPermissions: {
+          snap_confirm: {},
         },
-        "manifest": {
-          "description": "An example MetaMask Snap.",
-          "initialPermissions": {
-            "snap_confirm": {}
+        manifest: {
+          description: 'An example MetaMask Snap.',
+          initialPermissions: {
+            snap_confirm: {},
           },
-          "manifestVersion": "0.1",
-          "proposedName": "MetaMask Example Snap",
-          "repository": {
-            "type": "git",
-            "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+          manifestVersion: '0.1',
+          proposedName: 'MetaMask Example Snap',
+          repository: {
+            type: 'git',
+            url: 'https://github.com/MetaMask/snaps-skunkworks.git',
           },
-          "source": {
-            "location": {
-              "npm": {
-                "filePath": "dist/bundle.js",
-                "iconPath": "images/icon.svg",
-                "packageName": "@metamask/example-snap",
-                "registry": "https://registry.npmjs.org/"
-              }
+          source: {
+            location: {
+              npm: {
+                filePath: 'dist/bundle.js',
+                iconPath: 'images/icon.svg',
+                packageName: '@metamask/example-snap',
+                registry: 'https://registry.npmjs.org/',
+              },
             },
-            "shasum": "3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE="
+            shasum: '3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE=',
           },
-          "version": "0.6.0"
+          version: '0.6.0',
         },
-        "permissionName": "wallet_snap_local:http://localhost:8080/",
-        "sourceCode": "(...)",
-        "status": "stopped",
-        "svgIcon": "<svg>...</svg>",
-        "version": "0.6.0"
+        permissionName: 'wallet_snap_local:http://localhost:8080/',
+        sourceCode: '(...)',
+        status: 'stopped',
+        svgIcon: '<svg>...</svg>',
+        version: '0.6.0',
       },
-      "Filecoin Snap": {
-        "enabled": true,
-        "id": "npm:http://localhost:8080/",
-        "initialPermissions": {
-          "snap_confirm": {},
-          "eth_accounts": {},
-          "snap_manageState": {},
+      'Filecoin Snap': {
+        enabled: true,
+        id: 'npm:http://localhost:8080/',
+        initialPermissions: {
+          snap_confirm: {},
+          eth_accounts: {},
+          snap_manageState: {},
         },
-        "manifest": {
-          "description": "This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.",
-          "initialPermissions": {
-            "snap_confirm": {},
-            "eth_accounts": {},
-            "snap_manageState": {},
+        manifest: {
+          description:
+            'This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.',
+          initialPermissions: {
+            snap_confirm: {},
+            eth_accounts: {},
+            snap_manageState: {},
           },
-          "manifestVersion": "0.1",
-          "proposedName": "Filecoin Snap",
-          "repository": {
-            "type": "git",
-            "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+          manifestVersion: '0.1',
+          proposedName: 'Filecoin Snap',
+          repository: {
+            type: 'git',
+            url: 'https://github.com/MetaMask/snaps-skunkworks.git',
           },
-          "source": {
-            "location": {
-              "npm": {
-                "filePath": "dist/bundle.js",
-                "iconPath": "images/icon.svg",
-                "packageName": "@metamask/example-snap",
-                "registry": "https://registry.npmjs.org/"
-              }
+          source: {
+            location: {
+              npm: {
+                filePath: 'dist/bundle.js',
+                iconPath: 'images/icon.svg',
+                packageName: '@metamask/example-snap',
+                registry: 'https://registry.npmjs.org/',
+              },
             },
-            "shasum": "3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE="
+            shasum: '3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE=',
           },
-          "version": "0.6.0"
+          version: '0.6.0',
         },
-        "permissionName": "wallet_snap_npm:http://localhost:8080/",
-        "sourceCode": "(...)",
-        "status": "stopped",
-        "svgIcon": "<svg>...</svg>",
-        "version": "0.6.0"
+        permissionName: 'wallet_snap_npm:http://localhost:8080/',
+        sourceCode: '(...)',
+        status: 'stopped',
+        svgIcon: '<svg>...</svg>',
+        version: '0.6.0',
       },
     },
     accountArray: [
@@ -486,32 +483,46 @@ const state = {
     ],
     detectedTokens: [
       {
-        address: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
         decimals: 18,
-        symbol: "LINK",
-        image: "https://crypto.com/price/coin-data/icon/LINK/color_icon.png",
-        aggregators:[
-          "coinGecko","oneInch","paraswap","zapper","zerion"
-        ]
+        symbol: 'LINK',
+        image: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+        aggregators: ['coinGecko', 'oneInch', 'paraswap', 'zapper', 'zerion'],
       },
       {
-        address: "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+        address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
         decimals: 18,
-        symbol: "COMP",
-        image: "https://crypto.com/price/coin-data/icon/COMP/color_icon.png",
-        aggregators:[
-          "bancor","cmc","cryptocom","coinGecko","oneInch","paraswap","pmm","zapper","zerion","zeroEx"
-        ]
+        symbol: 'COMP',
+        image: 'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+        aggregators: [
+          'bancor',
+          'cmc',
+          'cryptocom',
+          'coinGecko',
+          'oneInch',
+          'paraswap',
+          'pmm',
+          'zapper',
+          'zerion',
+          'zeroEx',
+        ],
       },
       {
-        address: "0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB",
+        address: '0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB',
         decimals: 18,
-        symbol: "FSW",
-        image: "https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184",
-        aggregators:[
-          "aave", "cmc","coinGecko","oneInch","paraswap","zapper","zerion"
-        ]
-      }
+        symbol: 'FSW',
+        image:
+          'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
+        aggregators: [
+          'aave',
+          'cmc',
+          'coinGecko',
+          'oneInch',
+          'paraswap',
+          'zapper',
+          'zerion',
+        ],
+      },
     ],
     pendingTokens: {},
     customNonceValue: '',
@@ -559,18 +570,18 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Assets',
     provider: {
-      type: 'ropsten',
+      type: 'rinkeby',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x3',
+      chainId: '0x4',
     },
     previousProviderStore: {
-      type: 'ropsten',
+      type: 'rinkeby',
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x3',
+      chainId: '0x4',
     },
     network: '3',
     accounts: {
@@ -1304,7 +1315,7 @@ const state = {
     subjects: {
       'https://app.uniswap.org': {
         permissions: {
-          'eth_accounts': {
+          eth_accounts: {
             invoker: 'https://app.uniswap.org',
             parentCapability: 'eth_accounts',
             id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
@@ -1318,14 +1329,14 @@ const state = {
           },
         },
       },
-      "local:http://localhost:8080/": {
+      'local:http://localhost:8080/': {
         permissions: {
-          'snap_confirm': {
-            invoker: "local:http://localhost:8080/",
+          snap_confirm: {
+            invoker: 'local:http://localhost:8080/',
             parentCapability: 'snap_confirm',
             id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
             date: 1620710693178,
-            caveats: []
+            caveats: [],
           },
         },
       },
@@ -1423,30 +1434,30 @@ const state = {
     pendingApprovals: {},
     pendingApprovalCount: 0,
     subjectMetadata: {
-      "http://localhost:8080": {
+      'http://localhost:8080': {
         extensionId: null,
         iconUrl: null,
-        name: "Hello, Snaps!",
-        origin: "http://localhost:8080",
-        subjectType: "website"
+        name: 'Hello, Snaps!',
+        origin: 'http://localhost:8080',
+        subjectType: 'website',
       },
-      "https://metamask.github.io": {
+      'https://metamask.github.io': {
         extensionId: null,
         iconUrl: null,
-        name: "Snaps Iframe Execution Environment",
-        origin: "https://metamask.github.io",
-        subjectType: "website"
+        name: 'Snaps Iframe Execution Environment',
+        origin: 'https://metamask.github.io',
+        subjectType: 'website',
       },
-      "local:http://localhost:8080/": {
+      'local:http://localhost:8080/': {
         extensionId: null,
         iconUrl: null,
-        name: "MetaMask Example Snap",
-        origin: "local:http://localhost:8080/",
-        subjectType: "snap",
-        svgIcon: "<svg>...</svg>",
-        version: "0.6.0"
-      }
-    }
+        name: 'MetaMask Example Snap',
+        origin: 'local:http://localhost:8080/',
+        subjectType: 'snap',
+        svgIcon: '<svg>...</svg>',
+        version: '0.6.0',
+      },
+    },
   },
   appState: {
     shouldClose: false,
@@ -1455,7 +1466,14 @@ const state = {
       open: false,
       modalState: {
         name: null,
-        props: {},
+        props: {
+          token: {
+            address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+            symbol: 'DAI',
+            decimals: 18,
+          },
+          history: {},
+        },
       },
       previousModalState: {
         name: null,
@@ -1506,6 +1524,12 @@ const state = {
     gas: { error: 'gas' },
     amount: {
       error: 'amount',
+    },
+    currentTransactionUUID: 'test-uuid',
+    draftTransactions: {
+      'test-uuid': {
+        ...draftTransactionInitialState,
+      },
     },
   },
   confirmTransaction: {

@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { ERC20 } from '../../../helpers/constants/common';
+import { ERC20 } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {

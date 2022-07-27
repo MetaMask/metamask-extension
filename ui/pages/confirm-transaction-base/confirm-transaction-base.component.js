@@ -338,6 +338,7 @@ export default class ConfirmTransactionBase extends Component {
     };
 
     const hasSimulationError = Boolean(txData.simulationFails);
+
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
@@ -417,7 +418,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="custom-nonce-input">
             <TextField
               type="number"
-              min="0"
+              min={0}
               placeholder={
                 typeof nextNonce === 'number' ? nextNonce.toString() : null
               }
@@ -546,10 +547,10 @@ export default class ConfirmTransactionBase extends Component {
                   maxPriorityFeePerGas={hexWEIToDecGWEI(
                     maxPriorityFeePerGas ||
                       txData.txParams.maxPriorityFeePerGas,
-                  )}
+                  ).toString()}
                   maxFeePerGas={hexWEIToDecGWEI(
                     maxFeePerGas || txData.txParams.maxFeePerGas,
-                  )}
+                  ).toString()}
                 />
               )}
             </>
@@ -805,8 +806,10 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       baseFeePerGas,
+      methodData,
     } = this.props;
     const { submitting } = this.state;
+    const { name } = methodData;
 
     if (submitting) {
       return;
@@ -814,6 +817,10 @@ export default class ConfirmTransactionBase extends Component {
 
     if (baseFeePerGas) {
       txData.estimatedBaseFee = baseFeePerGas;
+    }
+
+    if (name) {
+      txData.contractMethodName = name;
     }
 
     if (maxFeePerGas) {

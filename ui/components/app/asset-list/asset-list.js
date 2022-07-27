@@ -7,7 +7,7 @@ import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
-  getCurrentAccountWithSendEtherInfo,
+  getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
@@ -33,12 +33,12 @@ const AssetList = ({ onClickAsset }) => {
 
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
-  const selectedAccountBalance = useSelector(
-    (state) => getCurrentAccountWithSendEtherInfo(state).balance,
-  );
+  const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const trackEvent = useContext(MetaMetricsContext);
+  const balance = useSelector(getSelectedAccountCachedBalance);
+  const balanceIsLoading = !balance;
 
   const {
     currency: primaryCurrency,
@@ -78,7 +78,7 @@ const AssetList = ({ onClickAsset }) => {
         }
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-        tokenImage={primaryTokenImage}
+        tokenImage={balanceIsLoading ? null : primaryTokenImage}
         identiconBorder
       />
       <TokenList

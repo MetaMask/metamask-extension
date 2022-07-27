@@ -363,10 +363,10 @@
     "message": "Comprar"
   },
   "buyWithWyre": {
-    "message": "Comprar ETH con Wyre"
+    "message": "Comprar $1 con Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
+    "message": "Wyre le permite usar una tarjeta de débito para depositar $1 directamente en su cuenta de MetaMask."
   },
   "bytes": {
     "message": "Bytes"
@@ -1642,10 +1642,6 @@
   },
   "metametricsTitle": {
     "message": "Únase a más de 6 millones de usuarios para mejorar MetaMask"
-  },
-  "mismatchedChain": {
-    "message": "Los detalles de la red de este ID de cadena no coinciden con nuestros registros. Antes de continuar, le recomendamos que $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
   },
   "mismatchedChainLinkText": {
     "message": "verifique los detalles de la red",
@@ -3214,10 +3210,6 @@
   "unrecognizedChain": {
     "message": "No se reconoce esta red personalizada. Antes de continuar, le recomendamos que $1",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "verifique los detalles de la red",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "El envío de tokens coleccionables (ERC-721) no se admite actualmente",

@@ -9,6 +9,10 @@
     padding: 0 24px 16px 24px;
   }
 
+  &__unknown-asset {
+    color: var(--color-primary-default);
+  }
+
   &__icon-display-content {
     display: flex;
     height: 51px;

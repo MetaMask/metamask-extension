@@ -38,7 +38,6 @@
     &__content {
       padding: 12px 18px;
       display: flex;
-      flex: 1 1 auto;
       align-items: center;
       position: relative;
 
@@ -68,6 +67,7 @@
         justify-content: center;
         margin-inline-end: 16px;
         flex: 0 0 18px;
+        color: var(--color-icon-alternative);
 
         @media screen and (min-width: $break-large) {
           flex: 0 0 14px;

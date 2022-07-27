@@ -30,12 +30,14 @@ describe('Account Details Modal', () => {
         name: 'Account 1',
       },
     },
-    accounts: {
-      address: '0xAddress',
-      lastSelected: 1637764711510,
-      name: 'Account 1',
-      balance: '0x543a5fb6caccf599',
-    },
+    accounts: [
+      {
+        address: '0xAddress',
+        lastSelected: 1637764711510,
+        name: 'Account 1',
+        balance: '0x543a5fb6caccf599',
+      },
+    ],
   };
 
   beforeEach(() => {

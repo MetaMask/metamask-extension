@@ -4,7 +4,7 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../../components/ui/text-field';
 import { I18nContext } from '../../../../contexts/i18n';
-import SearchIcon from '../../../../components/ui/search-icon';
+import SearchIcon from '../../../../components/ui/icon/search-icon';
 
 export default function CustomContentSearch({
   onSearch,
@@ -32,7 +32,7 @@ export default function CustomContentSearch({
     if (searchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');
     } else {
-      setSearchIconColor('var(--color-icon-default)');
+      setSearchIconColor('var(--color-icon-alternative)');
     }
 
     const fuseSearchResult = networksSearchFuse.search(searchQuery);

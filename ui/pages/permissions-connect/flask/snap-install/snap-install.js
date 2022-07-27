@@ -37,13 +37,6 @@ export default function SnapInstall({
     approveSnapInstall,
   ]);
 
-  const npmId = useMemo(() => {
-    if (!targetSubjectMetadata.origin.startsWith('npm:')) {
-      return undefined;
-    }
-    return targetSubjectMetadata.origin.substring(4);
-  }, [targetSubjectMetadata]);
-
   const shouldShowWarning = useMemo(
     () =>
       Boolean(
@@ -74,7 +67,7 @@ export default function SnapInstall({
           headerTitle={t('snapInstall')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={targetSubjectMetadata.origin}
-          npmPackageName={npmId}
+          isSnapInstall
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
