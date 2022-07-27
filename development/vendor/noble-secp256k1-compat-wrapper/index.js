@@ -1,3 +1,3 @@
-import * as secp256k1 from 'ethereum-cryptography/secp256k1';
+const secp256k1 = require('ethereum-cryptography/secp256k1-compat');
 
 module.exports = secp256k1;
