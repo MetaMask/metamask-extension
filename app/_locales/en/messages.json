@@ -429,6 +429,9 @@
     "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyNow": {
+    "message": "Buy Now"
+  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -869,6 +872,9 @@
   },
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
+  },
+  "downloadNow": {
+    "message": "Download Now"
   },
   "downloadSecretBackup": {
     "message": "Download this Secret Recovery Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
@@ -3782,6 +3788,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tutorial": {
+    "message": "Tutorial"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

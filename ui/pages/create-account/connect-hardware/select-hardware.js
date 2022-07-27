@@ -220,7 +220,7 @@ export default class SelectHardware extends Component {
             onClick={() => window.open("https://shop.ledger.com/?r=17c4991a03fa", "_blank")
             }
           >
-           Buy Now
+           {this.context.t('buyNow')}
           </Button>
           <Button
             className="hw-connect__external-btn"
@@ -228,7 +228,7 @@ export default class SelectHardware extends Component {
             onClick={() => window.open("https://support.ledger.com/hc/en-us/articles/4404366864657-Set-up-and-use-MetaMask-to-access-your-Ledger-Ethereum-ETH-account?docs=true", "_blank")
             }
           >
-           Tutorial
+           {this.context.t('tutorial')}
           </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
@@ -276,7 +276,7 @@ export default class SelectHardware extends Component {
             onClick={() => window.open("https://gridplus.io/?afmc=7p", "_blank")
             }
           >
-           Buy Now
+          {this.context.t('buyNow')}
           </Button>
           <Button
             className="hw-connect__external-btn"
@@ -284,7 +284,7 @@ export default class SelectHardware extends Component {
             onClick={() => window.open("https://docs.gridplus.io/setup/metamask", "_blank")
             }
           >
-           Tutorial
+           {this.context.t('tutorial')}
           </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
@@ -332,7 +332,7 @@ export default class SelectHardware extends Component {
             onClick={() => window.open("https://shop.trezor.io/product/trezor-one-black?offer_id=35&aff_id=11009", "_blank")
             }
           >
-           Buy Now
+           {this.context.t('buyNow')}
           </Button>
           <Button
             className="hw-connect__external-btn"
@@ -340,7 +340,7 @@ export default class SelectHardware extends Component {
             onClick={() => window.open("https://wiki.trezor.io/Apps:MetaMask", "_blank")
             }
           >
-           Tutorial
+           {this.context.t('tutorial')}
           </Button>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
@@ -373,14 +373,14 @@ export default class SelectHardware extends Component {
             type="secondary"
             onClick={() => window.open("https://shop.keyst.one/?rfsn=6088257.656b3e9&utm_source=refersion&utm_medium=affiliate&utm_campaign=6088257.656b3e9", "_blank")
             }>
-              Buy Now
+              {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => window.open("https://support.keyst.one/3rd-party-wallets/eth-and-web3-wallets-keystone/bind-metamask-with-keystone", "_blank")
               }>
-              Tutorial
+              {this.context.t('tutorial')}
             </Button>
           </>
         ),
@@ -394,14 +394,14 @@ export default class SelectHardware extends Component {
             type="secondary"
             onClick={() => window.open("https://airgap.it/", "_blank")
             }>
-              Download Now
+              {this.context.t('downloadNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => window.open("https://support.airgap.it/guides/metamask/", "_blank")
               }>
-              Tutorial
+              {this.context.t('tutorial')}
             </Button>
           </>
         ),
@@ -415,14 +415,14 @@ export default class SelectHardware extends Component {
             type="secondary"
             onClick={() => window.open("https://www.coolwallet.io/", "_blank")
             }>
-              Buy Now
+              {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => window.open("https://www.coolwallet.io/metamask-step-by-step-guides/", "_blank")
               }>
-              Tutorial
+              {this.context.t('tutorial')}
             </Button>
           </>
         ),
@@ -436,14 +436,14 @@ export default class SelectHardware extends Component {
             type="secondary"
             onClick={() => window.open("https://dcentwallet.com/", "_blank")
             }>
-              Buy Now
+              {this.context.t('buyNow')}
             </Button>
             <Button
               className="hw-connect__external-btn"
               type="secondary"
               onClick={() => window.open("https://medium.com/dcentwallet/dcent-wallet-now-supports-qr-based-protocol-to-link-with-metamask-57555f02603f", "_blank")
               }>
-              Tutorial 
+                {this.context.t('tutorial')}
             </Button>
           </>
         ),
