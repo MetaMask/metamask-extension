@@ -12,7 +12,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions', () => ({
   addToAddressBook: jest.fn(),
   cancelTx: jest.fn(),
 }));
@@ -31,12 +31,12 @@ jest.mock('../../../ducks/send', () => ({
   signTransaction: jest.fn(),
 }));
 
-jest.mock('../../../selectors/custom-gas.js', () => ({
+jest.mock('../../../selectors/custom-gas', () => ({
   getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => [
     { gasEstimateType: `mockGasEstimateType:${s}` },
   ],
 }));
-require('./send-footer.container.js');
+require('./send-footer.container');
 
 describe('send-footer container', () => {
   describe('mapDispatchToProps()', () => {
