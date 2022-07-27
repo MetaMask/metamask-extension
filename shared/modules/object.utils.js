@@ -7,7 +7,7 @@
  * should be included, and a sub-mask implies the property should be further
  * masked according to that sub-mask.
  *
- * @param {Object} object - The object to mask
+ * @param {object} object - The object to mask
  * @param {Object<object | boolean>} mask - The mask to apply to the object
  */
 export function maskObject(object, mask) {

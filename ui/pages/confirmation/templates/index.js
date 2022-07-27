@@ -32,12 +32,12 @@ const ALLOWED_TEMPLATE_KEYS = [
 ];
 
 /**
- * @typedef {Object} PendingApproval
+ * @typedef {object} PendingApproval
  * @property {string} id - The randomly generated id of the approval
  * @property {string} origin - The origin of the site requesting this approval
  * @property {number} time - The time the approval was requested
  * @property {string} type - The type of approval being requested
- * @property {Object} requestData - The data submitted with the request
+ * @property {object} requestData - The data submitted with the request
  */
 
 /**
@@ -46,7 +46,7 @@ const ALLOWED_TEMPLATE_KEYS = [
  * page the alerts returned from the getAlerts method will be set into the
  * alertState state object.
  *
- * @param {Object} pendingApproval - the object representing the confirmation
+ * @param {object} pendingApproval - the object representing the confirmation
  */
 export async function getTemplateAlerts(pendingApproval) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getAlerts;
@@ -78,7 +78,7 @@ async function emptyState() {
  * confirmationState state object. Note, this state is not consumed by the page
  * itself.
  *
- * @param {Object} pendingApproval - the object representing the confirmation
+ * @param {object} pendingApproval - the object representing the confirmation
  */
 export async function getTemplateState(pendingApproval) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getState ?? emptyState;
@@ -112,7 +112,7 @@ function getAttenuatedDispatch(dispatch) {
 /**
  * Returns the templated values to be consumed in the confirmation page
  *
- * @param {Object} pendingApproval - The pending confirmation object
+ * @param {object} pendingApproval - The pending confirmation object
  * @param {Function} t - Translation function
  * @param {Function} dispatch - Redux dispatch function
  */

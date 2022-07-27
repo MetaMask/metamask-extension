@@ -5,7 +5,7 @@ import { MINUTE } from '../../../shared/constants/time';
 
 export default class AppStateController extends EventEmitter {
   /**
-   * @param {Object} opts
+   * @param {object} opts
    */
   constructor(opts = {}) {
     const {
