@@ -752,15 +752,17 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
-  const isSwapButtonDisabled =
+  const isSwapButtonDisabled = Boolean(
     submitClicked ||
-    balanceError ||
-    tokenBalanceUnavailable ||
-    disableSubmissionDueToPriceWarning ||
-    (networkAndAccountSupports1559 && baseAndPriorityFeePerGas === undefined) ||
-    (!networkAndAccountSupports1559 &&
-      (gasPrice === null || gasPrice === undefined)) ||
-    (currentSmartTransactionsEnabled && currentSmartTransactionsError);
+      balanceError ||
+      tokenBalanceUnavailable ||
+      disableSubmissionDueToPriceWarning ||
+      (networkAndAccountSupports1559 &&
+        baseAndPriorityFeePerGas === undefined) ||
+      (!networkAndAccountSupports1559 &&
+        (gasPrice === null || gasPrice === undefined)) ||
+      (currentSmartTransactionsEnabled && currentSmartTransactionsError),
+  );
 
   useEffect(() => {
     if (
@@ -964,7 +966,7 @@ export default function ViewQuote() {
             : t('swap')
         }
         hideCancel
-        disabled={Boolean(isSwapButtonDisabled)}
+        disabled={isSwapButtonDisabled}
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder
       />
