@@ -142,7 +142,7 @@ export default class NetworkController extends EventEmitter {
   /**
    * Method to return the latest block for the current network
    *
-   * @returns {Object} Block header
+   * @returns {object} Block header
    */
   getLatestBlock() {
     return new Promise((resolve, reject) => {

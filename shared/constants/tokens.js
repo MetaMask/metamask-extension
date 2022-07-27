@@ -10,7 +10,7 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(
 ).map((address) => address.toLowerCase());
 
 /**
- * @typedef {Object} TokenDetails
+ * @typedef {object} TokenDetails
  * @property {string} address - The address of the selected 'TOKEN' or
  *  'COLLECTIBLE' contract.
  * @property {string} [symbol] - The symbol of the token.

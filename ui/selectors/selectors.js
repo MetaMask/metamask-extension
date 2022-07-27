@@ -81,7 +81,7 @@ import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
  * This will be used for all cases where this state key is accessed only for that
  * purpose.
  *
- * @param {Object} state - redux state object
+ * @param {object} state - redux state object
  */
 export function isNetworkLoading(state) {
   return state.metamask.network === 'loading';
@@ -204,7 +204,7 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 /**
  * Checks if the current wallet is a hardware wallet.
  *
- * @param {Object} state
+ * @param {object} state
  * @returns {boolean}
  */
 export function isHardwareWallet(state) {
@@ -215,7 +215,7 @@ export function isHardwareWallet(state) {
 /**
  * Get a HW wallet type, e.g. "Ledger Hardware"
  *
- * @param {Object} state
+ * @param {object} state
  * @returns {string | undefined}
  */
 export function getHardwareWalletType(state) {
@@ -247,7 +247,7 @@ export function getAccountType(state) {
  * metadata that predates the switch to using chainId.
  *
  * @deprecated - use getCurrentChainId instead
- * @param {Object} state - redux state object
+ * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
@@ -644,7 +644,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 }
 
 /**
- * @typedef {Object} SwapsEthToken
+ * @typedef {object} SwapsEthToken
  * @property {string} symbol - The symbol for ETH, namely "ETH"
  * @property {string} name - The name of the ETH currency, "Ether"
  * @property {string} address - A substitute address for the metaswap-api to
@@ -761,7 +761,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
 });
 
 /**
- * @typedef {Object} Notification
+ * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
  * @property {string} origin - A string identifing the snap origin
  * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
@@ -776,7 +776,7 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
  *
  * The returned notifications are sorted by date.
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {Notification[]} An array of notifications that can be shown to the user
  */
 
@@ -808,8 +808,8 @@ export const getUnreadNotificationsCount = createSelector(
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
- * @param {Object} state
- * @returns {Object}
+ * @param {object} state
+ * @returns {object}
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
@@ -835,7 +835,7 @@ function getAllowedAnnouncementIds(state) {
 }
 
 /**
- * @typedef {Object} Announcement
+ * @typedef {object} Announcement
  * @property {number} id - A unique identifier for the announcement
  * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
  */
@@ -848,7 +848,7 @@ function getAllowedAnnouncementIds(state) {
  *
  * The returned announcements are sorted by date.
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {Announcement[]} An array of announcements that can be shown to the user
  */
 
@@ -921,7 +921,7 @@ export function getTheme(state) {
  * To retrieve the tokenList produced by TokenListcontroller
  *
  * @param {*} state
- * @returns {Object}
+ * @returns {object}
  */
 export function getTokenList(state) {
   return state.metamask.tokenList;
