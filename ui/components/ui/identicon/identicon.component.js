@@ -137,6 +137,7 @@ export default class Identicon extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    // We only want to re-render if props are different.
     return !isEqual(nextProps, this.props);
   }
 
