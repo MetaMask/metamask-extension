@@ -3728,6 +3728,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createSnapMethodMiddleware(subjectType === SUBJECT_TYPES.SNAP, {
         getAppKey: this.getAppKeyForSubject.bind(this, origin),
+        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+          this.appStateController,
+        ),
         getSnaps: this.snapController.getPermittedSnaps.bind(
           this.snapController,
           origin,
