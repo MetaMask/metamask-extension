@@ -102,7 +102,9 @@ function importAllScripts() {
 importAllScripts();
 
 /*
- * Message event listener below loads script if they are no longer available.
+ * Message event listener is required to revice the service worker as it goes inactive.
+ * If UI is open it continuously sends message to service worker which help in activating service worker when it dies.
+ *
  * chrome below needs to be replaced by cross-browser object,
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
