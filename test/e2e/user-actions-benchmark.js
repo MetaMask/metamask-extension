@@ -86,9 +86,7 @@ async function confirmTx() {
       const amountMax = await driver.findClickableElement(
         '.send-v2__amount-max',
       );
-      await amountMax.click();
-
-      await amountMax.click();
+ 
       await inputAmount.fill('1');
 
       await driver.clickElement({ text: 'Next', tag: 'button' });
@@ -132,7 +130,7 @@ async function main() {
   const { out } = argv;
 
   if (out) {
-    const dirPath = 'load_time/stats.json';
+    const dirPath = 'benchmark/user_actions.json';
     const outPath = `${out}/${dirPath}`;
     const outputDirectory = path.dirname(outPath);
     const existingParentDirectory = await getFirstParentDirectoryThatExists(
