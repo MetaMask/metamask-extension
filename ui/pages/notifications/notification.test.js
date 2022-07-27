@@ -64,9 +64,10 @@ describe('Notifications', () => {
       },
     };
 
-    const { getByText } = render(mockStore);
+    const { getByText, getByRole } = render(mockStore);
 
     expect(getByText('Nothing to see here.')).toBeDefined();
+    expect(getByRole('button', { name: 'Mark all as read' })).toBeDisabled();
   });
 });
 
