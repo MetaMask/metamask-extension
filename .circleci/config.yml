@@ -136,6 +136,9 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
+      - user-actions-benchmark:
+          requires:
+            - prep-build-test
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
@@ -148,6 +151,7 @@ workflows:
             - prep-build-storybook
             - prep-build-test-mv3
             - benchmark
+            - user-actions-benchmark
             - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
