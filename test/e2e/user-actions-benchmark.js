@@ -83,10 +83,6 @@ async function confirmTx() {
         return sendDialogMsgs.length === 1;
       }, 10000);
 
-      const amountMax = await driver.findClickableElement(
-        '.send-v2__amount-max',
-      );
- 
       await inputAmount.fill('1');
 
       await driver.clickElement({ text: 'Next', tag: 'button' });
