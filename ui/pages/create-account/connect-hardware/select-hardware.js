@@ -411,9 +411,15 @@ export default class SelectHardware extends Component {
           <>
             <p className="hw-connect__QR-subtitle">CoolWallet</p>
             <Button
-            className="hw-connect__external-btn-first"
-            type="secondary"
-            onClick={() => window.open("https://www.coolwallet.io/", "_blank")
+              className="hw-connect__external-btn-first"
+              type="secondary"
+              onClick={() => {
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: 'Clicked Buy CoolWallet',
+                })
+                window.open("https://www.coolwallet.io/", "_blank")
+              }
             }>
               {this.context.t('buyNow')}
             </Button>
