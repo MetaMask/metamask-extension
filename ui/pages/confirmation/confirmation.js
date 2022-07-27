@@ -68,9 +68,9 @@ const alertStateReducer = produce((state, action) => {
  * outside of this file, but it helps to reduce complexity of the primary
  * component.
  *
- * @param {Object} pendingConfirmation - a pending confirmation waiting for
+ * @param {object} pendingConfirmation - a pending confirmation waiting for
  * user approval
- * @returns {[alertState: Object, dismissAlert: Function]} A tuple with
+ * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
 function useAlertState(pendingConfirmation) {
@@ -202,7 +202,10 @@ export default function ConfirmationPage() {
           <Box
             alignItems="center"
             marginTop={1}
-            padding={[1, 4, 4]}
+            paddingTop={1}
+            paddingRight={4}
+            paddingLeft={4}
+            paddingBottom={4}
             flexDirection={FLEX_DIRECTION.COLUMN}
           >
             <SiteOrigin

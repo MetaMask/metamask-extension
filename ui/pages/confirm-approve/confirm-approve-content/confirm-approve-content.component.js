@@ -77,6 +77,7 @@ export default class ConfirmApproveContent extends Component {
     assetStandard: PropTypes.string,
     isSetApproveForAll: PropTypes.bool,
     setApproveForAllArg: PropTypes.bool,
+    userAddress: PropTypes.string,
   };
 
   state = {
@@ -208,7 +209,7 @@ export default class ConfirmApproveContent extends Component {
           </div>
           <div className="confirm-approve-content__medium-text">
             {isSetApproveForAll
-              ? `${t('allOfYour', [titleTokenDescription])} `
+              ? t('allOfYour', [titleTokenDescription])
               : titleTokenDescription}
           </div>
         </div>
@@ -457,6 +458,8 @@ export default class ConfirmApproveContent extends Component {
       chainId,
       assetStandard,
       tokenSymbol,
+      isSetApproveForAll,
+      userAddress,
     } = this.props;
     const { t } = this.context;
     let titleTokenDescription = t('token');
@@ -465,6 +468,7 @@ export default class ConfirmApproveContent extends Component {
         tokenAddress,
         chainId,
         null,
+        userAddress,
         {
           blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
         },
@@ -483,7 +487,10 @@ export default class ConfirmApproveContent extends Component {
       titleTokenDescription = unknownTokenLink;
     }
 
-    if (assetStandard === ERC20 || (tokenSymbol && !tokenId)) {
+    if (
+      assetStandard === ERC20 ||
+      (tokenSymbol && !tokenId && !isSetApproveForAll)
+    ) {
       titleTokenDescription = tokenSymbol;
     } else if (
       assetStandard === ERC721 ||
@@ -492,14 +499,15 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : null;
+      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
       if (assetName || tokenSymbol) {
-        titleTokenDescription = `${assetName ?? tokenSymbol} ${tokenIdWrapped}`;
+        titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
       } else {
         const unknownNFTBlockExplorerLink = getTokenTrackerLink(
           tokenAddress,
           chainId,
           null,
+          userAddress,
           {
             blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
           },
@@ -581,6 +589,7 @@ export default class ConfirmApproveContent extends Component {
       rpcPrefs,
       isContract,
       assetStandard,
+      userAddress,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -667,7 +676,7 @@ export default class ConfirmApproveContent extends Component {
               className="confirm-approve-content__etherscan-link"
               onClick={() => {
                 const blockExplorerTokenLink = isContract
-                  ? getTokenTrackerLink(toAddress, chainId, null, null, {
+                  ? getTokenTrackerLink(toAddress, chainId, null, userAddress, {
                       blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                     })
                   : getAccountLink(

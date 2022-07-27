@@ -82,7 +82,9 @@ const AddNetwork = () => {
           className="add-network__edge-case-box"
           borderRadius={SIZES.MD}
           padding={4}
-          margin={[4, 6, 0, 6]}
+          marginTop={4}
+          marginRight={6}
+          marginLeft={6}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.ROW}
           backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
@@ -147,24 +149,23 @@ const AddNetwork = () => {
             </Box>
           )}
           <Box
-            margin={
-              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                ? [0, 0, 1, 0]
-                : [4, 0, 1, 0]
-            }
+            marginTop={getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? 0 : 4}
+            marginBottom={1}
             className="add-network__main-container"
           >
             <Typography
               variant={TYPOGRAPHY.H6}
               color={COLORS.TEXT_ALTERNATIVE}
-              margin={[4, 0, 0, 0]}
+              margin={0}
+              marginTop={4}
             >
               {t('addFromAListOfPopularNetworks')}
             </Typography>
             <Typography
               variant={TYPOGRAPHY.H7}
               color={COLORS.TEXT_MUTED}
-              margin={[4, 0, 3, 0]}
+              marginTop={4}
+              marginBottom={3}
             >
               {t('popularCustomNetworks')}
             </Typography>

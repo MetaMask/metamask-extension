@@ -172,6 +172,7 @@ export default function ConfirmApprove({
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
+              userAddress={userAddress}
               isSetApproveForAll={isSetApproveForAll}
               setApproveForAllArg={setApproveForAllArg}
               decimals={decimals}

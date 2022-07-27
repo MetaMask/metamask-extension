@@ -5,16 +5,16 @@ import {
 } from '../../../shared/constants/alerts';
 
 /**
- * @typedef {Object} AlertControllerInitState
- * @property {Object} alertEnabledness - A map of alerts IDs to booleans, where
+ * @typedef {object} AlertControllerInitState
+ * @property {object} alertEnabledness - A map of alerts IDs to booleans, where
  * `true` indicates that the alert is enabled and shown, and `false` the opposite.
- * @property {Object} unconnectedAccountAlertShownOrigins - A map of origin
+ * @property {object} unconnectedAccountAlertShownOrigins - A map of origin
  * strings to booleans indicating whether the "switch to connected" alert has
  * been shown (`true`) or otherwise (`false`).
  */
 
 /**
- * @typedef {Object} AlertControllerOptions
+ * @typedef {object} AlertControllerOptions
  * @property {AlertControllerInitState} initState - The initial controller state
  */
 
