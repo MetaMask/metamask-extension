@@ -3,6 +3,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
+  addCustomNetwork,
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -106,6 +107,7 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
+    addCustomNetwork: (...args) => dispatch(addCustomNetwork(...args)),
   };
 }
 
@@ -115,8 +117,9 @@ function getAttenuatedDispatch(dispatch) {
  * @param {object} pendingApproval - The pending confirmation object
  * @param {Function} t - Translation function
  * @param {Function} dispatch - Redux dispatch function
+ * @param history
  */
-export function getTemplateValues(pendingApproval, t, dispatch) {
+export function getTemplateValues(pendingApproval, t, dispatch, history) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -125,7 +128,7 @@ export function getTemplateValues(pendingApproval, t, dispatch) {
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions);
+  const values = fn(pendingApproval, t, safeActions, history);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {
