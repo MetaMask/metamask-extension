@@ -56,10 +56,11 @@ export function getRenderableTokenData(
       symbol,
       true,
     ) || '';
+  // eslint-disable-next-line require-unicode-regexp
+  const nonNumericCharsRegex = /[^0-9.,]+/g;
   const rawFiat = formattedFiat
-    ? // eslint-disable-next-line require-unicode-regexp
-      new BigNumber(formattedFiat.replace(/[^0-9.,]+/g, ''))
-    : '';
+    ? new BigNumber(formattedFiat.replace(nonNumericCharsRegex, ''))
+    : ''; // E.g. formattedFiat is "$120.63 USD" and rawFiat.toString() would be "120.63"
 
   // token from dynamic api list is fetched when useTokenDetection is true
   // And since the token.address from allTokens is checksumaddress
