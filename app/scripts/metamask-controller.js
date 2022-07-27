@@ -2227,7 +2227,7 @@ export default class MetamaskController extends EventEmitter {
    * Collects all the information that we want to share
    * with the mobile client for syncing purposes
    *
-   * @returns {Promise<Object>} Parts of the state that we want to syncx
+   * @returns {Promise<object>} Parts of the state that we want to syncx
    */
   async fetchInfoToSync() {
     // Preferences
@@ -2869,7 +2869,7 @@ export default class MetamaskController extends EventEmitter {
    * Signifies user intent to complete an eth_sign method.
    *
    * @param {Object} msgParams - The params passed to eth_call.
-   * @returns {Promise<Object>} Full state update.
+   * @returns {Promise<object>} Full state update.
    */
   async signMessage(msgParams) {
     log.info('MetaMaskController - signMessage');
@@ -2928,7 +2928,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers signing, and the callback function from newUnsignedPersonalMessage.
    *
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<Object>} A full state update.
+   * @returns {Promise<object>} A full state update.
    */
   async signPersonalMessage(msgParams) {
     log.info('MetaMaskController - signPersonalMessage');
@@ -2987,7 +2987,7 @@ export default class MetamaskController extends EventEmitter {
    * Only decrypt message and don't touch transaction state
    *
    * @param {Object} msgParams - The params of the message to decrypt.
-   * @returns {Promise<Object>} A full state update.
+   * @returns {Promise<object>} A full state update.
    */
   async decryptMessageInline(msgParams) {
     log.info('MetaMaskController - decryptMessageInline');
@@ -3013,7 +3013,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers decrypt, and the callback function from newUnsignedDecryptMessage.
    *
    * @param {Object} msgParams - The params of the message to decrypt & return to the Dapp.
-   * @returns {Promise<Object>} A full state update.
+   * @returns {Promise<object>} A full state update.
    */
   async decryptMessage(msgParams) {
     log.info('MetaMaskController - decryptMessage');
@@ -3114,7 +3114,7 @@ export default class MetamaskController extends EventEmitter {
    * Triggers receiving, and the callback function from newUnsignedEncryptionPublicKey.
    *
    * @param {Object} msgParams - The params of the message to receive & return to the Dapp.
-   * @returns {Promise<Object>} A full state update.
+   * @returns {Promise<object>} A full state update.
    */
   async encryptionPublicKey(msgParams) {
     log.info('MetaMaskController - encryptionPublicKey');

@@ -402,7 +402,7 @@ export function getSeedPhraseBackedUp(state) {
  *
  * @param {Object} state - the redux state object
  * @param {string} address - the address to search for among the keyring addresses
- * @returns {Object|undefined} The keyring which contains the passed address, or undefined
+ * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
 export function findKeyringForAddress(state, address) {
   const keyring = state.metamask.keyrings.find((kr) => {
