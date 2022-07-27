@@ -59,6 +59,8 @@ import {
   WEB3_SHIM_USAGE_ALERT_STATES,
 } from '../../../shared/constants/alerts';
 import Home from './home.component';
+import { getErrorHtml, setupLocale } from '../../../app/scripts/constants/error-utils';
+import { SUPPORT_LINK } from '../../../app/scripts/constants/ui-utils';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
@@ -101,6 +103,22 @@ const mapStateToProps = (state) => {
   const isSigningQRHardwareTransaction =
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
+
+  const a = async () => {
+    const b = await getErrorHtml(SUPPORT_LINK, 'en');
+
+    console.log(b);
+  }
+
+  const c = async () => {
+    const d = await setupLocale('en');
+
+    console.log(d);
+  }
+
+  a();
+
+  c();
 
   return {
     forgottenPassword,

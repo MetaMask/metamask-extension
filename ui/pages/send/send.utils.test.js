@@ -1,6 +1,5 @@
 import { rawEncode } from 'ethereumjs-abi';
 import { calcGasTotal } from '../../../app/scripts/constants/transactions-controller-utils';
-
 import {
   multiplyCurrencies,
   addCurrencies,
@@ -34,9 +33,16 @@ jest.mock('../../../shared/modules/conversion.utils', () => ({
 
 jest.mock(
   '../../../app/scripts/constants/transactions-controller-utils',
-  () => ({
-    calcTokenAmount: (a, d) => `calc:${a}${d}`,
-  }),
+  () => {
+    const originalModule = jest.requireActual(
+      '../../../app/scripts/constants/transactions-controller-utils',
+    );
+
+    return {
+      ...originalModule,
+      calcTokenAmount: (a, d) => `calc:${a}${d}`,
+    };
+  },
 );
 
 jest.mock('ethereumjs-abi', () => ({
