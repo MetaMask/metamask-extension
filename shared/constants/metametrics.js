@@ -262,7 +262,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
  *  callback: (err?: Error) => void
  * ) => void} track - Track an event with Segment, using the internal batching
  *  mechanism to optimize network requests
- * @property {(payload: Object) => void} page - Track a page view with Segment
+ * @property {(payload: object) => void} page - Track a page view with Segment
  * @property {() => void} identify - Identify an anonymous user. We do not
  *  currently use this method.
  */

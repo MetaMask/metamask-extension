@@ -763,7 +763,7 @@ function setupBundlerDefaults(
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
-      // Remove code that should be excluded from builds of the current type
+      // // Remove code that should be excluded from builds of the current type
       createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
       // Transpile top-level code
       [

@@ -19,7 +19,7 @@ function defaultOnError(error) {
 /**
  * This function handles requests for the mock Segment server
  *
- * @typedef {(request: IncomingMessage, response: ServerResponse, metricEvents: Array<Object>) => void} MockSegmentRequestHandler
+ * @typedef {(request: IncomingMessage, response: ServerResponse, metricEvents: Array<object>) => void} MockSegmentRequestHandler
  */
 
 /**
