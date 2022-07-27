@@ -30,8 +30,8 @@ export default class BackupController {
     }
 
     this._trackMetaMetricsEvent({
-      event: 'User restored data from backup',
-      category: 'backup',
+      event: 'User Restored Data From Backup',
+      category: 'Backup',
     });
   }
 
@@ -66,8 +66,8 @@ export default class BackupController {
     exportAsFile(userDataFileName, result);
 
     this._trackMetaMetricsEvent({
-      event: 'User data backed up',
-      category: 'backup',
+      event: 'User Data Backed Up',
+      category: 'Backup',
     });
 
     return result;
