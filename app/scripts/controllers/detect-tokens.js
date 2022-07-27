@@ -23,7 +23,7 @@ export default class DetectTokensController {
   /**
    * Creates a DetectTokensController
    *
-   * @param {Object} [config] - Options to configure controller
+   * @param {object} [config] - Options to configure controller
    * @param config.interval
    * @param config.preferences
    * @param config.network
@@ -252,7 +252,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * @type {Object}
+   * @type {object}
    */
   set network(network) {
     if (!network) {
@@ -265,7 +265,7 @@ export default class DetectTokensController {
   /**
    * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
    *
-   * @type {Object}
+   * @type {object}
    */
   set keyringMemStore(keyringMemStore) {
     if (!keyringMemStore) {
@@ -283,7 +283,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * @type {Object}
+   * @type {object}
    */
   set tokenList(tokenList) {
     if (!tokenList) {
@@ -295,7 +295,7 @@ export default class DetectTokensController {
   /**
    * Internal isActive state
    *
-   * @type {Object}
+   * @type {object}
    */
   get isActive() {
     return this.isOpen && this.isUnlocked;

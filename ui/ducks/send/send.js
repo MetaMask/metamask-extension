@@ -162,7 +162,7 @@ import {
  */
 
 /**
- * @typedef {Object} SendStateStages
+ * @typedef {object} SendStateStages
  * @property {'ADD_RECIPIENT'} ADD_RECIPIENT - The user is selecting which
  *  address to send an asset to.
  * @property {'DRAFT'} DRAFT - The send form is shown for a transaction yet to
@@ -188,7 +188,7 @@ export const SEND_STAGES = {
 };
 
 /**
- * @typedef {Object} DraftTxStatus
+ * @typedef {object} DraftTxStatus
  * @property {'INVALID'} INVALID - The transaction is invalid and cannot be
  *  submitted. There are a number of cases that would result in an invalid
  *  send state:
@@ -213,7 +213,7 @@ export const SEND_STATUSES = {
 };
 
 /**
- * @typedef {Object} SendStateGasModes
+ * @typedef {object} SendStateGasModes
  * @property {'BASIC'} BASIC - Shows the basic estimate slow/avg/fast buttons
  *  when on mainnet and the metaswaps API request is successful.
  * @property {'CUSTOM'} CUSTOM - Shows GasFeeDisplay component that is a read
@@ -235,7 +235,7 @@ export const GAS_INPUT_MODES = {
 };
 
 /**
- * @typedef {Object} SendStateAmountModes
+ * @typedef {object} SendStateAmountModes
  * @property {'INPUT'} INPUT - the user provides the amount by typing in the
  *  field.
  * @property {'MAX'} MAX - The user selects the MAX button and amount is
@@ -253,7 +253,7 @@ export const AMOUNT_MODES = {
 };
 
 /**
- * @typedef {Object} SendStateRecipientModes
+ * @typedef {object} SendStateRecipientModes
  * @property {'CONTACT_LIST'} CONTACT_LIST - The user is displayed a list of
  *  their contacts and addresses they have recently send to.
  * @property {'MY_ACCOUNTS'} MY_ACCOUNTS - the user is displayed a list of
@@ -271,21 +271,21 @@ export const RECIPIENT_SEARCH_MODES = {
 };
 
 /**
- * @typedef {Object} Account
+ * @typedef {object} Account
  * @property {string} address - The hex address of the account.
  * @property {string} balance - Hex string representing the native asset
  *  balance of the account the transaction will be sent from.
  */
 
 /**
- * @typedef {Object} Amount
+ * @typedef {object} Amount
  * @property {string} [error] - Error to display for the amount field.
  * @property {string} value - A hex string representing the amount of the
  *  selected currency to send.
  */
 
 /**
- * @typedef {Object} Asset
+ * @typedef {object} Asset
  * @property {string} balance - A hex string representing the balance
  *  that the user holds of the asset that they are attempting to send.
  * @property {TokenDetails} [details] - An object that describes the
@@ -299,7 +299,7 @@ export const RECIPIENT_SEARCH_MODES = {
  */
 
 /**
- * @typedef {Object} GasFees
+ * @typedef {object} GasFees
  * @property {string} [error] - error to display for gas fields.
  * @property {string} gasLimit - maximum gas needed for tx.
  * @property {string} gasPrice - price in wei to pay per gas.
@@ -312,7 +312,7 @@ export const RECIPIENT_SEARCH_MODES = {
 /**
  * An object that describes the intended recipient of a transaction.
  *
- * @typedef {Object} Recipient
+ * @typedef {object} Recipient
  * @property {string} address - The fully qualified address of the recipient.
  *  This is set after the recipient.userInput is validated, the userInput field
  *  is quickly updated to avoid delay between keystrokes and seeing the input
@@ -327,7 +327,7 @@ export const RECIPIENT_SEARCH_MODES = {
  */
 
 /**
- * @typedef {Object} DraftTransaction
+ * @typedef {object} DraftTransaction
  * @property {Amount} amount - An object containing information about the
  *  amount of currency to send.
  * @property {Asset} asset - An object that describes the asset that the user
@@ -398,7 +398,7 @@ export const draftTransactionInitialState = {
 /**
  * Describes the state tree of the send slice
  *
- * @typedef {Object} SendState
+ * @typedef {object} SendState
  * @property {MapValuesToUnion<SendStateAmountModes>} amountMode - Describe
  *  whether the user has manually input an amount or if they have selected max
  *  to send the maximum amount of the selected currency.
@@ -471,9 +471,9 @@ export const initialState = {
  * typescript conversions. The metamask key is typed as an object on purpose
  * here because I cannot go so far in this work as to type that entire object.
  *
- * @typedef {Object} MetaMaskState
+ * @typedef {object} MetaMaskState
  * @property {SendState} send - The state of the send flow.
- * @property {Object} metamask - The state of the metamask store.
+ * @property {object} metamask - The state of the metamask store.
  */
 
 const name = 'send';
@@ -554,7 +554,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 );
 
 /**
- * @typedef {Object} Asset
+ * @typedef {object} Asset
  * @property {AssetTypesString} type - The type of asset that the user
  *  is attempting to send. Defaults to 'NATIVE' which represents the native
  *  asset of the chain. Can also be 'TOKEN' or 'COLLECTIBLE'.
@@ -581,8 +581,8 @@ export const initializeSendState = createAsyncThunk(
   'send/initializeSendState',
   async ({ chainHasChanged = false } = {}, thunkApi) => {
     /**
-     * @typedef {Object} ReduxState
-     * @property {Object} metamask - Half baked type for the MetaMask object
+     * @typedef {object} ReduxState
+     * @property {object} metamask - Half baked type for the MetaMask object
      * @property {SendState} send - the send state
      */
 
@@ -717,7 +717,7 @@ export const initializeSendState = createAsyncThunk(
  */
 
 /**
- * @typedef {Object} GasFeeUpdateParams
+ * @typedef {object} GasFeeUpdateParams
  * @property {TransactionTypeString} transactionType - The transaction type
  * @property {string} [maxFeePerGas] - The maximum amount in hex wei to pay
  *  per gas on a FEE_MARKET transaction.
@@ -734,7 +734,7 @@ export const initializeSendState = createAsyncThunk(
  */
 
 /**
- * @typedef {Object} GasEstimateUpdateParams
+ * @typedef {object} GasEstimateUpdateParams
  * @property {GasEstimateType} gasEstimateType - The type of gas estimation
  *  provided by the controller.
  * @property {(
@@ -1804,7 +1804,7 @@ export function updateGasPrice(gasPrice) {
  * (temporary) send state recipient nickname is consistent with the address book
  * nickname which has already been persisted to state.
  *
- * @param {Object} recipient - Recipient information
+ * @param {object} recipient - Recipient information
  * @param {string} recipient.address - hex address to send the transaction to
  * @param {string} [recipient.nickname] - Alias for the address to display
  *  to the user
@@ -1950,7 +1950,7 @@ export function updateSendAmount(amount) {
  * object with the appropriate ERC20 details including address, symbol and
  * decimals.
  *
- * @param {Object} payload - action payload
+ * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
  * @returns {ThunkAction<void>}

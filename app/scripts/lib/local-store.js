@@ -34,7 +34,7 @@ export default class ExtensionStore {
   /**
    * Sets the key in local state
    *
-   * @param {Object} state - The state to set
+   * @param {object} state - The state to set
    * @returns {Promise<void>}
    */
   async set(state) {
@@ -45,7 +45,7 @@ export default class ExtensionStore {
    * Returns all of the keys currently saved
    *
    * @private
-   * @returns {Object} the key-value map from local storage
+   * @returns {object} the key-value map from local storage
    */
   _get() {
     const { local } = browser.storage;
@@ -64,7 +64,7 @@ export default class ExtensionStore {
   /**
    * Sets the key in local state
    *
-   * @param {Object} obj - The key to set
+   * @param {object} obj - The key to set
    * @returns {Promise<void>}
    * @private
    */
@@ -86,7 +86,7 @@ export default class ExtensionStore {
 /**
  * Returns whether or not the given object contains no keys
  *
- * @param {Object} obj - The object to check
+ * @param {object} obj - The object to check
  * @returns {boolean}
  */
 function isEmpty(obj) {

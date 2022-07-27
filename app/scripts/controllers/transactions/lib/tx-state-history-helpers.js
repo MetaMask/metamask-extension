@@ -28,8 +28,8 @@ export function migrateFromSnapshotsToDiffs(longHistory) {
  * value
  * with the first entry having the note and a timestamp when the change took place
  *
- * @param {Object} previousState - the previous state of the object
- * @param {Object} newState - the update object
+ * @param {object} previousState - the previous state of the object
+ * @param {object} newState - the update object
  * @param {string} [note] - a optional note for the state change
  * @returns {Array}
  */
@@ -49,7 +49,7 @@ export function generateHistoryEntry(previousState, newState, note) {
  * Recovers previous txMeta state obj
  *
  * @param _shortHistory
- * @returns {Object}
+ * @returns {object}
  */
 export function replayHistory(_shortHistory) {
   const shortHistory = cloneDeep(_shortHistory);
@@ -61,8 +61,8 @@ export function replayHistory(_shortHistory) {
 /**
  * Snapshot {@code txMeta}
  *
- * @param {Object} txMeta - the tx metadata object
- * @returns {Object} a deep clone without history
+ * @param {object} txMeta - the tx metadata object
+ * @returns {object} a deep clone without history
  */
 export function snapshotFromTxMeta(txMeta) {
   const shallow = { ...txMeta };
