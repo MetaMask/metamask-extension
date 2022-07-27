@@ -1,30 +1,13 @@
 const path = require('path');
 const { promises: fs } = require('fs');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
 const { convertToHexValue, withFixtures } = require('./helpers');
-
-async function exportResults(data) {
-  if (data) {
-    const outPath = 'user_actions.json';
-    const outputDirectory = path.dirname(outPath);
-    const existingParentDirectory = await getFirstParentDirectoryThatExists(
-      outputDirectory,
-    );
-    if (!(await isWritable(existingParentDirectory))) {
-      throw new Error('Specified output file directory is not writable');
-    }
-    if (outputDirectory !== existingParentDirectory) {
-      await fs.mkdir(outputDirectory, { recursive: true });
-    }
-    await fs.writeFile(outPath, JSON.stringify(data, null, 2));
-  } else {
-    console.log(JSON.stringify(data, null, 2));
-  }
-}
 
 const ganacheOptions = {
   accounts: [
@@ -61,8 +44,7 @@ async function loadAccount() {
         text: '0',
       });
       const timestampAfterAction = new Date();
-      loadingTimes =
-        timestampAfterAction - timestampBeforeAction;
+      loadingTimes = timestampAfterAction - timestampBeforeAction;
     },
   );
   return loadingTimes;
@@ -106,12 +88,8 @@ async function confirmTx() {
       );
       await amountMax.click();
 
-      let inputValue = await inputAmount.getProperty('value');
-
       await amountMax.click();
       await inputAmount.fill('1');
-
-      inputValue = await inputAmount.getProperty('value');
 
       await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -148,32 +126,25 @@ async function main() {
       }),
   );
 
-  const results = await profilePageLoad();
+  const results = {};
+  results.loadAccount = await loadAccount();
+  results.confirmTx = await confirmTx();
   const { out } = argv;
 
-  const logCategories = [
-    { key: 'background', dirPath: 'initialisation/background/stacks.json' },
-    { key: 'ui', dirPath: 'initialisation/ui/stacks.json' },
-    { key: 'loadTime', dirPath: 'load_time/stats.json' },
-  ];
-
   if (out) {
-    logCategories.forEach(async ({ key, dirPath }) => {
-      if (results[key]) {
-        const outPath = `${out}/${dirPath}`;
-        const outputDirectory = path.dirname(outPath);
-        const existingParentDirectory = await getFirstParentDirectoryThatExists(
-          outputDirectory,
-        );
-        if (!(await isWritable(existingParentDirectory))) {
-          throw new Error('Specified output file directory is not writable');
-        }
-        if (outputDirectory !== existingParentDirectory) {
-          await fs.mkdir(outputDirectory, { recursive: true });
-        }
-        await fs.writeFile(outPath, JSON.stringify(results[key], null, 2));
-      }
-    });
+    const dirPath = 'load_time/stats.json';
+    const outPath = `${out}/${dirPath}`;
+    const outputDirectory = path.dirname(outPath);
+    const existingParentDirectory = await getFirstParentDirectoryThatExists(
+      outputDirectory,
+    );
+    if (!(await isWritable(existingParentDirectory))) {
+      throw new Error('Specified output file directory is not writable');
+    }
+    if (outputDirectory !== existingParentDirectory) {
+      await fs.mkdir(outputDirectory, { recursive: true });
+    }
+    await fs.writeFile(outPath, JSON.stringify(results, null, 2));
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
