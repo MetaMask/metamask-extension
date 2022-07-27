@@ -192,7 +192,7 @@ export const SMART_TRANSACTION_STATUSES = {
 /**
  * Types that are specific to the transaction approval amount.
  *
- * @typedef {Object} TransactionApprovalAmountType
+ * @typedef {object} TransactionApprovalAmountType
  * @property {'custom'} CUSTOM - The user has edited the token amount.
  * @property {'revoke'} REVOKE - The selected amount (either CUSTOM or DAPP_PROPOSED) is 0.
  * @property {'dapp_proposed'} DAPP_PROPOSED - The dapp proposed token amount.
