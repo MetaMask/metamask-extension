@@ -16,6 +16,12 @@ then
     exit 1
 fi
 
+if [[ "${CIRCLE_BRANCH}" != "develop" ]]
+then
+    printf 'This is not develop branch'
+    exit 0
+fi
+
 if [[ -z "${GITHUB_TOKEN:-}" ]]
 then
     printf '%s\n' 'GITHUB_TOKEN environment variable must be set'
@@ -24,14 +30,6 @@ elif [[ -z "${GITHUB_TOKEN_USER:-}" ]]
 then
     printf '%s\n' 'GITHUB_TOKEN_USER environment variable must be set'
     exit 1
-fi
-
-printf '%s\n' 'Commit the manifest version and changelog if the manifest has changed'
-
-if [[ "${CIRCLE_BRANCH}" != "develop" ]]
-then
-    printf 'This is not develop branch'
-    exit 0
 fi
 
 mkdir temp
@@ -50,11 +48,11 @@ then
     exit 0
 fi
 
-cp -R test-artifacts/chrome/mv3/bundle_size.json temp/stats
+cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
 
 echo " bundle_size_stats-${CIRCLE_SHA1}.json" >> temp/stats/fileList.txt
 
-mv temp/stats/bundle_size.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
+mv temp/stats/bundle_size_stats.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
 
 cd temp
 

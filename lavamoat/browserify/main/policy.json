@@ -2655,10 +2655,10 @@
         "@metamask/controllers>nanoid": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
-        "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
         "eth-keyring-controller": true,
@@ -3234,7 +3234,7 @@
     },
     "@metamask/rpc-methods>@metamask/utils": {
       "packages": {
-        "@storybook/api>fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3303,9 +3303,9 @@
         "@metamask/snap-controllers>nanoid": true,
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
-        "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
+        "eslint>fast-deep-equal": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true,
@@ -3402,7 +3402,7 @@
     },
     "@metamask/snap-controllers>ajv": {
       "packages": {
-        "@storybook/api>fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
@@ -4547,19 +4547,12 @@
     },
     "enzyme>is-regex": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>has-symbols": true
+        "enzyme>is-regex>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
       }
     },
-    "eslint-plugin-react>array-includes>get-intrinsic": {
-      "globals": {
-        "AggregateError": true,
-        "FinalizationRegistry": true,
-        "WeakRef": true
-      },
+    "enzyme>is-regex>has-tostringtag": {
       "packages": {
-        "enzyme>has": true,
-        "mocha>object.assign>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
@@ -5881,7 +5874,13 @@
     },
     "globalthis>define-properties": {
       "packages": {
+        "globalthis>define-properties>has-property-descriptors": true,
         "nock>deep-equal>object-keys": true
+      }
+    },
+    "globalthis>define-properties>has-property-descriptors": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "json-rpc-engine": {
@@ -6000,6 +5999,11 @@
         "nock>deep-equal>is-date-object": true,
         "nock>deep-equal>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
+      }
+    },
+    "nock>deep-equal>is-date-object": {
+      "packages": {
+        "enzyme>is-regex>has-tostringtag": true
       }
     },
     "node-fetch": {
@@ -6595,12 +6599,25 @@
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
-        "eslint-plugin-react>array-includes>get-intrinsic": true,
-        "mocha>object.assign>function-bind": true
+        "mocha>object.assign>function-bind": true,
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "globals": {
+        "AggregateError": true,
+        "FinalizationRegistry": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "enzyme>has": true,
+        "mocha>object.assign>function-bind": true,
+        "string.prototype.matchall>has-symbols": true
       }
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
+        "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
       }
