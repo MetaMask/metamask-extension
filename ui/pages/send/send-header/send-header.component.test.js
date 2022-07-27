@@ -3,13 +3,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { fireEvent } from '@testing-library/react';
-import { SEND_STAGES } from '../../../ducks/send';
+import { initialState, SEND_STAGES } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/jest';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
-import {
-  getInitialSendStateWithExistingTxState,
-  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-} from '../../../../test/jest/mocks';
 import SendHeader from './send-header.component';
 
 const middleware = [thunk];
@@ -30,7 +26,7 @@ describe('SendHeader Component', () => {
       const { getByText, rerender } = renderWithProvider(
         <SendHeader />,
         configureMockStore(middleware)({
-          send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          send: initialState,
           gas: { basicEstimateStatus: 'LOADING' },
           history: { mostRecentOverviewPage: 'activity' },
         }),
@@ -39,10 +35,7 @@ describe('SendHeader Component', () => {
       rerender(
         <SendHeader />,
         configureMockStore(middleware)({
-          send: {
-            ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            stage: SEND_STAGES.ADD_RECIPIENT,
-          },
+          send: { ...initialState, stage: SEND_STAGES.ADD_RECIPIENT },
           gas: { basicEstimateStatus: 'LOADING' },
           history: { mostRecentOverviewPage: 'activity' },
         }),
@@ -55,12 +48,9 @@ describe('SendHeader Component', () => {
         <SendHeader />,
         configureMockStore(middleware)({
           send: {
-            ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+            ...initialState,
             stage: SEND_STAGES.DRAFT,
-            asset: {
-              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT.asset,
-              type: ASSET_TYPES.NATIVE,
-            },
+            asset: { ...initialState.asset, type: ASSET_TYPES.NATIVE },
           },
           gas: { basicEstimateStatus: 'LOADING' },
           history: { mostRecentOverviewPage: 'activity' },
@@ -74,12 +64,9 @@ describe('SendHeader Component', () => {
         <SendHeader />,
         configureMockStore(middleware)({
           send: {
-            ...getInitialSendStateWithExistingTxState({
-              asset: {
-                type: ASSET_TYPES.TOKEN,
-              },
-            }),
+            ...initialState,
             stage: SEND_STAGES.DRAFT,
+            asset: { ...initialState.asset, type: ASSET_TYPES.TOKEN },
           },
           gas: { basicEstimateStatus: 'LOADING' },
           history: { mostRecentOverviewPage: 'activity' },
@@ -93,7 +80,7 @@ describe('SendHeader Component', () => {
         <SendHeader />,
         configureMockStore(middleware)({
           send: {
-            ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+            ...initialState,
             stage: SEND_STAGES.EDIT,
           },
           gas: { basicEstimateStatus: 'LOADING' },
@@ -109,7 +96,7 @@ describe('SendHeader Component', () => {
       const { getByText } = renderWithProvider(
         <SendHeader />,
         configureMockStore(middleware)({
-          send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          send: initialState,
           gas: { basicEstimateStatus: 'LOADING' },
           history: { mostRecentOverviewPage: 'activity' },
         }),
@@ -121,10 +108,7 @@ describe('SendHeader Component', () => {
       const { getByText } = renderWithProvider(
         <SendHeader />,
         configureMockStore(middleware)({
-          send: {
-            ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            stage: SEND_STAGES.EDIT,
-          },
+          send: { ...initialState, stage: SEND_STAGES.EDIT },
           gas: { basicEstimateStatus: 'LOADING' },
           history: { mostRecentOverviewPage: 'activity' },
         }),
@@ -134,7 +118,7 @@ describe('SendHeader Component', () => {
 
     it('resets send state when clicked', () => {
       const store = configureMockStore(middleware)({
-        send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+        send: initialState,
         gas: { basicEstimateStatus: 'LOADING' },
         history: { mostRecentOverviewPage: 'activity' },
       });

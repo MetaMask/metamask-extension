@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-const WalletOverview = ({ balance, buttons, className, icon, loading }) => {
+const WalletOverview = ({ balance, buttons, className, icon }) => {
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
-        {loading ? null : icon}
+        {icon}
         {balance}
       </div>
       <div className="wallet-overview__buttons">{buttons}</div>
@@ -19,7 +19,6 @@ WalletOverview.propTypes = {
   buttons: PropTypes.element.isRequired,
   className: PropTypes.string,
   icon: PropTypes.element.isRequired,
-  loading: PropTypes.bool,
 };
 
 WalletOverview.defaultProps = {

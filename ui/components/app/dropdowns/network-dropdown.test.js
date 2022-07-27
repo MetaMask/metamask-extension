@@ -19,7 +19,6 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
-        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: true,
         },
@@ -51,7 +50,6 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
-        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: true,
         },
@@ -79,7 +77,7 @@ describe('Network Dropdown', () => {
       let found = false;
       while (!found) {
         if (
-          _wrapper.find(ColorIndicator).at(i).prop('color') === 'icon-muted'
+          _wrapper.find(ColorIndicator).at(i).prop('color') === 'text-muted'
         ) {
           i += 1;
         } else {
@@ -158,7 +156,6 @@ describe('Network Dropdown', () => {
         provider: {
           type: 'test',
         },
-        showTestnetMessageInDropdown: false,
         preferences: {
           showTestNetworks: false,
         },

@@ -7,9 +7,9 @@ import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { getPreferences } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box';
+import I18nValue from '../../ui/i18n-value';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
@@ -17,7 +17,6 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
-  const t = useI18nContext();
   const {
     estimateUsed,
     hasSimulationError,
@@ -71,7 +70,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
             <Box marginRight={1}>
               <strong>
                 {estimateUsed === 'high' && '⚠ '}
-                {t('editGasSubTextFeeLabel')}
+                <I18nValue messageKey="editGasSubTextFeeLabel" />
               </strong>
             </Box>
             <div
@@ -91,8 +90,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       subTitle={
         <GasTiming
-          maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
-          maxFeePerGas={maxFeePerGas.toString()}
+          maxPriorityFeePerGas={maxPriorityFeePerGas}
+          maxFeePerGas={maxFeePerGas}
         />
       }
     />

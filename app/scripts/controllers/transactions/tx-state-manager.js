@@ -18,8 +18,6 @@ import {
   validateConfirmedExternalTransaction,
 } from './lib/util';
 
-export const ERROR_SUBMITTING =
-  'There was an error when resubmitting this transaction.';
 /**
  * TransactionStatuses reimported from the shared transaction constants file
  *
@@ -306,23 +304,9 @@ export default class TransactionStateManager extends EventEmitter {
   updateTransaction(txMeta, note) {
     // normalize and validate txParams if present
     if (txMeta.txParams) {
-      try {
-        txMeta.txParams = normalizeAndValidateTxParams(txMeta.txParams, false);
-      } catch (error) {
-        if (txMeta.warning.message === ERROR_SUBMITTING) {
-          this.setTxStatusFailed(txMeta.id, error);
-        } else {
-          throw error;
-        }
-
-        return;
-      }
+      txMeta.txParams = normalizeAndValidateTxParams(txMeta.txParams, false);
     }
 
-    this._updateTransactionHistory(txMeta, note);
-  }
-
-  _updateTransactionHistory(txMeta, note) {
     // create txMeta snapshot for history
     const currentState = snapshotFromTxMeta(txMeta);
     // recover previous tx state obj
@@ -567,11 +551,10 @@ export default class TransactionStateManager extends EventEmitter {
       rpc: error.value,
       stack: error.stack,
     };
-    this._updateTransactionHistory(
+    this.updateTransaction(
       txMeta,
       'transactions:tx-state-manager#fail - add error',
     );
-
     this._setTransactionStatus(txId, TRANSACTION_STATUSES.FAILED);
   }
 
@@ -655,7 +638,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     txMeta.status = status;
     try {
-      this._updateTransactionHistory(
+      this.updateTransaction(
         txMeta,
         `txStateManager: setting status to ${status}`,
       );

@@ -5,9 +5,9 @@ import {
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
+import { ERC1155, ERC721 } from '../constants/common';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC20 } from '../../../shared/constants/transaction';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -43,7 +43,7 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-export function getTokenMetadata(tokenAddress, tokenList) {
+function getTokenMetadata(tokenAddress, tokenList) {
   const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
     return {
       ...acc,
@@ -151,29 +151,9 @@ export function getTokenValueParam(tokenData = {}) {
   return tokenData?.args?._value?.toString();
 }
 
-/**
- * Gets either the '_tokenId' parameter or the 'id' param of the passed token transaction data.,
- * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
- * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
- *
- * @param {Object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
- */
-export function getTokenIdParam(tokenData = {}) {
-  return (
-    tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
-  );
-}
-
-/**
- * Gets the '_approved' parameter of the given token transaction data
- * (i.e function call) per the Human Standard Token ABI, if present.
- *
- * @param {Object} tokenData - ethers Interface token data.
- * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
- */
-export function getTokenApprovedParam(tokenData = {}) {
-  return tokenData?.args?._approved;
+export function getTokenValue(tokenParams = []) {
+  const valueData = tokenParams.find((param) => param.name === '_value');
+  return valueData && valueData.value;
 }
 
 /**
@@ -248,32 +228,8 @@ export async function getAssetDetails(
     throw new Error('Unable to detect valid token data');
   }
 
-  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-  let tokenId =
-    getTokenIdParam(tokenData)?.toString() ?? getTokenValueParam(tokenData);
-
-  const toAddress = getTokenAddressParam(tokenData);
-
+  const tokenId = getTokenValueParam(tokenData);
   let tokenDetails;
-
-  // if a tokenId is present check if there is a collectible in state matching the address/tokenId
-  // and avoid unnecessary network requests to query token details we already have
-  if (existingCollectibles?.length && tokenId) {
-    const existingCollectible = existingCollectibles.find(
-      ({ address, tokenId: _tokenId }) =>
-        isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
-    );
-
-    if (existingCollectible) {
-      return {
-        toAddress,
-        ...existingCollectible,
-      };
-    }
-  }
-
   try {
     tokenDetails = await getTokenStandardAndDetails(
       tokenAddress,
@@ -282,31 +238,26 @@ export async function getAssetDetails(
     );
   } catch (error) {
     log.warn(error);
-    // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data
-    return { toAddress, tokenId };
+    return {};
   }
 
-  const tokenAmount =
-    tokenData &&
-    tokenDetails?.decimals &&
-    calcTokenAmount(
-      getTokenValueParam(tokenData),
-      tokenDetails?.decimals,
-    ).toString(10);
+  if (tokenDetails?.standard) {
+    const { standard } = tokenDetails;
+    if (standard === ERC721 || standard === ERC1155) {
+      const existingCollectible = existingCollectibles.find(({ address }) =>
+        isEqualCaseInsensitive(tokenAddress, address),
+      );
 
-  const decimals =
-    tokenDetails?.decimals && Number(tokenDetails.decimals?.toString(10));
-
-  if (tokenDetails?.standard === ERC20) {
-    tokenId = undefined;
+      if (existingCollectible) {
+        return {
+          ...existingCollectible,
+          standard,
+        };
+      }
+    }
+    // else if not a collectible already in state or standard === ERC20 just return tokenDetails as it contains all required data
+    return tokenDetails;
   }
 
-  // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
-  return {
-    tokenAmount,
-    toAddress,
-    decimals,
-    tokenId,
-    ...tokenDetails,
-  };
+  return {};
 }

@@ -14,7 +14,6 @@ import NicknamePopovers from '../../../modals/nickname-popovers';
 import Typography from '../../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
-import SiteOrigin from '../../../../ui/site-origin';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -53,8 +52,7 @@ const ConfirmPageContainerSummary = (props) => {
     contractAddress =
       transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
       transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM ||
-      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
         ? tokenAddress
         : toAddress;
   }
@@ -87,10 +85,7 @@ const ConfirmPageContainerSummary = (props) => {
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
       {origin === ORIGIN_METAMASK ? null : (
-        <SiteOrigin
-          className="confirm-page-container-summary__origin"
-          siteOrigin={origin}
-        />
+        <div className="confirm-page-container-summary__origin">{origin}</div>
       )}
       <div className="confirm-page-container-summary__action-row">
         <div className="confirm-page-container-summary__action">

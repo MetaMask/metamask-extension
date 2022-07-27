@@ -12,8 +12,6 @@ const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
-const ADD_POPULAR_CUSTOM_NETWORK =
-  '/settings/networks/add-popular-custom-network';
 const SNAPS_LIST_ROUTE = '/settings/snaps-list';
 const SNAPS_VIEW_ROUTE = '/settings/snaps-view';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
@@ -35,7 +33,6 @@ const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
-const NOTIFICATIONS_ROUTE = '/notifications';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
@@ -90,7 +87,6 @@ const CONFIRM_SEND_ETHER_PATH = '/send-ether';
 const CONFIRM_SEND_TOKEN_PATH = '/send-token';
 const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
 const CONFIRM_APPROVE_PATH = '/approve';
-const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
 const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
 const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
 const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
@@ -116,8 +112,6 @@ const PATH_NAME_MAP = {
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
-  [ADD_POPULAR_CUSTOM_NETWORK]:
-    'Add Network From A List Of Popular Custom Networks',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -146,7 +140,6 @@ const PATH_NAME_MAP = {
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`]: 'Confirm Send Token Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`]: 'Confirm Deploy Contract Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`]: 'Confirm Approve Transaction Page',
-  [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`]: 'Confirm Set Approval For All Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`]: 'Confirm Transfer From Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`]: 'Confirm Safe Transfer From Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${SIGNATURE_REQUEST_PATH}`]: 'Signature Request Page',
@@ -208,7 +201,6 @@ export {
   CONFIRM_SEND_TOKEN_PATH,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_APPROVE_PATH,
-  CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
   CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
@@ -231,14 +223,12 @@ export {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
-  ADD_POPULAR_CUSTOM_NETWORK,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
-  NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,

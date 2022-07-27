@@ -37,7 +37,9 @@ export default function ItemList({
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
 
-  const blockExplorerHostName = getURLHostName(blockExplorerLink);
+  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    ? getURLHostName(blockExplorerLink)
+    : t('etherscan');
   const trackEvent = useContext(MetaMetricsContext);
 
   // If there is a token for import based on a contract address, it's the only one in the list.
@@ -139,36 +141,41 @@ export default function ItemList({
             </div>
           );
         })}
-        {!hasTokenForImport && blockExplorerLink && (
+        {!hasTokenForImport && (
           <div
             tabIndex="0"
             className="searchable-item-list__item searchable-item-list__item--add-token"
             key="searchable-item-list-item-last"
           >
             <ActionableMessage
-              message={t('addCustomTokenByContractAddress', [
-                <a
-                  key="searchable-item-list__etherscan-link"
-                  onClick={() => {
-                    trackEvent({
-                      event: 'Clicked Block Explorer Link',
-                      category: EVENT.CATEGORIES.SWAPS,
-                      properties: {
-                        link_type: 'Token Tracker',
-                        action: 'Verify Contract Address',
-                        block_explorer_domain: blockExplorerHostName,
-                      },
-                    });
-                    global.platform.openTab({
-                      url: blockExplorerLink,
-                    });
-                  }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {blockExplorerHostName}
-                </a>,
-              ])}
+              message={
+                blockExplorerLink &&
+                t('addCustomTokenByContractAddress', [
+                  <a
+                    key="searchable-item-list__etherscan-link"
+                    onClick={() => {
+                      trackEvent({
+                        event: 'Clicked Block Explorer Link',
+                        category: EVENT.CATEGORIES.SWAPS,
+                        properties: {
+                          link_type: 'Token Tracker',
+                          action: 'Verify Contract Address',
+                          block_explorer_domain: getURLHostName(
+                            blockExplorerLink,
+                          ),
+                        },
+                      });
+                      global.platform.openTab({
+                        url: blockExplorerLink,
+                      });
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {blockExplorerLabel}
+                  </a>,
+                ])
+              }
             />
           </div>
         )}

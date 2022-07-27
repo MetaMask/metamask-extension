@@ -10,7 +10,9 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import Box from '../../components/ui/box';
+import Chip from '../../components/ui/chip';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
+import SiteIcon from '../../components/ui/site-icon';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   COLORS,
@@ -23,8 +25,6 @@ import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
-import SiteOrigin from '../../components/ui/site-origin';
-import { addCustomNetwork } from '../../store/actions';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
 
@@ -130,7 +130,6 @@ export default function ConfirmationPage() {
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
-  const [stayOnPage, setStayOnPage] = useState(false);
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
@@ -147,11 +146,11 @@ export default function ConfirmationPage() {
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
     if (pendingConfirmations.length === 0) {
-      !stayOnPage && history.push(DEFAULT_ROUTE);
+      history.push(DEFAULT_ROUTE);
     } else if (pendingConfirmations.length <= currentPendingConfirmation) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
-  }, [pendingConfirmations, history, currentPendingConfirmation, stayOnPage]);
+  }, [pendingConfirmations, history, currentPendingConfirmation]);
   if (!pendingConfirmation) {
     return null;
   }
@@ -191,32 +190,29 @@ export default function ConfirmationPage() {
       )}
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
-          <Box justifyContent="center" marginTop={2}>
+          <Box justifyContent="center">
             <NetworkDisplay
               indicatorSize={SIZES.XS}
               labelProps={{ color: COLORS.TEXT_DEFAULT }}
             />
           </Box>
         ) : null}
-        {pendingConfirmation.origin === 'metamask' ? null : (
-          <Box
-            alignItems="center"
-            marginTop={1}
-            paddingTop={1}
-            paddingRight={4}
-            paddingLeft={4}
-            paddingBottom={4}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-          >
-            <SiteOrigin
-              chip
-              siteOrigin={stripHttpsScheme(originMetadata.origin)}
-              title={stripHttpsScheme(originMetadata.origin)}
-              iconSrc={originMetadata.iconUrl}
-              iconName={originMetadata.hostname}
-            />
-          </Box>
-        )}
+        <Box
+          alignItems="center"
+          marginTop={1}
+          padding={[1, 4, 4]}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+        >
+          <SiteIcon
+            icon={originMetadata.iconUrl}
+            name={originMetadata.hostname}
+            size={36}
+          />
+          <Chip
+            label={stripHttpsScheme(originMetadata.origin)}
+            borderColor={COLORS.BORDER_DEFAULT}
+          />
+        </Box>
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
       </div>
       <ConfirmationFooter
@@ -237,15 +233,8 @@ export default function ConfirmationPage() {
               </Callout>
             ))
         }
-        onApprove={() => {
-          templatedValues.onApprove.apply();
-          pendingConfirmation.origin === 'metamask' &&
-            dispatch(addCustomNetwork(pendingConfirmation.requestData));
-        }}
-        onCancel={() => {
-          templatedValues.onCancel.apply();
-          pendingConfirmation.origin === 'metamask' && setStayOnPage(true);
-        }}
+        onApprove={templatedValues.onApprove}
+        onCancel={templatedValues.onCancel}
         approveText={templatedValues.approvalText}
         cancelText={templatedValues.cancelText}
       />

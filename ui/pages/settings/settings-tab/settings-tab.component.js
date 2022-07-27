@@ -225,10 +225,7 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                marginTop={0}
-                marginRight={12}
-                marginBottom={0}
-                marginLeft={3}
+                margin={[0, 12, 0, 3]}
               >
                 {t('jazzicons')}
               </Typography>
@@ -256,8 +253,7 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={0}
-                marginBottom={3}
+                margin={[0, 0, 0, 3]}
               >
                 {t('blockies')}
               </Typography>

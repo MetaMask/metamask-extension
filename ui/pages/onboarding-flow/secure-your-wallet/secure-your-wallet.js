@@ -47,11 +47,6 @@ export default function SecureYourWallet() {
     ru: 'Russian',
     tl: 'Tagalog',
     vi: 'Vietnamese',
-    de: 'German',
-    el: 'Greek',
-    fr: 'French',
-    tr: 'Turkish',
-    zh: 'Chinese - China',
   };
 
   const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';
@@ -60,14 +55,12 @@ export default function SecureYourWallet() {
       {showSkipSRPBackupPopover && (
         <SkipSRPBackup handleClose={() => setShowSkipSRPBackupPopover(false)} />
       )}
-      <ThreeStepProgressBar
-        stage={threeStepStages.RECOVERY_PHRASE_VIDEO}
-        marginBottom={4}
-      />
+      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_VIDEO} />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
+        marginTop={8}
       >
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
           {t('seedPhraseIntroTitle')}
@@ -82,7 +75,7 @@ export default function SecureYourWallet() {
         </Typography>
       </Box>
       <Box>
-        <video className="secure-your-wallet__video" controls>
+        <video controls style={{ borderRadius: '10px' }}>
           <source
             type="video/webm"
             src="./images/videos/recovery-onboarding/video.webm"
@@ -103,6 +96,7 @@ export default function SecureYourWallet() {
       </Box>
       <Box
         margin={8}
+        width="10/12"
         justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
         className="secure-your-wallet__actions"
       >
@@ -125,7 +119,7 @@ export default function SecureYourWallet() {
           {t('seedPhraseIntroRecommendedButtonCopy')}
         </Button>
       </Box>
-      <Box className="secure-your-wallet__desc">
+      <Box>
         <Box marginBottom={4}>
           <Typography
             tag="p"

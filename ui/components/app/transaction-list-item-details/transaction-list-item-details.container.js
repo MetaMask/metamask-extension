@@ -3,17 +3,18 @@ import { tryReverseResolveAddress } from '../../../store/actions';
 import {
   getAddressBook,
   getRpcPrefsForCurrentProvider,
-  getEnsResolutionByAddress,
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
+  const { metamask } = state;
+  const { ensResolutionsByAddress } = metamask;
   const { recipientAddress, senderAddress } = ownProps;
   let recipientEns;
   if (recipientAddress) {
     const address = toChecksumHexAddress(recipientAddress);
-    recipientEns = getEnsResolutionByAddress(state, address);
+    recipientEns = ensResolutionsByAddress[address] || '';
   }
   const addressBook = getAddressBook(state);
 

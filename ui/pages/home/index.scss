@@ -23,7 +23,7 @@
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
   &__main-view &__tabs {
     border: none;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
   }
 
   &__main-view &__tab {
@@ -116,7 +116,7 @@
     position: absolute;
     top: 73px;
     opacity: 1;
-    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
     background: none;
   }
 
@@ -205,20 +205,6 @@
       color: var(--color-icon-default);
       background: none;
       margin-inline-start: 32px;
-    }
-  }
-
-  &__new-network-added {
-    border-radius: 10px;
-    text-align: center;
-
-    &__check-circle {
-      color: var(--color-success-default);
-      margin-top: 20px;
-    }
-
-    &__switch-to-button {
-      margin-bottom: 16px;
     }
   }
 }

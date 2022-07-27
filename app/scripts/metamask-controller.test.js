@@ -18,8 +18,6 @@ import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
 const firstTimeState = {
   config: {},
   NetworkController: {
@@ -31,17 +29,6 @@ const firstTimeState = {
     networkDetails: {
       EIPS: {
         1559: false,
-      },
-    },
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
       },
     },
   },
@@ -782,20 +769,12 @@ describe('MetaMaskController', function () {
   describe('#removeAccount', function () {
     let ret;
     const addressToRemove = '0x1';
-    let mockKeyring;
 
     beforeEach(async function () {
-      mockKeyring = {
-        getAccounts: sinon.stub().returns(Promise.resolve([])),
-        destroy: sinon.stub(),
-      };
       sinon.stub(metamaskController.preferencesController, 'removeAddress');
       sinon.stub(metamaskController.accountTracker, 'removeAccount');
       sinon.stub(metamaskController.keyringController, 'removeAccount');
       sinon.stub(metamaskController, 'removeAllAccountPermissions');
-      sinon
-        .stub(metamaskController.keyringController, 'getKeyringForAccount')
-        .returns(Promise.resolve(mockKeyring));
 
       ret = await metamaskController.removeAccount(addressToRemove);
     });
@@ -805,9 +784,6 @@ describe('MetaMaskController', function () {
       metamaskController.accountTracker.removeAccount.restore();
       metamaskController.preferencesController.removeAddress.restore();
       metamaskController.removeAllAccountPermissions.restore();
-
-      mockKeyring.getAccounts.resetHistory();
-      mockKeyring.destroy.resetHistory();
     });
 
     it('should call preferencesController.removeAddress', async function () {
@@ -840,16 +816,6 @@ describe('MetaMaskController', function () {
     });
     it('should return address', async function () {
       assert.equal(ret, '0x1');
-    });
-    it('should call keyringController.getKeyringForAccount', async function () {
-      assert(
-        metamaskController.keyringController.getKeyringForAccount.calledWith(
-          addressToRemove,
-        ),
-      );
-    });
-    it('should call keyring.destroy', async function () {
-      assert(mockKeyring.destroy.calledOnce);
     });
   });
 
@@ -1244,27 +1210,6 @@ describe('MetaMaskController', function () {
       assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]]);
       assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]]);
       assert.deepEqual(metamaskController.getState(), oldState);
-    });
-  });
-
-  describe('markNotificationsAsRead', function () {
-    it('marks the notification as read', function () {
-      metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
-      const readNotification = metamaskController.getState().notifications[
-        NOTIFICATION_ID
-      ];
-      assert.notEqual(readNotification.readDate, null);
-    });
-  });
-
-  describe('dismissNotifications', function () {
-    it('deletes the notification from state', function () {
-      metamaskController.dismissNotifications([NOTIFICATION_ID]);
-      const state = metamaskController.getState().notifications;
-      assert.ok(
-        !Object.values(state).includes(NOTIFICATION_ID),
-        'Object should not include the deleted notification',
-      );
     });
   });
 });

@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
-import { editExistingTransaction } from '../../ducks/send';
+import { editTransaction } from '../../ducks/send';
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors';
 import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import ConfirmSendToken from './confirm-send-token.component';
@@ -18,11 +18,18 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    editExistingTransaction: async ({ txData }) => {
+    editTransaction: ({ txData, tokenData, tokenProps: assetDetails }) => {
       const { id } = txData;
-      await dispatch(editExistingTransaction(ASSET_TYPES.TOKEN, id.toString()));
-      await dispatch(clearConfirmTransaction());
-      await dispatch(showSendTokenPage());
+      dispatch(
+        editTransaction(
+          ASSET_TYPES.TOKEN,
+          id.toString(),
+          tokenData,
+          assetDetails,
+        ),
+      );
+      dispatch(clearConfirmTransaction());
+      dispatch(showSendTokenPage());
     },
   };
 };

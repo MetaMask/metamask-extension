@@ -99,13 +99,13 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
     });
 
-    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
-      await driver.clickElement('.btn-secondary');
+    it('clicks the "Create New Wallet" option', async function () {
+      await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
       await driver.delay(largeDelayMs);
     });
 
-    it('clicks the "Create New Wallet" option', async function () {
-      await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
+    it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
+      await driver.clickElement('.btn-secondary');
       await driver.delay(largeDelayMs);
     });
 

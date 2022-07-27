@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { startNewDraftTransaction } from '../../../ducks/send';
+import { updateSendAsset } from '../../../ducks/send';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
@@ -93,7 +93,7 @@ const TokenOverview = ({ className, token }) => {
               });
               try {
                 await dispatch(
-                  startNewDraftTransaction({
+                  updateSendAsset({
                     type: ASSET_TYPES.TOKEN,
                     details: token,
                   }),

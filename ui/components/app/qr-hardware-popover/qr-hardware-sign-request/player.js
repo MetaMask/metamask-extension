@@ -43,12 +43,7 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
         alignItems={ALIGN_ITEMS.CENTER}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <div
-          style={{
-            padding: 20,
-            backgroundColor: 'var(--qr-code-white-background)',
-          }}
-        >
+        <div style={{ border: '20px solid var(--qr-code-white-background)' }}>
           <QRCode value={currentQRCode.toUpperCase()} size={250} />
         </div>
       </Box>

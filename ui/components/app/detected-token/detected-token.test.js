@@ -8,11 +8,7 @@ import DetectedToken from './detected-token';
 describe('DetectedToken', () => {
   it('should render the detected token found page', async () => {
     const store = configureStore(testData);
-    const props = {
-      setShowDetectedTokens: jest.fn(),
-    };
-
-    renderWithProvider(<DetectedToken {...props} />, store);
+    renderWithProvider(<DetectedToken />, store);
 
     expect(screen.getByText('0 LINK')).toBeInTheDocument();
     expect(screen.getByText('0 COMP')).toBeInTheDocument();

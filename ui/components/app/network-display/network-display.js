@@ -48,7 +48,9 @@ export default function NetworkDisplay({
         >
           <ColorIndicator
             color={
-              networkType === NETWORK_TYPE_RPC ? COLORS.ICON_MUTED : networkType
+              networkType === NETWORK_TYPE_RPC
+                ? COLORS.ICON_DEFAULT
+                : networkType
             }
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}

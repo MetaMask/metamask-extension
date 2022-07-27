@@ -154,7 +154,9 @@ export default function DropdownSearchList({
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
 
-  const blockExplorerHostName = getURLHostName(blockExplorerLink);
+  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    ? getURLHostName(blockExplorerLink)
+    : t('etherscan');
 
   const importTokenProps = {
     onImportTokenCloseClick,
@@ -226,14 +228,15 @@ export default function DropdownSearchList({
               ) : (
                 <div className="dropdown-search-list__placeholder">
                   {t('swapBuildQuotePlaceHolderText', [searchQuery])}
-                  {blockExplorerLink && (
-                    <div
-                      tabIndex="0"
-                      className="searchable-item-list__item searchable-item-list__item--add-token"
-                      key="searchable-item-list-item-last"
-                    >
-                      <ActionableMessage
-                        message={t('addCustomTokenByContractAddress', [
+                  <div
+                    tabIndex="0"
+                    className="searchable-item-list__item searchable-item-list__item--add-token"
+                    key="searchable-item-list-item-last"
+                  >
+                    <ActionableMessage
+                      message={
+                        blockExplorerLink &&
+                        t('addCustomTokenByContractAddress', [
                           <a
                             key="dropdown-search-list__etherscan-link"
                             onClick={() => {
@@ -243,7 +246,9 @@ export default function DropdownSearchList({
                                 properties: {
                                   link_type: 'Token Tracker',
                                   action: 'Verify Contract Address',
-                                  block_explorer_domain: blockExplorerHostName,
+                                  block_explorer_domain: getURLHostName(
+                                    blockExplorerLink,
+                                  ),
                                 },
                               });
                               global.platform.openTab({
@@ -253,12 +258,12 @@ export default function DropdownSearchList({
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {blockExplorerHostName}
+                            {blockExplorerLabel}
                           </a>,
-                        ])}
-                      />
-                    </div>
-                  )}
+                        ])
+                      }
+                    />
+                  </div>
                 </div>
               )
             }

@@ -11,7 +11,6 @@ export const COLORS = {
   TEXT_ALTERNATIVE: 'text-alternative',
   TEXT_MUTED: 'text-muted',
   ICON_DEFAULT: 'icon-default',
-  ICON_ALTERNATIVE: 'text-alternative',
   ICON_MUTED: 'icon-muted',
   BORDER_DEFAULT: 'border-default',
   BORDER_MUTED: 'border-muted',
@@ -127,11 +126,9 @@ export const DISPLAY = {
   FLEX: 'flex',
   GRID: 'grid',
   INLINE_BLOCK: 'inline-block',
-  INLINE: 'inline',
   INLINE_FLEX: 'inline-flex',
   INLINE_GRID: 'inline-grid',
   LIST_ITEM: 'list-item',
-  NONE: 'none',
 };
 
 export const FRACTIONS = {
@@ -209,5 +206,3 @@ export const RESIZE = {
   INITIAL: 'initial',
   INHERIT: 'inherit',
 };
-
-export const BREAKPOINTS = ['base', 'sm', 'md', 'lg'];

@@ -1,7 +1,6 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
 import SafeEventEmitter from 'safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
-import { TEN_SECONDS_IN_MILLISECONDS } from '../../../ui/helpers/constants/critical-error';
 
 class MetaRPCClient {
   constructor(connectionStream) {
@@ -11,25 +10,6 @@ class MetaRPCClient {
     this.requests = new Map();
     this.connectionStream.on('data', this.handleResponse.bind(this));
     this.connectionStream.on('end', this.close.bind(this));
-    this.responseHandled = {};
-  }
-
-  send(id, payload, cb) {
-    this.requests.set(id, cb);
-    this.connectionStream.write(payload);
-    this.responseHandled[id] = false;
-    if (payload.method === 'getState') {
-      setTimeout(() => {
-        if (!this.responseHandled[id] && cb) {
-          delete this.responseHandled[id];
-          return cb(new Error('No response from RPC'), null);
-        }
-
-        delete this.responseHandled[id];
-        // needed for linter to pass
-        return true;
-      }, TEN_SECONDS_IN_MILLISECONDS);
-    }
   }
 
   onNotification(handler) {
@@ -53,8 +33,6 @@ class MetaRPCClient {
     const { id, result, error, method, params } = data;
     const isNotification = id === undefined && error === undefined;
     const cb = this.requests.get(id);
-
-    this.responseHandled[id] = true;
 
     if (method && params && !isNotification) {
       // dont handle server-side to client-side requests
@@ -101,13 +79,14 @@ const metaRPCClientFactory = (connectionStream) => {
         const cb = p[p.length - 1];
         const params = p.slice(0, -1);
         const id = createRandomId();
-        const payload = {
+
+        object.requests.set(id, cb);
+        object.connectionStream.write({
           jsonrpc: '2.0',
           method: property,
           params,
           id,
-        };
-        object.send(id, payload, cb);
+        });
       };
     },
   });

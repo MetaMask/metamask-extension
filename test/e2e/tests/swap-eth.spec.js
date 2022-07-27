@@ -18,9 +18,6 @@ describe('Swap Eth for another Token', function () {
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
-        driverOptions: {
-          timeOut: 20000,
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -39,6 +36,7 @@ describe('Swap Eth for another Token', function () {
         await driver.clickElement(
           '[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]',
         );
+        await driver.clickElement('[placeholder="Search for a token"]');
         await driver.clickElement('[placeholder="Search for a token"]');
         await driver.fill('[placeholder="Search for a token"]', 'DAI');
         await driver.waitForSelector(

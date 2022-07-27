@@ -30,7 +30,6 @@ describe('AdvancedTab Component', () => {
         dismissSeedBackUpReminder={false}
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
-        userHasALedgerAccount
       />,
       {
         context: {
@@ -60,9 +59,6 @@ describe('AdvancedTab Component', () => {
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
         setShowTestNetworks={toggleTestnet}
-        useTokenDetection
-        setUseTokenDetection={toggleTokenDetection}
-        userHasALedgerAccount
       />,
       {
         context: {
@@ -107,7 +103,6 @@ describe('AdvancedTab Component', () => {
         dismissSeedBackUpReminder={false}
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
-        userHasALedgerAccount
       />,
       {
         context: {
@@ -144,7 +139,6 @@ describe('AdvancedTab Component', () => {
         dismissSeedBackUpReminder={false}
         useTokenDetection
         setUseTokenDetection={toggleTokenDetection}
-        userHasALedgerAccount
       />,
       {
         context: {

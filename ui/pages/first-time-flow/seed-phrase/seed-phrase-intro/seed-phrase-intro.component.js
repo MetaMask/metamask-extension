@@ -35,11 +35,6 @@ export default function SeedPhraseIntro() {
     ru: 'Russian',
     tl: 'Tagalog',
     vi: 'Vietnamese',
-    de: 'German',
-    el: 'Greek',
-    fr: 'French',
-    tr: 'Turkish',
-    zh: 'Chinese - China',
   };
 
   return (

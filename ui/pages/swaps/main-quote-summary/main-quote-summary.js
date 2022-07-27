@@ -93,6 +93,7 @@ export default function MainQuoteSummary({
               position="bottom"
               html={amountToDisplay}
               disabled={ellipsedAmountToDisplay === amountToDisplay}
+              theme="white"
             >
               <span
                 className="main-quote-summary__quote-large-number"
@@ -128,54 +129,21 @@ export default function MainQuoteSummary({
 }
 
 MainQuoteSummary.propTypes = {
-  /**
-   * The amount that will be sent in the smallest denomination.
-   * For example, wei is the smallest denomination for ether.
-   */
   sourceValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
   ]).isRequired,
-
-  /**
-   * Maximum number of decimal places for the source token.
-   */
   sourceDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-
-  /**
-   * The ticker symbol for the source token.
-   */
   sourceSymbol: PropTypes.string.isRequired,
-
-  /**
-   * The amount that will be received in the smallest denomination.
-   * For example, wei is the smallest denomination for ether.
-   */
   destinationValue: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.instanceOf(BigNumber),
   ]).isRequired,
-
-  /**
-   * Maximum number of decimal places for the destination token.
-   */
   destinationDecimals: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]),
-
-  /**
-   * The ticker symbol for the destination token.
-   */
   destinationSymbol: PropTypes.string.isRequired,
-
-  /**
-   * The location of the source token icon file.
-   */
   sourceIconUrl: PropTypes.string,
-
-  /**
-   * The location of the destination token icon file.
-   */
   destinationIconUrl: PropTypes.string,
 };

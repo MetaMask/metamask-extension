@@ -7,6 +7,7 @@ import { submittedPendingTransactionsSelector } from '../../../selectors/transac
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import I18nValue from '../../../components/ui/i18n-value';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
@@ -39,7 +40,7 @@ const TransactionAlerts = ({
     <div className="transaction-alerts">
       {hasSimulationError && (
         <ActionableMessage
-          message={t('simulationErrorMessageV2')}
+          message={<I18nValue messageKey="simulationErrorMessageV2" />}
           useIcon
           iconFillColor="var(--color-error-default)"
           type="danger"
@@ -59,28 +60,34 @@ const TransactionAlerts = ({
             <Typography
               align="left"
               className="transaction-alerts__pending-transactions"
-              margin={0}
+              margin={[0, 0]}
               tag={TYPOGRAPHY.Paragraph}
               variant={TYPOGRAPHY.H7}
             >
               <strong>
-                {pendingTransactions?.length === 1
-                  ? t('pendingTransactionSingle', [pendingTransactions?.length])
-                  : t('pendingTransactionMultiple', [
-                      pendingTransactions?.length,
-                    ])}
+                <I18nValue
+                  messageKey={
+                    pendingTransactions?.length === 1
+                      ? 'pendingTransactionSingle'
+                      : 'pendingTransactionMultiple'
+                  }
+                  options={[pendingTransactions?.length]}
+                />
               </strong>{' '}
-              {t('pendingTransactionInfo')}
-              {t('learnCancelSpeeedup', [
-                <a
-                  key="cancelSpeedUpInfo"
-                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {t('cancelSpeedUp')}
-                </a>,
-              ])}
+              <I18nValue messageKey="pendingTransactionInfo" />{' '}
+              <I18nValue
+                messageKey="learnCancelSpeeedup"
+                options={[
+                  <a
+                    key="cancelSpeedUpInfo"
+                    href="https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <I18nValue messageKey="cancelSpeedUp" />
+                  </a>,
+                ]}
+              />
             </Typography>
           }
           useIcon
@@ -127,11 +134,11 @@ const TransactionAlerts = ({
           message={
             <Typography
               align="left"
-              margin={0}
+              margin={[0, 0]}
               tag={TYPOGRAPHY.Paragraph}
               variant={TYPOGRAPHY.H7}
             >
-              {t('lowPriorityMessage')}
+              <I18nValue messageKey="lowPriorityMessage" />
             </Typography>
           }
           useIcon
@@ -144,11 +151,11 @@ const TransactionAlerts = ({
           message={
             <Typography
               align="left"
-              margin={0}
+              margin={[0, 0]}
               tag={TYPOGRAPHY.Paragraph}
               variant={TYPOGRAPHY.H7}
             >
-              {t('networkIsBusy')}
+              <I18nValue messageKey="networkIsBusy" />
             </Typography>
           }
           iconFillColor="var(--color-warning-default)"

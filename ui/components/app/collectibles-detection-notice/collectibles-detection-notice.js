@@ -56,9 +56,8 @@ export default function CollectiblesDetectionNotice() {
             </Typography>
             <Button
               type="link"
-              onClick={(e) => {
-                e.preventDefault();
-                history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
+              onClick={() => {
+                history.push(EXPERIMENTAL_ROUTE);
               }}
               className="collectibles-detection-notice__message__link"
             >

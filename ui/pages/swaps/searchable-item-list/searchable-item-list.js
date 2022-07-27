@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ItemList from './item-list';
 import ListItemSearch from './list-item-search';
@@ -22,14 +22,7 @@ export default function SearchableItemList({
 }) {
   const itemListRef = useRef();
 
-  const initialResultsState = useMemo(() => {
-    return defaultToAll ? itemsToSearch : [];
-  }, [defaultToAll, itemsToSearch]);
-  const [results, setResults] = useState(initialResultsState);
-  useEffect(() => {
-    setResults(initialResultsState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialResultsState.length]);
+  const [results, setResults] = useState(defaultToAll ? itemsToSearch : []);
   const [searchQuery, setSearchQuery] = useState('');
 
   return (

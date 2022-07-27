@@ -18,20 +18,10 @@ class ChromeDriver {
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
-
-    if (process.env.ENABLE_MV3) {
-      args.push('--log-level=0');
-      args.push('--enable-logging');
-      args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
-    } else {
-      args.push('--log-level=3');
-    }
+    args.push('--log-level=3');
     const options = new chrome.Options().addArguments(args);
     options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
-    options.setUserPreferences({
-      'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
-    });
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);

@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { getFirstTimeFlowTypeRoute } from '../../../selectors';
 import MetaMetricsOptIn from './metametrics-opt-in.component';
 
 const firstTimeFlowTypeNameMap = {
@@ -11,6 +12,7 @@ const mapStateToProps = (state) => {
   const { firstTimeFlowType, participateInMetaMetrics } = state.metamask;
 
   return {
+    nextRoute: getFirstTimeFlowTypeRoute(state),
     firstTimeSelectionMetaMetricsName:
       firstTimeFlowTypeNameMap[firstTimeFlowType],
     participateInMetaMetrics,

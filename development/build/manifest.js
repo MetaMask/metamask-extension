@@ -2,12 +2,9 @@ const { promises: fs } = require('fs');
 const path = require('path');
 const { mergeWith, cloneDeep } = require('lodash');
 
-const baseManifest = process.env.ENABLE_MV3
-  ? require('../../app/manifest/v3/_base.json')
-  : require('../../app/manifest/v2/_base.json');
+const baseManifest = require('../../app/manifest/_base.json');
 const { BuildType } = require('../lib/build-type');
 
-const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 
 module.exports = createManifestTasks;
@@ -27,7 +24,7 @@ function createManifestTasks({
             '..',
             '..',
             'app',
-            process.env.ENABLE_MV3 ? 'manifest/v3' : 'manifest/v2',
+            'manifest',
             `${platform}.json`,
           ),
         );
@@ -69,22 +66,19 @@ function createManifestTasks({
   });
 
   // high level manifest tasks
-  const dev = createTask(
-    TASKS.MANIFEST_DEV,
-    composeSeries(prepPlatforms, envDev),
-  );
+  const dev = createTask('manifest:dev', composeSeries(prepPlatforms, envDev));
 
   const testDev = createTask(
-    TASKS.MANIFEST_TEST_DEV,
+    'manifest:testDev',
     composeSeries(prepPlatforms, envTestDev),
   );
 
   const test = createTask(
-    TASKS.MANIFEST_TEST,
+    'manifest:test',
     composeSeries(prepPlatforms, envTest),
   );
 
-  const prod = createTask(TASKS.MANIFEST_PROD, prepPlatforms);
+  const prod = createTask('manifest:prod', prepPlatforms);
 
   return { prod, dev, testDev, test };
 

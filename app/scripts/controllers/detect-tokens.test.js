@@ -8,18 +8,11 @@ import {
   TokenListController,
   TokensController,
 } from '@metamask/controllers';
-import {
-  MAINNET,
-  MAINNET_NETWORK_ID,
-  ROPSTEN,
-} from '../../../shared/constants/network';
+import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
 import PreferencesController from './preferences';
-
-const tokenIconsApiBaseUrl =
-  'https://static.metaswap.codefi.network/api/v1/tokenIcons';
 
 describe('DetectTokensController', function () {
   let tokenListController;
@@ -134,6 +127,7 @@ describe('DetectTokensController', function () {
     });
     tokenListController = new TokenListController({
       chainId: '1',
+      useStaticTokenList: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessenger,
@@ -185,6 +179,7 @@ describe('DetectTokensController', function () {
     });
     tokenListController = new TokenListController({
       chainId: '3',
+      useStaticTokenList: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessengerRopsten,
@@ -246,7 +241,7 @@ describe('DetectTokensController', function () {
         ),
       );
 
-    await tokensController.ignoreTokens([tokenAddressToSkip]);
+    await tokensController.removeAndIgnoreToken(tokenAddressToSkip);
     await controller.detectNewTokens();
 
     assert.deepEqual(tokensController.state.tokens, [
@@ -254,8 +249,7 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
-        aggregators: [],
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${existingTokenAddress}.png`,
+        image: undefined,
         isERC721: false,
       },
     ]);
@@ -309,16 +303,14 @@ describe('DetectTokensController', function () {
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
         isERC721: false,
-        aggregators: [],
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${existingTokenAddress}.png`,
+        image: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
+        image: undefined,
         isERC721: false,
-        aggregators: [],
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${tokenAddressToAdd}.png`,
       },
     ]);
   });
@@ -371,17 +363,15 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${existingTokenAddress}.png`,
+        image: undefined,
         isERC721: false,
-        aggregators: [],
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${tokenAddressToAdd}.png`,
+        image: undefined,
         isERC721: false,
-        aggregators: [],
       },
     ]);
   });

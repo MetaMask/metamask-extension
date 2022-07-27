@@ -8,7 +8,6 @@ module.exports = {
     'app/vendor/**',
     'builds/**/*',
     'development/chromereload.js',
-    'development/charts/**',
     'dist/**/*',
     'node_modules/**/*',
   ],

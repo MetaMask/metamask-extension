@@ -73,17 +73,9 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="var(--color-success-default)"
-          aria-label={t('active')}
-        />
+        <IconCheck color="var(--color-success-default)" />
       ) : (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="transparent"
-          aria-hidden="true"
-        />
+        <div className="networks-tab__content__check-icon__transparent">✓</div>
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { NETWORK_CONGESTION_THRESHOLDS } from '../../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import I18nValue from '../../../../ui/i18n-value';
 import { NetworkStabilityTooltip } from '../tooltips';
 
 const GRADIENT_COLORS = [
@@ -49,7 +49,6 @@ const determineStatusInfo = (givenNetworkCongestion) => {
 };
 
 const StatusSlider = () => {
-  const t = useI18nContext();
   const { gasFeeEstimates } = useGasFeeContext();
   const statusInfo = determineStatusInfo(gasFeeEstimates.networkCongestion);
 
@@ -82,7 +81,7 @@ const StatusSlider = () => {
           style={{ color: statusInfo.color }}
           data-testid="status-slider-label"
         >
-          {t(statusInfo.statusLabel)}
+          <I18nValue messageKey={statusInfo.statusLabel} />
         </div>
       </div>
     </NetworkStabilityTooltip>

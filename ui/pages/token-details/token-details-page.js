@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
-import { getTokenList } from '../../selectors';
+import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
@@ -32,6 +32,7 @@ export default function TokenDetailsPage() {
   const t = useContext(I18nContext);
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
+  const useTokenDetection = useSelector(getUseTokenDetection);
 
   const { address: tokenAddress } = useParams();
   const tokenMetadata = Object.values(tokenList).find((token) =>
@@ -39,7 +40,10 @@ export default function TokenDetailsPage() {
   );
   const aggregators = tokenMetadata?.aggregators?.join(', ');
   const fileName = tokenMetadata?.iconUrl;
-  const imagePath = fileName;
+  let imagePath = fileName;
+  if (!process.env.TOKEN_DETECTION_V2) {
+    imagePath = useTokenDetection ? fileName : `images/contract/${fileName}`;
+  }
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
@@ -70,8 +74,7 @@ export default function TokenDetailsPage() {
       <Box marginLeft={5} marginRight={6}>
         <Typography
           fontWeight={FONT_WEIGHT.BOLD}
-          margin={0}
-          marginTop={4}
+          margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H6}
           color={COLORS.TEXT_DEFAULT}
           className="token-details__title"
@@ -87,8 +90,7 @@ export default function TokenDetailsPage() {
           <Typography
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
-            margin={0}
-            marginRight={5}
+            margin={[0, 5, 0, 0]}
             variant={TYPOGRAPHY.H4}
             color={COLORS.TEXT_DEFAULT}
             className="token-details__token-value"
@@ -104,16 +106,14 @@ export default function TokenDetailsPage() {
           </Box>
         </Box>
         <Typography
-          margin={0}
-          marginTop={4}
+          margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H7}
           color={COLORS.TEXT_ALTERNATIVE}
         >
           {tokenCurrencyBalance || ''}
         </Typography>
         <Typography
-          margin={0}
-          marginTop={6}
+          margin={[6, 0, 0, 0]}
           variant={TYPOGRAPHY.H9}
           color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
@@ -123,8 +123,7 @@ export default function TokenDetailsPage() {
         <Box display={DISPLAY.FLEX}>
           <Typography
             variant={TYPOGRAPHY.H7}
-            margin={0}
-            marginTop={2}
+            margin={[2, 0, 0, 0]}
             color={COLORS.TEXT_DEFAULT}
             overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             className="token-details__token-address"
@@ -149,8 +148,7 @@ export default function TokenDetailsPage() {
         </Box>
         <Typography
           variant={TYPOGRAPHY.H9}
-          margin={0}
-          marginTop={4}
+          margin={[4, 0, 0, 0]}
           color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -158,16 +156,14 @@ export default function TokenDetailsPage() {
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H7}
-          margin={0}
-          marginTop={1}
+          margin={[1, 0, 0, 0]}
           color={COLORS.TEXT_DEFAULT}
         >
           {token.decimals}
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H9}
-          margin={0}
-          marginTop={4}
+          margin={[4, 0, 0, 0]}
           color={COLORS.TEXT_ALTERNATIVE}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -175,8 +171,7 @@ export default function TokenDetailsPage() {
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H7}
-          margin={1}
-          marginTop={0}
+          margin={[1, 0, 0, 0]}
           color={COLORS.TEXT_DEFAULT}
         >
           {networkType === NETWORK_TYPE_RPC
@@ -187,8 +182,7 @@ export default function TokenDetailsPage() {
           <>
             <Typography
               variant={TYPOGRAPHY.H9}
-              margin={0}
-              marginTop={4}
+              margin={[4, 0, 0, 0]}
               color={COLORS.TEXT_ALTERNATIVE}
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -196,8 +190,7 @@ export default function TokenDetailsPage() {
             </Typography>
             <Typography
               variant={TYPOGRAPHY.H7}
-              margin={0}
-              marginTop={1}
+              margin={[1, 0, 0, 0]}
               color={COLORS.TEXT_DEFAULT}
             >
               {`${aggregators}.`}

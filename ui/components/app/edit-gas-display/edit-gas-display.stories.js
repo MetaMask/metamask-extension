@@ -4,36 +4,32 @@ import EditGasDisplay from '.';
 export default {
   title: 'Components/App/EditGasDisplay',
   id: __filename,
-  args: {
-    transaction: {},
-  },
 };
 
-export const DefaultStory = (args) => {
+export const DefaultStory = () => {
   return (
     <div style={{ width: '600px' }}>
-      <EditGasDisplay {...args} />
+      <EditGasDisplay />
     </div>
   );
 };
 
 DefaultStory.storyName = 'Default';
 
-export const WithEducation = (args) => {
+export const WithEducation = () => {
   return (
     <div style={{ width: '600px' }}>
-      <EditGasDisplay showEducationButton {...args} />
+      <EditGasDisplay showEducationButton />
     </div>
   );
 };
 
-export const WithDappSuggestedGas = (args) => {
+export const WithDappSuggestedGas = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasDisplay
         dappSuggestedGasFee="100000"
         dappOrigin="davidwalsh.name"
-        {...args}
       />
     </div>
   );

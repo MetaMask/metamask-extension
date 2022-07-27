@@ -1,6 +1,5 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import NetworksTabSubheader from '.';
 
@@ -37,11 +36,11 @@ describe('NetworksTabSubheader Component', () => {
     expect(getByRole('button', { text: 'Add a network' })).toBeDefined();
   });
   it('should render add network form subheader correctly', () => {
-    const { queryByText, getAllByText } = renderComponent({
+    const { queryByText } = renderComponent({
       addNewNetwork: true,
     });
     expect(queryByText('Networks')).toBeInTheDocument();
-    waitFor(() => expect(getAllByText('>')).toBeInTheDocument());
+    expect(queryByText('>')).toBeInTheDocument();
     expect(queryByText('Add a network')).toBeInTheDocument();
   });
 });

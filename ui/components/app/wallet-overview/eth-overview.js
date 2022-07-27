@@ -16,13 +16,13 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { showModal } from '../../../store/actions';
 import {
   isBalanceCached,
+  getSelectedAccount,
   getShouldShowFiat,
   getCurrentKeyring,
   getSwapsDefaultToken,
   getIsSwapsChain,
   getIsBuyableChain,
   getNativeCurrencyImage,
-  getSelectedAccountCachedBalance,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
@@ -32,9 +32,6 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import Spinner from '../../ui/spinner';
-import { startNewDraftTransaction } from '../../../ducks/send';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -46,7 +43,8 @@ const EthOverview = ({ className }) => {
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  const selectedAccount = useSelector(getSelectedAccount);
+  const { balance } = selectedAccount;
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -54,7 +52,6 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
-      loading={!balance}
       balance={
         <Tooltip
           position="top"
@@ -63,28 +60,21 @@ const EthOverview = ({ className }) => {
         >
           <div className="eth-overview__balance">
             <div className="eth-overview__primary-container">
-              {balance ? (
-                <UserPreferencedCurrencyDisplay
-                  className={classnames('eth-overview__primary-balance', {
-                    'eth-overview__cached-balance': balanceIsCached,
-                  })}
-                  data-testid="eth-overview__primary-currency"
-                  value={balance}
-                  type={PRIMARY}
-                  ethNumberOfDecimals={4}
-                  hideTitle
-                />
-              ) : (
-                <Spinner
-                  color="var(--color-secondary-default)"
-                  className="loading-overlay__spinner"
-                />
-              )}
+              <UserPreferencedCurrencyDisplay
+                className={classnames('eth-overview__primary-balance', {
+                  'eth-overview__cached-balance': balanceIsCached,
+                })}
+                data-testid="eth-overview__primary-currency"
+                value={balance}
+                type={PRIMARY}
+                ethNumberOfDecimals={4}
+                hideTitle
+              />
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && balance && (
+            {showFiat && (
               <UserPreferencedCurrencyDisplay
                 className={classnames({
                   'eth-overview__cached-secondary-balance': balanceIsCached,
@@ -133,11 +123,7 @@ const EthOverview = ({ className }) => {
                   legacy_event: true,
                 },
               });
-              dispatch(
-                startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }),
-              ).then(() => {
-                history.push(SEND_ROUTE);
-              });
+              history.push(SEND_ROUTE);
             }}
           />
           <IconButton

@@ -103,17 +103,7 @@ export default function setupSentry({ release, getState }) {
     environment,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
-    beforeSend: (report) => {
-      if (getState) {
-        const appState = getState();
-        if (!appState?.store?.metamask?.participateInMetaMetrics) {
-          return null;
-        }
-      } else {
-        return null;
-      }
-      return rewriteReport(report);
-    },
+    beforeSend: (report) => rewriteReport(report),
   });
 
   function rewriteReport(report) {

@@ -3,18 +3,6 @@
 .snaps-authorship-pill {
   display: inline-block;
 
-  .chip {
-    padding-right: 8px;
-    margin-top: 4px;
-  }
-
-  .chip__label {
-    max-width: 168px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
   &:hover,
   &:focus {
     .chip {
@@ -24,14 +12,5 @@
 }
 
 .snaps-authorship-icon {
-  color: var(--color-icon-alternative);
-}
-
-.snaps-authorship-version {
-  border-radius: 100px;
-  line-height: 100%;
-}
-
-.snaps-authorship-version > span {
-  vertical-align: middle;
+  color: var(--color-icon-default);
 }

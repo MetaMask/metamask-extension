@@ -5,9 +5,15 @@ import Box from '../../ui/box';
 import {
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  COLORS,
+  TYPOGRAPHY,
+  TEXT_ALIGN,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
+import Typography from '../../ui/typography';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
@@ -25,8 +31,8 @@ export default class PermissionsConnectHeader extends Component {
     boxProps: PropTypes.shape({ ...Box.propTypes }),
     headerText: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    npmPackageName: PropTypes.string,
     snapVersion: PropTypes.string,
-    isSnapInstall: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -38,29 +44,11 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   renderHeaderIcon() {
-    const {
-      iconUrl,
-      iconName,
-      siteOrigin,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      isSnapInstall,
-      ///: END:ONLY_INCLUDE_IN
-    } = this.props;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    if (isSnapInstall) {
-      return null;
-    }
-    ///: END:ONLY_INCLUDE_IN
+    const { iconUrl, iconName, siteOrigin } = this.props;
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteOrigin
-          chip
-          siteOrigin={siteOrigin}
-          iconSrc={iconUrl}
-          name={iconName}
-        />
+        <SiteOrigin siteOrigin={siteOrigin} iconSrc={iconUrl} name={iconName} />
       </div>
     );
   }
@@ -71,11 +59,14 @@ export default class PermissionsConnectHeader extends Component {
       headerTitle,
       headerText,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      siteOrigin,
+      npmPackageName,
       snapVersion,
-      isSnapInstall,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    const npmPackageUrl = `https://www.npmjs.com/package/${npmPackageName}`;
+    const { t } = this.context;
+    ///: END:ONLY_INCLUDE_IN
     return (
       <Box
         className="permissions-connect-header"
@@ -87,8 +78,29 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          isSnapInstall && (
-            <SnapsAuthorshipPill snapId={siteOrigin} version={snapVersion} />
+          npmPackageName ? (
+            <SnapsAuthorshipPill
+              packageName={npmPackageName}
+              url={npmPackageUrl}
+            />
+          ) : null
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          snapVersion && (
+            <Typography
+              boxProps={{
+                margin: [2, 0],
+              }}
+              color={COLORS.TEXT_MUTED}
+              variant={TYPOGRAPHY.H7}
+              align={TEXT_ALIGN.CENTER}
+              tag="span"
+              className="version"
+            >
+              {t('shorthandVersion', [snapVersion])}
+            </Typography>
           )
           ///: END:ONLY_INCLUDE_IN
         }

@@ -558,15 +558,6 @@ export default class MetaMetricsController {
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]: metamaskState.frequentRpcListDetail.reduce(
-        (networkList, currentNetwork) => {
-          if (!currentNetwork.ticker) {
-            networkList.push(currentNetwork.chainId);
-          }
-          return networkList;
-        },
-        [],
-      ),
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
@@ -630,9 +621,11 @@ export default class MetaMetricsController {
    * @returns {[]}
    */
   _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
-    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
+    return Object.values(allCollectibles)
+      .reduce((result, chainNFTs) => {
+        return result.concat(Object.values(chainNFTs));
+      }, [])
+      .flat();
   });
 
   /**

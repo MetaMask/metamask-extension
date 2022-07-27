@@ -34,7 +34,6 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
-  PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
@@ -134,48 +133,6 @@ function getSegmentWriteKey({ buildType, environment }) {
   throw new Error(`Invalid build type: '${buildType}'`);
 }
 
-/**
- * Get the URL for the phishing warning page, if it has been set.
- *
- * @param {object} options - The phishing warning page options.
- * @param {boolean} options.testing - Whether this is a test build or not.
- * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
- */
-function getPhishingWarningPageUrl({ testing }) {
-  let phishingWarningPageUrl = metamaskrc.PHISHING_WARNING_PAGE_URL;
-
-  if (!phishingWarningPageUrl) {
-    phishingWarningPageUrl = testing
-      ? 'http://localhost:9999/'
-      : 'https://metamask.github.io/phishing-warning/v1.1.0/';
-  }
-
-  // We add a hash/fragment to the URL dynamically, so we need to ensure it
-  // has a valid pathname to append a hash to.
-  const normalizedUrl = phishingWarningPageUrl.endsWith('/')
-    ? phishingWarningPageUrl
-    : `${phishingWarningPageUrl}/`;
-
-  let phishingWarningPageUrlObject;
-  try {
-    // eslint-disable-next-line no-new
-    phishingWarningPageUrlObject = new URL(normalizedUrl);
-  } catch (error) {
-    throw new Error(
-      `Invalid phishing warning page URL: '${normalizedUrl}'`,
-      error,
-    );
-  }
-  if (phishingWarningPageUrlObject.hash) {
-    // The URL fragment must be set dynamically
-    throw new Error(
-      `URL fragment not allowed in phishing warning page URL: '${normalizedUrl}'`,
-    );
-  }
-
-  return normalizedUrl;
-}
-
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
 );
@@ -196,22 +153,22 @@ function createScriptTasks({
   // internal tasks
   const core = {
     // dev tasks (live reload)
-    dev: createTasksForScriptBundles({
+    dev: createTasksForBuildJsExtension({
       taskPrefix: 'scripts:core:dev',
       devMode: true,
     }),
-    testDev: createTasksForScriptBundles({
+    testDev: createTasksForBuildJsExtension({
       taskPrefix: 'scripts:core:test-live',
       devMode: true,
       testing: true,
     }),
     // built for CI tests
-    test: createTasksForScriptBundles({
+    test: createTasksForBuildJsExtension({
       taskPrefix: 'scripts:core:test',
       testing: true,
     }),
     // production
-    prod: createTasksForScriptBundles({ taskPrefix: 'scripts:core:prod' }),
+    prod: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:prod' }),
   };
 
   // high level tasks
@@ -219,11 +176,7 @@ function createScriptTasks({
   const { dev, test, testDev, prod } = core;
   return { dev, test, testDev, prod };
 
-  function createTasksForScriptBundles({
-    taskPrefix,
-    devMode = false,
-    testing = false,
-  }) {
+  function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
@@ -250,19 +203,24 @@ function createScriptTasks({
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
-      createContentscriptBundle({ devMode, testing }),
+      createTaskForBundleContentscript({ devMode, testing }),
     );
 
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createDisableConsoleBundle({ devMode, testing }),
+      createTaskForBundleDisableConsole({ devMode, testing }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createSentryBundle({ devMode, testing }),
+      createTaskForBundleSentry({ devMode, testing }),
+    );
+
+    const phishingDetectSubtask = createTask(
+      `${taskPrefix}:phishing-detect`,
+      createTaskForBundlePhishingDetect({ devMode, testing }),
     );
 
     // task for initiating browser livereload
@@ -287,6 +245,7 @@ function createScriptTasks({
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
+      phishingDetectSubtask,
     ].map((subtask) =>
       runInChildProcess(subtask, {
         applyLavaMoat,
@@ -300,7 +259,7 @@ function createScriptTasks({
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createDisableConsoleBundle({ devMode, testing }) {
+  function createTaskForBundleDisableConsole({ devMode, testing }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
@@ -317,7 +276,7 @@ function createScriptTasks({
     });
   }
 
-  function createSentryBundle({ devMode, testing }) {
+  function createTaskForBundleSentry({ devMode, testing }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
@@ -334,8 +293,25 @@ function createScriptTasks({
     });
   }
 
+  function createTaskForBundlePhishingDetect({ devMode, testing }) {
+    const label = 'phishing-detect';
+    return createNormalBundle({
+      buildType,
+      browserPlatforms,
+      destFilepath: `${label}.js`,
+      devMode,
+      entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      testing,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+    });
+  }
+
   // the "contentscript" bundle contains the "inpage" bundle
-  function createContentscriptBundle({ devMode, testing }) {
+  function createTaskForBundleContentscript({ devMode, testing }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
     return composeSeries(
@@ -367,102 +343,6 @@ function createScriptTasks({
       }),
     );
   }
-}
-
-const postProcessServiceWorker = (
-  mv3BrowserPlatforms,
-  fileList,
-  applyLavaMoat,
-  testing,
-) => {
-  mv3BrowserPlatforms.forEach((browser) => {
-    const appInitFile = `./dist/${browser}/app-init.js`;
-    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-    if (testing) {
-      fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
-    } else {
-      // Setting applyLavaMoat to true in testing mode
-      // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
-      fileOutput = fileOutput.replace(
-        'const applyLavaMoat = true;',
-        `const applyLavaMoat = ${applyLavaMoat};`,
-      );
-    }
-    writeFileSync(appInitFile, fileOutput);
-  });
-};
-
-// Function generates app-init.js for browsers chrome, brave and opera.
-// It dynamically injects list of files generated in the build.
-async function createManifestV3AppInitializationBundle({
-  jsBundles,
-  browserPlatforms,
-  buildType,
-  devMode,
-  ignoredFiles,
-  testing,
-  policyOnly,
-  shouldLintFenceFiles,
-  applyLavaMoat,
-  version,
-}) {
-  const label = 'app-init';
-  // TODO: remove this filter for firefox once MV3 is supported in it
-  const mv3BrowserPlatforms = browserPlatforms.filter(
-    (platform) => platform !== 'firefox',
-  );
-  const fileList = jsBundles.reduce(
-    (result, file) => `${result}'${file}',\n    `,
-    '',
-  );
-
-  await createNormalBundle({
-    browserPlatforms: mv3BrowserPlatforms,
-    buildType,
-    destFilepath: 'app-init.js',
-    devMode,
-    entryFilepath: './app/scripts/app-init.js',
-    ignoredFiles,
-    label,
-    testing,
-    policyOnly,
-    shouldLintFenceFiles,
-    version,
-  })();
-
-  postProcessServiceWorker(
-    mv3BrowserPlatforms,
-    fileList,
-    applyLavaMoat,
-    testing,
-  );
-
-  // If the application is running in development mode, we watch service worker file to
-  // in case the file is changes we need to process it again to replace "/** FILE NAMES */", "testMode" etc.
-  if (devMode && !testing) {
-    let prevChromeFileContent;
-    watch('./dist/chrome/app-init.js', () => {
-      const chromeFileContent = readFileSync(
-        './dist/chrome/app-init.js',
-        'utf8',
-      );
-      if (chromeFileContent !== prevChromeFileContent) {
-        prevChromeFileContent = chromeFileContent;
-        postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
-      }
-    });
-  }
-
-  // Code below is used to set statsMode to true when testing in MV3
-  // This is used to capture module initialisation stats using lavamoat.
-  if (testing) {
-    const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
-    const fileOutput = content.replace('statsMode = false', 'statsMode = true');
-    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
-  }
-
-  console.log(`Bundle end: service worker app-init.js`);
 }
 
 function createFactoredBuild({
@@ -577,7 +457,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    events.on('bundleDone', async () => {
+    events.on('bundleDone', () => {
       // Skip HTML generation if nothing is to be written to disk
       if (policyOnly) {
         return;
@@ -623,24 +503,6 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
             });
-            if (process.env.ENABLE_MV3) {
-              const jsBundles = [
-                ...commonSet.values(),
-                ...groupSet.values(),
-              ].map((label) => `./${label}.js`);
-              await createManifestV3AppInitializationBundle({
-                jsBundles,
-                browserPlatforms,
-                buildType,
-                devMode,
-                ignoredFiles,
-                testing,
-                policyOnly,
-                shouldLintFenceFiles,
-                applyLavaMoat,
-                version,
-              });
-            }
             break;
           }
           case 'content-script': {
@@ -662,7 +524,7 @@ function createFactoredBuild({
       }
     });
 
-    await createBundle(buildConfiguration, { reloadOnChange });
+    await bundleIt(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -672,9 +534,11 @@ function createNormalBundle({
   destFilepath,
   devMode,
   entryFilepath,
+  extraEntries = [],
   ignoredFiles,
   label,
   policyOnly,
+  modulesToExpose,
   shouldLintFenceFiles,
   testing,
   version,
@@ -708,7 +572,14 @@ function createNormalBundle({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [entryFilepath];
+    bundlerOpts.entries = [...extraEntries];
+    if (entryFilepath) {
+      bundlerOpts.entries.push(entryFilepath);
+    }
+
+    if (modulesToExpose) {
+      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
+    }
 
     // instrument pipeline
     events.on('configurePipeline', ({ pipeline }) => {
@@ -724,7 +595,7 @@ function createNormalBundle({
       });
     });
 
-    await createBundle(buildConfiguration, { reloadOnChange });
+    await bundleIt(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -777,7 +648,7 @@ function setupBundlerDefaults(
     // Look for TypeScript files when walking the dependency tree
     extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: devMode || testing,
+    fullPaths: devMode,
     // For sourcemaps
     debug: true,
   });
@@ -879,7 +750,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
   });
 }
 
-async function createBundle(buildConfiguration, { reloadOnChange }) {
+async function bundleIt(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
 
@@ -951,7 +822,6 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     IN_TEST: testing,
-    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},

@@ -1,36 +1,10 @@
 .add-network {
-  &__networks-container {
-    padding-inline-end: 24px;
-
-    @media screen and (max-width: $break-small) {
-      padding: 0;
-    }
-  }
-
   &__header {
     border-bottom: 1px solid var(--color-border-default);
 
-    @media screen and (max-width: 575px) {
-      padding-inline-start: 24px;
-      padding-inline-end: 24px;
-    }
-
-    &__subtitle {
-      margin-inline-start: 10px;
-      margin-inline-end: 10px;
-    }
-  }
-
-  &__main-container {
-    @media screen and (max-width: 575px) {
-      padding-inline-start: 24px;
-      padding-inline-end: 24px;
-    }
-  }
-
-  &__list-of-networks {
-    @media screen and (min-width: $break-large) {
-      width: 75%;
+    &__back-icon {
+      margin-left: 24px;
+      margin-right: 16px;
     }
   }
 
@@ -49,25 +23,19 @@
 
   &__add-icon {
     color: var(--color-text-alternative);
-    margin-inline-start: auto;
-    margin-inline-end: 0;
+    margin-left: auto;
+    margin-right: 0;
     cursor: pointer;
   }
 
   &__add-button.button {
     color: var(--color-primary-default);
     font-size: $font-size-h7;
-    margin-inline-start: 24px;
+    margin-left: 24px;
   }
 
   &__footer {
     border-top: 1px solid var(--color-border-muted);
-    width: 100%;
-    padding-bottom: 8px;
-
-    @media screen and (max-width: 575px) {
-      padding-inline-start: 24px !important;
-    }
 
     & .btn-link {
       display: initial;
@@ -83,14 +51,6 @@
       color: var(--color-text-alternative);
     }
   }
-
-  &__edge-case-box {
-    border: 1px solid var(--color-border-muted);
-
-    &__link {
-      color: var(--color-info-default);
-      display: inline;
-      padding: 0;
-    }
-  }
 }
+
+

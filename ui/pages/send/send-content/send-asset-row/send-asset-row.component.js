@@ -5,14 +5,10 @@ import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
 import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
-import { PRIMARY } from '../../../../helpers/constants/common';
+import { ERC20, ERC721, PRIMARY } from '../../../../helpers/constants/common';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { EVENT } from '../../../../../shared/constants/metametrics';
-import {
-  ASSET_TYPES,
-  ERC20,
-  ERC721,
-} from '../../../../../shared/constants/transaction';
+import { ASSET_TYPES } from '../../../../../shared/constants/transaction';
 
 export default class SendAssetRow extends Component {
   static propTypes = {

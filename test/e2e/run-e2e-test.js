@@ -70,12 +70,10 @@ async function main() {
   }
 
   let testTimeoutInMilliseconds = 60 * 1000;
-  let exit = '--exit';
 
   if (leaveRunning) {
     process.env.E2E_LEAVE_RUNNING = 'true';
     testTimeoutInMilliseconds = 0;
-    exit = '--no-exit';
   }
 
   await retry({ retries }, async () => {
@@ -85,7 +83,6 @@ async function main() {
       '--timeout',
       testTimeoutInMilliseconds,
       e2eTestPath,
-      exit,
     ]);
   });
 }

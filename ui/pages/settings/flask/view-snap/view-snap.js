@@ -47,6 +47,7 @@ function ViewSnap() {
     }
   }, [history, snap]);
 
+  const authorshipPillUrl = `https://npmjs.com/package/${snap?.manifest.source.location.npm.packageName}`;
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithPermission(state, snap?.permissionName),
   );
@@ -86,7 +87,10 @@ function ViewSnap() {
           </Typography>
           <Box className="view-snap__pill-toggle-container">
             <Box className="view-snap__pill-container" paddingLeft={2}>
-              <SnapsAuthorshipPill snapId={snap.id} />
+              <SnapsAuthorshipPill
+                packageName={snap.id}
+                url={authorshipPillUrl}
+              />
             </Box>
             <Box paddingLeft={4} className="view-snap__toggle-container">
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>

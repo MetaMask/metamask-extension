@@ -3,13 +3,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { fireEvent } from '@testing-library/react';
-import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
+import { initialState, SEND_STATUSES } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/jest';
 import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
-import {
-  getInitialSendStateWithExistingTxState,
-  INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-} from '../../../../../../test/jest/mocks';
 import AmountMaxButton from './amount-max-button';
 
 const middleware = [thunk];
@@ -26,7 +22,7 @@ describe('AmountMaxButton Component', () => {
               EIPS: {},
             },
           },
-          send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          send: initialState,
         }),
       );
       expect(getByText('Max')).toBeTruthy();
@@ -40,14 +36,12 @@ describe('AmountMaxButton Component', () => {
             EIPS: {},
           },
         },
-        send: getInitialSendStateWithExistingTxState({
-          status: SEND_STATUSES.VALID,
-        }),
+        send: { ...initialState, status: SEND_STATUSES.VALID },
       });
       const { getByText } = renderWithProvider(<AmountMaxButton />, store);
 
       const expectedActions = [
-        { type: 'send/updateAmountMode', payload: AMOUNT_MODES.MAX },
+        { type: 'send/updateAmountMode', payload: 'MAX' },
       ];
 
       fireEvent.click(getByText('Max'), { bubbles: true });
@@ -64,10 +58,9 @@ describe('AmountMaxButton Component', () => {
           },
         },
         send: {
-          ...getInitialSendStateWithExistingTxState({
-            status: SEND_STATUSES.VALID,
-          }),
-          amountMode: AMOUNT_MODES.MAX,
+          ...initialState,
+          status: SEND_STATUSES.VALID,
+          amount: { ...initialState.amount, mode: 'MAX' },
         },
       });
       const { getByText } = renderWithProvider(<AmountMaxButton />, store);

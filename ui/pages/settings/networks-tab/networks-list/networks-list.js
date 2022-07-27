@@ -66,8 +66,8 @@ const NetworksList = ({
       {searchQuery === '' && (
         <Typography
           variant={TYPOGRAPHY.H6}
-          marginTop={4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          margin={[6, 0, 0, 9]}
+          color={COLORS.TEXT_MUTED}
           className="networks-tab__networks-list__label"
         >
           {t('testNetworks')}

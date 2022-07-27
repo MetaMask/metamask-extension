@@ -8,7 +8,6 @@ import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   getTokenAddressParam,
-  getTokenIdParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
 import {
@@ -39,40 +38,16 @@ import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 
 /**
- *  There are seven types of transaction entries that are currently differentiated in the design:
- *  1. Signature request
- *  2. Send (sendEth sendTokens)
- *  3. Deposit
- *  4. Site interaction
- *  5. Approval
- *  6. Swap
- *  7. Swap Approval
- */
-const signatureTypes = [
-  null,
-  undefined,
-  TRANSACTION_TYPES.SIGN,
-  TRANSACTION_TYPES.PERSONAL_SIGN,
-  TRANSACTION_TYPES.SIGN_TYPED_DATA,
-  TRANSACTION_TYPES.ETH_DECRYPT,
-  TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY,
-];
-
-/**
- * @typedef {(import('../../selectors/transactions').TransactionGroup} TransactionGroup
- */
-
-/**
  * @typedef {Object} TransactionDisplayData
- * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
+ * @property {string} title - primary description of the transaction
+ * @property {string} subtitle - supporting text describing the transaction
+ * @property {bool} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
+ * @property {string} category - the transaction category
  * @property {string} primaryCurrency - the currency string to display in the primary position
- * @property {string} recipientAddress - the Ethereum address of the recipient
- * @property {string} senderAddress - the Ethereum address of the sender
- * @property {string} status - the status of the transaction
- * @property {string} subtitle - the supporting text describing the transaction
- * @property {boolean} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
- * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} status - the status of the transaction
+ * @property {string} senderAddress - the Ethereum address of the sender
+ * @property {string} recipientAddress - the Ethereum address of the recipient
  */
 
 /**
@@ -83,7 +58,7 @@ const signatureTypes = [
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
  *
- * @param {TransactionGroup} transactionGroup - group of transactions of the same nonce
+ * @param {Object} transactionGroup - group of transactions
  * @returns {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {
@@ -94,10 +69,10 @@ export function useTransactionDisplayData(transactionGroup) {
   const knownTokens = useSelector(getTokens);
   const knownCollectibles = useSelector(getCollectibles);
   const t = useI18nContext();
-
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
   const { type } = initialTransaction;
+
   const { from: senderAddress, to } = initialTransaction.txParams || {};
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
@@ -111,9 +86,8 @@ export function useTransactionDisplayData(transactionGroup) {
   const isSubmitted = displayedStatusKey === TRANSACTION_STATUSES.SUBMITTED;
 
   const primaryValue = primaryTransaction.txParams?.value;
-  const date = formatDateWithYearContext(initialTransaction.time);
-
   let prefix = '-';
+  const date = formatDateWithYearContext(initialTransaction.time);
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
@@ -139,18 +113,16 @@ export function useTransactionDisplayData(transactionGroup) {
     isTokenCategory,
   );
 
-  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-  const transactionDataTokenId =
-    getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
+  // If this is an ERC20 token transaction this value is equal to the amount sent
+  // If it is an ERC721 token transaction it is the tokenId being sent
+  const tokenAmountOrTokenId = getTokenValueParam(tokenData);
 
   const collectible =
     isTokenCategory &&
     knownCollectibles.find(
       ({ address, tokenId }) =>
         isEqualCaseInsensitive(address, recipientAddress) &&
-        tokenId === transactionDataTokenId,
+        tokenId === tokenAmountOrTokenId,
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
@@ -177,8 +149,9 @@ export function useTransactionDisplayData(transactionGroup) {
   // used to display fiat amount of tx. initialized to either tokenFiatAmount or undefined
   // but can later be modified if dealing with a swap
   let secondaryDisplayValue = isTokenCategory ? tokenFiatAmount : undefined;
-
+  // The transaction group category that will be used for rendering the icon in the activity list
   let category;
+  // The primary title of the Tx that will be displayed in the activity list
   let title;
 
   const {
@@ -187,6 +160,25 @@ export function useTransactionDisplayData(transactionGroup) {
     swapTokenFiatAmount,
     isViewingReceivedTokenFromSwap,
   } = useSwappedTokenValue(transactionGroup, currentAsset);
+
+  // There are seven types of transaction entries that are currently differentiated in the design
+  // 1. Signature request
+  // 2. Send (sendEth sendTokens)
+  // 3. Deposit
+  // 4. Site interaction
+  // 5. Approval
+  // 6. Swap
+  // 7. Swap Approval
+
+  const signatureTypes = [
+    null,
+    undefined,
+    TRANSACTION_TYPES.SIGN,
+    TRANSACTION_TYPES.PERSONAL_SIGN,
+    TRANSACTION_TYPES.SIGN_TYPED_DATA,
+    TRANSACTION_TYPES.ETH_DECRYPT,
+    TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+  ];
 
   if (signatureTypes.includes(type)) {
     category = TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
@@ -225,12 +217,6 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('approveSpendLimit', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL) {
-    category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
-    prefix = '';
-    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
-    subtitle = origin;
-    subtitleContainsOrigin = true;
   } else if (type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
     category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
@@ -252,17 +238,13 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
     type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
-    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+    type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendSpecifiedTokens', [
       token?.symbol || collectible?.name || t('token'),
     ]);
-    recipientAddress = getTokenAddressParam(tokenData);
-    subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM) {
-    category = TRANSACTION_GROUP_CATEGORIES.SEND;
-    title = t('safeTransferFrom');
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {

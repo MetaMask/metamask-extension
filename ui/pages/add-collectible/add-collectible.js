@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { util } from '@metamask/controllers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+
 import {
   DISPLAY,
   FONT_WEIGHT,
@@ -17,7 +18,7 @@ import PageContainer from '../../components/ui/page-container';
 import {
   addCollectibleVerifyOwnership,
   getTokenStandardAndDetails,
-  ignoreTokens,
+  removeToken,
   setNewCollectibleAddedMessage,
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
@@ -54,7 +55,9 @@ export default function AddCollectible() {
 
   const handleAddCollectible = async () => {
     try {
-      await dispatch(addCollectibleVerifyOwnership(address, tokenId));
+      await dispatch(
+        addCollectibleVerifyOwnership(address, tokenId.toString()),
+      );
     } catch (error) {
       const { message } = error;
       dispatch(setNewCollectibleAddedMessage(message));
@@ -63,10 +66,7 @@ export default function AddCollectible() {
     }
     if (contractAddressToConvertFromTokenToCollectible) {
       await dispatch(
-        ignoreTokens({
-          tokensToIgnore: contractAddressToConvertFromTokenToCollectible,
-          dontShowLoadingIndicator: true,
-        }),
+        removeToken(contractAddressToConvertFromTokenToCollectible),
       );
     }
     dispatch(setNewCollectibleAddedMessage('success'));
@@ -99,7 +99,7 @@ export default function AddCollectible() {
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!util.isValidHexAddress(address) || !val || isNaN(Number(val)));
+    setDisabled(!util.isValidHexAddress(address) || !val);
     setTokenId(val);
   };
 
@@ -149,7 +149,7 @@ export default function AddCollectible() {
           )}
           <Box margin={4}>
             <FormField
-              dataTestId="address"
+              id="address"
               titleText={t('address')}
               placeholder="0x..."
               value={address}
@@ -161,7 +161,7 @@ export default function AddCollectible() {
               autoFocus
             />
             <FormField
-              dataTestId="token-id"
+              id="token-id"
               titleText={t('tokenId')}
               placeholder={t('nftTokenIdPlaceholder')}
               value={tokenId}
@@ -170,6 +170,7 @@ export default function AddCollectible() {
                 setCollectibleAddFailed(false);
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
+              numeric
             />
           </Box>
         </Box>

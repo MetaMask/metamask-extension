@@ -2,11 +2,13 @@ WEBVTT
 
 1
 00:00:00.780 --> 00:00:04.580
-MetaMask adalah cara baru untuk terhubung ke situs dan aplikasi.
+MetaMask adalah cara baru untuk terhubung
+ke situs dan aplikasi.
 
 2
-00:00:04.580 --> 00:00:08.860 
-Di situs web biasa, basis data pusat atau bank bertanggung jawab untuk mengendalikan dan
+00:00:04.580 --> 00:00:08.860
+Di situs web tradisional, database sentral
+atau bank bertanggung jawab untuk mengontrol dan
 
 3
 00:00:08.860 --> 00:00:10.179
@@ -14,47 +16,56 @@ memulihkan akun Anda.
 
 4
 00:00:10.179 --> 00:00:15.050
-Namun, di MetaMask, seluruh kuasa milik pemegang kunci utama.
+Tetapi di MetaMask, semua kuasa milik
+pemegang kunci induk.
 
 5
 00:00:15.050 --> 00:00:18.460
-Siapa pun yang memegang kunci, ia mengendalikan akun.
+Siapa pun yang memegang kunci tersebut, akan mengontrol akun.
 
 6
 00:00:18.460 --> 00:00:21.110
-Frasa pemulihan rahasia Anda adalah "kunci rahasia" Anda.
+Frasa pemulihan rahasia
+adalah "kunci induk" Anda.
 
 7
 00:00:21.110 --> 00:00:26.070
-Frasa pemulihan ini berupa 12 kata yang dihasilkan saat pertama kali Anda menyiapkan MetaMask, yang memungkinkan
+Ini adalah rangkaian 12 kata yang dibuat
+saat Anda menyiapkan MetaMask pertama kali, yang memungkinkan
 
 8
 00:00:26.070 --> 00:00:30.120
-Anda untuk memulihkan dompet dan dana Anda jika Anda kehilangan akses.
+Anda memulihkan dompet dan dana jika Anda
+kehilangan akses.
 
 9
 00:00:30.120 --> 00:00:33.451
-Anda perlu mengamankan dompet Anda dengan menjaga
+Penting agar Anda mengamankan
+dompet Anda dengan menjaga
 
 10
 00:00:33.451 --> 00:00:37.510
-frasa pemulihan rahasia dengan sangat aman, dan sangat rahasia.
+frasa pemulihan rahasia
+Anda dengan sangat aman dan sangat rahasia.
 
 11
 00:00:37.510 --> 00:00:41.429
-Jika seseorang mendapatkan akses ke frasa tersebut, ia akan memiliki "kunci utama" ke dompet Anda dan dapat
+Jika seseorang mendapatkan aksesnya, mereka akan memiliki
+"kunci induk" ke dompet Anda dan dapat
 
 12
 00:00:41.429 --> 00:00:45.190
-dengan bebas mengakses serta mengambil seluruh dana Anda.
+mengakses secara bebas dan mengambil semua dana Anda.
 
 13
 00:00:45.190 --> 00:00:50.109
-Untuk mengamankan dompet MetaMask Anda, Anda perlu menyimpan frasa pemulihan rahasia dengan aman.
+Untuk mengamankan dompet MetaMask, Anda pasti ingin
+menyimpan frasa pemulihan rahasia Anda secara aman.
 
 14
 00:00:50.109 --> 00:00:54.930
-Anda dapat menuliskannya, menyembunyikannya, menaruhnya di brankas,
+Anda dapat menuliskannya, menyembunyikannya di suatu tempat,
+menempatkannya di kotak deposit yang aman
 
 15
 00:00:54.930 --> 00:00:57.729
@@ -62,19 +73,23 @@ atau menggunakan pengelola kata sandi yang aman.
 
 16
 00:00:57.729 --> 00:01:01.050
-Sebagian pengguna bahkan mengukir frasa yang mereka miliki di lempengan logam!
+Beberapa pengguna bahkan mengukir frasa
+mereka pada pelat logam!
 
 17
 00:01:01.050 --> 00:01:04.440
-Tidak seorang pun, bahkan tim di MetaMask sekalipun, dapat membantu Anda
+Tidak ada seorang pun, bahkan tidak juga tim
+di MetaMask, dapat membantu Anda
 
 18
 00:01:04.440 --> 00:01:07.820
-untuk memulihkan dompet jika Anda kehilangan frasa pemulihan rahasia Anda.
+memulihkan dompet Anda jika Anda menghilangkan
+frasa pemulihan rahasia Anda.
 
 19
 00:01:07.820 --> 00:01:12.072
-Jika Anda belum menuliskan frasa pemulihan rahasia dan menyimpannya di tempat yang aman,
+Jika belum menuliskan frasa pemulihan rahasia Anda
+dan menyimpannya di suatu tempat yang aman,
 
 20
 00:01:12.072 --> 00:01:15.492
@@ -82,17 +97,19 @@ lakukan sekarang. Kami akan menunggu.
 
 21
 00:01:15.500 --> 00:01:20.780
-Dan ingat, jangan pernah membagikan frasa pemulihan rahasia kepada siapa pun: bahkan kepada kami.
+Dan ingat, jangan membagikan frasa pemulihan rahasia
+Anda kepada siapa pun: bahkan tidak kepada kami.
 
 22
 00:01:20.780 --> 00:01:24.910
-Jika ada orang yang menanyakannya kepada Anda, mereka mencoba menipu Anda.
+Jika ada yang menanyakannya,
+mereka akan mencoba menipu Anda.
 
 23
 00:01:24.910 --> 00:01:26.250
-Itu saja!
+Begitulah!
 
 24
 00:01:26.250 --> 00:01:31.020
-Sekarang, Anda mengetahui apa itu frasa pemulihan rahasia dan cara mempertahankan agar dompet Anda tetap aman dan terjaga.
-
+Sekarang, Anda tahu apa itu frasa pemulihan rahasia
+dan cara menjaga dompet Anda tetap aman.

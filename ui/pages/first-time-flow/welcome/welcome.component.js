@@ -6,7 +6,6 @@ import Button from '../../../components/ui/button';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
-  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
 import WelcomeFooter from './welcome-footer.component';
@@ -17,7 +16,6 @@ export default class Welcome extends PureComponent {
     history: PropTypes.object,
     participateInMetaMetrics: PropTypes.bool,
     welcomeScreenSeen: PropTypes.bool,
-    isInitialized: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -31,28 +29,17 @@ export default class Welcome extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      history,
-      participateInMetaMetrics,
-      welcomeScreenSeen,
-      isInitialized,
-    } = this.props;
+    const { history, participateInMetaMetrics, welcomeScreenSeen } = this.props;
 
-    if (
-      welcomeScreenSeen &&
-      isInitialized &&
-      participateInMetaMetrics !== null
-    ) {
+    if (welcomeScreenSeen && participateInMetaMetrics !== null) {
       history.push(INITIALIZE_CREATE_PASSWORD_ROUTE);
-    } else if (welcomeScreenSeen && participateInMetaMetrics !== null) {
-      history.push(INITIALIZE_SELECT_ACTION_ROUTE);
     } else if (welcomeScreenSeen) {
-      history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+      history.push(INITIALIZE_SELECT_ACTION_ROUTE);
     }
   }
 
   handleContinue = () => {
-    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
   };
 
   render() {

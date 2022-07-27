@@ -4,17 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
 
 import {
-  addImportedTokens,
+  importTokens,
   ignoreTokens,
   setNewTokensImported,
 } from '../../../store/actions';
 import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
-} from '../../../../shared/constants/transaction';
+import { TOKEN_STANDARDS } from '../../../helpers/constants/common';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
@@ -65,7 +63,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         },
       });
     });
-    await dispatch(addImportedTokens(selectedTokens));
+    await dispatch(importTokens(selectedTokens));
     const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
     dispatch(setNewTokensImported(tokenSymbols.join(', ')));
   };
@@ -92,15 +90,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         asset_type: ASSET_TYPES.TOKEN,
       },
     });
-    const deSelectedTokensAddresses = deSelectedTokens.map(
-      ({ address }) => address,
-    );
-    await dispatch(
-      ignoreTokens({
-        tokensToIgnore: deSelectedTokensAddresses,
-        dontShowLoadingIndicator: true,
-      }),
-    );
+    await dispatch(ignoreTokens(deSelectedTokens));
     setShowDetectedTokens(false);
   };
 

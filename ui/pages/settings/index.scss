@@ -70,7 +70,7 @@
       &__list {
         background: var(--color-background-default);
         box-sizing: border-box;
-        box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
         border-radius: 6px;
         position: absolute;
         width: 100%;
@@ -320,7 +320,7 @@
 
       margin-top: 8px;
       margin-bottom: 12px;
-      color: var(--color-text-default);
+      color: var(--color-icon-default);
     }
   }
 
@@ -331,7 +331,7 @@
   &__content-description {
     @include H6;
 
-    color: var(--color-text-default);
+    color: var(--color-icon-default);
     padding-top: 5px;
 
     a {

@@ -9,11 +9,13 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
-import SearchIcon from '../../../../components/ui/icon/search-icon';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
-    <SearchIcon size={20} color="var(--color-icon-muted)" />
+    <i
+      className="fa fa-search fa-lg"
+      style={{ color: 'var(--color-icon-muted)' }}
+    />
   </InputAdornment>
 );
 

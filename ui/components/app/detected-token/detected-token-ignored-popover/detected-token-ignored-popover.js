@@ -41,10 +41,7 @@ const DetectedTokenIgnoredPopover = ({
       <Typography
         variant={TYPOGRAPHY.H6}
         tag={TYPOGRAPHY.H6}
-        marginTop={0}
-        marginRight={5}
-        marginBottom={7}
-        marginLeft={5}
+        margin={[0, 5, 7, 5]}
       >
         {t('ignoreTokenWarning')}
       </Typography>

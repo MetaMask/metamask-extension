@@ -8,7 +8,7 @@ import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../hel
 import { formatETHFee } from '../helpers/utils/formatters';
 import { calcGasTotal } from '../pages/send/send.utils';
 
-import { getGasLimit, getGasPrice } from '../ducks/send';
+import { getGasPrice } from '../ducks/send';
 import {
   GAS_ESTIMATE_TYPES as GAS_FEE_CONTROLLER_ESTIMATE_TYPES,
   GAS_LIMITS,
@@ -321,9 +321,8 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
     return [];
   }
   const showFiat = getShouldShowFiat(state);
-
   const gasLimit =
-    getGasLimit(state) ?? getCustomGasLimit(state) ?? GAS_LIMITS.SIMPLE;
+    state.send.gas.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state);

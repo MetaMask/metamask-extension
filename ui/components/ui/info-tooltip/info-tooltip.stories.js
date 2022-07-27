@@ -17,6 +17,7 @@ export default {
       control: 'select',
       options: ['top', 'left', 'bottom', 'right'],
     },
+    wide: { control: 'boolean' },
     containerClassName: { control: 'text' },
     wrapperClassName: { control: 'text' },
     iconFillColor: { control: 'text' },

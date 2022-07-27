@@ -6,10 +6,8 @@ import { MINUTE } from '../../../shared/constants/time';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
-} from '../../../shared/constants/transaction';
+import { TOKEN_STANDARDS } from '../../../ui/helpers/constants/common';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 // By default, poll every 3 minutes

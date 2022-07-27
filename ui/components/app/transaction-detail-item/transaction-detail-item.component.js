@@ -52,9 +52,7 @@ export default function TransactionDetailItem({
             color={COLORS.TEXT_DEFAULT}
             fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
             variant={TYPOGRAPHY.H6}
-            marginTop={1}
-            marginBottom={1}
-            marginLeft={1}
+            margin={[1, 0, 1, 1]}
             boxProps={{ textAlign: TEXT_ALIGN.RIGHT }}
           >
             {detailTotal}

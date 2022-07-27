@@ -17,6 +17,7 @@ import {
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 
 import {
@@ -33,8 +34,10 @@ import {
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
+  setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
+import Box from '../../../components/ui/box';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -53,11 +56,10 @@ import { stopPollingForQuotes } from '../../../store/actions';
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
-import CreateNewSwap from '../create-new-swap';
-import ViewOnBlockExplorer from '../view-on-block-explorer';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
+import ViewOnEtherScanLink from './view-on-ether-scan-link';
 
 export default function AwaitingSwap({
   swapComplete,
@@ -83,6 +85,8 @@ export default function AwaitingSwap({
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
   );
@@ -137,6 +141,11 @@ export default function AwaitingSwap({
     { blockExplorerUrl: baseNetworkUrl },
   );
 
+  const isCustomBlockExplorerUrl = Boolean(
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
+      rpcPrefs.blockExplorerUrl,
+  );
+
   let headerText;
   let statusImage;
   let descriptionText;
@@ -164,9 +173,10 @@ export default function AwaitingSwap({
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
     content = blockExplorerUrl && (
-      <ViewOnBlockExplorer
+      <ViewOnEtherScanLink
+        txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        sensitiveTrackingProperties={sensitiveProperties}
+        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
       />
     );
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
@@ -211,9 +221,10 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnBlockExplorer
+      <ViewOnEtherScanLink
+        txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        sensitiveTrackingProperties={sensitiveProperties}
+        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
       />
     );
   } else if (!errorKey && swapComplete) {
@@ -229,12 +240,34 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnBlockExplorer
+      <ViewOnEtherScanLink
+        txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        sensitiveTrackingProperties={sensitiveProperties}
+        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
       />
     );
   }
+
+  const MakeAnotherSwap = () => {
+    return (
+      <Box marginBottom={3}>
+        <a
+          href="#"
+          onClick={async () => {
+            trackEvent({
+              event: 'Make Another Swap',
+              category: EVENT.CATEGORIES.SWAPS,
+              sensitiveProperties,
+            });
+            await dispatch(navigateBackToBuildQuote(history));
+            dispatch(setSwapsFromToken(defaultSwapsToken));
+          }}
+        >
+          {t('makeAnotherSwap')}
+        </a>
+      </Box>
+    );
+  };
 
   useEffect(() => {
     if (errorKey) {
@@ -258,9 +291,7 @@ export default function AwaitingSwap({
         <div className="awaiting-swap__main-description">{descriptionText}</div>
         {content}
       </div>
-      {!errorKey && swapComplete ? (
-        <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
-      ) : null}
+      {!errorKey && swapComplete ? <MakeAnotherSwap /> : null}
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {

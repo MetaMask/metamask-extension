@@ -10,7 +10,6 @@ import Typography from '../../ui/typography';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
   FONT_WEIGHT,
-  TEXT_ALIGN,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
@@ -18,10 +17,6 @@ import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 const { isValidMnemonic } = ethers.utils;
 
 const defaultNumberOfWords = 12;
-
-const hasUpperCase = (draftSrp) => {
-  return draftSrp !== draftSrp.toLowerCase();
-};
 
 export default function SrpInput({ onChange, srpText }) {
   const [srpError, setSrpError] = useState('');
@@ -39,13 +34,11 @@ export default function SrpInput({ onChange, srpText }) {
   const onSrpChange = useCallback(
     (newDraftSrp) => {
       let newSrpError = '';
-      const joinedDraftSrp = newDraftSrp.join(' ').trim();
+      const joinedDraftSrp = newDraftSrp.join(' ');
 
       if (newDraftSrp.some((word) => word !== '')) {
         if (newDraftSrp.some((word) => word === '')) {
           newSrpError = t('seedPhraseReq');
-        } else if (hasUpperCase(joinedDraftSrp)) {
-          newSrpError = t('invalidSeedPhraseCaseSensitive');
         } else if (!isValidMnemonic(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhrase');
         }
@@ -131,11 +124,7 @@ export default function SrpInput({ onChange, srpText }) {
   return (
     <div className="import-srp__container">
       <label className="import-srp__srp-label">
-        <Typography
-          align={TEXT_ALIGN.LEFT}
-          variant={TYPOGRAPHY.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
+        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
           {srpText}
         </Typography>
       </label>

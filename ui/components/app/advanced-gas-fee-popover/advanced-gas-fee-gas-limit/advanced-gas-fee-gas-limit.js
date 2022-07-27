@@ -7,6 +7,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MAX_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import Button from '../../../ui/button';
 import FormField from '../../../ui/form-field';
+import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
@@ -65,11 +66,11 @@ const AdvancedGasFeeGasLimit = () => {
       tag={TYPOGRAPHY.Paragraph}
       variant={TYPOGRAPHY.H7}
       className="advanced-gas-fee-gas-limit"
-      marginTop={4}
-      marginLeft={2}
-      marginRight={2}
+      margin={[4, 2, 0, 2]}
     >
-      <strong>{t('gasLimitV2')}</strong>
+      <strong>
+        <I18nValue messageKey="gasLimitV2" />
+      </strong>
       <span>{gasLimit}</span>
       <Button
         data-testid="advanced-gas-fee-edit"
@@ -77,7 +78,7 @@ const AdvancedGasFeeGasLimit = () => {
         onClick={() => setEditing(true)}
         type="link"
       >
-        {t('edit')}
+        <I18nValue messageKey="edit" />
       </Button>
     </Typography>
   );

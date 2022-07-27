@@ -34,9 +34,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
 
   return (
     <Box
-      marginRight={4}
-      marginBottom={4}
-      marginLeft={4}
+      margin={[0, 4, 4, 4]}
       marginTop={isFirstAlert ? 4 : 0}
       className="enableEIP1559V2-notice"
     >

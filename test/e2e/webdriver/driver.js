@@ -266,21 +266,21 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator - The element locator.
+   * @param {string} element - The element locator.
    * @param {string} contentToPaste - The content to paste.
    */
-  async pasteIntoField(rawLocator, contentToPaste) {
+  async pasteIntoField(element, contentToPaste) {
     // Throw if double-quote is present in content to paste
     // so that we don't have to worry about escaping double-quotes
     if (contentToPaste.includes('"')) {
       throw new Error('Cannot paste content with double-quote');
     }
     // Click to focus the field
-    await this.clickElement(rawLocator);
+    await this.clickElement(element);
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
-    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+    await this.fill(element, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
@@ -305,10 +305,6 @@ class Driver {
 
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
-  }
-
-  async switchToFrame(element) {
-    await this.driver.switchTo().frame(element);
   }
 
   async getAllWindowHandles() {
@@ -395,20 +391,6 @@ class Driver {
       `${filepathBase}-state.json`,
       JSON.stringify(uiState, null, 2),
     );
-  }
-
-  async checkBrowserForLavamoatLogs() {
-    const browserLogs = (
-      await fs.readFile(
-        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
-      )
-    )
-      .toString('utf-8')
-      .split(/\r?\n/u);
-
-    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
-
-    return browserLogs;
   }
 
   async checkBrowserForConsoleErrors() {

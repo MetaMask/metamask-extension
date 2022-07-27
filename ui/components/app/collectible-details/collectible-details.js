@@ -45,13 +45,13 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
-import { startNewDraftTransaction } from '../../../ducks/send';
+import { updateSendAsset } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
+import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { ASSET_TYPES, ERC721 } from '../../../../shared/constants/transaction';
-import CollectibleDefaultImage from '../collectible-default-image';
+import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -119,7 +119,7 @@ export default function CollectibleDetails({ collectible }) {
 
   const onSend = async () => {
     await dispatch(
-      startNewDraftTransaction({
+      updateSendAsset({
         type: ASSET_TYPES.COLLECTIBLE,
         details: collectible,
       }),
@@ -176,11 +176,7 @@ export default function CollectibleDetails({ collectible }) {
             justifyContent={JUSTIFY_CONTENT.CENTER}
             className="collectible-details__card"
           >
-            {image ? (
-              <img className="collectible-details__image" src={image} />
-            ) : (
-              <CollectibleDefaultImage name={name} tokenId={tokenId} />
-            )}
+            <img className="collectible-details__image" src={image} />
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
@@ -219,7 +215,6 @@ export default function CollectibleDetails({ collectible }) {
                 <Typography
                   color={COLORS.TEXT_ALTERNATIVE}
                   variant={TYPOGRAPHY.H6}
-                  overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                   boxProps={{ margin: 0, marginBottom: 4 }}
                 >
                   {description}
@@ -316,7 +311,7 @@ export default function CollectibleDetails({ collectible }) {
                 {copied ? (
                   t('copiedExclamation')
                 ) : (
-                  <Copy size={15} color="var(--color-icon-alternative)" />
+                  <Copy size={15} color="var(--color-icon-default)" />
                 )}
               </button>
             </Box>

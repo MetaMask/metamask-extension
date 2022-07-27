@@ -7,13 +7,12 @@ const pify = require('pify');
 const pump = pify(require('pump'));
 
 const { BuildType } = require('../lib/build-type');
-const { TASKS } = require('./constants');
 const { createTask, composeParallel } = require('./task');
 
 module.exports = createEtcTasks;
 
 function createEtcTasks({ browserPlatforms, buildType, livereload, version }) {
-  const clean = createTask(TASKS.CLEAN, async function clean() {
+  const clean = createTask('clean', async function clean() {
     await del(['./dist/*']);
     await Promise.all(
       browserPlatforms.map(async (platform) => {
@@ -22,13 +21,13 @@ function createEtcTasks({ browserPlatforms, buildType, livereload, version }) {
     );
   });
 
-  const reload = createTask(TASKS.RELOAD, function devReload() {
+  const reload = createTask('reload', function devReload() {
     livereload.listen({ port: 35729 });
   });
 
   // zip tasks for distribution
   const zip = createTask(
-    TASKS.ZIP,
+    'zip',
     composeParallel(
       ...browserPlatforms.map((platform) =>
         createZipTask(platform, buildType, version),
@@ -49,10 +48,7 @@ function createZipTask(platform, buildType, version) {
       gulp.src(`dist/${platform}/**`),
       // sort files and set `mtime` to epoch to ensure zip build is deterministic
       sort(),
-      // Modified time set to an arbitrary static date to ensure build the is reproducible.
-      // The date chosen is MetaMask's birthday. Originally we chose the Unix epoch, but this
-      // resulted in invalid dates on certain timezones/operating systems.
-      gulpZip(`${path}.zip`, { modifiedTime: new Date('2016-07-14T00:00:00') }),
+      gulpZip(`${path}.zip`, { modifiedTime: new Date(0) }),
       gulp.dest('builds'),
     );
   };

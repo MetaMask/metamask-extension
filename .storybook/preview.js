@@ -30,7 +30,7 @@ addParameters({
     storySort: {
       order: [
         'Getting Started',
-        'Foundations',
+        'Design Tokens',
         'Components',
         ['UI', 'App'],
         'Pages',

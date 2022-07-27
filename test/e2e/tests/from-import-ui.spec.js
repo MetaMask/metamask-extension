@@ -9,7 +9,7 @@ const {
   completeImportSRPOnboardingFlowWordByWord,
 } = require('../helpers');
 
-describe('MetaMask Import UI', function () {
+describe('Metamask Import UI', function () {
   it('Importing wallet using Secret Recovery Phrase', async function () {
     const ganacheOptions = {
       accounts: [
@@ -72,8 +72,7 @@ describe('MetaMask Import UI', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Create a new account
-        // switches to localhost
-        await driver.delay(largeDelayMs);
+        // switches to locakhost
         await driver.clickElement('.network-display');
         await driver.clickElement({ text: 'Localhost', tag: 'span' });
 

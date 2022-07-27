@@ -72,9 +72,6 @@ describe('Add existing token using search', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
-        driverOptions: {
-          timeOut: 20000,
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -83,10 +80,7 @@ describe('Add existing token using search', function () {
 
         await driver.clickElement({ text: 'import tokens', tag: 'a' });
         await driver.fill('#search-tokens', 'BAT');
-        await driver.clickElement({
-          text: 'BAT',
-          tag: 'span',
-        });
+        await driver.clickElement({ text: 'BAT', tag: 'span' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
 

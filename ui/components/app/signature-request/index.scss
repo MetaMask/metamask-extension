@@ -53,6 +53,7 @@
     border-radius: 50%;
     border: 1px solid var(--color-background-default);
     position: absolute;
+    box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
   }
 
   &__identicon-initial {
@@ -62,13 +63,11 @@
     font-size: 60px;
     color: var(--color-background-default);
     z-index: 1;
-    text-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
   }
 
   &__info {
     @include H7;
-
-    padding: 0 12px 4px;
   }
 
   &__info--bolded {
@@ -82,5 +81,10 @@
 
     color: var(--color-text-muted);
   }
+
+  .identicon {}
 }
 
+.signature-request-footer {
+  flex: 1 1 auto;
+}

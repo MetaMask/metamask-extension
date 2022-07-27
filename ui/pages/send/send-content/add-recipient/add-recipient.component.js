@@ -32,7 +32,6 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
-    updateRecipientUserInput: PropTypes.func,
   };
 
   constructor(props) {
@@ -71,7 +70,6 @@ export default class AddRecipient extends Component {
       `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
     );
     this.props.updateRecipient({ address, nickname });
-    this.props.updateRecipientUserInput(address);
   };
 
   searchForContacts = () => {
@@ -117,7 +115,7 @@ export default class AddRecipient extends Component {
         recipient.nickname,
         'validated user input',
       );
-    } else if (ensResolution && !recipient.error) {
+    } else if (ensResolution) {
       content = this.renderExplicitAddress(
         ensResolution,
         addressBookEntryName || userInput,
@@ -210,13 +208,9 @@ export default class AddRecipient extends Component {
           addressBook={addressBook}
           searchForContacts={this.searchForContacts.bind(this)}
           searchForRecents={this.searchForRecents.bind(this)}
-          selectRecipient={(address, name) => {
-            this.selectRecipient(
-              address,
-              name,
-              `${name ? 'contact' : 'recent'} list`,
-            );
-          }}
+          selectRecipient={(address, name) =>
+            this.selectRecipient(address, name, 'contact list')
+          }
         >
           {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button

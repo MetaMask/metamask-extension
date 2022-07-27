@@ -165,7 +165,7 @@ describe('ComposableObservableStore', () => {
             Example: exampleController,
           },
         }),
-    ).toThrow(`Cannot read properties of undefined (reading 'subscribe')`);
+    ).toThrow(`Cannot read property 'subscribe' of undefined`);
   });
 
   it('should throw if the controller messenger is omitted and updateStructure called with a BaseControllerV2 controller', () => {
@@ -175,7 +175,7 @@ describe('ComposableObservableStore', () => {
     });
     const store = new ComposableObservableStore({});
     expect(() => store.updateStructure({ Example: exampleController })).toThrow(
-      `Cannot read properties of undefined (reading 'subscribe')`,
+      `Cannot read property 'subscribe' of undefined`,
     );
   });
 

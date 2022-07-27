@@ -103,7 +103,7 @@ describe('Deploy contract and call contract methods', function () {
         );
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
-          text: 'Deposit',
+          text: 'Withdraw',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);

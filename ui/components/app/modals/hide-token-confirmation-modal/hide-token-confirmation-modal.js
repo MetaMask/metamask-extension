@@ -17,11 +17,7 @@ function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
     hideToken: (address) => {
-      dispatch(
-        actions.ignoreTokens({
-          tokensToIgnore: address,
-        }),
-      ).then(() => {
+      dispatch(actions.removeToken(address)).then(() => {
         dispatch(actions.hideModal());
       });
     },

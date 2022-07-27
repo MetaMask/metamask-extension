@@ -26,28 +26,6 @@ async function setupMocking(server, testSpecificMock) {
   });
 
   await server
-    .forGet('https://www.4byte.directory/api/v1/signatures/')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [
-            {
-              id: 1,
-              created_at: null,
-              text_signature: 'deposit()',
-              hex_signature: null,
-              bytes_signature: null,
-            },
-          ],
-        },
-      };
-    });
-
-  await server
     .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
     .thenCallback(() => {
       return {
@@ -173,35 +151,6 @@ async function setupMocking(server, testSpecificMock) {
             occurrences: 9,
           },
         ],
-      };
-    });
-
-  await server
-    .forGet('https://token-api.metaswap.codefi.network/token/0x539')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {},
-      };
-    });
-
-  await server
-    .forGet(
-      'https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0d8775f648430679a709e98d2b0cb6250d2887ef.png',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
-
-  await server
-    .forGet(
-      'https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711.png',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
       };
     });
 

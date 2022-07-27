@@ -26,7 +26,9 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   DISPLAY,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   COLORS,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 
 import {
@@ -112,7 +114,7 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
+    notificationsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
@@ -121,16 +123,7 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    seedPhraseBackedUp: (props) => {
-      if (
-        props.seedPhraseBackedUp !== null &&
-        typeof props.seedPhraseBackedUp !== 'boolean'
-      ) {
-        throw new Error(
-          `seedPhraseBackedUp is required to be null or boolean. Received ${props.seedPhraseBackedUp}`,
-        );
-      }
-    },
+    seedPhraseBackedUp: PropTypes.bool.isRequired,
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
@@ -141,9 +134,6 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newCustomNetworkAdded: PropTypes.object,
-    setNewCustomNetworkAdded: PropTypes.func,
-    setRpcTarget: PropTypes.func,
   };
 
   state = {
@@ -281,9 +271,6 @@ export default class Home extends PureComponent {
       setNewCollectibleAddedMessage,
       newTokensImported,
       setNewTokensImported,
-      newCustomNetworkAdded,
-      setNewCustomNetworkAdded,
-      setRpcTarget,
     } = this.props;
     return (
       <MultipleNotifications>
@@ -483,56 +470,6 @@ export default class Home extends PureComponent {
             key="home-infuraBlockedNotification"
           />
         ) : null}
-        {Object.keys(newCustomNetworkAdded).length !== 0 && (
-          <Popover className="home__new-network-added">
-            <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Typography
-              variant={TYPOGRAPHY.H4}
-              marginTop={5}
-              marginRight={9}
-              marginLeft={9}
-              marginBottom={0}
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('networkAddedSuccessfully')}
-            </Typography>
-            <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
-              <Button
-                type="primary"
-                className="home__new-network-added__switch-to-button"
-                onClick={() => {
-                  setRpcTarget(
-                    newCustomNetworkAdded.rpcUrl,
-                    newCustomNetworkAdded.chainId,
-                    newCustomNetworkAdded.ticker,
-                    newCustomNetworkAdded.chainName,
-                  );
-                  setNewCustomNetworkAdded();
-                }}
-              >
-                <Typography
-                  variant={TYPOGRAPHY.H6}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.PRIMARY_INVERSE}
-                >
-                  {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
-                </Typography>
-              </Button>
-              <Button
-                type="secondary"
-                onClick={() => setNewCustomNetworkAdded()}
-              >
-                <Typography
-                  variant={TYPOGRAPHY.H6}
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.PRIMARY_DEFAULT}
-                >
-                  {t('dismiss')}
-                </Typography>
-              </Button>
-            </Box>
-          </Popover>
-        )}
       </MultipleNotifications>
     );
   }
@@ -588,7 +525,7 @@ export default class Home extends PureComponent {
       history,
       connectedStatusPopoverHasBeenShown,
       isPopup,
-      announcementsToShow,
+      notificationsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
       seedPhraseBackedUp,
@@ -606,8 +543,9 @@ export default class Home extends PureComponent {
     const showWhatsNew =
       ((completedOnboarding && firstTimeFlowType === 'import') ||
         !completedOnboarding) &&
-      announcementsToShow &&
+      notificationsToShow &&
       showWhatsNewPopup;
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
