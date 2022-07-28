@@ -4,12 +4,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [10.19.0]
 ### Uncategorized
+- Sync 10.18.1 and updated version 10.19.0
+- Merge branch 'develop' into Version-v10.19.0
+- Clean up of code introduced with 43f7a44 ([#15158](https://github.com/MetaMask/metamask-extension/pull/15158))
+- Adjusting the height of account menu nav items to expand scroll area ([#15302](https://github.com/MetaMask/metamask-extension/pull/15302))
+- Remove unnecessary file extensions ([#15352](https://github.com/MetaMask/metamask-extension/pull/15352))
+- Updates `eth-lattice-keyring` to v0.10.0 ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
+- [FLASK] disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
+- Updates to stories and component ([#15357](https://github.com/MetaMask/metamask-extension/pull/15357))
+- Add comments to build script ([#15319](https://github.com/MetaMask/metamask-extension/pull/15319))
+- added tx details popup to cancelled Swap ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
+- [FLASK] Fix missing snap hook ([#15354](https://github.com/MetaMask/metamask-extension/pull/15354))
+- remove exclusions for mismatched object jsdoc type casing ([#15351](https://github.com/MetaMask/metamask-extension/pull/15351))
+- Sync `master` with `develop` ([#15355](https://github.com/MetaMask/metamask-extension/pull/15355))
+- Fix for script to measure bundle size over time ([#15338](https://github.com/MetaMask/metamask-extension/pull/15338))
+- remove audit exclusion ([#15346](https://github.com/MetaMask/metamask-extension/pull/15346))
+- RC10.19 cut off and auto changelog generation
+- Updated all instances of "Component API" to "Props" in storybook documentation  ([#15324](https://github.com/MetaMask/metamask-extension/pull/15324))
+- Update Eslint and deps ([#15293](https://github.com/MetaMask/metamask-extension/pull/15293))
+- Remove decentralized 4byte function signature registry since it contains incorrect signatures and we can't algorithmically check for best option when 4byte.directory is down ([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
+- fix filetype audit ([#15334](https://github.com/MetaMask/metamask-extension/pull/15334))
+- Merge remote-tracking branch 'origin/develop' into master-sync
 - reducing logic gates in tx metrics ([#15329](https://github.com/MetaMask/metamask-extension/pull/15329))
 - Improve `tokenId` parsing and clean up `useAssetDetails` hook ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
 - [FLASK] Fix snaps authorship pill ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
-- Metrics adjustments ([#15313](https://github.com/MetaMask/metamask-extension/pull/15313))
 - Fix build ([#15328](https://github.com/MetaMask/metamask-extension/pull/15328))
 - Master sync following v10.18.0 ([#15326](https://github.com/MetaMask/metamask-extension/pull/15326))
 - added storybook controls for confirm send ether component ([#15235](https://github.com/MetaMask/metamask-extension/pull/15235))
@@ -3161,7 +3183,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.19.0...HEAD
+[10.19.0]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...v10.19.0
 [10.18.1]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...v10.18.1
 [10.18.0]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...v10.18.0
 [10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...v10.17.0
