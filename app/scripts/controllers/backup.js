@@ -66,7 +66,7 @@ export default class BackupController {
     exportAsFile(userDataFileName, result);
 
     this._trackMetaMetricsEvent({
-      event: 'User Data Backed Up',
+      event: 'User Data Exported',
       category: 'Backup',
     });
 
