@@ -38,8 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix snaps authorship pill ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
 - [FLASK] Add snap update metrics ([#15206](https://github.com/MetaMask/metamask-extension/pull/15206))
 - [FLASK] `snaps-skunkworks@0.18.1` ([#15230](https://github.com/MetaMask/metamask-extension/pull/15230))
-- Improve `tokenId` parsing and clean up `useAssetDetails` hook ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
-
 
 ## [10.18.1]
 ### Changed
