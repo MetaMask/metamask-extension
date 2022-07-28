@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "메모 추가"
   },
+  "addMoreNetworks": {
+    "message": "네트워크 직접 추가"
+  },
   "addNetwork": {
     "message": "네트워크 추가"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "경고"
   },
+  "allOfYour": {
+    "message": "내 $1 모두",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 허용:"
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "지출 한도 승인"
+  },
+  "approveAllTokensTitle": {
+    "message": "내 모든 $1에 액세스할 수 있는 권한을 부여할까요?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "승인 및 설치"
@@ -438,7 +449,7 @@
     "message": "Wyre로 $1 구매"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre를 사용하면 체크카드를 이용하여 $1 를 MetaMask 계정에 바로 예치할 수 있습니다."
+    "message": "최대 $ 1000 구매까지 간편한 온보딩. 신속한 대화형 상한 구매 확인. 직불/신용 카드, Apple Pay, 은행 송금 지원. 100여국 이상에서 사용 가능. MetaMask 계정으로 토큰 입금"
   },
   "bytes": {
     "message": "바이트"
@@ -465,6 +476,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "거래를 $1하려면 가스비를 최소 10%를 인상해야 네트워크에서 인식될 수 있습니다.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "~$1 비용으로 스왑 취소",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "무료로 스왑 취소"
   },
   "cancellationGasFee": {
     "message": "가스 수수료 취소"
@@ -1277,6 +1295,9 @@
   "functionApprove": {
     "message": "기능: 승인"
   },
+  "functionSetApprovalForAll": {
+    "message": "기능: 모두승인설정"
+  },
   "functionType": {
     "message": "기능 유형"
   },
@@ -1617,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "잘못된 비밀 복구 구문"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "입력 오류! 비밀 복구 구문은 대소문자를 구분해야 합니다."
+  },
   "ipfsGateway": {
     "message": "IPFS 게이트웨이"
   },
@@ -1892,6 +1916,19 @@
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "계속 진행하기 전에 $1 확인을 권합니다.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않는 것 같습니다."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "제출하신 환율 기호가 이 체인 ID의 환율과 일치하지 않습니다."
+  },
+  "mismatchedRpcUrl": {
+    "message": "기록에 따르면 제출하신 RPC URL 값이 이 체인 ID에 대해 알려진 공급업체와 일치하지 않습니다."
+  },
   "missingNFT": {
     "message": "NFT가 보이지 않나요?"
   },
@@ -1942,6 +1979,9 @@
   },
   "network": {
     "message": "네트워크:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "성공적으로 네트워크를 추가했습니다!"
   },
   "networkDetails": {
     "message": "네트워크 세부 정보"
@@ -2059,6 +2099,9 @@
     "message": "임시값이 권장 임시값인 $1보다 큽니다.",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT\n"
+  },
   "nftTokenIdPlaceholder": {
     "message": "수집 가능한 ID를 입력하세요."
   },
@@ -2154,10 +2197,20 @@
     "message": "다크모드 활성화"
   },
   "notifications12Description": {
-    "message": "신규 사용자의 경우 시스템 설정에 따라 다크모드가 활성화됩니다. 기존의 사용자는 설정 -> 실험에서 직접 다크 모드를 활성화해야 합니다."
+    "message": "다크모드가 마침내 활성화되었습니다! 설정(Settings) -> 시험 기능(Experimental)으로 이동하여 라이트, 다크, 시스템 중 선택하세요."
   },
   "notifications12Title": {
     "message": "다크모드를 원하세요? 이제 다크모드를 사용하세요! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "사용자 정의 네트워크 목록 보기"
+  },
+  "notifications13Description": {
+    "message": "이제 Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm 및 Polygon과 같은 인기 있는 사용자 정의 네트워크를 쉽게 추가할 수 있습니다! 이 기능을 활성화하려면 설정 -> 실험으로 이동하여 \"사용자 지정 네트워크 목록 표시\"를 켜세요!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "인기 네트워크 추가"
   },
   "notifications1Description": {
     "message": "MetaMask 모바일 사용자는 이제 모바일 지갑에서 토큰을 스왑할 수 있습니다. QR 코드를 스캔하여 모바일 앱을 설치하고 스왑을 시작하세요.",
@@ -2676,6 +2729,14 @@
   "revealTheSeedPhrase": {
     "message": "시드 구문 보기"
   },
+  "revokeAllTokensTitle": {
+    "message": "내 모든 $1에 액세스할 수 있는 권한을 취소할까요?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "권한을 취소하면 다음 $1의 $2 권한은 더 이상 유효하지 않습니다",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rinkeby 테스트 네트워크"
   },
@@ -2852,11 +2913,22 @@
     "message": "$1 보내기",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "경고: 토큰 주소를 전송하면 토큰이 손실될 수 있습니다. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "개인정보 설정 고급 지정"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
+  },
+  "setApprovalForAll": {
+    "message": "모두 승인 설정"
+  },
+  "setApprovalForAllTitle": {
+    "message": "$1 무제한 지출 승인",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "설정"
@@ -2876,6 +2948,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "이 항목을 선택하면 보내기 및 확인 화면에서 바로 가스 가격과 한도 조절을 확인할 수 있습니다."
+  },
+  "showCustomNetworkList": {
+    "message": "사용자 정의 네트워크 보기"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "이를 선택하면 새로 네트워크를 추가할 때 네트워크 목록에 상세 설명이 함께 나타납니다."
   },
   "showFiatConversionInTestnets": {
     "message": "테스트넷에 전환 표시"
@@ -2985,6 +3063,9 @@
   },
   "snapsToggle": {
     "message": "스냅은 활성화된 상태에서만 작동합니다."
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "네트워크에 따라 보안이나 개인 정보 유출의 위험이 있을 수 있습니다. 네트워크 추가 및 사용 이전에 위험 요소를 파악하세요."
   },
   "somethingWentWrong": {
     "message": "죄송합니다! 문제가 생겼습니다."
@@ -3548,6 +3629,10 @@
   "switchNetworks": {
     "message": "네트워크 전환"
   },
+  "switchToNetwork": {
+    "message": "$1 네트워크로 전환",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "이 계정으로 전환"
   },
@@ -3851,6 +3936,9 @@
   "unknownCameraErrorTitle": {
     "message": "죄송합니다! 문제가 생겼습니다...."
   },
+  "unknownCollection": {
+    "message": "제목 미지정 콜렉션"
+  },
   "unknownNetwork": {
     "message": "알 수 없는 비공개 네트워크"
   },
@@ -3962,7 +4050,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "당사 웹사이트 방문하기"
+    "message": "웹사이트를 방문하세요"
   },
   "walletConnectionGuide": {
     "message": "당사의 하드웨어 지갑 연결 가이드"
@@ -3986,6 +4074,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "지갑 생성 성공"
+  },
+  "wantToAddThisNetwork": {
+    "message": "이 네트워크를 추가할까요?"
   },
   "warning": {
     "message": "경고"
@@ -4048,6 +4139,10 @@
   },
   "yesLetsTry": {
     "message": "예, 시도하겠습니다."
+  },
+  "youHaveAddedAll": {
+    "message": "모든 인기 네트워크를 추가했습니다. $1에서 더 많은 네트워크를 확인하거나 $2 할 수 있습니다.",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "이 기능을 사용하려면 카메라 액세스를 허용해야 합니다."

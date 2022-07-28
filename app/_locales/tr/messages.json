@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Not ekleyin"
   },
+  "addMoreNetworks": {
+    "message": "manuel olarak daha fazla ağ ekleyin"
+  },
   "addNetwork": {
     "message": "Ağ ekle"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "Uyarılar"
   },
+  "allOfYour": {
+    "message": "Sahip olduğunuz tüm $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "Bu harici uzantının şunu yapmasına izin ver:"
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "Harcama limitini onayla"
+  },
+  "approveAllTokensTitle": {
+    "message": "Sahip olduğunuz tüm $1 için erişim izni verilsin mi?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Onayla ve Yükle"
@@ -438,7 +449,7 @@
     "message": "Wyre ile $1 satın al"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre, doğrudan MetaMask hesabınıza $1 yatırma işlemleri için banka kartı kullanmanıza izin verir."
+    "message": "1000$'a kadar satın alma işlemlerinde kolay oryantasyon. Banka Kartı/Kredi Kartı, Apple Pay, Banka Transferlerini destekler. +100 ülkede kullanılabilir. Token'lar MetaMask Hesabına yatırılır"
   },
   "bytes": {
     "message": "Bayt"
@@ -465,6 +476,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "İşlemi $1 için, gaz ücretinin ağ tarafından tanınması amacıyla en az %10 oranında artırılması gerekir.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "~$1 için swap işlemini iptal edin",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Swap işlemini ücretsiz iptal edin"
   },
   "cancellationGasFee": {
     "message": "İptal İşlemi Gaz Ücreti"
@@ -1277,6 +1295,9 @@
   "functionApprove": {
     "message": "İşlev: Onayla"
   },
+  "functionSetApprovalForAll": {
+    "message": "İşlev: TümüİçinOnayVer"
+  },
   "functionType": {
     "message": "İşlev Türü"
   },
@@ -1617,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "Gizli Kurtarma İfadesi geçersiz"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Giriş geçersiz! Gizli Kurtarma İfadesi büyük/küçük harf duyarlıdır."
+  },
   "ipfsGateway": {
     "message": "IPFS Ağ Geçidi"
   },
@@ -1892,6 +1916,19 @@
     "message": "ağ bilgilerini doğrula",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "İlerlemeden önce şunu öneririz: $1.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "Kayıtlarımıza göre, ağ adı bu zincir kimliği ile doğru bir şekilde uyumlu olmayabilir."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "Sunulan para birimi sembolü bu zincir kimliği için beklediğimiz sembolle uyumlu değil."
+  },
+  "mismatchedRpcUrl": {
+    "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
+  },
   "missingNFT": {
     "message": "NFT'nizi görmüyor musunuz?"
   },
@@ -1942,6 +1979,9 @@
   },
   "network": {
     "message": "Ağ:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "Ağ başarılı bir şekilde eklendi!"
   },
   "networkDetails": {
     "message": "Ağ Bilgileri"
@@ -2059,6 +2099,9 @@
     "message": "Geçici anahtar, önerilen $1 geçici anahtarından daha büyük",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT"
+  },
   "nftTokenIdPlaceholder": {
     "message": "Toplanabilir kimliğini girin"
   },
@@ -2154,10 +2197,20 @@
     "message": "Karanlık modu etkinleştir"
   },
   "notifications12Description": {
-    "message": "Karanlık Mod, sistem tercihlerine bağlı olarak yeni kullanıcılar için etkinleştirilecektir. Mevcut kullanıcılar için, Ayarlar -> Deneysel altında Karanlık Modu manuel olarak etkinleştir."
+    "message": "Uzantıda karanlık mod sonunda burada! Bunu açmak için Ayarlar -> Deneysel kısmına git ve ekran seçeneklerinden birini seç: Aydınlık, Karanlık, Sistem."
   },
   "notifications12Title": {
     "message": "Karanlık mod mu? Şimdi karanlık mod! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "Özel ağ listesini göster"
+  },
+  "notifications13Description": {
+    "message": "Artık şu popüler özel ağları kolayca ekleyebilirsiniz: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm ve Polygon! Bu özelliği etkinleştirmek için Ayarlar -> Deneysel kısmına gidip \"Özel ağ listesini göster\" seçeneğini açın!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Popüler Ağları Ekle"
   },
   "notifications1Description": {
     "message": "MetaMask Mobil kullanıcıları artık mobil cüzdanları içinde token takas edebilirler. Mobil uygulamayı edinmek ve takas yapmaya başlamak için QR kodunu tarayın.",
@@ -2676,6 +2729,14 @@
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
   },
+  "revokeAllTokensTitle": {
+    "message": "Sahip olduğunuz tüm $1 için izin geri çekilsin mi?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "İzni geri çektiğinizde aşağıdaki $1 artık $2 alanınıza erişim sağlayamayacak",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rinkeby Test Ağı"
   },
@@ -2852,11 +2913,22 @@
     "message": "$1 Gönderiliyor",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "Uyarı: Para kaybı ile sonuçlanabilecek bir token sözleşmesi göndermek üzeresiniz. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "Gelişmiş gizlilik ayarlarını yapın"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
+  },
+  "setApprovalForAll": {
+    "message": "Tümüne Onay Ver"
+  },
+  "setApprovalForAllTitle": {
+    "message": "$1 için harcama limiti olmadan onay ver",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Ayarlar"
@@ -2876,6 +2948,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
+  },
+  "showCustomNetworkList": {
+    "message": "Özel Ağ Listesini Göster"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Yeni bir ağ eklerken önceden doldurulan bilgilerle ağ listesini görüntülenmesi için bunu seçin."
   },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında Dönüşümü göster"
@@ -2985,6 +3063,9 @@
   },
   "snapsToggle": {
     "message": "Bir snap yalnızca etkinleştirilmişse çalışır"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
   },
   "somethingWentWrong": {
     "message": "Eyvah! Bir şeyler ters gitti."
@@ -3548,6 +3629,10 @@
   "switchNetworks": {
     "message": "Ağları Değiştir"
   },
+  "switchToNetwork": {
+    "message": "$1 ağına geçin",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Bu hesaba geç"
   },
@@ -3851,6 +3936,9 @@
   "unknownCameraErrorTitle": {
     "message": "Eyvah! Bir şeyler ters gitti...."
   },
+  "unknownCollection": {
+    "message": "İsimsiz koleksiyon"
+  },
   "unknownNetwork": {
     "message": "Bilinmeyen Özel Ağ"
   },
@@ -3962,7 +4050,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "Web sitemizi ziyaret edin"
+    "message": "Web sitemizi ziyaret et"
   },
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
@@ -3986,6 +4074,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Cüzdan oluşturma başarılı"
+  },
+  "wantToAddThisNetwork": {
+    "message": "Bu ağı eklemek istiyor musunuz?"
   },
   "warning": {
     "message": "Uyarı"
@@ -4048,6 +4139,10 @@
   },
   "yesLetsTry": {
     "message": "Evet, deneyelim"
+  },
+  "youHaveAddedAll": {
+    "message": "Tüm popüler ağları eklediniz. $1 daha fazla ağ gekşefedebilir veya $2 seçeneğini seçebilirsiniz",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bu özelliği kullanmak için kamera erişimine izin vermeniz gerekir."
