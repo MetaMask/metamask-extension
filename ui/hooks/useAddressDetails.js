@@ -34,9 +34,9 @@ const useAddressDetails = (toAddress) => {
   const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
     ? STATIC_MAINNET_TOKEN_LIST
     : tokenList;
-  if (caseInSensitiveTokenList[toAddress]?.name) {
+  if (caseInSensitiveTokenList[toAddress.toLowerCase()]?.name) {
     return {
-      toName: caseInSensitiveTokenList[toAddress].name,
+      toName: caseInSensitiveTokenList[toAddress.toLowerCase()].name,
       isTrusted: true,
     };
   }

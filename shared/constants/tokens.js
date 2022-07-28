@@ -23,11 +23,14 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map(
  */
 export const STATIC_MAINNET_TOKEN_LIST = Object.keys(contractMap).reduce(
   (acc, base) => {
+    const { logo, ...tokenMetadata } = contractMap[base];
     return {
       ...acc,
       [base.toLowerCase()]: {
-        ...contractMap[base],
+        ...tokenMetadata,
         address: base.toLowerCase(),
+        iconUrl: `images/contract/${logo}`,
+        aggregators: [],
       },
     };
   },

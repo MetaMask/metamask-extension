@@ -14,7 +14,6 @@ export default class TokenList extends Component {
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
     onToggleToken: PropTypes.func,
-    isTokenDetectionInactiveOnMainnet: PropTypes.bool,
   };
 
   render() {
@@ -23,7 +22,6 @@ export default class TokenList extends Component {
       selectedTokens = {},
       onToggleToken,
       tokens = [],
-      isTokenDetectionInactiveOnMainnet,
     } = this.props;
 
     return results.length === 0 ? (
@@ -38,15 +36,12 @@ export default class TokenList extends Component {
             .fill(undefined)
             .map((_, i) => {
               const { symbol, name, address } = results[i] || {};
-              const iconPath = isTokenDetectionInactiveOnMainnet
-                ? `images/contract/${results[i]?.logo}`
-                : results[i]?.iconUrl;
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens);
               const onClick = () =>
                 !tokenAlreadyAdded && onToggleToken(results[i]);
 
               return (
-                Boolean(iconPath || symbol || name) && (
+                Boolean(results[i]?.iconUrl || symbol || name) && (
                   <div
                     className={classnames('token-list__token', {
                       'token-list__token--selected': selectedTokens[address],
@@ -60,7 +55,8 @@ export default class TokenList extends Component {
                     <div
                       className="token-list__token-icon"
                       style={{
-                        backgroundImage: iconPath && `url(${iconPath})`,
+                        backgroundImage:
+                          results[i]?.iconUrl && `url(${results[i]?.iconUrl})`,
                       }}
                     />
                     <div className="token-list__token-data">

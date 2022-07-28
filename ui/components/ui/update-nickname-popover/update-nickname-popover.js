@@ -88,8 +88,7 @@ export default function UpdateNicknamePopover({
           className="update-nickname__content__indenticon"
           address={address}
           diameter={36}
-          caseInSensitiveTokenList={caseInSensitiveTokenList}
-          isTokenDetectionInactiveOnMainnet={isTokenDetectionInactiveOnMainnet}
+          image={caseInSensitiveTokenList[address.toLowerCase()]?.iconUrl}
         />
         <label className="update-nickname__content__label--capitalized">
           {t('address')}

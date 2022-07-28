@@ -17,14 +17,10 @@ function IconFactory(jazzicon) {
 IconFactory.prototype.iconForAddress = function (
   address,
   diameter,
-  caseInSensitiveTokenList,
-  isTokenDetectionInactiveOnMainnet,
+  tokenMetadata,
 ) {
-  if (iconExistsFor(address, caseInSensitiveTokenList[address.toLowerCase()])) {
-    return imageElFor(
-      caseInSensitiveTokenList[address.toLowerCase()],
-      isTokenDetectionInactiveOnMainnet,
-    );
+  if (iconExistsFor(address, tokenMetadata)) {
+    return imageElFor(tokenMetadata);
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -59,13 +55,9 @@ function iconExistsFor(address, tokenMetadata) {
   );
 }
 
-function imageElFor(tokenMetadata = {}, isTokenDetectionInactiveOnMainnet) {
+function imageElFor(tokenMetadata = {}) {
   const img = document.createElement('img');
-  const staticImagePath =
-    isTokenDetectionInactiveOnMainnet && tokenMetadata?.logo;
-  img.src = isTokenDetectionInactiveOnMainnet
-    ? `images/contract/${staticImagePath}`
-    : tokenMetadata?.iconUrl;
+  img.src = tokenMetadata?.iconUrl;
   img.style.width = '100%';
   return img;
 }

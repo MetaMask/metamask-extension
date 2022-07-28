@@ -60,8 +60,7 @@ const NicknamePopover = ({
           address={address}
           diameter={36}
           className="nickname-popover__identicon"
-          caseInSensitiveTokenList={caseInSensitiveTokenList}
-          isTokenDetectionInactiveOnMainnet={isTokenDetectionInactiveOnMainnet}
+          image={caseInSensitiveTokenList[address.toLowerCase()]?.iconUrl}
         />
         <div className="nickname-popover__address">
           {nickname || shortenAddress(address)}

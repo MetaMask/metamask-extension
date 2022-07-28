@@ -22,6 +22,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
+  getIsTokenDetectionInactiveOnMainnet,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -87,6 +88,7 @@ import { EVENT } from '../../../shared/constants/metametrics';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -136,8 +138,18 @@ export default function Swap() {
     checkNetworkAndAccountSupports1559,
   );
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  const tokenList = useSelector(getTokenList, isEqual);
-  const listTokenValues = shuffle(Object.values(tokenList));
+  const tokenList = useSelector(getTokenList);
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : tokenList;
+  const listTokenValues = shuffle(
+    Object.entries(caseInSensitiveTokenList).filter((tokenData) =>
+      Boolean(tokenData.erc20),
+    ),
+  );
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);

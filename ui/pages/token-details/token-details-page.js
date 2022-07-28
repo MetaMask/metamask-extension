@@ -45,9 +45,6 @@ export default function TokenDetailsPage() {
     ? STATIC_MAINNET_TOKEN_LIST[tokenAddress.toLowerCase()]
     : tokenList[tokenAddress.toLowerCase()];
   const aggregators = tokenMetadata?.aggregators?.join(', ');
-  const imagePath = isTokenDetectionInactiveInMainnet
-    ? `images/contract/${tokenMetadata?.logo}`
-    : tokenMetadata?.iconUrl;
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
@@ -107,7 +104,7 @@ export default function TokenDetailsPage() {
             <Identicon
               diameter={32}
               address={token.address}
-              image={tokenMetadata ? imagePath : token.image}
+              image={tokenMetadata ? tokenMetadata.iconUrl : token.image}
             />
           </Box>
         </Box>

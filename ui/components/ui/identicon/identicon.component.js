@@ -50,10 +50,6 @@ export default class Identicon extends Component {
      */
     imageBorder: PropTypes.bool,
     /**
-     * Check if token detection is OFF in Mainnet
-     */
-    isTokenDetectionInactiveOnMainnet: PropTypes.bool,
-    /**
      * Add list of token in object
      */
     caseInSensitiveTokenList: PropTypes.object,
@@ -108,7 +104,6 @@ export default class Identicon extends Component {
       diameter,
       alt,
       caseInSensitiveTokenList,
-      isTokenDetectionInactiveOnMainnet,
     } = this.props;
     return (
       <Jazzicon
@@ -118,7 +113,6 @@ export default class Identicon extends Component {
         style={getStyles(diameter)}
         alt={alt}
         caseInSensitiveTokenList={caseInSensitiveTokenList}
-        isTokenDetectionInactiveOnMainnet={isTokenDetectionInactiveOnMainnet}
       />
     );
   }
@@ -148,7 +142,6 @@ export default class Identicon extends Component {
       useBlockie,
       addBorder,
       diameter,
-      isTokenDetectionInactiveOnMainnet,
       caseInSensitiveTokenList,
     } = this.props;
     const size = diameter + 8;
@@ -158,11 +151,7 @@ export default class Identicon extends Component {
     }
 
     if (address) {
-      const tokenImagePath = isTokenDetectionInactiveOnMainnet
-        ? caseInSensitiveTokenList[address.toLowerCase()]?.logo
-        : caseInSensitiveTokenList[address.toLowerCase()]?.iconUrl;
-
-      if (tokenImagePath) {
+      if (caseInSensitiveTokenList[address.toLowerCase()]?.iconUrl) {
         return this.renderJazzicon();
       }
 

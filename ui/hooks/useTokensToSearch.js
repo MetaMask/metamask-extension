@@ -1,15 +1,13 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { isEqual, shuffle, uniqBy } from 'lodash';
+import { isEqual, uniqBy } from 'lodash';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
-  getIsTokenDetectionInactiveOnMainnet,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
@@ -19,15 +17,6 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
 import { useEqualityCheck } from './useEqualityCheck';
 
-const shuffledContractMap = shuffle(
-  Object.entries(contractMap)
-    .map(([address, tokenData]) => ({
-      ...tokenData,
-      address: address.toLowerCase(),
-    }))
-    .filter((tokenData) => Boolean(tokenData.erc20)),
-);
-
 export function getRenderableTokenData(
   token,
   contractExchangeRates,
@@ -35,7 +24,6 @@ export function getRenderableTokenData(
   currentCurrency,
   chainId,
   shuffledTokenList,
-  isTokenDetectionInactiveOnMainnet,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
@@ -68,11 +56,8 @@ export function getRenderableTokenData(
   const tokenMetadata = shuffledTokenList.find(
     (tokenData) => tokenData.address === address?.toLowerCase(),
   );
-  const tokenIconUrl = isTokenDetectionInactiveOnMainnet
-    ? `images/contract/${tokenMetadata?.logo}`
-    : tokenMetadata?.iconUrl;
 
-  const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
+  const usedIconUrl = iconUrl || tokenMetadata?.iconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
@@ -100,12 +85,6 @@ export function useTokensToSearch({
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
-  const isTokenDetectionInactiveOnMainnet = useSelector(
-    getIsTokenDetectionInactiveOnMainnet,
-  );
-  const shuffledTokenList = isTokenDetectionInactiveOnMainnet
-    ? shuffledContractMap
-    : shuffledTokensList;
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
@@ -116,8 +95,7 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     chainId,
-    shuffledTokenList,
-    isTokenDetectionInactiveOnMainnet,
+    shuffledTokensList,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -127,7 +105,7 @@ export function useTokensToSearch({
     ? swapsTokens
     : [
         memoizedDefaultToken,
-        ...shuffledTokenList.filter(
+        ...shuffledTokensList.filter(
           (token) => token.symbol !== memoizedDefaultToken.symbol,
         ),
       ];
@@ -157,8 +135,7 @@ export function useTokensToSearch({
         conversionRate,
         currentCurrency,
         chainId,
-        shuffledTokenList,
-        isTokenDetectionInactiveOnMainnet,
+        shuffledTokensList,
       );
       if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
         if (
@@ -214,8 +191,7 @@ export function useTokensToSearch({
     currentCurrency,
     memoizedDefaultToken,
     chainId,
-    shuffledTokenList,
-    isTokenDetectionInactiveOnMainnet,
+    shuffledTokensList,
     tokenBucketPriority,
   ]);
 }

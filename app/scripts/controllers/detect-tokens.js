@@ -151,7 +151,7 @@ export default class DetectTokensController {
       if (result) {
         const nonZeroTokenAddresses = Object.keys(result);
         for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
-          const { address, symbol, decimals, isERC721 } = tokenListUsed[
+          const { address, symbol, decimals, aggregators } = tokenListUsed[
             nonZeroTokenAddress
           ];
 
@@ -161,13 +161,7 @@ export default class DetectTokensController {
             address,
             symbol,
             decimals,
-            image: isTokenDetectionInactiveInMainnet
-              ? `images/contract/${tokenListUsed[nonZeroTokenAddress].logo}`
-              : tokenListUsed[nonZeroTokenAddress].iconUrl,
-            aggregators: isTokenDetectionInactiveInMainnet
-              ? []
-              : tokenListUsed[nonZeroTokenAddress].aggregators,
-            isERC721,
+            aggregators,
           });
         }
 

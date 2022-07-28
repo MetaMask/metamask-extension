@@ -19,7 +19,6 @@ const mapStateToProps = (state) => {
     useBlockie,
     caseInSensitiveTokenList,
     ipfsGateway,
-    isTokenDetectionInactiveOnMainnet,
   };
 };
 
