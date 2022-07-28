@@ -1,11 +1,9 @@
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
-// eslint-disable-next-line
-const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
-
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
+// eslint-disable-next-line
 const testMode = false;
 
 const loadTimeLogs = [];
@@ -106,9 +104,7 @@ function importAllScripts() {
 importAllScripts();
 
 /*
- * A keepalive message receiver to avoid Service Worker getting shut down due to inactivity.
- * UI sends the message periodically.
- *
+ * Message event listener below loads script if they are no longer available.
  * chrome below needs to be replaced by cross-browser object,
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
