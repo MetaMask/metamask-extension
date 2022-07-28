@@ -63,7 +63,7 @@ const signatureTypes = [
  */
 
 /**
- * @typedef {Object} TransactionDisplayData
+ * @typedef {object} TransactionDisplayData
  * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
  * @property {string} recipientAddress - the Ethereum address of the recipient

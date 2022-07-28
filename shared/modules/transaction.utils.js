@@ -15,7 +15,7 @@ import { isEqualCaseInsensitive } from './string-utils';
  */
 
 /**
- * @typedef {Object} InferTransactionTypeResult
+ * @typedef {object} InferTransactionTypeResult
  * @property {InferrableTransactionTypes} type - The type of transaction
  * @property {string} getCodeResponse - The contract code, in hex format if
  *  it exists. '0x0' or '0x' are also indicators of non-existent contract
@@ -138,7 +138,7 @@ export function parseStandardTokenTransactionData(data) {
  * represent specific events that we control from the extension and are added manually
  * at transaction creation.
  *
- * @param {Object} txParams - Parameters for the transaction
+ * @param {object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
  * @returns {InferTransactionTypeResult}
  */

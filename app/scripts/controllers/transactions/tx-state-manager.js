@@ -39,7 +39,7 @@ export const ERROR_SUBMITTING =
  */
 
 /**
- * @typedef {Object} TransactionState
+ * @typedef {object} TransactionState
  * @property {Record<string, TransactionMeta>} transactions - TransactionMeta
  *  keyed by the transaction's id.
  */
@@ -49,7 +49,7 @@ export const ERROR_SUBMITTING =
  * storing the transaction. It also has some convenience methods for finding
  * subsets of transactions.
  *
- * @param {Object} opts
+ * @param {object} opts
  * @param {TransactionState} [opts.initState={ transactions: {} }] - initial
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
@@ -300,7 +300,7 @@ export default class TransactionStateManager extends EventEmitter {
   /**
    * updates the txMeta in the list and adds a history entry
    *
-   * @param {Object} txMeta - the txMeta to update
+   * @param {object} txMeta - the txMeta to update
    * @param {string} [note] - a note about the update for history
    */
   updateTransaction(txMeta, note) {

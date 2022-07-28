@@ -79,6 +79,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - tabs story changes ([#15147](https://github.com/MetaMask/metamask-extension/pull/15147))
 - Show a tx link and the "create a new swap" link for STX ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
 
+## [10.18.1]
+### Changed
+- Move the metrics opt-in screen to the second screen of the onboarding flow ([#15313](https://github.com/MetaMask/metamask-extension/pull/15313))
+
 ## [10.18.0]
 ### Added
 - Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010)) 
@@ -3157,7 +3161,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...HEAD
+[10.18.1]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...v10.18.1
 [10.18.0]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...v10.18.0
 [10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...v10.17.0
 [10.16.2]: https://github.com/MetaMask/metamask-extension/compare/v10.16.1...v10.16.2
