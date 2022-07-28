@@ -8,7 +8,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-require('./user-preferenced-currency-input.container.js');
+require('./user-preferenced-currency-input.container');
 
 describe('UserPreferencedCurrencyInput container', () => {
   describe('mapStateToProps()', () => {

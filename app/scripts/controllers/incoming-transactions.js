@@ -30,7 +30,7 @@ const fetchWithTimeout = getFetchWithTimeout();
  *
  * Note that this is not an exhaustive type definiton; only the properties we use are defined
  *
- * @typedef {Object} EtherscanTransaction
+ * @typedef {object} EtherscanTransaction
  * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
  * @property {string} from - The hex-prefixed address of the sender
  * @property {string} gas - The gas limit, in decimal GWEI
