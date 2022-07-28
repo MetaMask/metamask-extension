@@ -124,9 +124,7 @@ async function main() {
   const { out } = argv;
 
   if (out) {
-    const dirPath = 'benchmark/user_actions.json';
-    const outPath = `${out}/${dirPath}`;
-    const outputDirectory = path.dirname(outPath);
+    const outputDirectory = path.dirname(out);
     const existingParentDirectory = await getFirstParentDirectoryThatExists(
       outputDirectory,
     );
@@ -136,7 +134,7 @@ async function main() {
     if (outputDirectory !== existingParentDirectory) {
       await fs.mkdir(outputDirectory, { recursive: true });
     }
-    await fs.writeFile(outPath, JSON.stringify(results, null, 2));
+    await fs.writeFile(out, JSON.stringify(results, null, 2));
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
