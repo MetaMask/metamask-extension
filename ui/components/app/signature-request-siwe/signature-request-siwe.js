@@ -12,7 +12,7 @@ import {
   getSubjectMetadata,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
-import formatMessage from './format-message-params';
+import { formatMessageParams } from '../../../../shared/modules/siwe';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -92,7 +92,7 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-      <Message data={formatMessage(parsedMessage, t)} />
+      <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <ActionableMessage
           className="signature-request-siwe__actionable-message"
