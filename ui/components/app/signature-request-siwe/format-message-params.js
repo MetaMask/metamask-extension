@@ -2,7 +2,7 @@
  * Takes in a parsed Sign-In with Ethereum Message (EIP-4361)
  * and generates an array of label-value pairs
  *
- * @param {Object} parsedMessage - A parsed SIWE message with message contents
+ * @param {object} parsedMessage - A parsed SIWE message with message contents
  * @param {Function} t - i18n function
  * @returns {Array} An array of label-value pairs with the type of the value as the label
  */

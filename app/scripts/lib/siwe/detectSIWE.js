@@ -28,7 +28,7 @@ const msgHexToText = (hex) => {
  *
  * {@see {@link https://eips.ethereum.org/EIPS/eip-4361}}
  *
- * @param {Object} msgParams - The params of the message to sign
+ * @param {object} msgParams - The params of the message to sign
  * @returns {localSIWEObject}
  */
 const detectSIWE = (msgParams) => {

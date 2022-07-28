@@ -2,11 +2,9 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
-import { EVENT } from '../../../../shared/constants/metametrics';
 import ActionableMessage from '../../ui/actionable-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
@@ -31,16 +29,13 @@ export default function SignatureRequestSIWE({
       from,
       origin,
       siwe: { parsedMessage },
-      version,
     },
-    type,
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
 
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
 
   const isMatchingAddress = from === parsedMessage.address;
 
@@ -73,19 +68,9 @@ export default function SignatureRequestSIWE({
         await signPersonalMessage(event);
       } catch (e) {
         log.error(e);
-      } finally {
-        trackEvent({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
-          event: 'Confirm',
-          properties: {
-            action: 'SIWE Request',
-            type,
-            version,
-          },
-        });
       }
     },
-    [signPersonalMessage, trackEvent, type, version],
+    [signPersonalMessage],
   );
 
   const onCancel = useCallback(
@@ -94,19 +79,9 @@ export default function SignatureRequestSIWE({
         await cancelPersonalMessage(event);
       } catch (e) {
         log.error(e);
-      } finally {
-        trackEvent({
-          category: EVENT.CATEGORIES.TRANSACTIONS,
-          event: 'Cancel',
-          properties: {
-            action: 'SIWE Request',
-            type,
-            version,
-          },
-        });
       }
     },
-    [cancelPersonalMessage, trackEvent, type, version],
+    [cancelPersonalMessage],
   );
 
   return (
