@@ -1604,7 +1604,7 @@ export default class MetamaskController extends EventEmitter {
       updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
       delCustomRpc: this.delCustomRpc.bind(this),
       addCustomNetwork: this.addCustomNetwork.bind(this),
-      requestUserApproval: this.requestUserApproval.bind(this),
+      requestAddNetworkApproval: this.requestAddNetworkApproval.bind(this),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,
@@ -2053,7 +2053,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async requestUserApproval(customRpc, originIsMetaMask) {
+  async requestAddNetworkApproval(customRpc, originIsMetaMask) {
     try {
       await this.approvalController.addAndShowApprovalRequest({
         origin: 'metamask',

@@ -1,6 +1,6 @@
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
-const storybook = require('./storybook.js');
+const storybook = require('./storybook');
 
 module.exports = { getHighlights };
 

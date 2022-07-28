@@ -46,7 +46,7 @@ const metamaskrc = require('rc')('metamask', {
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
 });
 
-const { streamFlatMap } = require('../stream-flat-map.js');
+const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 
 const {

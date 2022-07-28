@@ -186,7 +186,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
-  setNewCustomNetworkAdded: () => {
+  clearNewCustomNetworkAdded: () => {
     dispatch(setNewCustomNetworkAdded({}));
   },
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {

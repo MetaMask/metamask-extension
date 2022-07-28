@@ -72,12 +72,5 @@ module.exports = {
     // upgrading eslint and dependencies. This rule should be evaluated and
     // if agreeable turned on upstream in @metamask/eslint-config
     'import/no-named-as-default-member': 'off',
-
-    // This rule is set to off to avoid churn when upgrading eslint and its
-    // dependencies. This rule should be enabled and the failures fixed in
-    // a separate PR. This rule prevents adding file extensions to imports
-    // of the same type. E.G, not adding the '.js' extension to file names when
-    // inside a .js file.
-    'import/extensions': 'off',
   },
 };
