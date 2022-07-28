@@ -519,7 +519,6 @@ const NetworksForm = ({
         } catch {
           // error
         }
-        console.log(chainId);
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,
