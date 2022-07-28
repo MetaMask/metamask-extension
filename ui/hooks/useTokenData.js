@@ -12,7 +12,7 @@ import { parseStandardTokenTransactionData } from '../../shared/modules/transact
  *                                         force this hook to return null if it set as false
  *                                         which indicates the transaction is not associated
  *                                         with a token.
- * @returns {Object} Decoded token data
+ * @returns {object} Decoded token data
  */
 export function useTokenData(transactionData, isTokenTransaction = true) {
   return useMemo(() => {

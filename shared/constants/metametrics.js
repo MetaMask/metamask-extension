@@ -9,7 +9,7 @@
  * event was triggered. Also included as full details of the current page in
  * page events.
  *
- * @typedef {Object} MetaMetricsPageObject
+ * @typedef {object} MetaMetricsPageObject
  * @property {string} [path] - the path of the current page (e.g /home)
  * @property {string} [title] - the title of the current page (e.g 'home')
  * @property {string} [url] - the fully qualified url of the current page
@@ -18,7 +18,7 @@
 /**
  * For metamask, this is the dapp that triggered an interaction
  *
- * @typedef {Object} MetaMetricsReferrerObject
+ * @typedef {object} MetaMetricsReferrerObject
  * @property {string} [url] - the origin of the dapp issuing the
  *  notification
  */
@@ -31,8 +31,8 @@
  * function, but still provides the consumer a way to override these values if
  * necessary.
  *
- * @typedef {Object} MetaMetricsContext
- * @property {Object} app - Application metadata.
+ * @typedef {object} MetaMetricsContext
+ * @property {object} app - Application metadata.
  * @property {string} app.name - the name of the application tracking the event
  * @property {string} app.version - the version of the application
  * @property {string} userAgent - the useragent string of the user
@@ -43,7 +43,7 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsEventPayload
+ * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
  * @property {string} [environmentType] - The type of environment this event
@@ -66,7 +66,7 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsEventOptions
+ * @typedef {object} MetaMetricsEventOptions
  * @property {boolean} [isOptIn] - happened during opt in/out workflow
  * @property {boolean} [flushImmediately] - When true will automatically flush
  *  the segment queue after tracking the event. Recommended if the result of
@@ -83,7 +83,7 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsEventFragment
+ * @typedef {object} MetaMetricsEventFragment
  * @property {string} successEvent - The event name to fire when the fragment
  *  is closed in an affirmative action.
  * @property {string} [failureEvent] - The event name to fire when the fragment
@@ -125,19 +125,19 @@
 /**
  * Represents the shape of data sent to the segment.track method.
  *
- * @typedef {Object} SegmentEventPayload
+ * @typedef {object} SegmentEventPayload
  * @property {string} [userId] - The metametrics id for the user
  * @property {string} [anonymousId] - An anonymousId that is used to track
  *  sensitive data while preserving anonymity.
  * @property {string} event - name of the event to track
- * @property {Object} properties - properties to attach to the event
+ * @property {object} properties - properties to attach to the event
  * @property {MetaMetricsContext} context - the context the event occurred in
  */
 
 /**
- * @typedef {Object} MetaMetricsPagePayload
+ * @typedef {object} MetaMetricsPagePayload
  * @property {string} name - The name of the page that was viewed
- * @property {Object} [params] - The variadic parts of the page url
+ * @property {object} [params] - The variadic parts of the page url
  *  example (route: `/asset/:asset`, path: `/asset/ETH`)
  *  params: { asset: 'ETH' }
  * @property {EnvironmentType} environmentType - the environment type that the
@@ -148,14 +148,14 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsPageOptions
+ * @typedef {object} MetaMetricsPageOptions
  * @property {boolean} [isOptInPath] - is the current path one of the pages in
  *  the onboarding workflow? If true and participateInMetaMetrics is null track
  *  the page view
  */
 
 /**
- * @typedef {Object} Traits
+ * @typedef {object} Traits
  * @property {'address_book_entries'} ADDRESS_BOOK_ENTRIES - When the user
  *  adds or modifies addresses in address book the address_book_entries trait
  *  is identified.
@@ -207,7 +207,7 @@ export const TRAITS = {
 };
 
 /**
- * @typedef {Object} MetaMetricsTraits
+ * @typedef {object} MetaMetricsTraits
  * @property {number} [address_book_entries] - The number of entries in the
  *  user's address book.
  * @property {'ledgerLive' | 'webhid' | 'u2f'} [ledger_connection_type] - the
@@ -252,7 +252,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
 };
 
 /**
- * @typedef {Object} SegmentInterface
+ * @typedef {object} SegmentInterface
  * @property {SegmentEventPayload[]} queue - A queue of events to be sent when
  *  the flushAt limit has been reached, or flushInterval occurs
  * @property {() => void} flush - Immediately flush the queue, resetting it to
@@ -262,7 +262,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
  *  callback: (err?: Error) => void
  * ) => void} track - Track an event with Segment, using the internal batching
  *  mechanism to optimize network requests
- * @property {(payload: Object) => void} page - Track a page view with Segment
+ * @property {(payload: object) => void} page - Track a page view with Segment
  * @property {() => void} identify - Identify an anonymous user. We do not
  *  currently use this method.
  */

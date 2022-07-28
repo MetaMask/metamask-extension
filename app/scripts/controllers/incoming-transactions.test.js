@@ -104,7 +104,7 @@ function getMockBlockTracker() {
  * Returns a transaction object matching the expected format returned
  * by the Etherscan API
  *
- * @param {Object} [params] - options bag
+ * @param {object} [params] - options bag
  * @param {string} [params.toAddress] - The hex-prefixed address of the recipient
  * @param {number} [params.blockNumber] - The block number for the transaction
  * @param {boolean} [params.useEIP1559] - Use EIP-1559 gas fields

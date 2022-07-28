@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
+
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
@@ -199,8 +200,8 @@ export default function ViewQuote() {
       (currentSmartTransactionsError !== 'not_enough_funds' ||
         currentSmartTransactionsErrorMessageDismissed)
     );
-  const smartTransactionFees = useSelector(getSmartTransactionFees);
-  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
+  const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
@@ -781,19 +782,21 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
-  const isSwapButtonDisabled =
+  const isSwapButtonDisabled = Boolean(
     submitClicked ||
-    balanceError ||
-    tokenBalanceUnavailable ||
-    disableSubmissionDueToPriceWarning ||
-    (networkAndAccountSupports1559 && baseAndPriorityFeePerGas === undefined) ||
-    (!networkAndAccountSupports1559 &&
-      (gasPrice === null || gasPrice === undefined)) ||
-    (currentSmartTransactionsEnabled &&
-      (currentSmartTransactionsError || smartTransactionsError)) ||
-    (currentSmartTransactionsEnabled &&
-      smartTransactionsOptInStatus &&
-      !smartTransactionFees?.tradeTxFees);
+      balanceError ||
+      tokenBalanceUnavailable ||
+      disableSubmissionDueToPriceWarning ||
+      (networkAndAccountSupports1559 &&
+        baseAndPriorityFeePerGas === undefined) ||
+      (!networkAndAccountSupports1559 &&
+        (gasPrice === null || gasPrice === undefined)) ||
+      (currentSmartTransactionsEnabled &&
+        (currentSmartTransactionsError || smartTransactionsError)) ||
+      (currentSmartTransactionsEnabled &&
+        smartTransactionsOptInStatus &&
+        !smartTransactionFees?.tradeTxFees),
+  );
 
   useEffect(() => {
     if (

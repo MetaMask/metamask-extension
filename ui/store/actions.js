@@ -100,7 +100,7 @@ export function tryUnlockMetamask(password) {
  *
  * @param {string} password - The password.
  * @param {string} seedPhrase - The seed phrase.
- * @returns {Object} The updated state of the keyring controller.
+ * @returns {object} The updated state of the keyring controller.
  */
 export function createNewVaultAndRestore(password, seedPhrase) {
   return (dispatch) => {
@@ -2980,7 +2980,7 @@ export function requestAccountsPermissionWithId(origin) {
 /**
  * Approves the permissions request.
  *
- * @param {Object} request - The permissions request to approve.
+ * @param {object} request - The permissions request to approve.
  */
 export function approvePermissionsRequest(request) {
   return (dispatch) => {
@@ -3797,10 +3797,10 @@ export function addCustomNetwork(customRpc) {
   };
 }
 
-export function requestUserApproval(customRpc, originIsMetaMask) {
+export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.requestUserApproval(
+      await promisifiedBackground.requestAddNetworkApproval(
         customRpc,
         originIsMetaMask,
       );

@@ -39,11 +39,8 @@ export const useTransactionFunctions = ({
     ) {
       return {};
     }
-    const {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      gasLimit,
-    } = transaction?.txParams;
+    const { maxFeePerGas, maxPriorityFeePerGas, gasLimit } =
+      transaction?.txParams ?? {};
     return {
       previousGas: {
         maxFeePerGas,
@@ -173,10 +170,8 @@ export const useTransactionFunctions = ({
   );
 
   const updateTransactionUsingDAPPSuggestedValues = useCallback(() => {
-    const {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-    } = transaction?.dappSuggestedGasFees;
+    const { maxFeePerGas, maxPriorityFeePerGas } =
+      transaction?.dappSuggestedGasFees ?? {};
     updateTransaction({
       estimateUsed: PRIORITY_LEVELS.DAPP_SUGGESTED,
       maxFeePerGas,

@@ -32,7 +32,7 @@ const getMaxPriorityFeePerGasFromTransaction = (
 };
 
 /**
- * @typedef {Object} MaxPriorityFeePerGasInputReturnType
+ * @typedef {object} MaxPriorityFeePerGasInputReturnType
  * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
  *  input value.
  * @property {string} [maxPriorityFeePerGasFiat] - the maxPriorityFeePerGas
