@@ -62,7 +62,6 @@ export default function launchMetamaskUi(opts, cb) {
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      reduxStore = store;
       setupDebuggingHelpers(store);
       cb(null, store);
     });
@@ -142,6 +141,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   }
 
   const store = configureStore(draftInitialState);
+  reduxStore = store;
 
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(

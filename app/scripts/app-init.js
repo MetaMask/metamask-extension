@@ -2,8 +2,6 @@
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
-let scriptsLoadedInitiated = false;
-
 const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
 
 // Variable testMode is set to true when preparing test build.
@@ -36,12 +34,6 @@ function tryImport(...fileNames) {
 }
 
 function importAllScripts() {
-  // Bail if we've already imported scripts
-  if (scriptsLoadedInitiated) {
-    return;
-  }
-  scriptsLoadedInitiated = true;
-
   const files = [];
 
   // In testMode individual files are imported, this is to help capture load time stats
@@ -111,17 +103,15 @@ function importAllScripts() {
   }
 }
 
-// eslint-disable-next-line no-undef
-self.addEventListener('install', importAllScripts);
+importAllScripts();
 
 /*
- * Message event listener below loads script if they are no longer available.
+ * A keepalive message receiver to avoid Service Worker getting shut down due to inactivity.
+ * UI sends the message periodically.
+ *
  * chrome below needs to be replaced by cross-browser object,
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
-// eslint-disable-next-line no-undef
-chrome.runtime.onMessage.addListener((message) => {
-  importAllScripts();
-  return message.name === WORKER_KEEP_ALIVE_MESSAGE;
-});
+// eslint-disable-next-line
+chrome.runtime.onMessage.addListener(() => {});
