@@ -55,6 +55,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
+  actions._setBackgroundConnection(backgroundConnection);
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
@@ -163,7 +164,17 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
-  updateBackgroundConnection(backgroundConnection);
+  backgroundConnection.onNotification((data) => {
+    if (data.method === 'sendUpdate') {
+      store.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else {
+      throw new Error(
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
+  });
 
   // global metamask api - used by tooling
   global.metamask = {
