@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Adicionar observação"
   },
+  "addMoreNetworks": {
+    "message": "adicionar mais redes manualmente"
+  },
   "addNetwork": {
     "message": "Adicionar rede"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "Alertas"
   },
+  "allOfYour": {
+    "message": "Todos os seus $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "Permitir que essa extensão externa:"
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "Aprovar"
+  },
+  "approveAllTokensTitle": {
+    "message": "Dar permissão para acessar todos os seus $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Aprovar e instalar"
@@ -435,10 +446,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Comprar $1 com Wyre"
+    "message": "Comprar $1 com o Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
+    "message": "Integração fácil para compras de até US$ 1.000. Verificação de compra de alto limite rápida e interativa. Aceita cartão de crédito/débito, Apple Pay, transferências bancárias. Disponível em mais de 100 países. Depósito de tokens em sua conta na MetaMask"
   },
   "bytes": {
     "message": "Bytes"
@@ -465,6 +476,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "Cancelar swap por ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Cancelar swap gratuitamente"
   },
   "cancellationGasFee": {
     "message": "Taxa de gás por cancelamento"
@@ -650,7 +668,7 @@
     "message": "Interação com contrato"
   },
   "convertTokenToNFTDescription": {
-    "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo da sua lista de tokens e adicioná-lo como NFT?"
+    "message": "Detectamos que esse ativo é um NFT. A MetaMask agora oferece suporte nativo a NFTs. Gostaria de removê-lo de sua lista de tokens e adicioná-lo como NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Detectamos que esse ativo foi adicionado como NFT. Deseja removê-lo da sua lista de tokens?"
@@ -1277,6 +1295,9 @@
   "functionApprove": {
     "message": "Função: aprovar"
   },
+  "functionSetApprovalForAll": {
+    "message": "Função: SetApprovalForAll"
+  },
   "functionType": {
     "message": "Tipo de função"
   },
@@ -1617,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "Frase Secreta de Recuperação inválida"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Entrada inválida! A frase secreta de recuperação diferencia maiúsculas e minúsculas."
+  },
   "ipfsGateway": {
     "message": "Gateway IPFS"
   },
@@ -1892,6 +1916,19 @@
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "Recomendamos que você $1 antes de prosseguir.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "De acordo com os nossos registros, o nome da rede pode não corresponder à ID desta cadeia."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "O símbolo de moeda enviado não corresponde ao esperado para a ID desta cadeia."
+  },
+  "mismatchedRpcUrl": {
+    "message": "De acordo com os nossos registros, o valor da URL da RPC enviado não corresponde a um provedor conhecido da ID desta cadeia."
+  },
   "missingNFT": {
     "message": "Não está vendo o seu NFT?"
   },
@@ -1942,6 +1979,9 @@
   },
   "network": {
     "message": "Ethereum:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "Rede adicionada com sucesso!"
   },
   "networkDetails": {
     "message": "Detalhes da rede"
@@ -2059,6 +2099,9 @@
     "message": "Nonce é maior que o nonce sugerido de $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT"
+  },
   "nftTokenIdPlaceholder": {
     "message": "Insira o ID do token"
   },
@@ -2154,10 +2197,20 @@
     "message": "Ativar o modo escuro"
   },
   "notifications12Description": {
-    "message": "O Modo Escuro será ativado para novos usuários de acordo com suas preferências de sistema. Para usuários antigos, ative o Modo Escuro manualmente em Configurações -> Experimental."
+    "message": "O modo escuro na extensão finalmente chegou! Para ativá-lo, acesse Configurações -> Experimental e selecione uma das opções de exibição: claro, escuro, sistema."
   },
   "notifications12Title": {
     "message": "Modo escuro quando? Modo escuro agora! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "Exibir lista de redes personalizadas"
+  },
+  "notifications13Description": {
+    "message": "Agora você pode adicionar facilmente as seguintes redes personalizadas que são populares: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm e Polygon. Para ativar esse recurso, acesse Configurações -> Experimentais e ative \"Exibir lista de redes personalizadas\".",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Adicionar redes populares"
   },
   "notifications1Description": {
     "message": "Usuários da MetaMask Mobile agora podem trocar tokens dentro de sua carteira mobile. Leia o QR code para obter o aplicativo para dispositivos móveis e comece a trocar.",
@@ -2676,6 +2729,14 @@
   "revealTheSeedPhrase": {
     "message": "Revelar a frase de recuperação"
   },
+  "revokeAllTokensTitle": {
+    "message": "Revogar permissão de acesso a todos os seus $1?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "Ao revogar a permissão, o $1 a seguir não terá mais acesso ao seu $2",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rede de Teste Rinkeby"
   },
@@ -2852,11 +2913,22 @@
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "Aviso: você está prestes a enviar a um contrato de token que pode resultar em perda de fundos. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "Definir configurações avançadas de privacidade"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
+  },
+  "setApprovalForAll": {
+    "message": "Definir aprovação para todos"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Aprovar $1 sem limite de gastos",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Definições"
@@ -2876,6 +2948,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Selecione isso para mostrar o preço do gás e limitar os controles diretamente nas telas de envio e de confirmação."
+  },
+  "showCustomNetworkList": {
+    "message": "Exibir lista de redes personalizadas"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Selecione esta opção para exibir uma lista de redes com as informações pré-preenchidas ao adicionar uma nova rede."
   },
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversão nas redes de teste"
@@ -2985,6 +3063,9 @@
   },
   "snapsToggle": {
     "message": "O snap só será executado se estiver ativado"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Algumas redes podem representar riscos de segurança e/ou privacidade. Tenha os riscos em mente antes de adicionar e usar uma rede."
   },
   "somethingWentWrong": {
     "message": "Ops! Algo deu errado."
@@ -3548,6 +3629,10 @@
   "switchNetworks": {
     "message": "Trocar redes"
   },
+  "switchToNetwork": {
+    "message": "Trocar para $1",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Trocar para esta conta"
   },
@@ -3851,6 +3936,9 @@
   "unknownCameraErrorTitle": {
     "message": "Ops! Algo deu errado...."
   },
+  "unknownCollection": {
+    "message": "Coleção sem nome"
+  },
   "unknownNetwork": {
     "message": "Rede Privada Desconhecida"
   },
@@ -3962,7 +4050,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "Visite o nosso site"
+    "message": "Visite nosso site"
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
@@ -3986,6 +4074,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Carteira criada com sucesso"
+  },
+  "wantToAddThisNetwork": {
+    "message": "Desejar adicionar esta rede?"
   },
   "warning": {
     "message": "Atenção"
@@ -4048,6 +4139,10 @@
   },
   "yesLetsTry": {
     "message": "Sim, vamos tentar"
+  },
+  "youHaveAddedAll": {
+    "message": "Você adicionou todas as redes populares. Você pode descobrir mais redes $1 Ou você pode $2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."
