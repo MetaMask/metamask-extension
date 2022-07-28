@@ -1,5 +1,8 @@
 // This file is used only for manifest version 3
 
+// eslint-disable-next-line
+const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
+
 // Represents if importAllScripts has been run
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
@@ -110,4 +113,6 @@ importAllScripts();
  * chrome does seems to work in at-least all chromium based browsers
  */
 // eslint-disable-next-line
-chrome.runtime.onMessage.addListener(() => {});
+chrome.runtime.onMessage.addListener((message) => {
+  return message.name === WORKER_KEEP_ALIVE_MESSAGE;
+});
