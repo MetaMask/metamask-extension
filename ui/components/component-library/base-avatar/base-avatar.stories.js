@@ -156,9 +156,3 @@ export const BackgroundAndBorderColor = (args) => (
     </BaseAvatar>
   </Box>
 );
-
-export const BoxProps = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
-    <BaseAvatar {...args}>B</BaseAvatar>
-  </Box>
-);
