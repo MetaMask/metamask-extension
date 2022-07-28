@@ -1476,6 +1476,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1556,6 +1557,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1646,6 +1648,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1728,6 +1731,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1810,6 +1814,7 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1874,6 +1879,7 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1948,6 +1954,7 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           baz: 3.0,

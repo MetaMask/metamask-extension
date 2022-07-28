@@ -3788,10 +3788,10 @@ export function addCustomNetwork(customRpc) {
   };
 }
 
-export function requestUserApproval(customRpc, originIsMetaMask) {
+export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.requestUserApproval(
+      await promisifiedBackground.requestAddNetworkApproval(
         customRpc,
         originIsMetaMask,
       );
