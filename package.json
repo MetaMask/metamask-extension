@@ -76,7 +76,6 @@
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
   },
   "resolutions": {
-    "acorn": "^7.4.1",
     "**/regenerator-runtime": "^0.13.7",
     "**/caniuse-lite": "1.0.30001265",
     "**/cross-fetch": "^3.1.5",
