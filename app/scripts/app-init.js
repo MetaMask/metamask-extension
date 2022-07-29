@@ -3,6 +3,8 @@
 // eslint-disable-next-line
 const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
 
+let imported = false;
+
 // Represents if importAllScripts has been run
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
@@ -35,6 +37,10 @@ function tryImport(...fileNames) {
 }
 
 function importAllScripts() {
+  if (imported) {
+    return;
+  }
+  imported = true;
   const files = [];
 
   // In testMode individual files are imported, this is to help capture load time stats
@@ -107,7 +113,9 @@ function importAllScripts() {
 importAllScripts();
 
 /*
- * Message event listener below loads script if they are no longer available.
+ * A keepalive message receiver to avoid Service Worker getting shut down due to inactivity.
+ * UI sends the message periodically.
+ *
  * chrome below needs to be replaced by cross-browser object,
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
