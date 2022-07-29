@@ -1,8 +1,6 @@
 // This file is used only for manifest version 3
 
 // eslint-disable-next-line
-const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
-
 let imported = false;
 
 // Variable testMode is set to true when preparing test build.
@@ -121,5 +119,5 @@ importAllScripts();
  */
 // eslint-disable-next-line
 chrome.runtime.onMessage.addListener((message) => {
-  return message.name === WORKER_KEEP_ALIVE_MESSAGE;
+  return false;
 });
