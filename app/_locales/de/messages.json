@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Notiz hinzufügen"
   },
+  "addMoreNetworks": {
+    "message": "weitere Netzwerke manuell hinzufügen"
+  },
   "addNetwork": {
     "message": "Netzwerk hinzufügen"
   },
@@ -438,7 +441,7 @@
     "message": "$1 mit Wyre kaufen"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre ermöglicht Ihnen die Verwendung einer Kreditkarte zum direkten Einzahlen von $1 auf Ihr MetaMask-Konto."
+    "message": "Einfaches Onboarding für Käufe bis zu 1000 $. Schnelle interaktive Überprüfung von Käufen mit hohem Limit. Unterstützt Debit-/Kreditkarte, Apple Pay, Banküberweisungen. Verfügbar in über 100 Ländern. Einzahlung von Token auf Ihr MetaMask-Konto"
   },
   "bytes": {
     "message": "Bytes"
@@ -465,6 +468,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Für eine Transaktion im Wert von $1 muss die Gasgebühr um mindestens 10 % erhöht werden, damit sie vom Netz erkannt wird.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "Tausch für 1 $ abbrechen",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Tausch kostenlos abbrechen"
   },
   "cancellationGasFee": {
     "message": "Stornierungs-Gasgebühr"
@@ -1943,6 +1953,9 @@
   "network": {
     "message": "Netzwerk:"
   },
+  "networkAddedSuccessfully": {
+    "message": "Netzwerk erfolgreich hinzugefügt!"
+  },
   "networkDetails": {
     "message": "Netzwerkdetails"
   },
@@ -2058,6 +2071,9 @@
   "nextNonceWarning": {
     "message": "Nonce ist höher als vorgeschlagen nonce von $1",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nft": {
+    "message": "NFT"
   },
   "nftTokenIdPlaceholder": {
     "message": "Token-ID eingeben"
@@ -2262,7 +2278,7 @@
     "message": "Alle als gelesen markieren"
   },
   "numberOfNewTokensDetected": {
-    "message": "$1 neue Tokens in diesem Konto gefunden\n",
+    "message": "$1 neue Tokens in diesem Konto gefunden",
     "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
@@ -2877,6 +2893,12 @@
   "showAdvancedGasInlineDescription": {
     "message": "Wählen Sie dies aus, um den Gaspreis und die Limitkontrollen direkt auf den Senden- und Bestätigen-Bildschirmen anzuzeigen."
   },
+  "showCustomNetworkList": {
+    "message": "Benutzerdefinierte Netzwerkliste anzeigen"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Diese Option zeigt eine Liste von Netzwerken mit vorausgefüllten Details an, sobald ein neues Netzwerk hinzugefügt wird."
+  },
   "showFiatConversionInTestnets": {
     "message": "Umwandlung auf Testnets anzeigen"
   },
@@ -2986,6 +3008,9 @@
   "snapsToggle": {
     "message": "Ein Snap wird nur ausgeführt, wenn er aktiviert ist"
   },
+  "someNetworksMayPoseSecurity": {
+    "message": "Einige Netzwerke können Sicherheits- und/oder Datenschutzrisiken bergen. Informieren Sie sich über die Risiken, bevor Sie ein Netzwerk hinzufügen und nutzen."
+  },
   "somethingWentWrong": {
     "message": "Hoppla! Da hat etwas nicht geklappt."
   },
@@ -3075,7 +3100,7 @@
     "message": "Status"
   },
   "statusConnected": {
-    "message": "Verbunden"
+    "message": "Verbinden"
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
@@ -3548,6 +3573,10 @@
   "switchNetworks": {
     "message": "Netzwerk wechseln"
   },
+  "switchToNetwork": {
+    "message": "Zu 1 $ wechseln",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Zu diesem Konto wechseln"
   },
@@ -3851,6 +3880,9 @@
   "unknownCameraErrorTitle": {
     "message": "Hoppla! Etwas ist schiefgegangen ..."
   },
+  "unknownCollection": {
+    "message": "Unbenannte Sammlung"
+  },
   "unknownNetwork": {
     "message": "Unbekanntes privates Netzwerk"
   },
@@ -3962,7 +3994,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "Gehe zu unserer Webseite"
+    "message": "Besuchen Sie unsere Webseite"
   },
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
@@ -3986,6 +4018,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Wallet-Erstellung erfolgreich"
+  },
+  "wantToAddThisNetwork": {
+    "message": "Möchten Sie dieses Netzwerk hinzufügen?"
   },
   "warning": {
     "message": "Warnung"
@@ -4048,6 +4083,10 @@
   },
   "yesLetsTry": {
     "message": "Ja, versuchen wir es"
+  },
+  "youHaveAddedAll": {
+    "message": "Sie haben alle beliebten Netzwerke hinzugefügt. Sie können weitere Netzwerke entdecken 1 $ oder Sie können 2 $",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Sie müssen Zugriff auf die Kamera erlauben, um diese Funktion nutzen zu können."
