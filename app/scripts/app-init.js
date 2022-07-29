@@ -5,7 +5,6 @@ let scriptsLoadInitiated = false;
 
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
-// eslint-disable-next-line
 const testMode = false;
 
 const loadTimeLogs = [];
