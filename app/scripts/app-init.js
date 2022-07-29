@@ -107,7 +107,9 @@ function importAllScripts() {
   }
 }
 
-importAllScripts();
+// Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
+// eslint-disable-next-line no-undef
+self.addEventListener('install', importAllScripts);
 
 /*
  * A keepalive message receiver to avoid Service Worker getting shut down due to inactivity.
@@ -119,5 +121,6 @@ importAllScripts();
  */
 // eslint-disable-next-line
 chrome.runtime.onMessage.addListener((message) => {
+  importAllScripts();
   return false;
 });
