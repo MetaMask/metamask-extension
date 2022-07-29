@@ -2,10 +2,9 @@ import log from 'loglevel';
 import { memoize } from 'lodash';
 import getFirstPreferredLangCode from '../lib/get-first-preferred-lang-code';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { SECOND } from '../../../shared/constants/time';
 import switchDirection from './switch-direction';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 const relativeTimeFormatLocaleData = new Set();
 

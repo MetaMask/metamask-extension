@@ -1,14 +1,18 @@
 import {
   fetchLocale,
   getErrorHtml,
-} from '../../../app/scripts/constants/error-utils';
-import { SUPPORT_LINK } from '../../../app/scripts/constants/ui-utils';
+} from './error-utils';
+import { SUPPORT_LINK } from './ui-utils';
 
-jest.mock('../../../app/scripts/constants/error-utils', () => ({
-  loadRelativeTimeFormatLocaleData: jest.fn(),
-  fetchLocale: jest.fn(),
-  getErrorHtml: jest.fn(),
-}));
+jest.mock('./error-utils', () => {
+  const originalModule = jest.requireActual('./error-utils');
+
+  return {
+    ...originalModule,
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+    fetchLocale: jest.fn(),
+  }
+});
 
 describe('Error utils Tests', () => {
   it('should get error html', async () => {

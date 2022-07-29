@@ -176,7 +176,7 @@ async function verifyEnglishLocale() {
     'ui/pages/confirmation/templates/*.js',
   ];
   const testGlob = '**/*.test.js';
-  const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {
+  const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js', 'app/scripts/constants/**/*.js'], {
     ignore: [...globsToStrictSearch, testGlob],
   });
   const javascriptFilesToStrictSearch = await glob(globsToStrictSearch, {

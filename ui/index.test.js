@@ -29,10 +29,15 @@ const esMessages = {
   },
 };
 
-jest.mock('../app/scripts/constants/error-utils', () => ({
-  fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
-  loadRelativeTimeFormatLocaleData: jest.fn(),
-}));
+jest.mock('../app/scripts/constants/error-utils', () => {
+  const originalModule = jest.requireActual('../app/scripts/constants/error-utils');
+
+  return {
+    ...originalModule,
+    fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+  }
+});
 
 describe('Index Tests', () => {
   it('should get locale messages by calling setupLocale', async () => {
