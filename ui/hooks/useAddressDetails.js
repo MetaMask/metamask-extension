@@ -3,20 +3,15 @@ import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
   getAddressBook,
-  getIsTokenDetectionInactiveOnMainnet,
   getMetaMaskIdentities,
   getTokenList,
 } from '../selectors';
 import { shortenAddress } from '../helpers/utils/util';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 
 const useAddressDetails = (toAddress) => {
   const addressBook = useSelector(getAddressBook);
   const identities = useSelector(getMetaMaskIdentities);
   const tokenList = useSelector(getTokenList);
-  const isTokenDetectionInactiveOnMainnet = useSelector(
-    getIsTokenDetectionInactiveOnMainnet,
-  );
   const checksummedAddress = toChecksumHexAddress(toAddress);
 
   if (!toAddress) {
@@ -31,12 +26,9 @@ const useAddressDetails = (toAddress) => {
   if (identities[toAddress]?.name) {
     return { toName: identities[toAddress].name, isTrusted: true };
   }
-  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
-    ? STATIC_MAINNET_TOKEN_LIST
-    : tokenList;
-  if (caseInSensitiveTokenList[toAddress.toLowerCase()]?.name) {
+  if (tokenList[toAddress.toLowerCase()]?.name) {
     return {
-      toName: caseInSensitiveTokenList[toAddress.toLowerCase()].name,
+      toName: tokenList[toAddress.toLowerCase()].name,
       isTrusted: true,
     };
   }

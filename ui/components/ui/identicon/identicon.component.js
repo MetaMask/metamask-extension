@@ -52,7 +52,7 @@ export default class Identicon extends Component {
     /**
      * Add list of token in object
      */
-    caseInSensitiveTokenList: PropTypes.object,
+    tokenList: PropTypes.object,
     /**
      * User preferred IPFS gateway
      */
@@ -67,7 +67,7 @@ export default class Identicon extends Component {
     image: undefined,
     useBlockie: false,
     alt: '',
-    caseInSensitiveTokenList: {},
+    tokenList: {},
   };
 
   renderImage() {
@@ -98,13 +98,7 @@ export default class Identicon extends Component {
   }
 
   renderJazzicon() {
-    const {
-      address,
-      className,
-      diameter,
-      alt,
-      caseInSensitiveTokenList,
-    } = this.props;
+    const { address, className, diameter, alt, tokenList } = this.props;
     return (
       <Jazzicon
         address={address}
@@ -112,7 +106,7 @@ export default class Identicon extends Component {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
         alt={alt}
-        caseInSensitiveTokenList={caseInSensitiveTokenList}
+        tokenList={tokenList}
       />
     );
   }
@@ -142,7 +136,7 @@ export default class Identicon extends Component {
       useBlockie,
       addBorder,
       diameter,
-      caseInSensitiveTokenList,
+      tokenList,
     } = this.props;
     const size = diameter + 8;
 
@@ -151,7 +145,7 @@ export default class Identicon extends Component {
     }
 
     if (address) {
-      if (caseInSensitiveTokenList[address.toLowerCase()]?.iconUrl) {
+      if (tokenList[address.toLowerCase()]?.iconUrl) {
         return this.renderJazzicon();
       }
 

@@ -54,7 +54,7 @@ export default class SettingsTab extends PureComponent {
     setHideZeroBalanceTokens: PropTypes.func,
     lastFetchedConversionDate: PropTypes.number,
     selectedAddress: PropTypes.string,
-    caseInSensitiveTokenList: PropTypes.object,
+    tokenList: PropTypes.object,
   };
 
   settingsRefs = Array(
@@ -171,7 +171,7 @@ export default class SettingsTab extends PureComponent {
       useBlockie,
       setUseBlockie,
       selectedAddress,
-      caseInSensitiveTokenList,
+      tokenList,
     } = this.props;
 
     const getIconStyles = () => ({
@@ -213,7 +213,7 @@ export default class SettingsTab extends PureComponent {
                   id="jazzicon"
                   address={selectedAddress}
                   diameter={32}
-                  caseInSensitiveTokenList={caseInSensitiveTokenList}
+                  tokenList={tokenList}
                   style={getIconStyles()}
                 />
               </div>

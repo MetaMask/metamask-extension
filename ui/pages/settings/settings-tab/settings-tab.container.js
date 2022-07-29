@@ -7,11 +7,7 @@ import {
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
-import {
-  getIsTokenDetectionInactiveOnMainnet,
-  getPreferences,
-} from '../../../selectors';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
+import { getTokenList, getPreferences } from '../../../selectors';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -25,18 +21,12 @@ const mapStateToProps = (state, ownProps) => {
     useBlockie,
     currentLocale,
     selectedAddress,
-    tokenList,
   } = metamask;
   const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
     getPreferences(state);
 
   const { lastFetchedConversionDate } = ownProps;
-  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
-    state,
-  );
-  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
-    ? STATIC_MAINNET_TOKEN_LIST
-    : tokenList;
+  const tokenList = getTokenList(state);
 
   return {
     warning,
@@ -48,8 +38,7 @@ const mapStateToProps = (state, ownProps) => {
     hideZeroBalanceTokens,
     lastFetchedConversionDate,
     selectedAddress,
-    isTokenDetectionInactiveOnMainnet,
-    caseInSensitiveTokenList,
+    tokenList,
   };
 };
 

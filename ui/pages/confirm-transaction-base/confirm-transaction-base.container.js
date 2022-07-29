@@ -35,7 +35,6 @@ import {
   getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
-  getIsTokenDetectionInactiveOnMainnet,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -51,7 +50,6 @@ import {
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
@@ -121,16 +119,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const tokenList = getTokenList(state);
-  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
-    state,
-  );
-  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
-    ? STATIC_MAINNET_TOKEN_LIST
-    : tokenList;
 
   const toName =
     identities[toAddress]?.name ||
-    caseInSensitiveTokenList[toAddress.toLowerCase()]?.name ||
+    tokenList[toAddress.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);

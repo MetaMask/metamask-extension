@@ -65,9 +65,10 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getUseTokenDetection,
+  getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
-  getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
 
 import {
@@ -148,9 +149,8 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
-  const isTokenDetectionInactiveOnMainnet = useSelector(
-    getIsTokenDetectionInactiveOnMainnet,
-  );
+  const tokenList = useSelector(getTokenList, isEqual);
+  const useTokenDetection = useSelector(getUseTokenDetection);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
 
@@ -211,8 +211,8 @@ export default function BuildQuote({
     conversionRate,
     currentCurrency,
     chainId,
-    shuffledTokensList,
-    isTokenDetectionInactiveOnMainnet,
+    tokenList,
+    useTokenDetection,
   );
 
   const tokensToSearchSwapFrom = useTokensToSearch({

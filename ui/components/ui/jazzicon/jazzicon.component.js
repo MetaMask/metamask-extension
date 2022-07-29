@@ -15,7 +15,7 @@ export default class Jazzicon extends PureComponent {
     className: PropTypes.string,
     diameter: PropTypes.number,
     style: PropTypes.object,
-    caseInSensitiveTokenList: PropTypes.object,
+    tokenList: PropTypes.object,
   };
 
   static defaultProps = {
@@ -47,11 +47,11 @@ export default class Jazzicon extends PureComponent {
   }
 
   appendJazzicon() {
-    const { address, diameter, caseInSensitiveTokenList } = this.props;
+    const { address, diameter, tokenList } = this.props;
     const image = iconFactory.iconForAddress(
       address,
       diameter,
-      caseInSensitiveTokenList[address.toLowerCase()],
+      tokenList[address.toLowerCase()],
     );
     this.container.current.appendChild(image);
   }

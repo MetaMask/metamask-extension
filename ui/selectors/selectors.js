@@ -53,7 +53,7 @@ import {
 } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
-
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import {
@@ -919,13 +919,20 @@ export function getTheme(state) {
 }
 
 /**
- * To retrieve the tokenList produced by TokenListcontroller
+ * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
+ * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
  * @returns {object}
  */
 export function getTokenList(state) {
-  return state.metamask.tokenList;
+  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
+    state,
+  );
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : state.metamask.tokenList;
+  return caseInSensitiveTokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
