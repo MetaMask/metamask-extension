@@ -13,7 +13,7 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
       ...opts,
       signal,
     });
-
+    console.log('F: ', f);
     const timer = setTimeout(() => abortController.abort(), timeout);
 
     try {

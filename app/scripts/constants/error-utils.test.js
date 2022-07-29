@@ -1,16 +1,16 @@
 import {
   fetchLocale,
   getErrorHtml,
-} from '../../../app/scripts/constants/error-utils';
-import { SUPPORT_LINK } from '../../../app/scripts/constants/ui-utils';
+} from './error-utils';
+import { SUPPORT_LINK } from './ui-utils';
 
-jest.mock('../../../app/scripts/constants/error-utils', () => {
-  const originalModule = jest.requireActual('../../../app/scripts/constants/error-utils');
+jest.mock('./error-utils', () => {
+  const originalModule = jest.requireActual('./error-utils');
 
   return {
     ...originalModule,
-    // loadRelativeTimeFormatLocaleData: jest.fn(),
-    // fetchLocale: jest.fn(),
+    loadRelativeTimeFormatLocaleData: jest.fn(),
+    fetchLocale: jest.fn(),
   }
 });
 
@@ -39,20 +39,8 @@ describe('Error utils Tests', () => {
       },
     };
 
-    
-    // const a = async () => {
-    //   const b = await getErrorHtml(SUPPORT_LINK, 'en');
-
-    //   return b;
-    // } 
-
-
-    // const c = await a();
-    // console.log(c);
-
-    // fetchLocale.mockReturnValue(mockStore.localeMessages.current);
+    fetchLocale.mockReturnValue(mockStore.localeMessages.current);
     const errorHtml = await getErrorHtml(SUPPORT_LINK, mockStore.metamask);
-    console.log(errorHtml);
     const currentLocale = mockStore.localeMessages.current;
     const troubleStartingMessage = currentLocale.troubleStarting.message;
     const restartMetamaskMessage = currentLocale.restartMetamask.message;

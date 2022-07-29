@@ -42,6 +42,7 @@ module.exports = {
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
+    '<rootDir>/app/scripts/constants/error-utils.test.js',
   ],
   testTimeout: 2500,
   transform: {

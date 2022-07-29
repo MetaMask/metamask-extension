@@ -3,7 +3,6 @@ import { memoize } from 'lodash';
 import getFirstPreferredLangCode from '../lib/get-first-preferred-lang-code';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import switchDirection from './switch-direction';
-import { SECOND } from '../../../shared/constants/time';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -30,11 +29,9 @@ async function fetchRelativeTimeFormatData(languageTag) {
 
 export async function fetchLocale(localeCode) {
   try {
-    console.log("HERE");
     const response = await fetchWithTimeout(
-      `../../_locales/${localeCode}/messages.json`,
+      `./_locales/${localeCode}/messages.json`,
     );
-    console.log('response123: ', response);
     return await response.json();
   } catch (error) {
     log.error(`failed to fetch ${localeCode} locale because of ${error}`);
@@ -43,7 +40,6 @@ export async function fetchLocale(localeCode) {
 }
 
 const _setupLocale = async (currentLocale) => {
-  console.log("currentLocale: ", currentLocale);
   const currentLocaleMessages = currentLocale
     ? await fetchLocale(currentLocale)
     : {};
@@ -53,9 +49,6 @@ const _setupLocale = async (currentLocale) => {
   if (currentLocale) {
     await loadRelativeTimeFormatLocaleData(currentLocale);
   }
-
-  console.log('currentLocaleMessages: ', currentLocaleMessages);
-
 
   return { currentLocaleMessages, enLocaleMessages };
 };
@@ -81,7 +74,6 @@ export async function getErrorHtml(supportLink, metamaskState) {
     preferredLocale = await getFirstPreferredLangCode();
     response = await setupLocale(preferredLocale);
   }
-  console.log('response: ', response);
   const textDirection = ['ar', 'dv', 'fa', 'he', 'ku'].includes(preferredLocale)
     ? 'rtl'
     : 'auto';
