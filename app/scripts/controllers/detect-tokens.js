@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import { warn } from 'loglevel';
 import { MINUTE } from '../../../shared/constants/time';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
@@ -112,7 +112,9 @@ export default class DetectTokensController {
       : tokenList;
 
     const tokensToDetect = [];
-    this.web3.setProvider(this._network._provider);
+    this.ethersProvider = new ethers.providers.Web3Provider(
+      this._network._provider,
+    );
     for (const tokenAddress in tokenListUsed) {
       if (
         !this.tokenAddresses.find(({ address }) =>
@@ -220,7 +222,7 @@ export default class DetectTokensController {
       return;
     }
     this._network = network;
-    this.web3 = new Web3(network._provider);
+    this.ethersProvider = new ethers.providers.Web3Provider(network._provider);
     this._network.store.subscribe(() => {
       if (this.chainId !== this.getChainIdFromNetworkStore(network)) {
         this.restartTokenDetection();
