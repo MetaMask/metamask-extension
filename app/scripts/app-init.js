@@ -1,5 +1,6 @@
 // This file is used only for manifest version 3
 
+// Represents if importAllScripts has been run
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
 
@@ -33,6 +34,7 @@ function tryImport(...fileNames) {
 }
 
 function importAllScripts() {
+  // Bail if we've already imported scripts
   if (scriptsLoadInitiated) {
     return;
   }
