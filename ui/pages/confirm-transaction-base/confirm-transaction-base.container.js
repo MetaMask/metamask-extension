@@ -122,7 +122,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const toName =
     identities[toAddress]?.name ||
-    tokenList[toAddress.toLowerCase()]?.name ||
+    tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
