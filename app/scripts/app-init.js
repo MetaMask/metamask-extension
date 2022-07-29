@@ -1,3 +1,5 @@
+/* global chrome */
+
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
@@ -114,15 +116,14 @@ self.addEventListener('install', importAllScripts);
 
 /*
  * A keepalive message listener to prevent Service Worker getting shut down due to inactivity.
- * UI sends the message periodically, in a setInterval. 
+ * UI sends the message periodically, in a setInterval.
  * Chrome will revive the service worker if it was shut down, whenever a new message is sent, but only if a listener was defined here.
  *
  * chrome below needs to be replaced by cross-browser object,
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
-// eslint-disable-next-line
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener(() => {
   importAllScripts();
   return false;
 });
