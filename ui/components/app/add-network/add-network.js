@@ -58,14 +58,13 @@ const AddNetwork = () => {
   const [showPopover, setShowPopover] = useState(false);
 
   useEffect(() => {
-    const anAddNetworkConfirmationFromMetaMaskExists = unapprovedConfirmations?.find(
-      (confirmation) => {
+    const anAddNetworkConfirmationFromMetaMaskExists =
+      unapprovedConfirmations?.find((confirmation) => {
         return (
           confirmation.origin === 'metamask' &&
           confirmation.type === MESSAGE_TYPE.ADD_ETHEREUM_CHAIN
         );
-      },
-    );
+      });
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
       setShowPopover(true);
     }
