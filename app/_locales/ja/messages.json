@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "メモを追加"
   },
+  "addMoreNetworks": {
+    "message": "他のネットワークを手動で追加"
+  },
   "addNetwork": {
     "message": "ネットワークを追加"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "アラート"
   },
+  "allOfYour": {
+    "message": "すべての $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "この外部拡張機能に次の操作を許可します"
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "使用限度額の承認"
+  },
+  "approveAllTokensTitle": {
+    "message": "すべての $1 へのアクセスを許可しますか？",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "承認してインストール"
@@ -435,10 +446,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Wyreで $1 を購入"
+    "message": "Wyreで$1を購入"
   },
   "buyWithWyreDescription": {
-    "message": "Wyreを使用すると、デビット カードを使用して、$1 をMetaMaskアカウントに直接デポジットできます。"
+    "message": "簡単なオンボーディングプロセスで最高 $ 1000 購入可能。迅速かつインタラクティブな高限度額の購入検証。デビット・クレジットカード、Apple Pay、銀行送金に対応。100か国以上で利用可能。トークンは MetaMask アカウントに入金されます。"
   },
   "bytes": {
     "message": "バイト"
@@ -465,6 +476,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "トランザクションを$1するには、ネットワークに認識されるようにガス代を 10% 以上増額する必要があります。",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "$1 以下でスワップをキャンセル",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "無料でスワップをキャンセル"
   },
   "cancellationGasFee": {
     "message": "キャンセルのガス代"
@@ -1277,6 +1295,9 @@
   "functionApprove": {
     "message": "機能: 承認"
   },
+  "functionSetApprovalForAll": {
+    "message": "関数: SetApprovalForAll"
+  },
   "functionType": {
     "message": "機能の種類"
   },
@@ -1617,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "無効なシークレットリカバリーフレーズ"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "入力値が無効です！秘密のリカバリーフレーズは大文字・小文字が区別されます。"
+  },
   "ipfsGateway": {
     "message": "IPFSゲートウェイ"
   },
@@ -1892,6 +1916,19 @@
     "message": "ネットワークの詳細の確認",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "先に進む前に$1をお勧めします。",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "弊社の記録によると、ネットワーク名がこのチェーン ID と正しく一致していない可能性があります。"
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "送信された通貨記号がこのチェーン ID に関して予想されるものと一致していません。"
+  },
+  "mismatchedRpcUrl": {
+    "message": "弊社の記録によると、送信された RPC URL の値がこのチェーン ID の既知のプロバイダーと一致しません。"
+  },
   "missingNFT": {
     "message": "NFTが見当たりませんか？"
   },
@@ -1942,6 +1979,9 @@
   },
   "network": {
     "message": "ネットワーク:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "ネットワークが追加されました！"
   },
   "networkDetails": {
     "message": "ネットワークの詳細"
@@ -2059,6 +2099,9 @@
     "message": "ナンスが提案され$1よりも大きいです",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT"
+  },
   "nftTokenIdPlaceholder": {
     "message": "コレクティブルIDを入力してください"
   },
@@ -2154,10 +2197,20 @@
     "message": "ダークモードを有効にする"
   },
   "notifications12Description": {
-    "message": "新規ユーザーの場合、システム設定に従ってダークモードが有効になります。既存のユーザーは、設定 -> 実験的機能で、ダークモードを手動で有効にできます。"
+    "message": "拡張機能のダークモードがついに追加されました！オンにするには、設定 - 実験的機能の順に移動し、ライト、ダーク、システムの表示オプションから一つを選択してください。"
   },
   "notifications12Title": {
     "message": "いつダークモードに？今ダークモードです！🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "カスタムネットワークリストを表示"
+  },
+  "notifications13Description": {
+    "message": "人気のカスタムネットワーク（Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、Optimism、Palm、Polygon）が簡単に追加できるようになりました！この機能を有効にするには、設定 -> 実験的機能に移動し、「カスタムネットワークリストを表示」をオンにしてください！",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "人気のネットワークを追加"
   },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
@@ -2676,6 +2729,14 @@
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
   },
+  "revokeAllTokensTitle": {
+    "message": "すべての $1 へのアクセス許可を取り消しますか？",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "アクセス許可を取り消すと、次の $1 が今後 $2 にアクセスできなくなります",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rinkebyテストネットワーク"
   },
@@ -2852,11 +2913,22 @@
     "message": "$1を送信中",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "警告: 資金の喪失に繋がる可能性のあるトークンコントラクトに送信しようとしています。$1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "高度なプライバシー設定を設定"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMaskはこれらの信頼できるサードパーティーサービスを使用して、製品の使いやすさと安全性を向上させています。"
+  },
+  "setApprovalForAll": {
+    "message": "すべてを承認に設定"
+  },
+  "setApprovalForAllTitle": {
+    "message": "使用限度額なしで $1 を承認",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "設定"
@@ -2876,6 +2948,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "これを選択すると、ガス代と限度額のコントロールが送金画面と確認画面に直接表示されます。"
+  },
+  "showCustomNetworkList": {
+    "message": "カスタムネットワークリストを表示"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "新規ネットワークの追加時に事前に情報が入力済みのネットワークのリストを表示するには、これを選択します。"
   },
   "showFiatConversionInTestnets": {
     "message": "テストネット上に変換を表示"
@@ -2985,6 +3063,9 @@
   },
   "snapsToggle": {
     "message": "スナップは有効になっている場合にのみ実行されます"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
   },
   "somethingWentWrong": {
     "message": "申し訳ありません。問題が発生しました。"
@@ -3548,6 +3629,10 @@
   "switchNetworks": {
     "message": "ネットワークを切り替える"
   },
+  "switchToNetwork": {
+    "message": "$1 に切り替える",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "このアカウントに切り替える"
   },
@@ -3851,6 +3936,9 @@
   "unknownCameraErrorTitle": {
     "message": "申し訳ありません。問題が発生しました..."
   },
+  "unknownCollection": {
+    "message": "無名のコレクション"
+  },
   "unknownNetwork": {
     "message": "不明なプライベートネットワーク"
   },
@@ -3962,7 +4050,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "弊社Webサイトにアクセス"
+    "message": "弊社 Web サイトにアクセス"
   },
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
@@ -3986,6 +4074,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "ウォレットが作成されました"
+  },
+  "wantToAddThisNetwork": {
+    "message": "このネットワークを追加しますか？"
   },
   "warning": {
     "message": "警告"
@@ -4049,11 +4140,15 @@
   "yesLetsTry": {
     "message": "はい、やってみます"
   },
+  "youHaveAddedAll": {
+    "message": "すべての人気ネットワークを追加しました。$1で他のネットワークを発見するか、$2できます。",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
+  },
   "youNeedToAllowCameraAccess": {
     "message": "この機能を使用するには、カメラへのアクセスを許可する必要があります。"
   },
   "youSign": {
-    "message": "署名しています"
+    "message": "著名しています"
   },
   "yourPrivateSeedPhrase": {
     "message": "秘密のシークレットリカバリーフレーズ"

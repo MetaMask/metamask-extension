@@ -1216,6 +1216,7 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
+      originalType: originalTxMeta.type,
     });
 
     if (estimatedBaseFee) {
@@ -2006,6 +2007,7 @@ export default class TransactionController extends EventEmitter {
         estimateUsed,
       },
       defaultGasEstimates,
+      originalType,
       metamaskNetworkId: network,
     } = txMeta;
     const { transactions } = this.store.getState();
@@ -2100,7 +2102,7 @@ export default class TransactionController extends EventEmitter {
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
     } else if (type === TRANSACTION_TYPES.RETRY) {
-      transactionType = TRANSACTION_TYPES.RETRY;
+      transactionType = originalType;
     } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
       transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     } else if (contractInteractionTypes) {
@@ -2121,6 +2123,7 @@ export default class TransactionController extends EventEmitter {
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,
+      transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
     };
 
     const sensitiveProperties = {
