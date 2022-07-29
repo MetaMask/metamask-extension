@@ -27,7 +27,7 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 const container = document.getElementById('app-content');
 
 const WORKER_KEEP_ALIVE_INTERVAL = 1000;
-const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 /*
  * As long as UI is open it will keep sending messages to service worker
