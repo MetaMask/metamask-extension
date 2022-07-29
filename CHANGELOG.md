@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.19.0]
 ### Uncategorized
+- Merge branch 'develop' into Version-v10.19.0
+- New Crowdin translations by Github Action ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
+- Performance improvements for Swaps ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
+- Added speed up metrics data for transaction events and properly track speed up type ([#15197](https://github.com/MetaMask/metamask-extension/pull/15197))
+- Run auto-changelog with last commits
+- Sync 10.18.1 and updated version 10.19.0
+- Merge branch 'develop' into Version-v10.19.0
+- RC10.19 cut off and auto changelog generation
+- Merge remote-tracking branch 'origin/develop' into master-sync
 - Sync 10.18.1 and updated version 10.19.0
 - Merge branch 'develop' into Version-v10.19.0
 - Clean up of code introduced with 43f7a44 ([#15158](https://github.com/MetaMask/metamask-extension/pull/15158))
