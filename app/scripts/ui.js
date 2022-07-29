@@ -50,8 +50,6 @@ async function start() {
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
 
-  let isUIInitialised = false;
-
   // setup stream to background
   let extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
@@ -63,18 +61,9 @@ async function start() {
    * Code below ensures that UI is rendered only after background is ready.
    */
   if (isManifestV3()) {
-    /*
-     * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-     * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
-     * In case the UI is already rendered, only update the streams.
-     */
     const messageListener = (message) => {
       if (message?.name === 'CONNECTION_READY') {
-        if (isUIInitialised) {
-          updateUiStreams();
-        } else {
-          initializeUiWithTab(activeTab);
-        }
+        updateUiStreams();
       }
     };
 
@@ -95,8 +84,19 @@ async function start() {
       extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
     };
 
-    extensionPort.onMessage.addListener(messageListener);
-    extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
+    /*
+     * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
+     * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
+     * In case the UI is already rendered, only update the streams.
+     */
+    extensionPort.onMessage.addListener((message) => {
+      if (message?.name === 'CONNECTION_READY') {
+        initializeUiWithTab(activeTab);
+        extensionPort.onDisconnect.addListener(
+          resetExtensionStreamAndListeners,
+        );
+      }
+    });
   } else {
     initializeUiWithTab(activeTab);
   }
@@ -108,7 +108,6 @@ async function start() {
         displayCriticalError(err, store);
         return;
       }
-      isUIInitialised = true;
 
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
