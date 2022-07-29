@@ -90,7 +90,7 @@ class ImportToken extends Component {
     /**
      * The list of tokens available for search.
      */
-    caseInSensitiveTokenList: PropTypes.object,
+     tokenList: PropTypes.object,
 
     /**
      * Boolean flag indicating whether token detection is enabled or not.
@@ -116,7 +116,7 @@ class ImportToken extends Component {
   };
 
   static defaultProps = {
-    caseInSensitiveTokenList: {},
+    tokenList: {},
   };
 
   state = {
@@ -222,10 +222,8 @@ class ImportToken extends Component {
       return;
     }
 
-    const { setPendingTokens, history, caseInSensitiveTokenList } = this.props;
-    const tokenAddressList = Object.keys(
-      caseInSensitiveTokenList,
-    ).map((address) => address.toLowerCase());
+    const { setPendingTokens, history, tokenList } = this.props;
+    const tokenAddressList = Object.keys(tokenList);
     const {
       customAddress: address,
       customSymbol: symbol,
@@ -246,10 +244,10 @@ class ImportToken extends Component {
   }
 
   async attemptToAutoFillTokenParams(address) {
-    const { caseInSensitiveTokenList } = this.props;
+    const { tokenList } = this.props;
     const { symbol = '', decimals } = await this.tokenInfoGetter(
       address,
-      caseInSensitiveTokenList,
+      tokenList,
     );
 
     const symbolAutoFilled = Boolean(symbol);
@@ -578,7 +576,7 @@ class ImportToken extends Component {
   renderSearchToken() {
     const { t } = this.context;
     const {
-      caseInSensitiveTokenList,
+      tokenList,
       history,
       useTokenDetection,
       networkName,
@@ -612,7 +610,7 @@ class ImportToken extends Component {
             this.setState({ searchResults: results })
           }
           error={tokenSelectorError}
-          caseInSensitiveTokenList={caseInSensitiveTokenList}
+          tokenList={tokenList}
         />
         <div className="import-token__token-list">
           <TokenList

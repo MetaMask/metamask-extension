@@ -107,7 +107,6 @@ describe('DetectTokensController', function () {
           ],
           name: 'Synthetix',
           iconUrl: 'https://airswap-token-images.s3.amazonaws.com/SNX.png',
-          isERC721: false,
         },
         {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -129,7 +128,6 @@ describe('DetectTokensController', function () {
           ],
           name: 'Chainlink',
           iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
-          isERC721: false,
         },
         {
           address: '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
@@ -151,7 +149,6 @@ describe('DetectTokensController', function () {
           ],
           name: 'Bancor',
           iconUrl: 'https://s3.amazonaws.com/airswap-token-images/BNT.png',
-          isERC721: false,
         },
       ])
       .get(`/tokens/3`)
@@ -252,9 +249,7 @@ describe('DetectTokensController', function () {
         address: tokenValues[0].address,
         symbol: tokenValues[0].symbol,
         decimals: tokenValues[0].decimals,
-        image: tokenValues[0].iconUrl,
         aggregators: tokenValues[0].aggregators,
-        isERC721: false,
       },
     ]);
 
@@ -273,9 +268,7 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(tokenValues[0].address),
         decimals: tokenValues[0].decimals,
         symbol: tokenValues[0].symbol,
-        image: tokenValues[0].iconUrl,
         aggregators: tokenValues[0].aggregators,
-        isERC721: false,
       },
     ]);
   });
@@ -306,9 +299,7 @@ describe('DetectTokensController', function () {
         address: existingToken.address,
         symbol: existingToken.symbol,
         decimals: existingToken.decimals,
-        image: existingToken.iconUrl,
         aggregators: existingToken.aggregators,
-        isERC721: false,
       },
     ]);
     const tokenAddressToAdd = erc20ContractAddresses[1];
@@ -324,17 +315,13 @@ describe('DetectTokensController', function () {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
-        image: existingToken.iconUrl,
         aggregators: existingToken.aggregators,
-        isERC721: false,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
-        image: tokenToAdd.iconUrl,
         aggregators: tokenToAdd.aggregators,
-        isERC721: false,
       },
     ]);
   });

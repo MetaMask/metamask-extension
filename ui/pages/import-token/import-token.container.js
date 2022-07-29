@@ -13,8 +13,8 @@ import {
   getIsTokenDetectionInactiveOnMainnet,
   getIsDynamicTokenListAvailable,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getTokenList,
 } from '../../selectors/selectors';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import ImportToken from './import-token.component';
 
 const mapStateToProps = (state) => {
@@ -25,7 +25,6 @@ const mapStateToProps = (state) => {
       pendingTokens,
       provider: { chainId },
       useTokenDetection,
-      tokenList,
       selectedAddress,
     },
   } = state;
@@ -37,9 +36,6 @@ const mapStateToProps = (state) => {
     getIsTokenDetectionSupported(state) ||
     isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
-  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
-    ? STATIC_MAINNET_TOKEN_LIST
-    : tokenList;
 
   return {
     identities,
@@ -49,12 +45,11 @@ const mapStateToProps = (state) => {
     showSearchTab,
     chainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
-    caseInSensitiveTokenList,
+    tokenList: getTokenList(state),
     useTokenDetection,
     selectedAddress,
     isDynamicTokenListAvailable: getIsDynamicTokenListAvailable(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
-    isTokenDetectionInactiveOnMainnet,
     tokenDetectionInactiveOnNonMainnetSupportedNetwork: getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(
       state,
     ),

@@ -4,7 +4,6 @@ import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
 import {
   getTokenList,
-  getIsTokenDetectionInactiveOnMainnet,
 } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Identicon from '../../components/ui/identicon';
@@ -13,7 +12,6 @@ import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 import { showModal } from '../../store/actions';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
@@ -36,14 +34,9 @@ export default function TokenDetailsPage() {
   const t = useContext(I18nContext);
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
-  const isTokenDetectionInactiveInMainnet = useSelector(
-    getIsTokenDetectionInactiveOnMainnet,
-  );
 
   const { address: tokenAddress } = useParams();
-  const tokenMetadata = isTokenDetectionInactiveInMainnet
-    ? STATIC_MAINNET_TOKEN_LIST[tokenAddress.toLowerCase()]
-    : tokenList[tokenAddress.toLowerCase()];
+  const tokenMetadata = tokenList[tokenAddress.toLowerCase()];
   const aggregators = tokenMetadata?.aggregators?.join(', ');
 
   const token = tokens.find(({ address }) =>

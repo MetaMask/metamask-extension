@@ -28,7 +28,7 @@ describe('Import Token', () => {
       push: historyStub,
     },
     showSearchTab: true,
-    caseInSensitiveTokenList: {},
+    tokenList: {},
   };
 
   const render = () => {

@@ -137,7 +137,7 @@ export default function Swap() {
   );
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const tokenList = useSelector(getTokenList);
-  const listTokenValues = shuffle(
+  const shuffledTokensList = shuffle(
     Object.entries(tokenList).filter((tokenData) => Boolean(tokenData.erc20)),
   );
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -476,7 +476,7 @@ export default function Swap() {
                   <BuildQuote
                     ethBalance={ethBalance}
                     selectedAccountAddress={selectedAccountAddress}
-                    shuffledTokensList={listTokenValues}
+                    shuffledTokensList={shuffledTokensList}
                   />
                 );
               }}
