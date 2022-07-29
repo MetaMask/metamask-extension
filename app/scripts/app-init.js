@@ -5,7 +5,6 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'UI_OPEN';
 
 let imported = false;
 
-// Represents if importAllScripts has been run
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
 // eslint-disable-next-line
