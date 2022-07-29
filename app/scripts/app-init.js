@@ -1,7 +1,7 @@
 // This file is used only for manifest version 3
 
 // eslint-disable-next-line
-let imported = false;
+let scriptsLoadInitiated = false;
 
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
@@ -34,10 +34,10 @@ function tryImport(...fileNames) {
 }
 
 function importAllScripts() {
-  if (imported) {
+  if (scriptsLoadInitiated) {
     return;
   }
-  imported = true;
+  scriptsLoadInitiated = true;
   const files = [];
 
   // In testMode individual files are imported, this is to help capture load time stats
