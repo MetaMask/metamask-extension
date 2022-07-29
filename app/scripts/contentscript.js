@@ -7,6 +7,8 @@ import { obj as createThoughStream } from 'through2';
 
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 
+console.log("STARTING contentscript.js")
+
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');

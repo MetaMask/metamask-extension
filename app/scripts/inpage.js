@@ -54,3 +54,7 @@ initializeProvider({
   logger: log,
   shouldShimWeb3: true,
 });
+
+alert('GETS HERE');
+console.log("HEREERERERERE!")
+console.log("window.ethereum: ", window.ethereum, window, this);
