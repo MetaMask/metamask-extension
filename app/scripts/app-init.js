@@ -1,3 +1,4 @@
+/* global chrome */
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
@@ -120,8 +121,8 @@ self.addEventListener('install', importAllScripts);
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
-// eslint-disable-next-line
-chrome.runtime.onMessage.addListener((message) => {
+// eslint-disable-next-line no-undef
+chrome.runtime.onMessage.addListener(() => {
   importAllScripts();
   return false;
 });
