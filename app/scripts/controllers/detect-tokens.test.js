@@ -236,7 +236,7 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      trackMetaMetricsEvent: () => undefined,
+      trackMetaMetricsEvent: noop,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -250,6 +250,8 @@ describe('DetectTokensController', function () {
         symbol: tokenValues[0].symbol,
         decimals: tokenValues[0].decimals,
         aggregators: tokenValues[0].aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
 
@@ -269,6 +271,8 @@ describe('DetectTokensController', function () {
         decimals: tokenValues[0].decimals,
         symbol: tokenValues[0].symbol,
         aggregators: tokenValues[0].aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
   });
@@ -283,7 +287,7 @@ describe('DetectTokensController', function () {
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
-      trackMetaMetricsEvent: () => undefined,
+      trackMetaMetricsEvent: noop,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -300,6 +304,8 @@ describe('DetectTokensController', function () {
         symbol: existingToken.symbol,
         decimals: existingToken.decimals,
         aggregators: existingToken.aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
     const tokenAddressToAdd = erc20ContractAddresses[1];
@@ -316,12 +322,16 @@ describe('DetectTokensController', function () {
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
         aggregators: existingToken.aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
         aggregators: tokenToAdd.aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
   });
