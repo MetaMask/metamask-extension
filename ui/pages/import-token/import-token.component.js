@@ -90,7 +90,7 @@ class ImportToken extends Component {
     /**
      * The list of tokens available for search.
      */
-     tokenList: PropTypes.object,
+    tokenList: PropTypes.object,
 
     /**
      * Boolean flag indicating whether token detection is enabled or not.
@@ -575,12 +575,7 @@ class ImportToken extends Component {
 
   renderSearchToken() {
     const { t } = this.context;
-    const {
-      tokenList,
-      history,
-      useTokenDetection,
-      networkName,
-    } = this.props;
+    const { tokenList, history, useTokenDetection, networkName } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="import-token__search-token">
