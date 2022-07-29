@@ -298,6 +298,22 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * @param {string} txHash - transaction hash
+   * @returns {TransactionMeta} the txMeta who matches the given hash if none found
+   * for the network returns undefined
+   */
+  getTransactionByHash(txHash) {
+    const { transactions } = this.store.getState();
+    const txByHash = Object.values(transactions).filter((tx) => {
+      if (txHash && tx.hash && tx.hash === txHash) {
+        return tx;
+      }
+      return undefined;
+    });
+    return txByHash[0];
+  }
+
+  /**
    * updates the txMeta in the list and adds a history entry
    *
    * @param {object} txMeta - the txMeta to update

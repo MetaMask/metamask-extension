@@ -37,6 +37,10 @@ import { MESSAGE_TYPE } from './app';
  *  resubmitting the same transaction with a higher gas fee. This type is also used
  *  to speed up pending transactions. This is accomplished by creating a new tx with
  *  the same nonce and higher gas fees.
+ * @property {'other'} OTHER - First we must to turn on Customize transaction nonce in
+ *  Settings tab, then we want to send a tx. In confirmation screen we set Max base fee
+ *  and Priority fee to be lower, then save that changes and confirm a tx. This is accomplished
+ *  by creating a new tx with the same nonce while pending transaction.
  */
 
 /**
@@ -58,6 +62,7 @@ export const TRANSACTION_TYPES = {
   INCOMING: 'incoming',
   PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
   RETRY: 'retry',
+  OTHER: 'other',
   SIGN: MESSAGE_TYPE.ETH_SIGN,
   SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
   SIMPLE_SEND: 'simpleSend',
