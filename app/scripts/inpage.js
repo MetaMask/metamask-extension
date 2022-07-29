@@ -3,6 +3,8 @@
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
 let __define;
 
+console.log('STARTING inpage.js');
+
 /**
  * Caches reference to global define object and deletes it to
  * avoid conflicts with other global define objects, such as
@@ -53,8 +55,20 @@ initializeProvider({
   connectionStream: metamaskStream,
   logger: log,
   shouldShimWeb3: true,
+  shouldSetOnWindow: true,
 });
 
 alert('GETS HERE');
-console.log("HEREERERERERE!")
-console.log("window.ethereum: ", window.ethereum, window, this);
+console.log('HEREERERERERE!');
+console.log('window.ethereum: ', window.ethereum, window, this, globalThis);
+console.table([
+  ['window', window],
+  ['window.ethereum', window.ethereum],
+  ['this', this],
+  ['globalThis', globalThis],
+  ['document', window.document],
+]);
+
+if (window.document) {
+  window.document.MY_PROP = 'Blah';
+}

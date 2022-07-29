@@ -7,7 +7,7 @@ import { obj as createThoughStream } from 'through2';
 
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 
-console.log("STARTING contentscript.js")
+console.log('STARTING contentscript.js');
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -35,7 +35,8 @@ const LEGACY_INPAGE = 'inpage';
 const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
-const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+// const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+const phishingPageUrl = {};
 
 if (
   window.location.origin === phishingPageUrl.origin &&

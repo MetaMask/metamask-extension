@@ -45,7 +45,7 @@
     },
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["inpage.js", "contentscript.js"],
+      "js": ["contentscript.js", "inpage.js"],
       "run_at": "document_start",
       "world": "MAIN"
     }
