@@ -26,9 +26,9 @@ const useAddressDetails = (toAddress) => {
   if (identities[toAddress]?.name) {
     return { toName: identities[toAddress].name, isTrusted: true };
   }
-  if (tokenList[toAddress.toLowerCase()]?.name) {
+  if (tokenList[toAddress?.toLowerCase()]?.name) {
     return {
-      toName: tokenList[toAddress.toLowerCase()].name,
+      toName: tokenList[toAddress?.toLowerCase()].name,
       isTrusted: true,
     };
   }
