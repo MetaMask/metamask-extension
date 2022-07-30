@@ -69,6 +69,8 @@ import {
   calcTokenAmount,
   getTokenAddressParam,
   getTokenValueParam,
+  getTokenMetadata,
+  getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
   checkExistingAddresses,
@@ -88,12 +90,16 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-import { sumHexes } from '../../helpers/utils/transactions.util';
+import {
+  isSmartContractAddress,
+  sumHexes,
+} from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
-import { TOKEN_STANDARDS, ETH } from '../../helpers/constants/common';
+import { ETH } from '../../helpers/constants/common';
 import {
   ASSET_TYPES,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
@@ -156,7 +162,7 @@ import {
  */
 
 /**
- * @typedef {Object} SendStateStages
+ * @typedef {object} SendStateStages
  * @property {'ADD_RECIPIENT'} ADD_RECIPIENT - The user is selecting which
  *  address to send an asset to.
  * @property {'DRAFT'} DRAFT - The send form is shown for a transaction yet to
@@ -182,7 +188,7 @@ export const SEND_STAGES = {
 };
 
 /**
- * @typedef {Object} DraftTxStatus
+ * @typedef {object} DraftTxStatus
  * @property {'INVALID'} INVALID - The transaction is invalid and cannot be
  *  submitted. There are a number of cases that would result in an invalid
  *  send state:
@@ -207,7 +213,7 @@ export const SEND_STATUSES = {
 };
 
 /**
- * @typedef {Object} SendStateGasModes
+ * @typedef {object} SendStateGasModes
  * @property {'BASIC'} BASIC - Shows the basic estimate slow/avg/fast buttons
  *  when on mainnet and the metaswaps API request is successful.
  * @property {'CUSTOM'} CUSTOM - Shows GasFeeDisplay component that is a read
@@ -229,7 +235,7 @@ export const GAS_INPUT_MODES = {
 };
 
 /**
- * @typedef {Object} SendStateAmountModes
+ * @typedef {object} SendStateAmountModes
  * @property {'INPUT'} INPUT - the user provides the amount by typing in the
  *  field.
  * @property {'MAX'} MAX - The user selects the MAX button and amount is
@@ -247,7 +253,7 @@ export const AMOUNT_MODES = {
 };
 
 /**
- * @typedef {Object} SendStateRecipientModes
+ * @typedef {object} SendStateRecipientModes
  * @property {'CONTACT_LIST'} CONTACT_LIST - The user is displayed a list of
  *  their contacts and addresses they have recently send to.
  * @property {'MY_ACCOUNTS'} MY_ACCOUNTS - the user is displayed a list of
@@ -265,21 +271,21 @@ export const RECIPIENT_SEARCH_MODES = {
 };
 
 /**
- * @typedef {Object} Account
+ * @typedef {object} Account
  * @property {string} address - The hex address of the account.
  * @property {string} balance - Hex string representing the native asset
  *  balance of the account the transaction will be sent from.
  */
 
 /**
- * @typedef {Object} Amount
+ * @typedef {object} Amount
  * @property {string} [error] - Error to display for the amount field.
  * @property {string} value - A hex string representing the amount of the
  *  selected currency to send.
  */
 
 /**
- * @typedef {Object} Asset
+ * @typedef {object} Asset
  * @property {string} balance - A hex string representing the balance
  *  that the user holds of the asset that they are attempting to send.
  * @property {TokenDetails} [details] - An object that describes the
@@ -293,7 +299,7 @@ export const RECIPIENT_SEARCH_MODES = {
  */
 
 /**
- * @typedef {Object} GasFees
+ * @typedef {object} GasFees
  * @property {string} [error] - error to display for gas fields.
  * @property {string} gasLimit - maximum gas needed for tx.
  * @property {string} gasPrice - price in wei to pay per gas.
@@ -306,7 +312,7 @@ export const RECIPIENT_SEARCH_MODES = {
 /**
  * An object that describes the intended recipient of a transaction.
  *
- * @typedef {Object} Recipient
+ * @typedef {object} Recipient
  * @property {string} address - The fully qualified address of the recipient.
  *  This is set after the recipient.userInput is validated, the userInput field
  *  is quickly updated to avoid delay between keystrokes and seeing the input
@@ -321,7 +327,7 @@ export const RECIPIENT_SEARCH_MODES = {
  */
 
 /**
- * @typedef {Object} DraftTransaction
+ * @typedef {object} DraftTransaction
  * @property {Amount} amount - An object containing information about the
  *  amount of currency to send.
  * @property {Asset} asset - An object that describes the asset that the user
@@ -382,6 +388,7 @@ export const draftTransactionInitialState = {
     error: null,
     nickname: '',
     warning: null,
+    recipientWarningAcknowledged: false,
   },
   status: SEND_STATUSES.VALID,
   transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
@@ -391,7 +398,7 @@ export const draftTransactionInitialState = {
 /**
  * Describes the state tree of the send slice
  *
- * @typedef {Object} SendState
+ * @typedef {object} SendState
  * @property {MapValuesToUnion<SendStateAmountModes>} amountMode - Describe
  *  whether the user has manually input an amount or if they have selected max
  *  to send the maximum amount of the selected currency.
@@ -401,7 +408,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
- * @property {Object.<string, DraftTransaction>} draftTransactions - An object keyed
+ * @property {Object<string, DraftTransaction>} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
  *  supports EIP 1559 transactions.
@@ -464,9 +471,9 @@ export const initialState = {
  * typescript conversions. The metamask key is typed as an object on purpose
  * here because I cannot go so far in this work as to type that entire object.
  *
- * @typedef {Object} MetaMaskState
+ * @typedef {object} MetaMaskState
  * @property {SendState} send - The state of the send flow.
- * @property {Object} metamask - The state of the metamask store.
+ * @property {object} metamask - The state of the metamask store.
  */
 
 const name = 'send';
@@ -547,7 +554,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 );
 
 /**
- * @typedef {Object} Asset
+ * @typedef {object} Asset
  * @property {AssetTypesString} type - The type of asset that the user
  *  is attempting to send. Defaults to 'NATIVE' which represents the native
  *  asset of the chain. Can also be 'TOKEN' or 'COLLECTIBLE'.
@@ -574,8 +581,8 @@ export const initializeSendState = createAsyncThunk(
   'send/initializeSendState',
   async ({ chainHasChanged = false } = {}, thunkApi) => {
     /**
-     * @typedef {Object} ReduxState
-     * @property {Object} metamask - Half baked type for the MetaMask object
+     * @typedef {object} ReduxState
+     * @property {object} metamask - Half baked type for the MetaMask object
      * @property {SendState} send - the send state
      */
 
@@ -710,7 +717,7 @@ export const initializeSendState = createAsyncThunk(
  */
 
 /**
- * @typedef {Object} GasFeeUpdateParams
+ * @typedef {object} GasFeeUpdateParams
  * @property {TransactionTypeString} transactionType - The transaction type
  * @property {string} [maxFeePerGas] - The maximum amount in hex wei to pay
  *  per gas on a FEE_MARKET transaction.
@@ -727,7 +734,7 @@ export const initializeSendState = createAsyncThunk(
  */
 
 /**
- * @typedef {Object} GasEstimateUpdateParams
+ * @typedef {object} GasEstimateUpdateParams
  * @property {GasEstimateType} gasEstimateType - The type of gas estimation
  *  provided by the controller.
  * @property {(
@@ -919,31 +926,24 @@ const slice = createSlice({
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
-     * @param {UpdateAssetPayload} action - The asest to set in the
+     * @param {UpdateAssetPayload} action - The asset to set in the
      *  draftTransaction.
      * @returns {void}
      */
     updateAsset: (state, action) => {
+      const { asset, initialAssetSet } = action.payload;
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
-      // If an asset update occurs that changes the type from 'NATIVE' to
-      // 'NATIVE' then this is likely the initial asset set of an edit
-      // transaction. We don't need to set the amount to zero in this case.
-      // The only times where an update would occur of this nature that we
-      // would want to set the amount to zero is on a network or account change
-      // but that update is handled elsewhere.
-      const skipAmountUpdate =
-        action.payload.type === ASSET_TYPES.NATIVE &&
-        draftTransaction.asset.type === ASSET_TYPES.NATIVE;
-      draftTransaction.asset.type = action.payload.type;
-      draftTransaction.asset.balance = action.payload.balance;
-      draftTransaction.asset.error = action.payload.error;
+      draftTransaction.asset.type = asset.type;
+      draftTransaction.asset.balance = asset.balance;
+      draftTransaction.asset.error = asset.error;
+
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
       ) {
-        draftTransaction.asset.details = action.payload.details;
+        draftTransaction.asset.details = asset.details;
       } else {
         // clear the details object when sending native currency
         draftTransaction.asset.details = null;
@@ -952,20 +952,12 @@ const slice = createSlice({
           // are no longer valid when sending native currency.
           draftTransaction.recipient.error = null;
         }
-
-        if (
-          draftTransaction.recipient.warning === KNOWN_RECIPIENT_ADDRESS_WARNING
-        ) {
-          // Warning related to sending tokens to a known contract address
-          // are no longer valid when sending native currency.
-          draftTransaction.recipient.warning = null;
-        }
       }
       // if amount mode is MAX update amount to max of new asset, otherwise set
       // to zero. This will revalidate the send amount field.
       if (state.amountMode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
-      } else if (skipAmountUpdate === false) {
+      } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
       }
       // validate send state
@@ -1084,8 +1076,10 @@ const slice = createSlice({
     updateGasLimit: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
-      slice.caseReducers.calculateGasTotal(state);
+      if (draftTransaction) {
+        draftTransaction.gas.gasLimit = addHexPrefix(action.payload);
+        slice.caseReducers.calculateGasTotal(state);
+      }
     },
     /**
      * sets the layer 1 fees total (for a multi-layer fee network)
@@ -1154,6 +1148,26 @@ const slice = createSlice({
       state.recipientInput = '';
       state.recipientMode = action.payload;
     },
+
+    updateRecipientWarning: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.warning = action.payload;
+    },
+
+    updateDraftTransactionStatus: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.status = action.payload;
+    },
+
+    acknowledgeRecipientWarning: (state) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.recipientWarningAcknowledged = true;
+      slice.caseReducers.validateSendState(state);
+    },
+
     /**
      * Updates the value of the recipientInput key with what the user has
      * typed into the recipient input field in the UI.
@@ -1316,10 +1330,13 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const isSendingToken =
-            draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-            draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE;
-          const { chainId, tokens, tokenAddressList } = action.payload;
+          const {
+            chainId,
+            tokens,
+            tokenAddressList,
+            isProbablyAnAssetContract,
+          } = action.payload;
+
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
@@ -1331,10 +1348,9 @@ const slice = createSlice({
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
           } else if (
-            isSendingToken &&
             isOriginContractAddress(
               state.recipientInput,
-              draftTransaction.asset.details.address,
+              draftTransaction.asset?.details?.address,
             )
           ) {
             draftTransaction.recipient.error = CONTRACT_ADDRESS_ERROR;
@@ -1342,12 +1358,12 @@ const slice = createSlice({
             draftTransaction.recipient.error = null;
           }
           if (
-            isSendingToken &&
-            isValidHexAddress(state.recipientInput) &&
-            (tokenAddressList.find((address) =>
-              isEqualCaseInsensitive(address, state.recipientInput),
-            ) ||
-              checkExistingAddresses(state.recipientInput, tokens))
+            (isValidHexAddress(state.recipientInput) &&
+              (tokenAddressList.find((address) =>
+                isEqualCaseInsensitive(address, state.recipientInput),
+              ) ||
+                checkExistingAddresses(state.recipientInput, tokens))) ||
+            isProbablyAnAssetContract
           ) {
             draftTransaction.recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
           } else {
@@ -1355,6 +1371,7 @@ const slice = createSlice({
           }
         }
       }
+      slice.caseReducers.validateSendState(state);
     },
     /**
      * Checks if the draftTransaction is currently valid. The following list of
@@ -1390,6 +1407,12 @@ const slice = createSlice({
         case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
           new BigNumber(state.gasLimitMinimum),
         ):
+          draftTransaction.status = SEND_STATUSES.INVALID;
+          break;
+        case draftTransaction.recipient.warning === 'loading':
+        case draftTransaction.recipient.warning ===
+          KNOWN_RECIPIENT_ADDRESS_WARNING &&
+          draftTransaction.recipient.recipientWarningAcknowledged === false:
           draftTransaction.status = SEND_STATUSES.INVALID;
           break;
         default:
@@ -1589,9 +1612,16 @@ const {
   validateRecipientUserInput,
   updateRecipientSearchMode,
   addHistoryEntry,
+  acknowledgeRecipientWarning,
 } = actions;
 
-export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
+export {
+  useDefaultGas,
+  useCustomGas,
+  updateGasLimit,
+  addHistoryEntry,
+  acknowledgeRecipientWarning,
+};
 
 // Action Creators
 
@@ -1601,14 +1631,18 @@ export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
  * passing in both the dispatch method and the payload to dispatch, which makes
  * it only applicable for use within action creators.
  */
-const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
-  dispatch(
-    addHistoryEntry(
-      `sendFlow - user typed ${payload.userInput} into recipient input field`,
-    ),
-  );
-  dispatch(validateRecipientUserInput(payload));
-}, 300);
+const debouncedValidateRecipientUserInput = debounce(
+  (dispatch, payload, resolve) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user typed ${payload.userInput} into recipient input field`,
+      ),
+    );
+    dispatch(validateRecipientUserInput(payload));
+    resolve();
+  },
+  300,
+);
 
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
@@ -1663,7 +1697,7 @@ export function editExistingTransaction(assetType, transactionId) {
       await dispatch(
         updateSendAsset(
           { type: ASSET_TYPES.NATIVE },
-          { skipComputeEstimatedGasLimit: true },
+          { initialAssetSet: true },
         ),
       );
     } else {
@@ -1716,11 +1750,15 @@ export function editExistingTransaction(assetType, transactionId) {
             details: {
               address: transaction.txParams.to,
               ...(assetType === ASSET_TYPES.COLLECTIBLE
-                ? { tokenId: getTokenValueParam(tokenData) }
+                ? {
+                    tokenId:
+                      getTokenIdParam(tokenData) ??
+                      getTokenValueParam(tokenData),
+                  }
                 : {}),
             },
           },
-          { skipComputeEstimatedGasLimit: true },
+          { initialAssetSet: true },
         ),
       );
     }
@@ -1766,7 +1804,7 @@ export function updateGasPrice(gasPrice) {
  * (temporary) send state recipient nickname is consistent with the address book
  * nickname which has already been persisted to state.
  *
- * @param {Object} recipient - Recipient information
+ * @param {object} recipient - Recipient information
  * @param {string} recipient.address - hex address to send the transaction to
  * @param {string} [recipient.nickname] - Alias for the address to display
  *  to the user
@@ -1799,18 +1837,59 @@ export function updateRecipient({ address, nickname }) {
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
+    dispatch(actions.updateRecipientWarning('loading'));
+    dispatch(actions.updateDraftTransactionStatus(SEND_STATUSES.INVALID));
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
+    const draftTransaction =
+      state[name].draftTransactions[state[name].currentTransactionUUID];
+    const sendingAddress =
+      draftTransaction.fromAccount?.address ??
+      state[name].selectedAccount.address ??
+      getSelectedAddress(state);
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
-    const tokenAddressList = Object.keys(getTokenList(state));
-    debouncedValidateRecipientUserInput(dispatch, {
-      userInput,
-      chainId,
-      tokens,
-      useTokenDetection,
-      tokenAddressList,
+    const tokenMap = getTokenList(state);
+    const tokenAddressList = Object.keys(tokenMap);
+
+    const inputIsValidHexAddress = isValidHexAddress(userInput);
+    let isProbablyAnAssetContract = false;
+    if (inputIsValidHexAddress) {
+      const smartContractAddress = await isSmartContractAddress(userInput);
+      if (smartContractAddress) {
+        const { symbol, decimals } =
+          getTokenMetadata(userInput, tokenMap) || {};
+
+        isProbablyAnAssetContract = symbol && decimals !== undefined;
+
+        if (!isProbablyAnAssetContract) {
+          try {
+            const { standard } = await getTokenStandardAndDetails(
+              userInput,
+              sendingAddress,
+            );
+            isProbablyAnAssetContract = Boolean(standard);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+    }
+
+    return new Promise((resolve) => {
+      debouncedValidateRecipientUserInput(
+        dispatch,
+        {
+          userInput,
+          chainId,
+          tokens,
+          useTokenDetection,
+          tokenAddressList,
+          isProbablyAnAssetContract,
+        },
+        resolve,
+      );
     });
   };
 }
@@ -1871,14 +1950,14 @@ export function updateSendAmount(amount) {
  * object with the appropriate ERC20 details including address, symbol and
  * decimals.
  *
- * @param {Object} payload - action payload
+ * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
  * @returns {ThunkAction<void>}
  */
 export function updateSendAsset(
   { type, details: providedDetails },
-  { skipComputeEstimatedGasLimit = false } = {},
+  { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
     const state = getState();
@@ -1890,6 +1969,9 @@ export function updateSendAsset(
       getSelectedAddress(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === ASSET_TYPES.NATIVE) {
+      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
+
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${
@@ -1899,12 +1981,29 @@ export function updateSendAsset(
       );
       await dispatch(
         actions.updateAsset({
-          type,
-          details: null,
-          balance: account.balance,
-          error: null,
+          asset: {
+            type,
+            details: null,
+            balance: account.balance,
+            error: null,
+          },
+          initialAssetSet,
         }),
       );
+
+      // This is meant to handle cases where we are editing an unapprovedTx from the background state
+      // and its type is a token method. In such a case, the hex data will be the necessary hex data
+      // for calling the contract transfer method.
+      // Now that we are updating the transaction to be a send of a native asset type, we should
+      // set the hex data of the transaction being editing to be empty.
+      // then the user will not want to send any hex data now that they have change the
+      if (
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+        unapprovedTx?.type === TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM
+      ) {
+        await dispatch(actions.updateUserInputHexData(''));
+      }
     } else {
       await dispatch(showLoadingIndication());
       const details = {
@@ -1916,16 +2015,24 @@ export function updateSendAsset(
         )),
       };
       await dispatch(hideLoadingIndication());
-      const balance = addHexPrefix(
-        calcTokenAmount(details.balance, details.decimals).toString(16),
-      );
+
       const asset = {
         type,
         details,
-        balance,
         error: null,
       };
-      if (
+
+      if (details.standard === TOKEN_STANDARDS.ERC20) {
+        asset.balance = addHexPrefix(
+          calcTokenAmount(details.balance, details.decimals).toString(16),
+        );
+
+        await dispatch(
+          addHistoryEntry(
+            `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
+          ),
+        );
+      } else if (
         details.standard === TOKEN_STANDARDS.ERC1155 &&
         type === ASSET_TYPES.COLLECTIBLE
       ) {
@@ -1975,18 +2082,11 @@ export function updateSendAsset(
             ),
           );
         }
-      } else {
-        await dispatch(
-          addHistoryEntry(
-            `sendFlow - user set asset to ERC20 token with symbol ${details.symbol} and address ${details.address}`,
-          ),
-        );
-        // do nothing extra.
       }
 
-      await dispatch(actions.updateAsset(asset));
+      await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (skipComputeEstimatedGasLimit === false) {
+    if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
@@ -2008,6 +2108,7 @@ export function updateSendHexData(hexData) {
     await dispatch(
       addHistoryEntry(`sendFlow - user added custom hexData ${hexData}`),
     );
+
     await dispatch(actions.updateUserInputHexData(hexData));
     const state = getState();
     const draftTransaction =
@@ -2139,8 +2240,10 @@ export function signTransaction() {
           draftTransaction.history,
         ),
       );
-      dispatch(updateEditableParams(draftTransaction.id, editingTx.txParams));
-      dispatch(
+      await dispatch(
+        updateEditableParams(draftTransaction.id, editingTx.txParams),
+      );
+      await dispatch(
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
@@ -2252,6 +2355,19 @@ export function getCurrentTransactionUUID(state) {
  */
 export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
+}
+
+/**
+ * Selector that returns true if a draft transaction exists.
+ *
+ * @type {Selector<boolean>}
+ */
+export function getDraftTransactionExists(state) {
+  const draftTransaction = getCurrentDraftTransaction(state);
+  if (Object.keys(draftTransaction).length === 0) {
+    return false;
+  }
+  return true;
 }
 
 // Gas selectors
@@ -2484,6 +2600,13 @@ export function getIsUsingMyAccountForRecipientSearch(state) {
  */
 export function getRecipientUserInput(state) {
   return state[name].recipientInput;
+}
+
+export function getRecipientWarningAcknowledgement(state) {
+  return (
+    getCurrentDraftTransaction(state).recipient?.recipientWarningAcknowledged ??
+    false
+  );
 }
 
 // Overall validity and stage selectors

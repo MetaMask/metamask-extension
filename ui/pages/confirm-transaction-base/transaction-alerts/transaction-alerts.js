@@ -59,7 +59,7 @@ const TransactionAlerts = ({
             <Typography
               align="left"
               className="transaction-alerts__pending-transactions"
-              margin={[0, 0]}
+              margin={0}
               tag={TYPOGRAPHY.Paragraph}
               variant={TYPOGRAPHY.H7}
             >
@@ -127,7 +127,7 @@ const TransactionAlerts = ({
           message={
             <Typography
               align="left"
-              margin={[0, 0]}
+              margin={0}
               tag={TYPOGRAPHY.Paragraph}
               variant={TYPOGRAPHY.H7}
             >
@@ -144,7 +144,7 @@ const TransactionAlerts = ({
           message={
             <Typography
               align="left"
-              margin={[0, 0]}
+              margin={0}
               tag={TYPOGRAPHY.Paragraph}
               variant={TYPOGRAPHY.H7}
             >

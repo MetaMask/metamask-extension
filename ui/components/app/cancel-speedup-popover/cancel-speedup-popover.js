@@ -103,7 +103,8 @@ const CancelSpeedupPopover = () => {
         <Typography
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
           variant={TYPOGRAPHY.H6}
-          margin={[0, 0, 2, 0]}
+          marginTop={0}
+          marginBottom={2}
         >
           {t('cancelSpeedUpLabel', [
             <strong key="cancelSpeedupReplace">{t('replace')}</strong>,

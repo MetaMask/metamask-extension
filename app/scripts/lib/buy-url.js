@@ -9,7 +9,6 @@ import {
   ROPSTEN_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
   TRANSAK_API_KEY,
@@ -17,7 +16,7 @@ import {
   COINBASEPAY_API_KEY,
 } from '../constants/on-ramp';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * Create a Wyre purchase URL.
@@ -141,7 +140,7 @@ const createCoinbasePayUrl = (walletAddress, chainId) => {
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
- * @param {Object} opts - Options required to determine the correct url
+ * @param {object} opts - Options required to determine the correct url
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
  * @param opts.service

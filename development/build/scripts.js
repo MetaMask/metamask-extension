@@ -36,7 +36,6 @@ const metamaskrc = require('rc')('metamask', {
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
   PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
   TOKEN_DETECTION_V2: process.env.TOKEN_DETECTION_V2,
-  ADD_POPULAR_NETWORKS: process.env.ADD_POPULAR_NETWORKS,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
@@ -47,7 +46,7 @@ const metamaskrc = require('rc')('metamask', {
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
 });
 
-const { streamFlatMap } = require('../stream-flat-map.js');
+const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 
 const {
@@ -183,6 +182,31 @@ const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
 
 module.exports = createScriptTasks;
 
+/**
+ * Create tasks for building JavaScript bundles and templates. One
+ * task is returned for each build target. These build target tasks are
+ * each composed of smaller tasks.
+ *
+ * @param {object} options - Build options.
+ * @param {boolean} options.applyLavaMoat - Whether the build should use
+ * LavaMoat at runtime or not.
+ * @param {string[]} options.browserPlatforms - A list of browser platforms to
+ * build bundles for.
+ * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * "flask", etc.).
+ * @param {string[] | null} options.ignoredFiles - A list of files to exclude
+ * from the current build.
+ * @param {boolean} options.isLavaMoat - Whether this build script is being run
+ * using LavaMoat or not.
+ * @param {object} options.livereload - The "gulp-livereload" server instance.
+ * @param {boolean} options.policyOnly - Whether to stop the build after
+ * generating the LavaMoat policy, skipping any writes to disk other than the
+ * LavaMoat policy itself.
+ * @param {boolean} options.shouldLintFenceFiles - Whether files with code
+ * fences should be linted after fences have been removed.
+ * @param {string} options.version - The current version of the extension.
+ * @returns {object} A set of tasks, one for each build target.
+ */
 function createScriptTasks({
   applyLavaMoat,
   browserPlatforms,
@@ -190,29 +214,29 @@ function createScriptTasks({
   ignoredFiles,
   isLavaMoat,
   livereload,
-  shouldLintFenceFiles,
   policyOnly,
+  shouldLintFenceFiles,
   version,
 }) {
   // internal tasks
   const core = {
     // dev tasks (live reload)
-    dev: createTasksForBuildJsExtension({
+    dev: createTasksForScriptBundles({
       taskPrefix: 'scripts:core:dev',
       devMode: true,
     }),
-    testDev: createTasksForBuildJsExtension({
+    testDev: createTasksForScriptBundles({
       taskPrefix: 'scripts:core:test-live',
       devMode: true,
       testing: true,
     }),
     // built for CI tests
-    test: createTasksForBuildJsExtension({
+    test: createTasksForScriptBundles({
       taskPrefix: 'scripts:core:test',
       testing: true,
     }),
     // production
-    prod: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:prod' }),
+    prod: createTasksForScriptBundles({ taskPrefix: 'scripts:core:prod' }),
   };
 
   // high level tasks
@@ -220,7 +244,24 @@ function createScriptTasks({
   const { dev, test, testDev, prod } = core;
   return { dev, test, testDev, prod };
 
-  function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
+  /**
+   * Define tasks for building the JavaScript modules used by the extension.
+   * This function returns a single task that builds JavaScript modules in
+   * parallel for a single type of build (e.g. dev, testing, production).
+   *
+   * @param {object} options - The build options.
+   * @param {string} options.taskPrefix - The prefix to use for the name of
+   * each defined task.
+   * @param {boolean} [options.devMode] - Whether the build is being used for
+   * development.
+   * @param {boolean} [options.testing] - Whether the build is intended for
+   * running end-to-end (e2e) tests.
+   */
+  function createTasksForScriptBundles({
+    taskPrefix,
+    devMode = false,
+    testing = false,
+  }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
@@ -247,19 +288,19 @@ function createScriptTasks({
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
-      createTaskForBundleContentscript({ devMode, testing }),
+      createContentscriptBundle({ devMode, testing }),
     );
 
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createTaskForBundleDisableConsole({ devMode, testing }),
+      createDisableConsoleBundle({ devMode, testing }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createTaskForBundleSentry({ devMode, testing }),
+      createSentryBundle({ devMode, testing }),
     );
 
     // task for initiating browser livereload
@@ -297,7 +338,17 @@ function createScriptTasks({
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createTaskForBundleDisableConsole({ devMode, testing }) {
+  /**
+   * Create a bundle for the "disable-console" module.
+   *
+   * @param {object} options - The build options.
+   * @param {boolean} options.devMode - Whether the build is being used for
+   * development.
+   * @param {boolean} options.testing - Whether the build is intended for
+   * running end-to-end (e2e) tests.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createDisableConsoleBundle({ devMode, testing }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
@@ -314,7 +365,17 @@ function createScriptTasks({
     });
   }
 
-  function createTaskForBundleSentry({ devMode, testing }) {
+  /**
+   * Create a bundle for the "sentry-install" module.
+   *
+   * @param {object} options - The build options.
+   * @param {boolean} options.devMode - Whether the build is being used for
+   * development.
+   * @param {boolean} options.testing - Whether the build is intended for
+   * running end-to-end (e2e) tests.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createSentryBundle({ devMode, testing }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
@@ -331,8 +392,19 @@ function createScriptTasks({
     });
   }
 
-  // the "contentscript" bundle contains the "inpage" bundle
-  function createTaskForBundleContentscript({ devMode, testing }) {
+  /**
+   * Create bundles for the "contentscript" and "inpage" modules. The inpage
+   * module is created first because it gets embedded in the contentscript
+   * module.
+   *
+   * @param {object} options - The build options.
+   * @param {boolean} options.devMode - Whether the build is being used for
+   * development.
+   * @param {boolean} options.testing - Whether the build is intended for
+   * running end-to-end (e2e) tests.
+   * @returns {Function} A function that creates the bundles.
+   */
+  function createContentscriptBundle({ devMode, testing }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
     return composeSeries(
@@ -370,32 +442,67 @@ const postProcessServiceWorker = (
   mv3BrowserPlatforms,
   fileList,
   applyLavaMoat,
+  testing,
 ) => {
   mv3BrowserPlatforms.forEach((browser) => {
     const appInitFile = `./dist/${browser}/app-init.js`;
     const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    const fileOutput = fileContent
-      .replace('/** FILE NAMES */', fileList)
-      .replace(
+    let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
+    if (testing) {
+      fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
+    } else {
+      // Setting applyLavaMoat to true in testing mode
+      // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
+      fileOutput = fileOutput.replace(
         'const applyLavaMoat = true;',
         `const applyLavaMoat = ${applyLavaMoat};`,
       );
+    }
     writeFileSync(appInitFile, fileOutput);
   });
 };
 
-// Function generates app-init.js for browsers chrome, brave and opera.
-// It dynamically injects list of files generated in the build.
-async function bundleMV3AppInitialiser({
-  jsBundles,
+/**
+ * Create the bundle for the app initialization module used in manifest v3
+ * builds.
+ *
+ * This must be called after the "background" bundles have been created, so
+ * that the list of all background bundles can be injected into this bundle.
+ *
+ * @param {object} options - Build options.
+ * @param {boolean} options.applyLavaMoat - Whether the build should use
+ * LavaMoat at runtime or not.
+ * @param {string[]} options.browserPlatforms - A list of browser platforms to
+ * build bundles for.
+ * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * "flask", etc.).
+ * @param {boolean} options.devMode - Whether the build is being used for
+ * development.
+ * @param {string[] | null} options.ignoredFiles - A list of files to exclude
+ * from the current build.
+ * @param {string[]} options.jsBundles - A list of JavaScript bundles to be
+ * injected into this bundle.
+ * @param {boolean} options.policyOnly - Whether to stop the build after
+ * generating the LavaMoat policy, skipping any writes to disk other than the
+ * LavaMoat policy itself.
+ * @param {boolean} options.shouldLintFenceFiles - Whether files with code
+ * fences should be linted after fences have been removed.
+ * @param {boolean} options.testing - Whether the build is intended for
+ * running end-to-end (e2e) tests.
+ * @param {string} options.version - The current version of the extension.
+ * @returns {Function} A function that creates the set of bundles.
+ */
+async function createManifestV3AppInitializationBundle({
+  applyLavaMoat,
   browserPlatforms,
   buildType,
   devMode,
   ignoredFiles,
-  testing,
+  jsBundles,
   policyOnly,
   shouldLintFenceFiles,
-  applyLavaMoat,
+  testing,
+  version,
 }) {
   const label = 'app-init';
   // TODO: remove this filter for firefox once MV3 is supported in it
@@ -418,22 +525,76 @@ async function bundleMV3AppInitialiser({
     testing,
     policyOnly,
     shouldLintFenceFiles,
+    version,
   })();
 
-  postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+  postProcessServiceWorker(
+    mv3BrowserPlatforms,
+    fileList,
+    applyLavaMoat,
+    testing,
+  );
 
-  let prevChromeFileContent;
-  watch('./dist/chrome/app-init.js', () => {
-    const chromeFileContent = readFileSync('./dist/chrome/app-init.js', 'utf8');
-    if (chromeFileContent !== prevChromeFileContent) {
-      prevChromeFileContent = chromeFileContent;
-      postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
-    }
-  });
+  // If the application is running in development mode, we watch service worker file to
+  // in case the file is changes we need to process it again to replace "/** FILE NAMES */", "testMode" etc.
+  if (devMode && !testing) {
+    let prevChromeFileContent;
+    watch('./dist/chrome/app-init.js', () => {
+      const chromeFileContent = readFileSync(
+        './dist/chrome/app-init.js',
+        'utf8',
+      );
+      if (chromeFileContent !== prevChromeFileContent) {
+        prevChromeFileContent = chromeFileContent;
+        postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
+      }
+    });
+  }
+
+  // Code below is used to set statsMode to true when testing in MV3
+  // This is used to capture module initialisation stats using lavamoat.
+  if (testing) {
+    const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
+    const fileOutput = content.replace('statsMode = false', 'statsMode = true');
+    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
+  }
 
   console.log(`Bundle end: service worker app-init.js`);
 }
 
+/**
+ * Return a function that creates a set of factored bundles.
+ *
+ * For each entry point, a series of one or more bundles is created. These are
+ * split up roughly by size, to ensure no single bundle exceeds the maximum
+ * JavaScript file size imposed by Firefox.
+ *
+ * Modules that are common between all entry points are bundled separately, as
+ * a set of one or more "common" bundles.
+ *
+ * @param {object} options - Build options.
+ * @param {boolean} options.applyLavaMoat - Whether the build should use
+ * LavaMoat at runtime or not.
+ * @param {string[]} options.browserPlatforms - A list of browser platforms to
+ * build bundles for.
+ * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * "flask", etc.).
+ * @param {boolean} options.devMode - Whether the build is being used for
+ * development.
+ * @param {string[]} options.entryFiles - A list of entry point file paths,
+ * relative to the repository root directory.
+ * @param {string[] | null} options.ignoredFiles - A list of files to exclude
+ * from the current build.
+ * @param {boolean} options.policyOnly - Whether to stop the build after
+ * generating the LavaMoat policy, skipping any writes to disk other than the
+ * LavaMoat policy itself.
+ * @param {boolean} options.shouldLintFenceFiles - Whether files with code
+ * fences should be linted after fences have been removed.
+ * @param {boolean} options.testing - Whether the build is intended for
+ * running end-to-end (e2e) tests.
+ * @param {string} options.version - The current version of the extension.
+ * @returns {Function} A function that creates the set of bundles.
+ */
 function createFactoredBuild({
   applyLavaMoat,
   browserPlatforms,
@@ -597,16 +758,17 @@ function createFactoredBuild({
                 ...commonSet.values(),
                 ...groupSet.values(),
               ].map((label) => `./${label}.js`);
-              await bundleMV3AppInitialiser({
-                jsBundles,
+              await createManifestV3AppInitializationBundle({
+                applyLavaMoat,
                 browserPlatforms,
                 buildType,
                 devMode,
                 ignoredFiles,
-                testing,
+                jsBundles,
                 policyOnly,
                 shouldLintFenceFiles,
-                applyLavaMoat,
+                testing,
+                version,
               });
             }
             break;
@@ -630,21 +792,47 @@ function createFactoredBuild({
       }
     });
 
-    await bundleIt(buildConfiguration, { reloadOnChange });
+    await createBundle(buildConfiguration, { reloadOnChange });
   };
 }
 
+/**
+ * Return a function that creates a single JavaScript bundle.
+ *
+ * @param {object} options - Build options.
+ * @param {string[]} options.browserPlatforms - A list of browser platforms to
+ * build the bundle for.
+ * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * "flask", etc.).
+ * @param {string} options.destFilepath - The file path the bundle should be
+ * written to.
+ * @param {boolean} options.devMode - Whether the build is being used for
+ * development.
+ * @param {string[]} options.entryFilepath - The entry point file path,
+ * relative to the repository root directory.
+ * @param {string[] | null} options.ignoredFiles - A list of files to exclude
+ * from the current build.
+ * @param {string} options.label - A label used to describe this bundle in any
+ * diagnostic messages.
+ * @param {boolean} options.policyOnly - Whether to stop the build after
+ * generating the LavaMoat policy, skipping any writes to disk other than the
+ * LavaMoat policy itself.
+ * @param {boolean} options.shouldLintFenceFiles - Whether files with code
+ * fences should be linted after fences have been removed.
+ * @param {boolean} options.testing - Whether the build is intended for
+ * running end-to-end (e2e) tests.
+ * @param {string} options.version - The current version of the extension.
+ * @returns {Function} A function that creates the bundle.
+ */
 function createNormalBundle({
   browserPlatforms,
   buildType,
   destFilepath,
   devMode,
   entryFilepath,
-  extraEntries = [],
   ignoredFiles,
   label,
   policyOnly,
-  modulesToExpose,
   shouldLintFenceFiles,
   testing,
   version,
@@ -678,14 +866,7 @@ function createNormalBundle({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...extraEntries];
-    if (entryFilepath) {
-      bundlerOpts.entries.push(entryFilepath);
-    }
-
-    if (modulesToExpose) {
-      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
-    }
+    bundlerOpts.entries = [entryFilepath];
 
     // instrument pipeline
     events.on('configurePipeline', ({ pipeline }) => {
@@ -701,7 +882,7 @@ function createNormalBundle({
       });
     });
 
-    await bundleIt(buildConfiguration, { reloadOnChange });
+    await createBundle(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -740,7 +921,7 @@ function setupBundlerDefaults(
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
-      // Remove code that should be excluded from builds of the current type
+      // // Remove code that should be excluded from builds of the current type
       createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
       // Transpile top-level code
       [
@@ -754,7 +935,7 @@ function setupBundlerDefaults(
     // Look for TypeScript files when walking the dependency tree
     extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: devMode,
+    fullPaths: devMode || testing,
     // For sourcemaps
     debug: true,
   });
@@ -856,7 +1037,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
   });
 }
 
-async function bundleIt(buildConfiguration, { reloadOnChange }) {
+async function createBundle(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
 
@@ -916,6 +1097,19 @@ async function bundleIt(buildConfiguration, { reloadOnChange }) {
   }
 }
 
+/**
+ * Get environment variables to inject in the current build.
+ *
+ * @param {object} options - Build options.
+ * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * "flask", etc.).
+ * @param {boolean} options.devMode - Whether the build is being used for
+ * development.
+ * @param {boolean} options.testing - Whether the build is intended for
+ * running end-to-end (e2e) tests.
+ * @param {string} options.version - The current version of the extension.
+ * @returns {object} A map of environment variables to inject.
+ */
 function getEnvironmentVariables({ buildType, devMode, testing, version }) {
   const environment = getEnvironment({ devMode, testing });
   if (environment === ENVIRONMENT.PRODUCTION && !process.env.SENTRY_DSN) {
@@ -941,7 +1135,6 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
-    ADD_POPULAR_NETWORKS: metamaskrc.ADD_POPULAR_NETWORKS === '1',
   };
 }
 

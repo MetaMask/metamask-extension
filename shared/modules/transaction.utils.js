@@ -2,8 +2,11 @@ import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import { TOKEN_STANDARDS } from '../../ui/helpers/constants/common';
-import { ASSET_TYPES, TRANSACTION_TYPES } from '../constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+  TRANSACTION_TYPES,
+} from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -12,7 +15,7 @@ import { isEqualCaseInsensitive } from './string-utils';
  */
 
 /**
- * @typedef {Object} InferTransactionTypeResult
+ * @typedef {object} InferTransactionTypeResult
  * @property {InferrableTransactionTypes} type - The type of transaction
  * @property {string} getCodeResponse - The contract code, in hex format if
  *  it exists. '0x0' or '0x' are also indicators of non-existent contract
@@ -135,7 +138,7 @@ export function parseStandardTokenTransactionData(data) {
  * represent specific events that we control from the extension and are added manually
  * at transaction creation.
  *
- * @param {Object} txParams - Parameters for the transaction
+ * @param {object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
  * @returns {InferTransactionTypeResult}
  */

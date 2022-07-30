@@ -6,8 +6,10 @@ import { MINUTE } from '../../../shared/constants/time';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { TOKEN_STANDARDS } from '../../../ui/helpers/constants/common';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+} from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 // By default, poll every 3 minutes
@@ -21,7 +23,7 @@ export default class DetectTokensController {
   /**
    * Creates a DetectTokensController
    *
-   * @param {Object} [config] - Options to configure controller
+   * @param {object} [config] - Options to configure controller
    * @param config.interval
    * @param config.preferences
    * @param config.network
@@ -250,7 +252,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * @type {Object}
+   * @type {object}
    */
   set network(network) {
     if (!network) {
@@ -263,7 +265,7 @@ export default class DetectTokensController {
   /**
    * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
    *
-   * @type {Object}
+   * @type {object}
    */
   set keyringMemStore(keyringMemStore) {
     if (!keyringMemStore) {
@@ -281,7 +283,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * @type {Object}
+   * @type {object}
    */
   set tokenList(tokenList) {
     if (!tokenList) {
@@ -293,7 +295,7 @@ export default class DetectTokensController {
   /**
    * Internal isActive state
    *
-   * @type {Object}
+   * @type {object}
    */
   get isActive() {
     return this.isOpen && this.isUnlocked;

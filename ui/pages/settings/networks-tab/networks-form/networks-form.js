@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
+import { addHexPrefix } from 'ethereumjs-util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   isPrefixedFormattedHexString,
@@ -28,6 +35,12 @@ import {
 } from '../../../../helpers/constants/routes';
 import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  infuraProjectId,
+  FEATURED_RPCS,
+} from '../../../../../shared/constants/network';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -73,6 +86,7 @@ const NetworksForm = ({
   selectedNetwork,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
@@ -87,6 +101,9 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const chainIdMatchesFeaturedRPC = FEATURED_RPCS.some(
+    (featuredRpc) => Number(featuredRpc.chainId) === Number(chainId),
+  );
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -496,6 +513,30 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
+        let rpcUrlOrigin;
+        try {
+          rpcUrlOrigin = new URL(rpcUrl).origin;
+        } catch {
+          // error
+        }
+        trackEvent({
+          event: 'Custom Network Added',
+          category: EVENT.CATEGORIES.NETWORK,
+          referrer: {
+            url: rpcUrlOrigin,
+          },
+          properties: {
+            chain_id: addHexPrefix(chainId.toString(16)),
+            network_name: networkName,
+            network: rpcUrlOrigin,
+            symbol: ticker,
+            block_explorer_url: blockExplorerUrl,
+            source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          },
+          sensitiveProperties: {
+            rpc_url: rpcUrlOrigin,
+          },
+        });
         dispatch(setNewNetworkAdded(networkName));
         history.push(DEFAULT_ROUTE);
       }
@@ -528,10 +569,13 @@ const NetworksForm = ({
   };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
+  const chainIdErrorOnFeaturedRpcDuringEdit =
+    selectedNetwork?.rpcUrl && warnings.chainId && chainIdMatchesFeaturedRPC;
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||
     stateUnchanged ||
+    chainIdErrorOnFeaturedRpcDuringEdit ||
     !rpcUrl ||
     !chainId ||
     !ticker;
@@ -572,7 +616,11 @@ const NetworksForm = ({
           error={errors.rpcUrl?.msg || ''}
           onChange={setRpcUrl}
           titleText={t('rpcUrl')}
-          value={rpcUrl}
+          value={
+            rpcUrl?.includes(`/v3/${infuraProjectId}`)
+              ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
+              : rpcUrl
+          }
           disabled={viewOnly}
         />
         <FormField

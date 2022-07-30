@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script type="text/javascript" src="./jquery.min.js"></script>
+    <style>
+      table {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      tr {
+        border: 1px solid black;
+      }
+    </style>
+    <script>
+      $(function () {
+        var loadTime = [];
+
+        $.getJSON('stats.json', function (data) {
+          $.each(data.children, function (index, datum) {
+            if (datum.name) {
+              var tblRow =
+                '<tr>' +
+                '<td>' +
+                index +
+                '</td>' +
+                '<td>' +
+                datum.name +
+                '</td>' +
+                '<td>' +
+                datum.value +
+                '</td>' +
+                '</tr>';
+              $(tblRow).appendTo('#loaddata tbody');
+            }
+          });
+          $(
+            '<tr>' +
+              '<td>' +
+              'Total' +
+              '</td>' +
+              '<td>' +
+              '--' +
+              '</td>' +
+              '<td>' +
+              data.value +
+              '</td>' +
+              '</tr>',
+          ).appendTo('#loaddata tbody');
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="profile">
+        <table id="loaddata">
+          <thead>
+            <th>S.No</th>
+            <th>Name</th>
+            <th>TotalTime</th>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
