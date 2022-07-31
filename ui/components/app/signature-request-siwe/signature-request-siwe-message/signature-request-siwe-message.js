@@ -1,23 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Box from '../../../ui/box';
+import Typography from '../../../ui/typography';
+
+import {
+  FLEX_DIRECTION,
+  TYPOGRAPHY,
+} from '../../../../helpers/constants/design-system';
 
 const SignatureRequestSIWEMessage = ({ data }) => {
   return (
-    <div className="signature-request-siwe-message">
-      <div className="signature-request-siwe-message__list">
+    <Box className="signature-request-siwe-message">
+      <Box flexDirection={FLEX_DIRECTION.COLUMN}>
         {data.map(({ label, value }, i) => (
-          <div
-            className="signature-request-siwe-message__list__item"
-            key={i.toString()}
-          >
-            <div className="signature-request-siwe-message__list__item__label">
+          <Box key={i.toString()} marginTop={2} marginBottom={2}>
+            <Typography variant={TYPOGRAPHY.H4} marginTop={2} marginBottom={2}>
               {label}
-            </div>
-            <div className="signature-request-siwe-message__list__item__value">{`${value}`}</div>
-          </div>
+            </Typography>
+            <Typography
+              className="sub-text"
+              variant={TYPOGRAPHY.H6}
+              marginTop={2}
+              marginBottom={2}
+            >
+              {value}
+            </Typography>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
