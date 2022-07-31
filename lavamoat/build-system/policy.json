@@ -1313,8 +1313,13 @@
     "brfs>static-module>acorn-node": {
       "packages": {
         "@storybook/addon-essentials>@storybook/addon-docs>acorn-walk": true,
-        "jsdom>acorn": true,
+        "brfs>static-module>acorn-node>acorn": true,
         "watchify>xtend": true
+      }
+    },
+    "brfs>static-module>acorn-node>acorn": {
+      "globals": {
+        "define": true
       }
     },
     "brfs>static-module>magic-string": {
@@ -2721,13 +2726,24 @@
     "eslint>espree": {
       "packages": {
         "eslint>eslint-visitor-keys": true,
-        "eslint>espree>acorn-jsx": true,
-        "jsdom>acorn": true
+        "eslint>espree>acorn": true,
+        "eslint>espree>acorn-jsx": true
+      }
+    },
+    "eslint>espree>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "eslint>espree>acorn-jsx": {
       "packages": {
-        "jsdom>acorn": true
+        "eslint>espree>acorn-jsx>acorn": true
+      }
+    },
+    "eslint>espree>acorn-jsx>acorn": {
+      "globals": {
+        "define": true
       }
     },
     "eslint>esquery": {
@@ -3656,8 +3672,8 @@
         "gulp-sourcemaps>source-map": true,
         "gulp-sourcemaps>strip-bom-string": true,
         "gulp-sourcemaps>through2": true,
-        "jsdom>acorn": true,
-        "nyc>convert-source-map": true
+        "nyc>convert-source-map": true,
+        "webpack>acorn": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
@@ -3665,8 +3681,8 @@
         "css-loader>normalize-path": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true,
-        "jsdom>acorn": true,
-        "stylelint>postcss": true
+        "stylelint>postcss": true,
+        "webpack>acorn": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": {
@@ -5260,11 +5276,6 @@
         "pump>once": true
       }
     },
-    "jsdom>acorn": {
-      "globals": {
-        "define": true
-      }
-    },
     "jsdom>escodegen": {
       "globals": {
         "sourceMap.SourceNode": true
@@ -6794,8 +6805,8 @@
         "process.stdin.setEncoding": true
       },
       "packages": {
-        "jsdom>acorn": true,
-        "source-map": true
+        "source-map": true,
+        "webpack>acorn": true
       }
     },
     "terser>source-map-support": {
@@ -7045,6 +7056,11 @@
       },
       "packages": {
         "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "webpack>acorn": {
+      "globals": {
+        "define": true
       }
     },
     "webpack>micromatch>braces>snapdragon-node": {

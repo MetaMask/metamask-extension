@@ -21,7 +21,8 @@ function transformState(state) {
   if (Array.isArray(transactions)) {
     transactions.forEach((transaction) => {
       if (typeof transaction.metamaskNetworkId === 'number') {
-        transaction.metamaskNetworkId = transaction.metamaskNetworkId.toString();
+        transaction.metamaskNetworkId =
+          transaction.metamaskNetworkId.toString();
       }
     });
   }

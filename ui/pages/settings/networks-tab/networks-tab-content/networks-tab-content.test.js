@@ -48,9 +48,8 @@ const props = {
 
 describe('NetworksTabContent Component', () => {
   it('should render networks tab content correctly', async () => {
-    const { queryByText, getByDisplayValue, getAllByText } = renderComponent(
-      props,
-    );
+    const { queryByText, getByDisplayValue, getAllByText } =
+      renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
     expect(queryByText('Ropsten Test Network')).toBeInTheDocument();

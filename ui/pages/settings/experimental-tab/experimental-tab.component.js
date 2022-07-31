@@ -288,10 +288,8 @@ export default class ExperimentalTab extends PureComponent {
 
   renderCustomNetworkListToggle() {
     const { t } = this.context;
-    const {
-      customNetworkListEnabled,
-      setCustomNetworkListEnabled,
-    } = this.props;
+    const { customNetworkListEnabled, setCustomNetworkListEnabled } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[5]} className="settings-page__content-row">

@@ -24,9 +24,8 @@ export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
-  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] = useState(
-    false,
-  );
+  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
+    useState(false);
 
   const handleClickRecommended = () => {
     history.push(ONBOARDING_REVIEW_SRP_ROUTE);

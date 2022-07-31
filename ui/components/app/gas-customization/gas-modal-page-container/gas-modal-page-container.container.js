@@ -138,9 +138,8 @@ const mapStateToProps = (state, ownProps) => {
         conversionRate,
       });
   const isGasEstimate = getIsGasEstimatesFetched(state);
-  const customNetworkEstimateWasFetched = getIsCustomNetworkGasPriceFetched(
-    state,
-  );
+  const customNetworkEstimateWasFetched =
+    getIsCustomNetworkGasPriceFetched(state);
 
   let customPriceIsSafe = true;
   if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {

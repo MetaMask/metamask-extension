@@ -391,8 +391,9 @@ export default class TypedMessageManager extends EventEmitter {
    */
   _saveMsgList() {
     const unapprovedTypedMessages = this.getUnapprovedMsgs();
-    const unapprovedTypedMessagesCount = Object.keys(unapprovedTypedMessages)
-      .length;
+    const unapprovedTypedMessagesCount = Object.keys(
+      unapprovedTypedMessages,
+    ).length;
     this.memStore.updateState({
       unapprovedTypedMessages,
       unapprovedTypedMessagesCount,

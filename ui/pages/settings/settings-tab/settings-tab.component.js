@@ -78,11 +78,8 @@ export default class SettingsTab extends PureComponent {
 
   renderCurrentConversion() {
     const { t } = this.context;
-    const {
-      currentCurrency,
-      setCurrentCurrency,
-      lastFetchedConversionDate,
-    } = this.props;
+    const { currentCurrency, setCurrentCurrency, lastFetchedConversionDate } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[0]} className="settings-page__content-row">
@@ -209,7 +206,8 @@ export default class SettingsTab extends PureComponent {
                 className={classnames(
                   'settings-page__content-item__identicon__item__icon',
                   {
-                    'settings-page__content-item__identicon__item__icon--active': !useBlockie,
+                    'settings-page__content-item__identicon__item__icon--active':
+                      !useBlockie,
                   },
                 )}
               >
@@ -242,7 +240,8 @@ export default class SettingsTab extends PureComponent {
                 className={classnames(
                   'settings-page__content-item__identicon__item__icon',
                   {
-                    'settings-page__content-item__identicon__item__icon--active': useBlockie,
+                    'settings-page__content-item__identicon__item__icon--active':
+                      useBlockie,
                   },
                 )}
               >
