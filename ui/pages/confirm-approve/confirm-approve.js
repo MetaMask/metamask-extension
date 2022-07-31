@@ -155,9 +155,8 @@ export default function ConfirmApprove({
       })
     : null;
 
-  const parsedTransactionData = parseStandardTokenTransactionData(
-    transactionData,
-  );
+  const parsedTransactionData =
+    parseStandardTokenTransactionData(transactionData);
   const setApproveForAllArg = getTokenApprovedParam(parsedTransactionData);
 
   return tokenSymbol === undefined && assetName === undefined ? (

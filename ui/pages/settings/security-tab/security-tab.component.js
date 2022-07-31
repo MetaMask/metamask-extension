@@ -84,10 +84,8 @@ export default class SecurityTab extends PureComponent {
 
   renderMetaMetricsOptIn() {
     const { t } = this.context;
-    const {
-      participateInMetaMetrics,
-      setParticipateInMetaMetrics,
-    } = this.props;
+    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[3]} className="settings-page__content-row">
@@ -113,10 +111,8 @@ export default class SecurityTab extends PureComponent {
 
   renderIncomingTransactionsOptIn() {
     const { t } = this.context;
-    const {
-      showIncomingTransactions,
-      setShowIncomingTransactionsFeatureFlag,
-    } = this.props;
+    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[1]} className="settings-page__content-row">

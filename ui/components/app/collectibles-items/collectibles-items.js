@@ -118,9 +118,8 @@ export default function CollectiblesItems({
       [key]: !isExpanded,
     };
 
-    collectiblesDropdownState[selectedAddress][
-      chainId
-    ] = newCurrentAccountState;
+    collectiblesDropdownState[selectedAddress][chainId] =
+      newCurrentAccountState;
 
     dispatch(updateCollectibleDropDownState(collectiblesDropdownState));
   };
@@ -186,13 +185,8 @@ export default function CollectiblesItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {collectibles.map((collectible, i) => {
-              const {
-                image,
-                address,
-                tokenId,
-                backgroundColor,
-                name,
-              } = collectible;
+              const { image, address, tokenId, backgroundColor, name } =
+                collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
@@ -249,11 +243,8 @@ export default function CollectiblesItems({
       >
         <>
           {collectionsKeys.map((key) => {
-            const {
-              collectibles,
-              collectionName,
-              collectionImage,
-            } = collections[key];
+            const { collectibles, collectionName, collectionImage } =
+              collections[key];
 
             return renderCollection({
               collectibles,

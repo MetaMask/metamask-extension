@@ -157,10 +157,8 @@ export async function determineTransactionType(txParams, query) {
   if (data && !to) {
     result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
   } else {
-    const {
-      contractCode: resultCode,
-      isContractAddress,
-    } = await readAddressAsContract(query, to);
+    const { contractCode: resultCode, isContractAddress } =
+      await readAddressAsContract(query, to);
 
     contractCode = resultCode;
 

@@ -186,30 +186,24 @@ export function useGasFeeInputs(
     transaction,
   ]);
 
-  const {
-    gasPrice,
-    setGasPrice,
-    setGasPriceHasBeenManuallySet,
-  } = useGasPriceInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    transaction,
-  });
+  const { gasPrice, setGasPrice, setGasPriceHasBeenManuallySet } =
+    useGasPriceInput({
+      estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      transaction,
+    });
 
-  const {
-    maxFeePerGas,
-    maxFeePerGasFiat,
-    setMaxFeePerGas,
-  } = useMaxFeePerGasInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    gasLimit,
-    gasPrice,
-    supportsEIP1559V2,
-    transaction,
-  });
+  const { maxFeePerGas, maxFeePerGasFiat, setMaxFeePerGas } =
+    useMaxFeePerGasInput({
+      estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      gasLimit,
+      gasPrice,
+      supportsEIP1559V2,
+      transaction,
+    });
 
   const {
     maxPriorityFeePerGas,
