@@ -2655,10 +2655,10 @@
         "@metamask/controllers>nanoid": true,
         "@metamask/controllers>web3-provider-engine": true,
         "@metamask/metamask-eth-abis": true,
-        "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
         "eth-keyring-controller": true,
@@ -3234,7 +3234,7 @@
     },
     "@metamask/rpc-methods>@metamask/utils": {
       "packages": {
-        "@storybook/api>fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3303,9 +3303,9 @@
         "@metamask/snap-controllers>nanoid": true,
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
-        "@storybook/api>fast-deep-equal": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
+        "eslint>fast-deep-equal": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true,
@@ -3402,7 +3402,7 @@
     },
     "@metamask/snap-controllers>ajv": {
       "packages": {
-        "@storybook/api>fast-deep-equal": true
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
@@ -4547,19 +4547,12 @@
     },
     "enzyme>is-regex": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>has-symbols": true
+        "enzyme>is-regex>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
       }
     },
-    "eslint-plugin-react>array-includes>get-intrinsic": {
-      "globals": {
-        "AggregateError": true,
-        "FinalizationRegistry": true,
-        "WeakRef": true
-      },
+    "enzyme>is-regex>has-tostringtag": {
       "packages": {
-        "enzyme>has": true,
-        "mocha>object.assign>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
@@ -4836,7 +4829,6 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "console.warn": true,
         "fetch": true,
         "open": true,
         "setInterval": true,
@@ -4865,40 +4857,29 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
-        "console.warn": true,
+        "AggregateError": true,
+        "Buffer": true,
+        "DO_NOT_EXPORT_CRC": true,
+        "FinalizationRegistry": true,
+        "HTMLElement": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "WeakRef": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console": true,
+        "crypto": true,
+        "define": true,
+        "intToBuffer": true,
+        "location": true,
+        "msCrypto": true,
         "setTimeout": true
       },
       "packages": {
-        "3box>ethers>elliptic": true,
-        "@ethereumjs/common": true,
-        "@ethereumjs/common>crc-32": true,
-        "@ethereumjs/tx": true,
-        "bn.js": true,
         "browserify>buffer": true,
-        "eth-lattice-keyring>gridplus-sdk>bech32": true,
-        "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
-        "eth-lattice-keyring>gridplus-sdk>bitwise": true,
-        "eth-lattice-keyring>gridplus-sdk>borc": true,
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
-        "eth-lattice-keyring>gridplus-sdk>rlp": true,
-        "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethers>@ethersproject/keccak256>js-sha3": true,
-        "ethers>@ethersproject/sha2>hash.js": true,
-        "lodash": true,
-        "pubnub>superagent": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>bitwise": {
-      "packages": {
-        "browserify>buffer": true
+        "browserify>process": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc": {
@@ -4916,43 +4897,6 @@
       "globals": {
         "crypto": true,
         "define": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
-      "globals": {
-        "intToBuffer": true
-      },
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": true,
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true,
-        "ethers>@ethersproject/keccak256>js-sha3": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "browserify>buffer>ieee754": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>secp256k1": {
-      "packages": {
-        "3box>ethers>elliptic": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -5881,7 +5825,13 @@
     },
     "globalthis>define-properties": {
       "packages": {
+        "globalthis>define-properties>has-property-descriptors": true,
         "nock>deep-equal>object-keys": true
+      }
+    },
+    "globalthis>define-properties>has-property-descriptors": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "json-rpc-engine": {
@@ -6002,6 +5952,11 @@
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
+    "nock>deep-equal>is-date-object": {
+      "packages": {
+        "enzyme>is-regex>has-tostringtag": true
+      }
+    },
     "node-fetch": {
       "globals": {
         "Headers": true,
@@ -6079,21 +6034,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "pubnub>superagent": {
-      "globals": {
-        "ActiveXObject": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.trace": true,
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "pubnub>superagent>component-emitter": true
       }
     },
     "pump": {
@@ -6596,12 +6536,25 @@
     },
     "string.prototype.matchall>call-bind": {
       "packages": {
-        "eslint-plugin-react>array-includes>get-intrinsic": true,
-        "mocha>object.assign>function-bind": true
+        "mocha>object.assign>function-bind": true,
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "globals": {
+        "AggregateError": true,
+        "FinalizationRegistry": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "enzyme>has": true,
+        "mocha>object.assign>function-bind": true,
+        "string.prototype.matchall>has-symbols": true
       }
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
+        "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
       }
