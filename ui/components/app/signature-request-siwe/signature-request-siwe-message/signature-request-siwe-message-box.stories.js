@@ -1,8 +1,8 @@
 import React from 'react';
-import SignatureRequestMessage from '.';
+import SignatureRequestMessage from './signature-request-siwe-message-box';
 
 export default {
-  title: 'Components/App/SignatureRequestSIWE/SignatureRequestMessage',
+  title: 'Components/App/SignatureRequestSIWE/SignatureRequestMessageBox',
   id: __filename,
   argTypes: {
     data: {

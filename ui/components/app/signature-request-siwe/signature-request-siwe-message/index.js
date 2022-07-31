@@ -1,1 +1,1 @@
-export { default } from './signature-request-siwe-message';
+export { default } from './signature-request-siwe-message-box';
