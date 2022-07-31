@@ -48,8 +48,7 @@ export default class AccountImportSubview extends Component {
               className="new-account-info-link"
               onClick={() => {
                 global.platform.openTab({
-                  url:
-                    'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+                  url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
                 });
               }}
             >

@@ -46,17 +46,10 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
 const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const {
-    gasLimit,
-    setErrorValue,
-    setMaxPriorityFeePerGas,
-  } = useAdvancedGasFeePopoverContext();
-  const {
-    editGasMode,
-    estimateUsed,
-    gasFeeEstimates,
-    maxPriorityFeePerGas,
-  } = useGasFeeContext();
+  const { gasLimit, setErrorValue, setMaxPriorityFeePerGas } =
+    useAdvancedGasFeePopoverContext();
+  const { editGasMode, estimateUsed, gasFeeEstimates, maxPriorityFeePerGas } =
+    useGasFeeContext();
   const {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,

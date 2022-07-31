@@ -40,12 +40,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
   }
 
   handleImport = async (password, seedPhrase) => {
-    const {
-      history,
-      onSubmit,
-      setSeedPhraseBackedUp,
-      initializeThreeBox,
-    } = this.props;
+    const { history, onSubmit, setSeedPhraseBackedUp, initializeThreeBox } =
+      this.props;
 
     await onSubmit(password, seedPhrase);
     this.context.trackEvent({

@@ -228,8 +228,7 @@ export default class SignatureRequestOriginal extends Component {
               className="request-signature__help-link"
               onClick={() => {
                 global.platform.openTab({
-                  url:
-                    'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
+                  url: 'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
                 });
               }}
             >

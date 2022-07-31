@@ -314,8 +314,9 @@ export default class PersonalMessageManager extends EventEmitter {
    */
   _saveMsgList() {
     const unapprovedPersonalMsgs = this.getUnapprovedMsgs();
-    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs)
-      .length;
+    const unapprovedPersonalMsgCount = Object.keys(
+      unapprovedPersonalMsgs,
+    ).length;
     this.memStore.updateState({
       unapprovedPersonalMsgs,
       unapprovedPersonalMsgCount,

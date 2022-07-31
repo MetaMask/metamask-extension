@@ -615,11 +615,11 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const {
-      unapprovedEncryptionPublicKeyMsgCount,
-    } = controller.encryptionPublicKeyManager;
+    const { unapprovedEncryptionPublicKeyMsgCount } =
+      controller.encryptionPublicKeyManager;
     const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
-    const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
+    const pendingApprovalCount =
+      controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (

@@ -232,11 +232,8 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = (device, path) => {
-    const {
-      history,
-      mostRecentOverviewPage,
-      unlockHardwareWalletAccounts,
-    } = this.props;
+    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
+      this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {

@@ -14,9 +14,8 @@ const AssetOptions = ({
   isEthNetwork,
 }) => {
   const t = useContext(I18nContext);
-  const [assetOptionsButtonElement, setAssetOptionsButtonElement] = useState(
-    null,
-  );
+  const [assetOptionsButtonElement, setAssetOptionsButtonElement] =
+    useState(null);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
 
   return (

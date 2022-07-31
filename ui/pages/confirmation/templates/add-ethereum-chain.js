@@ -40,8 +40,7 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
             element: 'a',
             key: 'mismatchedChainLink',
             props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+              href: 'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
               target: '__blank',
               tabIndex: 0,
             },
@@ -267,8 +266,7 @@ function getValues(pendingApproval, t, actions, history) {
                   children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
                   key: 'addEthereumChainConfirmationRisksLearnMoreLink',
                   props: {
-                    href:
-                      'https://metamask.zendesk.com/hc/en-us/articles/4404424659995',
+                    href: 'https://metamask.zendesk.com/hc/en-us/articles/4404424659995',
                     target: '__blank',
                   },
                 },
@@ -308,8 +306,8 @@ function getValues(pendingApproval, t, actions, history) {
               : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('blockExplorerUrl')]: pendingApproval.requestData
-              .blockExplorerUrl,
+            [t('blockExplorerUrl')]:
+              pendingApproval.requestData.blockExplorerUrl,
           },
           prefaceKeys: [
             t('networkName'),
