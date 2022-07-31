@@ -1,8 +1,8 @@
 diff --git a/node_modules/eslint/lib/linter/linter.js b/node_modules/eslint/lib/linter/linter.js
-index adb5c21..4a4be92 100644
+index 29d78da..a6ae07b 100644
 --- a/node_modules/eslint/lib/linter/linter.js
 +++ b/node_modules/eslint/lib/linter/linter.js
-@@ -560,7 +560,7 @@ function resolveParserOptions(parserName, providedOptions, enabledEnvironments)
+@@ -704,7 +704,7 @@ function createLanguageOptions({ globals: configuredGlobals, parser, parserOptio
   */
  function resolveGlobals(providedGlobals, enabledEnvironments) {
      return Object.assign(

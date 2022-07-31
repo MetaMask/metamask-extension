@@ -5,6 +5,8 @@ import React, {
   useReducer,
   useState,
 } from 'react';
+import PropTypes from 'prop-types';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
@@ -24,7 +26,6 @@ import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
-import { addCustomNetwork } from '../../store/actions';
 import ConfirmationFooter from './components/confirmation-footer';
 import { getTemplateValues, getTemplateAlerts } from './templates';
 
@@ -68,9 +69,9 @@ const alertStateReducer = produce((state, action) => {
  * outside of this file, but it helps to reduce complexity of the primary
  * component.
  *
- * @param {Object} pendingConfirmation - a pending confirmation waiting for
+ * @param {object} pendingConfirmation - a pending confirmation waiting for
  * user approval
- * @returns {[alertState: Object, dismissAlert: Function]} A tuple with
+ * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
 function useAlertState(pendingConfirmation) {
@@ -116,7 +117,9 @@ function useAlertState(pendingConfirmation) {
   return [alertState, dismissAlert];
 }
 
-export default function ConfirmationPage() {
+export default function ConfirmationPage({
+  redirectToHomeOnZeroConfirmations = true,
+}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -124,34 +127,40 @@ export default function ConfirmationPage() {
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
-  const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
-    0,
-  );
+  const [currentPendingConfirmation, setCurrentPendingConfirmation] =
+    useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
-  const [stayOnPage, setStayOnPage] = useState(false);
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
     return pendingConfirmation
-      ? getTemplateValues(pendingConfirmation, t, dispatch)
+      ? getTemplateValues(pendingConfirmation, t, dispatch, history)
       : {};
-  }, [pendingConfirmation, t, dispatch]);
+  }, [pendingConfirmation, t, dispatch, history]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
-    if (pendingConfirmations.length === 0) {
-      !stayOnPage && history.push(DEFAULT_ROUTE);
+    if (
+      pendingConfirmations.length === 0 &&
+      redirectToHomeOnZeroConfirmations
+    ) {
+      history.push(DEFAULT_ROUTE);
     } else if (pendingConfirmations.length <= currentPendingConfirmation) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
-  }, [pendingConfirmations, history, currentPendingConfirmation, stayOnPage]);
+  }, [
+    pendingConfirmations,
+    history,
+    currentPendingConfirmation,
+    redirectToHomeOnZeroConfirmations,
+  ]);
   if (!pendingConfirmation) {
     return null;
   }
@@ -237,18 +246,15 @@ export default function ConfirmationPage() {
               </Callout>
             ))
         }
-        onApprove={() => {
-          templatedValues.onApprove.apply();
-          pendingConfirmation.origin === 'metamask' &&
-            dispatch(addCustomNetwork(pendingConfirmation.requestData));
-        }}
-        onCancel={() => {
-          templatedValues.onCancel.apply();
-          pendingConfirmation.origin === 'metamask' && setStayOnPage(true);
-        }}
+        onApprove={templatedValues.onApprove}
+        onCancel={templatedValues.onCancel}
         approveText={templatedValues.approvalText}
         cancelText={templatedValues.cancelText}
       />
     </div>
   );
 }
+
+ConfirmationPage.propTypes = {
+  redirectToHomeOnZeroConfirmations: PropTypes.bool,
+};

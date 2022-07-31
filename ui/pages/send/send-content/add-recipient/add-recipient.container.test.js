@@ -40,7 +40,7 @@ jest.mock('../../../../ducks/send', () => ({
   getRecipient: (s) => `mockRecipient:${s}`,
 }));
 
-require('./add-recipient.container.js');
+require('./add-recipient.container');
 
 describe('add-recipient container', () => {
   describe('mapStateToProps()', () => {

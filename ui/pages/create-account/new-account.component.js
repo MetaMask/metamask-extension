@@ -18,12 +18,8 @@ export default class NewAccountCreateForm extends Component {
 
   render() {
     const { newAccountName, defaultAccountName } = this.state;
-    const {
-      history,
-      createAccount,
-      mostRecentOverviewPage,
-      accounts,
-    } = this.props;
+    const { history, createAccount, mostRecentOverviewPage, accounts } =
+      this.props;
 
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)

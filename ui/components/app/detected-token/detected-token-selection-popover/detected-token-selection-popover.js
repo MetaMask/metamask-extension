@@ -27,9 +27,8 @@ const DetectedTokenSelectionPopover = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const { selected: selectedTokens = [] } = sortingBasedOnTokenSelection(
-    tokensListDetected,
-  );
+  const { selected: selectedTokens = [] } =
+    sortingBasedOnTokenSelection(tokensListDetected);
   const numOfTokensImporting =
     selectedTokens.length === detectedTokens.length
       ? `All`
