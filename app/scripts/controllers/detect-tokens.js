@@ -174,13 +174,8 @@ export default class DetectTokensController {
         if (result) {
           const nonZeroTokenAddresses = Object.keys(result);
           for (const nonZeroTokenAddress of nonZeroTokenAddresses) {
-            const {
-              address,
-              symbol,
-              decimals,
-              iconUrl,
-              aggregators,
-            } = tokenList[nonZeroTokenAddress];
+            const { address, symbol, decimals, iconUrl, aggregators } =
+              tokenList[nonZeroTokenAddress];
 
             eventTokensDetails.push(`${symbol} - ${address}`);
 

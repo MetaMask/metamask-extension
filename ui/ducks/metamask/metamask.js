@@ -355,9 +355,8 @@ export function getEstimatedGasFeeTimeBounds(state) {
 }
 
 export function getIsGasEstimatesLoading(state) {
-  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
+  const networkAndAccountSupports1559 =
+    checkNetworkAndAccountSupports1559(state);
   const gasEstimateType = getGasEstimateType(state);
 
   // We consider the gas estimate to be loading if the gasEstimateType is

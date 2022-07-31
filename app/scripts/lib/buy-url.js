@@ -82,9 +82,8 @@ const createTransakUrl = (walletAddress, chainId) => {
  * @returns String
  */
 const createMoonPayUrl = async (walletAddress, chainId) => {
-  const {
-    moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {},
-  } = BUYABLE_CHAINS_MAP[chainId];
+  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
+    BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
     walletAddress,

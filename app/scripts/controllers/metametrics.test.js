@@ -132,12 +132,10 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment,
-    getNetworkIdentifier: networkController.getNetworkIdentifier.bind(
-      networkController,
-    ),
-    getCurrentChainId: networkController.getCurrentChainId.bind(
-      networkController,
-    ),
+    getNetworkIdentifier:
+      networkController.getNetworkIdentifier.bind(networkController),
+    getCurrentChainId:
+      networkController.getCurrentChainId.bind(networkController),
     onNetworkDidChange: networkController.on.bind(
       networkController,
       NETWORK_EVENTS.NETWORK_DID_CHANGE,

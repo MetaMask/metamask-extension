@@ -24,10 +24,8 @@ const mapStateToProps = (state, ownProps) => {
     useTokenDetection,
     tokenList,
   } = metamask;
-  const {
-    useNativeCurrencyAsPrimaryCurrency,
-    hideZeroBalanceTokens,
-  } = getPreferences(state);
+  const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
+    getPreferences(state);
 
   const { lastFetchedConversionDate } = ownProps;
 

@@ -23,8 +23,7 @@ function getActionFunctionById(id, history) {
   const actionFunctions = {
     2: () => {
       global.platform.openTab({
-        url:
-          'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
+        url: 'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
       });
     },
     3: () => {

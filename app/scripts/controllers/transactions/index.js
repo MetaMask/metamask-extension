@@ -174,9 +174,8 @@ export default class TransactionController extends EventEmitter {
         );
         return [...pendingTransactions, ...externalPendingTransactions];
       },
-      getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
-        this.txStateManager,
-      ),
+      getConfirmedTransactions:
+        this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -189,9 +188,8 @@ export default class TransactionController extends EventEmitter {
         return [...pending, ...approved];
       },
       approveTransaction: this.approveTransaction.bind(this),
-      getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(
-        this.txStateManager,
-      ),
+      getCompletedTransactions:
+        this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
 
     this.txStateManager.store.subscribe(() =>
@@ -227,10 +225,10 @@ export default class TransactionController extends EventEmitter {
   }
 
   async getEIP1559Compatibility(fromAddress) {
-    const currentNetworkIsCompatible = await this._getCurrentNetworkEIP1559Compatibility();
-    const fromAccountIsCompatible = await this._getCurrentAccountEIP1559Compatibility(
-      fromAddress,
-    );
+    const currentNetworkIsCompatible =
+      await this._getCurrentNetworkEIP1559Compatibility();
+    const fromAccountIsCompatible =
+      await this._getCurrentAccountEIP1559Compatibility(fromAddress);
     return currentNetworkIsCompatible && fromAccountIsCompatible;
   }
 
@@ -815,10 +813,8 @@ export default class TransactionController extends EventEmitter {
       maxFeePerGas: defaultMaxFeePerGas,
       maxPriorityFeePerGas: defaultMaxPriorityFeePerGas,
     } = await this._getDefaultGasFees(txMeta, eip1559Compatibility);
-    const {
-      gasLimit: defaultGasLimit,
-      simulationFails,
-    } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
+    const { gasLimit: defaultGasLimit, simulationFails } =
+      await this._getDefaultGasLimit(txMeta, getCodeResponse);
 
     // eslint-disable-next-line no-param-reassign
     txMeta = this.txStateManager.getTransaction(txMeta.id);
@@ -960,10 +956,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     try {
-      const {
-        gasFeeEstimates,
-        gasEstimateType,
-      } = await this._getEIP1559GasFeeEstimates();
+      const { gasFeeEstimates, gasEstimateType } =
+        await this._getEIP1559GasFeeEstimates();
       if (
         eip1559Compatibility &&
         gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
@@ -1038,11 +1032,8 @@ export default class TransactionController extends EventEmitter {
       return { gasLimit: GAS_LIMITS.SIMPLE };
     }
 
-    const {
-      blockGasLimit,
-      estimatedGasHex,
-      simulationFails,
-    } = await this.txGasUtil.analyzeGasUsage(txMeta);
+    const { blockGasLimit, estimatedGasHex, simulationFails } =
+      await this.txGasUtil.analyzeGasUsage(txMeta);
 
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.txGasUtil.addGasBuffer(
@@ -1545,9 +1536,8 @@ export default class TransactionController extends EventEmitter {
       const metricsParams = { gas_used: gasUsed };
 
       if (submittedTime) {
-        metricsParams.completion_time = this._getTransactionCompletionTime(
-          submittedTime,
-        );
+        metricsParams.completion_time =
+          this._getTransactionCompletionTime(submittedTime);
       }
 
       if (txReceipt.status === '0x0') {
@@ -1606,9 +1596,8 @@ export default class TransactionController extends EventEmitter {
       const metricsParams = { gas_used: gasUsed };
 
       if (submittedTime) {
-        metricsParams.completion_time = this._getTransactionCompletionTime(
-          submittedTime,
-        );
+        metricsParams.completion_time =
+          this._getTransactionCompletionTime(submittedTime);
       }
 
       if (txReceipt.status === '0x0') {
@@ -1673,10 +1662,8 @@ export default class TransactionController extends EventEmitter {
    */
   async createTransactionEventFragment(transactionId, event) {
     const txMeta = this.txStateManager.getTransaction(transactionId);
-    const {
-      properties,
-      sensitiveProperties,
-    } = await this._buildEventFragmentProperties(txMeta);
+    const { properties, sensitiveProperties } =
+      await this._buildEventFragmentProperties(txMeta);
     this._createTransactionEventFragment(
       txMeta,
       event,
@@ -2052,7 +2039,8 @@ export default class TransactionController extends EventEmitter {
           if (gasFeeEstimates?.[estimateType]?.suggestedMaxPriorityFeePerGas) {
             defaultMaxPriorityFeePerGas =
               gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas;
-            gasParams.default_max_priority_fee_per_gas = defaultMaxPriorityFeePerGas;
+            gasParams.default_max_priority_fee_per_gas =
+              defaultMaxPriorityFeePerGas;
           }
         }
       }
@@ -2272,10 +2260,8 @@ export default class TransactionController extends EventEmitter {
     if (!txMeta) {
       return;
     }
-    const {
-      properties,
-      sensitiveProperties,
-    } = await this._buildEventFragmentProperties(txMeta, extraParams);
+    const { properties, sensitiveProperties } =
+      await this._buildEventFragmentProperties(txMeta, extraParams);
 
     // Create event fragments for event types that spawn fragments, and ensure
     // existence of fragments for event types that act upon them.
