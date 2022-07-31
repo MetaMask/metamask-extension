@@ -1,13 +1,14 @@
 import * as ethers from 'ethers';
-import * as optimismContracts from '@eth-optimism/contracts';
+import { getContractFactory } from '@eth-optimism/contracts/dist/contract-defs';
+import { predeploys } from '@eth-optimism/contracts/dist/predeploys';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
 // The code in this file is largely drawn from https://community.optimism.io/docs/developers/l2/new-fees.html#for-frontend-and-wallet-developers
 
 function buildOVMGasPriceOracleContract(eth) {
-  const OVMGasPriceOracle = optimismContracts
-    .getContractFactory('OVM_GasPriceOracle')
-    .attach(optimismContracts.predeploys.OVM_GasPriceOracle);
+  const OVMGasPriceOracle = getContractFactory('OVM_GasPriceOracle').attach(
+    predeploys.OVM_GasPriceOracle,
+  );
   const abi = JSON.parse(
     OVMGasPriceOracle.interface.format(ethers.utils.FormatTypes.json),
   );
