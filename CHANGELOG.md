@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.19.0]
 ### Added
 - Add ENS wildcard and secure offchain resolution (ENSIP-10 & EIP3668) ([#14675](https://github.com/MetaMask/metamask-extension/pull/14675))
-- Adding "What's New" Notification for Add Popular networks ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
+- Add "What's New" Notification for Add Popular Networks ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
+- Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
 - Swaps: on the Swap Complete screen ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
   - Add a tx link 
   - Add a "Create a new swap" link for STX 
+- Swaps: add tx details view to cancelled Swaps ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
 
 ### Changed
 - Update Confirmation screen styling by adding a top margin and moving Site Icon next to the site URL ([#15136](https://github.com/MetaMask/metamask-extension/pull/15136))
@@ -24,26 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove dark mode and transaction insights announcements ([#15279](https://github.com/MetaMask/metamask-extension/pull/15279))
 - Remove decentralized 4byte function signature registry since it contains incorrect signatures and we can't algorithmically check for best option when 4byte.directory is down ([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
 - Updating design tokens package and shadow values with new tokens ([#15264](https://github.com/MetaMask/metamask-extension/pull/15264))
+- Updates `eth-lattice-keyring` to v0.10.0 ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
+- Improve `tokenId` parsing and clean up `useAssetDetails` hook ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
+- Swaps: Performance improvements for Swaps ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
 
 ### Fixed
 - Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
 - Preserve send amount when editing an ERC20 transaction ([#15275](https://github.com/MetaMask/metamask-extension/pull/15275))
-### Uncategorized
-- Merge branch 'develop' into Version-v10.19.0
-- New Crowdin translations by Github Action ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
-- Performance improvements for Swaps ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
-- Added speed up metrics data for transaction events and properly track speed up type ([#15197](https://github.com/MetaMask/metamask-extension/pull/15197))
-- Run auto-changelog with last commits
-- Sync 10.18.1 and updated version 10.19.0
-- Merge branch 'develop' into Version-v10.19.0
-- RC10.19 cut off and auto changelog generation
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Sync 10.18.1 and updated version 10.19.0
-- Merge branch 'develop' into Version-v10.19.0
-- Clean up of code introduced with 43f7a44 ([#15158](https://github.com/MetaMask/metamask-extension/pull/15158))
 - Adjusting the height of account menu nav items to expand scroll area ([#15302](https://github.com/MetaMask/metamask-extension/pull/15302))
 - Fix: Actionable Message on Confirm Transaction view is over Tabs ([#15272](https://github.com/MetaMask/metamask-extension/pull/15272))
-- Swaps: added tx details popup to cancelled Swap ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
 
 ### Uncategorized
 - [FLASK] disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
