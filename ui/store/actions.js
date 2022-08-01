@@ -718,11 +718,10 @@ export function updateSwapApprovalTransaction(txId, txSwapApproval) {
   return async (dispatch) => {
     let updatedTransaction;
     try {
-      updatedTransaction =
-        await promisifiedBackground.updateSwapApprovalTransaction(
-          txId,
-          txSwapApproval,
-        );
+      updatedTransaction = await promisifiedBackground.updateSwapApprovalTransaction(
+        txId,
+        txSwapApproval,
+      );
     } catch (error) {
       dispatch(txError(error));
       log.error(error.message);
@@ -763,11 +762,10 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
   return async (dispatch) => {
     let updatedTransaction;
     try {
-      updatedTransaction =
-        await promisifiedBackground.updateTransactionSendFlowHistory(
-          txId,
-          sendFlowHistory,
-        );
+      updatedTransaction = await promisifiedBackground.updateTransactionSendFlowHistory(
+        txId,
+        sendFlowHistory,
+      );
     } catch (error) {
       dispatch(txError(error));
       log.error(error.message);
@@ -1524,12 +1522,14 @@ export function showAccountDetail(address) {
     log.debug(`background.setSelectedAddress`);
 
     const state = getState();
-    const unconnectedAccountAccountAlertIsEnabled =
-      getUnconnectedAccountAlertEnabledness(state);
+    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
+      state,
+    );
     const activeTabOrigin = state.activeTab.origin;
     const selectedAddress = getSelectedAddress(state);
-    const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(state);
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
+      state,
+    );
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
       permittedAccountsForCurrentTab.includes(selectedAddress);
@@ -2806,11 +2806,13 @@ export function setSwapsFeatureFlags(featureFlags) {
 
 export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
-    const [quotes, selectedAggId] =
-      await promisifiedBackground.fetchAndSetQuotes(
-        fetchParams,
-        fetchParamsMetaData,
-      );
+    const [
+      quotes,
+      selectedAggId,
+    ] = await promisifiedBackground.fetchAndSetQuotes(
+      fetchParams,
+      fetchParamsMetaData,
+    );
     await forceUpdateMetamaskState(dispatch);
     return [quotes, selectedAggId];
   };
@@ -3355,8 +3357,7 @@ export function setRequestAccountTabIds(requestAccountTabIds) {
 
 export function getRequestAccountTabIds() {
   return async (dispatch) => {
-    const requestAccountTabIds =
-      await promisifiedBackground.getRequestAccountTabIds();
+    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds();
     dispatch(setRequestAccountTabIds(requestAccountTabIds));
   };
 }
@@ -3370,8 +3371,7 @@ export function setOpenMetamaskTabsIDs(openMetaMaskTabIDs) {
 
 export function getOpenMetamaskTabsIds() {
   return async (dispatch) => {
-    const openMetaMaskTabIDs =
-      await promisifiedBackground.getOpenMetamaskTabsIds();
+    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds();
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
   };
 }
@@ -3613,10 +3613,9 @@ const createSignedTransactions = async (
     }
     return unsignedTransactionWithFees;
   });
-  const signedTransactions =
-    await promisifiedBackground.approveTransactionsWithSameNonce(
-      unsignedTransactionsWithFees,
-    );
+  const signedTransactions = await promisifiedBackground.approveTransactionsWithSameNonce(
+    unsignedTransactionsWithFees,
+  );
   return signedTransactions;
 };
 
@@ -3801,4 +3800,12 @@ export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
+}
+
+export async function clearEventsBeforeMetricsOptIn() {
+  await promisifiedBackground.clearEventsBeforeMetricsOptIn();
+}
+
+export async function addEventBeforeMetricsOptIn(event) {
+  await promisifiedBackground.addEventBeforeMetricsOptIn(event);
 }

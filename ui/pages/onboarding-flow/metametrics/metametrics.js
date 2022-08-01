@@ -10,11 +10,15 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import {
+  setParticipateInMetaMetrics,
+  clearEventsBeforeMetricsOptIn,
+} from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
   getParticipateInMetaMetrics,
+  getEventsBeforeMetricsOptIn,
 } from '../../../selectors';
 
 import { EVENT } from '../../../../shared/constants/metametrics';
@@ -35,6 +39,7 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const eventsBeforeMetricsOptIn = useSelector(getEventsBeforeMetricsOptIn);
   const firstTimeSelectionMetaMetricsName =
     firstTimeFlowTypeNameMap[firstTimeFlowType];
 
@@ -61,6 +66,12 @@ export default function OnboardingMetametrics() {
             flushImmediately: true,
           },
         );
+        if (eventsBeforeMetricsOptIn.length > 0) {
+          eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
+            trackEvent(eventBeforeMetricsOptIn);
+          });
+          clearEventsBeforeMetricsOptIn();
+        }
       }
       trackEvent(
         {

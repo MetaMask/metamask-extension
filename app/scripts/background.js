@@ -22,6 +22,8 @@ import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTFICIATION_CLOSE,
   REJECT_NOTFICIATION_CLOSE_SIG,
+  EVENT,
+  EVENT_NAMES,
 } from '../../shared/constants/metametrics';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
@@ -69,6 +71,7 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
+let controller;
 
 // state persistence
 const inTest = process.env.IN_TEST;
@@ -314,7 +317,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   // MetaMask Controller
   //
 
-  const controller = new MetamaskController({
+  controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
@@ -615,11 +618,11 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const { unapprovedEncryptionPublicKeyMsgCount } =
-      controller.encryptionPublicKeyManager;
+    const {
+      unapprovedEncryptionPublicKeyMsgCount,
+    } = controller.encryptionPublicKeyManager;
     const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
-    const pendingApprovalCount =
-      controller.approvalController.getTotalApprovalCount();
+    const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
@@ -758,6 +761,21 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
     platform.openExtensionInBrowser();
+    console.log(
+      '-------------------------controller------------------------------',
+    );
+    console.log(controller);
+    // I might need to wait here until the "controller" is set up.
+    if (controller) {
+      controller.appStateController.addEventBeforeMetricsOptIn({
+        category: EVENT.CATEGORIES.APP,
+        event: EVENT_NAMES.APP_INSTALLED,
+        properties: {
+          action: 'App Installed',
+          signup_date: new Date().toLocaleDateString('en-US'), // mm/dd/yyyy
+        },
+      });
+    }
   }
 });
 

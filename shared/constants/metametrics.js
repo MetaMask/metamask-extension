@@ -296,6 +296,7 @@ export const EVENT_NAMES = {
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
   SUPPORT_LINK_CLICKED: 'Support Link Clicked',
+  APP_INSTALLED: 'App Installed',
 };
 
 export const EVENT = {
@@ -316,6 +317,7 @@ export const EVENT = {
     WALLET: 'Wallet',
     ERROR: 'Error',
     FOOTER: 'Footer',
+    APP: 'App',
   },
   SOURCE: {
     NETWORK: {

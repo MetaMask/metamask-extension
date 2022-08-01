@@ -37,6 +37,7 @@ export default class AppStateController extends EventEmitter {
       ...initState,
       qrHardware: {},
       collectiblesDropdownState: {},
+      eventsBeforeMetricsOptIn: [],
     });
     this.timer = null;
 
@@ -239,6 +240,19 @@ export default class AppStateController extends EventEmitter {
       popupGasPollTokens: [],
       notificationGasPollTokens: [],
       fullScreenGasPollTokens: [],
+    });
+  }
+
+  clearEventsBeforeMetricsOptIn() {
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [],
+    });
+  }
+
+  addEventBeforeMetricsOptIn(event) {
+    const prevState = this.store.getState().eventsBeforeMetricsOptIn;
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [...prevState, event],
     });
   }
 
