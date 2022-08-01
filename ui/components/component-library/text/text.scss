@@ -1,0 +1,104 @@
+@use "design-system";
+@use "sass:map";
+
+$text-variants: (
+  display: ("md"),
+  heading: ( "sm", "md", "lg"),
+  body: ("xs", "sm", "sm-bold", "md", "md-bold", "lg-medium"),
+);
+
+// Variable output mixin
+// screen size, type, size
+
+@mixin textVariables($type, $size) {
+  font-family: var(--typography-s-#{$type}-#{$size}-font-family);
+  font-weight: var(--typography-s-#{$type}-#{$size}-font-weight);
+  font-size: var(--typography-s-#{$type}-#{$size}-font-size);
+  line-height: var(--typography-s-#{$type}-#{$size}-line-height);
+  letter-spacing: var(--typography-s-#{$type}-#{$size}-letter-spacing);
+
+  @include screen-md-min {
+    font-family: var(--typography-l-#{$type}-#{$size}-font-family);
+    font-weight: var(--typography-l-#{$type}-#{$size}-font-weight);
+    font-size: var(--typography-l-#{$type}-#{$size}-font-size);
+    line-height: var(--typography-l-#{$type}-#{$size}-line-height);
+    letter-spacing: var(--typography-l-#{$type}-#{$size}-letter-spacing);
+  }
+}
+
+
+
+.text {
+  // Set default styles
+  color: var(--color-text-default);
+  font-family: var(----font-family-sans);
+
+  @each $type, $size-options in $text-variants {
+    &--#{$type} {
+      // Sets a default
+      @include textVariables($type, "md");
+      // Generates all the size options
+      @each $size in $size-options {
+        &-#{$size} {
+          @include textVariables($type, $size);
+        }
+      }
+    }
+  }
+
+  @each $variant, $color in $color-map {
+    &--color-#{$variant} {
+      color: var($color);
+    }
+  }
+
+  @each $weight in $font-weight {
+    &--font-weight-#{$weight} {
+      @if $weight == "medium" {
+        font-weight: var(--font-weight-medium);
+      }
+
+      @else {
+        font-weight: $weight;
+      }
+    }
+  }
+
+  @each $style in $font-style {
+    &--font-style-#{$style} {
+      font-style: $style;
+    }
+  }
+
+  @each $alignment in $text-align {
+    &--text-align-#{$alignment} {
+      text-align: $alignment;
+    }
+  }
+
+  @each $overflow in $overflow-wrap {
+    &--overflow-wrap-#{$overflow} {
+      overflow-wrap: $overflow;
+    }
+  }
+
+  &--ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &--text-transform-uppercase {
+    text-transform: uppercase;
+  }
+
+  &--text-transform-lowercase {
+    text-transform: lowercase;
+  }
+
+  &--text-transform-capitalize {
+    text-transform: capitalize;
+  }
+}
+
+
