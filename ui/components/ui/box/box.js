@@ -74,8 +74,8 @@ export const BorderColors = [
 
 const ValidSize = PropTypes.oneOf(Sizes);
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
-const ValidBackgroundColors = PropTypes.oneOf(BackgroundColors);
-const ValidBorderColors = PropTypes.oneOf(BorderColors);
+export const ValidBackgroundColors = PropTypes.oneOf(BackgroundColors);
+export const ValidBorderColors = PropTypes.oneOf(BorderColors);
 
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
