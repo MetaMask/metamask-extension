@@ -375,22 +375,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * @param {string} txHash - transaction hash
-   * @returns {TransactionMeta} the txMeta who matches the given hash if none found
-   * for the network returns undefined
-   */
-  _getTransactionByHash(txHash) {
-    const { transactions } = this.store.getState();
-    const txByHash = Object.values(transactions).filter((tx) => {
-      if (tx.hash && txHash && tx.hash === txHash) {
-        return tx;
-      }
-      return undefined;
-    });
-    return txByHash[0];
-  }
-
-  /**
    * @param {number} txId
    * @returns {boolean}
    */
@@ -1857,6 +1841,7 @@ export default class TransactionController extends EventEmitter {
         return;
       }
       otherTxMeta.replacedBy = txMeta.hash;
+      otherTxMeta.replacedById = txMeta.id;
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
@@ -2011,7 +1996,7 @@ export default class TransactionController extends EventEmitter {
       },
       defaultGasEstimates,
       originalType,
-      replacedBy,
+      replacedById,
       metamaskNetworkId: network,
     } = txMeta;
     const { transactions } = this.store.getState();
@@ -2115,15 +2100,21 @@ export default class TransactionController extends EventEmitter {
       transactionContractMethod = transactions[id]?.contractMethodName;
     }
 
-    const replacedTxMeta = this._getTransactionByHash(replacedBy);
+    const replacedTxMeta = this._getTransaction(replacedById);
+
+    const TRANSACTION_REPLACEMENT_METHODS = {
+      RETRY: TRANSACTION_TYPES.RETRY,
+      CANCEL: TRANSACTION_TYPES.CANCEL,
+      SAME_NONCE: 'other',
+    };
 
     let transactionReplaced;
     if (extraParams?.dropped) {
-      transactionReplaced = TRANSACTION_TYPES.OTHER;
+      transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.SAME_NONCE;
       if (replacedTxMeta?.type === TRANSACTION_TYPES.CANCEL) {
-        transactionReplaced = TRANSACTION_TYPES.CANCEL;
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.CANCEL;
       } else if (replacedTxMeta?.type === TRANSACTION_TYPES.RETRY) {
-        transactionReplaced = TRANSACTION_TYPES.RETRY;
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.RETRY;
       }
     }
 
