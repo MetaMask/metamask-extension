@@ -7,6 +7,7 @@ export default class Tabs extends Component {
     defaultActiveTabName: null,
     onTabClick: null,
     tabsClassName: undefined,
+    subHeader: null,
   };
 
   static propTypes = {
@@ -14,6 +15,7 @@ export default class Tabs extends Component {
     onTabClick: PropTypes.func,
     children: PropTypes.node.isRequired,
     tabsClassName: PropTypes.string,
+    subHeader: PropTypes.node,
   };
 
   state = {
@@ -74,12 +76,13 @@ export default class Tabs extends Component {
   }
 
   render() {
-    const { tabsClassName } = this.props;
+    const { tabsClassName, subHeader } = this.props;
     return (
       <div className="tabs">
         <ul className={classnames('tabs__list', tabsClassName)}>
           {this.renderTabs()}
         </ul>
+        {subHeader}
         <div className="tabs__content">{this.renderActiveTabContent()}</div>
       </div>
     );

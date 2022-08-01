@@ -2524,6 +2524,9 @@
   "popularCustomNetworks": {
     "message": "Popular custom networks"
   },
+  "portfolioView": {
+    "message": "portfolio view"
+  },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger Connection Type",
     "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
