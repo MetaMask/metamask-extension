@@ -33,6 +33,10 @@ import {
   ERC20,
   ERC721,
 } from '../../../../shared/constants/transaction';
+import {
+  MAINNET_CHAIN_ID,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -462,31 +466,11 @@ export default class ConfirmApproveContent extends Component {
       userAddress,
     } = this.props;
     const { t } = this.context;
+    const useBlockExplorer =
+      rpcPrefs?.blockExplorerUrl ||
+      [...TEST_CHAINS, MAINNET_CHAIN_ID].includes(chainId);
+
     let titleTokenDescription = t('token');
-    if (rpcPrefs?.blockExplorerUrl || chainId) {
-      const unknownTokenBlockExplorerLink = getTokenTrackerLink(
-        tokenAddress,
-        chainId,
-        null,
-        userAddress,
-        {
-          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-        },
-      );
-
-      const unknownTokenLink = (
-        <a
-          href={unknownTokenBlockExplorerLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="confirm-approve-content__unknown-asset"
-        >
-          {t('token')}
-        </a>
-      );
-      titleTokenDescription = unknownTokenLink;
-    }
-
     if (
       assetStandard === ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
@@ -503,7 +487,11 @@ export default class ConfirmApproveContent extends Component {
       if (assetName || tokenSymbol) {
         titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
       } else {
-        const unknownNFTBlockExplorerLink = getTokenTrackerLink(
+        titleTokenDescription = t('nft');
+      }
+
+      if (useBlockExplorer) {
+        const blockExplorerLink = getTokenTrackerLink(
           tokenAddress,
           chainId,
           null,
@@ -512,24 +500,35 @@ export default class ConfirmApproveContent extends Component {
             blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
           },
         );
-        const unknownNFTLink = (
+        const blockExplorerElement = (
           <>
             <a
-              href={unknownNFTBlockExplorerLink}
+              href={blockExplorerLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="confirm-approve-content__unknown-asset"
+              title={tokenAddress}
+              className="confirm-approve-content__approval-asset-link"
             >
-              {t('nft')}
+              {titleTokenDescription}
             </a>
             {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
           </>
         );
-        titleTokenDescription = unknownNFTLink;
+        return blockExplorerElement;
       }
     }
 
-    return titleTokenDescription;
+    return (
+      <span
+        className="confirm-approve-content__approval-asset-title"
+        onClick={() => {
+          copyToClipboard(tokenAddress);
+        }}
+        title={tokenAddress}
+      >
+        {titleTokenDescription}
+      </span>
+    );
   }
 
   renderTitle() {
@@ -631,7 +630,10 @@ export default class ConfirmApproveContent extends Component {
             </Typography>
           </Box>
         </Box>
-        <div className="confirm-approve-content__title">
+        <div
+          className="confirm-approve-content__title"
+          data-testid="confirm-approve-title"
+        >
           {this.renderTitle()}
         </div>
         <div className="confirm-approve-content__description">
