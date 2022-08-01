@@ -27,6 +27,7 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
+import IconChart from '../../components/ui/icon/icon-chart';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -59,6 +60,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
+const METALABS_URL = process.env.METALABS_URL || 'https://labs.metamask.io';
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -640,6 +642,19 @@ export default class Home extends PureComponent {
               defaultActiveTabName={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
+              subHeader={
+                <a
+                  href={`${METALABS_URL}?metamaskOnboarding=true`}
+                  className="home__subheader-link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <IconChart />
+                  <div className="home__subheader-link__text">
+                    {t('portfolioView')}
+                  </div>
+                </a>
+              }
             >
               <Tab
                 activeClassName="home__tab--active"
