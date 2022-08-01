@@ -37,7 +37,8 @@ export default function SignatureRequestSIWE({
 
   const t = useContext(I18nContext);
 
-  const isMatchingAddress = from === parsedMessage.address;
+  const isMatchingAddress =
+    from.toLowerCase() === parsedMessage.address.toLowerCase();
 
   const checkSIWEDomain = () => {
     let isSIWEDomainValid = false;
