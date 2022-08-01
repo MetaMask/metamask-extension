@@ -1,8 +1,9 @@
+/* global chrome */
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
-let scriptsLoaded = false;
+let scriptsLoadInitiated = false;
 
 // Variable testMode is set to true when preparing test build.
 // This helps in changing service worker execution in test environment.
@@ -35,10 +36,10 @@ function tryImport(...fileNames) {
 
 function importAllScripts() {
   // Bail if we've already imported scripts
-  if (scriptsLoaded) {
+  if (scriptsLoadInitiated) {
     return;
   }
-
+  scriptsLoadInitiated = true;
   const files = [];
 
   // In testMode individual files are imported, this is to help capture load time stats
@@ -68,9 +69,6 @@ function importAllScripts() {
     loadFile('./lockdown-more.js');
     loadFile('./runtime-cjs.js');
   }
-
-  // Mark scripts as loaded
-  scriptsLoaded = true;
 
   const fileList = [
     // The list of files is injected at build time by replacing comment below with comma separated strings of file names
@@ -111,14 +109,20 @@ function importAllScripts() {
   }
 }
 
+// Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
 self.addEventListener('install', importAllScripts);
 
 /*
- * Message event listener below loads script if they are no longer available.
+ * A keepalive message listener to prevent Service Worker getting shut down due to inactivity.
+ * UI sends the message periodically, in a setInterval.
+ * Chrome will revive the service worker if it was shut down, whenever a new message is sent, but only if a listener was defined here.
+ *
  * chrome below needs to be replaced by cross-browser object,
  * but there is issue in importing webextension-polyfill into service worker.
  * chrome does seems to work in at-least all chromium based browsers
  */
-// eslint-disable-next-line no-undef
-chrome.runtime.onMessage.addListener(importAllScripts);
+chrome.runtime.onMessage.addListener(() => {
+  importAllScripts();
+  return false;
+});
