@@ -295,6 +295,7 @@ export const EVENT_NAMES = {
   NFT_ADDED: 'NFT Added',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
+  SUPPORT_LINK_CLICKED: 'Support Link Clicked',
 };
 
 export const EVENT = {
@@ -313,6 +314,8 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+    ERROR: 'Error',
+    FOOTER: 'Footer',
   },
   SOURCE: {
     NETWORK: {

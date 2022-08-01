@@ -6,7 +6,7 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { returnToOnboardingInitiatorTab } from '../onboarding-initiator-util';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
@@ -98,7 +98,19 @@ export default class EndOfFlowScreen extends PureComponent {
               target="_blank"
               key="metamaskSupportLink"
               rel="noopener noreferrer"
-              href={SUPPORT_REQUEST_LINK}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ONBOARDING,
+                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  properties: {
+                    action: 'Onboarding Complete',
+                    url: SUPPORT_REQUEST_LINK,
+                  },
+                });
+                global.platform.openTab({
+                  url: SUPPORT_REQUEST_LINK,
+                });
+              }}
             >
               <span className="first-time-flow__link-text">
                 {this.context.t('here')}

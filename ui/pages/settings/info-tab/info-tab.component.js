@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
 import Button from '../../../components/ui/button';
 import {
   SUPPORT_LINK,
@@ -10,6 +11,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -105,7 +107,19 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[7]} className="info-tab__link-item">
           <Button
             type="link"
-            href={SUPPORT_REQUEST_LINK}
+            onClick={() => {
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.SETTINGS,
+                event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                properties: {
+                  action: 'Info Tab',
+                  url: SUPPORT_REQUEST_LINK,
+                },
+              });
+              global.platform.openTab({
+                url: SUPPORT_REQUEST_LINK,
+              });
+            }}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"

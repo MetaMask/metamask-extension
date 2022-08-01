@@ -5,7 +5,7 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
@@ -440,6 +440,14 @@ export default class AccountMenu extends Component {
         }
         <AccountMenuItem
           onClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.NAVIGATION,
+              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              properties: {
+                action: 'Main Menu',
+                url: supportLink,
+              },
+            });
             global.platform.openTab({ url: supportLink });
           }}
           icon={
