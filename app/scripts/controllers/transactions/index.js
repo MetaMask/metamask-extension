@@ -1967,6 +1967,61 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
+  /**
+   * The allowance amount in relation to the dapp proposed amount for specific token
+   *
+   * @param {string} transactionApprovalAmountType - The transaction approval amount type
+   * @param {string} originalApprovalAmount - The original approval amount is the originally dapp proposed token amount
+   * @param {string} finalApprovalAmount - The final approval amount is the chosen amount which will be the same as the
+   * originally dapp proposed token amount if the user does not edit the amount or will be a custom token amount set by the user
+   */
+  _allowanceAmountInRelationToDappProposedValue(
+    transactionApprovalAmountType,
+    originalApprovalAmount,
+    finalApprovalAmount,
+  ) {
+    if (
+      transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM &&
+      originalApprovalAmount &&
+      finalApprovalAmount
+    ) {
+      return `${new BigNumber(originalApprovalAmount, 10)
+        .div(finalApprovalAmount, 10)
+        .times(100)
+        .round(2)}`;
+    }
+    return null;
+  }
+
+  /**
+   * The allowance amount in relation to the balance for that specific token
+   *
+   * @param {string} transactionApprovalAmountType - The transaction approval amount type
+   * @param {string} dappProposedTokenAmount - The dapp proposed token amount
+   * @param {string} currentTokenBalance - The balance of the token that is being send
+   */
+  _allowanceAmountInRelationToTokenBalance(
+    transactionApprovalAmountType,
+    dappProposedTokenAmount,
+    currentTokenBalance,
+  ) {
+    if (
+      (transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM ||
+        transactionApprovalAmountType ===
+          TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED) &&
+      dappProposedTokenAmount &&
+      currentTokenBalance
+    ) {
+      return `${new BigNumber(dappProposedTokenAmount, 16)
+        .div(currentTokenBalance, 10)
+        .times(100)
+        .round(2)}`;
+    }
+    return null;
+  }
+
   async _buildEventFragmentProperties(txMeta, extraParams) {
     const {
       id,
@@ -2082,6 +2137,8 @@ export default class TransactionController extends EventEmitter {
     const finalApprovalAmount = transactions[id]?.finalApprovalAmount;
     let transactionApprovalAmountType;
     let transactionContractMethod;
+    let transactionApprovalAmountVsProposedRatio;
+    let transactionApprovalAmountVsBalanceRatio;
     let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
@@ -2106,6 +2163,18 @@ export default class TransactionController extends EventEmitter {
           transactionApprovalAmountType =
             TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED;
         }
+        transactionApprovalAmountVsProposedRatio =
+          this._allowanceAmountInRelationToDappProposedValue(
+            transactionApprovalAmountType,
+            originalApprovalAmount,
+            finalApprovalAmount,
+          );
+        transactionApprovalAmountVsBalanceRatio =
+          this._allowanceAmountInRelationToTokenBalance(
+            transactionApprovalAmountType,
+            dappProposedTokenAmount,
+            currentTokenBalance,
+          );
       }
     }
 
@@ -2126,32 +2195,8 @@ export default class TransactionController extends EventEmitter {
         transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.RETRY;
       }
     }
-    
-    const transactionApprovalAmountVsProposedRation =
-      transactionApprovalAmountType ===
-        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM &&
-      originalApprovalAmount &&
-      finalApprovalAmount
-        ? `${new BigNumber(originalApprovalAmount, 10)
-            .div(finalApprovalAmount, 10)
-            .times(100)
-            .round(2)}`
-        : null;
 
-    const transactionApprovalAmountVsBalanceRation =
-      (transactionApprovalAmountType ===
-        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM ||
-        transactionApprovalAmountType ===
-          TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED) &&
-      dappProposedTokenAmount &&
-      currentTokenBalance
-        ? `${new BigNumber(dappProposedTokenAmount, 16)
-            .div(currentTokenBalance, 10)
-            .times(100)
-            .round(2)}`
-        : null;
-
-    const properties = {
+    let properties = {
       chain_id: chainId,
       referrer,
       source,
@@ -2165,10 +2210,16 @@ export default class TransactionController extends EventEmitter {
       token_standard: tokenStandard,
       transaction_type: transactionType,
       transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
-      transaction_approval_amount_type: transactionApprovalAmountType,
     };
 
-    const sensitiveProperties = {
+    if (transactionContractMethod === 'Approve') {
+      properties = {
+        ...properties,
+        transaction_approval_amount_type: transactionApprovalAmountType,
+      };
+    }
+
+    let sensitiveProperties = {
       status,
       transaction_envelope_type: isEIP1559Transaction(txMeta)
         ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
@@ -2177,11 +2228,19 @@ export default class TransactionController extends EventEmitter {
       gas_limit: gasLimit,
       transaction_contract_method: transactionContractMethod,
       transaction_replaced: transactionReplaced,
-      transaction_approval_amount_vs_balance_ratio: transactionApprovalAmountVsBalanceRation,
-      transaction_approval_amount_vs_proposed_ratio: transactionApprovalAmountVsProposedRation,
       ...extraParams,
       ...gasParamsInGwei,
     };
+
+    if (transactionContractMethod === 'Approve') {
+      sensitiveProperties = {
+        ...sensitiveProperties,
+        transaction_approval_amount_vs_balance_ratio:
+          transactionApprovalAmountVsBalanceRatio,
+        transaction_approval_amount_vs_proposed_ratio:
+          transactionApprovalAmountVsProposedRatio,
+      };
+    }
 
     return { properties, sensitiveProperties };
   }
