@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
+  "addMoreNetworks": {
+    "message": "thêm thủ công các mạng khác"
+  },
   "addNetwork": {
     "message": "Thêm mạng"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "Cảnh báo"
   },
+  "allOfYour": {
+    "message": "Tất cả $1 của bạn",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "Cho phép tiện ích bên ngoài này:"
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "Phê duyệt giới hạn chi tiêu"
+  },
+  "approveAllTokensTitle": {
+    "message": "Cấp quyền truy cập vào tất cả $1 của bạn?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Chấp nhận và cài đặt"
@@ -438,7 +449,7 @@
     "message": "Mua $1 qua Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre cho phép bạn dùng thẻ ghi nợ để nạp $1 trực tiếp vào tài khoản MetaMask của mình."
+    "message": "Dễ dàng tham gia đối với các giao dịch mua lên đến $1.000. Xác minh mua hàng giới hạn cao và tương tác nhanh. Hỗ trợ Thẻ Tín dụng/Ghi nợ, Apple Pay, Chuyển khoản Ngân hàng. Hiện có tại hơn 100 quốc gia. Nạp token vào Tài khoản MetaMask của bạn"
   },
   "bytes": {
     "message": "Byte"
@@ -465,6 +476,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Để $1 một giao dịch, phí gas phải tăng tối thiểu 10% để mạng nhận ra giao dịch này.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "Hủy hoán đổi với giá ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Hủy hoán đổi miễn phí"
   },
   "cancellationGasFee": {
     "message": "Phí gas hủy"
@@ -650,7 +668,7 @@
     "message": "Tương tác với hợp đồng"
   },
   "convertTokenToNFTDescription": {
-    "message": "Chúng tôi phát hiện tài sản này là một NFT. MetaMask hiện đã hỗ trợ gốc đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
+    "message": "Chúng tôi phát hiện tài sản này là một NFT. MetaMask hiện đã hỗ trợ toàn diện và đầy đủ cho NFT. Bạn có muốn xóa tài sản khỏi danh sách token và thêm tài sản dưới dạng NFT không?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Chúng tôi phát hiện tài sản này đã được thêm dưới dạng NFT. Bạn có muốn xóa tài sản khỏi danh sách token không?"
@@ -1277,6 +1295,9 @@
   "functionApprove": {
     "message": "Chức năng: Phê duyệt"
   },
+  "functionSetApprovalForAll": {
+    "message": "Chức năng: SetApprovalForAll"
+  },
   "functionType": {
     "message": "Loại chức năng"
   },
@@ -1617,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "Cụm mật khẩu khôi phục bí mật không hợp lệ"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Nội dung nhập không hợp lệ! Cụm từ khôi phục bí mật phân biệt chữ hoa và chữ thường."
+  },
   "ipfsGateway": {
     "message": "Cổng kết nối IPFS"
   },
@@ -1892,6 +1916,19 @@
     "message": "xác minh thông tin về mạng",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "Bạn nên $1 trước khi tiếp tục.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "Theo hồ sơ của chúng tôi, tên mạng có thể không khớp hoàn toàn với ID chuỗi này."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "Ký hiệu đơn vị tiền tệ đã gửi không khớp với những gì chúng tôi mong đợi cho ID chuỗi này."
+  },
+  "mismatchedRpcUrl": {
+    "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
+  },
   "missingNFT": {
     "message": "Không thấy NFT của mình?"
   },
@@ -1942,6 +1979,9 @@
   },
   "network": {
     "message": "Mạng:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "Đã thêm mạng thành công!"
   },
   "networkDetails": {
     "message": "Thông tin về mạng"
@@ -2059,6 +2099,9 @@
     "message": "Số chỉ dùng một lần lớn hơn số chỉ dùng một lần gợi ý là $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "NFT"
+  },
   "nftTokenIdPlaceholder": {
     "message": "Nhập ID bộ sưu tập"
   },
@@ -2154,10 +2197,20 @@
     "message": "Bật chế độ tối"
   },
   "notifications12Description": {
-    "message": "Chế độ tối sẽ được kích hoạt dành cho người dùng mới tùy theo tùy chọn hệ thống của họ. Đối với người dùng hiện tại, có thể bật Chế độ tối theo cách thủ công trong phần Cài đặt -> Thử nghiệm."
+    "message": "Tiện ích Chế độ tối hiện đã ra mắt! Để bật, hãy vào Cài đặt -> Thử nghiệm và chọn một trong các tùy chọn hiển thị: Sáng, Tối, Hệ thống."
   },
   "notifications12Title": {
     "message": "Dùng chế độ tối khi nào? Ngay bây giờ! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "Hiển thị danh sách mạng tùy chỉnh"
+  },
+  "notifications13Description": {
+    "message": "Giờ đây, bạn có thể dễ dàng thêm các mạng tùy chỉnh phổ biến sau: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm và Polygon! Để bật tính năng này, hãy chuyển đến Cài đặt -> Thử nghiệm và bật \"Hiển thị danh sách mạng tùy chỉnh\"!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Thêm các mạng phổ biến"
   },
   "notifications1Description": {
     "message": "Giờ đây, người dùng MetaMask trên điện thoại di động có thể hoán đổi token trong ví di động của họ. Quét mã QR để tải ứng dụng di động và bắt đầu hoán đổi.",
@@ -2676,6 +2729,14 @@
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"
   },
+  "revokeAllTokensTitle": {
+    "message": "Thu hồi quyền truy cập vào tất cả $1 của bạn?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "Bằng cách thu hồi quyền truy cập, $1 sau đây sẽ không thể truy cập vào $2 của bạn nữa",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Mạng thử nghiệm Rinkeby"
   },
@@ -2852,11 +2913,22 @@
     "message": "Gửi $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "Cảnh báo: bạn sắp gửi đến một hợp đồng token và điều này có thể dẫn đến nguy cơ mất tiền. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "Thiết lập cài đặt quyền riêng tư nâng cao"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."
+  },
+  "setApprovalForAll": {
+    "message": "Cài đặt phê duyệt tất cả"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Phê duyệt $1 không có giới hạn chi tiêu",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Cài đặt"
@@ -2876,6 +2948,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Chọn tùy chọn này để hiển thị các quyền kiểm soát giá gas và giới hạn ngay trên màn hình gửi và xác nhận."
+  },
+  "showCustomNetworkList": {
+    "message": "Hiển thị danh sách mạng tùy chỉnh"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Chọn tùy chọn này để hiển thị danh sách các mạng có thông tin được điền sẵn khi thêm mạng mới."
   },
   "showFiatConversionInTestnets": {
     "message": "Hiển thị tỷ lệ quy đổi trên các mạng thử nghiệm"
@@ -2985,6 +3063,9 @@
   },
   "snapsToggle": {
     "message": "Snap chỉ hoạt động khi đã bật"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Một số mạng có thể gây ra rủi ro về bảo mật và/hoặc quyền riêng tư. Bạn cần hiểu rõ các rủi ro này trước khi thêm và sử dụng mạng."
   },
   "somethingWentWrong": {
     "message": "Rất tiếc! Đã xảy ra sự cố."
@@ -3548,6 +3629,10 @@
   "switchNetworks": {
     "message": "Chuyển mạng"
   },
+  "switchToNetwork": {
+    "message": "Chuyển sang $1",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Chuyển sang tài khoản này"
   },
@@ -3851,6 +3936,9 @@
   "unknownCameraErrorTitle": {
     "message": "Rất tiếc! Đã xảy ra sự cố...."
   },
+  "unknownCollection": {
+    "message": "Bộ sưu tập chưa có tên"
+  },
   "unknownNetwork": {
     "message": "Mạng riêng không xác định"
   },
@@ -3987,6 +4075,9 @@
   "walletCreationSuccessTitle": {
     "message": "Tạo ví thành công"
   },
+  "wantToAddThisNetwork": {
+    "message": "Bạn muốn thêm mạng này?"
+  },
   "warning": {
     "message": "Cảnh báo"
   },
@@ -4048,6 +4139,10 @@
   },
   "yesLetsTry": {
     "message": "Có, hãy thử"
+  },
+  "youHaveAddedAll": {
+    "message": "Bạn đã thêm tất cả các mạng phổ biến. Bạn có thể khám phá thêm nhiều mạng khác $1 Hoặc bạn có thể $2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bạn cần cho phép truy cập vào máy ảnh để sử dụng tính năng này."
