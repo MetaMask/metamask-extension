@@ -121,9 +121,8 @@ describe('NetworkForm Component', () => {
   });
 
   it('should render network form correctly', () => {
-    const { queryByText, getByDisplayValue } = renderComponent(
-      propNetworkDisplay,
-    );
+    const { queryByText, getByDisplayValue } =
+      renderComponent(propNetworkDisplay);
     expect(queryByText('Network Name')).toBeInTheDocument();
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();

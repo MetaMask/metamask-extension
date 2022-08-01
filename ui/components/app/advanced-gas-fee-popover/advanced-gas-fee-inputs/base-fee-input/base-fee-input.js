@@ -45,12 +45,8 @@ const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
 const BaseFeeInput = () => {
   const t = useI18nContext();
 
-  const {
-    gasFeeEstimates,
-    estimateUsed,
-    maxFeePerGas,
-    editGasMode,
-  } = useGasFeeContext();
+  const { gasFeeEstimates, estimateUsed, maxFeePerGas, editGasMode } =
+    useGasFeeContext();
   const {
     gasLimit,
     maxPriorityFeePerGas,
@@ -59,11 +55,8 @@ const BaseFeeInput = () => {
     setMaxBaseFee,
   } = useAdvancedGasFeePopoverContext();
 
-  const {
-    estimatedBaseFee,
-    historicalBaseFeeRange,
-    baseFeeTrend,
-  } = gasFeeEstimates;
+  const { estimatedBaseFee, historicalBaseFeeRange, baseFeeTrend } =
+    gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 

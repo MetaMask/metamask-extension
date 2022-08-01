@@ -646,22 +646,18 @@ export function quotesToRenderableData(
     let rawNetworkFees = null;
     let rawEthFee = null;
 
-    ({
-      feeInFiat,
-      feeInEth,
-      rawNetworkFees,
-      rawEthFee,
-    } = getRenderableNetworkFeesForQuote({
-      tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
-      approveGas,
-      gasPrice,
-      currentCurrency,
-      conversionRate,
-      tradeValue: trade.value,
-      sourceSymbol: sourceTokenInfo.symbol,
-      sourceAmount,
-      chainId,
-    }));
+    ({ feeInFiat, feeInEth, rawNetworkFees, rawEthFee } =
+      getRenderableNetworkFeesForQuote({
+        tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
+        approveGas,
+        gasPrice,
+        currentCurrency,
+        conversionRate,
+        tradeValue: trade.value,
+        sourceSymbol: sourceTokenInfo.symbol,
+        sourceAmount,
+        chainId,
+      }));
 
     if (smartTransactionEstimatedGas) {
       ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({

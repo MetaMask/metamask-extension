@@ -1,1 +1,7 @@
-export { default, MultipleSizes, MultipleSizesAndAuto } from './box';
+export {
+  default,
+  MultipleSizes,
+  MultipleSizesAndAuto,
+  ValidBackgroundColors,
+  ValidBorderColors,
+} from './box';

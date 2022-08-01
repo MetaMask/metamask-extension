@@ -34,11 +34,8 @@ export default {
 
 function transformState(state = {}) {
   if (state.PreferencesController) {
-    const {
-      accountTokens,
-      accountHiddenTokens,
-      frequentRpcListDetail,
-    } = state.PreferencesController;
+    const { accountTokens, accountHiddenTokens, frequentRpcListDetail } =
+      state.PreferencesController;
 
     const newAccountTokens = {};
     const newAccountHiddenTokens = {};
