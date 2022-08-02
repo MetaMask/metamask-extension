@@ -20,6 +20,7 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
   getNewTokensImported,
+  getPermissionSubjects,
 } from '../../selectors';
 
 import {
@@ -27,6 +28,7 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
+  requestAccountsPermissionWithId,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
@@ -144,6 +146,7 @@ const mapStateToProps = (state) => {
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
+    permissionsSubjects: getPermissionSubjects(state),
   };
 };
 
@@ -192,6 +195,7 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
+  requestAccountsPermissionWithId: (origin) => dispatch(requestAccountsPermissionWithId(origin)),
 });
 
 export default compose(

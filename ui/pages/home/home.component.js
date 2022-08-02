@@ -597,6 +597,8 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
+      requestAccountsPermissionWithId,
+      permissionsSubjects,
     } = this.props;
 
     if (forgottenPassword) {
@@ -639,17 +641,28 @@ export default class Home extends PureComponent {
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
-                <a
-                  href={`${METALABS_URL}?metamaskOnboarding=true`}
+                <div
                   className="home__subheader-link"
-                  target="_blank"
-                  rel="noreferrer"
+                  onClick={async () => {
+                    if (permissionsSubjects[METALABS_URL]) {
+                      window.open(METALABS_URL);
+                    } else {
+                      const id = await requestAccountsPermissionWithId(
+                        METALABS_URL,
+                      );
+                      history.push(
+                        `${CONNECT_ROUTE}/${id}?redirect=${encodeURIComponent(
+                          METALABS_URL,
+                        )}`,
+                      );
+                    }
+                  }}
                 >
                   <IconChart />
                   <div className="home__subheader-link__text">
                     {t('portfolioView')}
                   </div>
-                </a>
+                </div>
               }
             >
               <Tab
