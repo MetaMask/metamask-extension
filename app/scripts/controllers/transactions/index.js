@@ -17,7 +17,6 @@ import {
   addHexPrefix,
   getChainType,
 } from '../../lib/util';
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { calcGasTotal } from '../../../../ui/pages/send/send.utils';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
 import {
@@ -1013,21 +1012,9 @@ export default class TransactionController extends EventEmitter {
     } else if (
       txMeta.txParams.to &&
       txMeta.type === TRANSACTION_TYPES.SIMPLE_SEND &&
-      chainType !== 'custom'
+      chainType !== 'custom' &&
+      !txMeta.txParams.data
     ) {
-      // if there's data in the params, but there's no contract code, it's not a valid transaction
-      if (txMeta.txParams.data) {
-        const err = new Error(
-          'TxGasUtil - Trying to call a function on a non-contract address',
-        );
-        // set error key so ui can display localized error message
-        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY;
-
-        // set the response on the error so that we can see in logs what the actual response was
-        err.getCodeResponse = getCodeResponse;
-        throw err;
-      }
-
       // This is a standard ether simple send, gas requirement is exactly 21k
       return { gasLimit: GAS_LIMITS.SIMPLE };
     }
