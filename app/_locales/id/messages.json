@@ -3045,10 +3045,6 @@
   "snapInstallWarningCheck": {
     "message": "Untuk mengonfirmasikan Anda sudah paham, centang semua."
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "Anda memberikan akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
-    "description": "The parameter is the name of the snap"
-  },
   "snapRequestsPermission": {
     "message": "Snap ini meminta izin berikut:"
   },
