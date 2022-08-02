@@ -31,7 +31,7 @@ export default class BackupController {
 
     if (preferences && addressBook) {
       this._trackMetaMetricsEvent({
-        event: 'User Restored Data From Backup',
+        event: 'User Data Imported',
         category: 'Backup',
       });
     }
