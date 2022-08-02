@@ -195,7 +195,8 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
-  requestAccountsPermissionWithId: (origin) => dispatch(requestAccountsPermissionWithId(origin)),
+  requestAccountsPermissionWithId: (origin) =>
+    dispatch(requestAccountsPermissionWithId(origin)),
 });
 
 export default compose(

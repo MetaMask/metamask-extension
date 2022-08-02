@@ -154,12 +154,12 @@ export default class PermissionConnect extends Component {
   }
 
   selectAccounts = (addresses) => {
-    const history = this.props.history;
+    const { history, confirmPermissionPath } = this.props;
     this.setState(
       {
         selectedAccountAddresses: addresses,
       },
-      () => history.push(`${this.props.confirmPermissionPath}${history.location.search}`),
+      () => history.push(`${confirmPermissionPath}${history.location.search}`),
     );
   };
 
@@ -228,7 +228,6 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
-      history,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
       ///: END:ONLY_INCLUDE_IN
