@@ -926,9 +926,8 @@ export function getTheme(state) {
  * @returns {object}
  */
 export function getTokenList(state) {
-  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
-    state,
-  );
+  const isTokenDetectionInactiveOnMainnet =
+    getIsTokenDetectionInactiveOnMainnet(state);
   const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
     ? STATIC_MAINNET_TOKEN_LIST
     : state.metamask.tokenList;

@@ -29,9 +29,8 @@ const mapStateToProps = (state) => {
     },
   } = state;
 
-  const isTokenDetectionInactiveOnMainnet = getIsTokenDetectionInactiveOnMainnet(
-    state,
-  );
+  const isTokenDetectionInactiveOnMainnet =
+    getIsTokenDetectionInactiveOnMainnet(state);
   const showSearchTab =
     getIsTokenDetectionSupported(state) ||
     isTokenDetectionInactiveOnMainnet ||
@@ -50,9 +49,8 @@ const mapStateToProps = (state) => {
     selectedAddress,
     isDynamicTokenListAvailable: getIsDynamicTokenListAvailable(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
-    tokenDetectionInactiveOnNonMainnetSupportedNetwork: getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(
-      state,
-    ),
+    tokenDetectionInactiveOnNonMainnetSupportedNetwork:
+      getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state),
   };
 };
 const mapDispatchToProps = (dispatch) => {

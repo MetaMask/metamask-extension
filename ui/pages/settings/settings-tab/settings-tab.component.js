@@ -167,12 +167,8 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const {
-      useBlockie,
-      setUseBlockie,
-      selectedAddress,
-      tokenList,
-    } = this.props;
+    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
+      this.props;
 
     const getIconStyles = () => ({
       display: 'block',

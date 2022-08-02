@@ -50,14 +50,10 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       return tokenObj;
     }, {}),
   );
-  const [
-    showDetectedTokenIgnoredPopover,
-    setShowDetectedTokenIgnoredPopover,
-  ] = useState(false);
-  const [
-    partiallyIgnoreDetectedTokens,
-    setPartiallyIgnoreDetectedTokens,
-  ] = useState(false);
+  const [showDetectedTokenIgnoredPopover, setShowDetectedTokenIgnoredPopover] =
+    useState(false);
+  const [partiallyIgnoreDetectedTokens, setPartiallyIgnoreDetectedTokens] =
+    useState(false);
 
   const importSelectedTokens = async (selectedTokens) => {
     selectedTokens.forEach((importedToken) => {

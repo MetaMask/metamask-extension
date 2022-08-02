@@ -43,7 +43,8 @@ const DetectedTokenIgnoredPopover = ({
       }
       className={classNames('detected-token-ignored-popover', {
         'detected-token-ignored-popover--import': partiallyIgnoreDetectedTokens,
-        'detected-token-ignored-popover--ignore': !partiallyIgnoreDetectedTokens,
+        'detected-token-ignored-popover--ignore':
+          !partiallyIgnoreDetectedTokens,
       })}
       footer={footer}
     >

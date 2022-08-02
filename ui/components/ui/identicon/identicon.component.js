@@ -130,14 +130,8 @@ export default class Identicon extends Component {
   }
 
   render() {
-    const {
-      address,
-      image,
-      useBlockie,
-      addBorder,
-      diameter,
-      tokenList,
-    } = this.props;
+    const { address, image, useBlockie, addBorder, diameter, tokenList } =
+      this.props;
     const size = diameter + 8;
 
     if (image) {
