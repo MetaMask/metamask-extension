@@ -3045,10 +3045,6 @@
   "snapInstallWarningCheck": {
     "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả."
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "Bạn đang cấp quyền truy cập khóa cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
-    "description": "The parameter is the name of the snap"
-  },
   "snapRequestsPermission": {
     "message": "Snap này đang yêu cầu các quyền sau:"
   },
