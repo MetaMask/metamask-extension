@@ -104,6 +104,7 @@ export default class Routes extends Component {
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
     sendStage: PropTypes.string,
+    disableContextEditing: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -358,6 +359,7 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      disableContextEditing,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -384,9 +386,12 @@ export default class Routes extends Component {
         {!this.hideAppHeader() && (
           <AppHeader
             hideNetworkIndicator={this.onInitializationUnlockPage()}
-            disableNetworkIndicator={this.onSwapsPage()}
+            disableNetworkIndicator={
+              disableContextEditing || this.onSwapsPage()
+            }
             onClick={this.onAppHeaderClick}
             disabled={
+              disableContextEditing ||
               this.onConfirmPage() ||
               this.onEditTransactionPage() ||
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())

@@ -393,6 +393,7 @@ export const draftTransactionInitialState = {
   status: SEND_STATUSES.VALID,
   transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
   userInputHexData: null,
+  contextEditingDisabled: true,
 };
 
 /**
@@ -841,6 +842,9 @@ const slice = createSlice({
       slice.caseReducers.validateGasField(state);
       // validate send state
       slice.caseReducers.validateSendState(state);
+    },
+    disableContextEditing: (state) => {
+      state.contextEditingDisabled = true;
     },
     /**
      * Clears all drafts from send state and drops the currentTransactionUUID.
@@ -1548,6 +1552,7 @@ const slice = createSlice({
         slice.caseReducers.validateAmountField(state);
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
+        state.contextEditingDisabled = false;
       })
       .addCase(SELECTED_ACCOUNT_CHANGED, (state, action) => {
         // If we are on the edit flow the account we are keyed into will be the
@@ -1615,6 +1620,7 @@ const {
   updateRecipientSearchMode,
   addHistoryEntry,
   acknowledgeRecipientWarning,
+  disableContextEditing,
 } = actions;
 
 export {
@@ -1623,6 +1629,7 @@ export {
   updateGasLimit,
   addHistoryEntry,
   acknowledgeRecipientWarning,
+  disableContextEditing,
 };
 
 // Action Creators
@@ -1662,6 +1669,7 @@ const debouncedValidateRecipientUserInput = debounce(
  */
 export function editExistingTransaction(assetType, transactionId) {
   return async (dispatch, getState) => {
+    await dispatch(actions.disableContextEditing());
     await dispatch(actions.clearPreviousDrafts());
     const state = getState();
     const unapprovedTransactions = getUnapprovedTxs(state);
@@ -2312,6 +2320,7 @@ export function toggleSendMaxMode() {
  */
 export function startNewDraftTransaction(asset) {
   return async (dispatch) => {
+    await dispatch(actions.disableContextEditing());
     await dispatch(actions.clearPreviousDrafts());
 
     await dispatch(

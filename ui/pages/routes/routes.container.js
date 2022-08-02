@@ -19,7 +19,7 @@ import { getSendStage } from '../../ducks/send';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
-  const { appState } = state;
+  const { appState, send } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
 
@@ -40,6 +40,7 @@ function mapStateToProps(state) {
     providerType: state.metamask.provider?.type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
+    disableSendContextEditing: send.disableContextEditing,
   };
 }
 

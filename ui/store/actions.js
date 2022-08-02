@@ -31,6 +31,7 @@ import {
   computeEstimatedGasLimit,
   initializeSendState,
   resetSendState,
+  disableContextEditing,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
@@ -1449,6 +1450,7 @@ export function updateMetamaskState(newState) {
         type: actionConstants.CHAIN_CHANGED,
         payload: newProvider.chainId,
       });
+      dispatch(disableContextEditing());
       // We dispatch this action to ensure that the send state stays up to date
       // after the chain changes. This async thunk will fail gracefully in the
       // event that we are not yet on the send flow with a draftTransaction in
