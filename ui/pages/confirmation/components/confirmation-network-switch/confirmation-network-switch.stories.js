@@ -2,7 +2,7 @@ import React from 'react';
 import ConfirmationNetworkSwitch from '.';
 
 export default {
-  title: 'Components/Pages/Confirmation/Components/ConfirmationNetworkSwitch', // ui/pages/confirmation/components/confirmation-network-switch/confirmation-network-switch.js
+  title: 'Pages/Confirmation/Components/ConfirmationNetworkSwitch',
   id: __filename,
   argTypes: {
     newNetwork: {
