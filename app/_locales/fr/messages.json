@@ -3736,12 +3736,6 @@
   "tokenDetectionAlertMessage": {
     "message": "La détection du token est actuellement disponible sur $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Nouveau ! Une détection améliorée des jetons est disponible sur le Mainnet d’Ethereum en tant que fonctionnalité expérimentale. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "L’API des tokens de ConsenSys regroupe une liste de tokens provenant de diverses listes de tokens externes. Sa désactivation arrêtera la détection de nouveaux tokens ajoutés à votre portefeuille, mais conservera l’option de recherche de tokens à importer."
-  },
   "tokenId": {
     "message": "ID de token"
   },
