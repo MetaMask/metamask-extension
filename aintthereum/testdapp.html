@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if (window.aintthereum) {
+            console.log('available synchronously!', window.aintthereum?.zb)
+        } else {
+            let log = [];
+            let tt;
+            const t0 = Date.now();
+            function check() {
+                log.push(window.aintthereum ? '!' : '.')
+                const dt = Date.now() - t0;
+                if (!!window.aintthereum || dt > 10000) {
+                    console.log(log.join(''))
+                    console.log('delta time', dt, 'value', window.aintthereum?.zb)
+                    clearInterval(tt)
+                }
+            }
+            tt = setInterval(check, 1)
+            check();
+        }
+    </script>
+    <title>Document</title>
+</head>
+
+<body>
+    Check the console
+</body>
+
+</html>

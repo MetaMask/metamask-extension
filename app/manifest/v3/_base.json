@@ -42,12 +42,6 @@
     {
       "matches": ["*://connect.trezor.io/*/popup.html"],
       "js": ["vendor/trezor/content-script.js"]
-    },
-    {
-      "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["contentscript.js", "inpage.js"],
-      "run_at": "document_start",
-      "world": "MAIN"
     }
   ],
   "default_locale": "en",
@@ -75,7 +69,9 @@
     "activeTab",
     "webRequest",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "scripting", "tabs"
   ],
+  "host_permissions": ["file://*/*", "http://*/*", "https://*/*"],
   "short_name": "__MSG_appName__"
 }

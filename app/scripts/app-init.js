@@ -1,7 +1,25 @@
 // This file is used only for manifest version 3
 
-// Represents if importAllScripts has been run
+// Attempt to load the contentscript into MAIN world early
 // eslint-disable-next-line
+chrome.scripting.registerContentScripts([
+  {
+    id: 'csmain',
+    matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+    js: ['contentscript.js'],
+    world: 'MAIN',
+    runAt: 'document_start',
+  },
+  {
+    id: 'csmaininpage',
+    matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+    js: ['inpage.js'],
+    world: 'MAIN',
+    runAt: 'document_start',
+  },
+]);
+
+// Represents if importAllScripts has been run
 let scriptsLoaded = false;
 
 // Variable testMode is set to true when preparing test build.

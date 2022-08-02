@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "aintthereum extension",
+    "version": "0.1",
+    "description": "Tests that dynamic scripts can be injected into the main world at the document start",
+    "background": {
+      "service_worker": "worker.js",
+      "type": "module"
+    },
+    "permissions": ["scripting", "activeTab"],
+    "host_permissions": ["http://*/*"],
+    "content_scripts": [
+        {
+          "matches": ["http://*/*"],
+          "js": ["contentscript2.js"],
+          "run_at": "document_start"
+        }
+      ]
+  }
