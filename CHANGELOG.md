@@ -9,32 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.19.0]
 ### Added
 - Add ENS wildcard and secure offchain resolution (ENSIP-10 & EIP3668) ([#14675](https://github.com/MetaMask/metamask-extension/pull/14675))
-- Add "What's New" Notification for Add Popular Networks ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
+- Add "What's New" notification for Add Popular Networks ([#15121](https://github.com/MetaMask/metamask-extension/pull/15121))
 - Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
-- Swaps: on the Swap Complete screen ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
-  - Add a tx link 
-  - Add a "Create a new swap" link for STX 
-- Swaps: add tx details view to cancelled Swaps ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
+- Add Goerli, BSC, Optimism, Polygon, Avalance, Fantom and Arbitrum networks to query balances using BalanceChecker ([#13846](https://github.com/MetaMask/metamask-extension/pull/13846))
+- Swaps: on the STX status page ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
+  - Add a link to the Swap tx
+  - Add a link for "Create a new swap"
+- Swaps: add a tx details view for cancelled Swaps on the Activity tab ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
 
 ### Changed
 - Update Confirmation screen styling by adding a top margin and moving Site Icon next to the site URL ([#15136](https://github.com/MetaMask/metamask-extension/pull/15136))
-- Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
-- Remove 'ADD_POPULAR_NETWORKS' feature flag ([#15229](https://github.com/MetaMask/metamask-extension/pull/15229))
-- Standardize spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
-- Update the "results" state if "initialResultsState" array length is different ([#15270](https://github.com/MetaMask/metamask-extension/pull/15270))
-- Add goerli, bsc, optimism, polygon, avalance, fantom, arbitrum network to query balances using BalanceChecker ([#13846](https://github.com/MetaMask/metamask-extension/pull/13846))
-- Remove dark mode and transaction insights announcements ([#15279](https://github.com/MetaMask/metamask-extension/pull/15279))
-- Remove decentralized 4byte function signature registry since it contains incorrect signatures and we can't algorithmically check for best option when 4byte.directory is down ([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
-- Updating design tokens package and shadow values with new tokens ([#15264](https://github.com/MetaMask/metamask-extension/pull/15264))
-- Updates `eth-lattice-keyring` to v0.10.0 ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
-- Improve `tokenId` parsing and clean up `useAssetDetails` hook ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
-- Swaps: Performance improvements for Swaps ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
+- Remove 'ADD_POPULAR_NETWORKS' feature flag as the feature is enabled by default ([#15229](https://github.com/MetaMask/metamask-extension/pull/15229))
+- Remove dark mode and transaction insights from the "What's New" announcements ([#15279](https://github.com/MetaMask/metamask-extension/pull/15279))
+- Remove decentralized 4byte function signature registry for signature resolution, since it contains incorrect signatures and we can't algorithmically check for best option when 4byte.directory is down ([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
+- Update design tokens package and consolidate shadow values with new tokens ([#15264](https://github.com/MetaMask/metamask-extension/pull/15264))
+- Update `eth-lattice-keyring` to v0.10.0 which itself updates `gridplus-sdk` ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
+  - `eth-lattice-keyring` changes: [GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
+  - `gridplus-sdk` changes: [GridPlus/gridplus-sdk@v1.2.3...v2.2.0](https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.0)
+- Parse `tokenId` for ERC721 txs, refactor `useAssetDetails` and `getAssetDetails` and improve overall legibility ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
+- Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
+- Swaps: Standardize the spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
+- Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
 
 ### Fixed
 - Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
-- Preserve send amount when editing an ERC20 transaction ([#15275](https://github.com/MetaMask/metamask-extension/pull/15275))
-- Adjusting the height of account menu nav items to expand scroll area ([#15302](https://github.com/MetaMask/metamask-extension/pull/15302))
-- Fix: Actionable Message on Confirm Transaction view is over Tabs ([#15272](https://github.com/MetaMask/metamask-extension/pull/15272))
+- Fix Amount set to 0 on Send page when editing an ERC20 tx by preserving its value ([#15275](https://github.com/MetaMask/metamask-extension/pull/15275))
+- Fix limited scroll area in the Account Menu by adjusting the height of Account Menu nav items, expanding scroll area ([#15302](https://github.com/MetaMask/metamask-extension/pull/15302))
+- Fix Actionable Message overlapping tabs on Confirm Transaction view ([#15272](https://github.com/MetaMask/metamask-extension/pull/15272))
+- Swaps: fix displaying "No tokens available matching" when there are tokens available, by updating the `results` state if `initialResultsState` array length is different ([#15270](https://github.com/MetaMask/metamask-extension/pull/15270))
 
 ### Uncategorized
 - [FLASK] disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
