@@ -55,6 +55,7 @@ describe('Test Snap Confirm', function () {
           'MetaMask Notification',
           windowHandles,
         );
+        await driver.delay(2000);
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
