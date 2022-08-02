@@ -22,6 +22,7 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../../shared/modules/export-utils';
+import ActionableMessage from '../../../components/ui/actionable-message';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -194,14 +195,20 @@ export default class AdvancedTab extends PureComponent {
             />
           </div>
           {showResultMessage && (
-            <span
-              className={classnames({
-                'settings-page__content-description': restoreSuccessful,
-                'settings-page__error-text': !restoreSuccessful,
-              })}
-            >
-              {restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')}
-            </span>
+            <ActionableMessage
+              type={restoreSuccessful ? 'success' : 'danger'}
+              message={
+                restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')
+              }
+            />
+            // <span
+            //   className={classnames({
+            //     'settings-page__content-description': restoreSuccessful,
+            //     'settings-page__error-text': !restoreSuccessful,
+            //   })}
+            // >
+            //   {restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')}
+            // </span>
           )}
         </div>
       </div>

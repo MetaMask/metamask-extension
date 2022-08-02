@@ -29,10 +29,12 @@ export default class BackupController {
       this.addressBookController.update(addressBook, true);
     }
 
-    this._trackMetaMetricsEvent({
-      event: 'User Restored Data From Backup',
-      category: 'Backup',
-    });
+    if (preferences && addressBook) {
+      this._trackMetaMetricsEvent({
+        event: 'User Restored Data From Backup',
+        category: 'Backup',
+      });
+    }
   }
 
   async backupUserData() {
