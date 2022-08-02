@@ -1,12 +1,7 @@
 import { connect } from 'react-redux';
 import { addToAddressBook, cancelTx } from '../../../store/actions';
 import {
-  getRenderableEstimateDataForSmallButtonsFromGWEI,
-  getDefaultActiveButtonIndex,
-} from '../../../selectors';
-import {
   resetSendState,
-  getGasPrice,
   getSendStage,
   getSendTo,
   getSendErrors,
@@ -17,7 +12,6 @@ import {
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { getSendToAccounts } from '../../../ducks/metamask/metamask';
-import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 import SendFooter from './send-footer.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter);
@@ -31,17 +25,6 @@ function addressIsNew(toAccounts, newAddress) {
 }
 
 function mapStateToProps(state) {
-  const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state);
-  const gasPrice = getGasPrice(state);
-  const activeButtonIndex = getDefaultActiveButtonIndex(
-    gasButtonInfo,
-    gasPrice,
-  );
-  const gasEstimateType =
-    activeButtonIndex >= 0
-      ? gasButtonInfo[activeButtonIndex].gasEstimateType
-      : CUSTOM_GAS_ESTIMATE;
-
   return {
     disabled: isSendFormInvalid(state),
     to: getSendTo(state),
@@ -49,7 +32,6 @@ function mapStateToProps(state) {
     sendStage: getSendStage(state),
     sendErrors: getSendErrors(state),
     draftTransactionID: getDraftTransactionID(state),
-    gasEstimateType,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
   };
 }
