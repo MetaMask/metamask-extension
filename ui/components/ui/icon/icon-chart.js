@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const IconChart = ({ size = 12, color = 'var(--color-primary-default)', className, ariaLabel }) => (
+const IconChart = ({
+  size = 12,
+  color = 'var(--color-primary-default)',
+  className,
+  ariaLabel,
+}) => (
   <svg
     width={size}
     height={size}
