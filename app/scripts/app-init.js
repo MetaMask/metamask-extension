@@ -50,8 +50,12 @@ function importAllScripts() {
   };
 
   const startImportScriptsTime = Date.now();
+
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
+  if (typeof applyLavaMoat !== 'boolean') {
+    throw new Error('Missing APPLY_LAVAMOAT environment variable');
+  }
 
   loadFile('./globalthis.js');
   loadFile('./sentry-install.js');
