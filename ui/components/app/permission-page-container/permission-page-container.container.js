@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import { getMetaMaskIdentities } from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
@@ -15,4 +17,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(PermissionPageContainer);
+export default compose(
+  withRouter,
+  connect(mapStateToProps),
+)(PermissionPageContainer);

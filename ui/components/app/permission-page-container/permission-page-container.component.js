@@ -12,6 +12,7 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
+    history: PropTypes.object.isRequired,
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
@@ -103,6 +104,17 @@ export default class PermissionPageContainer extends Component {
 
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
+      const searchParams = new URLSearchParams(
+        this.props.history.location.search,
+      );
+      const redirect = searchParams.get('redirect');
+      if (redirect) {
+        window.open(
+          `${redirect}?${request.approvedAccounts
+            .map((address) => `approvedAccounts=${address}`)
+            .join('&')}`,
+        );
+      }
     } else {
       rejectPermissionsRequest(request.metadata.id);
     }

@@ -13,7 +13,7 @@ const IconChart = ({
     viewBox="0 0 12 12"
     fill="none"
     className={className}
-    ariaLabel={ariaLabel}
+    aria-label={ariaLabel}
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
