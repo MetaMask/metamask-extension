@@ -115,18 +115,9 @@ describe('Advanced Settings', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
-
-        await driver.clickElement(
-          '[data-testid="advanced-setting-show-testnet-conversion"] label',
-        );
-
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
+        await driver.clickElement('.app-header__network-component-wrapper div');
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
+        await driver.waitForSelector({ text: 'Ethereum Mainnet', tag: 'span' });
 
         // Ropsten
         await driver.clickElement('.app-header__network-component-wrapper div');
