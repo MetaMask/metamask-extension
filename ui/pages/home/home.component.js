@@ -149,6 +149,8 @@ export default class Home extends PureComponent {
     newCustomNetworkAdded: PropTypes.object,
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
+    requestAccountsPermissionWithId: PropTypes.func,
+    permissionsSubjects: PropTypes.object,
   };
 
   state = {
