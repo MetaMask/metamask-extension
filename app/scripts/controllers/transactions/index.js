@@ -1841,6 +1841,7 @@ export default class TransactionController extends EventEmitter {
         return;
       }
       otherTxMeta.replacedBy = txMeta.hash;
+      otherTxMeta.replacedById = txMeta.id;
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
@@ -1995,6 +1996,7 @@ export default class TransactionController extends EventEmitter {
       },
       defaultGasEstimates,
       originalType,
+      replacedById,
       metamaskNetworkId: network,
     } = txMeta;
     const { transactions } = this.store.getState();
@@ -2098,6 +2100,24 @@ export default class TransactionController extends EventEmitter {
       transactionContractMethod = transactions[id]?.contractMethodName;
     }
 
+    const replacedTxMeta = this._getTransaction(replacedById);
+
+    const TRANSACTION_REPLACEMENT_METHODS = {
+      RETRY: TRANSACTION_TYPES.RETRY,
+      CANCEL: TRANSACTION_TYPES.CANCEL,
+      SAME_NONCE: 'other',
+    };
+
+    let transactionReplaced;
+    if (extraParams?.dropped) {
+      transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.SAME_NONCE;
+      if (replacedTxMeta?.type === TRANSACTION_TYPES.CANCEL) {
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.CANCEL;
+      } else if (replacedTxMeta?.type === TRANSACTION_TYPES.RETRY) {
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.RETRY;
+      }
+    }
+
     const properties = {
       chain_id: chainId,
       referrer,
@@ -2122,6 +2142,7 @@ export default class TransactionController extends EventEmitter {
       first_seen: time,
       gas_limit: gasLimit,
       transaction_contract_method: transactionContractMethod,
+      transaction_replaced: transactionReplaced,
       ...extraParams,
       ...gasParamsInGwei,
     };
@@ -2330,6 +2351,8 @@ export default class TransactionController extends EventEmitter {
   _dropTransaction(txId) {
     this.txStateManager.setTxStatusDropped(txId);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED, {
+      dropped: true,
+    });
   }
 }
