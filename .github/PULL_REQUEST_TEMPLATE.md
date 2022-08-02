@@ -57,3 +57,5 @@ How should reviewers and QA manually test your changes? For instance:
 
 - [ ] Manual testing complete & passed
 - [ ] "Extension QA Board" label has been applied
+
+Please refer to this document for further information: https://docs.google.com/document/d/1-KllcS71EBs0YWN8yXReZrbj7htC1yZ7Xu-1nE6M7HM/edit#heading=h.ddzvv7jhy12p
