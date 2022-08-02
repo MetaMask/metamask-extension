@@ -1002,7 +1002,7 @@ export default class TransactionController extends EventEmitter {
    * @param {string} getCodeResponse - The transaction category code response, used for debugging purposes
    * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
-  async _getDefaultGasLimit(txMeta, getCodeResponse) {
+  async _getDefaultGasLimit(txMeta) {
     const chainId = this._getCurrentChainId();
     const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
     const chainType = getChainType(chainId);
