@@ -2,15 +2,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Tooltip from '../tooltip';
-import { getSelectedAddress } from '../../../selectors';
+import { getSelectedAccount } from '../../../selectors';
 import InfoIcon from '../icon/info-icon.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 export default function AccountMismatchWarning({ address }) {
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccount = useSelector(getSelectedAccount);
   const t = useI18nContext();
-  if (selectedAddress === address) {
+  if (selectedAccount.address === address) {
     return null;
   }
 
