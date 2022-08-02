@@ -27,25 +27,33 @@
       color: var(--color-overlay-inverse);
       text-align: center;
     }
+  }
 
-    &-item-wrapper {
-      align-self: center;
+  &__item-wrapper {
+    align-self: center;
+
+    &__card {
+      overflow: hidden;
     }
+  }
 
-    &-item {
-      border-radius: 4px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      cursor: pointer;
-      align-self: center;
-    }
+  &__item {
+    border-radius: 4px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    align-self: center;
 
-    &-item-image {
+    &-image {
       border-radius: 4px;
       width: 100%;
       height: 100%;
       cursor: pointer;
     }
+  }
+
+  &__icon-chevron {
+    color: var(--color-icon-default);
   }
 }

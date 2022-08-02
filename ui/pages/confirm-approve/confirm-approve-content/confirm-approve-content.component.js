@@ -28,7 +28,11 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import { ERC1155, ERC20, ERC721 } from '../../../helpers/constants/common';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '../../../../shared/constants/transaction';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -62,6 +66,7 @@ export default class ConfirmApproveContent extends Component {
     txData: PropTypes.object,
     fromAddressIsLedger: PropTypes.bool,
     chainId: PropTypes.string,
+    tokenAddress: PropTypes.string,
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
@@ -70,6 +75,9 @@ export default class ConfirmApproveContent extends Component {
     assetName: PropTypes.string,
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
+    isSetApproveForAll: PropTypes.bool,
+    setApproveForAllArg: PropTypes.bool,
+    userAddress: PropTypes.string,
   };
 
   state = {
@@ -99,7 +107,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            {!supportsEIP1559V2 && (
+            {supportsEIP1559V2 && title === t('transactionFee') ? null : (
               <>
                 <div className="confirm-approve-content__card-header__symbol">
                   {symbol}
@@ -183,7 +191,9 @@ export default class ConfirmApproveContent extends Component {
 
   renderERC721OrERC1155PermissionContent() {
     const { t } = this.context;
-    const { origin, toAddress, isContract, assetName, tokenId } = this.props;
+    const { origin, toAddress, isContract, isSetApproveForAll } = this.props;
+
+    const titleTokenDescription = this.getTitleTokenDescription();
 
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
@@ -198,7 +208,9 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
-            {`${assetName} #${tokenId}`}
+            {isSetApproveForAll
+              ? t('allOfYour', [titleTokenDescription])
+              : titleTokenDescription}
           </div>
         </div>
         <div className="flex-row">
@@ -296,12 +308,19 @@ export default class ConfirmApproveContent extends Component {
 
   renderDataContent() {
     const { t } = this.context;
-    const { data } = this.props;
+    const { data, isSetApproveForAll, setApproveForAllArg } = this.props;
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
-          {t('functionApprove')}
+          {isSetApproveForAll
+            ? t('functionSetApprovalForAll')
+            : t('functionApprove')}
         </div>
+        {isSetApproveForAll && setApproveForAllArg !== undefined ? (
+          <div className="confirm-approve-content__small-text">
+            {`${t('parameters')}: ${setApproveForAllArg}`}
+          </div>
+        ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
         </div>
@@ -430,6 +449,124 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
+  getTitleTokenDescription() {
+    const {
+      tokenId,
+      assetName,
+      tokenAddress,
+      rpcPrefs,
+      chainId,
+      assetStandard,
+      tokenSymbol,
+      isSetApproveForAll,
+      userAddress,
+    } = this.props;
+    const { t } = this.context;
+    let titleTokenDescription = t('token');
+    if (rpcPrefs?.blockExplorerUrl || chainId) {
+      const unknownTokenBlockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        userAddress,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+
+      const unknownTokenLink = (
+        <a
+          href={unknownTokenBlockExplorerLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="confirm-approve-content__unknown-asset"
+        >
+          {t('token')}
+        </a>
+      );
+      titleTokenDescription = unknownTokenLink;
+    }
+
+    if (
+      assetStandard === ERC20 ||
+      (tokenSymbol && !tokenId && !isSetApproveForAll)
+    ) {
+      titleTokenDescription = tokenSymbol;
+    } else if (
+      assetStandard === ERC721 ||
+      assetStandard === ERC1155 ||
+      // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
+      (assetName && tokenId) ||
+      (tokenSymbol && tokenId)
+    ) {
+      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
+      if (assetName || tokenSymbol) {
+        titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
+      } else {
+        const unknownNFTBlockExplorerLink = getTokenTrackerLink(
+          tokenAddress,
+          chainId,
+          null,
+          userAddress,
+          {
+            blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+          },
+        );
+        const unknownNFTLink = (
+          <>
+            <a
+              href={unknownNFTBlockExplorerLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="confirm-approve-content__unknown-asset"
+            >
+              {t('nft')}
+            </a>
+            {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+          </>
+        );
+        titleTokenDescription = unknownNFTLink;
+      }
+    }
+
+    return titleTokenDescription;
+  }
+
+  renderTitle() {
+    const { t } = this.context;
+    const { isSetApproveForAll, setApproveForAllArg } = this.props;
+    const titleTokenDescription = this.getTitleTokenDescription();
+
+    let title;
+
+    if (isSetApproveForAll) {
+      title = t('approveAllTokensTitle', [titleTokenDescription]);
+      if (setApproveForAllArg === false) {
+        title = t('revokeAllTokensTitle', [titleTokenDescription]);
+      }
+    }
+    return title || t('allowSpendToken', [titleTokenDescription]);
+  }
+
+  renderDescription() {
+    const { t } = this.context;
+    const { isContract, isSetApproveForAll, setApproveForAllArg } = this.props;
+    const grantee = isContract
+      ? t('contract').toLowerCase()
+      : t('account').toLowerCase();
+
+    let description = t('trustSiteApprovePermission', [grantee]);
+
+    if (isSetApproveForAll && setApproveForAllArg === false) {
+      description = t('revokeApproveForAllDescription', [
+        grantee,
+        this.getTitleTokenDescription(),
+      ]);
+    }
+
+    return description;
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -452,8 +589,7 @@ export default class ConfirmApproveContent extends Component {
       rpcPrefs,
       isContract,
       assetStandard,
-      tokenId,
-      assetName,
+      userAddress,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -496,18 +632,10 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {t('allowSpendToken', [
-            assetStandard === ERC20
-              ? tokenSymbol
-              : `${assetName} (#${tokenId})`,
-          ])}
+          {this.renderTitle()}
         </div>
         <div className="confirm-approve-content__description">
-          {t('trustSiteApprovePermission', [
-            isContract
-              ? t('contract').toLowerCase()
-              : t('account').toLowerCase(),
-          ])}
+          {this.renderDescription()}
         </div>
         <Box className="confirm-approve-content__address-display-content">
           <Box display={DISPLAY.FLEX}>
@@ -548,13 +676,15 @@ export default class ConfirmApproveContent extends Component {
               className="confirm-approve-content__etherscan-link"
               onClick={() => {
                 const blockExplorerTokenLink = isContract
-                  ? getTokenTrackerLink(toAddress, chainId, null, null, {
+                  ? getTokenTrackerLink(toAddress, chainId, null, userAddress, {
                       blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                     })
                   : getAccountLink(
                       toAddress,
                       chainId,
-                      { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+                      {
+                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                      },
                       null,
                     );
                 global.platform.openTab({

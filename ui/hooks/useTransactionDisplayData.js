@@ -8,6 +8,7 @@ import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   getTokenAddressParam,
+  getTokenIdParam,
   getTokenValueParam,
 } from '../helpers/utils/token-util';
 import {
@@ -62,7 +63,7 @@ const signatureTypes = [
  */
 
 /**
- * @typedef {Object} TransactionDisplayData
+ * @typedef {object} TransactionDisplayData
  * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
  * @property {string} recipientAddress - the Ethereum address of the recipient
@@ -138,16 +139,18 @@ export function useTransactionDisplayData(transactionGroup) {
     isTokenCategory,
   );
 
-  // If this is an ERC20 token transaction this value is equal to the amount sent
-  // If it is an ERC721 token transaction it is the tokenId being sent
-  const tokenAmountOrTokenId = getTokenValueParam(tokenData);
+  // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+  // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+  // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
+  const transactionDataTokenId =
+    getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
 
   const collectible =
     isTokenCategory &&
     knownCollectibles.find(
       ({ address, tokenId }) =>
         isEqualCaseInsensitive(address, recipientAddress) &&
-        tokenId === tokenAmountOrTokenId,
+        tokenId === transactionDataTokenId,
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
@@ -220,6 +223,12 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
     prefix = '';
     title = t('approveSpendLimit', [token?.symbol || t('token')]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL) {
+    category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
+    prefix = '';
+    title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {

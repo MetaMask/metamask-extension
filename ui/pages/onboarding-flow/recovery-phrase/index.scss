@@ -179,7 +179,7 @@
 
     &--with-input {
       width: 120px;
-      box-shadow: 0 3px 4px -3px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
       border-width: 2px;
       border-radius: 13px;
       height: 32px;

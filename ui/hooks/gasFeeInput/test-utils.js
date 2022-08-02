@@ -96,60 +96,62 @@ export const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   estimatedGasFeeTimeBounds: {},
 };
 
-export const generateUseSelectorRouter = ({
-  checkNetworkAndAccountSupports1559Response,
-  shouldShowFiat = true,
-  eip1559V2Enabled = false,
-} = {}) => (selector) => {
-  if (selector === getConversionRate) {
-    return MOCK_ETH_USD_CONVERSION_RATE;
-  }
-  if (selector === getNativeCurrency) {
-    return ETH;
-  }
-  if (selector === getPreferences) {
-    return {
-      useNativeCurrencyAsPrimaryCurrency: true,
-    };
-  }
-  if (selector === getCurrentCurrency) {
-    return 'USD';
-  }
-  if (selector === getShouldShowFiat) {
-    return shouldShowFiat;
-  }
-  if (selector === txDataSelector) {
-    return {
-      txParams: {
-        value: '0x5555',
-      },
-    };
-  }
-  if (selector === getSelectedAccount) {
-    return {
-      balance: '0x440aa47cc2556',
-    };
-  }
-  if (selector === getCustomMaxFeePerGas) {
-    return '0x5208';
-  }
-  if (selector === getCustomMaxPriorityFeePerGas) {
-    return '0x5208';
-  }
-  if (selector === checkNetworkAndAccountSupports1559) {
-    return checkNetworkAndAccountSupports1559Response;
-  }
-  if (selector === getEIP1559V2Enabled) {
-    return eip1559V2Enabled;
-  }
-  if (selector === getCurrentKeyring) {
-    return { type: '' };
-  }
-  if (selector === getTokenExchangeRates) {
-    return { '0x1': '1' };
-  }
-  return undefined;
-};
+export const generateUseSelectorRouter =
+  ({
+    checkNetworkAndAccountSupports1559Response,
+    shouldShowFiat = true,
+    eip1559V2Enabled = false,
+  } = {}) =>
+  (selector) => {
+    if (selector === getConversionRate) {
+      return MOCK_ETH_USD_CONVERSION_RATE;
+    }
+    if (selector === getNativeCurrency) {
+      return ETH;
+    }
+    if (selector === getPreferences) {
+      return {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      };
+    }
+    if (selector === getCurrentCurrency) {
+      return 'USD';
+    }
+    if (selector === getShouldShowFiat) {
+      return shouldShowFiat;
+    }
+    if (selector === txDataSelector) {
+      return {
+        txParams: {
+          value: '0x5555',
+        },
+      };
+    }
+    if (selector === getSelectedAccount) {
+      return {
+        balance: '0x440aa47cc2556',
+      };
+    }
+    if (selector === getCustomMaxFeePerGas) {
+      return '0x5208';
+    }
+    if (selector === getCustomMaxPriorityFeePerGas) {
+      return '0x5208';
+    }
+    if (selector === checkNetworkAndAccountSupports1559) {
+      return checkNetworkAndAccountSupports1559Response;
+    }
+    if (selector === getEIP1559V2Enabled) {
+      return eip1559V2Enabled;
+    }
+    if (selector === getCurrentKeyring) {
+      return { type: '' };
+    }
+    if (selector === getTokenExchangeRates) {
+      return { '0x1': '1' };
+    }
+    return undefined;
+  };
 
 export function getTotalCostInETH(gwei, gasLimit) {
   return multiplyCurrencies(gwei, gasLimit, {

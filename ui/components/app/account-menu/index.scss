@@ -5,7 +5,7 @@
   width: 320px;
   border-radius: 4px;
   background: var(--color-background-default);
-  box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
+  box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
   min-width: 150px;
   color: var(--color-text-default);
 
@@ -32,10 +32,13 @@
     align-items: center;
     position: relative;
     z-index: 201;
+    border: 0;
+    background: none;
+    width: 100%;
 
     @media screen and (max-width: $break-small) {
-      padding: 14px;
-      height: 54px;
+      padding: 0 14px;
+      height: 40px;
     }
 
     &--clickable {
@@ -53,10 +56,22 @@
     &__icon {
       margin-right: 8px;
       display: flex;
+      color: var(--color-icon-alternative);
+
+      i {
+        text-align: center;
+        width: 24px;
+      }
     }
 
     &__text {
-      @include Paragraph;
+      @include H6;
+
+      @include screen-md-min {
+        @include Paragraph;
+      }
+
+      color: var(--color-text-default);
     }
 
     &__subtext {
@@ -100,8 +115,9 @@
   & &__lock-button {
     @include H7;
 
-    padding: 3.5px 5px;
-    width: 59px;
+    padding: 0.25rem 0.5rem;
+    min-width: 59px;
+    width: auto;
   }
 
   &__accounts-container {
@@ -109,10 +125,6 @@
     position: relative;
     flex-direction: column;
     z-index: 200;
-
-    @media (max-height: 600px) {
-      max-height: 236px;
-    }
   }
 
   &__accounts {
@@ -121,8 +133,14 @@
     max-height: 256px;
     scrollbar-width: auto;
 
-    @media screen and (max-width: $break-small) {
-      max-height: 228px;
+    @include screen-sm-max {
+      max-height: 240px;
+    }
+
+    // If window is smaller than extension popover height
+    // reduce scrollable accounts window height
+    @media screen and (max-height: 600px) {
+      max-height: 130px;
     }
 
     .keyring-label {
@@ -145,6 +163,25 @@
     }
   }
 
+  &__notifications {
+    position: relative;
+
+    &__count {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      right: 0;
+      bottom: 0;
+      min-width: 12px;
+      min-height: 12px;
+      font-size: 8px;
+      border-radius: 50%;
+      background-color: var(--color-primary-default);
+      color: var(--color-primary-inverse);
+    }
+  }
+
   &__no-accounts {
     @include H6;
 
@@ -156,6 +193,9 @@
     flex-flow: row nowrap;
     padding: 16px 14px;
     flex: 0 0 auto;
+    background: none;
+    border: 0;
+    width: 100%;
 
     @media screen and (max-width: $break-small) {
       padding: 12px 14px;
@@ -197,13 +237,18 @@
   }
 
   &__name {
-    @include H4;
+    @include H6;
+
+    @include screen-md-min {
+      @include Paragraph;
+    }
 
     color: var(--color-text-default);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     max-width: 200px;
+    text-align: start;
   }
 
   &__balance {

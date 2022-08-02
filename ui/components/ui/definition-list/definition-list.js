@@ -7,6 +7,7 @@ import {
   SIZES,
   TYPOGRAPHY,
   FONT_WEIGHT,
+  OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
 
@@ -60,6 +61,7 @@ export default function DefinitionList({
               marginBottom: MARGIN_MAP[gapSize],
             }}
             className="definition-list__definition"
+            overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             tag="dd"
           >
             {definition}

@@ -4,6 +4,7 @@ import SiteIcon from '.';
 
 describe('SiteIcon', () => {
   const args = {
+    size: 32,
     name: 'Snap name',
     icon: './images/eth_logo.svg',
     className: 'classname-test',
@@ -11,7 +12,7 @@ describe('SiteIcon', () => {
   };
 
   it('should render without crashing', () => {
-    const { getByText } = render(<SiteIcon name={args.name} />);
+    const { getByText } = render(<SiteIcon size={32} name={args.name} />);
     expect(getByText('S')).toBeDefined();
   });
 

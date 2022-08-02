@@ -20,6 +20,9 @@ export default class AppHeader extends PureComponent {
     disabled: PropTypes.bool,
     disableNetworkIndicator: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    unreadNotificationsCount: PropTypes.number,
+    ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
   };
 
@@ -66,11 +69,14 @@ export default class AppHeader extends PureComponent {
       selectedAddress,
       disabled,
       isAccountMenuOpen,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      unreadNotificationsCount,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     return (
       isUnlocked && (
-        <div
+        <button
           className={classnames('account-menu__icon', {
             'account-menu__icon--disabled': disabled,
           })}
@@ -90,7 +96,16 @@ export default class AppHeader extends PureComponent {
           }}
         >
           <Identicon address={selectedAddress} diameter={32} addBorder />
-        </div>
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            unreadNotificationsCount > 0 && (
+              <div className="account-menu__icon__notification-count">
+                {unreadNotificationsCount}
+              </div>
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
+        </button>
       )
     );
   }
