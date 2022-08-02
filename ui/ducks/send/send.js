@@ -678,6 +678,20 @@ export const initializeSendState = createAsyncThunk(
     // We have to keep the gas slice in sync with the send slice state
     // so that it'll be initialized correctly if the gas modal is opened.
     await thunkApi.dispatch(setCustomGasLimit(gasLimit));
+
+    // There may be a case where the send has been canceled by the user while
+    // the gas estimate is being computed. So we check again to make sure that
+    // a currentTransactionUUID exists and matches the previous tx.
+    const newState = thunkApi.getState();
+    if (
+      newState.send.currentTransactionUUID !== sendState.currentTransactionUUID
+    ) {
+      return thunkApi.rejectWithValue(
+        `draftTransaction changed during initialization.
+        A new initializeSendState action must be dispatched.`,
+      );
+    }
+
     return {
       account,
       chainId: getCurrentChainId(state),
