@@ -999,7 +999,6 @@ export default class TransactionController extends EventEmitter {
    * Gets default gas limit, or debug information about why gas estimate failed.
    *
    * @param {object} txMeta - The txMeta object
-   * @param {string} getCodeResponse - The transaction category code response, used for debugging purposes
    * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
   async _getDefaultGasLimit(txMeta) {
