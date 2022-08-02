@@ -73,9 +73,17 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck color="var(--color-success-default)" />
+        <IconCheck
+          className="networks-tab__content__icon-check"
+          color="var(--color-success-default)"
+          aria-label={t('active')}
+        />
       ) : (
-        <div className="networks-tab__content__check-icon__transparent">✓</div>
+        <IconCheck
+          className="networks-tab__content__icon-check"
+          color="transparent"
+          aria-hidden="true"
+        />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -106,7 +114,8 @@ const NetworksListItem = ({
       )}
       <div
         className={classnames('networks-tab__networks-list-name', {
-          'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
+          'networks-tab__networks-list-name--selected':
+            displayNetworkListItemAsSelected,
           'networks-tab__networks-list-name--disabled':
             currentProviderType !== NETWORK_TYPE_RPC &&
             !displayNetworkListItemAsSelected,

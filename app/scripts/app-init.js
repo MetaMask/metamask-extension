@@ -1,42 +1,87 @@
+/* global chrome */
+// This file is used only for manifest version 3
+
+// Represents if importAllScripts has been run
+// eslint-disable-next-line
+let scriptsLoadInitiated = false;
+
+// Variable testMode is set to true when preparing test build.
+// This helps in changing service worker execution in test environment.
+const testMode = false;
+
+const loadTimeLogs = [];
+
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
+    const startTime = new Date().getTime();
     // eslint-disable-next-line
     importScripts(...fileNames);
+    const endTime = new Date().getTime();
+    loadTimeLogs.push({
+      name: fileNames[0],
+      value: endTime - startTime,
+      children: [],
+      startTime,
+      endTime,
+    });
+
     return true;
   } catch (e) {
     console.error(e);
-    return false;
   }
+
+  return false;
 }
 
 function importAllScripts() {
+  // Bail if we've already imported scripts
+  if (scriptsLoadInitiated) {
+    return;
+  }
+  scriptsLoadInitiated = true;
+  const files = [];
+
+  // In testMode individual files are imported, this is to help capture load time stats
+  const loadFile = (fileName) => {
+    if (testMode) {
+      tryImport(fileName);
+    } else {
+      files.push(fileName);
+    }
+  };
+
   const startImportScriptsTime = Date.now();
-  // applyLavaMoat has been hard coded to "true" as
-  // tryImport('./runtime-cjs.js') is giving issue with XMLHttpRequest object which is not avaialble to service worker.
-  // we need to dynamically inject values of applyLavaMoat once this is fixed.
+  // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = true;
 
-  tryImport('./globalthis.js');
-  tryImport('./sentry-install.js');
+  loadFile('./globalthis.js');
+  loadFile('./sentry-install.js');
 
   if (applyLavaMoat) {
-    tryImport('./runtime-lavamoat.js');
-    tryImport('./lockdown-more.js');
-    tryImport('./policy-load.js');
+    loadFile('./runtime-lavamoat.js');
+    loadFile('./lockdown-more.js');
+    loadFile('./policy-load.js');
   } else {
-    tryImport('./lockdown-install.js');
-    tryImport('./lockdown-more.js');
-    tryImport('./lockdown-run.js');
-    tryImport('./runtime-cjs.js');
+    loadFile('./init-globals.js');
+    loadFile('./lockdown-install.js');
+    loadFile('./lockdown-run.js');
+    loadFile('./lockdown-more.js');
+    loadFile('./runtime-cjs.js');
   }
 
   const fileList = [
     // The list of files is injected at build time by replacing comment below with comma separated strings of file names
+    // https://github.com/MetaMask/metamask-extension/blob/496d9d81c3367931031edc11402552690c771acf/development/build/scripts.js#L406
     /** FILE NAMES */
   ];
 
-  fileList.forEach((fileName) => tryImport(fileName));
+  fileList.forEach((fileName) => loadFile(fileName));
+
+  // Import all required resources
+  tryImport(...files);
+
+  const endImportScriptsTime = Date.now();
 
   // for performance metrics/reference
   console.log(
@@ -44,12 +89,40 @@ function importAllScripts() {
       (Date.now() - startImportScriptsTime) / 1000
     }`,
   );
+
+  // In testMode load time logs are output to console
+  if (testMode) {
+    console.log(
+      `Time for each import: ${JSON.stringify(
+        {
+          name: 'Total',
+          children: loadTimeLogs,
+          startTime: startImportScriptsTime,
+          endTime: endImportScriptsTime,
+          value: endImportScriptsTime - startImportScriptsTime,
+          version: 1,
+        },
+        undefined,
+        '    ',
+      )}`,
+    );
+  }
 }
 
-// Placing script import call here ensures that scripts are inported each time service worker is activated.
-importAllScripts();
+// Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
+// eslint-disable-next-line no-undef
+self.addEventListener('install', importAllScripts);
 
-/**
- * An open issue is changes in this file break during hot reloading. Reason is dynamic injection of "FILE NAMES".
- * Developers need to restart local server if they change this file.
+/*
+ * A keepalive message listener to prevent Service Worker getting shut down due to inactivity.
+ * UI sends the message periodically, in a setInterval.
+ * Chrome will revive the service worker if it was shut down, whenever a new message is sent, but only if a listener was defined here.
+ *
+ * chrome below needs to be replaced by cross-browser object,
+ * but there is issue in importing webextension-polyfill into service worker.
+ * chrome does seems to work in at-least all chromium based browsers
  */
+chrome.runtime.onMessage.addListener(() => {
+  importAllScripts();
+  return false;
+});

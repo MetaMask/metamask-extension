@@ -9,7 +9,7 @@ import { getCurrentChainId } from '../selectors';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
 /**
- * @typedef {Object} SwappedTokenValue
+ * @typedef {object} SwappedTokenValue
  * @property {string} swapTokenValue - a primary currency string formatted for display
  * @property {string} swapTokenFiatAmount - a secondary currency string formatted for display
  * @property {boolean} isViewingReceivedTokenFromSwap - true if user is on the asset page for the

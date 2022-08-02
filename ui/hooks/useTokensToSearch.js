@@ -40,28 +40,32 @@ export function getRenderableTokenData(
   useTokenDetection,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
+  let contractExchangeRate;
+  if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
+    contractExchangeRate = 1;
+  } else if (string && conversionRate > 0) {
+    // This condition improves performance significantly.
+    contractExchangeRate = contractExchangeRates[toChecksumHexAddress(address)];
+  }
   const formattedFiat =
     getTokenFiatAmount(
-      isSwapsDefaultTokenSymbol(symbol, chainId)
-        ? 1
-        : contractExchangeRates[toChecksumHexAddress(address)],
+      contractExchangeRate,
       conversionRate,
       currentCurrency,
       string,
       symbol,
       true,
     ) || '';
-  const rawFiat =
-    getTokenFiatAmount(
-      isSwapsDefaultTokenSymbol(symbol, chainId)
-        ? 1
-        : contractExchangeRates[toChecksumHexAddress(address)],
-      conversionRate,
-      currentCurrency,
-      string,
-      symbol,
-      false,
-    ) || '';
+  const rawFiat = formattedFiat
+    ? getTokenFiatAmount(
+        contractExchangeRate,
+        conversionRate,
+        currentCurrency,
+        string,
+        symbol,
+        false,
+      )
+    : '';
 
   // token from dynamic api list is fetched when useTokenDetection is true
   // And since the token.address from allTokens is checksumaddress
@@ -214,10 +218,10 @@ export function useTokensToSearch({
   }, [
     memoizedTokensToSearch,
     memoizedUsersToken,
+    memoizedTopTokens,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    memoizedTopTokens,
     memoizedDefaultToken,
     chainId,
     tokenList,

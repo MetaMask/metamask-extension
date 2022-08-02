@@ -152,10 +152,10 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
 };
 
 /**
- * @typedef {Object} GasFeeErrorsReturnType
- * @property {Object} [gasErrors] - combined map of errors and warnings.
+ * @typedef {object} GasFeeErrorsReturnType
+ * @property {object} [gasErrors] - combined map of errors and warnings.
  * @property {boolean} [hasGasErrors] - true if there are errors that can block submission.
- * @property {Object} gasWarnings - map of gas warnings for EIP-1559 fields.
+ * @property {object} gasWarnings - map of gas warnings for EIP-1559 fields.
  * @property {boolean} [balanceError] - true if user balance is less than transaction value.
  * @property {boolean} [estimatesUnavailableWarning] - true if supportsEIP1559 is true and
  * estimate is not of type fee-market.

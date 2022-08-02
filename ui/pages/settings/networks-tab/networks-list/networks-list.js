@@ -23,12 +23,10 @@ const NetworksList = ({
     searchedNetworks.length === 0 && searchQuery === ''
       ? networksToRender
       : searchedNetworks;
-  const searchedNetworksToRenderThatAreNotTestNetworks = searchedNetworksToRender.filter(
-    (network) => !network.isATestNetwork,
-  );
-  const searchedNetworksToRenderThatAreTestNetworks = searchedNetworksToRender.filter(
-    (network) => network.isATestNetwork,
-  );
+  const searchedNetworksToRenderThatAreNotTestNetworks =
+    searchedNetworksToRender.filter((network) => !network.isATestNetwork);
+  const searchedNetworksToRenderThatAreTestNetworks =
+    searchedNetworksToRender.filter((network) => network.isATestNetwork);
 
   return (
     <div
@@ -66,7 +64,7 @@ const NetworksList = ({
       {searchQuery === '' && (
         <Typography
           variant={TYPOGRAPHY.H6}
-          margin={[6, 0, 0, 9]}
+          marginTop={4}
           color={COLORS.TEXT_ALTERNATIVE}
           className="networks-tab__networks-list__label"
         >

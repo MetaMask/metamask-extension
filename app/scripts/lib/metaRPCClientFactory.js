@@ -18,16 +18,18 @@ class MetaRPCClient {
     this.requests.set(id, cb);
     this.connectionStream.write(payload);
     this.responseHandled[id] = false;
-    setTimeout(() => {
-      if (!this.responseHandled[id] && cb) {
-        delete this.responseHandled[id];
-        return cb(new Error('No response from RPC'), null);
-      }
+    if (payload.method === 'getState') {
+      setTimeout(() => {
+        if (!this.responseHandled[id] && cb) {
+          delete this.responseHandled[id];
+          return cb(new Error('No response from RPC'), null);
+        }
 
-      delete this.responseHandled[id];
-      // needed for linter to pass
-      return true;
-    }, TEN_SECONDS_IN_MILLISECONDS);
+        delete this.responseHandled[id];
+        // needed for linter to pass
+        return true;
+      }, TEN_SECONDS_IN_MILLISECONDS);
+    }
   }
 
   onNotification(handler) {

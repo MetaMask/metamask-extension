@@ -76,7 +76,7 @@ export default class AppHeader extends PureComponent {
 
     return (
       isUnlocked && (
-        <div
+        <button
           className={classnames('account-menu__icon', {
             'account-menu__icon--disabled': disabled,
           })}
@@ -105,7 +105,7 @@ export default class AppHeader extends PureComponent {
             )
             ///: END:ONLY_INCLUDE_IN
           }
-        </div>
+        </button>
       )
     );
   }

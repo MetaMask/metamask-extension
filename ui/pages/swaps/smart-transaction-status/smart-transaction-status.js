@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { isEqual } from 'lodash';
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -18,7 +20,14 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
-} from '../../../selectors/selectors';
+  getCurrentChainId,
+  getUSDConversionRate,
+  conversionRateSelector,
+  getCurrentCurrency,
+  getRpcPrefsForCurrentProvider,
+} from '../../../selectors';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -44,8 +53,13 @@ import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transac
 
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import { showRemainingTimeInMinAndSec } from '../swaps.util';
+import {
+  showRemainingTimeInMinAndSec,
+  getFeeForSmartTransaction,
+} from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import CreateNewSwap from '../create-new-swap';
+import ViewOnBlockExplorer from '../view-on-block-explorer';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -58,27 +72,42 @@ export default function SmartTransactionStatus() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
-  const fetchParams = useSelector(getFetchParams) || {};
+  const fetchParams = useSelector(getFetchParams, isEqual) || {};
   const { destinationTokenInfo = {}, sourceTokenInfo = {} } =
     fetchParams?.metaData || {};
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const selectedQuote = useSelector(getSelectedQuote);
-  const topQuote = useSelector(getTopQuote);
+  const selectedQuote = useSelector(getSelectedQuote, isEqual);
+  const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
-  const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
+  const currentSmartTransactions = useSelector(
+    getCurrentSmartTransactions,
+    isEqual,
+  );
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const baseNetworkUrl =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const conversionRate = useSelector(conversionRateSelector);
+  const USDConversionRate = useSelector(getUSDConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
   let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
+  let cancellationFeeWei;
 
   if (currentSmartTransactions && currentSmartTransactions.length > 0) {
     latestSmartTransaction =
@@ -86,6 +115,8 @@ export default function SmartTransactionStatus() {
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus =
       latestSmartTransaction?.status || SMART_TRANSACTION_STATUSES.PENDING;
+    cancellationFeeWei =
+      latestSmartTransaction?.statusMetadata?.cancellationFeeWei;
   }
 
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
@@ -122,6 +153,7 @@ export default function SmartTransactionStatus() {
   const showCloseButtonOnly =
     isSmartTransactionPending ||
     smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS;
+  const txHash = latestSmartTransaction?.statusMetadata?.minedHash;
 
   useEffect(() => {
     trackEvent({
@@ -173,10 +205,11 @@ export default function SmartTransactionStatus() {
   let description;
   let subDescription;
   let icon;
+  let blockExplorerUrl;
   if (isSmartTransactionPending) {
     if (cancelSwapLinkClicked) {
       headerText = t('stxTryingToCancel');
-    } else if (latestSmartTransaction?.statusMetadata?.cancellationFeeWei > 0) {
+    } else if (cancellationFeeWei > 0) {
       headerText = t('stxPendingPubliclySubmittingSwap');
     }
   }
@@ -221,11 +254,28 @@ export default function SmartTransactionStatus() {
     ]);
     icon = <RevertedIcon />;
   }
+  if (txHash && latestSmartTransactionUuid) {
+    blockExplorerUrl = getBlockExplorerLink(
+      { hash: txHash, chainId },
+      { blockExplorerUrl: baseNetworkUrl },
+    );
+  }
 
   const showCancelSwapLink =
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
+    let feeInFiat;
+    if (cancellationFeeWei > 0) {
+      ({ feeInFiat } = getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        USDConversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: cancellationFeeWei,
+      }));
+    }
     return (
       <Box marginBottom={0}>
         <a
@@ -242,7 +292,9 @@ export default function SmartTransactionStatus() {
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
-          {t('cancelSwap')}
+          {feeInFiat
+            ? t('cancelSwapForFee', [feeInFiat])
+            : t('cancelSwapForFree')}
         </a>
       </Box>
     );
@@ -367,11 +419,17 @@ export default function SmartTransactionStatus() {
         {description && (
           <Typography
             variant={TYPOGRAPHY.H6}
-            boxProps={{ marginTop: 0 }}
+            boxProps={{ ...(blockExplorerUrl && { margin: [1, 0, 0] }) }}
             color={COLORS.TEXT_ALTERNATIVE}
           >
             {description}
           </Typography>
+        )}
+        {blockExplorerUrl && (
+          <ViewOnBlockExplorer
+            blockExplorerUrl={blockExplorerUrl}
+            sensitiveTrackingProperties={sensitiveProperties}
+          />
         )}
         <Box
           marginTop={3}
@@ -390,6 +448,9 @@ export default function SmartTransactionStatus() {
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
         isSmartTransactionPending && <CancelSwap />}
+      {smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS ? (
+        <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
+      ) : null}
       <SwapsFooter
         onSubmit={async () => {
           if (showCloseButtonOnly) {

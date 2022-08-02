@@ -252,14 +252,14 @@ const SWAP_GAS_PRICE_VALIDATOR = [
   },
 ];
 
-function validateData(validators, object, urlUsed) {
+function validateData(validators, object, urlUsed, logError = true) {
   return validators.every(({ property, type, validator }) => {
     const types = type.split('|');
 
     const valid =
       types.some((_type) => typeof object[property] === _type) &&
       (!validator || validator(object[property]));
-    if (!valid) {
+    if (!valid && logError) {
       log.error(
         `response to GET ${urlUsed} invalid for property ${property}; value was:`,
         object[property],
@@ -381,11 +381,12 @@ export async function fetchTokens(chainId) {
     { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
+  const logError = false;
   const filteredTokens = [
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
     ...tokens.filter((token) => {
       return (
-        validateData(TOKEN_VALIDATORS, token, tokensUrl) &&
+        validateData(TOKEN_VALIDATORS, token, tokensUrl, logError) &&
         !(
           isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
           isSwapsDefaultTokenAddress(token.address, chainId)
@@ -645,22 +646,18 @@ export function quotesToRenderableData(
     let rawNetworkFees = null;
     let rawEthFee = null;
 
-    ({
-      feeInFiat,
-      feeInEth,
-      rawNetworkFees,
-      rawEthFee,
-    } = getRenderableNetworkFeesForQuote({
-      tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
-      approveGas,
-      gasPrice,
-      currentCurrency,
-      conversionRate,
-      tradeValue: trade.value,
-      sourceSymbol: sourceTokenInfo.symbol,
-      sourceAmount,
-      chainId,
-    }));
+    ({ feeInFiat, feeInEth, rawNetworkFees, rawEthFee } =
+      getRenderableNetworkFeesForQuote({
+        tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
+        approveGas,
+        gasPrice,
+        currentCurrency,
+        conversionRate,
+        tradeValue: trade.value,
+        sourceSymbol: sourceTokenInfo.symbol,
+        sourceAmount,
+        chainId,
+      }));
 
     if (smartTransactionEstimatedGas) {
       ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({

@@ -24,9 +24,8 @@ export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
-  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] = useState(
-    false,
-  );
+  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
+    useState(false);
 
   const handleClickRecommended = () => {
     history.push(ONBOARDING_REVIEW_SRP_ROUTE);
@@ -47,6 +46,11 @@ export default function SecureYourWallet() {
     ru: 'Russian',
     tl: 'Tagalog',
     vi: 'Vietnamese',
+    de: 'German',
+    el: 'Greek',
+    fr: 'French',
+    tr: 'Turkish',
+    zh: 'Chinese - China',
   };
 
   const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';

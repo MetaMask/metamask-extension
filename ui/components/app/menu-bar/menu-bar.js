@@ -17,10 +17,8 @@ export default function MenuBar() {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const [
-    accountOptionsButtonElement,
-    setAccountOptionsButtonElement,
-  ] = useState(null);
+  const [accountOptionsButtonElement, setAccountOptionsButtonElement] =
+    useState(null);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const origin = useSelector(getOriginOfCurrentTab);
 
