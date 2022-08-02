@@ -471,6 +471,7 @@ export default class ConfirmApproveContent extends Component {
       [...TEST_CHAINS, MAINNET_CHAIN_ID].includes(chainId);
 
     let titleTokenDescription = t('token');
+    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
     if (
       assetStandard === ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
@@ -483,9 +484,8 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
       if (assetName || tokenSymbol) {
-        titleTokenDescription = `${assetName ?? tokenSymbol}${tokenIdWrapped}`;
+        titleTokenDescription = `${assetName ?? tokenSymbol}`;
       } else {
         titleTokenDescription = t('nft');
       }
@@ -519,15 +519,18 @@ export default class ConfirmApproveContent extends Component {
     }
 
     return (
-      <span
-        className="confirm-approve-content__approval-asset-title"
-        onClick={() => {
-          copyToClipboard(tokenAddress);
-        }}
-        title={tokenAddress}
-      >
-        {titleTokenDescription}
-      </span>
+      <>
+        <span
+          className="confirm-approve-content__approval-asset-title"
+          onClick={() => {
+            copyToClipboard(tokenAddress);
+          }}
+          title={tokenAddress}
+        >
+          {titleTokenDescription}
+        </span>
+        {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+      </>
     );
   }
 
