@@ -1760,7 +1760,6 @@ describe('Send Slice', () => {
           useTokenDetection: true,
           isProbablyAnAssetContract: false,
           userInput: newUserRecipientInput,
-          smartContractAddress: undefined,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
