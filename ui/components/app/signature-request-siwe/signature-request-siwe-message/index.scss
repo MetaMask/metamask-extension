@@ -5,7 +5,7 @@
   margin: 16px;
   border: 1px solid var(--color-border-muted);
 
-  .sub-text {
+  &__sub-text {
     white-space: pre-line;
     overflow: hidden;
     word-wrap: break-word;

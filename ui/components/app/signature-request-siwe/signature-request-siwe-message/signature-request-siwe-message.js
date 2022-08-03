@@ -18,7 +18,7 @@ const SignatureRequestSIWEMessage = ({ data }) => {
               {label}
             </Typography>
             <Typography
-              className="sub-text"
+              className="signature-request-siwe-message__sub-text"
               variant={TYPOGRAPHY.H6}
               marginTop={2}
               marginBottom={2}

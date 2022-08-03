@@ -55,14 +55,6 @@ export default function SignatureRequestSIWE({
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
 
-  /**
-   * @todo update MetaMetrics for onSign and onCancel
-   * Currently, we're tracking the events similarily to how we track the events with the SignatureRequest component
-   * in which the action names differ. We want to revisit this to add properties mentioned in the related, internal Slack thread.
-   * We would also want to ensure that we are tracking the event appropriatedly should an error be thrown.
-   * @see {@link ui/components/app/signature-request/signature-request.component.js}
-   * @see {@link https://consensys.slack.com/archives/C031PSFHQER/p1654811895007879?thread_ts=1654805714.261689&cid=C031PSFHQER}
-   */
   const onSign = useCallback(
     async (event) => {
       try {
