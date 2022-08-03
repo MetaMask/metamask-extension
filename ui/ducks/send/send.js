@@ -1917,7 +1917,6 @@ export function updateRecipientUserInput(userInput) {
           useTokenDetection,
           tokenAddressList,
           isProbablyAnAssetContract,
-          smartContractAddress,
         },
         resolve,
       );
