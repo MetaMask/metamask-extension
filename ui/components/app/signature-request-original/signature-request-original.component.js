@@ -32,7 +32,6 @@ export default class SignatureRequestOriginal extends Component {
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-    requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
@@ -107,11 +106,13 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderRequestIcon = () => {
-    const { requesterAddress } = this.props;
+    const {
+      fromAccount: { address },
+    } = this.state;
 
     return (
       <div className="request-signature__request-icon">
-        <Identicon diameter={40} address={requesterAddress} />
+        <Identicon diameter={40} address={address} />
       </div>
     );
   };
@@ -228,7 +229,8 @@ export default class SignatureRequestOriginal extends Component {
               className="request-signature__help-link"
               onClick={() => {
                 global.platform.openTab({
-                  url: 'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
+                  url:
+                    'https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/',
                 });
               }}
             >
