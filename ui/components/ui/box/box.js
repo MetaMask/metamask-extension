@@ -25,27 +25,18 @@ export const BackgroundColors = [
   COLORS.PRIMARY_DEFAULT,
   COLORS.PRIMARY_ALTERNATIVE,
   COLORS.PRIMARY_MUTED,
-  COLORS.PRIMARY_DISABLED,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_ALTERNATIVE,
-  COLORS.SECONDARY_MUTED,
-  COLORS.SECONDARY_DISABLED,
   COLORS.ERROR_DEFAULT,
   COLORS.ERROR_ALTERNATIVE,
   COLORS.ERROR_MUTED,
-  COLORS.ERROR_DISABLED,
   COLORS.WARNING_DEFAULT,
   COLORS.WARNING_ALTERNATIVE,
   COLORS.WARNING_MUTED,
-  COLORS.WARNING_DISABLED,
   COLORS.SUCCESS_DEFAULT,
   COLORS.SUCCESS_ALTERNATIVE,
   COLORS.SUCCESS_MUTED,
-  COLORS.SUCCESS_DISABLED,
   COLORS.INFO_DEFAULT,
   COLORS.INFO_ALTERNATIVE,
   COLORS.INFO_MUTED,
-  COLORS.INFO_DISABLED,
   COLORS.MAINNET,
   COLORS.ROPSTEN,
   COLORS.KOVAN,
@@ -60,27 +51,18 @@ export const BorderColors = [
   COLORS.PRIMARY_DEFAULT,
   COLORS.PRIMARY_ALTERNATIVE,
   COLORS.PRIMARY_MUTED,
-  COLORS.PRIMARY_DISABLED,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_ALTERNATIVE,
-  COLORS.SECONDARY_MUTED,
-  COLORS.SECONDARY_DISABLED,
   COLORS.ERROR_DEFAULT,
   COLORS.ERROR_ALTERNATIVE,
   COLORS.ERROR_MUTED,
-  COLORS.ERROR_DISABLED,
   COLORS.WARNING_DEFAULT,
   COLORS.WARNING_ALTERNATIVE,
   COLORS.WARNING_MUTED,
-  COLORS.WARNING_DISABLED,
   COLORS.SUCCESS_DEFAULT,
   COLORS.SUCCESS_ALTERNATIVE,
   COLORS.SUCCESS_MUTED,
-  COLORS.SUCCESS_DISABLED,
   COLORS.INFO_DEFAULT,
   COLORS.INFO_ALTERNATIVE,
   COLORS.INFO_MUTED,
-  COLORS.INFO_DISABLED,
   COLORS.MAINNET,
   COLORS.ROPSTEN,
   COLORS.KOVAN,
@@ -92,8 +74,8 @@ export const BorderColors = [
 
 const ValidSize = PropTypes.oneOf(Sizes);
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
-const ValidBackgroundColors = PropTypes.oneOf(BackgroundColors);
-const ValidBorderColors = PropTypes.oneOf(BorderColors);
+export const ValidBackgroundColors = PropTypes.oneOf(BackgroundColors);
+export const ValidBorderColors = PropTypes.oneOf(BorderColors);
 
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
@@ -245,6 +227,7 @@ export default function Box({
   children,
   className,
   backgroundColor,
+  ...props
 }) {
   const boxClassName = classnames(
     BASE_CLASS_NAME,
@@ -301,7 +284,11 @@ export default function Box({
   if (typeof children === 'function') {
     return children(boxClassName);
   }
-  return <div className={boxClassName}>{children}</div>;
+  return (
+    <div className={boxClassName} {...props}>
+      {children}
+    </div>
+  );
 }
 
 Box.propTypes = {

@@ -35,9 +35,10 @@ const SelectQuotePopover = ({
     setContentView('sortList');
   }, []);
 
-  const onRowClick = useCallback((aggId) => setSelectedAggId(aggId), [
-    setSelectedAggId,
-  ]);
+  const onRowClick = useCallback(
+    (aggId) => setSelectedAggId(aggId),
+    [setSelectedAggId],
+  );
 
   const onCaretClick = useCallback(
     (aggId) => {

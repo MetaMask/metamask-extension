@@ -19,9 +19,8 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import { useAssetDetails } from '../../hooks/useAssetDetails';
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
-  const {
-    txParams: { data, to: tokenAddress, from: userAddress } = {},
-  } = transaction;
+  const { txParams: { data, to: tokenAddress, from: userAddress } = {} } =
+    transaction;
 
   const {
     assetStandard,

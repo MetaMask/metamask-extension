@@ -131,7 +131,7 @@ export function calcTokenValue(value, decimals) {
  *   - The '_to' parameter, if present
  *   - The first parameter, if present
  *
- * @param {Object} tokenData - ethers Interface token data.
+ * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A lowercase address string.
  */
 export function getTokenAddressParam(tokenData = {}) {
@@ -144,7 +144,7 @@ export function getTokenAddressParam(tokenData = {}) {
  * Gets the '_value' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {Object} tokenData - ethers Interface token data.
+ * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A decimal string value.
  */
 export function getTokenValueParam(tokenData = {}) {
@@ -156,7 +156,7 @@ export function getTokenValueParam(tokenData = {}) {
  * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
  * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
  *
- * @param {Object} tokenData - ethers Interface token data.
+ * @param {object} tokenData - ethers Interface token data.
  * @returns {string | undefined} A decimal string value.
  */
 export function getTokenIdParam(tokenData = {}) {
@@ -169,7 +169,7 @@ export function getTokenIdParam(tokenData = {}) {
  * Gets the '_approved' parameter of the given token transaction data
  * (i.e function call) per the Human Standard Token ABI, if present.
  *
- * @param {Object} tokenData - ethers Interface token data.
+ * @param {object} tokenData - ethers Interface token data.
  * @returns {boolean | undefined} A boolean indicating whether the function is being called to approve or revoke access.
  */
 export function getTokenApprovedParam(tokenData = {}) {

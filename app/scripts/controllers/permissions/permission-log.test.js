@@ -639,9 +639,9 @@ describe('PermissionLogController', () => {
  * Validates an activity log entry with respect to a request, response, and
  * relevant metadata.
  *
- * @param {Object} entry - The activity log entry to validate.
- * @param {Object} req - The request that generated the entry.
- * @param {Object} [res] - The response for the request, if any.
+ * @param {object} entry - The activity log entry to validate.
+ * @param {object} req - The request that generated the entry.
+ * @param {object} [res] - The response for the request, if any.
  * @param {'restricted'|'internal'} methodType - The method log controller method type of the request.
  * @param {boolean} success - Whether the request succeeded or not.
  */

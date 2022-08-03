@@ -1476,6 +1476,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1483,6 +1484,7 @@ describe('Transaction Controller', function () {
             gas_price: '2',
             gas_limit: '0x7b0d',
             transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1556,6 +1558,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1563,6 +1566,7 @@ describe('Transaction Controller', function () {
             gas_price: '2',
             gas_limit: '0x7b0d',
             transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1646,6 +1650,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1653,6 +1658,7 @@ describe('Transaction Controller', function () {
             gas_price: '2',
             gas_limit: '0x7b0d',
             transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1728,6 +1734,7 @@ describe('Transaction Controller', function () {
             asset_type: ASSET_TYPES.NATIVE,
             token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
+            transaction_speed_up: false,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1735,6 +1742,7 @@ describe('Transaction Controller', function () {
             gas_price: '2',
             gas_limit: '0x7b0d',
             transaction_contract_method: undefined,
+            transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
             status: 'unapproved',
@@ -1810,11 +1818,13 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           gas_price: '2',
           gas_limit: '0x7b0d',
           transaction_contract_method: undefined,
+          transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
@@ -1874,6 +1884,7 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1881,6 +1892,7 @@ describe('Transaction Controller', function () {
           gas_price: '2',
           gas_limit: '0x7b0d',
           transaction_contract_method: undefined,
+          transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
@@ -1948,6 +1960,7 @@ describe('Transaction Controller', function () {
           asset_type: ASSET_TYPES.NATIVE,
           token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
+          transaction_speed_up: false,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1956,6 +1969,7 @@ describe('Transaction Controller', function () {
           max_priority_fee_per_gas: '2',
           gas_limit: '0x7b0d',
           transaction_contract_method: undefined,
+          transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
           status: 'unapproved',
@@ -2284,8 +2298,7 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_getCode = '0xab';
       // test update gasFees
       await txController.updateEditableParams('1', {
-        data:
-          '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        data: '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
       });
       const result = txStateManager.getTransaction('1');
       assert.equal(
@@ -2309,8 +2322,7 @@ describe('Transaction Controller', function () {
           // maxFeePerGas: '0x004',
           to: VALID_ADDRESS,
           from: VALID_ADDRESS,
-          data:
-            '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+          data: '0xa9059cbb000000000000000000000000e18035bf8712672935fdb4e5e431b1a0183d2dfc0000000000000000000000000000000000000000000000000de0b6b3a7640000',
         },
         estimateUsed: '0x005',
         estimatedBaseFee: '0x006',

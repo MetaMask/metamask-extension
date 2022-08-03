@@ -157,6 +157,9 @@
   "addMemo": {
     "message": "添加备忘录"
   },
+  "addMoreNetworks": {
+    "message": "手动添加更多网络"
+  },
   "addNetwork": {
     "message": "添加网络"
   },
@@ -227,6 +230,10 @@
   "alerts": {
     "message": "提醒"
   },
+  "allOfYour": {
+    "message": "您的所有$1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
   "allowExternalExtensionTo": {
     "message": "允许此外部扩展程序："
   },
@@ -262,6 +269,10 @@
   },
   "approve": {
     "message": "批准消费限额"
+  },
+  "approveAllTokensTitle": {
+    "message": "是否允许访问您的所有$1？",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "批准并安装"
@@ -435,10 +446,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 $1"
+    "message": "使用Wyre购买$1"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用借记卡将 $1 存入您的 MetaMask 账户。"
+    "message": "购买不超过$1000可以轻松开通。快速交互式上限购买验证。支持借记卡/信用卡、Apple Pay、银行转账。适用于100多个国家。代币存入您的MetaMask账户"
   },
   "bytes": {
     "message": "字节"
@@ -465,6 +476,13 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwapForFee": {
+    "message": "以~$1取消兑换",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "免费取消兑换"
   },
   "cancellationGasFee": {
     "message": "取消燃料费用"
@@ -1277,6 +1295,9 @@
   "functionApprove": {
     "message": "功能：批准"
   },
+  "functionSetApprovalForAll": {
+    "message": "功能：SetApprovalForAll"
+  },
   "functionType": {
     "message": "功能类型"
   },
@@ -1617,6 +1638,9 @@
   "invalidSeedPhrase": {
     "message": "助记词无效"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "输入无效！助记词须区分大小写。"
+  },
   "ipfsGateway": {
     "message": "IPFS 网关"
   },
@@ -1646,7 +1670,7 @@
     "message": "已知合约地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在您的钱包中列出的代币，有可能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
   "kovan": {
     "message": "Kovan 测试网络"
@@ -1892,6 +1916,19 @@
     "message": "验证网络信息",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "mismatchedChainRecommendation": {
+    "message": "我们建议您在继续之前$1。",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "根据我们的记录，该网络名称可能与此链ID不匹配。"
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "所提交的货币符号与我们对此链ID的预期不匹配。"
+  },
+  "mismatchedRpcUrl": {
+    "message": "根据我们的记录，所提交的RPC URL值与此链ID的已知提供者不匹配。"
+  },
   "missingNFT": {
     "message": "找不到您的 NFT？"
   },
@@ -1942,6 +1979,9 @@
   },
   "network": {
     "message": "网络： "
+  },
+  "networkAddedSuccessfully": {
+    "message": "网络添加成功！"
   },
   "networkDetails": {
     "message": "网络详情"
@@ -2059,6 +2099,9 @@
     "message": "Nonce 高于建议的 nouce 值 $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "非同质化代币(NFT)"
+  },
   "nftTokenIdPlaceholder": {
     "message": "输入代币ID"
   },
@@ -2154,10 +2197,20 @@
     "message": "启用黑暗模式"
   },
   "notifications12Description": {
-    "message": "将根据新用户的系统偏好设置为其启用黑暗模式。对于现有用户，请在“设置 -> 实验项”下手动启用黑暗模式。"
+    "message": "扩展程序的深色模式终于来了！若要开启，请前往“设置 -> 实验项”，然后选择一个显示选项：浅色、深色、系统。"
   },
   "notifications12Title": {
     "message": "何时启用黑暗模式？现在启用黑暗模式！ 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "显示自定义网络列表"
+  },
+  "notifications13Description": {
+    "message": "您现在可以轻松添加以下热门自定义网络：Arbitrum、Avalanche、Binance Smart Chain、Fantom、Harmony、Optimism、Palm和Polygon！如需启用此功能，请转到“设置” -> “实验”，然后打开“显示自定义网络列表”！",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "添加热门网络"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile 用户现在可以在他们的移动钱包中交换代币。扫描二维码以获取移动应用程序并开始交换。",
@@ -2676,6 +2729,14 @@
   "revealTheSeedPhrase": {
     "message": "显示助记词"
   },
+  "revokeAllTokensTitle": {
+    "message": "撤销访问您的所有$1的权限？",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "通过撤销权限，以下$1将无法再访问您的$2",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
   "rinkeby": {
     "message": "Rinkeby 测试网络"
   },
@@ -2852,11 +2913,22 @@
     "message": "正在发送 $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "警告：您将要发送到代币合约，这可能会导致资金损失。$1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "设置高级隐私设置"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"
+  },
+  "setApprovalForAll": {
+    "message": "设置批准所有"
+  },
+  "setApprovalForAllTitle": {
+    "message": "批准$1，且无消费限制",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "设置"
@@ -2876,6 +2948,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "选择此项可直接在发送和确认界面显示燃料价格和上限控制。"
+  },
+  "showCustomNetworkList": {
+    "message": "显示自定义网络列表"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "选择此项，在添加新网络时就会显示附有预填详细信息的网络列表。"
   },
   "showFiatConversionInTestnets": {
     "message": "在测试网络上显示转换"
@@ -2967,10 +3045,6 @@
   "snapInstallWarningCheck": {
     "message": "请勾选全部以确认您理解。"
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "您正在向snap \"$1\"授予密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
-    "description": "The parameter is the name of the snap"
-  },
   "snapRequestsPermission": {
     "message": "此Snap正在请求以下权限："
   },
@@ -2985,6 +3059,9 @@
   },
   "snapsToggle": {
     "message": "Snap仅在启用后才会运行"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
   },
   "somethingWentWrong": {
     "message": "哎呀！出了点问题。"
@@ -3548,6 +3625,10 @@
   "switchNetworks": {
     "message": "切换网络"
   },
+  "switchToNetwork": {
+    "message": "切换至$1",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "切换到该账户"
   },
@@ -3851,6 +3932,9 @@
   "unknownCameraErrorTitle": {
     "message": "糟糕！出问题了...."
   },
+  "unknownCollection": {
+    "message": "未命名的收藏"
+  },
   "unknownNetwork": {
     "message": "未知的私有网络"
   },
@@ -3987,6 +4071,9 @@
   "walletCreationSuccessTitle": {
     "message": "钱包创建成功"
   },
+  "wantToAddThisNetwork": {
+    "message": "想要添加此网络吗？"
+  },
   "warning": {
     "message": "警告"
   },
@@ -4048,6 +4135,10 @@
   },
   "yesLetsTry": {
     "message": "是的，我们试一下"
+  },
+  "youHaveAddedAll": {
+    "message": "您已经添加了所有热门网络。您可以探索更多网络$1，或者您可以$2",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要开启相机访问权限，才能使用该功能。"
