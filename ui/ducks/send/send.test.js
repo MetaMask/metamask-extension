@@ -1760,6 +1760,7 @@ describe('Send Slice', () => {
           useTokenDetection: true,
           isProbablyAnAssetContract: false,
           userInput: newUserRecipientInput,
+          smartContractAddress: undefined,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
@@ -2406,6 +2407,7 @@ describe('Send Slice', () => {
               nickname: '',
               warning: null,
               recipientWarningAcknowledged: false,
+              type: '',
             },
             status: SEND_STATUSES.VALID,
             transactionType: '0x0',
@@ -2548,6 +2550,7 @@ describe('Send Slice', () => {
               error: null,
               nickname: '',
               warning: null,
+              type: '',
               recipientWarningAcknowledged: false,
             },
             status: SEND_STATUSES.VALID,
@@ -2737,6 +2740,7 @@ describe('Send Slice', () => {
             error: null,
             warning: null,
             nickname: '',
+            type: '',
             recipientWarningAcknowledged: false,
           },
           status: SEND_STATUSES.VALID,
