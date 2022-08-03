@@ -647,7 +647,7 @@ export default class Home extends PureComponent {
                   className="home__subheader-link"
                   onClick={async () => {
                     if (permissionsSubjects[METALABS_URL]) {
-                      window.open(METALABS_URL);
+                      global.platform.openTab({ url: METALABS_URL });
                     } else {
                       const id = await requestAccountsPermissionWithId(
                         METALABS_URL,
@@ -661,7 +661,7 @@ export default class Home extends PureComponent {
                   }}
                 >
                   <IconChart />
-                  <div className="home__subheader-link__text">
+                  <div className="home__subheader-link--text">
                     {t('portfolioView')}
                   </div>
                 </div>
