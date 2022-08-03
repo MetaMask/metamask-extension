@@ -12,7 +12,7 @@ jest.mock('../../../../../ducks/send', () => ({
   getSendErrors: (s) => `mockErrors:${s}`,
 }));
 
-require('./send-row-error-message.container.js');
+require('./send-row-error-message.container');
 
 describe('send-row-error-message container', () => {
   describe('mapStateToProps()', () => {

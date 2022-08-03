@@ -221,9 +221,10 @@ describe('MetaMaskController', function () {
     });
 
     it('adds private key to keyrings in KeyringController', async function () {
-      const simpleKeyrings = metamaskController.keyringController.getKeyringsByType(
-        'Simple Key Pair',
-      );
+      const simpleKeyrings =
+        metamaskController.keyringController.getKeyringsByType(
+          'Simple Key Pair',
+        );
       const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
       const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
       const addressBuffer = pubToAddress(pubKeyBuffer);
@@ -234,7 +235,8 @@ describe('MetaMaskController', function () {
     });
 
     it('adds 1 account', async function () {
-      const keyringAccounts = await metamaskController.keyringController.getAccounts();
+      const keyringAccounts =
+        await metamaskController.keyringController.getAccounts();
       assert.equal(
         keyringAccounts[keyringAccounts.length - 1],
         '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
@@ -259,7 +261,8 @@ describe('MetaMaskController', function () {
       const identities = Object.keys(
         metamaskController.preferencesController.store.getState().identities,
       );
-      const addresses = await metamaskController.keyringController.getAccounts();
+      const addresses =
+        await metamaskController.keyringController.getAccounts();
 
       identities.forEach((identity) => {
         assert.ok(
@@ -486,7 +489,8 @@ describe('MetaMaskController', function () {
     });
 
     it('changes preferences controller select address', function () {
-      const preferenceControllerState = metamaskController.preferencesController.store.getState();
+      const preferenceControllerState =
+        metamaskController.preferencesController.store.getState();
       assert.equal(preferenceControllerState.selectedAddress, address);
     });
 
@@ -517,9 +521,10 @@ describe('MetaMaskController', function () {
       await metamaskController
         .connectHardware(DEVICE_NAMES.TREZOR, 0)
         .catch(() => null);
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        KEYRING_TYPES.TREZOR,
-      );
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          KEYRING_TYPES.TREZOR,
+        );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
         [KEYRING_TYPES.TREZOR],
@@ -532,9 +537,10 @@ describe('MetaMaskController', function () {
       await metamaskController
         .connectHardware(DEVICE_NAMES.LEDGER, 0)
         .catch(() => null);
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        KEYRING_TYPES.LEDGER,
-      );
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          KEYRING_TYPES.LEDGER,
+        );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
         [KEYRING_TYPES.LEDGER],
@@ -586,9 +592,10 @@ describe('MetaMaskController', function () {
         .connectHardware(DEVICE_NAMES.TREZOR, 0)
         .catch(() => null);
       await metamaskController.forgetDevice(DEVICE_NAMES.TREZOR);
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        KEYRING_TYPES.TREZOR,
-      );
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          KEYRING_TYPES.TREZOR,
+        );
 
       assert.deepEqual(keyrings[0].accounts, []);
       assert.deepEqual(keyrings[0].page, 0);
@@ -645,9 +652,10 @@ describe('MetaMaskController', function () {
     });
 
     it('should set unlockedAccount in the keyring', async function () {
-      const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        KEYRING_TYPES.TREZOR,
-      );
+      const keyrings =
+        await metamaskController.keyringController.getKeyringsByType(
+          KEYRING_TYPES.TREZOR,
+        );
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
     });
 
@@ -690,7 +698,8 @@ describe('MetaMaskController', function () {
         CUSTOM_RPC_URL,
         CUSTOM_RPC_CHAIN_ID,
       );
-      const networkControllerState = metamaskController.networkController.store.getState();
+      const networkControllerState =
+        metamaskController.networkController.store.getState();
       assert.equal(networkControllerState.provider.rpcUrl, CUSTOM_RPC_URL);
     });
   });
@@ -726,7 +735,8 @@ describe('MetaMaskController', function () {
 
     it('#addNewAccount', async function () {
       await metamaskController.addNewAccount();
-      const getAccounts = await metamaskController.keyringController.getAccounts();
+      const getAccounts =
+        await metamaskController.keyringController.getAccounts();
       assert.equal(getAccounts.length, 2);
     });
   });
@@ -959,7 +969,8 @@ describe('MetaMaskController', function () {
       // handle the promise so it doesn't throw an unhandledRejection
       promise.then(noop).catch(noop);
 
-      metamaskPersonalMsgs = metamaskController.personalMessageManager.getUnapprovedMsgs();
+      metamaskPersonalMsgs =
+        metamaskController.personalMessageManager.getUnapprovedMsgs();
       personalMessages = metamaskController.personalMessageManager.messages;
       msgId = Object.keys(metamaskPersonalMsgs)[0];
       personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10);
@@ -1250,9 +1261,8 @@ describe('MetaMaskController', function () {
   describe('markNotificationsAsRead', function () {
     it('marks the notification as read', function () {
       metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
-      const readNotification = metamaskController.getState().notifications[
-        NOTIFICATION_ID
-      ];
+      const readNotification =
+        metamaskController.getState().notifications[NOTIFICATION_ID];
       assert.notEqual(readNotification.readDate, null);
     });
   });

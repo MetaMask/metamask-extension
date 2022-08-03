@@ -69,11 +69,8 @@ describe('GasPriceButtonGroup Component', () => {
     });
 
     it('should render the correct props on the ButtonGroup', () => {
-      const {
-        className,
-        defaultActiveButtonIndex,
-        noButtonActiveByDefault,
-      } = wrapper.props();
+      const { className, defaultActiveButtonIndex, noButtonActiveByDefault } =
+        wrapper.props();
       expect(className).toStrictEqual('gas-price-button-group');
       expect(defaultActiveButtonIndex).toStrictEqual(2);
       expect(noButtonActiveByDefault).toStrictEqual(true);
@@ -195,14 +192,15 @@ describe('GasPriceButtonGroup Component', () => {
     });
 
     it('should render a feeInPrimaryCurrency if passed a feeInPrimaryCurrency', () => {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
-        {
-          feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
-        },
-        {
-          className: 'someClass',
-        },
-      );
+      const renderButtonContentResult =
+        GasPriceButtonGroup.prototype.renderButtonContent(
+          {
+            feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
+          },
+          {
+            className: 'someClass',
+          },
+        );
       const wrappedRenderButtonContentResult = shallowWithContext(
         renderButtonContentResult,
       );
@@ -217,14 +215,15 @@ describe('GasPriceButtonGroup Component', () => {
     });
 
     it('should render a feeInSecondaryCurrency if passed a feeInSecondaryCurrency', () => {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
-        {
-          feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
-        },
-        {
-          className: 'someClass',
-        },
-      );
+      const renderButtonContentResult =
+        GasPriceButtonGroup.prototype.renderButtonContent(
+          {
+            feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
+          },
+          {
+            className: 'someClass',
+          },
+        );
       const wrappedRenderButtonContentResult = shallowWithContext(
         renderButtonContentResult,
       );
@@ -239,14 +238,15 @@ describe('GasPriceButtonGroup Component', () => {
     });
 
     it('should render a timeEstimate if passed a timeEstimate', () => {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
-        {
-          timeEstimate: 'mockTimeEstimate',
-        },
-        {
-          className: 'someClass',
-        },
-      );
+      const renderButtonContentResult =
+        GasPriceButtonGroup.prototype.renderButtonContent(
+          {
+            timeEstimate: 'mockTimeEstimate',
+          },
+          {
+            className: 'someClass',
+          },
+        );
       const wrappedRenderButtonContentResult = shallowWithContext(
         renderButtonContentResult,
       );
@@ -261,13 +261,14 @@ describe('GasPriceButtonGroup Component', () => {
     });
 
     it('should render a check if showCheck is true', () => {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
-        {},
-        {
-          className: 'someClass',
-          showCheck: true,
-        },
-      );
+      const renderButtonContentResult =
+        GasPriceButtonGroup.prototype.renderButtonContent(
+          {},
+          {
+            className: 'someClass',
+            showCheck: true,
+          },
+        );
       const wrappedRenderButtonContentResult = shallowWithContext(
         renderButtonContentResult,
       );
@@ -296,10 +297,8 @@ describe('GasPriceButtonGroup Component', () => {
     });
 
     it('should render no elements if all args passed', () => {
-      const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
-        {},
-        {},
-      );
+      const renderButtonContentResult =
+        GasPriceButtonGroup.prototype.renderButtonContent({}, {});
       const wrappedRenderButtonContentResult = shallowWithContext(
         renderButtonContentResult,
       );

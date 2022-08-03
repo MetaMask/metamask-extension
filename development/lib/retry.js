@@ -3,7 +3,7 @@
  * of retries is exceeded, whichever comes first (with an optional delay in
  * between retries).
  *
- * @param {Object} args - A set of arguments and options.
+ * @param {object} args - A set of arguments and options.
  * @param {number} args.retries - The maximum number of times to re-run the
  * function on failure.
  * @param {number} args.delay - The amount of time (in milliseconds) to wait in

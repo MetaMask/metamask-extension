@@ -82,9 +82,8 @@ const createTransakUrl = (walletAddress, chainId) => {
  * @returns String
  */
 const createMoonPayUrl = async (walletAddress, chainId) => {
-  const {
-    moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {},
-  } = BUYABLE_CHAINS_MAP[chainId];
+  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
+    BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
     walletAddress,
@@ -140,7 +139,7 @@ const createCoinbasePayUrl = (walletAddress, chainId) => {
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
- * @param {Object} opts - Options required to determine the correct url
+ * @param {object} opts - Options required to determine the correct url
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
  * @param opts.service

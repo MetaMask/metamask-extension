@@ -28,12 +28,8 @@ export default class NewAccount extends PureComponent {
   };
 
   isValid() {
-    const {
-      password,
-      confirmPassword,
-      passwordError,
-      confirmPasswordError,
-    } = this.state;
+    const { password, confirmPassword, passwordError, confirmPasswordError } =
+      this.state;
 
     if (!password || !confirmPassword || password !== confirmPassword) {
       return false;

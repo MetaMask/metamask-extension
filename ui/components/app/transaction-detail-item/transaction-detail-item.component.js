@@ -40,7 +40,8 @@ export default function TransactionDetailItem({
         </Typography>
         <div
           className={classnames('transaction-detail-item__detail-values', {
-            'transaction-detail-item__detail-values--flex-width': flexWidthValues,
+            'transaction-detail-item__detail-values--flex-width':
+              flexWidthValues,
           })}
         >
           {detailText && (

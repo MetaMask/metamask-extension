@@ -49,7 +49,7 @@ let registry;
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @returns {Object}
+ * @returns {object}
  */
 export async function getMethodDataAsync(fourBytePrefix) {
   try {
@@ -152,8 +152,8 @@ export function isLegacyTransaction(txParams) {
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {Object} transaction - The txMeta object of a transaction.
- * @param {Object} transaction.txReceipt - The transaction receipt.
+ * @param {object} transaction - The txMeta object of a transaction.
+ * @param {object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
 export function getStatusKey(transaction) {

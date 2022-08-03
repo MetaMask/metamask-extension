@@ -295,9 +295,8 @@ class NetworkDropdown extends Component {
         onClickOutside={(event) => {
           const { classList } = event.target;
           const isInClassList = (className) => classList.contains(className);
-          const notToggleElementIndex = notToggleElementClassnames.findIndex(
-            isInClassList,
-          );
+          const notToggleElementIndex =
+            notToggleElementClassnames.findIndex(isInClassList);
 
           if (notToggleElementIndex === -1) {
             event.stopPropagation();

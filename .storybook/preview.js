@@ -31,6 +31,7 @@ addParameters({
       order: [
         'Getting Started',
         'Foundations',
+        ['Color', 'Shadow', 'Breakpoints'],
         'Components',
         ['UI', 'App'],
         'Pages',

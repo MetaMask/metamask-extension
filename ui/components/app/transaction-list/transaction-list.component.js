@@ -129,6 +129,7 @@ export default function TransactionList({
                 <SmartTransactionListItem
                   isEarliestNonce={index === 0}
                   smartTransaction={transactionGroup.initialTransaction}
+                  transactionGroup={transactionGroup}
                   key={`${transactionGroup.nonce}:${index}`}
                 />
               ) : (
@@ -152,6 +153,7 @@ export default function TransactionList({
                 transactionGroup.initialTransaction?.transactionType ===
                 'smart' ? (
                   <SmartTransactionListItem
+                    transactionGroup={transactionGroup}
                     smartTransaction={transactionGroup.initialTransaction}
                     key={`${transactionGroup.nonce}:${index}`}
                   />
