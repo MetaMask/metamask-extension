@@ -76,6 +76,15 @@ export default class RevealSeedPhrase extends PureComponent {
       },
     });
 
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: 'New Wallet Created',
+      properties: {
+        action: 'Onboarding Complete',
+        legacy_event: true,
+      },
+    });
+
     await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
 
     if (onboardingInitiator) {
