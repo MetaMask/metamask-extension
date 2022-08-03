@@ -44,6 +44,60 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (Coming Soon)"
   },
+  "SIWEAddressInvalid": {
+    "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
+  },
+  "SIWEDomainInvalid": {
+    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
+    "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningBody": {
+    "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
+    "description": "$1 represents the website domain"
+  },
+  "SIWELabelChainID": {
+    "message": "Chain ID:"
+  },
+  "SIWELabelExpirationTime": {
+    "message": "Expires At:"
+  },
+  "SIWELabelIssuedAt": {
+    "message": "Issued At:"
+  },
+  "SIWELabelMessage": {
+    "message": "Message:"
+  },
+  "SIWELabelNonce": {
+    "message": "Nonce:"
+  },
+  "SIWELabelNotBefore": {
+    "message": "Not Before:"
+  },
+  "SIWELabelRequestID": {
+    "message": "Request ID:"
+  },
+  "SIWELabelResources": {
+    "message": "Resources: $1",
+    "description": "$1 represents the number of resources"
+  },
+  "SIWELabelURI": {
+    "message": "URI:"
+  },
+  "SIWELabelVersion": {
+    "message": "Version:"
+  },
+  "SIWESiteRequestSubtitle": {
+    "message": "This site is requesting to sign in with"
+  },
+  "SIWESiteRequestTitle": {
+    "message": "Sign-in request"
+  },
+  "SIWEWarningSubtitle": {
+    "message": "To confirm you understand, check:"
+  },
+  "SIWEWarningTitle": {
+    "message": "Are you sure?"
+  },
   "about": {
     "message": "About"
   },
@@ -3011,6 +3065,9 @@
   },
   "signed": {
     "message": "Signed"
+  },
+  "signin": {
+    "message": "Sign-In"
   },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."

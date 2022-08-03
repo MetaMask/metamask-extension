@@ -44,6 +44,7 @@ const metamaskrc = require('rc')('metamask', {
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
+  SIWE_V1: process.env.SIWE_V1,
 });
 
 const { streamFlatMap } = require('../stream-flat-map');
@@ -1131,6 +1132,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     INFURA_PROJECT_ID: getInfuraProjectId({ buildType, environment, testing }),
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, environment }),
+    SIWE_V1: metamaskrc.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
