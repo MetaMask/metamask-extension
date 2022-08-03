@@ -1565,6 +1565,9 @@ const slice = createSlice({
             },
           });
         }
+        if (state.amountMode === AMOUNT_MODES.MAX) {
+          slice.caseReducers.updateAmountToMax(state);
+        }
         slice.caseReducers.validateAmountField(state);
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
