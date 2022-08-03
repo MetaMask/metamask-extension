@@ -3803,10 +3803,6 @@ export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
   };
 }
 
-export async function clearEventsBeforeMetricsOptIn() {
-  await promisifiedBackground.clearEventsBeforeMetricsOptIn();
-}
-
 export async function addEventBeforeMetricsOptIn(event) {
   await promisifiedBackground.addEventBeforeMetricsOptIn(event);
 }
