@@ -368,6 +368,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
+      extension: this.extension,
       initState: initState.MetaMetricsController,
       captureException,
     });

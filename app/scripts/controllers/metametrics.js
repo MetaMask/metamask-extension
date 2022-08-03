@@ -69,6 +69,7 @@ export default class MetaMetricsController {
    *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
+   * @param {string} options.extension - webextension-polyfill
    * @param {MetaMetricsControllerState} options.initState - State to initialized with
    * @param options.captureException
    */
@@ -81,6 +82,7 @@ export default class MetaMetricsController {
     version,
     environment,
     initState,
+    extension,
     captureException = defaultCaptureException,
   }) {
     this._captureException = (err) => {
@@ -96,6 +98,7 @@ export default class MetaMetricsController {
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
+    this.extension = extension;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
 
@@ -316,6 +319,22 @@ export default class MetaMetricsController {
     this._identify(allValidTraits);
   }
 
+  updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
+    // TODO: Change it to the right URL once it's available.
+    const extensionUninstallUrl =
+      'https://swap.metaswap.codefi.network/tracking/uninstall';
+    const query = {};
+    if (participateInMetaMetrics) {
+      // We only want to track these things if a user opted into metrics.
+      query.id = metaMetricsId;
+      query.version = this.version;
+    }
+    const queryString = new URLSearchParams(query);
+    this.extension.runtime.setUninstallURL(
+      `${extensionUninstallUrl}?${queryString}`,
+    );
+  }
+
   /**
    * Setter for the `participateInMetaMetrics` property
    *
@@ -336,6 +355,8 @@ export default class MetaMetricsController {
       this.trackEventsBeforeMetricsOptIn();
       this.clearEventsBeforeMetricsOptIn();
     }
+    // TODO: Uncomment the line below once we have a "Sorry to see you go" page ready.
+    // this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 
