@@ -1888,8 +1888,6 @@ export function updateRecipientUserInput(userInput) {
       smartContractAddress = await isSmartContractAddress(userInput);
       if (smartContractAddress) {
         dispatch(actions.updateRecipientType(RECIPIENT_TYPES.SMART_CONTRACT));
-      }
-      if (smartContractAddress) {
         const { symbol, decimals } =
           getTokenMetadata(userInput, tokenMap) || {};
 
