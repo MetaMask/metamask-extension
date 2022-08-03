@@ -689,12 +689,12 @@ export default class Home extends PureComponent {
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(beta)
-                <BetaHomeFooter trackEvent={this.context.trackEvent} />
+                <BetaHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-                <FlaskHomeFooter trackEvent={this.context.trackEvent} />
+                <FlaskHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }
             </div>

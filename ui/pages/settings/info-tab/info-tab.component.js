@@ -107,22 +107,19 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[7]} className="info-tab__link-item">
           <Button
             type="link"
+            href={SUPPORT_REQUEST_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="info-tab__link-text"
             onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.SETTINGS,
                 event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
                 properties: {
-                  action: 'Info Tab',
                   url: SUPPORT_REQUEST_LINK,
                 },
               });
-              global.platform.openTab({
-                url: SUPPORT_REQUEST_LINK,
-              });
             }}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="info-tab__link-text"
           >
             {t('contactUs')}
           </Button>

@@ -444,7 +444,6 @@ export default class AccountMenu extends Component {
               category: EVENT.CATEGORIES.NAVIGATION,
               event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
               properties: {
-                action: 'Main Menu',
                 url: supportLink,
               },
             });
