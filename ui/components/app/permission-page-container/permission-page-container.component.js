@@ -109,11 +109,11 @@ export default class PermissionPageContainer extends Component {
       );
       const redirect = searchParams.get('redirect');
       if (redirect) {
-        window.open(
-          `${redirect}?${request.approvedAccounts
-            .map((address) => `approvedAccounts=${address}`)
+        global.platform.openTab({
+          url: `${redirect}?${request.approvedAccounts
+            .map((address) => `approvedAccounts=${encodeURIComponent(address)}`)
             .join('&')}`,
-        );
+        });
       }
     } else {
       rejectPermissionsRequest(request.metadata.id);

@@ -245,8 +245,6 @@ export default class PermissionConnect extends Component {
       targetSubjectMetadata,
     } = this.state;
 
-    console.log('targetSubjectMetadata', targetSubjectMetadata);
-
     return (
       <div className="permissions-connect">
         {this.renderTopBar()}
