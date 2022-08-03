@@ -297,6 +297,8 @@ export const EVENT_NAMES = {
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
   SUPPORT_LINK_CLICKED: 'Support Link Clicked',
   APP_INSTALLED: 'App Installed',
+  NEW_WALLET_CREATED: 'New Wallet Created',
+  NEW_WALLET_IMPORTED: 'New Wallet Imported',
 };
 
 export const EVENT = {

@@ -11,7 +11,10 @@ import {
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { exportAsFile } from '../../../../helpers/utils/util';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import { returnToOnboardingInitiatorTab } from '../../onboarding-initiator-util';
 
 export default class RevealSeedPhrase extends PureComponent {
@@ -78,7 +81,7 @@ export default class RevealSeedPhrase extends PureComponent {
 
     this.context.trackEvent({
       category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'New Wallet Created',
+      event: EVENT_NAMES.NEW_WALLET_CREATED,
       properties: {
         action: 'Onboarding Complete',
         legacy_event: true,
