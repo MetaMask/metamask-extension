@@ -66,10 +66,10 @@ async function confirmTx() {
       await driver.press('#password', driver.Key.ENTER);
       console.log('After password input');
 
-      await driver.clickElement('[data-testid='eth-overview-send']');
+      await driver.clickElement('[data-testid="eth-overview-send"]');
 
       await driver.fill(
-        'input[placeholder='Search, public address (0x), or ENS']',
+        'input[placeholder="Search, public address (0x), or ENS"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
@@ -93,7 +93,7 @@ async function confirmTx() {
       const timestampBeforeAction = new Date();
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-      await driver.clickElement('[data-testid='home__activity-tab']');
+      await driver.clickElement('[data-testid="home__activity-tab"]');
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',
