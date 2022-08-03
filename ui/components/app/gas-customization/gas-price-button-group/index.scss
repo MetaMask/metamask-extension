@@ -70,7 +70,7 @@
   justify-content: stretch;
   min-height: 54px;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     max-width: 260px;
   }
 
@@ -93,7 +93,7 @@
 
     padding-bottom: 2px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H8;
     }
   }
@@ -103,7 +103,7 @@
 
     padding-bottom: 2px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H8;
     }
   }
