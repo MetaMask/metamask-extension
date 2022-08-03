@@ -1571,11 +1571,11 @@ const slice = createSlice({
         slice.caseReducers.validateSendState(state);
       })
       .addCase(SELECTED_ACCOUNT_CHANGED, (state, action) => {
-        // If we are on the edit flow the account we are keyed into will be the
-        // original 'from' account, which may differ from the selected account
-        if (state.stage !== SEND_STAGES.EDIT) {
-          // This event occurs when the user selects a new account from the
-          // account menu, or the currently active account's balance updates.
+        // This event occurs when the user selects a new account from the
+        // account menu, or the currently active account's balance updates.
+        // We only care about new transactions, not edits, here, because we use
+        // the fromAccount and ACCOUNT_CHANGED action for that.
+        if (state.stage !== SEND_STAGES.EDIT && action.payload.account) {
           state.selectedAccount.balance = action.payload.account.balance;
           state.selectedAccount.address = action.payload.account.address;
           const draftTransaction =

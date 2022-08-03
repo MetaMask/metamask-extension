@@ -1139,6 +1139,28 @@ describe('Send Slice', () => {
           action.payload.account.address,
         );
       });
+
+      it('should gracefully handle missing account in payload', () => {
+        const olderState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          selectedAccount: {
+            balance: '0x0',
+            address: '0xAddress',
+          },
+        };
+
+        const action = {
+          type: 'SELECTED_ACCOUNT_CHANGED',
+          payload: {
+            account: undefined,
+          },
+        };
+
+        const result = sendReducer(olderState, action);
+
+        expect(result.selectedAccount.balance).toStrictEqual('0x0');
+        expect(result.selectedAccount.address).toStrictEqual('0xAddress');
+      });
     });
 
     describe('Account Changed', () => {
