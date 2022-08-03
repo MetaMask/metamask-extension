@@ -7,7 +7,7 @@ chrome.scripting.registerContentScripts([
     id: 'csmain',
     matches: ['file://*/*', 'http://*/*', 'https://*/*'],
     js: ['contentscript.js'],
-    world: 'MAIN',
+    // world: 'MAIN',
     runAt: 'document_start',
   },
   {

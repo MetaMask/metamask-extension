@@ -67,6 +67,7 @@ console.table([
   ['this', this],
   ['globalThis', globalThis],
   ['document', window.document],
+  ['chrome.runtime', chrome.runtime]
 ]);
 
 if (window.document) {
