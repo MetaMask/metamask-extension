@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.18.2]
+### Changed
+- Enhance approval screen title logic ([#15406](https://github.com/MetaMask/metamask-extension/pull/15406))
+
+### Fixed
+- Ensure smart contract interactions are properly represented on the confirm screen ([#15446](https://github.com/MetaMask/metamask-extension/pull/15446))
+- Fix update of max amount in send flow after network switch([#15444](https://github.com/MetaMask/metamask-extension/pull/15444))
+- Fix to ensure user can access full screen editing of network forms from the popup ([#15442](https://github.com/MetaMask/metamask-extension/pull/15442))
+- Possibly fix bug which crashes firefox on startup after upgrade to v10.18.1 ([#15425](https://github.com/MetaMask/metamask-extension/pull/15425))
+- Fix blocking of editing transactions that had a contract address recipient but no tx data ([#15424](https://github.com/MetaMask/metamask-extension/pull/15424))
+- Fix error that could leave the app in a stuck state when quickly moving between the send screen and other screens ([#15420](https://github.com/MetaMask/metamask-extension/pull/15420))
+- Fix send screen for Optimism network ([#15419](https://github.com/MetaMask/metamask-extension/pull/15419))
+- Fix error that makes app unusable after clicking activity list items for token approval transactions ([#15398](https://github.com/MetaMask/metamask-extension/pull/15398))
 
 ## [10.18.1]
 ### Changed
