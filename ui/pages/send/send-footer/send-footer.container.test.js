@@ -31,11 +31,6 @@ jest.mock('../../../ducks/send', () => ({
   signTransaction: jest.fn(),
 }));
 
-jest.mock('../../../selectors/custom-gas', () => ({
-  getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => [
-    { gasEstimateType: `mockGasEstimateType:${s}` },
-  ],
-}));
 require('./send-footer.container');
 
 describe('send-footer container', () => {

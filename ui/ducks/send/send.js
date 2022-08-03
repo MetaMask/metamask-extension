@@ -518,7 +518,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
           value:
             send.amountMode === AMOUNT_MODES.MAX
               ? send.selectedAccount.balance
-              : send.amount.value,
+              : draftTransaction.amount.value,
           from: send.selectedAccount.address,
           data: draftTransaction.userInputHexData,
           type: '0x0',
@@ -603,7 +603,7 @@ export const initializeSendState = createAsyncThunk(
     // For instance, in the actions.js file we dispatch this action anytime the
     // chain changes.
     if (!draftTransaction) {
-      thunkApi.rejectWithValue(
+      return thunkApi.rejectWithValue(
         'draftTransaction not found, possibly not on send flow',
       );
     }
@@ -678,6 +678,20 @@ export const initializeSendState = createAsyncThunk(
     // We have to keep the gas slice in sync with the send slice state
     // so that it'll be initialized correctly if the gas modal is opened.
     await thunkApi.dispatch(setCustomGasLimit(gasLimit));
+
+    // There may be a case where the send has been canceled by the user while
+    // the gas estimate is being computed. So we check again to make sure that
+    // a currentTransactionUUID exists and matches the previous tx.
+    const newState = thunkApi.getState();
+    if (
+      newState.send.currentTransactionUUID !== sendState.currentTransactionUUID
+    ) {
+      return thunkApi.rejectWithValue(
+        `draftTransaction changed during initialization.
+        A new initializeSendState action must be dispatched.`,
+      );
+    }
+
     return {
       account,
       chainId: getCurrentChainId(state),
@@ -1396,28 +1410,30 @@ const slice = createSlice({
     validateSendState: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
-      switch (true) {
-        case Boolean(draftTransaction.amount.error):
-        case Boolean(draftTransaction.gas.error):
-        case Boolean(draftTransaction.asset.error):
-        case draftTransaction.asset.type === ASSET_TYPES.TOKEN &&
-          draftTransaction.asset.details === null:
-        case state.stage === SEND_STAGES.ADD_RECIPIENT:
-        case state.stage === SEND_STAGES.INACTIVE:
-        case state.gasEstimateIsLoading:
-        case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
-          new BigNumber(state.gasLimitMinimum),
-        ):
-          draftTransaction.status = SEND_STATUSES.INVALID;
-          break;
-        case draftTransaction.recipient.warning === 'loading':
-        case draftTransaction.recipient.warning ===
-          KNOWN_RECIPIENT_ADDRESS_WARNING &&
-          draftTransaction.recipient.recipientWarningAcknowledged === false:
-          draftTransaction.status = SEND_STATUSES.INVALID;
-          break;
-        default:
-          draftTransaction.status = SEND_STATUSES.VALID;
+      if (draftTransaction) {
+        switch (true) {
+          case Boolean(draftTransaction.amount.error):
+          case Boolean(draftTransaction.gas.error):
+          case Boolean(draftTransaction.asset.error):
+          case draftTransaction.asset.type === ASSET_TYPES.TOKEN &&
+            draftTransaction.asset.details === null:
+          case state.stage === SEND_STAGES.ADD_RECIPIENT:
+          case state.stage === SEND_STAGES.INACTIVE:
+          case state.gasEstimateIsLoading:
+          case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
+            new BigNumber(state.gasLimitMinimum),
+          ):
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case draftTransaction.recipient.warning === 'loading':
+          case draftTransaction.recipient.warning ===
+            KNOWN_RECIPIENT_ADDRESS_WARNING &&
+            draftTransaction.recipient.recipientWarningAcknowledged === false:
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          default:
+            draftTransaction.status = SEND_STATUSES.VALID;
+        }
       }
     },
   },
@@ -1512,26 +1528,28 @@ const slice = createSlice({
         state.selectedAccount.balance = action.payload.account.balance;
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
-        draftTransaction.gas.gasLimit = action.payload.gasLimit;
+        if (draftTransaction) {
+          draftTransaction.gas.gasLimit = action.payload.gasLimit;
+          draftTransaction.gas.gasTotal = action.payload.gasTotal;
+          if (action.payload.chainHasChanged) {
+            // If the state was reinitialized as a result of the user changing
+            // the network from the network dropdown, then the selected asset is
+            // no longer valid and should be set to the native asset for the
+            // network.
+            draftTransaction.asset.type = ASSET_TYPES.NATIVE;
+            draftTransaction.asset.balance =
+              draftTransaction.fromAccount?.balance ??
+              state.selectedAccount.balance;
+            draftTransaction.asset.details = null;
+          }
+        }
         slice.caseReducers.updateGasFeeEstimates(state, {
           payload: {
             gasFeeEstimates: action.payload.gasFeeEstimates,
             gasEstimateType: action.payload.gasEstimateType,
           },
         });
-        draftTransaction.gas.gasTotal = action.payload.gasTotal;
         state.gasEstimatePollToken = action.payload.gasEstimatePollToken;
-        if (action.payload.chainHasChanged) {
-          // If the state was reinitialized as a result of the user changing
-          // the network from the network dropdown, then the selected asset is
-          // no longer valid and should be set to the native asset for the
-          // network.
-          draftTransaction.asset.type = ASSET_TYPES.NATIVE;
-          draftTransaction.asset.balance =
-            draftTransaction.fromAccount?.balance ??
-            state.selectedAccount.balance;
-          draftTransaction.asset.details = null;
-        }
         if (action.payload.gasEstimatePollToken) {
           state.gasEstimateIsLoading = false;
         }
@@ -2641,7 +2659,11 @@ export function isSendStateInitialized(state) {
  * @type {Selector<boolean>}
  */
 export function isSendFormInvalid(state) {
-  return getCurrentDraftTransaction(state).status === SEND_STATUSES.INVALID;
+  const draftTransaction = getCurrentDraftTransaction(state);
+  if (!draftTransaction) {
+    return true;
+  }
+  return draftTransaction.status === SEND_STATUSES.INVALID;
 }
 
 /**

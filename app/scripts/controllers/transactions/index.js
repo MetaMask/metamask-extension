@@ -17,7 +17,6 @@ import {
   addHexPrefix,
   getChainType,
 } from '../../lib/util';
-import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { calcGasTotal } from '../../../../ui/pages/send/send.utils';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
 import {
@@ -1000,10 +999,9 @@ export default class TransactionController extends EventEmitter {
    * Gets default gas limit, or debug information about why gas estimate failed.
    *
    * @param {object} txMeta - The txMeta object
-   * @param {string} getCodeResponse - The transaction category code response, used for debugging purposes
    * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
-  async _getDefaultGasLimit(txMeta, getCodeResponse) {
+  async _getDefaultGasLimit(txMeta) {
     const chainId = this._getCurrentChainId();
     const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
     const chainType = getChainType(chainId);
@@ -1013,21 +1011,9 @@ export default class TransactionController extends EventEmitter {
     } else if (
       txMeta.txParams.to &&
       txMeta.type === TRANSACTION_TYPES.SIMPLE_SEND &&
-      chainType !== 'custom'
+      chainType !== 'custom' &&
+      !txMeta.txParams.data
     ) {
-      // if there's data in the params, but there's no contract code, it's not a valid transaction
-      if (txMeta.txParams.data) {
-        const err = new Error(
-          'TxGasUtil - Trying to call a function on a non-contract address',
-        );
-        // set error key so ui can display localized error message
-        err.errorKey = TRANSACTION_NO_CONTRACT_ERROR_KEY;
-
-        // set the response on the error so that we can see in logs what the actual response was
-        err.getCodeResponse = getCodeResponse;
-        throw err;
-      }
-
       // This is a standard ether simple send, gas requirement is exactly 21k
       return { gasLimit: GAS_LIMITS.SIMPLE };
     }
@@ -1841,6 +1827,7 @@ export default class TransactionController extends EventEmitter {
         return;
       }
       otherTxMeta.replacedBy = txMeta.hash;
+      otherTxMeta.replacedById = txMeta.id;
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
@@ -1995,6 +1982,7 @@ export default class TransactionController extends EventEmitter {
       },
       defaultGasEstimates,
       originalType,
+      replacedById,
       metamaskNetworkId: network,
     } = txMeta;
     const { transactions } = this.store.getState();
@@ -2098,6 +2086,24 @@ export default class TransactionController extends EventEmitter {
       transactionContractMethod = transactions[id]?.contractMethodName;
     }
 
+    const replacedTxMeta = this._getTransaction(replacedById);
+
+    const TRANSACTION_REPLACEMENT_METHODS = {
+      RETRY: TRANSACTION_TYPES.RETRY,
+      CANCEL: TRANSACTION_TYPES.CANCEL,
+      SAME_NONCE: 'other',
+    };
+
+    let transactionReplaced;
+    if (extraParams?.dropped) {
+      transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.SAME_NONCE;
+      if (replacedTxMeta?.type === TRANSACTION_TYPES.CANCEL) {
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.CANCEL;
+      } else if (replacedTxMeta?.type === TRANSACTION_TYPES.RETRY) {
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.RETRY;
+      }
+    }
+
     const properties = {
       chain_id: chainId,
       referrer,
@@ -2122,6 +2128,7 @@ export default class TransactionController extends EventEmitter {
       first_seen: time,
       gas_limit: gasLimit,
       transaction_contract_method: transactionContractMethod,
+      transaction_replaced: transactionReplaced,
       ...extraParams,
       ...gasParamsInGwei,
     };
@@ -2330,6 +2337,8 @@ export default class TransactionController extends EventEmitter {
   _dropTransaction(txId) {
     this.txStateManager.setTxStatusDropped(txId);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED, {
+      dropped: true,
+    });
   }
 }
