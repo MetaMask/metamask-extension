@@ -18,6 +18,7 @@ import {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
+  RECIPIENT_TYPES,
 } from '../../pages/send/send.constants';
 
 import {
@@ -388,6 +389,7 @@ export const draftTransactionInitialState = {
     error: null,
     nickname: '',
     warning: null,
+    type: '',
     recipientWarningAcknowledged: false,
   },
   status: SEND_STATUSES.VALID,
@@ -1169,6 +1171,12 @@ const slice = createSlice({
       draftTransaction.recipient.warning = action.payload;
     },
 
+    updateRecipientType: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.type = action.payload;
+    },
+
     updateDraftTransactionStatus: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
@@ -1875,8 +1883,12 @@ export function updateRecipientUserInput(userInput) {
 
     const inputIsValidHexAddress = isValidHexAddress(userInput);
     let isProbablyAnAssetContract = false;
+    let smartContractAddress;
     if (inputIsValidHexAddress) {
-      const smartContractAddress = await isSmartContractAddress(userInput);
+      smartContractAddress = await isSmartContractAddress(userInput);
+      if (smartContractAddress) {
+        dispatch(actions.updateRecipientType(RECIPIENT_TYPES.SMART_CONTRACT));
+      }
       if (smartContractAddress) {
         const { symbol, decimals } =
           getTokenMetadata(userInput, tokenMap) || {};
@@ -1907,6 +1919,7 @@ export function updateRecipientUserInput(userInput) {
           useTokenDetection,
           tokenAddressList,
           isProbablyAnAssetContract,
+          smartContractAddress,
         },
         resolve,
       );
@@ -2267,7 +2280,10 @@ export function signTransaction() {
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
-      let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+      let transactionType =
+        draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
+          ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+          : TRANSACTION_TYPES.SIMPLE_SEND;
 
       if (draftTransaction.asset.type !== ASSET_TYPES.NATIVE) {
         transactionType =
