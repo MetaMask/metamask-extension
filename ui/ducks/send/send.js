@@ -1883,9 +1883,8 @@ export function updateRecipientUserInput(userInput) {
 
     const inputIsValidHexAddress = isValidHexAddress(userInput);
     let isProbablyAnAssetContract = false;
-    let smartContractAddress;
     if (inputIsValidHexAddress) {
-      smartContractAddress = await isSmartContractAddress(userInput);
+      const smartContractAddress = await isSmartContractAddress(userInput);
       if (smartContractAddress) {
         dispatch(actions.updateRecipientType(RECIPIENT_TYPES.SMART_CONTRACT));
         const { symbol, decimals } =
