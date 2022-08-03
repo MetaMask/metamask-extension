@@ -7,6 +7,18 @@
     3. 4
     4. 5
 
+## Versions we can combine
+1. 1.0.0
+2. 2.0.4
+3. 4.0.0
+4. 4.1.1
+5. 4.11.9
+6. 4.4.0
+7. 5.1.3
+8. 5.2.0
+
+We need at least these 8 versions in the extension, we also need to resolve other versions with minor versions to them. For instance we can combine all 4.11.X to 4.11.9
+
 ## Versions in the extension and what depended on them
 
 1. ^1.0.0
