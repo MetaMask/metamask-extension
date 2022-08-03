@@ -18,6 +18,7 @@ import {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
+  RECIPIENT_TYPES,
 } from '../../pages/send/send.constants';
 
 import {
@@ -82,6 +83,10 @@ import {
   getTokens,
   getUnapprovedTxs,
 } from '../metamask/metamask';
+import {
+  isSmartContractAddress,
+  sumHexes,
+} from '../../helpers/utils/transactions.util';
 
 import { resetEnsResolution } from '../ens';
 import {
@@ -89,7 +94,7 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-import { sumHexes } from '../../helpers/utils/transactions.util';
+
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import { TOKEN_STANDARDS, ETH } from '../../helpers/constants/common';
@@ -383,6 +388,7 @@ export const draftTransactionInitialState = {
     error: null,
     nickname: '',
     warning: null,
+    type: '',
     recipientWarningAcknowledged: false,
   },
   status: SEND_STATUSES.VALID,
@@ -1172,6 +1178,12 @@ const slice = createSlice({
       draftTransaction.recipient.warning = action.payload;
     },
 
+    updateRecipientType: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.type = action.payload;
+    },
+
     updateDraftTransactionStatus: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
@@ -1876,19 +1888,24 @@ export function updateRecipientUserInput(userInput) {
     const inputIsValidHexAddress = isValidHexAddress(userInput);
     let isProbablyAnAssetContract = false;
     if (inputIsValidHexAddress) {
-      const { symbol, decimals } = getTokenMetadata(userInput, tokenMap) || {};
+      const smartContractAddress = await isSmartContractAddress(userInput);
+      if (smartContractAddress) {
+        dispatch(actions.updateRecipientType(RECIPIENT_TYPES.SMART_CONTRACT));
+        const { symbol, decimals } =
+          getTokenMetadata(userInput, tokenMap) || {};
 
-      isProbablyAnAssetContract = symbol && decimals !== undefined;
+        isProbablyAnAssetContract = symbol && decimals !== undefined;
 
-      if (!isProbablyAnAssetContract) {
-        try {
-          const { standard } = await getTokenStandardAndDetails(
-            userInput,
-            sendingAddress,
-          );
-          isProbablyAnAssetContract = Boolean(standard);
-        } catch (e) {
-          console.log(e);
+        if (!isProbablyAnAssetContract) {
+          try {
+            const { standard } = await getTokenStandardAndDetails(
+              userInput,
+              sendingAddress,
+            );
+            isProbablyAnAssetContract = Boolean(standard);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
@@ -2259,7 +2276,10 @@ export function signTransaction() {
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
-      let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+      let transactionType =
+        draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
+          ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+          : TRANSACTION_TYPES.SIMPLE_SEND;
 
       if (draftTransaction.asset.type !== ASSET_TYPES.NATIVE) {
         transactionType =
