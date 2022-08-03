@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "गैस की कीमत को अनुकूलित करने के लिए $1 का उपयोग करें। यदि आप परिचित नहीं हैं तो ये भ्रामक हो सकता है। अपनी ज़िम्मेदारी पर बातचीत करें।",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "$1 जमा करें",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "विवरण"
@@ -1481,7 +1481,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "लोकप्रिय NFT ड्रॉप जैसी चीज़ों की वजह से नेटवर्क ट्रैफिक में वृद्धि को कवर करने के लिए $1 का उपयोग करें।",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "उच्च"
@@ -1787,7 +1787,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "एक सस्ती कीमत की प्रतीक्षा के लिए $1 का उपयोग करें। समय का अनुमान बहुत कम सही होता है क्योंकि कीमतें कुछ हद तक अप्रत्याशित होती हैं।",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "निम्न"
@@ -1831,7 +1831,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "मौजूदा बाजार मूल्य पर तेजी से प्रोसेस करने के लिए $1का उपयोग करें।",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "मेमो"
@@ -2170,7 +2170,7 @@
   },
   "notifications10ActionText": {
     "message": "सेटिंग्स में जाएं",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "बेहतर टोकन डिटेक्शन वर्तमान में Ethereum Mainnet, Polygon, BSC और Avalanche के नेटवर्कों पर उपलब्ध है। और भी आने वाला है!"
@@ -2275,7 +2275,7 @@
   },
   "notifications8ActionText": {
     "message": "एडवांस सेटिंग्स पर जाएं",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "MetaMask v10.4.0 के अनुसार, अब आपको अपने लेजर डिवाइस को मेटामास्क से कनेक्ट करने के लिए लेजर लाइव की आवश्यकता नहीं है।",
@@ -2520,7 +2520,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "वरीयता वाले लेजर कनेक्शन के प्रकार",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
@@ -3710,7 +3710,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 परीक्षण नेटवर्क",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "टोकन"

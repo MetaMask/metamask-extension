@@ -739,7 +739,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "$1 verwenden, um den Gaspreis anzupassen. Das kann verwirrend sein, wenn Sie damit nicht vertraut sind. Interaktion auf eigene Gefahr.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
@@ -825,7 +825,7 @@
   },
   "depositCrypto": {
     "message": "$1 einzahlen",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Beschreibung"
@@ -1470,7 +1470,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Hohe Wahrscheinlichkeit, auch in volatilen Märkten. Verwenden Sie $1, um Schwankungen im Netzwerkverkehr, die z. B. durch den Ausfall beliebter NFTs entstehen, abzudecken.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "hoch"
@@ -1773,7 +1773,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Verwenden Sie $1, um auf einen günstigeren Preis zu warten. Zeitschätzungen sind viel ungenauer, da die Preise nicht vorhersehbar sind.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "niedrig"
@@ -1817,7 +1817,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Verwenden Sie $1 für schnelle Verarbeitung zum aktuellen Marktpreis.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": " Memo"
@@ -2143,7 +2143,7 @@
   },
   "notifications10ActionText": {
     "message": "Einstellungen ansehen",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Die verbesserte Token-Erkennung ist derzeit in den Netzwerken Ethereum Mainnet, Polygon, BSC und Avalanche verfügbar. Es gibt bald mehr!"
@@ -2238,7 +2238,7 @@
   },
   "notifications8ActionText": {
     "message": "Zu den erweiterten Einstellungen gehen",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Ab MetaMask v10.4.0 benötigen Sie kein Ledger Live mehr, um Ihr Ledger Gerät mit MetaMask zu verbinden.",
@@ -2483,7 +2483,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Bevorzugter Ledger-Verbindungstyp",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Swap wird vorbereitet ..."
@@ -3654,7 +3654,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 Test-Netzwerke",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"

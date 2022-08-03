@@ -1533,7 +1533,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Utilice $1 para esperar un precio más bajo. Las estimaciones de tiempo son mucho menos precisas ya que los precios son algo imprevisibles.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "baja"
@@ -1565,7 +1565,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Utilice $1 para un procesamiento rápido al precio actual del mercado.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "nota"
@@ -1911,7 +1911,7 @@
   },
   "notifications8ActionText": {
     "message": "Ir a Configuración Avanzada",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "A partir de MetaMask v10.4.0, ya no necesita Ledger Live para conectar su dispositivo Ledger a MetaMask.",
@@ -2085,7 +2085,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Tipo de conexión de Ledger preferida",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "Ant."
@@ -3007,7 +3007,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 redes de prueba",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"

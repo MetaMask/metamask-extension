@@ -47,7 +47,7 @@ describe('Swap Eth for another Token', function () {
         await driver.clickElement(
           '[class="searchable-item-list__primary-label"]',
         );
-        await driver.clickElement({ text: 'Review Swap', tag: 'button' });
+        await driver.clickElement({ text: 'Review swap', tag: 'button' });
         await driver.waitForSelector('[class*="box--align-items-center"]');
         const estimatedEth = await driver.waitForSelector({
           css: '[class*="box--align-items-center"]',
