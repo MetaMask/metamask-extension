@@ -1450,7 +1450,7 @@ const slice = createSlice({
           if (
             draftTransaction &&
             draftTransaction.fromAccount &&
-            draftTransaction?.fromAccount.address ===
+            draftTransaction.fromAccount.address ===
               action.payload.account.address
           ) {
             draftTransaction.fromAccount.balance =
