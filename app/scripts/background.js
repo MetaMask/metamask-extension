@@ -618,11 +618,11 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const {
-      unapprovedEncryptionPublicKeyMsgCount,
-    } = controller.encryptionPublicKeyManager;
+    const { unapprovedEncryptionPublicKeyMsgCount } =
+      controller.encryptionPublicKeyManager;
     const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
-    const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
+    const pendingApprovalCount =
+      controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
     return (
@@ -760,22 +760,19 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
     reason === 'install' &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
+    setTimeout(() => {
+      // TODO: Find a better way to wait until the controller is set.
+      if (controller) {
+        controller.metaMetricsController.addEventBeforeMetricsOptIn({
+          category: EVENT.CATEGORIES.APP,
+          event: EVENT_NAMES.APP_INSTALLED,
+          properties: {
+            signup_date: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+          },
+        });
+      }
+    }, 5000);
     platform.openExtensionInBrowser();
-    console.log(
-      '-------------------------controller------------------------------',
-    );
-    console.log(controller);
-    // I might need to wait here until the "controller" is set up.
-    if (controller) {
-      controller.appStateController.addEventBeforeMetricsOptIn({
-        category: EVENT.CATEGORIES.APP,
-        event: EVENT_NAMES.APP_INSTALLED,
-        properties: {
-          action: 'App Installed',
-          signup_date: new Date().toLocaleDateString('en-US'), // mm/dd/yyyy
-        },
-      });
-    }
   }
 });
 

@@ -7,17 +7,8 @@ import MetaMetricsOptInModal from './metametrics-opt-in-modal.component';
 const mapStateToProps = (_, ownProps) => {
   const { unapprovedTxCount } = ownProps;
 
-  console.log(
-    '-------------------------mapStateToProps------------------------------',
-  );
-  console.log(
-    '-------------------------_.appState------------------------------',
-  );
-  console.log(_.appState);
-
   return {
     unapprovedTxCount,
-    eventsBeforeMetricsOptIn: _.appState.eventsBeforeMetricsOptIn,
   };
 };
 

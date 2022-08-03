@@ -1079,14 +1079,6 @@ export function getIsCustomNetworkListEnabled(state) {
   return state.metamask.customNetworkListEnabled;
 }
 
-export function getEventsBeforeMetricsOptIn(state) {
-  console.log(
-    '-------------------------getEventsBeforeMetricsOptIn------------------------------',
-  );
-  console.log(state.appState);
-  return state.appState.eventsBeforeMetricsOptIn;
-}
-
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

@@ -102,6 +102,7 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      eventsBeforeMetricsOptIn: [],
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -331,6 +332,10 @@ export default class MetaMetricsController {
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    if (participateInMetaMetrics) {
+      this.trackEventsBeforeMetricsOptIn();
+      this.clearEventsBeforeMetricsOptIn();
+    }
     return metaMetricsId;
   }
 
@@ -470,6 +475,26 @@ export default class MetaMetricsController {
     if (userTraits) {
       this.identify(userTraits);
     }
+  }
+
+  trackEventsBeforeMetricsOptIn() {
+    const { eventsBeforeMetricsOptIn } = this.store.getState();
+    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
+      this.trackEvent(eventBeforeMetricsOptIn);
+    });
+  }
+
+  clearEventsBeforeMetricsOptIn() {
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [],
+    });
+  }
+
+  addEventBeforeMetricsOptIn(event) {
+    const prevState = this.store.getState().eventsBeforeMetricsOptIn;
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [...prevState, event],
+    });
   }
 
   /** PRIVATE METHODS */

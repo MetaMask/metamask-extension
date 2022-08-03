@@ -4,13 +4,11 @@ import PropTypes from 'prop-types';
 import MetaFoxLogo from '../../../ui/metafox-logo';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 import { EVENT } from '../../../../../shared/constants/metametrics';
-import { clearEventsBeforeMetricsOptIn } from '../../../../store/actions';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {
     setParticipateInMetaMetrics: PropTypes.func,
     hideModal: PropTypes.func,
-    eventsBeforeMetricsOptIn: PropTypes.array,
   };
 
   static contextTypes = {
@@ -20,11 +18,7 @@ export default class MetaMetricsOptInModal extends Component {
 
   render() {
     const { trackEvent, t } = this.context;
-    const {
-      setParticipateInMetaMetrics,
-      hideModal,
-      eventsBeforeMetricsOptIn,
-    } = this.props;
+    const { setParticipateInMetaMetrics, hideModal } = this.props;
 
     return (
       <div className="metametrics-opt-in metametrics-opt-in-modal">
@@ -151,14 +145,6 @@ export default class MetaMetricsOptInModal extends Component {
                     },
                   );
                   hideModal();
-                  if (eventsBeforeMetricsOptIn.length > 0) {
-                    eventsBeforeMetricsOptIn.forEach(
-                      (eventBeforeMetricsOptIn) => {
-                        trackEvent(eventBeforeMetricsOptIn);
-                      },
-                    );
-                    clearEventsBeforeMetricsOptIn();
-                  }
                 });
               }}
               submitText={t('affirmAgree')}
