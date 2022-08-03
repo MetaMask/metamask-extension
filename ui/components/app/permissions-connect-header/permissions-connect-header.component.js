@@ -29,7 +29,7 @@ export default class PermissionsConnectHeader extends Component {
     rightIcon: PropTypes.node,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     snapVersion: PropTypes.string,
-    isSnapInstall: PropTypes.bool,
+    isSnapInstallOrUpdate: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -47,12 +47,12 @@ export default class PermissionsConnectHeader extends Component {
       siteOrigin,
       rightIcon,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      isSnapInstall,
+      isSnapInstallOrUpdate,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    if (isSnapInstall) {
+    if (isSnapInstallOrUpdate) {
       return null;
     }
     ///: END:ONLY_INCLUDE_IN
@@ -79,7 +79,7 @@ export default class PermissionsConnectHeader extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       siteOrigin,
       snapVersion,
-      isSnapInstall,
+      isSnapInstallOrUpdate,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     return (
@@ -93,7 +93,7 @@ export default class PermissionsConnectHeader extends Component {
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          isSnapInstall && (
+          isSnapInstallOrUpdate && (
             <SnapsAuthorshipPill snapId={siteOrigin} version={snapVersion} />
           )
           ///: END:ONLY_INCLUDE_IN

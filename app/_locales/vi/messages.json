@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Tài sản được chấp nhận"
   },
-  "areYouDeveloper": {
-    "message": "Bạn có phải là lập trình viên không?"
-  },
   "areYouSure": {
     "message": "Bạn có chắc chắn không?"
   },
@@ -2396,9 +2393,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Mở MetaMask ở chế độ toàn màn hình để kết nối thiết bị Ledger của bạn qua WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Kiểm tra mã nguồn"
   },
   "optional": {
     "message": "Không bắt buộc"

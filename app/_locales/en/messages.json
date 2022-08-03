@@ -332,7 +332,10 @@
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
-    "message": "Approve & Install"
+    "message": "Approve & install"
+  },
+  "approveAndUpdate": {
+    "message": "Approve & update"
   },
   "approveButtonText": {
     "message": "Approve"
@@ -350,8 +353,9 @@
   "approvedAsset": {
     "message": "Approved asset"
   },
-  "areYouDeveloper": {
-    "message": "Are you a developer?"
+  "approvedOn": {
+    "message": "Approved on $1",
+    "description": "$1 is the approval date for a permission"
   },
   "areYouSure": {
     "message": "Are you sure?"
@@ -2454,9 +2458,6 @@
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "Check the source code"
-  },
   "optional": {
     "message": "Optional"
   },
@@ -2528,6 +2529,12 @@
   },
   "permissionRequestCapitalized": {
     "message": "Permission Request"
+  },
+  "permissionRequested": {
+    "message": "Requested now"
+  },
+  "permissionRevoked": {
+    "message": "Revoked in this update"
   },
   "permission_accessNetwork": {
     "message": "Access the Internet.",
@@ -3114,6 +3121,13 @@
   },
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
+  },
+  "snapUpdate": {
+    "message": "Update Snap"
+  },
+  "snapUpdateExplanation": {
+    "message": "$1 needs a newer version of your snap.",
+    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snaps"

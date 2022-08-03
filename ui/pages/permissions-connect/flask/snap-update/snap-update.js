@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,12 +15,12 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
-import { coinTypeToProtocolName } from '../../../../helpers/utils/util';
+import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
 
-export default function SnapInstall({
+export default function SnapUpdate({
   request,
-  approveSnapInstall,
-  rejectSnapInstall,
+  approveSnapUpdate,
+  rejectSnapUpdate,
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
@@ -29,29 +28,29 @@ export default function SnapInstall({
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const onCancel = useCallback(
-    () => rejectSnapInstall(request.metadata.id),
-    [request, rejectSnapInstall],
+    () => rejectSnapUpdate(request.metadata.id),
+    [request, rejectSnapUpdate],
   );
 
   const onSubmit = useCallback(
-    () => approveSnapInstall(request),
-    [request, approveSnapInstall],
+    () => approveSnapUpdate(request),
+    [request, approveSnapUpdate],
   );
 
-  const bip44EntropyPermissions =
-    request.permissions &&
-    Object.keys(request.permissions).filter((v) =>
-      v.startsWith('snap_getBip44Entropy_'),
-    );
-
-  const shouldShowWarning = bip44EntropyPermissions?.length > 0;
-
-  const getCoinType = (bip44EntropyPermission) =>
-    bip44EntropyPermission?.split('_').slice(-1);
+  const shouldShowWarning = useMemo(
+    () =>
+      Boolean(
+        request.permissions &&
+          Object.keys(request.permissions).find((v) =>
+            v.startsWith('snap_getBip44Entropy_'),
+          ),
+      ),
+    [request.permissions],
+  );
 
   return (
     <Box
-      className="page-container snap-install"
+      className="page-container snap-update"
       justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
       height={BLOCK_SIZES.FULL}
       borderStyle={BORDER_STYLE.NONE}
@@ -65,11 +64,11 @@ export default function SnapInstall({
         <PermissionConnectHeader
           icon={targetSubjectMetadata.iconUrl}
           iconName={targetSubjectMetadata.name}
-          headerTitle={t('snapInstall')}
+          headerTitle={t('snapUpdate')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
-          siteOrigin={targetSubjectMetadata.origin}
+          siteOrigin={request.snapId}
           isSnapInstallOrUpdate
-          snapVersion={targetSubjectMetadata.version}
+          snapVersion={request.newVersion}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
         <Typography
@@ -79,10 +78,21 @@ export default function SnapInstall({
           variant={TYPOGRAPHY.H7}
           tag="span"
         >
+          {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
+        </Typography>
+        <Typography
+          boxProps={{
+            padding: [2, 4, 0, 4],
+          }}
+          variant={TYPOGRAPHY.H7}
+          tag="span"
+        >
           {t('snapRequestsPermission')}
         </Typography>
-        <PermissionsConnectPermissionList
-          permissions={request.permissions || {}}
+        <UpdateSnapPermissionList
+          approvedPermissions={request.approvedPermissions || {}}
+          revokedPermissions={request.unusedPermissions || {}}
+          newPermissions={request.newPermissions || {}}
         />
       </Box>
       <Box
@@ -90,7 +100,7 @@ export default function SnapInstall({
         alignItems={ALIGN_ITEMS.CENTER}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Box className="snap-install__footer--no-source-code" paddingTop={4}>
+        <Box className="snap-update__footer--no-source-code" paddingTop={4}>
           <PermissionsConnectFooter />
         </Box>
         <PageContainerFooter
@@ -100,34 +110,24 @@ export default function SnapInstall({
           onSubmit={
             shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
           }
-          submitText={t('approveAndInstall')}
+          submitText={t('approveAndUpdate')}
         />
       </Box>
       {isShowingWarning && (
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          warnings={bip44EntropyPermissions.map((permission, i) => {
-            const coinType = getCoinType(permission);
-            return {
-              id: `key-access-${i}`,
-              message: t('snapInstallWarningKeyAccess', [
-                targetSubjectMetadata.name,
-                coinTypeToProtocolName(coinType) ||
-                  t('unrecognizedProtocol', [coinType]),
-              ]),
-            };
-          })}
+          snapName={targetSubjectMetadata.name}
         />
       )}
     </Box>
   );
 }
 
-SnapInstall.propTypes = {
+SnapUpdate.propTypes = {
   request: PropTypes.object.isRequired,
-  approveSnapInstall: PropTypes.func.isRequired,
-  rejectSnapInstall: PropTypes.func.isRequired,
+  approveSnapUpdate: PropTypes.func.isRequired,
+  rejectSnapUpdate: PropTypes.func.isRequired,
   targetSubjectMetadata: PropTypes.shape({
     iconUrl: PropTypes.string,
     name: PropTypes.string,
