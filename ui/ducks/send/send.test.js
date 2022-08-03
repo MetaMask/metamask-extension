@@ -1154,9 +1154,14 @@ describe('Send Slice', () => {
     });
 
     describe('Account Changed', () => {
-      it('should', () => {
+      it('should correctly update the fromAccount in an edit', () => {
         const accountsChangedState = {
-          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          ...getInitialSendStateWithExistingTxState({
+            fromAccount: {
+              address: '0xAddress',
+              balance: '0x0',
+            },
+          }),
           stage: SEND_STAGES.EDIT,
           selectedAccount: {
             address: '0xAddress',
@@ -1176,9 +1181,40 @@ describe('Send Slice', () => {
 
         const result = sendReducer(accountsChangedState, action);
 
-        expect(result.selectedAccount.balance).toStrictEqual(
+        const draft = getTestUUIDTx(result);
+
+        expect(draft.fromAccount.balance).toStrictEqual(
           action.payload.account.balance,
         );
+      });
+
+      it('should gracefully handle missing account param in payload', () => {
+        const accountsChangedState = {
+          ...getInitialSendStateWithExistingTxState({
+            fromAccount: {
+              address: '0xAddress',
+              balance: '0x0',
+            },
+          }),
+          stage: SEND_STAGES.EDIT,
+          selectedAccount: {
+            address: '0xAddress',
+            balance: '0x0',
+          },
+        };
+
+        const action = {
+          type: 'ACCOUNT_CHANGED',
+          payload: {
+            account: undefined,
+          },
+        };
+
+        const result = sendReducer(accountsChangedState, action);
+
+        const draft = getTestUUIDTx(result);
+
+        expect(draft.fromAccount.balance).toStrictEqual('0x0');
       });
 
       it(`should not edit account balance if action payload address is not the same as state's address`, () => {
