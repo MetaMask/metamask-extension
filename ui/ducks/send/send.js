@@ -1440,28 +1440,30 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(ACCOUNT_CHANGED, (state, action) => {
-        // If we are on the edit flow then we need to watch for changes to the
-        // current account.address in state and keep balance updated
-        // appropriately
-        if (
-          state.stage === SEND_STAGES.EDIT &&
-          action.payload.account.address === state.selectedAccount.address
-        ) {
-          // This event occurs when the user's account details update due to
-          // background state changes. If the account that is being updated is
-          // the current from account on the edit flow we need to update
-          // the balance for the account and revalidate the send state.
-          state.selectedAccount.balance = action.payload.account.balance;
-          // We need to update the asset balance if the asset is the native
-          // network asset. Once we update the balance we recompute error state.
+        // This event occurs when the user's account details update due to
+        // background state changes. If the account that is being updated is
+        // the current from account on the edit flow we need to update
+        // the balance for the account and revalidate the send state.
+        if (state.stage === SEND_STAGES.EDIT && action.payload.account) {
           const draftTransaction =
             state.draftTransactions[state.currentTransactionUUID];
-          if (draftTransaction?.asset.type === ASSET_TYPES.NATIVE) {
-            draftTransaction.asset.balance = action.payload.account.balance;
+          if (
+            draftTransaction &&
+            draftTransaction.fromAccount &&
+            draftTransaction?.fromAccount.address ===
+              action.payload.account.address
+          ) {
+            draftTransaction.fromAccount.balance =
+              action.payload.account.balance;
+            // We need to update the asset balance if the asset is the native
+            // network asset. Once we update the balance we recompute error state.
+            if (draftTransaction.asset.type === ASSET_TYPES.NATIVE) {
+              draftTransaction.asset.balance = action.payload.account.balance;
+            }
+            slice.caseReducers.validateAmountField(state);
+            slice.caseReducers.validateGasField(state);
+            slice.caseReducers.validateSendState(state);
           }
-          slice.caseReducers.validateAmountField(state);
-          slice.caseReducers.validateGasField(state);
-          slice.caseReducers.validateSendState(state);
         }
       })
       .addCase(ADDRESS_BOOK_UPDATED, (state, action) => {
