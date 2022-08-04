@@ -1048,7 +1048,10 @@ export default class ConfirmTransactionBase extends Component {
     } = this.getNavigateTxData();
 
     let functionType;
-    if (txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+    if (
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION &&
+      txData.origin !== 'metamask'
+    ) {
       functionType = getMethodName(name);
     }
 
