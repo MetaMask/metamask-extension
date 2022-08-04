@@ -319,6 +319,8 @@ export default class MetaMetricsController {
     this._identify(allValidTraits);
   }
 
+  // It sets an uninstall URL ("Sorry to see you go!" page),
+  // which is opened if a user uninstalls the extension.
   updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
     // TODO: Change it to the right URL once it's available.
     const extensionUninstallUrl =
@@ -352,8 +354,8 @@ export default class MetaMetricsController {
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
-      this.trackEventsBeforeMetricsOptIn();
-      this.clearEventsBeforeMetricsOptIn();
+      this.trackEventsAfterMetricsOptIn();
+      this.clearEventsAfterMetricsOptIn();
     }
     // TODO: Uncomment the line below once we have a "Sorry to see you go" page ready.
     // this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
@@ -498,19 +500,22 @@ export default class MetaMetricsController {
     }
   }
 
-  trackEventsBeforeMetricsOptIn() {
+  // Track all queued events after a user opted into metrics.
+  trackEventsAfterMetricsOptIn() {
     const { eventsBeforeMetricsOptIn } = this.store.getState();
     eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
       this.trackEvent(eventBeforeMetricsOptIn);
     });
   }
 
-  clearEventsBeforeMetricsOptIn() {
+  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
+  clearEventsAfterMetricsOptIn() {
     this.store.updateState({
       eventsBeforeMetricsOptIn: [],
     });
   }
 
+  // It adds an event into a queue, which is only tracked if a user opts into metrics.
   addEventBeforeMetricsOptIn(event) {
     const prevState = this.store.getState().eventsBeforeMetricsOptIn;
     this.store.updateState({

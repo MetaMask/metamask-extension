@@ -754,6 +754,7 @@ async function openPopup() {
   });
 }
 
+// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
 const addAppInstalledEvent = () => {
   if (controller) {
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
