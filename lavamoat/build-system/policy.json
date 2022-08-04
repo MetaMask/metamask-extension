@@ -2415,7 +2415,7 @@
       "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
         "eslint-plugin-import>tsconfig-paths>strip-bom": true,
-        "rc>minimist": true
+        "patch-package>minimist": true
       }
     },
     "eslint-plugin-import>tsconfig-paths>json5": {
@@ -3613,7 +3613,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss>@choojs/findup": true,
         "gulp-rtlcss>rtlcss>postcss": true,
-        "rc>strip-json-comments": true
+        "mocha>strip-json-comments": true
       }
     },
     "gulp-rtlcss>rtlcss>@choojs/findup": {
@@ -5329,6 +5329,11 @@
         "pump>once": true
       }
     },
+    "ini": {
+      "globals": {
+        "process": true
+      }
+    },
     "jsdom>escodegen": {
       "globals": {
         "sourceMap.SourceNode": true
@@ -5875,36 +5880,6 @@
     "randomcolor": {
       "globals": {
         "define": true
-      }
-    },
-    "rc": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.argv.slice": true,
-        "process.cwd": true,
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "rc>deep-extend": true,
-        "rc>ini": true,
-        "rc>minimist": true,
-        "rc>strip-json-comments": true
-      }
-    },
-    "rc>deep-extend": {
-      "globals": {
-        "Buffer": true
-      }
-    },
-    "rc>ini": {
-      "globals": {
-        "process": true
       }
     },
     "readable-stream": {
@@ -6589,7 +6564,12 @@
       },
       "packages": {
         "mocha>which": true,
-        "rc>ini": true
+        "stylelint>global-modules>global-prefix>ini": true
+      }
+    },
+    "stylelint>global-modules>global-prefix>ini": {
+      "globals": {
+        "process": true
       }
     },
     "stylelint>globjoin": {
