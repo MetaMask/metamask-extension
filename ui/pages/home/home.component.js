@@ -151,6 +151,7 @@ export default class Home extends PureComponent {
     setRpcTarget: PropTypes.func,
     requestAccountsPermissionWithId: PropTypes.func,
     permissionsSubjects: PropTypes.object,
+    addPostApprovalRedirectURL: PropTypes.func,
   };
 
   state = {
@@ -604,6 +605,7 @@ export default class Home extends PureComponent {
       completedOnboarding,
       requestAccountsPermissionWithId,
       permissionsSubjects,
+      addPostApprovalRedirectURL,
     } = this.props;
 
     if (forgottenPassword) {
@@ -656,11 +658,8 @@ export default class Home extends PureComponent {
                       const id = await requestAccountsPermissionWithId(
                         METALABS_URL,
                       );
-                      history.push(
-                        `${CONNECT_ROUTE}/${id}?redirect=${encodeURIComponent(
-                          METALABS_URL,
-                        )}`,
-                      );
+                      addPostApprovalRedirectURL(METALABS_URL);
+                      history.push(`${CONNECT_ROUTE}/${id}`);
                     }
                   }}
                 >

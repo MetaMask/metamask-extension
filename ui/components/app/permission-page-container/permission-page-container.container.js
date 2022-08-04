@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 import { getMetaMaskIdentities } from '../../../selectors';
+import { clearPostApprovalRedirectURL } from '../../../ducks/app/app';
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,10 +13,19 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     allIdentitiesSelected,
+    postApprovalRedirectURL: state.appState.postApprovalRedirectURL,
   };
 };
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps),
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearPostApprovalRedirectURL: () => {
+      return dispatch(clearPostApprovalRedirectURL());
+    },
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
 )(PermissionPageContainer);

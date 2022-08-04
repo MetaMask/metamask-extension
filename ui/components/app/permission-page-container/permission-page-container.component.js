@@ -12,7 +12,6 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
-    history: PropTypes.object.isRequired,
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
@@ -22,6 +21,8 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
+    postApprovalRedirectURL: PropTypes.string,
+    clearPostApprovalRedirectURL: PropTypes.func,
   };
 
   static defaultProps = {
@@ -80,7 +81,19 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest(request.metadata.id);
   };
 
-  onSubmit = () => {
+  postApprovalRedirect = (request) => {
+    const { postApprovalRedirectURL, clearPostApprovalRedirectURL } =
+      this.props;
+
+    if (postApprovalRedirectURL && request?.metadata?.origin === postApprovalRedirectURL) {
+      clearPostApprovalRedirectURL();
+      global.platform.openTab({
+        url: `${postApprovalRedirectURL}?metamaskEntry=ext`,
+      });
+    }
+  };
+
+  onSubmit = async () => {
     const {
       request: _request,
       approvePermissionsRequest,
@@ -103,16 +116,8 @@ export default class PermissionPageContainer extends Component {
     });
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request);
-      const searchParams = new URLSearchParams(
-        this.props.history.location.search,
-      );
-      const redirect = searchParams.get('redirect');
-      if (redirect) {
-        global.platform.openTab({
-          url: `${redirect}?metamaskEntry=ext`,
-        });
-      }
+      await approvePermissionsRequest(request);
+      this.postApprovalRedirect(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
     }

@@ -61,6 +61,7 @@ export default function reduceApp(state = {}, action) {
     sendInputCurrencySwitched: false,
     newTokensImported: '',
     newCustomNetworkAdded: {},
+    postApprovalRedirectURL: '',
     ...state,
   };
 
@@ -399,6 +400,16 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         newCustomNetworkAdded: action.value,
       };
+    case actionConstants.ADD_POST_APPROVAL_REDIRECT_URL:
+      return {
+        ...appState,
+        postApprovalRedirectURL: action.value,
+      };
+    case actionConstants.CLEAR_POST_APPROVAL_REDIRECT_URL:
+      return {
+        ...appState,
+        postApprovalRedirectURL: '',
+      };
     default:
       return appState;
   }
@@ -428,6 +439,14 @@ export function setLedgerWebHidConnectedStatus(value) {
 
 export function setLedgerTransportStatus(value) {
   return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, value };
+}
+
+export function addPostApprovalRedirectURL(url) {
+  return { type: actionConstants.ADD_POST_APPROVAL_REDIRECT_URL, value: url };
+}
+
+export function clearPostApprovalRedirectURL() {
+  return { type: actionConstants.CLEAR_POST_APPROVAL_REDIRECT_URL };
 }
 
 // Selectors
