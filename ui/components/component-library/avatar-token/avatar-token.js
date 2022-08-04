@@ -1,43 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { BaseAvatar } from '../base-avatar';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import {
+  COLORS,
+  SIZES,
+  DISPLAY,
+  ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
 
 export const AvatarToken = ({
-  children,
   size = SIZES.MD,
   backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
   borderColor = COLORS.BORDER_DEFAULT,
+  tokenName,
+  tokenImageUrl,
   ...props
-}) => (
-  <BaseAvatar
-    size={size}
-    className={classnames('avatar-token')}
-    {...{ backgroundColor, borderColor, ...props }}
-  >
-    {children}
-  </BaseAvatar>
-);
+}) => {
+  const [showFallback, setShowFallback] = useState(!tokenImageUrl);
+
+  const style = size ? { height: `100%`, width: `100%` } : {};
+
+  const handleOnError = () => {
+    setShowFallback(true);
+  };
+
+  return (
+    <BaseAvatar
+      size={size}
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.CENTER}
+      justifyContent={JUSTIFY_CONTENT.CENTER}
+      {...{ backgroundColor, borderColor, ...props }}
+    >
+      {showFallback ? (
+        tokenName?.[0].toUpperCase() ?? '?'
+      ) : (
+        <img
+          onError={handleOnError}
+          src={tokenImageUrl}
+          style={style}
+          alt={tokenName || 'icon'}
+          {...props}
+        />
+      )}
+    </BaseAvatar>
+  );
+};
 
 AvatarToken.propTypes = {
   /**
-   * The size of the BaseAvatar.
-   * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl',
+   * The tokenName accepts the string to render the first alphabet of the Avatar Name
    */
-  size: PropTypes.oneOf(Object.values(SIZES)),
+  tokenName: PropTypes.string,
   /**
-   * The children to be rendered inside the AvatarToken
+   * The tokenImageUrl accepts the string of the image to be rendered
    */
-  children: PropTypes.node,
-  /**
-   * The background color of the AvatarToken
-   */
-  backgroundColor: BaseAvatar.propTypes.backgroundColor,
-  /**
-   * The background color of the AvatarToken
-   */
-  borderColor: BaseAvatar.propTypes.borderColor,
+  tokenImageUrl: PropTypes.string,
   /**
    * AvatarToken accepts all the props from BaseAvatar
    */
