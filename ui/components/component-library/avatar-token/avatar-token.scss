@@ -1,0 +1,8 @@
+.avatar-initial {
+  font-size: var(--typography-s-body-sm-bold-font-size);
+  font-weight: var(--typography-s-body-sm-bold-font-weight);
+
+  @include screen-sm-min {
+    font-size: var(--typography-l-body-sm-bold-font-size);
+  }
+}
