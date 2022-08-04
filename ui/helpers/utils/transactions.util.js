@@ -144,8 +144,11 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const { isContractCode } = await readAddressAsContract(global.eth, address);
-  return isContractCode;
+  const { isContractAddress } = await readAddressAsContract(
+    global.eth,
+    address,
+  );
+  return isContractAddress;
 }
 
 export function sumHexes(...args) {
