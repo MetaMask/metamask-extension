@@ -58,7 +58,7 @@ const LEGACY_WEB3_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
 const INFURA_BLOCKAGE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360059386712';
-const METALABS_URL = process.env.METALABS_URL || 'https://labs.metamask.io';
+const METALABS_URL = process.env.METALABS_URL;
 
 function shouldCloseNotificationPopup({
   isNotification,
