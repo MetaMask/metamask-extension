@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
-  NETWORKS_FORM_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../store/actions';
 import Button from '../../../components/ui/button';
@@ -37,15 +36,12 @@ const defaultNetworks = defaultNetworksData.map((network) => ({
 const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
   const history = useHistory();
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
-    isFullScreen ||
-    Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
-    window.location.hash.split('#')[2] === 'blockExplorerUrl';
+    isFullScreen || window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);

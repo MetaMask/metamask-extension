@@ -11,7 +11,6 @@ import {
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
   GENERAL_ROUTE,
-  NETWORKS_FORM_ROUTE,
   NETWORKS_ROUTE,
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
@@ -44,7 +43,6 @@ const ROUTES_TO_I18N_KEYS = {
   [SNAPS_VIEW_ROUTE]: 'snaps',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
   [NETWORKS_ROUTE]: 'networks',
-  [NETWORKS_FORM_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 

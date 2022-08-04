@@ -10,7 +10,6 @@ const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
 const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
-const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
 const ADD_POPULAR_CUSTOM_NETWORK =
   '/settings/networks/add-popular-custom-network';
@@ -115,7 +114,6 @@ const PATH_NAME_MAP = {
   [ABOUT_US_ROUTE]: 'About Us Page',
   [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
-  [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
   [ADD_POPULAR_CUSTOM_NETWORK]:
     'Add Network From A List Of Popular Custom Networks',
@@ -242,7 +240,6 @@ export {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
   NETWORKS_ROUTE,
-  NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
