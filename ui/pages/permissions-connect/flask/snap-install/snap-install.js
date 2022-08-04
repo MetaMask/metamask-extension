@@ -68,7 +68,7 @@ export default function SnapInstall({
           headerTitle={t('snapInstall')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={targetSubjectMetadata.origin}
-          isSnapInstall
+          isSnapInstallOrUpdate
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
@@ -90,31 +90,9 @@ export default function SnapInstall({
         alignItems={ALIGN_ITEMS.CENTER}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        {targetSubjectMetadata.sourceCode ? (
-          <>
-            <div className="source-code">
-              <div className="text">{t('areYouDeveloper')}</div>
-              <div
-                className="link"
-                onClick={() =>
-                  global.platform.openTab({
-                    url: targetSubjectMetadata.sourceCode,
-                  })
-                }
-              >
-                {t('openSourceCode')}
-              </div>
-            </div>
-            <Box paddingBottom={4}>
-              <PermissionsConnectFooter />
-            </Box>
-          </>
-        ) : (
-          <Box className="snap-install__footer--no-source-code" paddingTop={4}>
-            <PermissionsConnectFooter />
-          </Box>
-        )}
-
+        <Box className="snap-install__footer--no-source-code" paddingTop={4}>
+          <PermissionsConnectFooter />
+        </Box>
         <PageContainerFooter
           cancelButtonType="default"
           onCancel={onCancel}

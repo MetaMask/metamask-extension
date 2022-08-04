@@ -18,6 +18,7 @@ import {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
+  RECIPIENT_TYPES,
 } from '../../pages/send/send.constants';
 
 import {
@@ -388,6 +389,7 @@ export const draftTransactionInitialState = {
     error: null,
     nickname: '',
     warning: null,
+    type: '',
     recipientWarningAcknowledged: false,
   },
   status: SEND_STATUSES.VALID,
@@ -1169,6 +1171,12 @@ const slice = createSlice({
       draftTransaction.recipient.warning = action.payload;
     },
 
+    updateRecipientType: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.type = action.payload;
+    },
+
     updateDraftTransactionStatus: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
@@ -1440,28 +1448,30 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(ACCOUNT_CHANGED, (state, action) => {
-        // If we are on the edit flow then we need to watch for changes to the
-        // current account.address in state and keep balance updated
-        // appropriately
-        if (
-          state.stage === SEND_STAGES.EDIT &&
-          action.payload.account.address === state.selectedAccount.address
-        ) {
-          // This event occurs when the user's account details update due to
-          // background state changes. If the account that is being updated is
-          // the current from account on the edit flow we need to update
-          // the balance for the account and revalidate the send state.
-          state.selectedAccount.balance = action.payload.account.balance;
-          // We need to update the asset balance if the asset is the native
-          // network asset. Once we update the balance we recompute error state.
+        // This event occurs when the user's account details update due to
+        // background state changes. If the account that is being updated is
+        // the current from account on the edit flow we need to update
+        // the balance for the account and revalidate the send state.
+        if (state.stage === SEND_STAGES.EDIT && action.payload.account) {
           const draftTransaction =
             state.draftTransactions[state.currentTransactionUUID];
-          if (draftTransaction?.asset.type === ASSET_TYPES.NATIVE) {
-            draftTransaction.asset.balance = action.payload.account.balance;
+          if (
+            draftTransaction &&
+            draftTransaction.fromAccount &&
+            draftTransaction.fromAccount.address ===
+              action.payload.account.address
+          ) {
+            draftTransaction.fromAccount.balance =
+              action.payload.account.balance;
+            // We need to update the asset balance if the asset is the native
+            // network asset. Once we update the balance we recompute error state.
+            if (draftTransaction.asset.type === ASSET_TYPES.NATIVE) {
+              draftTransaction.asset.balance = action.payload.account.balance;
+            }
+            slice.caseReducers.validateAmountField(state);
+            slice.caseReducers.validateGasField(state);
+            slice.caseReducers.validateSendState(state);
           }
-          slice.caseReducers.validateAmountField(state);
-          slice.caseReducers.validateGasField(state);
-          slice.caseReducers.validateSendState(state);
         }
       })
       .addCase(ADDRESS_BOOK_UPDATED, (state, action) => {
@@ -1563,16 +1573,19 @@ const slice = createSlice({
             },
           });
         }
+        if (state.amountMode === AMOUNT_MODES.MAX) {
+          slice.caseReducers.updateAmountToMax(state);
+        }
         slice.caseReducers.validateAmountField(state);
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
       .addCase(SELECTED_ACCOUNT_CHANGED, (state, action) => {
-        // If we are on the edit flow the account we are keyed into will be the
-        // original 'from' account, which may differ from the selected account
-        if (state.stage !== SEND_STAGES.EDIT) {
-          // This event occurs when the user selects a new account from the
-          // account menu, or the currently active account's balance updates.
+        // This event occurs when the user selects a new account from the
+        // account menu, or the currently active account's balance updates.
+        // We only care about new transactions, not edits, here, because we use
+        // the fromAccount and ACCOUNT_CHANGED action for that.
+        if (state.stage !== SEND_STAGES.EDIT && action.payload.account) {
           state.selectedAccount.balance = action.payload.account.balance;
           state.selectedAccount.address = action.payload.account.address;
           const draftTransaction =
@@ -1878,6 +1891,7 @@ export function updateRecipientUserInput(userInput) {
     if (inputIsValidHexAddress) {
       const smartContractAddress = await isSmartContractAddress(userInput);
       if (smartContractAddress) {
+        dispatch(actions.updateRecipientType(RECIPIENT_TYPES.SMART_CONTRACT));
         const { symbol, decimals } =
           getTokenMetadata(userInput, tokenMap) || {};
 
@@ -2267,7 +2281,10 @@ export function signTransaction() {
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
     } else {
-      let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+      let transactionType =
+        draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
+          ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+          : TRANSACTION_TYPES.SIMPLE_SEND;
 
       if (draftTransaction.asset.type !== ASSET_TYPES.NATIVE) {
         transactionType =

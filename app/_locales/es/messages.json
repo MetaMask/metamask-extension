@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Activo aprobado"
   },
-  "areYouDeveloper": {
-    "message": "¿Usted es desarrollador?"
-  },
   "areYouSure": {
     "message": "¿Está seguro?"
   },
@@ -2396,9 +2393,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Abra MetaMask en pantalla completa para conectar su Ledger a través de WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Compruebe el código fuente"
   },
   "optional": {
     "message": "Opcional"
