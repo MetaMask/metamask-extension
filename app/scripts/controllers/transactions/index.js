@@ -2130,6 +2130,19 @@ export default class TransactionController extends EventEmitter {
       TRANSACTION_TYPES.SWAP,
       TRANSACTION_TYPES.SWAP_APPROVAL,
     ].includes(type);
+
+    const contractMethodNames = {
+      CONTRACT_INTERACTION: 'Mint Collectibles',
+      APPROVE: 'Approve',
+      SAFE_TRANSFER_FROM: 'Safe Transfer From',
+      SET_APPROVAL_FOR_ALL: 'Set Approval For All',
+      TRANSFER: 'Transfer',
+      TRANSFER_FROM: 'Transfer From',
+      SMART: 'Smart',
+      SWAP: 'Swap',
+      SWAP_APPROVAL: 'Swap Approval',
+    };
+
     const customTokenAmount = transactions[id]?.customTokenAmount;
     const dappProposedTokenAmount = transactions[id]?.dappProposedTokenAmount;
     const currentTokenBalance = transactions[id]?.currentTokenBalance;
@@ -2150,7 +2163,7 @@ export default class TransactionController extends EventEmitter {
       transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
       transactionContractMethod = transactions[id]?.contractMethodName;
       if (
-        transactionContractMethod === 'Approve' &&
+        transactionContractMethod === contractMethodNames.APPROVE &&
         tokenStandard === TOKEN_STANDARDS.ERC20
       ) {
         if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
@@ -2212,7 +2225,7 @@ export default class TransactionController extends EventEmitter {
       transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
     };
 
-    if (transactionContractMethod === 'Approve') {
+    if (transactionContractMethod === contractMethodNames.APPROVE) {
       properties = {
         ...properties,
         transaction_approval_amount_type: transactionApprovalAmountType,
@@ -2232,7 +2245,7 @@ export default class TransactionController extends EventEmitter {
       ...gasParamsInGwei,
     };
 
-    if (transactionContractMethod === 'Approve') {
+    if (transactionContractMethod === contractMethodNames.APPROVE) {
       sensitiveProperties = {
         ...sensitiveProperties,
         transaction_approval_amount_vs_balance_ratio:

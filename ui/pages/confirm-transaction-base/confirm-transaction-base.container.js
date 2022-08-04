@@ -93,14 +93,7 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const {
-    txParams = {},
-    id: transactionId,
-    type,
-    customTokenAmount,
-    currentTokenBalance,
-    dappProposedTokenAmount,
-  } = txData;
+  const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -225,9 +218,6 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
     unapprovedTxs,
     unapprovedTxCount,
-    customTokenAmount,
-    dappProposedTokenAmount,
-    currentTokenBalance,
     currentNetworkUnapprovedTxs,
     customGas: {
       gasLimit,
