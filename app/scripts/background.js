@@ -767,7 +767,7 @@ const addAppInstalledEvent = () => {
     return;
   }
   setTimeout(() => {
-    // If the controller is not set yet, we wait and try to log the "App Installed" event again.
+    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
     addAppInstalledEvent();
   }, 1000);
 };
