@@ -2180,8 +2180,8 @@ export function useMyAccountsForRecipientSearch() {
 export function resetRecipientInput() {
   return async (dispatch) => {
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
-    await dispatch(updateRecipientUserInput(''));
-    await dispatch(updateRecipient({ address: '', nickname: '' }));
+    await dispatch(actions.updateRecipientUserInput(''));
+    await dispatch(actions.updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetEnsResolution());
     await dispatch(validateRecipientUserInput());
   };
