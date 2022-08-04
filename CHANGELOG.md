@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix blocking of editing transactions that had a contract address recipient but no tx data ([#15424](https://github.com/MetaMask/metamask-extension/pull/15424))
 - Fix error that could leave the app in a stuck state when quickly moving between the send screen and other screens ([#15420](https://github.com/MetaMask/metamask-extension/pull/15420))
 - Fix send screen for Optimism network ([#15419](https://github.com/MetaMask/metamask-extension/pull/15419))
+- Fix to ensure the correct balance is used when validating send amounts ([#15449](https://github.com/MetaMask/metamask-extension/pull/15449))
 - Fix error that makes app unusable after clicking activity list items for token approval transactions ([#15398](https://github.com/MetaMask/metamask-extension/pull/15398))
 
 ## [10.18.1]
