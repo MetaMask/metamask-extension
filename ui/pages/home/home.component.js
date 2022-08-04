@@ -666,7 +666,7 @@ export default class Home extends PureComponent {
                 >
                   <IconChart />
                   <div className="home__subheader-link--text">
-                    {t('portfolioView')}
+                    {t('goToPortfolio')}
                   </div>
                 </div>
               }

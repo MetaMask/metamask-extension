@@ -1519,6 +1519,9 @@
   "gotIt": {
     "message": "Got it!"
   },
+  "goToPortfolio": {
+    "message": "go to portfolio"
+  },
   "grantedToWithColon": {
     "message": "Granted to:"
   },
@@ -2646,9 +2649,6 @@
   },
   "popularCustomNetworks": {
     "message": "Popular custom networks"
-  },
-  "portfolioView": {
-    "message": "portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
