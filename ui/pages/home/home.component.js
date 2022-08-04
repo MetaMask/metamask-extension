@@ -60,7 +60,6 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
-const { METALABS_URL } = process.env;
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -652,13 +651,15 @@ export default class Home extends PureComponent {
                 <div
                   className="home__subheader-link"
                   onClick={async () => {
-                    if (permissionsSubjects[METALABS_URL]) {
-                      global.platform.openTab({ url: METALABS_URL });
+                    if (permissionsSubjects[process.env.METALABS_URL]) {
+                      global.platform.openTab({
+                        url: process.env.METALABS_URL,
+                      });
                     } else {
                       const id = await requestAccountsPermissionWithId(
-                        METALABS_URL,
+                        process.env.METALABS_URL,
                       );
-                      addPostApprovalRedirectURL(METALABS_URL);
+                      addPostApprovalRedirectURL(process.env.METALABS_URL);
                       history.push(`${CONNECT_ROUTE}/${id}`);
                     }
                   }}

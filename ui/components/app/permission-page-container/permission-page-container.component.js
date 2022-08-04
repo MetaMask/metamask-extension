@@ -85,7 +85,10 @@ export default class PermissionPageContainer extends Component {
     const { postApprovalRedirectURL, clearPostApprovalRedirectURL } =
       this.props;
 
-    if (postApprovalRedirectURL && request?.metadata?.origin === postApprovalRedirectURL) {
+    if (
+      postApprovalRedirectURL &&
+      request?.metadata?.origin === postApprovalRedirectURL
+    ) {
       clearPostApprovalRedirectURL();
       global.platform.openTab({
         url: `${postApprovalRedirectURL}?metamaskEntry=ext`,
