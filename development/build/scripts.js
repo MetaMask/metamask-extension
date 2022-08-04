@@ -44,6 +44,7 @@ const metamaskrc = require('rc')('metamask', {
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
+  SIWE_V1: process.env.SIWE_V1,
 });
 
 const { streamFlatMap } = require('../stream-flat-map');
@@ -438,30 +439,6 @@ function createScriptTasks({
   }
 }
 
-const postProcessServiceWorker = (
-  mv3BrowserPlatforms,
-  fileList,
-  applyLavaMoat,
-  testing,
-) => {
-  mv3BrowserPlatforms.forEach((browser) => {
-    const appInitFile = `./dist/${browser}/app-init.js`;
-    const fileContent = readFileSync('./app/scripts/app-init.js', 'utf8');
-    let fileOutput = fileContent.replace('/** FILE NAMES */', fileList);
-    if (testing) {
-      fileOutput = fileOutput.replace('testMode = false', 'testMode = true');
-    } else {
-      // Setting applyLavaMoat to true in testing mode
-      // This is to enable capturing initialisation time stats using e2e with lavamoat statsMode enabled
-      fileOutput = fileOutput.replace(
-        'const applyLavaMoat = true;',
-        `const applyLavaMoat = ${applyLavaMoat};`,
-      );
-    }
-    writeFileSync(appInitFile, fileOutput);
-  });
-};
-
 /**
  * Create the bundle for the app initialization module used in manifest v3
  * builds.
@@ -509,10 +486,19 @@ async function createManifestV3AppInitializationBundle({
   const mv3BrowserPlatforms = browserPlatforms.filter(
     (platform) => platform !== 'firefox',
   );
-  const fileList = jsBundles.reduce(
-    (result, file) => `${result}'${file}',\n    `,
-    '',
-  );
+
+  for (const filename of jsBundles) {
+    if (filename.includes(',')) {
+      throw new Error(
+        `Invalid filename "${filename}", not allowed to contain comma.`,
+      );
+    }
+  }
+
+  const extraEnvironmentVariables = {
+    APPLY_LAVAMOAT: applyLavaMoat,
+    FILE_NAMES: jsBundles.join(','),
+  };
 
   await createNormalBundle({
     browserPlatforms: mv3BrowserPlatforms,
@@ -520,6 +506,7 @@ async function createManifestV3AppInitializationBundle({
     destFilepath: 'app-init.js',
     devMode,
     entryFilepath: './app/scripts/app-init.js',
+    extraEnvironmentVariables,
     ignoredFiles,
     label,
     testing,
@@ -527,29 +514,6 @@ async function createManifestV3AppInitializationBundle({
     shouldLintFenceFiles,
     version,
   })();
-
-  postProcessServiceWorker(
-    mv3BrowserPlatforms,
-    fileList,
-    applyLavaMoat,
-    testing,
-  );
-
-  // If the application is running in development mode, we watch service worker file to
-  // in case the file is changes we need to process it again to replace "/** FILE NAMES */", "testMode" etc.
-  if (devMode && !testing) {
-    let prevChromeFileContent;
-    watch('./dist/chrome/app-init.js', () => {
-      const chromeFileContent = readFileSync(
-        './dist/chrome/app-init.js',
-        'utf8',
-      );
-      if (chromeFileContent !== prevChromeFileContent) {
-        prevChromeFileContent = chromeFileContent;
-        postProcessServiceWorker(mv3BrowserPlatforms, fileList, applyLavaMoat);
-      }
-    });
-  }
 
   // Code below is used to set statsMode to true when testing in MV3
   // This is used to capture module initialisation stats using lavamoat.
@@ -810,6 +774,8 @@ function createFactoredBuild({
  * development.
  * @param {string[]} options.entryFilepath - The entry point file path,
  * relative to the repository root directory.
+ * @param {Record<string, unknown>} options.extraEnvironmentVariables - Extra
+ * environment variables to inject just into this bundle.
  * @param {string[] | null} options.ignoredFiles - A list of files to exclude
  * from the current build.
  * @param {string} options.label - A label used to describe this bundle in any
@@ -830,6 +796,7 @@ function createNormalBundle({
   destFilepath,
   devMode,
   entryFilepath,
+  extraEnvironmentVariables,
   ignoredFiles,
   label,
   policyOnly,
@@ -847,12 +814,15 @@ function createNormalBundle({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({
-      buildType,
-      devMode,
-      testing,
-      version,
-    });
+    const envVars = {
+      ...getEnvironmentVariables({
+        buildType,
+        devMode,
+        testing,
+        version,
+      }),
+      ...extraEnvironmentVariables,
+    };
     setupBundlerDefaults(buildConfiguration, {
       buildType,
       devMode,
@@ -1131,6 +1101,7 @@ function getEnvironmentVariables({ buildType, devMode, testing, version }) {
     INFURA_PROJECT_ID: getInfuraProjectId({ buildType, environment, testing }),
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, environment }),
+    SIWE_V1: metamaskrc.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',

@@ -1444,6 +1444,10 @@ export function updateMetamaskState(newState) {
         },
       });
     }
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: newState,
+    });
     if (provider.chainId !== newProvider.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
@@ -1455,10 +1459,6 @@ export function updateMetamaskState(newState) {
       // progress.
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
-    dispatch({
-      type: actionConstants.UPDATE_METAMASK_STATE,
-      value: newState,
-    });
   };
 }
 
