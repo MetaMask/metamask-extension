@@ -48,6 +48,7 @@ import {
   setThreeBoxLastUpdated,
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
+  addPostApprovalRedirectURL,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
@@ -197,6 +198,8 @@ const mapDispatchToProps = (dispatch) => ({
   },
   requestAccountsPermissionWithId: (origin) =>
     dispatch(requestAccountsPermissionWithId(origin)),
+  addPostApprovalRedirectURL: (url) =>
+    dispatch(addPostApprovalRedirectURL(url)),
 });
 
 export default compose(
