@@ -110,9 +110,7 @@ export default class PermissionPageContainer extends Component {
       const redirect = searchParams.get('redirect');
       if (redirect) {
         global.platform.openTab({
-          url: `${redirect}?${request.approvedAccounts
-            .map((address) => `approvedAccounts=${encodeURIComponent(address)}`)
-            .join('&')}`,
+          url: `${redirect}?metamaskEntry=ext`,
         });
       }
     } else {
