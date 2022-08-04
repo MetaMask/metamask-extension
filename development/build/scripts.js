@@ -1023,7 +1023,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
-    METALABS_URL: metamaskrc.METALABS_URL,
+    METALABS_URL: metamaskrc.METALABS_URL || 'https://metalabs.consensys.net',
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
