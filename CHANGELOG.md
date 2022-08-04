@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.18.3]
-### Uncategorized
-- Version v10.18.2 RC ([#15454](https://github.com/MetaMask/metamask-extension/pull/15454))
-- Update changelog v10.18.2 ([#15455](https://github.com/MetaMask/metamask-extension/pull/15455))
-- add safegaurd for missing account in action ([#15450](https://github.com/MetaMask/metamask-extension/pull/15450))
-- remove unnecessary usage of renderableGasButton logic ([#15422](https://github.com/MetaMask/metamask-extension/pull/15422))
-- Version v10.18.2
+### Fixed
+- Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
 
 ## [10.18.2]
 ### Changed
