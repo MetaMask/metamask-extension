@@ -7,6 +7,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ValidBackgroundColors, ValidBorderColors } from '../../ui/box';
 
+import README from './README.mdx';
 import { AvatarToken } from './avatar-token';
 
 const marginSizeKnobOptions = [
@@ -30,6 +31,11 @@ export default {
   title: 'Components/ComponentLibrary/AvatarToken',
   id: __filename,
   component: AvatarToken,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   argTypes: {
     size: {
       control: 'select',
