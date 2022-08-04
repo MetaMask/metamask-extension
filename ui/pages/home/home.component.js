@@ -60,7 +60,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
-const METALABS_URL = process.env.METALABS_URL;
+const { METALABS_URL } = process.env;
 
 function shouldCloseNotificationPopup({
   isNotification,
