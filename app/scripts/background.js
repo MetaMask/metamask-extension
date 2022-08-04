@@ -754,24 +754,30 @@ async function openPopup() {
   });
 }
 
+const addAppInstalledEvent = () => {
+  if (controller) {
+    controller.metaMetricsController.addEventBeforeMetricsOptIn({
+      category: EVENT.CATEGORIES.APP,
+      event: EVENT_NAMES.APP_INSTALLED,
+      properties: {
+        signup_date: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+      },
+    });
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try to log the "App Installed" event again.
+    addAppInstalledEvent();
+  }, 1000);
+};
+
 // On first install, open a new tab with MetaMask
 browser.runtime.onInstalled.addListener(({ reason }) => {
   if (
     reason === 'install' &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
-    setTimeout(() => {
-      // TODO: Find a better way to wait until the controller is set.
-      if (controller) {
-        controller.metaMetricsController.addEventBeforeMetricsOptIn({
-          category: EVENT.CATEGORIES.APP,
-          event: EVENT_NAMES.APP_INSTALLED,
-          properties: {
-            signup_date: new Date().toISOString().split('T')[0], // yyyy-mm-dd
-          },
-        });
-      }
-    }, 5000);
+    addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
 });
