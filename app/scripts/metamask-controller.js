@@ -2234,9 +2234,8 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const [primaryKeyring] = keyringController.getKeyringsByType(
-        'HD Key Tree',
-      );
+      const [primaryKeyring] =
+        keyringController.getKeyringsByType('HD Key Tree');
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -2311,7 +2310,8 @@ export default class MetamaskController extends EventEmitter {
       // keyring's iframe and have the setting initialized properly
       // Optimistically called to not block Metamask login due to
       // Ledger Keyring GitHub downtime
-      const transportPreference = this.preferencesController.getLedgerTransportPreference();
+      const transportPreference =
+        this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
 
       // set new identities
