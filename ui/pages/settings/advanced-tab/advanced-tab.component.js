@@ -201,14 +201,6 @@ export default class AdvancedTab extends PureComponent {
                 restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')
               }
             />
-            // <span
-            //   className={classnames({
-            //     'settings-page__content-description': restoreSuccessful,
-            //     'settings-page__error-text': !restoreSuccessful,
-            //   })}
-            // >
-            //   {restoreSuccessful ? t('restoreSuccessful') : t('restoreFailed')}
-            // </span>
           )}
         </div>
       </div>
@@ -217,7 +209,6 @@ export default class AdvancedTab extends PureComponent {
 
   renderUserDataBackup() {
     const { t } = this.context;
-    // if
     const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 13;
     return (
       <div
