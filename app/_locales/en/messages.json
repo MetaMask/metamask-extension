@@ -1513,14 +1513,14 @@
   "goBack": {
     "message": "Go back"
   },
+  "goToPortfolio": {
+    "message": "go to portfolio"
+  },
   "goerli": {
     "message": "Goerli test network"
   },
   "gotIt": {
     "message": "Got it!"
-  },
-  "goToPortfolio": {
-    "message": "go to portfolio"
   },
   "grantedToWithColon": {
     "message": "Granted to:"
