@@ -18,6 +18,7 @@ const requestEthereumAccounts = {
     getUnlockPromise: true,
     hasPermission: true,
     requestAccountsPermission: true,
+    openPopup: true
   },
 };
 export default requestEthereumAccounts;
@@ -57,13 +58,15 @@ async function requestEthereumAccountsHandler(
     getUnlockPromise,
     hasPermission,
     requestAccountsPermission,
+    openPopup
   },
 ) {
+
   if (locks.has(origin)) {
-    res.error = ethErrors.rpc.resourceUnavailable(
-      `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
-    );
-    return end();
+    // res.error = ethErrors.rpc.resourceUnavailable(
+    //   `Already processing ${MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS}. Please wait.`,
+    // );
+    await openPopup();
   }
 
   if (hasPermission(MESSAGE_TYPE.ETH_ACCOUNTS)) {
@@ -85,10 +88,16 @@ async function requestEthereumAccountsHandler(
 
   // If no accounts, request the accounts permission
   try {
+    console.log('new')
+    locks.add(origin);
+    await getUnlockPromise(true);
     await requestAccountsPermission();
   } catch (err) {
     res.error = err;
     return end();
+  }
+  finally {
+    locks.delete(origin);
   }
 
   // Get the approved accounts
