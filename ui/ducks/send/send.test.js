@@ -73,6 +73,7 @@ import sendReducer, {
   isSendFormInvalid,
   getSendStage,
   updateGasPrice,
+  computeEstimatedGasLimit,
 } from './send';
 import { draftTransactionInitialState, editExistingTransaction } from '.';
 
@@ -86,6 +87,16 @@ jest.mock('./send', () => {
     getERC20Balance: jest.fn(() => '0x0'),
   };
 });
+
+jest.mock('./helpers', () => ({
+  estimateGasLimitForSend: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve('0xffffff')),
+}));
+
+jest.mock('../../helpers/utils/optimism/fetchEstimatedL1Fee', () =>
+  jest.fn().mockImplementation(() => Promise.resolve('0xf')),
+);
 
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
@@ -1061,6 +1072,96 @@ describe('Send Slice', () => {
   });
 
   describe('extraReducers/externalReducers', () => {
+    describe('computeEstimatedGasLimit', () => {
+      let dispatchSpy;
+      let getState;
+
+      beforeEach(() => {
+        dispatchSpy = jest.fn();
+      });
+
+      it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
+        getState = jest.fn().mockReturnValue({
+          metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasFeeEstimates: {},
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+            selectedAddress: '0xAddress',
+            identities: { '0xAddress': { address: '0xAddress' } },
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xAddress'],
+              },
+            ],
+            accounts: {
+              '0xAddress': {
+                address: '0xAddress',
+                balance: '0x0',
+              },
+            },
+            cachedBalances: {
+              0x4: {
+                '0xAddress': '0x0',
+              },
+            },
+            provider: {
+              chainId: '0xa',
+            },
+            useTokenDetection: true,
+            tokenList: {
+              '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
+          },
+          send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          gas: {
+            basicEstimateStatus: 'LOADING',
+            basicEstimatesStatus: {
+              safeLow: null,
+              average: null,
+              fast: null,
+            },
+          },
+        });
+
+        const action = computeEstimatedGasLimit();
+        const result = await action(dispatchSpy, getState, undefined);
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(1);
+
+        expect(result).toDeepEqual({
+          gasLimit: '0xffffff',
+          gasTotalForLayer1: '0xf',
+        });
+      });
+    });
+
     describe('QR Code Detected', () => {
       const qrCodestate = getInitialSendStateWithExistingTxState({
         recipient: {
@@ -1346,6 +1447,88 @@ describe('Send Slice', () => {
         expect(dispatchSpy.mock.calls[2][0].type).toStrictEqual(
           'send/initializeSendState/fulfilled',
         );
+      });
+
+      it('should update the amount if max mode is set', async () => {
+        getState = jest.fn().mockReturnValue({
+          metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasFeeEstimates: {},
+            networkDetails: {
+              EIPS: {
+                1559: true,
+              },
+            },
+            selectedAddress: '0xAddress',
+            identities: { '0xAddress': { address: '0xAddress' } },
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xAddress'],
+              },
+            ],
+            accounts: {
+              '0xAddress': {
+                address: '0xAddress',
+                balance: '0x555',
+              },
+            },
+            cachedBalances: {
+              0x4: {
+                '0xAddress': '0x555',
+              },
+            },
+            provider: {
+              chainId: '0x4',
+            },
+            useTokenDetection: true,
+            tokenList: {
+              '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
+          },
+          send: {
+            ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+            amountMode: AMOUNT_MODES.MAX,
+          },
+          gas: {
+            basicEstimateStatus: 'LOADING',
+            basicEstimatesStatus: {
+              safeLow: null,
+              average: null,
+              fast: null,
+            },
+          },
+        });
+
+        const action = initializeSendState();
+        const result = await action(dispatchSpy, getState, undefined);
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
+
+        expect(draftTransaction.amount.value).toStrictEqual('0x555');
       });
     });
 

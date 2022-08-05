@@ -394,6 +394,31 @@ describe('Transaction Controller', function () {
       );
     });
 
+    it('should fail if the type is not valid', async function () {
+      await assert.rejects(() =>
+        txController.addUnapprovedTransaction(
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+          },
+          'metamask',
+          'INVALID_TRANSACTION_TYPE',
+        ),
+      );
+    });
+
+    it('should succeed if the type is a contract interaction', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        'metamask',
+        TRANSACTION_TYPES.CONTRACT_INTERACTION,
+      );
+      assert.ok('id' in txMeta, 'should have a id');
+    });
+
     it('should fail if netId is loading', async function () {
       txController.networkStore = new ObservableStore('loading');
       await assert.rejects(
@@ -442,6 +467,36 @@ describe('Transaction Controller', function () {
         txMetaWithDefaults.txParams.gas,
         'should have added the gas field',
       );
+    });
+
+    it('should add an estimated gas limit for simple sends with tx data', async function () {
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          data: '0x02',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_gasPrice = '4a817c800';
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = 'ffff';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+      assert.equal(txMetaWithDefaults.txParams.gas, 'ffff');
     });
 
     it('should add EIP1559 tx defaults', async function () {

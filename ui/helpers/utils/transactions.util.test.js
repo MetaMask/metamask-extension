@@ -93,4 +93,38 @@ describe('Transactions utils', () => {
       });
     });
   });
+
+  describe('isSmartContractAddress', () => {
+    global.ethereumProvider = new HttpProvider(
+      'https://mainnet.infura.io/v3/341eacb578dd44a1a049cbc5f6fd4035',
+    );
+    it('should return true if readAddressAsContract returns true', async () => {
+      nock('https://mainnet.infura.io:443', { encodedQueryParams: true })
+        .post('/v3/341eacb578dd44a1a049cbc5f6fd4035')
+        .reply(200, (_, requestBody) => ({
+          id: requestBody.id,
+          jsonrpc: '2.0',
+          result: '0xabc',
+        }));
+      expect(
+        await utils.isSmartContractAddress(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        ),
+      ).toStrictEqual(true);
+    });
+    it('should return false if readAddressAsContract returns false', async () => {
+      nock('https://mainnet.infura.io:443', { encodedQueryParams: true })
+        .post('/v3/341eacb578dd44a1a049cbc5f6fd4035')
+        .reply(200, (_, requestBody) => ({
+          id: requestBody.id,
+          jsonrpc: '2.0',
+          result: '0x0',
+        }));
+      expect(
+        await utils.isSmartContractAddress(
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        ),
+      ).toStrictEqual(false);
+    });
+  });
 });

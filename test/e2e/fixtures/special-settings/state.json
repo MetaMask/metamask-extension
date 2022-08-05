@@ -66,36 +66,47 @@
       "seedPhraseBackedUp": false
     },
     "PermissionsMetadata": {
-      "domainMetadata": {
-        "metamask.github.io": {
-          "icon": null,
-          "name": "M E T A M A S K M E S H T E S T"
-        }
-      },
-      "permissionsHistory": {},
       "permissionsLog": [
         {
-          "id": 746677923,
-          "method": "eth_accounts",
+          "id": 1764280960,
+          "method": "eth_requestAccounts",
           "methodType": "restricted",
-          "origin": "metamask.github.io",
+          "origin": "http://127.0.0.1:8080",
           "request": {
-            "id": 746677923,
+            "method": "eth_requestAccounts",
             "jsonrpc": "2.0",
-            "method": "eth_accounts",
-            "origin": "metamask.github.io",
-            "params": []
+            "id": 1764280960,
+            "origin": "http://127.0.0.1:8080",
+            "tabId": 2
           },
-          "requestTime": 1575697241368,
+          "requestTime": 1594348329232,
           "response": {
-            "id": 746677923,
+            "id": 1764280960,
             "jsonrpc": "2.0",
-            "result": []
+            "result": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"]
           },
-          "responseTime": 1575697241370,
+          "responseTime": 1594348332276,
           "success": true
         }
-      ]
+      ],
+      "permissionsHistory": {
+        "http://127.0.0.1:8080": {
+          "eth_accounts": {
+            "accounts": {
+              "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": 1594348332276
+            },
+            "lastApproved": 1594348332276
+          }
+        }
+      },
+      "domainMetadata": {
+        "http://127.0.0.1:8080": {
+          "name": "E2E Test Dapp",
+          "icon": "http://127.0.0.1:8080/metamask-fox.svg",
+          "lastUpdated": 1594348323811,
+          "host": "127.0.0.1:8080"
+        }
+      }
     },
     "PreferencesController": {
       "accountTokens": {
@@ -136,6 +147,35 @@
       "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": true
+    },
+    "PermissionsController": {
+      "permissionsRequests": [],
+      "permissionsDescriptions": {},
+      "domains": {
+        "http://127.0.0.1:8080": {
+          "permissions": [
+            {
+              "@context": ["https://github.com/MetaMask/rpc-cap"],
+              "parentCapability": "eth_accounts",
+              "id": "f55a1c15-ea48-4088-968e-63be474d42fa",
+              "date": 1594348332268,
+              "invoker": "http://127.0.0.1:8080",
+              "caveats": [
+                {
+                  "type": "limitResponseLength",
+                  "value": 1,
+                  "name": "primaryAccountOnly"
+                },
+                {
+                  "type": "filterResponse",
+                  "value": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"],
+                  "name": "exposedAccounts"
+                }
+              ]
+            }
+          ]
+        }
+      }
     },
     "config": {},
     "firstTimeInfo": {

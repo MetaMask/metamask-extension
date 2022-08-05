@@ -41,6 +41,30 @@ describe('Actions', () => {
     });
   });
 
+  describe('updateMetamaskState', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('dispatches the correct actions in the correct sequence when the chain Id changes', async () => {
+      const store = mockStore();
+      const oldState = store.getState();
+      const newState = {
+        ...oldState,
+        provider: '0x123',
+      };
+
+      const expectedActions = [
+        { type: 'UPDATE_METAMASK_STATE', value: newState },
+        { type: 'CHAIN_CHANGED', value: '0x123' },
+      ];
+
+      await store.dispatch(actions.updateMetamaskState());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#tryUnlockMetamask', () => {
     afterEach(() => {
       sinon.restore();
