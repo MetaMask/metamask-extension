@@ -55,7 +55,7 @@ export const AvatarToken = ({
             onError={handleOnError}
             src={tokenImageUrl}
             style={style}
-            alt={tokenName || 'icon'}
+            alt={tokenName || 'token'}
             {...props}
           />
           {showHalo && (
