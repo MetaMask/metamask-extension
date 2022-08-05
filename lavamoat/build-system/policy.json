@@ -2855,14 +2855,8 @@
     "eslint>espree": {
       "packages": {
         "eslint>eslint-visitor-keys": true,
-        "eslint>espree>acorn": true,
-        "eslint>espree>acorn-jsx": true
-      }
-    },
-    "eslint>espree>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
+        "eslint>espree>acorn-jsx": true,
+        "ts-node>acorn": true
       }
     },
     "eslint>espree>acorn-jsx": {
@@ -3795,23 +3789,28 @@
         "fs-extra>graceful-fs": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources": true,
+        "gulp-sourcemaps>acorn": true,
         "gulp-sourcemaps>css": true,
         "gulp-sourcemaps>debug-fabulous": true,
         "gulp-sourcemaps>detect-newline": true,
         "gulp-sourcemaps>source-map": true,
         "gulp-sourcemaps>strip-bom-string": true,
         "gulp-sourcemaps>through2": true,
-        "nyc>convert-source-map": true,
-        "webpack>acorn": true
+        "nyc>convert-source-map": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
       "packages": {
         "chokidar>normalize-path": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>source-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": true,
-        "stylelint>postcss": true,
-        "webpack>acorn": true
+        "stylelint>postcss": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/identity-map>acorn": {
+      "globals": {
+        "define": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2": {
@@ -3865,6 +3864,11 @@
       "packages": {
         "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sourcemaps>acorn": {
+      "globals": {
+        "define": true
       }
     },
     "gulp-sourcemaps>css": {
@@ -5214,9 +5218,14 @@
       },
       "packages": {
         "end-of-stream": true,
+        "gulp>glob-watcher>async-done>process-nextick-args": true,
         "gulp>glob-watcher>async-done>stream-exhaust": true,
-        "pump>once": true,
-        "vinyl>cloneable-readable>process-nextick-args": true
+        "pump>once": true
+      }
+    },
+    "gulp>glob-watcher>async-done>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -7207,9 +7216,9 @@
         "stylelint>autoprefixer>caniuse-lite": true,
         "stylelint>autoprefixer>normalize-range": true,
         "stylelint>autoprefixer>num2fraction": true,
-        "stylelint>autoprefixer>picocolors": true,
         "stylelint>postcss": true,
-        "stylelint>postcss-value-parser": true
+        "stylelint>postcss-value-parser": true,
+        "stylelint>postcss>picocolors": true
       }
     },
     "stylelint>autoprefixer>browserslist": {
@@ -7238,16 +7247,6 @@
         "stylelint>autoprefixer>browserslist>electron-to-chromium": true,
         "stylelint>autoprefixer>browserslist>node-releases": true,
         "stylelint>autoprefixer>caniuse-lite": true
-      }
-    },
-    "stylelint>autoprefixer>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
       }
     },
     "stylelint>chalk": {
@@ -7645,7 +7644,7 @@
       },
       "packages": {
         "source-map": true,
-        "webpack>acorn": true
+        "ts-node>acorn": true
       }
     },
     "terser>source-map-support": {
@@ -7691,6 +7690,12 @@
         "@storybook/api>util-deprecate": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
+      }
+    },
+    "ts-node>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "tsutils": {
@@ -7895,11 +7900,6 @@
       },
       "packages": {
         "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "webpack>acorn": {
-      "globals": {
-        "define": true
       }
     },
     "webpack>micromatch>braces>snapdragon-node": {
