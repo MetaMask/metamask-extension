@@ -329,16 +329,17 @@ function documentElementCheck() {
  */
 function blockedDomainCheck() {
   const blockedDomains = [
-    'uscourts.gov',
-    'dropbox.com',
-    'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
-    'gravityforms.com',
-    'harbourair.com',
     'ani.gamer.com.tw',
     'blueskybooking.com',
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'docs.google.com',
+    'dropbox.com',
+    'gravityforms.com',
+    'harbourair.com',
     'sharefile.com',
+    'uscourts.gov',
+    'webbyawards.com',
   ];
   const currentUrl = window.location.href;
   let currentRegex;
