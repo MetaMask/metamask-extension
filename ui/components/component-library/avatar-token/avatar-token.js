@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
-import './avatar-token.scss';
+
 import {
   COLORS,
   SIZES,
@@ -44,6 +44,7 @@ export const AvatarToken = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
+      data-test-id="avatar-token"
       {...{ backgroundColor, borderColor, ...props }}
     >
       {showFallback ? (
