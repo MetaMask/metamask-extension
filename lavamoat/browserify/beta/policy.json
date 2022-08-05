@@ -688,7 +688,7 @@
         "3box>ipfs>multihashes": true,
         "3box>ipfs>superstruct": true,
         "browserify>buffer": true,
-        "rc>deep-extend": true
+        "madge>rc>deep-extend": true
       }
     },
     "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": {
@@ -5929,6 +5929,11 @@
         "madge>debug>ms": true
       }
     },
+    "madge>rc>deep-extend": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "mockttp>node-forge": {
       "globals": {
         "Blob": true,
@@ -6080,11 +6085,6 @@
         "prop-types": true,
         "qrcode.react>qr.js": true,
         "react": true
-      }
-    },
-    "rc>deep-extend": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "react": {

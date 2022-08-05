@@ -13,3 +13,7 @@ export const ENTRYPOINT_PATTERNS = [
   '**/*.stories',
   '**/*.test',
 ];
+export const FILES_TO_CONVERT_PATH = path.join(
+  __dirname,
+  '../files-to-convert.json',
+);

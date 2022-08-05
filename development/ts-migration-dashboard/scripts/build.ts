@@ -12,7 +12,7 @@ import gulpDartSass from 'gulp-dart-sass';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'gulp-autoprefixer';
 import fg from 'fast-glob';
-import buildModulePartitions from './buildModulePartitions';
+import buildModulePartitions from './build-module-partitions';
 
 const promisifiedPump = pify(pump);
 const projectDirectoryPath = path.resolve(__dirname, '../');
@@ -22,6 +22,11 @@ const intermediateDirectoryPath = path.join(
   'intermediate',
 );
 const buildDirectoryPath = path.join(projectDirectoryPath, 'build');
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 async function generateIntermediateFiles(dest: string) {
   const partitions = await buildModulePartitions();
@@ -179,8 +184,3 @@ async function main() {
     await rebuild({ isInitial: true, isOnly: true });
   }
 }
-
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});

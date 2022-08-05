@@ -1,12 +1,12 @@
-#!node_modules/.bin/ts-node
-
 import path from 'path';
 import fs from 'fs';
 import fg from 'fast-glob';
 import madge from 'madge';
-import { BASE_DIRECTORY, ENTRYPOINT_PATTERNS } from './constants';
-
-const outFilePath = path.resolve(__dirname, '../filesToConvert.json');
+import {
+  BASE_DIRECTORY,
+  ENTRYPOINT_PATTERNS,
+  FILES_TO_CONVERT_PATH,
+} from './constants';
 
 main().catch((error) => {
   console.error(error);
@@ -45,9 +45,12 @@ async function main(): Promise<void> {
       );
     });
 
-  fs.writeFileSync(outFilePath, JSON.stringify(sortedFilePaths, null, '  '));
+  fs.writeFileSync(
+    FILES_TO_CONVERT_PATH,
+    JSON.stringify(sortedFilePaths, null, '  '),
+  );
   console.log(
-    `${path.relative(process.cwd(), outFilePath)} written with ${
+    `${path.relative(process.cwd(), FILES_TO_CONVERT_PATH)} written with ${
       sortedFilePaths.length
     } modules.`,
   );

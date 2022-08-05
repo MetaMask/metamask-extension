@@ -2,33 +2,42 @@ import fs from 'fs';
 import path from 'path';
 import fg from 'fast-glob';
 import madge from 'madge';
-import { BASE_DIRECTORY, ENTRYPOINT_PATTERNS } from './constants';
+import {
+  BASE_DIRECTORY,
+  ENTRYPOINT_PATTERNS,
+  FILES_TO_CONVERT_PATH,
+} from './constants';
 
+/**
+ * Represents a module in the dependency graph.
+ *
+ * @property id - The name of a file or NPM module.
+ * @property dependents - The modules which are imported by this module.
+ * @property level - How many modules it takes to import this module (at a
+ * certain point in the dependency graph).
+ * @property isExternal - Whether the module refers to a NPM module.
+ * @property hasBeenConverted - Whether the module was one of the files we
+ * wanted to convert to TypeScript and has consequently been converted.
+ */
 type Module = {
-  /**
-   * The name of a file or NPM module.
-   */
   id: string;
-  /**
-   * The modules which are imported by this module.
-   */
   dependents: Module[];
-  /**
-   * How many modules it takes to import this module (at a certain point in the
-   * dependency graph).
-   */
   level: number;
-  /**
-   * Whether the module refers to a NPM module.
-   */
   isExternal: boolean;
-  /**
-   * Whether the module was one of the files we wanted to convert to TypeScript
-   * and has been thus converted.
-   */
   hasBeenConverted: boolean;
 };
 
+/**
+ * Represents a suite of modules that sit at a certain level within the
+ * dependency tree.
+ *
+ * @property level - How many modules it takes to import these module (from the
+ * root of the dependency tree).
+ * @property children - The modules within this level.
+ * @property children[].name - The name of the module.
+ * @property children[].hasBeenConverted - Whether or not it has been converted
+ * to TypeScript.
+ */
 export type ModulePartition = {
   level: number;
   children: {
@@ -39,17 +48,12 @@ export type ModulePartition = {
 
 /**
  * Returns the contents of a JSON file that stores the names of the files that
- * we planned on converting to TypeScript. All of the dependency information
+ * we plan on converting to TypeScript. All of the dependency information
  * will be filtered through this list.
  */
 function readFilesToConvert(): string[] {
   try {
-    return JSON.parse(
-      fs.readFileSync(
-        path.resolve(__dirname, '../filesToConvert.json'),
-        'utf-8',
-      ),
-    );
+    return JSON.parse(fs.readFileSync(FILES_TO_CONVERT_PATH, 'utf-8'));
   } catch (error: unknown) {
     throw new Error(
       'Could not read or parse list of files to convert. ' +
@@ -110,7 +114,7 @@ function findDirectAndIndirectDependentIdsOf(module: Module): Set<string> {
  * that depend on the leaves — then the dependents of the dependents, etc. We
  * can derive this information by traversing the graph, and for each module we
  * encounter, recording the number of modules it takes to reach that module. We
- * call this number the "level".
+ * call this number the **level**.
  *
  * We will discuss a couple of optimizations we've made to ensure that graph
  * traversal is performant.
@@ -127,7 +131,9 @@ function findDirectAndIndirectDependentIdsOf(module: Module): Set<string> {
  *
  * In this case, even if there are few modules in a system, a subset of those
  * modules may be visited multiple times in the course of traversing connections
- * between all of them. This is costly and unnecessary.
+ * between all of them (this is the nature of a graph: each node can have
+ * multiple incoming connections and multiple outgoing connections). This is
+ * costly and unnecessary.
  *
  * To address this, as we are traversing the graph, we record modules we've
  * visited along with the level when we visited it. If we encounter a
@@ -182,7 +188,7 @@ function buildModulesWithLevels(
     (dependenciesByModuleId[currentModule.id] ?? []).forEach(
       (givenChildModuleId) => {
         const npmPackageMatch = givenChildModuleId.match(
-          /^module_modules\/(?:(@[^/]+)\/)?([^/]+)\/.+$/u,
+          /^node_modules\/(?:(@[^/]+)\/)?([^/]+)\/.+$/u,
         );
 
         let childModuleId;
@@ -267,18 +273,18 @@ function partitionModulesByLevel(
 ): ModulePartition[] {
   const levels = Object.values(modulesById).map((module) => module.level);
   const maxLevel = Math.max(...levels);
-  const groupedModules: ModulePartition[] = [];
+  const modulePartitions: ModulePartition[] = [];
   for (let i = 0; i <= maxLevel; i++) {
     const modulePartition: ModulePartition = { level: i + 1, children: [] };
-    groupedModules[i] = modulePartition;
+    modulePartitions[i] = modulePartition;
   }
   Object.values(modulesById).forEach((module) => {
-    groupedModules[module.level].children.push({
+    modulePartitions[module.level].children.push({
       name: module.id,
       hasBeenConverted: module.hasBeenConverted,
     });
   });
-  return groupedModules.reverse();
+  return modulePartitions.reverse();
 }
 
 /**
