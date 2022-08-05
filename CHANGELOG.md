@@ -31,7 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
 - Swaps: Standardize the spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
 - Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
-- [FLASK] disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
+- [FLASK] Disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
+- [FLASK] Update Snaps packages to version `^0.18.1` ([#15230](https://github.com/MetaMask/metamask-extension/pull/15230))
+  - Updates the following packages from `0.16.0` to `0.18.1`:
+    - `@metamask/execution-environments`
+    - `@metamask/rpc-methods`
+    - `@metamask/snap-controllers`
+    - `@metamask/snap-types`
+  - Serialization issues were fixed in `@metmask/execution-environments`. See the ([releases](https://github.com/MetaMask/snaps-skunkworks/releases)) of the Snaps monorepo for details.
 
 ### Fixed
 - Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
@@ -39,8 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix limited scroll area in the Account Menu by adjusting the height of Account Menu nav items, expanding scroll area ([#15302](https://github.com/MetaMask/metamask-extension/pull/15302))
 - Fix Actionable Message overlapping tabs on Confirm Transaction view ([#15272](https://github.com/MetaMask/metamask-extension/pull/15272))
 - Swaps: fix displaying "No tokens available matching" when there are tokens available, by updating the `results` state if `initialResultsState` array length is different ([#15270](https://github.com/MetaMask/metamask-extension/pull/15270))
-- [FLASK] Fix missing snap hook ([#15354](https://github.com/MetaMask/metamask-extension/pull/15354))
-- [FLASK] Fix snaps authorship pill ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
+- [FLASK] Fix missing snap hook for `getAppKey`, the `getUnlockPromise` hook was missing, breaking some snap examples  ([#15354](https://github.com/MetaMask/metamask-extension/pull/15354))
+- [FLASK] Fix snaps authorship pill truncation, previously the authorship label would not be truncated and offset the UI ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
 
 ## [10.18.1]
 ### Changed
