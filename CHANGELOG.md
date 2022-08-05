@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.18.3]
+### Fixed
+- Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
+
+## [10.18.2]
+### Changed
+- Enhance approval screen title logic ([#15406](https://github.com/MetaMask/metamask-extension/pull/15406))
+
+### Fixed
+- Ensure smart contract interactions are properly represented on the confirm screen ([#15446](https://github.com/MetaMask/metamask-extension/pull/15446))
+- Fix update of max amount in send flow after network switch([#15444](https://github.com/MetaMask/metamask-extension/pull/15444))
+- Fix to ensure user can access full screen editing of network forms from the popup ([#15442](https://github.com/MetaMask/metamask-extension/pull/15442))
+- Possibly fix bug which crashes firefox on startup after upgrade to v10.18.1 ([#15425](https://github.com/MetaMask/metamask-extension/pull/15425))
+- Fix blocking of editing transactions that had a contract address recipient but no tx data ([#15424](https://github.com/MetaMask/metamask-extension/pull/15424))
+- Fix error that could leave the app in a stuck state when quickly moving between the send screen and other screens ([#15420](https://github.com/MetaMask/metamask-extension/pull/15420))
+- Fix send screen for Optimism network ([#15419](https://github.com/MetaMask/metamask-extension/pull/15419))
+- Fix to ensure the correct balance is used when validating send amounts ([#15449](https://github.com/MetaMask/metamask-extension/pull/15449))
+- Fix error that makes app unusable after clicking activity list items for token approval transactions ([#15398](https://github.com/MetaMask/metamask-extension/pull/15398))
+
 ## [10.18.1]
 ### Changed
 - Move the metrics opt-in screen to the second screen of the onboarding flow ([#15313](https://github.com/MetaMask/metamask-extension/pull/15313))
@@ -3088,7 +3107,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...HEAD
+[10.18.3]: https://github.com/MetaMask/metamask-extension/compare/v10.18.2...v10.18.3
+[10.18.2]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...v10.18.2
 [10.18.1]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...v10.18.1
 [10.18.0]: https://github.com/MetaMask/metamask-extension/compare/v10.17.0...v10.18.0
 [10.17.0]: https://github.com/MetaMask/metamask-extension/compare/v10.16.2...v10.17.0
