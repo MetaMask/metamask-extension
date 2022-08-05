@@ -39,9 +39,8 @@ export default function MainQuoteSummary({
 
   const amountToDisplay = formatSwapsValueForDisplay(destinationAmount);
   const amountDigitLength = amountToDisplay.match(/\d+/gu).join('').length;
-  const [numberFontSize, lineHeight] = getFontSizesAndLineHeights(
-    amountDigitLength,
-  );
+  const [numberFontSize, lineHeight] =
+    getFontSizesAndLineHeights(amountDigitLength);
   let ellipsedAmountToDisplay = amountToDisplay;
 
   if (amountDigitLength > 20) {
