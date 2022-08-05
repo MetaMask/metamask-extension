@@ -1,1 +1,1 @@
-import { AvatarToken } from "./avatar-token";
+export { AvatarToken } from './avatar-token';

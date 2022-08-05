@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
+import './avatar-token.scss';
 import {
   COLORS,
   SIZES,
@@ -15,11 +16,22 @@ export const AvatarToken = ({
   borderColor = COLORS.BORDER_DEFAULT,
   tokenName,
   tokenImageUrl,
+  showHalo,
   ...props
 }) => {
   const [showFallback, setShowFallback] = useState(!tokenImageUrl);
 
-  const style = size ? { height: `100%`, width: `100%` } : {};
+  const baseStyle = showHalo ? { position: `relative` } : {};
+  const sizePercentage = showHalo ? '62.5%' : '100%';
+
+  const style = size
+    ? {
+        height: sizePercentage,
+        width: sizePercentage,
+        borderRadius: '50%',
+        zIndex: '2',
+      }
+    : {};
 
   const handleOnError = () => {
     setShowFallback(true);
@@ -28,6 +40,7 @@ export const AvatarToken = ({
   return (
     <BaseAvatar
       size={size}
+      style={baseStyle}
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
@@ -36,13 +49,23 @@ export const AvatarToken = ({
       {showFallback ? (
         tokenName?.[0].toUpperCase() ?? '?'
       ) : (
-        <img
-          onError={handleOnError}
-          src={tokenImageUrl}
-          style={style}
-          alt={tokenName || 'icon'}
-          {...props}
-        />
+        <>
+          <img
+            onError={handleOnError}
+            src={tokenImageUrl}
+            style={style}
+            alt={tokenName || 'icon'}
+            {...props}
+          />
+          {showHalo && (
+            <img
+              src={tokenImageUrl}
+              className={showHalo ? 'blur-halo-image' : ''}
+              aria-hidden="true"
+              {...props}
+            />
+          )}
+        </>
       )}
     </BaseAvatar>
   );
@@ -57,6 +80,10 @@ AvatarToken.propTypes = {
    * The tokenImageUrl accepts the string of the image to be rendered
    */
   tokenImageUrl: PropTypes.string,
+  /**
+   * The showHalo accepts a boolean prop to render the image with halo effect
+   */
+  showHalo: PropTypes.bool,
   /**
    * AvatarToken accepts all the props from BaseAvatar
    */
