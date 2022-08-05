@@ -17,6 +17,8 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
+import { EVENT } from '../../../../shared/constants/metametrics';
+
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const firstTimeFlowTypeNameMap = {
@@ -36,33 +38,45 @@ export default function OnboardingMetametrics() {
   const firstTimeSelectionMetaMetricsName =
     firstTimeFlowTypeNameMap[firstTimeFlowType];
 
-  const metricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
 
+    const isInitiallyNotParticipating = !participateInMetaMetrics;
+
     try {
-      if (!participateInMetaMetrics) {
-        metricsEvent({
-          eventOpts: {
-            category: 'Onboarding',
-            action: 'Metrics Option',
-            name: 'Metrics Opt In',
+      if (isInitiallyNotParticipating) {
+        trackEvent(
+          {
+            category: EVENT.CATEGORIES.ONBOARDING,
+            event: 'Metrics Opt In',
+            properties: {
+              action: 'Metrics Option',
+              legacy_event: true,
+            },
           },
-          isOptIn: true,
-          flushImmediately: true,
-        });
+          {
+            isOptIn: true,
+            flushImmediately: true,
+          },
+        );
       }
-      metricsEvent({
-        eventOpts: {
-          category: 'Onboarding',
-          action: 'Import or Create',
-          name: firstTimeSelectionMetaMetricsName,
+      trackEvent(
+        {
+          category: EVENT.CATEGORIES.ONBOARDING,
+          event: firstTimeSelectionMetaMetricsName,
+          properties: {
+            action: 'Import or Create',
+            legacy_event: true,
+          },
         },
-        isOptIn: true,
-        metaMetricsId,
-        flushImmediately: true,
-      });
+        {
+          isOptIn: true,
+          metaMetricsId,
+          flushImmediately: true,
+        },
+      );
     } finally {
       history.push(nextRoute);
     }
@@ -71,17 +85,25 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
 
+    const isInitiallyParticipatingOrNotSet =
+      participateInMetaMetrics === null || participateInMetaMetrics;
+
     try {
-      if (!participateInMetaMetrics) {
-        metricsEvent({
-          eventOpts: {
-            category: 'Onboarding',
-            action: 'Metrics Option',
-            name: 'Metrics Opt Out',
+      if (isInitiallyParticipatingOrNotSet) {
+        trackEvent(
+          {
+            category: EVENT.CATEGORIES.ONBOARDING,
+            event: 'Metrics Opt Out',
+            properties: {
+              action: 'Metrics Option',
+              legacy_event: true,
+            },
           },
-          isOptIn: true,
-          flushImmediately: true,
-        });
+          {
+            isOptIn: true,
+            flushImmediately: true,
+          },
+        );
       }
     } finally {
       history.push(nextRoute);
@@ -97,7 +119,10 @@ export default function OnboardingMetametrics() {
       >
         {t('metametricsTitle')}
       </Typography>
-      <Typography align={TEXT_ALIGN.CENTER}>
+      <Typography
+        className="onboarding-metametrics__desc"
+        align={TEXT_ALIGN.CENTER}
+      >
         {t('metametricsOptInDescription2')}
       </Typography>
       <ul>

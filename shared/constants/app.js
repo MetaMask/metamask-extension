@@ -39,11 +39,14 @@ export const MESSAGE_TYPE = {
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SIGN: 'eth_sign',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
+  ETH_SIGN_TYPED_DATA_V3: 'eth_signTypedData_v3',
+  ETH_SIGN_TYPED_DATA_V4: 'eth_signTypedData_v4',
   GET_PROVIDER_STATE: 'metamask_getProviderState',
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
+  WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -70,3 +73,27 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
 };
+
+export const ORIGIN_METAMASK = 'metamask';
+
+export const METAMASK_BETA_CHROME_ID = 'pbbkamfgmaedccnfkmjcofcecjhfgldn';
+export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
+export const METAMASK_FLASK_CHROME_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
+
+export const CHROME_BUILD_IDS = [
+  METAMASK_BETA_CHROME_ID,
+  METAMASK_PROD_CHROME_ID,
+  METAMASK_FLASK_CHROME_ID,
+];
+
+const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';
+const METAMASK_PROD_FIREFOX_ID = 'webextension@metamask.io';
+const METAMASK_FLASK_FIREFOX_ID = 'webextension-flask@metamask.io';
+
+export const FIREFOX_BUILD_IDS = [
+  METAMASK_BETA_FIREFOX_ID,
+  METAMASK_PROD_FIREFOX_ID,
+  METAMASK_FLASK_FIREFOX_ID,
+];
+
+export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';

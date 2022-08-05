@@ -35,23 +35,25 @@ async function getMethodFrom4Byte(fourBytePrefix) {
       mode: 'cors',
     },
   );
-
-  if (fourByteResponse.count === 1) {
-    return fourByteResponse.results[0].text_signature;
-  }
-  return null;
+  fourByteResponse.results.sort((a, b) => {
+    return new Date(a.created_at).getTime() < new Date(b.created_at).getTime()
+      ? -1
+      : 1;
+  });
+  return fourByteResponse.results[0].text_signature;
 }
+
 let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @returns {Object}
+ * @returns {object}
  */
 export async function getMethodDataAsync(fourBytePrefix) {
   try {
-    const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+    const fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
       log.error(e);
       return null;
     });
@@ -60,17 +62,11 @@ export async function getMethodDataAsync(fourBytePrefix) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    let sig = await registry.lookup(fourBytePrefix);
-
-    if (!sig) {
-      sig = await fourByteSig;
-    }
-
-    if (!sig) {
+    if (!fourByteSig) {
       return {};
     }
 
-    const parsedResult = registry.parse(sig);
+    const parsedResult = registry.parse(fourByteSig);
 
     return {
       name: parsedResult.name,
@@ -104,6 +100,7 @@ export function isTokenMethodAction(type) {
   return [
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
     TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ].includes(type);
@@ -131,8 +128,11 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const { isContractCode } = await readAddressAsContract(global.eth, address);
-  return isContractCode;
+  const { isContractAddress } = await readAddressAsContract(
+    global.eth,
+    address,
+  );
+  return isContractAddress;
 }
 
 export function sumHexes(...args) {
@@ -155,8 +155,8 @@ export function isLegacyTransaction(txParams) {
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {Object} transaction - The txMeta object of a transaction.
- * @param {Object} transaction.txReceipt - The transaction receipt.
+ * @param {object} transaction - The txMeta object of a transaction.
+ * @param {object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
 export function getStatusKey(transaction) {
@@ -204,6 +204,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
+    }
+    case TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL: {
+      return t('setApprovalForAll');
     }
     case TRANSACTION_TYPES.SIMPLE_SEND: {
       return t('sendingNativeAsset', [nativeCurrency]);

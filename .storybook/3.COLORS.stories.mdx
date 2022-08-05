@@ -1,19 +1,11 @@
 import { Meta } from '@storybook/addon-docs';
-import ActionaleMessage from '../ui/components/ui/actionable-message';
 import designTokenDiagramImage from './images/design.token.graphic.svg';
 
-<Meta title="Design Tokens / Color" />
+<Meta title="Foundations / Color" />
 
 # Color
 
 Color is used to express style and communicate meaning.
-
-<ActionaleMessage
-  type="warning"
-  message="We are in the process of consolidating all of our colors, making them accessible and enabling theming. Many of the colors used throughout the codebase are deprecated please follow the guide below to ensure you are using the correct colors when building MetaMask UI"
-/>
-
-<br />
 
 ## Design tokens
 
@@ -67,6 +59,7 @@ var(--color-text-muted)
 
 /** Icons */
 var(--color-icon-default)
+var(--color-icon-alternative)
 var(--color-icon-muted)
 
 /** Borders */
@@ -75,20 +68,20 @@ var(--color-border-muted)
 
 /** Overlays */
 var(--color-overlay-default)
-var(--color-overlay-inverse)
+var(--color-overlay-inverse) [DEPRECATED]
 
 /** User Actions */
 var(--color-primary-default)
 var(--color-primary-alternative)
 var(--color-primary-muted)
 var(--color-primary-inverse)
-var(--color-primary-disabled)
+var(--color-primary-disabled) [DEPRECATED]
 
-var(--color-secondary-default)
-var(--color-secondary-alternative)
-var(--color-secondary-muted)
-var(--color-secondary-inverse)
-var(--color-secondary-disabled)
+var(--color-secondary-default) [DEPRECATED]
+var(--color-secondary-alternative) [DEPRECATED]
+var(--color-secondary-muted) [DEPRECATED]
+var(--color-secondary-inverse) [DEPRECATED]
+var(--color-secondary-disabled) [DEPRECATED]
 
 /** States */
 /** Error */
@@ -96,28 +89,28 @@ var(--color-error-default)
 var(--color-error-alternative)
 var(--color-error-muted)
 var(--color-error-inverse)
-var(--color-error-disabled)
+var(--color-error-disabled) [DEPRECATED]
 
 /** Warning */
 var(--color-warning-default)
-var(--color-warning-alternative)
+var(--color-warning-alternative) [DEPRECATED]
 var(--color-warning-muted)
 var(--color-warning-inverse)
-var(--color-warning-disabled)
+var(--color-warning-disabled) [DEPRECATED]
 
 /** Success */
 var(--color-success-default)
-var(--color-success-alternative)
+var(--color-success-alternative) [DEPRECATED]
 var(--color-success-muted)
 var(--color-success-inverse)
-var(--color-success-disabled)
+var(--color-success-disabled) [DEPRECATED]
 
 /** Info */
 var(--color-info-default)
-var(--color-info-alternative)
+var(--color-info-alternative) [DEPRECATED]
 var(--color-info-muted)
 var(--color-info-inverse)
-var(--color-info-disabled)
+var(--color-info-disabled) [DEPRECATED]
 ```
 
 ### **Component colors** (tier 3)

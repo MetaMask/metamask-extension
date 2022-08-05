@@ -19,6 +19,11 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_DEADLINE,
+  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+} from '../../../shared/constants/smartTransactions';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
@@ -41,8 +46,6 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
-const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
-const FALLBACK_SMART_TRANSACTIONS_DEADLINE = 180;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -86,8 +89,10 @@ const initialState = {
     saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime:
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsFeatureFlags: {},
   },
 };
@@ -129,19 +134,17 @@ export default class SwapsController {
     });
   }
 
-  async fetchSwapsRefreshRates(chainId) {
+  async fetchSwapsNetworkConfig(chainId) {
     const response = await fetchWithCache(
       getBaseApi('network', chainId),
       { method: 'GET' },
       { cacheRefreshTime: 600000 },
     );
-    const { refreshRates } = response || {};
+    const { refreshRates, parameters = {} } = response || {};
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
-      typeof refreshRates.quotesPrefetching !== 'number' ||
-      typeof refreshRates.stxGetTransactions !== 'number' ||
-      typeof refreshRates.stxBatchStatus !== 'number'
+      typeof refreshRates.quotesPrefetching !== 'number'
     ) {
       throw new Error(
         `MetaMask - invalid response for refreshRates: ${response}`,
@@ -154,35 +157,39 @@ export default class SwapsController {
       stxGetTransactions: refreshRates.stxGetTransactions * 1000,
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
       stxStatusDeadline: refreshRates.stxStatusDeadline,
+      stxMaxFeeMultiplier: parameters.stxMaxFeeMultiplier,
     };
   }
 
-  // Sets the refresh rate for quote updates from the MetaSwap API
-  async _setSwapsRefreshRates() {
+  // Sets the network config from the MetaSwap API.
+  async _setSwapsNetworkConfig() {
     const chainId = this._getCurrentChainId();
-    let swapsRefreshRates;
+    let swapsNetworkConfig;
     try {
-      swapsRefreshRates = await this.fetchSwapsRefreshRates(chainId);
+      swapsNetworkConfig = await this.fetchSwapsNetworkConfig(chainId);
     } catch (e) {
-      console.error('Request for swaps quote refresh time failed: ', e);
+      console.error('Request for Swaps network config failed: ', e);
     }
     const { swapsState: latestSwapsState } = this.store.getState();
     this.store.updateState({
       swapsState: {
         ...latestSwapsState,
         swapsQuoteRefreshTime:
-          swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
         swapsQuotePrefetchingRefreshTime:
-          swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsNetworkConfig?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
         swapsStxGetTransactionsRefreshTime:
-          swapsRefreshRates?.stxGetTransactions ||
-          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+          swapsNetworkConfig?.stxGetTransactions ||
+          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
         swapsStxBatchStatusRefreshTime:
-          swapsRefreshRates?.stxBatchStatus ||
-          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+          swapsNetworkConfig?.stxBatchStatus ||
+          FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
         swapsStxStatusDeadline:
-          swapsRefreshRates?.stxStatusDeadline ||
+          swapsNetworkConfig?.stxStatusDeadline ||
           FALLBACK_SMART_TRANSACTIONS_DEADLINE,
+        swapsStxMaxFeeMultiplier:
+          swapsNetworkConfig?.stxMaxFeeMultiplier ||
+          FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
       },
     });
   }
@@ -255,7 +262,7 @@ export default class SwapsController {
       this._fetchTradesInfo(fetchParams, {
         ...fetchParamsMetaData,
       }),
-      this._setSwapsRefreshRates(),
+      this._setSwapsNetworkConfig(),
     ]);
 
     const {
@@ -330,10 +337,8 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
-      const [
-        _topAggId,
-        quotesWithSavingsAndFeeData,
-      ] = await this._findTopQuoteAndCalculateSavings(newQuotes);
+      const [_topAggId, quotesWithSavingsAndFeeData] =
+        await this._findTopQuoteAndCalculateSavings(newQuotes);
       topAggId = _topAggId;
       newQuotes = quotesWithSavingsAndFeeData;
     }
@@ -480,10 +485,8 @@ export default class SwapsController {
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
-    const {
-      gasLimit: newGasEstimate,
-      simulationFails,
-    } = await this.timedoutGasReturn(quoteToUpdate.trade);
+    const { gasLimit: newGasEstimate, simulationFails } =
+      await this.timedoutGasReturn(quoteToUpdate.trade);
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
@@ -631,9 +634,8 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const {
-      contractExchangeRates: tokenConversionRates,
-    } = this.getTokenRatesState();
+    const { contractExchangeRates: tokenConversionRates } =
+      this.getTokenRatesState();
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
@@ -646,10 +648,8 @@ export default class SwapsController {
 
     const newQuotes = cloneDeep(quotes);
 
-    const {
-      gasFeeEstimates,
-      gasEstimateType,
-    } = await this._getEIP1559GasFeeEstimates();
+    const { gasFeeEstimates, gasEstimateType } =
+      await this._getEIP1559GasFeeEstimates();
 
     let usedGasPrice = '0x0';
 
@@ -750,9 +750,8 @@ export default class SwapsController {
       const tokenPercentageOfPreFeeDestAmount = new BigNumber(100, 10)
         .minus(metaMaskFee, 10)
         .div(100);
-      const destinationAmountBeforeMetaMaskFee = decimalAdjustedDestinationAmount.div(
-        tokenPercentageOfPreFeeDestAmount,
-      );
+      const destinationAmountBeforeMetaMaskFee =
+        decimalAdjustedDestinationAmount.div(tokenPercentageOfPreFeeDestAmount);
       const metaMaskFeeInTokens = destinationAmountBeforeMetaMaskFee.minus(
         decimalAdjustedDestinationAmount,
       );
@@ -877,7 +876,7 @@ export default class SwapsController {
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
  * @param {Array} _quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
- * @returns {Object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
+ * @returns {object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
  */
 function getMedianEthValueQuote(_quotes) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
@@ -954,7 +953,7 @@ function getMedianEthValueQuote(_quotes) {
  *
  * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
  * ethValueOfTokens properties
- * @returns {Object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * @returns {object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
  * the passed quote objects
  */
 function meansOfQuotesFeesAndValue(quotes) {

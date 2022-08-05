@@ -135,9 +135,8 @@ describe('Selectors', () => {
   });
 
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
-    const accountsWithSendEther = selectors.accountsWithSendEtherInfoSelector(
-      mockState,
-    );
+    const accountsWithSendEther =
+      selectors.accountsWithSendEtherInfoSelector(mockState);
     expect(accountsWithSendEther).toHaveLength(2);
     expect(accountsWithSendEther[0].balance).toStrictEqual('0x0');
     expect(accountsWithSendEther[0].address).toStrictEqual(
@@ -147,9 +146,8 @@ describe('Selectors', () => {
   });
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
-    const currentAccountwithSendEther = selectors.getCurrentAccountWithSendEtherInfo(
-      mockState,
-    );
+    const currentAccountwithSendEther =
+      selectors.getCurrentAccountWithSendEtherInfo(mockState);
     expect(currentAccountwithSendEther.balance).toStrictEqual('0x0');
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -235,13 +233,34 @@ describe('Selectors', () => {
     });
   });
   it('#getIsAdvancedGasFeeDefault', () => {
-    const isAdvancedGasFeeDefault = selectors.getIsAdvancedGasFeeDefault(
-      mockState,
-    );
+    const isAdvancedGasFeeDefault =
+      selectors.getIsAdvancedGasFeeDefault(mockState);
     expect(isAdvancedGasFeeDefault).toStrictEqual(true);
   });
   it('#getAppIsLoading', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
+  });
+  it('#getNotifications', () => {
+    const notifications = selectors.getNotifications(mockState);
+
+    expect(notifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+      mockState.metamask.notifications.test2,
+    ]);
+  });
+  it('#getUnreadNotificationsCount', () => {
+    const unreadNotificationCount =
+      selectors.getUnreadNotificationsCount(mockState);
+
+    expect(unreadNotificationCount).toStrictEqual(1);
+  });
+
+  it('#getUnreadNotifications', () => {
+    const unreadNotifications = selectors.getUnreadNotifications(mockState);
+
+    expect(unreadNotifications).toStrictEqual([
+      mockState.metamask.notifications.test,
+    ]);
   });
 });

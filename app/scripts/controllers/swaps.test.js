@@ -13,6 +13,10 @@ import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+} from '../../../shared/constants/smartTransactions';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -38,8 +42,7 @@ const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 const POLLING_TIMEOUT = SECOND * 1000;
 
 const MOCK_APPROVAL_NEEDED = {
-  data:
-    '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
+  data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
   to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   amount: '0',
   from: '0x2369267687A84ac7B494daE2f1542C40E37f4455',
@@ -134,8 +137,10 @@ const EMPTY_INIT_STATE = {
     swapsFeatureFlags: {},
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
-    swapsStxBatchStatusRefreshTime: 10000,
-    swapsStxGetTransactionsRefreshTime: 10000,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime:
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
   },
@@ -365,13 +370,10 @@ describe('SwapsController', function () {
           baseGasEstimate,
         );
 
-        const {
-          gasLimit: bufferedGasLimit,
-        } = await swapsController.getBufferedGasLimit();
-        const {
-          gasEstimate,
-          gasEstimateWithRefund,
-        } = swapsController.store.getState().swapsState.quotes[initialAggId];
+        const { gasLimit: bufferedGasLimit } =
+          await swapsController.getBufferedGasLimit();
+        const { gasEstimate, gasEstimateWithRefund } =
+          swapsController.store.getState().swapsState.quotes[initialAggId];
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
@@ -411,12 +413,10 @@ describe('SwapsController', function () {
       });
 
       it('returns the top aggId and quotes with savings and fee values if passed necessary data and an even number of quotes', async function () {
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(
-          getTopQuoteAndSavingsMockQuotes(),
-        );
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(
+            getTopQuoteAndSavingsMockQuotes(),
+          );
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(
           resultQuotes,
@@ -437,10 +437,8 @@ describe('SwapsController', function () {
           medianMetaMaskFee: '0.0202',
         };
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -480,10 +478,8 @@ describe('SwapsController', function () {
           },
         };
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -498,7 +494,8 @@ describe('SwapsController', function () {
             trade: { value: '0x8ac7230489e80000' },
           }),
         );
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes =
+          getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
@@ -544,10 +541,8 @@ describe('SwapsController', function () {
           },
         };
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_1);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -564,7 +559,8 @@ describe('SwapsController', function () {
         );
         // 0.04 ETH fee included in trade value
         testInput[TEST_AGG_ID_1].trade.value = '0x8b553ece48ec0000';
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes =
+          getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
@@ -621,10 +617,8 @@ describe('SwapsController', function () {
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
@@ -633,7 +627,8 @@ describe('SwapsController', function () {
         const testInput = getTopQuoteAndSavingsMockQuotes();
         // 0.04 ETH fee included in trade value
         testInput[TEST_AGG_ID_1].trade.value = '0x8e1bc9bf040000';
-        const baseExpectedResultQuotes = getTopQuoteAndSavingsBaseExpectedResults();
+        const baseExpectedResultQuotes =
+          getTopQuoteAndSavingsBaseExpectedResults();
         const expectedResultQuotes = {
           ...baseExpectedResultQuotes,
           [TEST_AGG_ID_1]: {
@@ -657,10 +652,8 @@ describe('SwapsController', function () {
         delete expectedResultQuotes[TEST_AGG_ID_1].isBestQuote;
         delete expectedResultQuotes[TEST_AGG_ID_1].savings;
 
-        const [
-          topAggId,
-          resultQuotes,
-        ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
+        const [topAggId, resultQuotes] =
+          await swapsController._findTopQuoteAndCalculateSavings(testInput);
         assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });

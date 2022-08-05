@@ -17,6 +17,7 @@ import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
+import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -40,7 +41,7 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  */
 
 /**
- * @typedef {Object} GasFeeInputReturnType
+ * @typedef {object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
  *  user's preferred currency.
@@ -81,7 +82,7 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  *
  * @param {EstimateLevel} [defaultEstimateToUse] - which estimate
  *  level to default the 'estimateToUse' state variable to.
- * @param {object} [transaction]
+ * @param {object} [_transaction]
  * @param {string} [minimumGasLimit]
  * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
  * @returns {GasFeeInputReturnType & import(
@@ -90,10 +91,28 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  */
 export function useGasFeeInputs(
   defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
-  transaction,
+  _transaction,
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
+  const initialRetryTxMeta = {
+    txParams: _transaction?.txParams,
+    id: _transaction?.id,
+    userFeeLevel: _transaction?.userFeeLevel,
+    originalGasEstimate: _transaction?.originalGasEstimate,
+    userEditedGasLimit: _transaction?.userEditedGasLimit,
+  };
+
+  if (_transaction?.previousGas) {
+    initialRetryTxMeta.previousGas = _transaction?.previousGas;
+  }
+
+  const [retryTxMeta, setRetryTxMeta] = useState(initialRetryTxMeta);
+
+  const transaction = editGasModeIsSpeedUpOrCancel(editGasMode)
+    ? retryTxMeta
+    : _transaction;
+
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const supportsEIP1559 =
@@ -167,30 +186,24 @@ export function useGasFeeInputs(
     transaction,
   ]);
 
-  const {
-    gasPrice,
-    setGasPrice,
-    setGasPriceHasBeenManuallySet,
-  } = useGasPriceInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    transaction,
-  });
+  const { gasPrice, setGasPrice, setGasPriceHasBeenManuallySet } =
+    useGasPriceInput({
+      estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      transaction,
+    });
 
-  const {
-    maxFeePerGas,
-    maxFeePerGasFiat,
-    setMaxFeePerGas,
-  } = useMaxFeePerGasInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    gasLimit,
-    gasPrice,
-    supportsEIP1559V2,
-    transaction,
-  });
+  const { maxFeePerGas, maxFeePerGasFiat, setMaxFeePerGas } =
+    useMaxFeePerGasInput({
+      estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      gasLimit,
+      gasPrice,
+      supportsEIP1559V2,
+      transaction,
+    });
 
   const {
     maxPriorityFeePerGas,
@@ -272,6 +285,7 @@ export function useGasFeeInputs(
     maxPriorityFeePerGas,
     minimumGasLimit,
     transaction,
+    setRetryTxMeta,
   });
 
   // When a user selects an estimate level, it will wipe out what they have

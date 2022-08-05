@@ -1,15 +1,7 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  regularDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Deploy contract and call contract methods', function () {
-  let windowHandles;
-  let extension;
-  let popup;
-  let dapp;
   const ganacheOptions = {
     accounts: [
       {
@@ -23,7 +15,7 @@ describe('Deploy contract and call contract methods', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'imported-account',
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
@@ -32,32 +24,17 @@ describe('Deploy contract and call contract methods', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // connects the dapp
+        // deploy contract
         await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#deployButton');
         await driver.waitUntilXWindowHandles(3);
-        await driver.delay(5000);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-        dapp = await driver.switchToWindowWithTitle(
+        let windowHandles = await driver.getAllWindowHandles();
+        const extension = windowHandles[0];
+        const dapp = await driver.switchToWindowWithTitle(
           'E2E Test Dapp',
           windowHandles,
         );
-        popup = windowHandles.find(
-          (handle) => handle !== extension && handle !== dapp,
-        );
-        await driver.switchToWindow(popup);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-
-        // creates a deploy contract transaction
-        await driver.switchToWindow(dapp);
-        await driver.clickElement('#deployButton');
-
         // displays the contract creation data
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -91,13 +68,15 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(dapp);
         await driver.clickElement('#depositButton');
         await driver.waitUntilXWindowHandles(3);
-        await driver.delay(5000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
@@ -117,13 +96,15 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(dapp);
         await driver.clickElement('#withdrawButton');
         await driver.waitUntilXWindowHandles(3);
-        await driver.delay(5000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);

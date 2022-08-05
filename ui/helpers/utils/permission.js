@@ -58,6 +58,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-wifi',
     rightIcon: null,
   },
+  [EndowmentPermissions['endowment:long-running']]: {
+    label: (t) => t('permission_longRunning'),
+    leftIcon: 'fas fa-infinity',
+    rightIcon: null,
+  },
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: {
     label: (t, permissionName) =>
@@ -68,7 +73,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 });
 
 /**
- * @typedef {Object} PermissionLabelObject
+ * @typedef {object} PermissionLabelObject
  * @property {string} label - The text label.
  * @property {string} leftIcon - The left icon.
  * @property {string} rightIcon - The right icon.

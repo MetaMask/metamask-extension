@@ -1,7 +1,4 @@
-import {
-  isValidHexAddress,
-  toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 let iconFactory;
 
@@ -17,22 +14,9 @@ function IconFactory(jazzicon) {
   this.cache = {};
 }
 
-IconFactory.prototype.iconForAddress = function (
-  address,
-  diameter,
-  useTokenDetection,
-  tokenList,
-) {
-  // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
-  // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
-  // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
-  // And since the token.address from allTokens is checksumaddress
-  // tokenAddress have to be changed to lowercase when we are using dynamic list
-  const addr = useTokenDetection
-    ? address.toLowerCase()
-    : toChecksumHexAddress(address);
-  if (iconExistsFor(addr, tokenList)) {
-    return imageElFor(addr, useTokenDetection, tokenList);
+IconFactory.prototype.iconForAddress = function (address, diameter, tokenList) {
+  if (iconExistsFor(address.toLowerCase(), tokenList)) {
+    return imageElFor(address.toLowerCase(), tokenList);
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -67,16 +51,10 @@ function iconExistsFor(address, tokenList) {
   );
 }
 
-function imageElFor(address, useTokenDetection, tokenList) {
+function imageElFor(address, tokenList) {
   const tokenMetadata = tokenList[address];
-  const fileName = tokenMetadata?.iconUrl;
-  // token from dynamic api list is fetched when useTokenDetection is true
-  // In the static list, the iconUrl will be holding only a filename for the image,
-  // the corresponding images will be available in the `images/contract/` location when the contract-metadata package was added to the extension
-  //  so that it can be accessed using the filename in iconUrl.
-  const path = useTokenDetection ? fileName : `images/contract/${fileName}`;
   const img = document.createElement('img');
-  img.src = path;
+  img.src = tokenMetadata?.iconUrl;
   img.style.width = '100%';
   return img;
 }

@@ -61,6 +61,8 @@ popoverContent.setAttribute('id', 'popover-content');
 window.document.body.appendChild(popoverContent);
 
 // fetch
+// fetch is part of node js in future versions, thus triggering no-shadow
+// eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 
 const { Headers, Request, Response } = fetch;
@@ -70,6 +72,10 @@ Object.assign(window, { fetch, Headers, Request, Response });
 window.localStorage = {
   removeItem: () => null,
 };
+
+// used for native dark/light mode detection
+window.matchMedia = () => true;
+
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;
 

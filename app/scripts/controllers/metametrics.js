@@ -1,4 +1,13 @@
-import { isEqual, merge, omit, omitBy, pickBy } from 'lodash';
+import {
+  isEqual,
+  memoize,
+  merge,
+  omit,
+  omitBy,
+  pickBy,
+  size,
+  sum,
+} from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { generateUUID } from 'pubnub';
@@ -31,10 +40,11 @@ const exceptionsToFilter = {
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventFragment} MetaMetricsEventFragment
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsTraits} MetaMetricsTraits
  */
 
 /**
- * @typedef {Object} MetaMetricsControllerState
+ * @typedef {object} MetaMetricsControllerState
  * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
@@ -47,9 +57,9 @@ const exceptionsToFilter = {
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {Object} options.segment - an instance of analytics-node for tracking
+   * @param {object} options.segment - an instance of analytics-node for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} options.preferencesStore - The preferences controller store, used
+   * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
@@ -282,6 +292,30 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Calls this._identify with validated metaMetricsId and user traits if user is participating
+   * in the MetaMetrics analytics program
+   *
+   * @param {object} userTraits
+   */
+  identify(userTraits) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+
+    if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
+      return;
+    }
+    if (typeof userTraits !== 'object') {
+      console.warn(
+        `MetaMetricsController#identify: userTraits parameter must be an object. Received type: ${typeof userTraits}`,
+      );
+      return;
+    }
+
+    const allValidTraits = this._buildValidTraits(userTraits);
+
+    this._identify(allValidTraits);
+  }
+
+  /**
    * Setter for the `participateInMetaMetrics` property
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
@@ -434,7 +468,7 @@ export default class MetaMetricsController {
   handleMetaMaskStateUpdate(newState) {
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
-      // this.identify(userTraits);
+      this.identify(userTraits);
     }
   }
 
@@ -507,15 +541,47 @@ export default class MetaMetricsController {
     };
   }
 
+  /**
+   * This method generates the MetaMetrics user traits object, omitting any
+   * traits that have not changed since the last invocation of this method.
+   *
+   * @param {object} metamaskState - Full metamask state object.
+   * @returns {MetaMetricsTraits | null} traits that have changed since last update
+   */
   _buildUserTraitsObject(metamaskState) {
+    /** @type {MetaMetricsTraits} */
     const currentTraits = {
+      [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
+        Object.values(metamaskState.addressBook).map(size),
+      ),
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
-        .length,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
+      [TRAITS.NETWORKS_WITHOUT_TICKER]:
+        metamaskState.frequentRpcListDetail.reduce(
+          (networkList, currentNetwork) => {
+            if (!currentNetwork.ticker) {
+              networkList.push(currentNetwork.chainId);
+            }
+            return networkList;
+          },
+          [],
+        ),
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
+        .length,
+      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+        metamaskState.allCollectibles,
+      ),
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
+        metamaskState.allCollectibles,
+      ).length,
+      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
+      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THEME]: metamaskState.theme || 'default',
+      [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
     if (!this.previousTraits) {
@@ -534,6 +600,144 @@ export default class MetaMetricsController {
 
     return null;
   }
+
+  /**
+   * Returns a new object of all valid user traits. For dates, we transform them into ISO-8601 timestamp strings.
+   *
+   * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
+   * @param {object} userTraits
+   * @returns {object}
+   */
+  _buildValidTraits(userTraits) {
+    return Object.entries(userTraits).reduce((validTraits, [key, value]) => {
+      if (this._isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this._isValidTrait(value)) {
+        validTraits[key] = value;
+      } else {
+        console.warn(
+          `MetaMetricsController: "${key}" value is not a valid trait type`,
+        );
+      }
+      return validTraits;
+    }, {});
+  }
+
+  /**
+   * Returns an array of all of the collectibles/NFTs the user
+   * possesses across all networks and accounts.
+   *
+   * @param {object} allCollectibles
+   * @returns {[]}
+   */
+  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
+    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
+      return result.concat(...Object.values(chainNFTs));
+    }, []);
+  });
+
+  /**
+   * Returns the number of unique collectible/NFT addresses the user
+   * possesses across all networks and accounts.
+   *
+   * @param {object} allCollectibles
+   * @returns {number}
+   */
+  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+      (nft) => nft.address,
+    );
+    const uniqueAddresses = new Set(allNFTAddresses);
+    return uniqueAddresses.size;
+  }
+
+  /**
+   * @param {object} metamaskState
+   * @returns number of unique token addresses
+   */
+  _getNumberOfTokens(metamaskState) {
+    return Object.values(metamaskState.allTokens).reduce(
+      (result, accountsByChain) => {
+        return result + sum(Object.values(accountsByChain).map(size));
+      },
+      0,
+    );
+  }
+
+  /**
+   * Calls segment.identify with given user traits
+   *
+   * @see {@link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify}
+   * @private
+   * @param {object} userTraits
+   */
+  _identify(userTraits) {
+    const { metaMetricsId } = this.state;
+
+    if (!userTraits || Object.keys(userTraits).length === 0) {
+      console.warn('MetaMetricsController#_identify: No userTraits found');
+      return;
+    }
+
+    try {
+      this.segment.identify({
+        userId: metaMetricsId,
+        traits: userTraits,
+      });
+    } catch (err) {
+      this._captureException(err);
+    }
+  }
+
+  /**
+   * Validates the trait value. Segment accepts any data type. We are adding validation here to
+   * support data types for our Segment destination(s) e.g. MixPanel
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTrait(value) {
+    const type = typeof value;
+
+    return (
+      type === 'string' ||
+      type === 'boolean' ||
+      type === 'number' ||
+      this._isValidTraitArray(value) ||
+      this._isValidTraitDate(value)
+    );
+  }
+
+  /**
+   * Segment accepts any data type value. We have special logic to validate arrays.
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTraitArray = (value) => {
+    return (
+      Array.isArray(value) &&
+      (value.every((element) => {
+        return typeof element === 'string';
+      }) ||
+        value.every((element) => {
+          return typeof element === 'boolean';
+        }) ||
+        value.every((element) => {
+          return typeof element === 'number';
+        }))
+    );
+  };
+
+  /**
+   * Returns true if the value is an accepted date type
+   *
+   * @param {*} value
+   * @returns {boolean}
+   */
+  _isValidTraitDate = (value) => {
+    return Object.prototype.toString.call(value) === '[object Date]';
+  };
 
   /**
    * Perform validation on the payload and update the id type to use before

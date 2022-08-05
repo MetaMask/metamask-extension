@@ -10,11 +10,12 @@ import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography';
 import { updateViewedNotifications } from '../../../store/actions';
-import { getTranslatedUINoficiations } from '../../../../shared/notifications';
-import { getSortedNotificationsToShow } from '../../../selectors';
+import { getTranslatedUINotifications } from '../../../../shared/notifications';
+import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
   ADVANCED_ROUTE,
+  EXPERIMENTAL_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
@@ -22,8 +23,7 @@ function getActionFunctionById(id, history) {
   const actionFunctions = {
     2: () => {
       global.platform.openTab({
-        url:
-          'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
+        url: 'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
       });
     },
     3: () => {
@@ -44,6 +44,18 @@ function getActionFunctionById(id, history) {
     8: () => {
       updateViewedNotifications({ 8: true });
       history.push(ADVANCED_ROUTE);
+    },
+    10: () => {
+      updateViewedNotifications({ 10: true });
+      history.push(`${ADVANCED_ROUTE}#token-description`);
+    },
+    12: () => {
+      updateViewedNotifications({ 12: true });
+      history.push(EXPERIMENTAL_ROUTE);
+    },
+    13: () => {
+      updateViewedNotifications({ 13: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#show-custom-network`);
     },
   };
 
@@ -163,7 +175,7 @@ export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
   const history = useHistory();
 
-  const notifications = useSelector(getSortedNotificationsToShow);
+  const notifications = useSelector(getSortedAnnouncementsToShow);
   const locale = useSelector(getCurrentLocale);
 
   const [seenNotifications, setSeenNotifications] = useState({});
@@ -228,7 +240,7 @@ export default function WhatsNewPopup({ onClose }) {
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
-          const notification = getTranslatedUINoficiations(t, locale)[id];
+          const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
           return index === 0 || id === 1

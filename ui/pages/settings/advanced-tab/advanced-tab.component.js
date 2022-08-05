@@ -13,7 +13,7 @@ import { getPlatform } from '../../../../app/scripts/lib/util';
 
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -21,11 +21,12 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -68,7 +69,7 @@ export default class AdvancedTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('advanced')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('advanced')),
   )
     .fill(undefined)
     .map(() => {
@@ -179,11 +180,12 @@ export default class AdvancedTab extends PureComponent {
               className="settings-tab__button--red"
               onClick={(event) => {
                 event.preventDefault();
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Reset Account',
+                  properties: {
                     action: 'Reset Account',
-                    name: 'Reset Account',
+                    legacy_event: true,
                   },
                 });
                 showResetAccountConfirmationModal();
@@ -289,10 +291,8 @@ export default class AdvancedTab extends PureComponent {
 
   renderShowConversionInTestnets() {
     const { t } = this.context;
-    const {
-      showFiatInTestnets,
-      setShowFiatConversionOnTestnetsPreference,
-    } = this.props;
+    const { showFiatInTestnets, setShowFiatConversionOnTestnetsPreference } =
+      this.props;
 
     return (
       <div
@@ -373,7 +373,7 @@ export default class AdvancedTab extends PureComponent {
   renderAutoLockTimeLimit() {
     const { t } = this.context;
     const { lockTimeError } = this.state;
-    const { autoLockTimeLimit, setAutoLockTimeLimit } = this.props;
+    const { setAutoLockTimeLimit } = this.props;
 
     return (
       <div
@@ -394,7 +394,6 @@ export default class AdvancedTab extends PureComponent {
               id="autoTimeout"
               placeholder="5"
               value={this.state.autoLockTimeLimit}
-              defaultValue={autoLockTimeLimit}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth
@@ -640,10 +639,8 @@ export default class AdvancedTab extends PureComponent {
 
   renderDismissSeedBackupReminderControl() {
     const { t } = this.context;
-    const {
-      dismissSeedBackUpReminder,
-      setDismissSeedBackUpReminder,
-    } = this.props;
+    const { dismissSeedBackUpReminder, setDismissSeedBackUpReminder } =
+      this.props;
 
     return (
       <div
@@ -696,11 +693,12 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={useTokenDetection}
               onToggle={(value) => {
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Token Detection',
+                  properties: {
                     action: 'Token Detection',
-                    name: 'Token Detection',
+                    legacy_event: true,
                   },
                 });
                 setUseTokenDetection(!value);

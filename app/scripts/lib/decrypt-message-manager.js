@@ -4,6 +4,7 @@ import { bufferToHex, stripHexPrefix } from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 import { addHexPrefix } from './util';
@@ -14,11 +15,11 @@ const hexRe = /^[0-9A-Fa-f]+$/gu;
  * Represents, and contains data about, an 'eth_decrypt' type decryption request. These are created when a
  * decryption for an eth_decrypt call is requested.
  *
- * @typedef {Object} DecryptMessage
+ * @typedef {object} DecryptMessage
  * @property {number} id An id to track and identify the message object
- * @property {Object} msgParams The parameters to pass to the decryptMessage method once the decryption request is
+ * @property {object} msgParams The parameters to pass to the decryptMessage method once the decryption request is
  * approved.
- * @property {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+ * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the decryption request
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the decryption request is 'unapproved', 'approved', 'decrypted' or 'rejected'
@@ -55,7 +56,7 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' DecryptMessages in this.messages
    *
-   * @returns {Object} An index of DecryptMessage ids to DecryptMessages, for all 'unapproved' DecryptMessages in
+   * @returns {object} An index of DecryptMessage ids to DecryptMessages, for all 'unapproved' DecryptMessages in
    * this.messages
    */
   getUnapprovedMsgs() {
@@ -72,8 +73,8 @@ export default class DecryptMessageManager extends EventEmitter {
    * the new DecryptMessage to this.messages, and to save the unapproved DecryptMessages from that list to
    * this.memStore.
    *
-   * @param {Object} msgParams - The params for the eth_decrypt call to be made after the message is approved.
-   * @param {Object} [req] - The original request object possibly containing the origin
+   * @param {object} msgParams - The params for the eth_decrypt call to be made after the message is approved.
+   * @param {object} [req] - The original request object possibly containing the origin
    * @returns {Promise<Buffer>} The raw decrypted message contents
    */
   addUnapprovedMessageAsync(msgParams, req) {
@@ -116,8 +117,8 @@ export default class DecryptMessageManager extends EventEmitter {
    * the new DecryptMessage to this.messages, and to save the unapproved DecryptMessages from that list to
    * this.memStore.
    *
-   * @param {Object} msgParams - The params for the eth_decryptMsg call to be made after the message is approved.
-   * @param {Object} [req] - The original request object possibly containing the origin
+   * @param {object} msgParams - The params for the eth_decryptMsg call to be made after the message is approved.
+   * @param {object} [req] - The original request object possibly containing the origin
    * @returns {number} The id of the newly created DecryptMessage.
    */
   addUnapprovedMessage(msgParams, req) {
@@ -174,8 +175,8 @@ export default class DecryptMessageManager extends EventEmitter {
    * Approves a DecryptMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with the message params modified for proper decryption.
    *
-   * @param {Object} msgParams - The msgParams to be used when eth_decryptMsg is called, plus data added by MetaMask.
-   * @param {Object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
+   * @param {object} msgParams - The msgParams to be used when eth_decryptMsg is called, plus data added by MetaMask.
+   * @param {object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    */
   approveMessage(msgParams) {
@@ -209,7 +210,7 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams - The msgParams to modify
+   * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
   prepMsgForDecryption(msgParams) {
@@ -227,7 +228,7 @@ export default class DecryptMessageManager extends EventEmitter {
     if (reason) {
       this.metricsEvent({
         event: reason,
-        category: 'Messages',
+        category: EVENT.CATEGORIES.MESSAGES,
         properties: {
           action: 'Decrypt Message Request',
         },

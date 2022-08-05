@@ -67,7 +67,7 @@
 
   &__cached-balance,
   &__cached-star {
-    color: var(--color-secondary-default);
+    color: var(--color-warning-default);
   }
 
   &__cached-secondary-balance {
@@ -79,7 +79,7 @@
   &__secondary-balance {
     @include Paragraph;
 
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
   }
 
   &__button {
@@ -125,7 +125,7 @@
   &__secondary-balance {
     @include H5;
 
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
   }
 
   &__button {

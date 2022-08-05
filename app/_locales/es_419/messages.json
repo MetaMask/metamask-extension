@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "Acepto"
   },
-  "aggregatorFeeCost": {
-    "message": "Cuota de red de agregador"
-  },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Cuota de red de agregador y aprobación"
-  },
-  "approvalTxGasCost": {
-    "message": "Costo de gas por transacción de aprobación"
   },
   "approve": {
     "message": "Aprobar límite de gastos"
@@ -372,10 +363,10 @@
     "message": "Comprar"
   },
   "buyWithWyre": {
-    "message": "Comprar ETH con Wyre"
+    "message": "Comprar $1 con Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
+    "message": "Wyre le permite usar una tarjeta de débito para depositar $1 directamente en su cuenta de MetaMask."
   },
   "bytes": {
     "message": "Bytes"
@@ -1047,10 +1038,6 @@
   "externalExtension": {
     "message": "Extensión externa"
   },
-  "extraApprovalGas": {
-    "message": "+$1 de gas por aprobación",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "Con errores"
   },
@@ -1319,13 +1306,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
   },
-  "importExistingWalletDescription": {
-    "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
-  "importExistingWalletTitle": {
-    "message": "Importar la cartera existente con la frase secreta de recuperación"
-  },
   "importMyWallet": {
     "message": "Importar Mi cartera"
   },
@@ -1453,9 +1433,6 @@
   },
   "lastConnected": {
     "message": "Última conexión"
-  },
-  "layer1Fees": {
-    "message": "Cargos de capa 1"
   },
   "learmMoreAboutGas": {
     "message": "¿Quiere $1 sobre el gas?"
@@ -1666,10 +1643,6 @@
   "metametricsTitle": {
     "message": "Únase a más de 6 millones de usuarios para mejorar MetaMask"
   },
-  "mismatchedChain": {
-    "message": "Los detalles de la red de este ID de cadena no coinciden con nuestros registros. Antes de continuar, le recomendamos que $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "verifique los detalles de la red",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1789,9 +1762,6 @@
   },
   "newNFTsDetected": {
     "message": "¡Nuevo! Detección NFT"
-  },
-  "newNFTsDetectedInfo": {
-    "message": "Permitir que MetaMask detecte automáticamente NFT de Opensea y los muestre en su cartera MetaMask."
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
@@ -2520,9 +2490,6 @@
   "signed": {
     "message": "Firmado"
   },
-  "simulationErrorMessage": {
-    "message": "Se anticipa que esta transacción falle. En caso de intentar ejecutarla, se anticipa que eso sea costoso y a la vez falle, y por lo tanto no se recomienda."
-  },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
   },
@@ -3194,9 +3161,6 @@
   "tryAgain": {
     "message": "Vuelva a intentarlo"
   },
-  "tryAnywayOption": {
-    "message": "Lo intentaré de todos modos"
-  },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"
   },
@@ -3246,10 +3210,6 @@
   "unrecognizedChain": {
     "message": "No se reconoce esta red personalizada. Antes de continuar, le recomendamos que $1",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "verifique los detalles de la red",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "El envío de tokens coleccionables (ERC-721) no se admite actualmente",

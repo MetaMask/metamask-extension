@@ -4,14 +4,15 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -26,7 +27,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(
+    getNumberOfSettingsInSection(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),
@@ -62,11 +63,12 @@ export default class SecurityTab extends PureComponent {
               large
               onClick={(event) => {
                 event.preventDefault();
-                this.context.metricsEvent({
-                  eventOpts: {
-                    category: 'Settings',
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: 'Reveal Seed Phrase',
+                  properties: {
                     action: 'Reveal Seed Phrase',
-                    name: 'Reveal Seed Phrase',
+                    legacy_event: true,
                   },
                 });
                 history.push(REVEAL_SEED_ROUTE);
@@ -82,10 +84,8 @@ export default class SecurityTab extends PureComponent {
 
   renderMetaMetricsOptIn() {
     const { t } = this.context;
-    const {
-      participateInMetaMetrics,
-      setParticipateInMetaMetrics,
-    } = this.props;
+    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[3]} className="settings-page__content-row">
@@ -111,10 +111,8 @@ export default class SecurityTab extends PureComponent {
 
   renderIncomingTransactionsOptIn() {
     const { t } = this.context;
-    const {
-      showIncomingTransactions,
-      setShowIncomingTransactionsFeatureFlag,
-    } = this.props;
+    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[1]} className="settings-page__content-row">

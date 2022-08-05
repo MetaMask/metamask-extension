@@ -5,6 +5,7 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
@@ -22,9 +23,11 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import SearchIcon from '../../ui/search-icon';
 import IconCheck from '../../ui/icon/icon-check';
 import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
 import IconConnect from '../../ui/icon/icon-connect';
@@ -33,6 +36,7 @@ import IconPlus from '../../ui/icon/icon-plus';
 import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
+import SearchIcon from '../../ui/icon/search-icon';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -46,13 +50,13 @@ export function AccountMenuItem(props) {
       {children}
     </div>
   ) : (
-    <div className={itemClassName} onClick={onClick}>
+    <button className={itemClassName} onClick={onClick}>
       {icon ? <div className="account-menu__item__icon">{icon}</div> : null}
       {text ? <div className="account-menu__item__text">{text}</div> : null}
       {subText ? (
         <div className="account-menu__item__subtext">{subText}</div>
       ) : null}
-    </div>
+    </button>
   );
 }
 
@@ -68,7 +72,7 @@ AccountMenuItem.propTypes = {
 export default class AccountMenu extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -83,6 +87,9 @@ export default class AccountMenu extends Component {
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    unreadNotificationsCount: PropTypes.number,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   accountsRef;
@@ -93,11 +100,12 @@ export default class AccountMenu extends Component {
   };
 
   addressFuse = new Fuse([], {
-    threshold: 0.45,
+    threshold: 0.55,
     location: 0,
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
+    ignoreFieldNorm: true,
     keys: [
       { name: 'name', weight: 0.5 },
       { name: 'address', weight: 0.5 },
@@ -123,6 +131,11 @@ export default class AccountMenu extends Component {
   }
 
   renderAccountsSearch() {
+    const handleChange = (e) => {
+      const val = e.target.value.length > 1 ? e.target.value : '';
+      this.setSearchQuery(val);
+    };
+
     const inputAdornment = (
       <InputAdornment
         position="start"
@@ -132,7 +145,7 @@ export default class AccountMenu extends Component {
           marginLeft: '8px',
         }}
       >
-        <SearchIcon color="currentColor" />
+        <SearchIcon color="var(--color-icon-muted)" />
       </InputAdornment>
     );
 
@@ -142,8 +155,7 @@ export default class AccountMenu extends Component {
         id="search-accounts"
         placeholder={this.context.t('searchAccounts')}
         type="text"
-        value={this.state.searchQuery}
-        onChange={(e) => this.setSearchQuery(e.target.value)}
+        onChange={handleChange}
         startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
@@ -193,19 +205,21 @@ export default class AccountMenu extends Component {
       const iconAndNameForOpenSubject = addressSubjects[originOfCurrentTab];
 
       return (
-        <div
+        <button
           className="account-menu__account account-menu__item--clickable"
           onClick={() => {
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            this.context.trackEvent({
+              category: EVENT.CATEGORIES.NAVIGATION,
+              event: 'Switched Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Switched Account',
+                legacy_event: true,
               },
             });
             showAccountDetail(identity.address);
           }}
           key={identity.address}
+          data-testid="account-menu__account"
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
@@ -217,6 +231,7 @@ export default class AccountMenu extends Component {
             <div className="account-menu__name">{identity.name || ''}</div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
+              data-testid="account-menu__balance"
               value={identity.balance}
               type={PRIMARY}
             />
@@ -231,7 +246,7 @@ export default class AccountMenu extends Component {
               />
             </div>
           ) : null}
-        </div>
+        </button>
       );
     });
   }
@@ -284,13 +299,16 @@ export default class AccountMenu extends Component {
   }
 
   render() {
-    const { t, metricsEvent } = this.context;
+    const { t, trackEvent } = this.context;
     const {
       shouldShowAccountsSearch,
       isAccountMenuOpen,
       toggleAccountMenu,
       lockMetamask,
       history,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      unreadNotificationsCount,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     if (!isAccountMenuOpen) {
@@ -338,33 +356,35 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: EVENT.CATEGORIES.NAVIGATION,
+              event: 'Clicked Create Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Create Account',
+                legacy_event: true,
               },
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-default)" />}
+          icon={<IconPlus color="var(--color-icon-alternative)" />}
           text={t('createAccount')}
         />
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: EVENT.CATEGORIES.NAVIGATION,
+              event: 'Clicked Import Account',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Import Account',
+                legacy_event: true,
               },
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
           icon={
             <IconImport
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('importAccount')}
             />
           }
@@ -373,11 +393,12 @@ export default class AccountMenu extends Component {
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();
-            metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            trackEvent({
+              category: EVENT.CATEGORIES.NAVIGATION,
+              event: 'Clicked Connect Hardware',
+              properties: {
                 action: 'Main Menu',
-                name: 'Clicked Connect Hardware',
+                legacy_event: true,
               },
             });
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -388,20 +409,44 @@ export default class AccountMenu extends Component {
           }}
           icon={
             <IconConnect
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('connectHardwareWallet')}
             />
           }
           text={t('connectHardwareWallet')}
         />
         <div className="account-menu__divider" />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <>
+            <AccountMenuItem
+              onClick={() => {
+                toggleAccountMenu();
+                history.push(NOTIFICATIONS_ROUTE);
+              }}
+              icon={
+                <div className="account-menu__notifications">
+                  <i className="fa fa-bell fa-xl" />
+                  {unreadNotificationsCount > 0 && (
+                    <div className="account-menu__notifications__count">
+                      {unreadNotificationsCount}
+                    </div>
+                  )}
+                </div>
+              }
+              text={t('notifications')}
+            />
+            <div className="account-menu__divider" />
+          </>
+          ///: END:ONLY_INCLUDE_IN
+        }
         <AccountMenuItem
           onClick={() => {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
             <IconSpeechBubbles
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={supportText}
             />
           }
@@ -412,17 +457,18 @@ export default class AccountMenu extends Component {
           onClick={() => {
             toggleAccountMenu();
             history.push(SETTINGS_ROUTE);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Navigation',
+            this.context.trackEvent({
+              category: EVENT.CATEGORIES.NAVIGATION,
+              event: 'Opened Settings',
+              properties: {
                 action: 'Main Menu',
-                name: 'Opened Settings',
+                legacy_event: true,
               },
             });
           }}
           icon={
             <IconCog
-              color="var(--color-icon-default)"
+              color="var(--color-icon-alternative)"
               ariaLabel={t('settings')}
             />
           }

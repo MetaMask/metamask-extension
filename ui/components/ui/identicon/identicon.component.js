@@ -1,7 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { isEqual } from 'lodash';
 import Jazzicon from '../jazzicon';
+
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
 
@@ -11,7 +13,7 @@ const getStyles = (diameter) => ({
   borderRadius: diameter / 2,
 });
 
-export default class Identicon extends PureComponent {
+export default class Identicon extends Component {
   static propTypes = {
     /**
      * Adds blue border around the Identicon used for selected account.
@@ -100,14 +102,8 @@ export default class Identicon extends PureComponent {
   }
 
   renderJazzicon() {
-    const {
-      address,
-      className,
-      diameter,
-      alt,
-      useTokenDetection,
-      tokenList,
-    } = this.props;
+    const { address, className, diameter, alt, useTokenDetection, tokenList } =
+      this.props;
     return (
       <Jazzicon
         address={address}
@@ -134,6 +130,11 @@ export default class Identicon extends PureComponent {
     );
   }
 
+  shouldComponentUpdate(nextProps) {
+    // We only want to re-render if props are different.
+    return !isEqual(nextProps, this.props);
+  }
+
   render() {
     const {
       address,
@@ -151,14 +152,22 @@ export default class Identicon extends PureComponent {
     }
 
     if (address) {
-      // token from dynamic api list is fetched when useTokenDetection is true
-      // And since the token.address from allTokens is checksumaddress
-      // tokenAddress have to be changed to lowercase when we are using dynamic list
-      const tokenAddress = useTokenDetection ? address.toLowerCase() : address;
-      if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
-        return this.renderJazzicon();
+      if (process.env.TOKEN_DETECTION_V2) {
+        if (tokenList[address.toLowerCase()]?.iconUrl) {
+          return this.renderJazzicon();
+        }
+      } else {
+        /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
+        // token from dynamic api list is fetched when useTokenDetection is true
+        // And since the token.address from allTokens is checksumaddress
+        // tokenAddress have to be changed to lowercase when we are using dynamic list
+        const tokenAddress = useTokenDetection
+          ? address.toLowerCase()
+          : address;
+        if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
+          return this.renderJazzicon();
+        }
       }
-
       return (
         <div
           className={classnames({ 'identicon__address-wrapper': addBorder })}

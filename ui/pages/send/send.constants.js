@@ -3,12 +3,12 @@ import {
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 
 const MIN_GAS_PRICE_DEC = '0';
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC, 10).toString(16);
 const MIN_GAS_LIMIT_DEC = '21000';
 const MAX_GAS_LIMIT_DEC = '7920027';
-const MIN_GAS_LIMIT_HEX = parseInt(MIN_GAS_LIMIT_DEC, 10).toString(16);
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 const MIN_GAS_PRICE_GWEI = addHexPrefix(
@@ -47,6 +47,11 @@ const ENS_ILLEGAL_CHARACTER = 'ensIllegalCharacter';
 const ENS_UNKNOWN_ERROR = 'ensUnknownError';
 const ENS_REGISTRATION_ERROR = 'ensRegistrationError';
 
+const RECIPIENT_TYPES = {
+  SMART_CONTRACT: 'SMART_CONTRACT',
+  NON_CONTRACT: 'NON_CONTRACT',
+};
+
 export {
   MAX_GAS_LIMIT_DEC,
   HIGH_FEE_WARNING_MULTIPLIER,
@@ -63,7 +68,6 @@ export {
   ENS_UNKNOWN_ERROR,
   ENS_REGISTRATION_ERROR,
   MIN_GAS_LIMIT_DEC,
-  MIN_GAS_LIMIT_HEX,
   MIN_GAS_PRICE_DEC,
   MIN_GAS_PRICE_GWEI,
   MIN_GAS_PRICE_HEX,
@@ -73,4 +77,5 @@ export {
   CONFUSING_ENS_ERROR,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
+  RECIPIENT_TYPES,
 };

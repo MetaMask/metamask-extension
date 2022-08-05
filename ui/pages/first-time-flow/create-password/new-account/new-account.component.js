@@ -6,10 +6,11 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
 import TextField from '../../../../components/ui/text-field';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -27,12 +28,8 @@ export default class NewAccount extends PureComponent {
   };
 
   isValid() {
-    const {
-      password,
-      confirmPassword,
-      passwordError,
-      confirmPasswordError,
-    } = this.state;
+    const { password, confirmPassword, passwordError, confirmPasswordError } =
+      this.state;
 
     if (!password || !confirmPassword || password !== confirmPassword) {
       return false;
@@ -100,11 +97,12 @@ export default class NewAccount extends PureComponent {
     try {
       await onSubmit(password);
 
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Onboarding',
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: 'Submit Password',
+        properties: {
           action: 'Create Password',
-          name: 'Submit Password',
+          legacy_event: true,
         },
       });
 
@@ -115,11 +113,12 @@ export default class NewAccount extends PureComponent {
   };
 
   toggleTermsCheck = () => {
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: 'Check ToS',
+      properties: {
         action: 'Create Password',
-        name: 'Check ToS',
+        legacy_event: true,
       },
     });
 
@@ -150,11 +149,12 @@ export default class NewAccount extends PureComponent {
           <a
             onClick={(e) => {
               e.preventDefault();
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Onboarding',
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.ONBOARDING,
+                event: 'Go Back from Onboarding Create',
+                properties: {
                   action: 'Create Password',
-                  name: 'Go Back from Onboarding Create',
+                  legacy_event: true,
                 },
               });
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);

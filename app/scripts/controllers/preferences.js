@@ -14,17 +14,17 @@ import { NETWORK_EVENTS } from './network';
 export default class PreferencesController {
   /**
    *
-   * @typedef {Object} PreferencesController
-   * @param {Object} opts - Overrides the defaults for the initial state of this.store
-   * @property {Object} store The stored object containing a users preferences, stored in local storage
+   * @typedef {object} PreferencesController
+   * @param {object} opts - Overrides the defaults for the initial state of this.store
+   * @property {object} store The stored object containing a users preferences, stored in local storage
    * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
-   * @property {Object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
+   * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
    * user wishes to see that feature.
    *
    * Feature flags can be set by the global function `setPreference(feature, enabled)`, and so should not expose any sensitive behavior.
-   * @property {Object} store.knownMethodData Contains all data methods known by the user
+   * @property {object} store.knownMethodData Contains all data methods known by the user
    * @property {string} store.currentLocale The preferred language locale key
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
@@ -38,7 +38,7 @@ export default class PreferencesController {
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: Boolean(process.env.TOKEN_DETECTION_V2),
       useCollectibleDetection: false,
       openSeaEnabled: false,
       advancedGasFee: null,
@@ -68,7 +68,8 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
-      theme: 'default',
+      theme: 'light',
+      customNetworkListEnabled: false,
       ...opts.initState,
     };
 
@@ -177,6 +178,17 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
+  }
+
+  /**
+   * Setter for the `customNetworkListEnabled` property
+   *
+   * @param customNetworkListEnabled
+   */
+  setCustomNetworkListEnabled(customNetworkListEnabled) {
+    this.store.updateState({
+      customNetworkListEnabled,
+    });
   }
 
   /**
@@ -364,12 +376,12 @@ export default class PreferencesController {
   /**
    * updates custom RPC details
    *
-   * @param {Object} newRpcDetails - Options bag.
+   * @param {object} newRpcDetails - Options bag.
    * @param {string} newRpcDetails.rpcUrl - The RPC url to add to frequentRpcList.
    * @param {string} newRpcDetails.chainId - The chainId of the selected network.
    * @param {string} [newRpcDetails.ticker] - Optional ticker symbol of the selected network.
    * @param {string} [newRpcDetails.nickname] - Optional nickname of the selected network.
-   * @param {Object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
+   * @param {object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    */
   async updateRpc(newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail();
@@ -444,7 +456,7 @@ export default class PreferencesController {
    * @param {string} chainId - The chainId of the selected network.
    * @param {string} [ticker] - Ticker symbol of the selected network.
    * @param {string} [nickname] - Nickname of the selected network.
-   * @param {Object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
+   * @param {object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    */
   addToFrequentRpcList(
     rpcUrl,
@@ -538,7 +550,7 @@ export default class PreferencesController {
   /**
    * A getter for the `preferences` property
    *
-   * @returns {Object} A key-boolean map of user-selected preferences.
+   * @returns {object} A key-boolean map of user-selected preferences.
    */
   getPreferences() {
     return this.store.getState().preferences;

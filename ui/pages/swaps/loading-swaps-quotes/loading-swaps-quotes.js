@@ -18,8 +18,9 @@ import {
   getHardwareWalletType,
 } from '../../../selectors/selectors';
 import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Mascot from '../../../components/ui/mascot';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
 
@@ -29,7 +30,7 @@ export default function LoadingSwapsQuotes({
   onDone,
 }) {
   const t = useContext(I18nContext);
-  const metaMetricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
@@ -47,7 +48,7 @@ export default function LoadingSwapsQuotes({
   );
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
-    category: 'swaps',
+    category: EVENT.CATEGORIES.SWAPS,
     sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
@@ -104,12 +105,8 @@ export default function LoadingSwapsQuotes({
 
   useEffect(() => {
     if (currentMascotContainer) {
-      const {
-        top,
-        left,
-        width,
-        height,
-      } = currentMascotContainer.getBoundingClientRect();
+      const { top, left, width, height } =
+        currentMascotContainer.getBoundingClientRect();
       const center = { x: left + width / 2, y: top + height / 2 };
       setMidpointTarget(center);
     }
@@ -149,7 +146,6 @@ export default function LoadingSwapsQuotes({
               animationEventEmitter={animationEventEmitter.current}
               width="90"
               height="90"
-              followMouse={false}
               lookAtTarget={midPointTarget}
             />
           </div>
@@ -158,7 +154,7 @@ export default function LoadingSwapsQuotes({
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          metaMetricsEvent(quotesRequestCancelledEventConfig);
+          trackEvent(quotesRequestCancelledEventConfig);
           await dispatch(navigateBackToBuildQuote(history));
         }}
         hideCancel

@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TextField from '../../ui/text-field';
@@ -22,7 +23,7 @@ export default function CreateNewVault({
   const [termsChecked, setTermsChecked] = useState(false);
 
   const t = useI18nContext();
-  const metricsEvent = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onPasswordChange = useCallback(
     (newPassword) => {
@@ -82,16 +83,17 @@ export default function CreateNewVault({
   );
 
   const toggleTermsCheck = useCallback(() => {
-    metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: 'Check ToS',
+      properties: {
         action: 'Import Seed Phrase',
-        name: 'Check ToS',
+        legacy_event: true,
       },
     });
 
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
-  }, [metricsEvent]);
+  }, [trackEvent]);
 
   const termsOfUse = t('acceptTermsOfUse', [
     <a
@@ -107,7 +109,7 @@ export default function CreateNewVault({
 
   return (
     <form className="create-new-vault__form" onSubmit={onImport}>
-      <SrpInput onChange={setSeedPhrase} />
+      <SrpInput onChange={setSeedPhrase} srpText={t('secretRecoveryPhrase')} />
       <div className="create-new-vault__create-password">
         <TextField
           id="password"

@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
   getRenderableTokenData,
@@ -86,14 +86,16 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  TOKEN_BUCKET_PRIORITY,
 } from '../../../../shared/constants/swaps';
 
 import {
   resetSwapsPostFetchState,
-  removeToken,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
@@ -128,9 +130,8 @@ export default function BuildQuote({
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
-    undefined,
-  );
+  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
+    useState(undefined);
   const [verificationClicked, setVerificationClicked] = useState(false);
 
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
@@ -139,12 +140,12 @@ export default function BuildQuote({
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
     fetchParams?.metaData || {};
   const tokens = useSelector(getTokens, isEqual);
-  const topAssets = useSelector(getTopAssets);
+  const topAssets = useSelector(getTopAssets, isEqual);
   const fromToken = useSelector(getFromToken, isEqual);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const fromTokenError = useSelector(getFromTokenError);
   const maxSlippage = useSelector(getMaxSlippage);
-  const toToken = useSelector(getToToken) || destinationTokenInfo;
+  const toToken = useSelector(getToToken, isEqual) || destinationTokenInfo;
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
@@ -214,13 +215,20 @@ export default function BuildQuote({
     useTokenDetection,
   );
 
-  const tokensToSearch = useTokensToSearch({
+  const tokensToSearchSwapFrom = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
+    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.OWNED,
+  });
+  const tokensToSearchSwapTo = useTokensToSearch({
+    usersTokens: memoizedUsersTokens,
+    topTokens: topAssets,
+    shuffledTokensList,
+    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.TOP,
   });
   const selectedToToken =
-    tokensToSearch.find(({ address }) =>
+    tokensToSearchSwapFrom.find(({ address }) =>
       isEqualCaseInsensitive(address, toToken?.address),
     ) || toToken;
   const toTokenIsNotDefault =
@@ -350,7 +358,12 @@ export default function BuildQuote({
   const onToSelect = useCallback(
     (token) => {
       if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(removeToken(toAddress));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
@@ -433,7 +446,7 @@ export default function BuildQuote({
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Build Quote Page Loaded',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
@@ -465,7 +478,7 @@ export default function BuildQuote({
         onClick={() => {
           trackEvent({
             event: 'Clicked Block Explorer Link',
-            category: 'Swaps',
+            category: EVENT.CATEGORIES.SWAPS,
             properties: {
               link_type: 'Token Tracker',
               action: 'Swaps Confirmation',
@@ -658,7 +671,7 @@ export default function BuildQuote({
         </div>
         <DropdownInputPair
           onSelect={onFromSelect}
-          itemsToSearch={tokensToSearch}
+          itemsToSearch={tokensToSearchSwapFrom}
           onInputChange={(value) => {
             onInputChange(value, fromTokenBalance);
           }}
@@ -668,7 +681,7 @@ export default function BuildQuote({
           maxListItems={30}
           loading={
             loading &&
-            (!tokensToSearch?.length ||
+            (!tokensToSearchSwapFrom?.length ||
               !topAssets ||
               !Object.keys(topAssets).length)
           }
@@ -729,7 +742,7 @@ export default function BuildQuote({
         <div className="dropdown-input-pair dropdown-input-pair__to">
           <DropdownSearchList
             startingItem={selectedToToken}
-            itemsToSearch={tokensToSearch}
+            itemsToSearch={tokensToSearchSwapTo}
             searchPlaceholderText={t('swapSearchForAToken')}
             fuseSearchKeys={fuseSearchKeys}
             selectPlaceHolderText={t('swapSelectAToken')}
@@ -737,7 +750,7 @@ export default function BuildQuote({
             onSelect={onToSelect}
             loading={
               loading &&
-              (!tokensToSearch?.length ||
+              (!tokensToSearchSwapTo?.length ||
                 !topAssets ||
                 !Object.keys(topAssets).length)
             }
@@ -794,7 +807,7 @@ export default function BuildQuote({
                       onClick={() => {
                         trackEvent({
                           event: 'Clicked Block Explorer Link',
-                          category: 'Swaps',
+                          category: EVENT.CATEGORIES.SWAPS,
                           properties: {
                             link_type: 'Token Tracker',
                             action: 'Swaps Confirmation',
@@ -825,7 +838,8 @@ export default function BuildQuote({
               )}
             </div>
           ))}
-        {!isDirectWrappingEnabled && (
+        {(smartTransactionsEnabled ||
+          (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
           <div className="build-quote__slippage-buttons-container">
             <SlippageButtons
               onSelect={(newSlippage) => {
@@ -837,6 +851,7 @@ export default function BuildQuote({
               smartTransactionsOptInStatus={smartTransactionsOptInStatus}
               setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
               currentSmartTransactionsError={currentSmartTransactionsError}
+              isDirectWrappingEnabled={isDirectWrappingEnabled}
             />
           </div>
         )}

@@ -7,11 +7,12 @@ import * as actions from '../../../store/actions';
 import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 class PrivateKeyImportView extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -43,22 +44,24 @@ class PrivateKeyImportView extends Component {
     importNewAccount('Private Key', [privateKey])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.ACCOUNTS,
+            event: 'Imported Account with Private Key',
+            properties: {
               action: 'Import Account',
-              name: 'Imported Account with Private Key',
+              legacy_event: true,
             },
           });
           history.push(mostRecentOverviewPage);
           displayWarning(null);
         } else {
           displayWarning(t('importAccountError'));
-          this.context.metricsEvent({
-            eventOpts: {
-              category: 'Accounts',
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.ACCOUNTS,
+            event: 'Error importing with Private Key',
+            properties: {
               action: 'Import Account',
-              name: 'Error importing with Private Key',
+              legacy_event: true,
             },
           });
           setSelectedAddress(firstAddress);

@@ -1,5 +1,10 @@
 .onboarding-metametrics {
-  width: 600px;
+  @include screen-sm-min {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 
   ul {
     margin: 24px 0 0 0;
@@ -29,13 +34,21 @@
   }
 
   &__buttons {
-    margin: 24px auto 0 auto;
-    justify-content: space-between;
-    display: flex;
+    margin-top: 24px;
+    width: 100%;
+
+    @include screen-sm-min {
+      margin-top: 40px;
+      justify-content: space-between;
+      display: flex;
+    }
 
     button {
       margin-bottom: 24px;
-      width: 200px;
+
+      @include screen-sm-min {
+        width: 200px;
+      }
     }
   }
 }

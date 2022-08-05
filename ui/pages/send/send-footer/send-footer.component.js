@@ -6,6 +6,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { SEND_STAGES } from '../../../ducks/send';
 
 export default class SendFooter extends Component {
@@ -19,7 +20,6 @@ export default class SendFooter extends Component {
     toAccounts: PropTypes.array,
     sendStage: PropTypes.string,
     sendErrors: PropTypes.object,
-    gasEstimateType: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     cancelTx: PropTypes.func,
     draftTransactionID: PropTypes.string,
@@ -27,7 +27,7 @@ export default class SendFooter extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   onCancel() {
@@ -52,29 +52,20 @@ export default class SendFooter extends Component {
 
   async onSubmit(event) {
     event.preventDefault();
-    const {
-      addToAddressBookIfNew,
-      sign,
-      to,
-      toAccounts,
-      history,
-      gasEstimateType,
-    } = this.props;
-    const { metricsEvent } = this.context;
+    const { addToAddressBookIfNew, sign, to, toAccounts, history } = this.props;
+    const { trackEvent } = this.context;
 
     // TODO: add nickname functionality
     await addToAddressBookIfNew(to, toAccounts);
     const promise = sign();
 
     Promise.resolve(promise).then(() => {
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
+      trackEvent({
+        category: EVENT.CATEGORIES.TRANSACTIONS,
+        event: 'Complete',
+        properties: {
           action: 'Edit Screen',
-          name: 'Complete',
-        },
-        customVariables: {
-          gasChanged: gasEstimateType,
+          legacy_event: true,
         },
       });
       history.push(CONFIRM_TRANSACTION_ROUTE);
@@ -83,7 +74,7 @@ export default class SendFooter extends Component {
 
   componentDidUpdate(prevProps) {
     const { sendErrors } = this.props;
-    const { metricsEvent } = this.context;
+    const { trackEvent } = this.context;
     if (
       Object.keys(sendErrors).length > 0 &&
       isEqual(sendErrors, prevProps.sendErrors) === false
@@ -91,13 +82,12 @@ export default class SendFooter extends Component {
       const errorField = Object.keys(sendErrors).find((key) => sendErrors[key]);
       const errorMessage = sendErrors[errorField];
 
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
+      trackEvent({
+        category: EVENT.CATEGORIES.TRANSACTIONS,
+        event: 'Error',
+        properties: {
           action: 'Edit Screen',
-          name: 'Error',
-        },
-        customVariables: {
+          legacy_event: true,
           errorField,
           errorMessage,
         },

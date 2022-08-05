@@ -1,0 +1,51 @@
+.confirmation-network-switch {
+  &__center-icon {
+    position: relative;
+    height: 64px;
+  }
+
+  &__icon {
+    width: 64px;
+  }
+
+  &__check {
+    width: 32px;
+    height: 32px;
+    color: var(--color-primary-inverse);
+    background-color: var(--color-primary-default);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 35%;
+      top: 25%;
+    }
+  }
+
+  [dir='rtl'] &__arrow {
+    transform: rotate(180deg);
+  }
+
+  &__dashed-line {
+    width: 130px;
+    border-bottom: 1px solid var(--color-border-muted);
+    border-style: dashed;
+  }
+
+  &__unknown-icon {
+    color: var(--color-icon-muted);
+    border-radius: 50%;
+    border: 1px solid var(--color-border-muted);
+    background-color: var(--color-background-alternative);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    width: 64px;
+  }
+}

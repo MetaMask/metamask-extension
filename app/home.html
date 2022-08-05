@@ -8,11 +8,14 @@
     <link rel="stylesheet" type="text/css" href="./index-rtl.css" title="rtl" disabled>
   </head>
   <body>
-    <div id="app-content"></div>
+    <div id="app-content">
+      <img class="loading-logo" src="./images/logo/metamask-fox.svg" alt="" />
+      <img class="loading-spinner" src="./images/spinner.gif" alt="" />      
+    </div>
     <div id="popover-content"></div>
     <script src="./globalthis.js" type="text/javascript" charset="utf-8"></script>
     <script src="./sentry-install.js" type="text/javascript" charset="utf-8"></script>
-    {{@if(it.useLavamoat)}}
+    {{@if(it.applyLavaMoat)}}
       <script src="./runtime-lavamoat.js" type="text/javascript" charset="utf-8"></script>
       <script src="./lockdown-more.js" type="text/javascript" charset="utf-8"></script>
       <script src="./policy-load.js" type="text/javascript" charset="utf-8"></script>

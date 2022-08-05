@@ -9,7 +9,7 @@
   &__body {
     padding: 12px 18px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       padding: 12px;
     }
   }

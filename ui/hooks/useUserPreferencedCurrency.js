@@ -11,7 +11,7 @@ import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
  *
- * @typedef {Object} UseUserPreferencedCurrencyOptions
+ * @typedef {object} UseUserPreferencedCurrencyOptions
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
  * @property {number} [ethNumberOfDecimals] - Number of significant decimals to display
  *                                             when using ETH
@@ -22,7 +22,7 @@ import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
 /**
  * Defines the return shape of useUserPreferencedCurrency
  *
- * @typedef {Object} UserPreferredCurrency
+ * @typedef {object} UserPreferredCurrency
  * @property {string} currency - the currency type to use (eg: 'ETH', 'usd')
  * @property {number} numberOfDecimals - Number of significant decimals to display
  */
@@ -44,7 +44,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     getPreferences,
     shallowEqual,
   );
-  const showFiat = useSelector(getShouldShowFiat);
+  const showFiat = useSelector(getShouldShowFiat) || opts.showFiatOverride;
   const currentCurrency = useSelector(getCurrentCurrency);
 
   let currency, numberOfDecimals;

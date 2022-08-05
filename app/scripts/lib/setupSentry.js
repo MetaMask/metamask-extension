@@ -68,9 +68,9 @@ export const SENTRY_STATE = {
 };
 
 export default function setupSentry({ release, getState }) {
-  let sentryTarget;
-
-  if (METAMASK_DEBUG) {
+  if (!release) {
+    throw new Error('Missing release');
+  } else if (METAMASK_DEBUG) {
     return undefined;
   }
 
@@ -79,6 +79,7 @@ export default function setupSentry({ release, getState }) {
       ? METAMASK_ENVIRONMENT
       : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
 
+  let sentryTarget;
   if (METAMASK_ENVIRONMENT === 'production') {
     if (!process.env.SENTRY_DSN) {
       throw new Error(
@@ -102,7 +103,17 @@ export default function setupSentry({ release, getState }) {
     environment,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: (report) => {
+      if (getState) {
+        const appState = getState();
+        if (!appState?.store?.metamask?.participateInMetaMetrics) {
+          return null;
+        }
+      } else {
+        return null;
+      }
+      return rewriteReport(report);
+    },
   });
 
   function rewriteReport(report) {

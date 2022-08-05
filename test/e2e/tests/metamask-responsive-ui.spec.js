@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
-describe('Metamask Responsive UI', function () {
+describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet', async function () {
     const driverOptions = { responsive: true };
 
@@ -87,11 +87,11 @@ describe('Metamask Responsive UI', function () {
           });
           await driver.delay(tinyDelayMs);
 
-          // clicks the "Create New Wallet" option
-          await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
-
           // clicks the "I Agree" option on the metametrics opt-in screen
           await driver.clickElement('.btn-primary');
+
+          // clicks the "Create New Wallet" option
+          await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
 
           // accepts a secure password
           await driver.fill(

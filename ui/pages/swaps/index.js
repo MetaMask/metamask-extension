@@ -76,16 +76,17 @@ import {
 import {
   resetBackgroundSwapsState,
   setSwapsTokens,
-  removeToken,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
-import { MetaMetricsContext } from '../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -156,16 +157,24 @@ export default function Swap() {
   const showSmartTransactionsErrorMessage =
     currentSmartTransactionsError && !smartTransactionsErrorMessageDismissed;
 
-  if (networkAndAccountSupports1559) {
-    // This will pre-load gas fees before going to the View Quote page.
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGasFeeEstimates();
-  }
+  useEffect(() => {
+    const leaveSwaps = async () => {
+      await dispatch(prepareToLeaveSwaps());
+      // We need to wait until "prepareToLeaveSwaps" is done, because otherwise
+      // a user would be redirected from DEFAULT_ROUTE back to Swaps.
+      history.push(DEFAULT_ROUTE);
+    };
 
-  const {
-    balance: ethBalance,
-    address: selectedAccountAddress,
-  } = selectedAccount;
+    if (!isSwapsChain) {
+      leaveSwaps();
+    }
+  }, [isSwapsChain, dispatch, history]);
+
+  // This will pre-load gas fees before going to the View Quote page.
+  useGasFeeEstimates();
+
+  const { balance: ethBalance, address: selectedAccountAddress } =
+    selectedAccount;
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
 
@@ -203,7 +212,12 @@ export default function Swap() {
         destinationTokenAddedForSwap &&
         (!isAwaitingSwapRoute || conversionError)
       ) {
-        dispatch(removeToken(destinationTokenInfo?.address));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: destinationTokenInfo?.address,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
     };
   }, [
@@ -222,6 +236,9 @@ export default function Swap() {
 
   // eslint-disable-next-line
   useEffect(() => {
+    if (!isSwapsChain) {
+      return undefined;
+    }
     fetchTokens(chainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
@@ -239,14 +256,14 @@ export default function Swap() {
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-  }, [dispatch, chainId, networkAndAccountSupports1559]);
+  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const trackExitedSwapsEvent = () => {
     trackEvent({
       event: 'Exited Swaps',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
         token_from_amount: fetchParams?.value,
@@ -307,7 +324,7 @@ export default function Swap() {
   const trackErrorStxEvent = useCallback(() => {
     trackEvent({
       event: 'Error Smart Transactions',
-      category: 'swaps',
+      category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
         token_from_amount: fetchParams?.value,
@@ -352,13 +369,15 @@ export default function Swap() {
   ]);
 
   if (!isSwapsChain) {
-    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+    // A user is being redirected outside of Swaps via the async "leaveSwaps" function above. In the meantime
+    // we have to prevent the code below this condition, which wouldn't work on an unsupported chain.
+    return <></>;
   }
 
   const isStxNotEnoughFundsError =
     currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
-  const isStxRegularTxPendingError =
-    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_PENDING;
+  const isRegularTxInProgressError =
+    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_IN_PROGRESS;
 
   return (
     <div className="swaps">
@@ -422,7 +441,7 @@ export default function Swap() {
                       {t('stxUnavailable')}
                     </div>
                     <div>
-                      {isStxRegularTxPendingError
+                      {isRegularTxInProgressError
                         ? t('stxFallbackPendingTx')
                         : t('stxFallbackUnavailable')}
                     </div>

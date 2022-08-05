@@ -1,15 +1,12 @@
 .info-tab {
   &__logo-wrapper {
-    height: 80px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
   }
 
   &__logo {
-    max-height: 100%;
-    max-width: 50%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    height: 80px;
   }
 
   &__item {
@@ -19,7 +16,7 @@
   &__link-header {
     padding-bottom: 15px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-bottom: 5px;
     }
   }
@@ -32,7 +29,7 @@
   &__link-item {
     padding: 15px 0;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding: 5px 0;
     }
   }

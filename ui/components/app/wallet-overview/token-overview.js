@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { updateSendAsset } from '../../../ducks/send';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
@@ -27,7 +27,8 @@ import SendIcon from '../../ui/icon/overview-send-icon.component';
 import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 
@@ -84,7 +85,7 @@ const TokenOverview = ({ className, token }) => {
             onClick={async () => {
               trackEvent({
                 event: 'Clicked Send: Token',
-                category: 'Navigation',
+                category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
                   action: 'Home',
                   legacy_event: true,
@@ -92,7 +93,7 @@ const TokenOverview = ({ className, token }) => {
               });
               try {
                 await dispatch(
-                  updateSendAsset({
+                  startNewDraftTransaction({
                     type: ASSET_TYPES.TOKEN,
                     details: token,
                   }),
@@ -117,9 +118,9 @@ const TokenOverview = ({ className, token }) => {
               if (isSwapsChain) {
                 trackEvent({
                   event: 'Swaps Opened',
-                  category: 'swaps',
+                  category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: 'Token View',
+                    source: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
                     active_currency: token.symbol,
                   },
                 });

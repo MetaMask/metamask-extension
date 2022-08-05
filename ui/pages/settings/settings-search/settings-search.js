@@ -1,11 +1,17 @@
 import React, { useState, useContext } from 'react';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { useSelector } from 'react-redux';
+///: END:ONLY_INCLUDE_IN
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
-import SearchIcon from '../../../components/ui/search-icon';
+import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { getSnapsRouteObjects } from '../../../selectors';
+///: END:ONLY_INCLUDE_IN
 
 export default function SettingsSearch({
   onSearch,
@@ -20,6 +26,10 @@ export default function SettingsSearch({
   );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const snaps = useSelector(getSnapsRouteObjects);
+  settingsRoutesListArray.push(...snaps);
+  ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
     threshold: 0.2,
@@ -27,12 +37,15 @@ export default function SettingsSearch({
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
-    keys: ['tab', 'section', 'description'],
+    keys: ['tabMessage', 'sectionMessage', 'descriptionMessage'],
+    getFn: (routeObject, path) => routeObject[path](t),
   });
 
-  // eslint-disable-next-line no-shadow
   const handleSearch = (_searchQuery) => {
-    const sanitizedSearchQuery = _searchQuery.replace(/[^A-z0-9\s]|[\\]/gu, '');
+    const sanitizedSearchQuery = _searchQuery.replace(
+      /[^A-z0-9\s&]|[\\]/gu,
+      '',
+    );
     setSearchQuery(sanitizedSearchQuery);
     if (sanitizedSearchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');
@@ -43,7 +56,7 @@ export default function SettingsSearch({
     const fuseSearchResult = settingsSearchFuse.search(sanitizedSearchQuery);
     const addressSearchResult = settingsRoutesListArray.filter((routes) => {
       return (
-        routes.tab &&
+        routes.tabMessage &&
         sanitizedSearchQuery &&
         isEqualCaseInsensitive(routes.tab, sanitizedSearchQuery)
       );

@@ -9,6 +9,7 @@ import {
   GAS_ESTIMATE_TYPES,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -35,7 +36,7 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
 import GasTiming from '../gas-timing';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
@@ -80,7 +81,7 @@ export default function EditGasDisplay({
   const isMainnet = useSelector(getIsMainnet);
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction.txParams);
+    !isLegacyTransaction(transaction?.txParams);
   const showAdvancedInlineGasIfPossible = useSelector(
     getAdvancedInlineGasShown,
   );
@@ -98,9 +99,8 @@ export default function EditGasDisplay({
     }
   }, [showAdvancedForm]);
 
-  const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
-    transaction,
-  );
+  const dappSuggestedAndTxParamGasFeesAreTheSame =
+    areDappSuggestedAndTxParamGasFeesTheSame(transaction);
 
   const requireDappAcknowledgement = Boolean(
     transaction?.dappSuggestedGasFees &&
@@ -216,8 +216,8 @@ export default function EditGasDisplay({
             hasGasErrors === false &&
             supportsEIP1559 && (
               <GasTiming
-                maxFeePerGas={maxFeePerGas}
-                maxPriorityFeePerGas={maxPriorityFeePerGas}
+                maxFeePerGas={maxFeePerGas.toString()}
+                maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
                 gasWarnings={gasWarnings}
               />
             )
@@ -280,7 +280,7 @@ export default function EditGasDisplay({
                 setShowAdvancedForm(!showAdvancedForm);
                 trackEvent({
                   event: 'Clicked "Advanced Options"',
-                  category: 'Transactions',
+                  category: EVENT.CATEGORIES.TRANSACTIONS,
                   properties: {
                     action: 'Edit Screen',
                     legacy_event: true,

@@ -11,7 +11,7 @@ import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon'
 import Typography from '../../../components/ui/typography';
 
 import {
-  getSettingsSectionNumber,
+  getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -59,7 +59,7 @@ export default class SettingsTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getSettingsSectionNumber(this.context.t, this.context.t('general')),
+    getNumberOfSettingsInSection(this.context.t, this.context.t('general')),
   )
     .fill(undefined)
     .map(() => {
@@ -78,11 +78,8 @@ export default class SettingsTab extends PureComponent {
 
   renderCurrentConversion() {
     const { t } = this.context;
-    const {
-      currentCurrency,
-      setCurrentCurrency,
-      lastFetchedConversionDate,
-    } = this.props;
+    const { currentCurrency, setCurrentCurrency, lastFetchedConversionDate } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[0]} className="settings-page__content-row">
@@ -200,16 +197,19 @@ export default class SettingsTab extends PureComponent {
             {t('jazzAndBlockies')}
           </span>
           <div className="settings-page__content-item__identicon">
-            <div className="settings-page__content-item__identicon__item">
+            <button
+              data-test-id="jazz_icon"
+              onClick={() => setUseBlockie(false)}
+              className="settings-page__content-item__identicon__item"
+            >
               <div
-                data-test-id="jazz_icon"
                 className={classnames(
                   'settings-page__content-item__identicon__item__icon',
                   {
-                    'settings-page__content-item__identicon__item__icon--active': !useBlockie,
+                    'settings-page__content-item__identicon__item__icon--active':
+                      !useBlockie,
                   },
                 )}
-                onClick={() => setUseBlockie(false)}
               >
                 <Jazzicon
                   id="jazzicon"
@@ -223,21 +223,27 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={[0, 12, 0, 3]}
+                marginTop={0}
+                marginRight={12}
+                marginBottom={0}
+                marginLeft={3}
               >
                 {t('jazzicons')}
               </Typography>
-            </div>
-            <div className="settings-page__content-item__identicon__item">
+            </button>
+            <button
+              data-test-id="blockie_icon"
+              onClick={() => setUseBlockie(true)}
+              className="settings-page__content-item__identicon__item"
+            >
               <div
-                data-test-id="blockie_icon"
                 className={classnames(
                   'settings-page__content-item__identicon__item__icon',
                   {
-                    'settings-page__content-item__identicon__item__icon--active': useBlockie,
+                    'settings-page__content-item__identicon__item__icon--active':
+                      useBlockie,
                   },
                 )}
-                onClick={() => setUseBlockie(true)}
               >
                 <BlockieIdenticon
                   id="blockies"
@@ -249,11 +255,12 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={[0, 0, 0, 3]}
+                margin={0}
+                marginBottom={3}
               >
                 {t('blockies')}
               </Typography>
-            </div>
+            </button>
           </div>
         </div>
       </div>

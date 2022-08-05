@@ -2,20 +2,50 @@
   "resources": {
     "@babel/core": {
       "packages": {
-        "<root>": true,
+        "$root$": true,
+        "@babel/preset-env": true,
+        "@babel/preset-react": true,
+        "@babel/plugin-transform-runtime": true,
         "@babel/plugin-proposal-class-properties": true,
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
-        "@babel/plugin-transform-runtime": true,
-        "@babel/preset-env": true,
-        "@babel/preset-react": true,
         "@babel/preset-typescript": true
       }
     },
-    "@eslint/eslintrc": {
+    "@babel/eslint-parser": {
+      "builtin": {
+        "path": true
+      },
       "packages": {
-        "<root>": true,
+        "@babel/core": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/eslint-parser>eslint-scope": true,
+        "@babel/eslint-parser>eslint-visitor-keys": true,
+        "@babel/eslint-parser>semver": true,
+        "@babel/parser": true,
+        "depcheck>@babel/parser": true,
+        "eslint": true
+      },
+      "globals": {
+        "process.versions": true
+      }
+    },
+    "eslint>@eslint/eslintrc": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "module": true,
+        "os": true,
+        "path": true,
+        "url": true,
+        "util": true
+      },
+      "globals": {
+        "process.platform": true
+      },
+      "packages": {
+        "$root$": true,
         "@babel/eslint-parser": true,
         "@babel/eslint-plugin": true,
         "@metamask/eslint-config": true,
@@ -32,57 +62,102 @@
         "eslint-plugin-react-hooks": true
       }
     },
-    "@typescript-eslint/eslint-plugin": {
-      "packages": {
-        "@typescript-eslint/experimental-utils": true,
-        "@typescript-eslint/scope-manager": true,
-        "debug": true,
-        "eslint": true,
-        "ignore": true,
-        "regexpp": true,
-        "semver": true,
-        "tsutils": true,
-        "typescript": true
+    "eslint>eslint-scope": {
+      "builtin": {
+        "assert": true
       }
     },
-    "@typescript-eslint/experimental-utils": {
+    "eslint-plugin-jest": {
+      "packages": {
+        "eslint-plugin-jest>@typescript-eslint/utils": true,
+        "@typescript-eslint/eslint-plugin": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": {
+      "packages": {
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils>eslint-visitor-keys": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils": {
       "builtin": {
         "path": true
       },
       "packages": {
-        "@typescript-eslint/scope-manager": true,
-        "@typescript-eslint/types": true,
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
-        "eslint-scope": true,
-        "eslint-utils": true
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "eslint>eslint-scope": true,
+        "@babel/eslint-parser>eslint-scope": true,
+        "eslint>eslint-utils": true
       }
     },
-    "@typescript-eslint/scope-manager": {
+    "eslint-plugin-jest>@typescript-eslint/experimental-utils": {
+      "builtin": {
+        "path": true
+      },
       "packages": {
-        "@typescript-eslint/types": true,
-        "@typescript-eslint/visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
+        "eslint": true,
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "eslint>eslint-scope": true,
+        "eslint>eslint-utils": true
       }
     },
-    "@typescript-eslint/visitor-keys": {
+    "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": {
       "packages": {
-        "eslint-visitor-keys": true
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils>eslint-visitor-keys": true
       }
     },
-    "eslint-module-utils": {
+    "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
-        "@babel/eslint-parser": true,
-        "@typescript-eslint/parser": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
+        "@typescript-eslint/eslint-plugin>tsutils": true,
+        "eslint-plugin-jest>@typescript-eslint/utils": true,
+        "eslint>debug": true,
+        "madge>debug": true,
+        "typescript": true
+      }
+    },
+    "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": {
+      "packages": {
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug>ms": true
+      },
+      "globals": {
+        "console.debug": true,
+        "console.log": true
+      }
+    },
+    "@typescript-eslint/eslint-plugin": {
+      "packages": {
+        "typescript": true,
+        "eslint-plugin-jest>@typescript-eslint/utils": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "@typescript-eslint/eslint-plugin>tsutils": true,
+        "eslint>debug": true,
+        "eslint": true,
+        "semver": true,
+        "globby>ignore": true,
+        "eslint>regexpp": true
+      }
+    },
+    "eslint-plugin-import>eslint-module-utils": {
+      "packages": {
         "eslint-import-resolver-node": true,
-        "eslint-import-resolver-typescript": true
-      }
-    },
-    "module-deps": {
-      "packages": {
-        "loose-envify": true
+        "@babel/eslint-parser": true
       }
     },
     "node-sass": {
       "native": true
+    },
+    "browserify>module-deps": {
+      "packages": {
+        "loose-envify": true
+      }
     },
     "sass": {
       "env": "unfrozen",
@@ -91,6 +166,11 @@
       },
       "globals": {
         "Buffer": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "packages": {
+        "string.prototype.matchall>has-symbols": true
       }
     },
     "tsutils": {
@@ -102,6 +182,36 @@
     "typescript": {
       "globals": {
         "globalThis": true
+      }
+    },
+    "yargs": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "console": true,
+        "Error": true,
+        "process": true
+      }
+    },
+    "yargs>y18n": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "util": true
+      }
+    },
+    "yargs>yargs-parser": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "process": true
       }
     }
   }

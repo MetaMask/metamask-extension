@@ -15,6 +15,7 @@ import {
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
+import { SLIPPAGE } from '../../../../shared/constants/swaps';
 
 export default function SlippageButtons({
   onSelect,
@@ -24,13 +25,13 @@ export default function SlippageButtons({
   smartTransactionsOptInStatus,
   setSmartTransactionsOptInStatus,
   currentSmartTransactionsError,
+  isDirectWrappingEnabled,
 }) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState(() => {
     if (
       typeof currentSlippage === 'number' &&
-      currentSlippage !== 2 &&
-      currentSlippage !== 3
+      !Object.values(SLIPPAGE).includes(currentSlippage)
     ) {
       return currentSlippage.toString();
     }
@@ -38,17 +39,17 @@ export default function SlippageButtons({
   });
   const [enteringCustomValue, setEnteringCustomValue] = useState(false);
   const [activeButtonIndex, setActiveButtonIndex] = useState(() => {
-    if (currentSlippage === 3) {
-      return 1;
-    } else if (currentSlippage === 2) {
-      return 0;
+    if (currentSlippage === SLIPPAGE.HIGH) {
+      return 1; // 3% slippage.
+    } else if (currentSlippage === SLIPPAGE.DEFAULT) {
+      return 0; // 2% slippage.
     } else if (typeof currentSlippage === 'number') {
-      return 2;
+      return 2; // Custom slippage.
     }
-    return 1; // Choose activeButtonIndex = 1 for 3% slippage by default.
+    return 0;
   });
   const [open, setOpen] = useState(() => {
-    return currentSlippage !== 3; // Only open Advanced Options by default if it's not default 3% slippage.
+    return currentSlippage !== SLIPPAGE.DEFAULT; // Only open Advanced Options by default if it's not default slippage.
   });
   const [inputRef, setInputRef] = useState(null);
 
@@ -103,94 +104,101 @@ export default function SlippageButtons({
       <div className="slippage-buttons__content">
         {open && (
           <>
-            <div className="slippage-buttons__dropdown-content">
-              <div className="slippage-buttons__buttons-prefix">
-                <div className="slippage-buttons__prefix-text">
-                  {t('swapsMaxSlippage')}
+            {!isDirectWrappingEnabled && (
+              <div className="slippage-buttons__dropdown-content">
+                <div className="slippage-buttons__buttons-prefix">
+                  <div className="slippage-buttons__prefix-text">
+                    {t('swapsMaxSlippage')}
+                  </div>
+                  <InfoTooltip
+                    position="top"
+                    contentText={t('swapAdvancedSlippageInfo')}
+                  />
                 </div>
-                <InfoTooltip
-                  position="top"
-                  contentText={t('swapAdvancedSlippageInfo')}
-                />
-              </div>
-              <ButtonGroup
-                defaultActiveButtonIndex={
-                  activeButtonIndex === 2 && !customValue
-                    ? 1
-                    : activeButtonIndex
-                }
-                variant="radiogroup"
-                newActiveButtonIndex={activeButtonIndex}
-                className={classnames(
-                  'button-group',
-                  'slippage-buttons__button-group',
-                )}
-              >
-                <Button
-                  onClick={() => {
-                    setCustomValue('');
-                    setEnteringCustomValue(false);
-                    setActiveButtonIndex(0);
-                    onSelect(2);
-                  }}
-                >
-                  2%
-                </Button>
-                <Button
-                  onClick={() => {
-                    setCustomValue('');
-                    setEnteringCustomValue(false);
-                    setActiveButtonIndex(1);
-                    onSelect(3);
-                  }}
-                >
-                  3%
-                </Button>
-                <Button
+                <ButtonGroup
+                  defaultActiveButtonIndex={
+                    activeButtonIndex === 2 && !customValue
+                      ? 1
+                      : activeButtonIndex
+                  }
+                  variant="radiogroup"
+                  newActiveButtonIndex={activeButtonIndex}
                   className={classnames(
-                    'slippage-buttons__button-group-custom-button',
-                    {
-                      'radio-button--danger': errorText,
-                    },
+                    'button-group',
+                    'slippage-buttons__button-group',
                   )}
-                  onClick={() => {
-                    setActiveButtonIndex(2);
-                    setEnteringCustomValue(true);
-                  }}
                 >
-                  {enteringCustomValue ? (
-                    <div
-                      className={classnames('slippage-buttons__custom-input', {
-                        'slippage-buttons__custom-input--danger': errorText,
-                      })}
-                    >
-                      <input
-                        onChange={(event) => {
-                          const { value } = event.target;
-                          const isValueNumeric = !isNaN(Number(value));
-                          if (isValueNumeric) {
-                            setCustomValue(value);
-                            onSelect(Number(value));
-                          }
-                        }}
-                        type="text"
-                        maxLength="4"
-                        ref={setInputRef}
-                        onBlur={() => {
-                          setEnteringCustomValue(false);
-                        }}
-                        value={customValue || ''}
-                      />
-                    </div>
-                  ) : (
-                    customValueText
-                  )}
-                  {(customValue || enteringCustomValue) && (
-                    <div className="slippage-buttons__percentage-suffix">%</div>
-                  )}
-                </Button>
-              </ButtonGroup>
-            </div>
+                  <Button
+                    onClick={() => {
+                      setCustomValue('');
+                      setEnteringCustomValue(false);
+                      setActiveButtonIndex(0);
+                      onSelect(SLIPPAGE.DEFAULT);
+                    }}
+                  >
+                    {t('swapSlippagePercent', [SLIPPAGE.DEFAULT])}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setCustomValue('');
+                      setEnteringCustomValue(false);
+                      setActiveButtonIndex(1);
+                      onSelect(SLIPPAGE.HIGH);
+                    }}
+                  >
+                    {t('swapSlippagePercent', [SLIPPAGE.HIGH])}
+                  </Button>
+                  <Button
+                    className={classnames(
+                      'slippage-buttons__button-group-custom-button',
+                      {
+                        'radio-button--danger': errorText,
+                      },
+                    )}
+                    onClick={() => {
+                      setActiveButtonIndex(2);
+                      setEnteringCustomValue(true);
+                    }}
+                  >
+                    {enteringCustomValue ? (
+                      <div
+                        className={classnames(
+                          'slippage-buttons__custom-input',
+                          {
+                            'slippage-buttons__custom-input--danger': errorText,
+                          },
+                        )}
+                      >
+                        <input
+                          onChange={(event) => {
+                            const { value } = event.target;
+                            const isValueNumeric = !isNaN(Number(value));
+                            if (isValueNumeric) {
+                              setCustomValue(value);
+                              onSelect(Number(value));
+                            }
+                          }}
+                          type="text"
+                          maxLength="4"
+                          ref={setInputRef}
+                          onBlur={() => {
+                            setEnteringCustomValue(false);
+                          }}
+                          value={customValue || ''}
+                        />
+                      </div>
+                    ) : (
+                      customValueText
+                    )}
+                    {(customValue || enteringCustomValue) && (
+                      <div className="slippage-buttons__percentage-suffix">
+                        %
+                      </div>
+                    )}
+                  </Button>
+                </ButtonGroup>
+              </div>
+            )}
             {smartTransactionsEnabled && (
               <Box marginTop={2} display={DISPLAY.FLEX}>
                 <Box
@@ -246,4 +254,5 @@ SlippageButtons.propTypes = {
   smartTransactionsOptInStatus: PropTypes.bool,
   setSmartTransactionsOptInStatus: PropTypes.func,
   currentSmartTransactionsError: PropTypes.string,
+  isDirectWrappingEnabled: PropTypes.bool,
 };

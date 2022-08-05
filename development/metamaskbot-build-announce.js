@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const { promises: fs } = require('fs');
 const path = require('path');
+// Fetch is part of node js in future versions, thus triggering no-shadow
+// eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
 const VERSION = require('../package.json').version;
@@ -19,6 +21,8 @@ async function start() {
   console.log('CIRCLE_SHA1', CIRCLE_SHA1);
   const { CIRCLE_BUILD_NUM } = process.env;
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
+  const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
+  console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
@@ -27,7 +31,7 @@ async function start() {
 
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
-  const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-42009758-gh.circle-artifacts.com/0`;
+  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
   // build the github comment content
 
@@ -92,6 +96,14 @@ async function start() {
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
+  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
+  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
+  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
+  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
+  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -101,6 +113,10 @@ async function start() {
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
+    `mv3: ${moduleInitStatsBackgroundLink}`,
+    `mv3: ${moduleInitStatsUILink}`,
+    `mv3: ${moduleLoadStatsLink}`,
+    `mv3: ${bundleSizeStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,

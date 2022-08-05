@@ -8,13 +8,13 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../../../store/actions';
+import { EVENT } from '../../../../../shared/constants/metametrics';
 import AdvancedTabContent from './advanced-tab-content';
 import BasicTabContent from './basic-tab-content';
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
     trackEvent: PropTypes.func,
   };
 
@@ -219,11 +219,12 @@ export default class GasModalPageContainer extends Component {
           onClose={() => cancelAndClose()}
           onSubmit={() => {
             if (isSpeedUp) {
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Navigation',
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: 'Saved "Speed Up"',
+                properties: {
                   action: 'Activity Log',
-                  name: 'Saved "Speed Up"',
+                  legacy_event: true,
                 },
               });
             }

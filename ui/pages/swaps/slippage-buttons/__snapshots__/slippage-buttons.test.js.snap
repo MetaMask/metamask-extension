@@ -21,16 +21,16 @@ exports[`SlippageButtons renders the component with initial props 2`] = `
   role="radiogroup"
 >
   <button
-    aria-checked="true"
-    class="button-group__button radio-button button-group__button--active radio-button--active"
+    aria-checked="false"
+    class="button-group__button radio-button"
     data-testid="button-group__button0"
     role="radio"
   >
     2%
   </button>
   <button
-    aria-checked="false"
-    class="button-group__button radio-button"
+    aria-checked="true"
+    class="button-group__button radio-button button-group__button--active radio-button--active"
     data-testid="button-group__button1"
     role="radio"
   >
@@ -68,16 +68,16 @@ exports[`SlippageButtons renders the component with the Smart Transaction opt-in
   role="radiogroup"
 >
   <button
-    aria-checked="true"
-    class="button-group__button radio-button button-group__button--active radio-button--active"
+    aria-checked="false"
+    class="button-group__button radio-button"
     data-testid="button-group__button0"
     role="radio"
   >
     2%
   </button>
   <button
-    aria-checked="false"
-    class="button-group__button radio-button"
+    aria-checked="true"
+    class="button-group__button radio-button button-group__button--active radio-button--active"
     data-testid="button-group__button1"
     role="radio"
   >

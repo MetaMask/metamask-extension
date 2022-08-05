@@ -51,7 +51,7 @@ html {
   flex-direction: column;
   background: var(--color-background-alternative);
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     background-color: var(--color-background-default);
   }
 }
@@ -89,29 +89,30 @@ input.form-control {
   padding-left: 10px;
   font-size: 14px;
   height: 40px;
-  border: 1px solid var(--color-border-muted);
+  border: 1px solid var(--color-border-default);
+  color: 1px solid var(--color-text-default);
   background: transparent;
   border-radius: 3px;
   width: 100%;
 
   &::-webkit-input-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &::-moz-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &:-ms-input-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &:-moz-placeholder {
     font-weight: 100;
-    color: var(--color-text-alternative);
+    color: var(--color-text-muted);
   }
 
   &--error {
@@ -123,4 +124,3 @@ input.form-control {
 * {
   font-family: $font-family;
 }
-

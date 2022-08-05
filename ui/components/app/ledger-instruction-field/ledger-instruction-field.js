@@ -38,7 +38,7 @@ import { attemptLedgerTransportCreation } from '../../../store/actions';
 const renderInstructionStep = (
   text,
   show = true,
-  color = COLORS.PRIMARY_DEFAULT,
+  color = COLORS.TEXT_DEFAULT,
 ) => {
   return (
     show && (
@@ -173,11 +173,10 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   type="link"
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
-                      const connectedDevices = await window.navigator.hid.requestDevice(
-                        {
+                      const connectedDevices =
+                        await window.navigator.hid.requestDevice({
                           filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                        },
-                      );
+                        });
                       const webHidIsConnected = connectedDevices.some(
                         (device) =>
                           device.vendorId === Number(LEDGER_USB_VENDOR_ID),

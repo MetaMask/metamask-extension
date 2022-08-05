@@ -8,7 +8,7 @@ import { useTokenData } from './useTokenData';
 /**
  * Defines the shape for the Token input parameter for useTokenDisplayValue
  *
- * @typedef {Object} Token
+ * @typedef {object} Token
  * @property {string} symbol - The string to use as a suffix for the token (eg. DAI)
  * @property {number} decimals - The number of decimals to show when displaying this type of token
  */
@@ -35,6 +35,8 @@ export function useTokenDisplayValue(
   isTokenTransaction = true,
 ) {
   const tokenData = useTokenData(transactionData, isTokenTransaction);
+  const tokenValue = getTokenValueParam(tokenData);
+
   const shouldCalculateTokenValue = Boolean(
     // If we are currently processing a token transaction
     isTokenTransaction &&
@@ -42,15 +44,17 @@ export function useTokenDisplayValue(
       transactionData &&
       // and a token object has been provided
       token &&
-      // and we are able to parse the token details from the raw data
-      tokenData?.args?.length,
+      // and the provided token object contains a defined decimal value we need to calculate amount
+      token.decimals &&
+      // and we are able to parse the token detail we to calculate amount from the raw data
+      tokenValue,
   );
 
   const displayValue = useMemo(() => {
     if (!shouldCalculateTokenValue) {
       return null;
     }
-    const tokenValue = getTokenValueParam(tokenData);
+
     return calcTokenAmount(tokenValue, token.decimals).toString(10);
   }, [shouldCalculateTokenValue, tokenData, token]);
 

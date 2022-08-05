@@ -5,16 +5,17 @@ import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for
  * an eth_sign call is requested.
  *
  * @see {@link https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign}
- * @typedef {Object} Message
+ * @typedef {object} Message
  * @property {number} id An id to track and identify the message object
- * @property {Object} msgParams The parameters to pass to the eth_sign method once the signature request is approved.
- * @property {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+ * @property {object} msgParams The parameters to pass to the eth_sign method once the signature request is approved.
+ * @property {object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
  * @property {string} msgParams.data A hex string conversion of the raw buffer data of the signature request
  * @property {number} time The epoch time at which the this message was created
  * @property {string} status Indicates whether the signature request is 'unapproved', 'approved', 'signed' or 'rejected'
@@ -51,7 +52,7 @@ export default class MessageManager extends EventEmitter {
   /**
    * A getter for the 'unapproved' Messages in this.messages
    *
-   * @returns {Object} An index of Message ids to Messages, for all 'unapproved' Messages in this.messages
+   * @returns {object} An index of Message ids to Messages, for all 'unapproved' Messages in this.messages
    */
   getUnapprovedMsgs() {
     return this.messages
@@ -66,8 +67,8 @@ export default class MessageManager extends EventEmitter {
    * Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
-   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} [req] - The original request object possibly containing the origin
+   * @param {object} msgParams - The params for the eth_sign call to be made after the message is approved.
+   * @param {object} [req] - The original request object possibly containing the origin
    * @returns {promise} after signature has been
    */
   async addUnapprovedMessageAsync(msgParams, req) {
@@ -105,8 +106,8 @@ export default class MessageManager extends EventEmitter {
    * Creates a new Message with an 'unapproved' status using the passed msgParams. this.addMsg is called to add the
    * new Message to this.messages, and to save the unapproved Messages from that list to this.memStore.
    *
-   * @param {Object} msgParams - The params for the eth_sign call to be made after the message is approved.
-   * @param {Object} [req] - The original request object where the origin may be specified
+   * @param {object} msgParams - The params for the eth_sign call to be made after the message is approved.
+   * @param {object} [req] - The original request object where the origin may be specified
    * @returns {number} The id of the newly created message.
    */
   addUnapprovedMessage(msgParams, req) {
@@ -157,8 +158,8 @@ export default class MessageManager extends EventEmitter {
    * Approves a Message. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise with
    * any the message params modified for proper signing.
    *
-   * @param {Object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
-   * @param {Object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
+   * @param {object} msgParams - The msgParams to be used when eth_sign is called, plus data added by MetaMask.
+   * @param {object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    */
   approveMessage(msgParams) {
@@ -192,7 +193,7 @@ export default class MessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams - The msgParams to modify
+   * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
   prepMsgForSigning(msgParams) {
@@ -211,7 +212,7 @@ export default class MessageManager extends EventEmitter {
       const msg = this.getMsg(msgId);
       this.metricsEvent({
         event: reason,
-        category: 'Transactions',
+        category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
           action: 'Sign Request',
           type: msg.type,
