@@ -28,6 +28,12 @@ main().catch((error) => {
   process.exit(1);
 });
 
+/**
+ * Compiles a set of files that we want to convert to TypeScript, divided by
+ * level in the dependency tree.
+ *
+ * @param dest - The directory in which to hold the file.
+ */
 async function generateIntermediateFiles(dest: string) {
   const partitions = await buildModulePartitions();
   const partitionsFile = path.resolve(dest, 'partitions.json');
@@ -44,6 +50,12 @@ async function generateIntermediateFiles(dest: string) {
   );
 }
 
+/**
+ * Compiles the JavaScript code for the dashboard.
+ *
+ * @param src - The path to the JavaScript entrypoint.
+ * @param dest - The path to the compiled and bundled JavaScript file.
+ */
 async function compileScripts(src: string, dest: string) {
   const extensions = ['.js', '.ts', '.tsx'];
   const browserifyOptions: Record<string, unknown> = {
@@ -75,6 +87,12 @@ async function compileScripts(src: string, dest: string) {
   );
 }
 
+/**
+ * Compiles the CSS code for the dashboard.
+ *
+ * @param src - The path to the CSS file.
+ * @param dest - The path to the compiled CSS file.
+ */
 async function compileStylesheets(src: string, dest: string): Promise<void> {
   await promisifiedPump(
     gulp.src(src),
@@ -94,6 +112,12 @@ async function compileStylesheets(src: string, dest: string): Promise<void> {
   );
 }
 
+/**
+ * Copies static files (images and the index HTML file) to the build directory.
+ *
+ * @param src - The path to the directory that holds the static files.
+ * @param dest - The path where they should be copied.
+ */
 async function copyStaticFiles(src: string, dest: string): Promise<void> {
   const entries = await fg([path.join(src, '*')], {
     onlyFiles: false,
@@ -112,6 +136,18 @@ async function copyStaticFiles(src: string, dest: string): Promise<void> {
   );
 }
 
+/**
+ * Generates a compiled and bundled version of the dashboard ready for
+ * distribution.
+ *
+ * @param options - The options.
+ * @param options.isInitial - Whether this is the first time this function has
+ * been called (if we are watching for file changes, we may call this function
+ * multiple times).
+ * @param options.isOnly - Whether this will be the only time this function will
+ * be called (if we are not watching for file changes, then this will never be
+ * called again).
+ */
 async function rebuild({
   isInitial = false,
   isOnly = false,
@@ -149,6 +185,11 @@ async function rebuild({
   }
 }
 
+/**
+ * The entrypoint to this script. Parses command-line arguments, then, depending
+ * on whether `--watch` was given, either starts a file watcher, after which the
+ * dashboard will be built on file changes, or builds the dashboard immediately.
+ */
 async function main() {
   const opts = yargs(hideBin(process.argv))
     .usage('Usage: $0 [options]')

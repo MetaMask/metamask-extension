@@ -14,6 +14,8 @@ main().catch((error) => {
 });
 
 /**
+ * The entrypoint to this script.
+ *
  * Uses the `madge` package to traverse the dependency graph of a set of
  * entrypoints (a combination of the ones that the build script uses to build
  * the extension as well as a manually picked list), outputting a JSON array
