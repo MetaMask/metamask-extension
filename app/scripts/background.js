@@ -24,6 +24,7 @@ import {
   REJECT_NOTFICIATION_CLOSE_SIG,
   EVENT,
   EVENT_NAMES,
+  TRAITS,
 } from '../../shared/constants/metametrics';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
@@ -757,12 +758,13 @@ async function openPopup() {
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
 const addAppInstalledEvent = () => {
   if (controller) {
+    controller.metaMetricsController.updateTraits({
+      [TRAITS.SIGNUP_DATE]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+    });
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
       category: EVENT.CATEGORIES.APP,
       event: EVENT_NAMES.APP_INSTALLED,
-      properties: {
-        signup_date: new Date().toISOString().split('T')[0], // yyyy-mm-dd
-      },
+      properties: {},
     });
     return;
   }

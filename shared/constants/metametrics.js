@@ -183,6 +183,7 @@
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
+ * @property {'signup_date'} SIGNUP_DATE - when the user installed the extension
  */
 
 /**
@@ -204,6 +205,7 @@ export const TRAITS = {
   THREE_BOX_ENABLED: 'three_box_enabled',
   THEME: 'theme',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
+  SIGNUP_DATE: 'signup_date',
 };
 
 /**

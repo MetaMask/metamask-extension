@@ -19,6 +19,8 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
+const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
   // but does not interrupt the call stack
@@ -106,6 +108,7 @@ export default class MetaMetricsController {
       participateInMetaMetrics: null,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
+      traits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -323,8 +326,7 @@ export default class MetaMetricsController {
   // which is opened if a user uninstalls the extension.
   updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
     // TODO: Change it to the right URL once it's available.
-    const extensionUninstallUrl =
-      'https://swap.metaswap.codefi.network/tracking/uninstall';
+
     const query = {};
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
@@ -333,7 +335,7 @@ export default class MetaMetricsController {
     }
     const queryString = new URLSearchParams(query);
     this.extension.runtime.setUninstallURL(
-      `${extensionUninstallUrl}?${queryString}`,
+      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
     );
   }
 
@@ -523,6 +525,14 @@ export default class MetaMetricsController {
     });
   }
 
+  // Add or update traits for tracking.
+  updateTraits(newTraits) {
+    const { traits } = this.store.getState();
+    this.store.updateState({
+      traits: { ...traits, ...newTraits },
+    });
+  }
+
   /** PRIVATE METHODS */
 
   /**
@@ -600,6 +610,7 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    const { traits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
@@ -633,6 +644,7 @@ export default class MetaMetricsController {
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
+      [TRAITS.SIGNUP_DATE]: traits[TRAITS.SIGNUP_DATE] || '',
     };
 
     if (!this.previousTraits) {
