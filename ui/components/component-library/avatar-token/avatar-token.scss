@@ -1,8 +1,7 @@
-.avatar-initial {
-  font-size: var(--typography-s-body-sm-bold-font-size);
-  font-weight: var(--typography-s-body-sm-bold-font-weight);
-
-  @include screen-sm-min {
-    font-size: var(--typography-l-body-sm-bold-font-size);
-  }
+.blur-halo-image {
+  filter: blur(20px);
+  transform: scale(1.25);
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
 }
