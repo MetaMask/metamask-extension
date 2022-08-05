@@ -101,6 +101,7 @@ export default class MetaMetricsController {
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
+    this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
 
@@ -331,7 +332,8 @@ export default class MetaMetricsController {
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
       query.id = metaMetricsId;
-      query.version = this.version;
+      query.env = this.environment;
+      query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
     this.extension.runtime.setUninstallURL(
