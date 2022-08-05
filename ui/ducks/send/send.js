@@ -84,10 +84,6 @@ import {
   getTokens,
   getUnapprovedTxs,
 } from '../metamask/metamask';
-import {
-  isSmartContractAddress,
-  sumHexes,
-} from '../../helpers/utils/transactions.util';
 
 import { resetEnsResolution } from '../ens';
 import {
