@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `eth-lattice-keyring` changes: [GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
 - `gridplus-sdk` changes: [GridPlus/gridplus-sdk@v1.2.3...v2.2.0](https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.0)
 - Parse `tokenId` for ERC721 txs, refactor `useAssetDetails` and `getAssetDetails` and improve overall legibility ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
-- Update Zendesk ticket request URLs for a facilitating the bug reporting process ([#15458](https://github.com/MetaMask/metamask-extension/pull/15261))
+- Update Zendesk ticket request URLs for a facilitating the bug reporting process ([#15458](https://github.com/MetaMask/metamask-extension/pull/15458))
 - Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
 - Swaps: Standardize the spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
 - Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
