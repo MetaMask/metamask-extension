@@ -1,9 +1,3 @@
-/* eslint-disable import/first */
-import log from 'loglevel';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
-import shouldInjectProvider from '../../shared/modules/provider-injection';
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -35,6 +29,12 @@ const restoreContextAfterImports = () => {
 };
 
 cleanContextForImports();
+
+/* eslint-disable import/first */
+import log from 'loglevel';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
+import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
+import shouldInjectProvider from '../../shared/modules/provider-injection';
 
 restoreContextAfterImports();
 
