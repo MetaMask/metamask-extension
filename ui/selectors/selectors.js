@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -41,7 +42,11 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
+import {
+  shortenAddress,
+  getAccountByAddress,
+  getURLHostName,
+} from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -725,7 +730,7 @@ export function getIsBuyableCoinbasePayChain(state) {
 }
 
 export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state).toUpperCase();
+  const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
 }
 
@@ -1072,4 +1077,44 @@ export function getNewTokensImported(state) {
  */
 export function getIsCustomNetworkListEnabled(state) {
   return state.metamask.customNetworkListEnabled;
+}
+
+export function getIsCustomNetwork(state) {
+  const chainId = getCurrentChainId(state);
+
+  return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
+}
+
+export function getBlockExplorerLinkText(
+  state,
+  accountDetailsModalComponent = false,
+) {
+  const isCustomNetwork = getIsCustomNetwork(state);
+  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+
+  let blockExplorerLinkText = {
+    firstPart: 'addBlockExplorer',
+    secondPart: '',
+  };
+
+  if (rpcPrefs.blockExplorerUrl) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? {
+          firstPart: 'blockExplorerView',
+          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+        }
+      : {
+          firstPart: 'viewinExplorer',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  } else if (isCustomNetwork === false) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? { firstPart: 'etherscanViewOn', secondPart: '' }
+      : {
+          firstPart: 'viewOnEtherscan',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  }
+
+  return blockExplorerLinkText;
 }

@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "승인된 자산"
   },
-  "areYouDeveloper": {
-    "message": "개발자이신가요?"
-  },
   "areYouSure": {
     "message": "확실한가요?"
   },
@@ -2397,9 +2394,6 @@
     "message": "전체 화면에서 MetaMask를 열어 WebHID를 통해 Ledger를 연결합니다.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "소스 코드를 확인하세요"
-  },
   "optional": {
     "message": "옵션"
   },
@@ -3044,10 +3038,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "이해하셨으면 모두 체크해 주세요."
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "'$1' 스냅 이용에 필요한 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "이 스냅이 다음 권한을 요청하고 있습니다."

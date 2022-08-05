@@ -285,9 +285,6 @@
   "approvedAsset": {
     "message": "Genehmigtes Asset"
   },
-  "areYouDeveloper": {
-    "message": "Sind Sie ein Entwickler?"
-  },
   "areYouSure": {
     "message": "Sind Sie sicher?"
   },
@@ -2360,9 +2357,6 @@
     "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "Prüfen Sie den Quellcode"
-  },
   "optional": {
     "message": "Optional"
   },
@@ -2988,10 +2982,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "Um zu bestätigen, dass Sie alles verstanden haben, kreuzen Sie alles an."
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Sie gewähren dem Snap „$1“ wichtige Zugriffsrechte. Dies kann nicht rückgängig gemacht werden und gibt „$1“ Kontrolle über Ihre Konten und Vermögenswerte. Stellen Sie sicher, dass Sie „$1“ vertrauen, bevor Sie fortfahren.",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "Für diesen Snap werden die folgenden Berechtigungen beantragt:"

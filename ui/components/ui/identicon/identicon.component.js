@@ -102,14 +102,8 @@ export default class Identicon extends Component {
   }
 
   renderJazzicon() {
-    const {
-      address,
-      className,
-      diameter,
-      alt,
-      useTokenDetection,
-      tokenList,
-    } = this.props;
+    const { address, className, diameter, alt, useTokenDetection, tokenList } =
+      this.props;
     return (
       <Jazzicon
         address={address}

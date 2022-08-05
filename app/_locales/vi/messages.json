@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Tài sản được chấp nhận"
   },
-  "areYouDeveloper": {
-    "message": "Bạn có phải là lập trình viên không?"
-  },
   "areYouSure": {
     "message": "Bạn có chắc chắn không?"
   },
@@ -2397,9 +2394,6 @@
     "message": "Mở MetaMask ở chế độ toàn màn hình để kết nối thiết bị Ledger của bạn qua WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "Kiểm tra mã nguồn"
-  },
   "optional": {
     "message": "Không bắt buộc"
   },
@@ -3044,10 +3038,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả."
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Bạn đang cấp quyền truy cập khóa cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "Snap này đang yêu cầu các quyền sau:"

@@ -28,7 +28,7 @@
     float: right;
     margin-inline-start: 62px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-inline-start: 112px;
     }
   }
@@ -38,7 +38,7 @@
     height: 39px;
     margin-top: 70px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-inline-start: 20px;
     }
   }

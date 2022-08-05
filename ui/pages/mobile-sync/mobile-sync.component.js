@@ -219,13 +219,8 @@ export default class MobileSyncPage extends Component {
     this.syncing = true;
     this.setState({ syncing: true });
 
-    const {
-      accounts,
-      network,
-      preferences,
-      transactions,
-      tokens,
-    } = await this.props.fetchInfoToSync();
+    const { accounts, network, preferences, transactions, tokens } =
+      await this.props.fetchInfoToSync();
     const { t } = this.context;
 
     const allDataStr = JSON.stringify({

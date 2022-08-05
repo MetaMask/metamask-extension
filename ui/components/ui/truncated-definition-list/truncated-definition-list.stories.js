@@ -10,8 +10,7 @@ export default {
 };
 
 const basic = {
-  term:
-    'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
+  term: 'a word or phrase used to describe a thing or to express a concept, especially in a particular kind of language or branch of study.',
   definition:
     'a statement of the exact meaning of a word, especially in a dictionary.',
   dl: 'HTML tag denoting a definition list',

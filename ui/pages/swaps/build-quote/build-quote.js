@@ -130,9 +130,8 @@ export default function BuildQuote({
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
-    undefined,
-  );
+  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
+    useState(undefined);
   const [verificationClicked, setVerificationClicked] = useState(false);
 
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);

@@ -31,10 +31,11 @@
 @import 'edit-gas-fee-popover/network-statistics/status-slider/index';
 @import 'edit-gas-fee-popover/edit-gas-tooltip/index';
 @import 'flask/experimental-area/index';
+@import 'flask/snaps-authorship-pill/index';
 @import 'flask/snap-install-warning/index';
 @import 'flask/snap-remove-warning/index';
 @import 'flask/snap-settings-card/index';
-@import 'flask/snaps-authorship-pill/index';
+@import 'flask/update-snap-permission-list/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -58,6 +59,7 @@
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
 @import 'signature-request/index';
+@import 'signature-request-siwe/index';
 @import 'signature-request-original/index';
 @import 'srp-input/srp-input';
 @import 'tab-bar/index';
