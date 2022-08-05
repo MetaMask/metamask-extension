@@ -1125,6 +1125,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.setupControllerEventSubscriptions();
 
+    // For more information about these legacy streams, see here:
+    // https://github.com/MetaMask/metamask-extension/issues/15491
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
 

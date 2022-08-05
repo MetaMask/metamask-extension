@@ -27,6 +27,8 @@ const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 const PROVIDER = 'metamask-provider';
 
+// For more information about these legacy streams, see here:
+// https://github.com/MetaMask/metamask-extension/issues/15491
 // TODO:LegacyProvider: Delete
 const LEGACY_CONTENT_SCRIPT = 'contentscript';
 const LEGACY_INPAGE = 'inpage';
