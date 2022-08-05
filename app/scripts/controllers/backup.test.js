@@ -45,7 +45,8 @@ describe('BackupController', function () {
   describe('constructor', function () {
     it('should setup correctly', async function () {
       const backupController = getBackupController();
-      const selectedAddress = backupController.preferencesController.getSelectedAddress();
+      const selectedAddress =
+        backupController.preferencesController.getSelectedAddress();
       assert.equal(selectedAddress, '0x01');
     });
 
