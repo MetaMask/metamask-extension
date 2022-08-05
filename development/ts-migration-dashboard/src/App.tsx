@@ -70,30 +70,38 @@ export default function App() {
           </p>
 
           <p>
-            Each box on this page represents a file that either we want to
-            convert or we've already converted to TypeScript (hover over a box
-            to see the filename). Boxes that are greyed out are test or
-            Storybook files.
+            Each box
+            <div className="file file--inline file--to-be-converted">
+              &nbsp;
+            </div>
+            on this page represents a file that either we want to convert or
+            we've already converted to TypeScript (hover over a box to see the
+            filename). Boxes that are
+            <div className="file file--inline file--to-be-converted file--test">
+              &nbsp;
+            </div>
+            greyed out are test or Storybook files.
           </p>
 
           <p>
-            These boxes are further partitioned by <b>level</b>. The level of a
-            file is how many files it takes to reach that file in the dependency
-            graph relative to some root (which we know is level 1). For
-            instance, if we have a root <code>foo.js</code>, and that imports{' '}
-            <code>bar.js</code>, and <code>bar.js</code> imports{' '}
-            <code>baz.js</code>, then:
+            These boxes are further partitioned by <em>level</em>. The level of
+            a file is how many files it takes to reach that file in the
+            dependency graph relative to some root (which we know is level 1).
+            For instance, if we have a root <code>foo.js</code>, and that
+            imports <code>bar.js</code> and <code>baz.js</code>, and{' '}
+            <code>baz.js</code> imports <code>qux.js</code>, then:
           </p>
 
           <ul>
             <li>
-              <code>foo.js</code> would be at <b>level 1</b>
+              <code>foo.js</code> would be at <em>level 1</em>
             </li>
             <li>
-              <code>bar.js</code> would be at <b>level 2</b>
+              <code>bar.js</code> and <code>baz.js</code> would be at{' '}
+              <em>level 2</em>
             </li>
             <li>
-              <code>baz.js</code> would be at <b>level 3</b>
+              <code>qux.js</code> would be at <em>level 3</em>
             </li>
           </ul>
 
@@ -101,7 +109,11 @@ export default function App() {
             This level assignment can be used to determine a priority for
             converting the remaining JavaScript files. Files which have fewer
             dependencies should in theory be easier to convert, so files with a
-            higher level should be converted first.
+            higher level should be converted first. In other words,{' '}
+            <strong>
+              you should be able to start from the top and go down
+            </strong>
+            .
           </p>
         </div>
       </details>

@@ -40,6 +40,14 @@ code {
     monospace;
 }
 
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
 ul {
   list-style: disc;
   margin-bottom: 1rem;
@@ -80,15 +88,24 @@ ul {
 .help {
   margin-bottom: 2rem;
   color: black;
-  line-height: 1.25rem;
+  line-height: 1.5rem;
+  background-color: #ffffc8;
+  border: 1px solid rgb(0 0 0 / 25%);
+  max-width: 40rem;
+
+  [open] {
+    padding: 1rem;
+  }
 
   &__question {
     font-weight: bold;
     cursor: pointer;
+    font-size: 1.1rem;
+    padding: 1rem;
   }
 
   &__answer {
-    padding-top: 1rem;
+    padding: 0 1rem 1rem;
   }
 }
 
@@ -137,6 +154,12 @@ ul {
   height: 1.5rem;
   border: 1px solid rgba(0 0 0 / 25%);
   border-radius: 0.25rem;
+
+  &--inline {
+    display: inline-block;
+    margin: 0 0.5rem;
+    vertical-align: middle;
+  }
 
   &__tooltipped {
     width: 1.5rem;

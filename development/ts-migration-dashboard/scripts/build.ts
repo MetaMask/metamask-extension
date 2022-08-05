@@ -112,7 +112,7 @@ async function rebuild({
   isOnly = false,
 } = {}): Promise<void> {
   if (isInitial && !isOnly) {
-    console.log('Running initial build, please wait...');
+    console.log('Running initial build, please wait (may take a bit)...');
   }
 
   if (!isInitial) {
