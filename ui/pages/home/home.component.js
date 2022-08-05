@@ -28,6 +28,7 @@ import {
   DISPLAY,
   COLORS,
 } from '../../helpers/constants/design-system';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 import {
   ASSET_ROUTE,
@@ -681,6 +682,15 @@ export default class Home extends PureComponent {
                     target="_blank"
                     rel="noopener noreferrer"
                     key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent({
+                        category: EVENT.CATEGORIES.HOME,
+                        event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                        properties: {
+                          url: SUPPORT_LINK,
+                        },
+                      });
+                    }}
                   >
                     {t('needHelpLinkText')}
                   </a>,

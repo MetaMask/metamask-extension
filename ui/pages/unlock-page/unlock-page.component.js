@@ -7,7 +7,7 @@ import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -205,6 +205,15 @@ export default class UnlockPage extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
                 key="need-help-link"
+                onClick={() => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.NAVIGATION,
+                    event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                    properties: {
+                      url: SUPPORT_LINK,
+                    },
+                  });
+                }}
               >
                 {t('needHelpLinkText')}
               </a>,

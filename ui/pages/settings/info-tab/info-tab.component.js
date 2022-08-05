@@ -89,6 +89,15 @@ export default class InfoTab extends PureComponent {
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
+            onClick={() => {
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.SETTINGS,
+                event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                properties: {
+                  url: SUPPORT_LINK,
+                },
+              });
+            }}
           >
             {t('supportCenter')}
           </Button>

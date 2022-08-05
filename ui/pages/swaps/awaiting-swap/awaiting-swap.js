@@ -8,7 +8,7 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import {
   getCurrentChainId,
@@ -156,6 +156,15 @@ export default function AwaitingSwap({
         href={SUPPORT_LINK}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => {
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.SWAPS,
+            event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+            properties: {
+              url: SUPPORT_LINK,
+            },
+          });
+        }}
       >
         {new URL(SUPPORT_LINK).hostname}
       </a>,

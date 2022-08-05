@@ -322,6 +322,7 @@ export const EVENT = {
     ERROR: 'Error',
     FOOTER: 'Footer',
     APP: 'App',
+    HOME: 'Home',
   },
   SOURCE: {
     NETWORK: {
