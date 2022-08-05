@@ -700,6 +700,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        [TRAITS.SIGNUP_DATE]: '',
       });
     });
 
