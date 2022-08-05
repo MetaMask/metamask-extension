@@ -54,6 +54,9 @@ const exceptionsToFilter = {
  *  whether or not events are tracked
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
+ * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
+ *  a user opts into metrics.
+ * @property {object} [traits] - Traits that are not derived from other state keys.
  */
 
 export default class MetaMetricsController {
