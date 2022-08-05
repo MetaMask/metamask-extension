@@ -1,15 +1,14 @@
 const { ethers } = require('ethers');
-const ganache = require('ganache');
-const { contractConfiguration } = require('./smart-contracts');
+const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
 const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
 
 /*
  * Ganache seeder is used to seed initial smart contract or set initial blockchain state.
  */
 class GanacheSeeder {
-  constructor(debug = false) {
-    this.debug = debug;
+  constructor(ganacheProvider) {
     this.smartContractRegistry = new GanacheContractAddressRegistry();
+    this.ganacheProvider = ganacheProvider;
   }
 
   /**
@@ -19,28 +18,26 @@ class GanacheSeeder {
    */
 
   async deploySmartContract(contractName) {
-    if (this.debug) {
-      console.log('Deploying smart contracts using GanacheSeeder');
-    }
-
     const ethersProvider = new ethers.providers.Web3Provider(
-      ganache.provider(),
+      this.ganacheProvider,
       'any',
     );
+    const signer = ethersProvider.getSigner();
+    const fromAddress = await signer.getAddress();
     const contractFactory = new ethers.ContractFactory(
       contractConfiguration[contractName].abi,
       contractConfiguration[contractName].bytecode,
-      ethersProvider.getSigner(),
+      signer,
     );
 
     let contract;
 
-    if (contractName === 'hst') {
+    if (contractName === SMART_CONTRACTS.HST) {
       contract = await contractFactory.deploy(
-        contractConfiguration.hst.initialAmount,
-        contractConfiguration.hst.tokenName,
-        contractConfiguration.hst.decimalUnits,
-        contractConfiguration.hst.tokenSymbol,
+        contractConfiguration[SMART_CONTRACTS.HST].initialAmount,
+        contractConfiguration[SMART_CONTRACTS.HST].tokenName,
+        contractConfiguration[SMART_CONTRACTS.HST].decimalUnits,
+        contractConfiguration[SMART_CONTRACTS.HST].tokenSymbol,
       );
     } else {
       contract = await contractFactory.deploy();
@@ -48,10 +45,11 @@ class GanacheSeeder {
 
     await contract.deployTransaction.wait();
 
-    if (this.debug) {
-      console.log(
-        `Contract mined! address: ${contract.address} transactionHash: ${contract.deployTransaction.hash}`,
-      );
+    if (contractName === SMART_CONTRACTS.COLLECTIBLES) {
+      const transaction = await contract.mintCollectibles(1, {
+        from: fromAddress,
+      });
+      await transaction.wait();
     }
     this.storeSmartContractAddress(contractName, contract.address);
   }
@@ -64,11 +62,6 @@ class GanacheSeeder {
    * @param contractAddress
    */
   storeSmartContractAddress(contractName, contractAddress) {
-    if (this.debug) {
-      console.log(
-        `Storing smart contract address: [${contractName}] => ${contractAddress}`,
-      );
-    }
     this.smartContractRegistry.storeNewContractAddress(
       contractName,
       contractAddress,

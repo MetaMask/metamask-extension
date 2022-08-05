@@ -33,11 +33,18 @@ const failingContract = {
   abi: failingContractAbi,
 };
 
-const contractConfiguration = {
-  hst: hstFactory,
-  collectibles: collectiblesFactory,
-  piggybank: piggybankFactory,
-  failing: failingContract,
+const SMART_CONTRACTS = {
+  HST: 'hst',
+  COLLECTIBLES: 'collectibles',
+  PIGGYBANK: 'piggybank',
+  FAILING: 'failing',
 };
 
-module.exports = { contractConfiguration };
+const contractConfiguration = {
+  [SMART_CONTRACTS.HST]: hstFactory,
+  [SMART_CONTRACTS.COLLECTIBLES]: collectiblesFactory,
+  [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
+  [SMART_CONTRACTS.FAILING]: failingContract,
+};
+
+module.exports = { SMART_CONTRACTS, contractConfiguration };
