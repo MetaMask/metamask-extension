@@ -13,8 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
 - Add Goerli, BSC, Optimism, Polygon, Avalance, Fantom and Arbitrum networks to query balances using BalanceChecker ([#13846](https://github.com/MetaMask/metamask-extension/pull/13846))
 - Swaps: on the STX status page ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
-- Add a link to the Swap tx
-- Add a link for "Create a new swap"
+  - Add a link to the Swap tx
+  - Add a link for "Create a new swap"
 - Swaps: add a tx details view for cancelled Swaps on the Activity tab ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
 - [FLASK] Add snap update metrics ([#15206](https://github.com/MetaMask/metamask-extension/pull/15206))
 
@@ -25,8 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove decentralized 4byte function signature registry for signature resolution, since it contains incorrect signatures and we can't algorithmically check for best option when 4byte.directory is down ([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
 - Update design tokens package and consolidate shadow values with new tokens ([#15264](https://github.com/MetaMask/metamask-extension/pull/15264))
 - Update `eth-lattice-keyring` to v0.10.0 which itself updates `gridplus-sdk` ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
-- `eth-lattice-keyring` changes: [GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
-- `gridplus-sdk` changes: [GridPlus/gridplus-sdk@v1.2.3...v2.2.0](https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.0)
+  - `eth-lattice-keyring` changes: [GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
+  - `gridplus-sdk` changes: [GridPlus/gridplus-sdk@v1.2.3...v2.2.0](https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.0)
 - Parse `tokenId` for ERC721 txs, refactor `useAssetDetails` and `getAssetDetails` and improve overall legibility ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
 - Update Zendesk ticket request URLs for a facilitating the bug reporting process ([#15458](https://github.com/MetaMask/metamask-extension/pull/15458))
 - Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
@@ -34,12 +34,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
 - [FLASK] Disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
 - [FLASK] Update Snaps packages to version `^0.18.1` ([#15230](https://github.com/MetaMask/metamask-extension/pull/15230))
-- Updates the following packages from `0.16.0` to `0.18.1`:
-- `@metamask/execution-environments`
-- `@metamask/rpc-methods`
-- `@metamask/snap-controllers`
-- `@metamask/snap-types`
-- Serialization issues were fixed in `@metmask/execution-environments`. See the ([releases](https://github.com/MetaMask/snaps-skunkworks/releases)) of the Snaps monorepo for details.
+  - Updates the following packages from `0.16.0` to `0.18.1`:
+    - `@metamask/execution-environments`
+    - `@metamask/rpc-methods`
+    - `@metamask/snap-controllers`
+    - `@metamask/snap-types`
+  - Serialization issues were fixed in `@metmask/execution-environments`. See the ([releases](https://github.com/MetaMask/snaps-skunkworks/releases)) of the Snaps monorepo for details.
 
 ### Fixed
 - Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
