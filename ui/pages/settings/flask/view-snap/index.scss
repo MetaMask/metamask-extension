@@ -1,7 +1,7 @@
 .view-snap {
   padding: 12px 18px;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     padding: 12px;
   }
 
@@ -14,7 +14,7 @@
     display: flex;
     flex-flow: row nowrap;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       margin-inline-end: 0;
       padding: 0 0 16px;
       flex-direction: column;
@@ -28,7 +28,7 @@
     border-bottom: 1px solid var(--color-border-muted);
     margin-inline-end: 24px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       margin-inline-end: 0;
     }
   }
@@ -38,7 +38,7 @@
   }
 
   &__title {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-bottom: 16px;
     }
   }
@@ -48,14 +48,14 @@
     display: flex;
     flex-grow: 1;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
       justify-content: space-between;
     }
   }
 
   &__pill-container {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-left: 0;
       display: inline-block;
     }
@@ -64,7 +64,7 @@
   &__toggle-container {
     margin-left: auto;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding-left: 0;
       display: inline-block;
     }
@@ -75,7 +75,7 @@
   }
 
   &__content-container {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
     }
   }
@@ -89,7 +89,7 @@
     padding-bottom: 16px;
     margin-bottom: 16px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: initial;
       padding: 5px 0 16px;
     }
@@ -124,7 +124,7 @@
   &__remove-button {
     max-width: 175px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       align-self: center;
     }
   }

@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Εγκεκριμένο περιουσιακό στοιχείο"
   },
-  "areYouDeveloper": {
-    "message": "Είστε προγραμματιστής;"
-  },
   "areYouSure": {
     "message": "Είστε βέβαιος/η;"
   },
@@ -2396,9 +2393,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το ledger σας μέσω WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Ελέγξτε τον πηγαίο κώδικα"
   },
   "optional": {
     "message": "Προαιρετικό"

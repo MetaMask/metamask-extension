@@ -3735,6 +3735,24 @@
         "localforage": true
       }
     },
+    "@spruceid/siwe-parser": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@spruceid/siwe-parser>apg-js": true
+      }
+    },
+    "@spruceid/siwe-parser>apg-js": {
+      "globals": {
+        "mode": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
     "@storybook/api>regenerator-runtime": {
       "globals": {
         "regeneratorRuntime": "write"

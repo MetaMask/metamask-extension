@@ -64,7 +64,7 @@ describe('Test Snap bip-44', function () {
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Approve & Install',
+          text: 'Approve & install',
           tag: 'button',
         });
         // deal with permissions popover
