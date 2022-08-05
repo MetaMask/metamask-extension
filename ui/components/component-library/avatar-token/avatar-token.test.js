@@ -29,8 +29,8 @@ describe('AvatarToken', () => {
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarToken {...args} />);
-    const image = screen.getByRole('img', { hidden: true });
-    expect(image).toBeDefined();
+    render(<AvatarToken {...args} showHalo={true}/>);
+    const image = screen.getAllByRole('img', { hidden: true });
+    expect(image[1]).toHaveClass('blur-halo-image');
   });
 });
