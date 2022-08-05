@@ -1,3 +1,10 @@
+const BUILD_TARGETS = {
+  DEVELOPMENT: 'dev',
+  PRODUCTION: 'prod',
+  E2E_TEST: 'test',
+  E2E_TEST_DEV: 'testDev',
+};
+
 const TASKS = {
   CLEAN: 'clean',
   DEV: 'dev',
@@ -45,4 +52,4 @@ const TASKS = {
   ZIP: 'zip',
 };
 
-module.exports = { TASKS };
+module.exports = { BUILD_TARGETS, TASKS };
