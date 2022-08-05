@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { Tooltip as ReactTippy } from 'react-tippy';
-import { ModulePartition } from '../scripts/buildModulePartitions';
+import { ModulePartition } from '../scripts/build-module-partitions';
 
 // The `brfs` transform for browserify calls `fs.readLineSync` and
 // `path.resolve` at build time and inlines file contents into the source code.
@@ -85,11 +85,11 @@ export default function App() {
 
           <p>
             These boxes are further partitioned by <em>level</em>. The level of
-            a file is how many files it takes to reach that file in the
-            dependency graph relative to some root (which we know is level 1).
-            For instance, if we have a root <code>foo.js</code>, and that
-            imports <code>bar.js</code> and <code>baz.js</code>, and{' '}
-            <code>baz.js</code> imports <code>qux.js</code>, then:
+            a file is how many files you have to import before you reach that
+            file in the whole codebase. For instance, if we have a file
+            <code>foo.js</code>, and that file imports <code>bar.js</code> and
+            <code>baz.js</code>, and <code>baz.js</code> imports
+            <code>qux.js</code>, then:
           </p>
 
           <ul>
