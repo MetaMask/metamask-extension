@@ -759,7 +759,7 @@ async function openPopup() {
 const addAppInstalledEvent = () => {
   if (controller) {
     controller.metaMetricsController.updateTraits({
-      [TRAITS.SIGNUP_DATE]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+      [TRAITS.INSTALL_DATE_EXT]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
     });
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
       category: EVENT.CATEGORIES.APP,

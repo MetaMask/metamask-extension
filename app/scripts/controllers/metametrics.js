@@ -649,7 +649,7 @@ export default class MetaMetricsController {
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
-      [TRAITS.SIGNUP_DATE]: traits[TRAITS.SIGNUP_DATE] || '',
+      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
     };
 
     if (!this.previousTraits) {
