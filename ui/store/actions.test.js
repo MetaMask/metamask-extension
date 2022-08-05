@@ -103,9 +103,8 @@ describe('Actions', () => {
     it('calls createNewVaultAndRestore', async () => {
       const store = mockStore();
 
-      const createNewVaultAndRestore = background.createNewVaultAndRestore.callsFake(
-        (_, __, cb) => cb(),
-      );
+      const createNewVaultAndRestore =
+        background.createNewVaultAndRestore.callsFake((_, __, cb) => cb());
 
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
@@ -341,11 +340,10 @@ describe('Actions', () => {
     it('calls importAccountWithStrategies in background', async () => {
       const store = mockStore();
 
-      const importAccountWithStrategy = background.importAccountWithStrategy.callsFake(
-        (_, __, cb) => {
+      const importAccountWithStrategy =
+        background.importAccountWithStrategy.callsFake((_, __, cb) => {
           cb();
-        },
-      );
+        });
 
       actions._setBackgroundConnection(background);
 
@@ -563,9 +561,10 @@ describe('Actions', () => {
 
     it('calls unlockHardwareWalletAccount in background', async () => {
       const store = mockStore();
-      const unlockHardwareWalletAccount = background.unlockHardwareWalletAccount.callsFake(
-        (_, __, ___, ____, cb) => cb(),
-      );
+      const unlockHardwareWalletAccount =
+        background.unlockHardwareWalletAccount.callsFake(
+          (_, __, ___, ____, cb) => cb(),
+        );
 
       actions._setBackgroundConnection(background);
 
@@ -639,8 +638,7 @@ describe('Actions', () => {
     const msgParams = {
       metamaskId: 123,
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      data:
-        '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
+      data: '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     };
 
     afterEach(() => {
@@ -684,8 +682,7 @@ describe('Actions', () => {
   describe('#signPersonalMsg', () => {
     const msgParams = {
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      data:
-        '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
+      data: '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     };
 
     afterEach(() => {
@@ -1099,32 +1096,34 @@ describe('Actions', () => {
     });
   });
 
-  describe('#removeToken', () => {
+  describe('#ignoreTokens', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeToken in background', async () => {
+    it('calls ignoreTokens in background', async () => {
       const store = mockStore();
 
-      const removeTokenStub = sinon.stub().callsFake((_, cb) => cb());
+      const ignoreTokensStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        removeToken: removeTokenStub,
+        ignoreTokens: ignoreTokensStub,
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.removeToken());
-      expect(removeTokenStub.callCount).toStrictEqual(1);
+      await store.dispatch(
+        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
+      );
+      expect(ignoreTokensStub.callCount).toStrictEqual(1);
     });
 
-    it('should display warning when removeToken in background fails', async () => {
+    it('should display warning when ignoreTokens in background fails', async () => {
       const store = mockStore();
 
       background.getApi.returns({
-        removeToken: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        ignoreTokens: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
@@ -1140,7 +1139,9 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.removeToken());
+      await store.dispatch(
+        actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
+      );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });

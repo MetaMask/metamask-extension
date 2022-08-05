@@ -288,10 +288,8 @@ export default class ExperimentalTab extends PureComponent {
 
   renderCustomNetworkListToggle() {
     const { t } = this.context;
-    const {
-      customNetworkListEnabled,
-      setCustomNetworkListEnabled,
-    } = this.props;
+    const { customNetworkListEnabled, setCustomNetworkListEnabled } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[5]} className="settings-page__content-row">
@@ -336,8 +334,7 @@ export default class ExperimentalTab extends PureComponent {
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}
         {this.renderTheme()}
-        {process.env.ADD_POPULAR_NETWORKS &&
-          this.renderCustomNetworkListToggle()}
+        {this.renderCustomNetworkListToggle()}
       </div>
     );
   }

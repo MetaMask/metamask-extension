@@ -95,7 +95,7 @@ import {
 
 import {
   resetSwapsPostFetchState,
-  removeToken,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
@@ -130,9 +130,8 @@ export default function BuildQuote({
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] = useState(
-    undefined,
-  );
+  const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
+    useState(undefined);
   const [verificationClicked, setVerificationClicked] = useState(false);
 
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
@@ -141,12 +140,12 @@ export default function BuildQuote({
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
     fetchParams?.metaData || {};
   const tokens = useSelector(getTokens, isEqual);
-  const topAssets = useSelector(getTopAssets);
+  const topAssets = useSelector(getTopAssets, isEqual);
   const fromToken = useSelector(getFromToken, isEqual);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const fromTokenError = useSelector(getFromTokenError);
   const maxSlippage = useSelector(getMaxSlippage);
-  const toToken = useSelector(getToToken) || destinationTokenInfo;
+  const toToken = useSelector(getToToken, isEqual) || destinationTokenInfo;
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
@@ -359,7 +358,12 @@ export default function BuildQuote({
   const onToSelect = useCallback(
     (token) => {
       if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(removeToken(toAddress));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);

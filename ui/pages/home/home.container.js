@@ -5,6 +5,9 @@ import {
   activeTabHasPermissions,
   getCurrentEthBalance,
   getFirstPermissionRequest,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getFirstSnapUpdateRequest,
+  ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -86,9 +89,18 @@ const mapStateToProps = (state) => {
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  const firstPermissionsRequest = getFirstPermissionRequest(state);
-  const firstPermissionsRequestId =
-    firstPermissionsRequest?.metadata.id || null;
+  let firstPermissionsRequest, firstPermissionsRequestId;
+  firstPermissionsRequest = getFirstPermissionRequest(state);
+  firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+
+  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (!firstPermissionsRequest) {
+    firstPermissionsRequest = getFirstSnapUpdateRequest(state);
+    firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -186,7 +198,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
-  setNewCustomNetworkAdded: () => {
+  clearNewCustomNetworkAdded: () => {
     dispatch(setNewCustomNetworkAdded({}));
   },
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {

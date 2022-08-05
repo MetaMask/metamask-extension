@@ -127,9 +127,11 @@ export const DISPLAY = {
   FLEX: 'flex',
   GRID: 'grid',
   INLINE_BLOCK: 'inline-block',
+  INLINE: 'inline',
   INLINE_FLEX: 'inline-flex',
   INLINE_GRID: 'inline-grid',
   LIST_ITEM: 'list-item',
+  NONE: 'none',
 };
 
 export const FRACTIONS = {
@@ -207,3 +209,5 @@ export const RESIZE = {
   INITIAL: 'initial',
   INHERIT: 'inherit',
 };
+
+export const BREAKPOINTS = ['base', 'sm', 'md', 'lg'];

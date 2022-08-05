@@ -16,8 +16,7 @@ export default class PermissionsConnectFooter extends Component {
             className="permissions-connect-footer__text--link"
             onClick={() => {
               global.platform.openTab({
-                url:
-                  'https://metamask.zendesk.com/hc/en-us/articles/4405506066331-User-guide-Dapps',
+                url: 'https://metamask.zendesk.com/hc/en-us/articles/4405506066331-User-guide-Dapps',
               });
             }}
           >

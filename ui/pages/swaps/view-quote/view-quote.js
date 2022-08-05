@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
+
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
@@ -128,10 +129,8 @@ export default function ViewQuote() {
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
 
-  const [
-    acknowledgedPriceDifference,
-    setAcknowledgedPriceDifference,
-  ] = useState(false);
+  const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
+    useState(false);
   const priceDifferenceRiskyBuckets = [
     GAS_RECOMMENDATIONS.HIGH,
     GAS_RECOMMENDATIONS.MEDIUM,
@@ -195,8 +194,8 @@ export default function ViewQuote() {
       (currentSmartTransactionsError !== 'not_enough_funds' ||
         currentSmartTransactionsErrorMessageDismissed)
     );
-  const smartTransactionFees = useSelector(getSmartTransactionFees);
-  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig);
+  const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 
   let gasFeeInputs;
@@ -334,26 +333,22 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  let {
-    feeInFiat,
-    feeInEth,
-    rawEthFee,
-    feeInUsd,
-  } = getRenderableNetworkFeesForQuote({
-    tradeGas: usedGasLimit,
-    approveGas,
-    gasPrice: networkAndAccountSupports1559
-      ? baseAndPriorityFeePerGas
-      : gasPrice,
-    currentCurrency,
-    conversionRate,
-    USDConversionRate,
-    tradeValue,
-    sourceSymbol: sourceTokenSymbol,
-    sourceAmount: usedQuote.sourceAmount,
-    chainId,
-    nativeCurrencySymbol,
-  });
+  let { feeInFiat, feeInEth, rawEthFee, feeInUsd } =
+    getRenderableNetworkFeesForQuote({
+      tradeGas: usedGasLimit,
+      approveGas,
+      gasPrice: networkAndAccountSupports1559
+        ? baseAndPriorityFeePerGas
+        : gasPrice,
+      currentCurrency,
+      conversionRate,
+      USDConversionRate,
+      tradeValue,
+      sourceSymbol: sourceTokenSymbol,
+      sourceAmount: usedQuote.sourceAmount,
+      chainId,
+      nativeCurrencySymbol,
+    });
   additionalTrackingParams.reg_tx_fee_in_usd = Number(feeInUsd);
   additionalTrackingParams.reg_tx_fee_in_eth = Number(rawEthFee);
 
@@ -751,15 +746,17 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
-  const isSwapButtonDisabled =
+  const isSwapButtonDisabled = Boolean(
     submitClicked ||
-    balanceError ||
-    tokenBalanceUnavailable ||
-    disableSubmissionDueToPriceWarning ||
-    (networkAndAccountSupports1559 && baseAndPriorityFeePerGas === undefined) ||
-    (!networkAndAccountSupports1559 &&
-      (gasPrice === null || gasPrice === undefined)) ||
-    (currentSmartTransactionsEnabled && currentSmartTransactionsError);
+      balanceError ||
+      tokenBalanceUnavailable ||
+      disableSubmissionDueToPriceWarning ||
+      (networkAndAccountSupports1559 &&
+        baseAndPriorityFeePerGas === undefined) ||
+      (!networkAndAccountSupports1559 &&
+        (gasPrice === null || gasPrice === undefined)) ||
+      (currentSmartTransactionsEnabled && currentSmartTransactionsError),
+  );
 
   useEffect(() => {
     if (

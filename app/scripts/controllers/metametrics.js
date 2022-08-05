@@ -44,7 +44,7 @@ const exceptionsToFilter = {
  */
 
 /**
- * @typedef {Object} MetaMetricsControllerState
+ * @typedef {object} MetaMetricsControllerState
  * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
@@ -57,9 +57,9 @@ const exceptionsToFilter = {
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {Object} options.segment - an instance of analytics-node for tracking
+   * @param {object} options.segment - an instance of analytics-node for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} options.preferencesStore - The preferences controller store, used
+   * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
@@ -295,7 +295,7 @@ export default class MetaMetricsController {
    * Calls this._identify with validated metaMetricsId and user traits if user is participating
    * in the MetaMetrics analytics program
    *
-   * @param {Object} userTraits
+   * @param {object} userTraits
    */
   identify(userTraits) {
     const { metaMetricsId, participateInMetaMetrics } = this.state;
@@ -558,15 +558,16 @@ export default class MetaMetricsController {
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]: metamaskState.frequentRpcListDetail.reduce(
-        (networkList, currentNetwork) => {
-          if (!currentNetwork.ticker) {
-            networkList.push(currentNetwork.chainId);
-          }
-          return networkList;
-        },
-        [],
-      ),
+      [TRAITS.NETWORKS_WITHOUT_TICKER]:
+        metamaskState.frequentRpcListDetail.reduce(
+          (networkList, currentNetwork) => {
+            if (!currentNetwork.ticker) {
+              networkList.push(currentNetwork.chainId);
+            }
+            return networkList;
+          },
+          [],
+        ),
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
@@ -604,8 +605,8 @@ export default class MetaMetricsController {
    * Returns a new object of all valid user traits. For dates, we transform them into ISO-8601 timestamp strings.
    *
    * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
-   * @param {Object} userTraits
-   * @returns {Object}
+   * @param {object} userTraits
+   * @returns {object}
    */
   _buildValidTraits(userTraits) {
     return Object.entries(userTraits).reduce((validTraits, [key, value]) => {
@@ -626,7 +627,7 @@ export default class MetaMetricsController {
    * Returns an array of all of the collectibles/NFTs the user
    * possesses across all networks and accounts.
    *
-   * @param {Object} allCollectibles
+   * @param {object} allCollectibles
    * @returns {[]}
    */
   _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
@@ -639,7 +640,7 @@ export default class MetaMetricsController {
    * Returns the number of unique collectible/NFT addresses the user
    * possesses across all networks and accounts.
    *
-   * @param {Object} allCollectibles
+   * @param {object} allCollectibles
    * @returns {number}
    */
   _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
@@ -668,7 +669,7 @@ export default class MetaMetricsController {
    *
    * @see {@link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify}
    * @private
-   * @param {Object} userTraits
+   * @param {object} userTraits
    */
   _identify(userTraits) {
     const { metaMetricsId } = this.state;

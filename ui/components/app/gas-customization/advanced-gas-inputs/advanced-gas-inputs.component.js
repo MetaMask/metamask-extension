@@ -166,7 +166,8 @@ export default class AdvancedGasInputs extends Component {
                   errorType === 'error',
                 'advanced-gas-inputs__gas-edit-row__input--warning':
                   errorType === 'warning',
-                'advanced-gas-inputs__gas-edit-row__input-arrows--hidden': disabled,
+                'advanced-gas-inputs__gas-edit-row__input-arrows--hidden':
+                  disabled,
               },
             )}
           >
@@ -210,16 +211,14 @@ export default class AdvancedGasInputs extends Component {
       return null;
     }
 
-    const {
-      errorText: gasPriceErrorText,
-      errorType: gasPriceErrorType,
-    } = this.gasPriceError({
-      insufficientBalance,
-      customPriceIsSafe,
-      isSpeedUp,
-      gasPrice,
-      customPriceIsExcessive,
-    });
+    const { errorText: gasPriceErrorText, errorType: gasPriceErrorType } =
+      this.gasPriceError({
+        insufficientBalance,
+        customPriceIsSafe,
+        isSpeedUp,
+        gasPrice,
+        customPriceIsExcessive,
+      });
     const gasPriceErrorComponent = gasPriceErrorType ? (
       <div
         className={`advanced-gas-inputs__gas-edit-row__${gasPriceErrorType}-text`}
@@ -228,10 +227,8 @@ export default class AdvancedGasInputs extends Component {
       </div>
     ) : null;
 
-    const {
-      errorText: gasLimitErrorText,
-      errorType: gasLimitErrorType,
-    } = this.gasLimitError({ insufficientBalance, gasLimit, minimumGasLimit });
+    const { errorText: gasLimitErrorText, errorType: gasLimitErrorType } =
+      this.gasLimitError({ insufficientBalance, gasLimit, minimumGasLimit });
     const gasLimitErrorComponent = gasLimitErrorType ? (
       <div
         className={`advanced-gas-inputs__gas-edit-row__${gasLimitErrorType}-text`}

@@ -173,12 +173,8 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const {
-      isPopup,
-      pathnameI18nKey,
-      addressName,
-      isSnapViewPage,
-    } = this.props;
+    const { isPopup, pathnameI18nKey, addressName, isSnapViewPage } =
+      this.props;
     let titleText;
     if (isSnapViewPage) {
       titleText = t('snaps');

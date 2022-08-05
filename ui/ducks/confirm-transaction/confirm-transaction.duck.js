@@ -92,11 +92,8 @@ export default function reducer(state = initState, action = {}) {
       };
     }
     case UPDATE_TRANSACTION_FEES: {
-      const {
-        fiatTransactionFee,
-        ethTransactionFee,
-        hexTransactionFee,
-      } = action.payload;
+      const { fiatTransactionFee, ethTransactionFee, hexTransactionFee } =
+        action.payload;
       return {
         ...state,
         fiatTransactionFee: fiatTransactionFee || state.fiatTransactionFee,
@@ -105,11 +102,8 @@ export default function reducer(state = initState, action = {}) {
       };
     }
     case UPDATE_TRANSACTION_TOTALS: {
-      const {
-        fiatTransactionTotal,
-        ethTransactionTotal,
-        hexTransactionTotal,
-      } = action.payload;
+      const { fiatTransactionTotal, ethTransactionTotal, hexTransactionTotal } =
+        action.payload;
       return {
         ...state,
         fiatTransactionTotal:
@@ -266,9 +260,8 @@ export function updateTxDataAndCalculate(txData) {
 export function setTransactionToConfirm(transactionId) {
   return (dispatch, getState) => {
     const state = getState();
-    const unconfirmedTransactionsHash = unconfirmedTransactionsHashSelector(
-      state,
-    );
+    const unconfirmedTransactionsHash =
+      unconfirmedTransactionsHashSelector(state);
     const transaction = unconfirmedTransactionsHash[transactionId];
 
     if (!transaction) {

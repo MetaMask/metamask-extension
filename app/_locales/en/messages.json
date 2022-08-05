@@ -44,6 +44,60 @@
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (Coming Soon)"
   },
+  "SIWEAddressInvalid": {
+    "message": "The address in the sign-in request does not match the address of the account you are using to sign in."
+  },
+  "SIWEDomainInvalid": {
+    "message": "The website you are attempting to sign in to ($1) does not match the domain in the sign-in request. Proceed with caution.",
+    "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningBody": {
+    "message": "The website ($1) is asking you to sign in to the wrong domain. This may be a phishing attack.",
+    "description": "$1 represents the website domain"
+  },
+  "SIWELabelChainID": {
+    "message": "Chain ID:"
+  },
+  "SIWELabelExpirationTime": {
+    "message": "Expires At:"
+  },
+  "SIWELabelIssuedAt": {
+    "message": "Issued At:"
+  },
+  "SIWELabelMessage": {
+    "message": "Message:"
+  },
+  "SIWELabelNonce": {
+    "message": "Nonce:"
+  },
+  "SIWELabelNotBefore": {
+    "message": "Not Before:"
+  },
+  "SIWELabelRequestID": {
+    "message": "Request ID:"
+  },
+  "SIWELabelResources": {
+    "message": "Resources: $1",
+    "description": "$1 represents the number of resources"
+  },
+  "SIWELabelURI": {
+    "message": "URI:"
+  },
+  "SIWELabelVersion": {
+    "message": "Version:"
+  },
+  "SIWESiteRequestSubtitle": {
+    "message": "This site is requesting to sign in with"
+  },
+  "SIWESiteRequestTitle": {
+    "message": "Sign-in request"
+  },
+  "SIWEWarningSubtitle": {
+    "message": "To confirm you understand, check:"
+  },
+  "SIWEWarningTitle": {
+    "message": "Are you sure?"
+  },
   "about": {
     "message": "About"
   },
@@ -120,6 +174,9 @@
   },
   "addAlias": {
     "message": "Add alias"
+  },
+  "addBlockExplorer": {
+    "message": "Add a block explorer"
   },
   "addContact": {
     "message": "Add contact"
@@ -275,7 +332,10 @@
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
-    "message": "Approve & Install"
+    "message": "Approve & install"
+  },
+  "approveAndUpdate": {
+    "message": "Approve & update"
   },
   "approveButtonText": {
     "message": "Approve"
@@ -293,8 +353,9 @@
   "approvedAsset": {
     "message": "Approved asset"
   },
-  "areYouDeveloper": {
-    "message": "Are you a developer?"
+  "approvedOn": {
+    "message": "Approved on $1",
+    "description": "$1 is the approval date for a permission"
   },
   "areYouSure": {
     "message": "Are you sure?"
@@ -1638,6 +1699,9 @@
   "invalidSeedPhrase": {
     "message": "Invalid Secret Recovery Phrase"
   },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
   "ipfsGateway": {
     "message": "IPFS Gateway"
   },
@@ -1909,13 +1973,22 @@
   "metametricsTitle": {
     "message": "Join 6M+ users to improve MetaMask"
   },
-  "mismatchedChain": {
-    "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "mismatchedChainRecommendation": {
+    "message": "We recommend that you $1 before proceeding.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "According to our record the network name may not correctly match this chain ID."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "The submitted currency symbol does not match what we expect for this chain ID."
+  },
+  "mismatchedRpcUrl": {
+    "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
   "missingNFT": {
     "message": "Don't see your NFT?"
@@ -2190,6 +2263,16 @@
   "notifications12Title": {
     "message": "Wen dark mode? Now dark mode! 🕶️🦊"
   },
+  "notifications13ActionText": {
+    "message": "Show custom network list"
+  },
+  "notifications13Description": {
+    "message": "You can now add the following popular custom networks easily: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm and Polygon! To enable this feature, go to Settings -> Experimental and turn \"Show custom network list\" on!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Add Popular Networks"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2375,9 +2458,6 @@
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "Check the source code"
-  },
   "optional": {
     "message": "Optional"
   },
@@ -2449,6 +2529,12 @@
   },
   "permissionRequestCapitalized": {
     "message": "Permission Request"
+  },
+  "permissionRequested": {
+    "message": "Requested now"
+  },
+  "permissionRevoked": {
+    "message": "Revoked in this update"
   },
   "permission_accessNetwork": {
     "message": "Access the Internet.",
@@ -2987,6 +3073,9 @@
   "signed": {
     "message": "Signed"
   },
+  "signin": {
+    "message": "Sign-In"
+  },
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
@@ -3021,14 +3110,24 @@
     "message": "Install Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "To confirm you understand, check all."
+    "message": "To confirm that you understand, check the box."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "To confirm that you understand, check all the boxes."
   },
   "snapInstallWarningKeyAccess": {
-    "message": "You are granting key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your accounts and assets. Make sure you trust \"$1\" before proceeding.",
-    "description": "The parameter is the name of the snap"
+    "message": "You are granting $2 key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your $2 accounts and assets. Make sure you trust \"$1\" before proceeding.",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
+  },
+  "snapUpdate": {
+    "message": "Update Snap"
+  },
+  "snapUpdateExplanation": {
+    "message": "$1 needs a newer version of your snap.",
+    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snaps"
@@ -3195,7 +3294,7 @@
     "message": "Swap would have failed"
   },
   "stxCancelledDescription": {
-    "message": "Your transaction would have failed and was canceled to protect you from paying unnecessary gas fees."
+    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary gas fees."
   },
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
@@ -3261,10 +3360,10 @@
     "message": "A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing."
   },
   "stxUserCancelled": {
-    "message": "Swap canceled"
+    "message": "Swap cancelled"
   },
   "stxUserCancelledDescription": {
-    "message": "Your transaction has been canceled and you did not pay any unnecessary gas fees."
+    "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
   },
   "stxYouCanOptOut": {
     "message": "You can opt-out in advanced settings any time."
@@ -3933,12 +4032,12 @@
     "message": "The decentralized web awaits"
   },
   "unrecognizedChain": {
-    "message": "This custom network is not recognized. We recommend that you $1 before proceeding",
+    "message": "This custom network is not recognized",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedChainLinkText": {
-    "message": "verify the network details",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  "unrecognizedProtocol": {
+    "message": "$1 (Unrecognized protocol)",
+    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Sending collectible (ERC-721) tokens is not currently supported",

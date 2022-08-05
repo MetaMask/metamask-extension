@@ -119,10 +119,8 @@ describe('migration #68', () => {
     };
 
     const newStorage = await migration68.migrate(oldStorage);
-    const {
-      PermissionLogController,
-      SubjectMetadataController,
-    } = newStorage.data;
+    const { PermissionLogController, SubjectMetadataController } =
+      newStorage.data;
     const expected = getOldState().PermissionsMetadata;
 
     expect(PermissionLogController.permissionHistory).toStrictEqual(

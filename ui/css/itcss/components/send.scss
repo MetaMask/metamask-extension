@@ -3,7 +3,7 @@
   flex-flow: column nowrap;
   z-index: 25;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     width: 100%;
     overflow-y: auto;
   }
@@ -15,7 +15,7 @@
 
 .send-screen-card {
   background-color: var(--color-background-default);
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -24,7 +24,7 @@
   width: 498px;
   flex: 1 0 auto;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     top: 0;
     width: 100%;
     box-shadow: none;
@@ -49,14 +49,14 @@
   width: 70px;
   height: 70px;
   border: 1px solid var(--color-border-muted);
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   position: absolute;
   top: -35px;
   z-index: 25;
   padding: 4px;
   background-color: var(--color-background-default);
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     position: relative;
     top: 0;
   }
@@ -184,7 +184,7 @@
   height: 307px;
   background-color: var(--color-background-default);
   opacity: 1;
-  box-shadow: var(--color-border-muted) 0 0 5px;
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   z-index: 1050;
   padding: 13px 19px;
   border-radius: 4px;
@@ -200,7 +200,7 @@
   transform: rotate(45deg);
   left: 107px;
   top: 294px;
-  box-shadow: 2px 2px 2px var(--color-border-muted);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
 }
 
 .customize-gas-tooltip-container input[type='number']::-webkit-inner-spin-button {
@@ -326,7 +326,7 @@
     width: 498px;
     height: 605px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -334,7 +334,7 @@
     flex-flow: column nowrap;
     flex: 1 0 auto;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       top: 0;
       width: 100%;
       box-shadow: none;
@@ -347,7 +347,7 @@
     top: -35px;
     z-index: 25;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       position: relative;
       top: 0;
       flex: 0 0 auto;
@@ -385,7 +385,7 @@
     align-items: center;
     flex: 0 0 auto;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       margin-top: 24px;
     }
 
@@ -406,14 +406,14 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
     align-items: center;
     position: relative;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
       top: 0;
       box-shadow: none;
@@ -424,7 +424,7 @@
   &__send-header-icon-container {
     z-index: 25;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       position: relative;
       top: 0;
     }
@@ -450,7 +450,7 @@
     border-radius: 50%;
     z-index: 100;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       top: 36px;
     }
   }
@@ -464,7 +464,7 @@
     justify-content: center;
     align-items: center;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: 59px;
       width: 100vw;
     }
@@ -479,7 +479,7 @@
     left: 178px;
     top: 75px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       top: 46px;
       left: 0;
       right: 0;
@@ -527,7 +527,7 @@
   }
 
   &__form {
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       margin: 0;
       flex: 1 1 auto;
     }
@@ -617,7 +617,7 @@
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
       background-color: var(--color-background-default);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -666,7 +666,7 @@
       flex-grow: 1;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       &__asset-data {
         width: 60%;
       }
@@ -705,7 +705,7 @@
       border: 1px solid var(--color-border-muted);
       border-radius: 4px;
       background-color: var(--color-background-default);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
       top: 65px;
       left: 0;
       box-sizing: content-box;
@@ -864,11 +864,11 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100vw;
       height: 100vh;
     }
@@ -882,7 +882,7 @@
       align-items: center;
       justify-content: space-between;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         flex: 0 0 auto;
       }
     }
@@ -909,7 +909,7 @@
       display: flex;
       margin-bottom: 24px;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         flex-flow: column;
         flex: 1 1 auto;
       }
@@ -925,7 +925,7 @@
       justify-content: space-between;
       position: relative;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         flex: 0 0 auto;
       }
     }

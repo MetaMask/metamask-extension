@@ -18,9 +18,8 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * @typedef {import('../../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -31,7 +30,7 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  *
  * Note that this is not an exhaustive type definiton; only the properties we use are defined
  *
- * @typedef {Object} EtherscanTransaction
+ * @typedef {object} EtherscanTransaction
  * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
  * @property {string} from - The hex-prefixed address of the sender
  * @property {string} gas - The gas limit, in decimal GWEI
