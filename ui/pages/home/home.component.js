@@ -74,6 +74,7 @@ function shouldCloseNotificationPopup({
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {

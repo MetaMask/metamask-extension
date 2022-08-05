@@ -8,6 +8,7 @@ import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 class ErrorPage extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {

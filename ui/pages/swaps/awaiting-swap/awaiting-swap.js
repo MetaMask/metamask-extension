@@ -157,7 +157,7 @@ export default function AwaitingSwap({
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => {
-          this.context.trackEvent({
+          trackEvent({
             category: EVENT.CATEGORIES.SWAPS,
             event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
             properties: {

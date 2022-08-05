@@ -20,6 +20,7 @@ export default class InfoTab extends PureComponent {
 
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   settingsRefs = Array(
