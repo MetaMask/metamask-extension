@@ -636,6 +636,7 @@ export default class ConfirmApproveContent extends Component {
         <div
           className="confirm-approve-content__title"
           data-testid="confirm-approve-title"
+          style={{ color: 'var(--color-error-default)' }}
         >
           {this.renderTitle()}
         </div>
