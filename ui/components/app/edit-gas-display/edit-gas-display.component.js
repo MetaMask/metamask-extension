@@ -279,7 +279,7 @@ export default function EditGasDisplay({
               onClick={() => {
                 setShowAdvancedForm(!showAdvancedForm);
                 trackEvent({
-                  event: 'Clicked "Advanced Options"',
+                  event: 'Clicked "Advanced options"',
                   category: EVENT.CATEGORIES.TRANSACTIONS,
                   properties: {
                     action: 'Edit Screen',

@@ -126,7 +126,7 @@ describe('FeeCard', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders the component with Smart Transactions enabled and user opted in', () => {
+  it('renders the component with smart transactions enabled and user opted in', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps({
       smartTransactionsOptInStatus: true,
