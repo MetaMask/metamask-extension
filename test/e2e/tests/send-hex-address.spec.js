@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  veryLargeDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);

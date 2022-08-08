@@ -692,14 +692,19 @@
         "3box>ipfs>ipfs-unixfs": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-batch": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-first": true,
+        "3box>ipfs>ipfs-unixfs-importer>deep-extend": true,
         "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": true,
         "3box>ipfs>ipld-dag-pb": true,
         "3box>ipfs>ipld-raw>multihashing-async": true,
         "3box>ipfs>multicodec": true,
         "3box>ipfs>multihashes": true,
         "3box>ipfs>superstruct": true,
-        "browserify>buffer": true,
-        "rc>deep-extend": true
+        "browserify>buffer": true
+      }
+    },
+    "3box>ipfs>ipfs-unixfs-importer>deep-extend": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": {
@@ -6080,11 +6085,6 @@
         "prop-types": true,
         "qrcode.react>qr.js": true,
         "react": true
-      }
-    },
-    "rc>deep-extend": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "react": {

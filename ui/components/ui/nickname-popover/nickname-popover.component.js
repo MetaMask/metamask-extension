@@ -10,10 +10,7 @@ import Identicon from '../identicon/identicon.component';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import {
-  getTokenList,
-  getBlockExplorerLinkText,
-} from '../../../selectors';
+import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 
 const NicknamePopover = ({

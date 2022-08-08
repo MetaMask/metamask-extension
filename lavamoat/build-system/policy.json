@@ -4753,7 +4753,7 @@
     },
     "gulp-watch>chokidar>readdirp>micromatch>extend-shallow>is-extendable": {
       "packages": {
-        "gulp>gulp-cli>liftoff>is-plain-object": true
+        "@babel/register>clone-deep>is-plain-object": true
       }
     },
     "gulp-watch>chokidar>readdirp>micromatch>extglob": {
@@ -5010,7 +5010,7 @@
     },
     "gulp-zip>plugin-error>extend-shallow>is-extendable": {
       "packages": {
-        "gulp>gulp-cli>liftoff>is-plain-object": true
+        "@babel/register>clone-deep>is-plain-object": true
       }
     },
     "gulp-zip>through2": {
@@ -5126,7 +5126,7 @@
     },
     "gulp>glob-watcher>anymatch>micromatch>extend-shallow>is-extendable": {
       "packages": {
-        "gulp>gulp-cli>liftoff>is-plain-object": true
+        "@babel/register>clone-deep>is-plain-object": true
       }
     },
     "gulp>glob-watcher>anymatch>normalize-path": {
@@ -5370,12 +5370,10 @@
         "process.stderr": true
       },
       "packages": {
-        "@babel/register>clone-deep>is-plain-object": true,
         "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": true,
         "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>console-control-strings": true,
         "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>gauge": true,
-        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>set-blocking": true,
-        "gulp>gulp-cli>liftoff>is-plain-object": true
+        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>set-blocking": true
       }
     },
     "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": {
@@ -5467,30 +5465,6 @@
       "builtin": {
         "assert.equal": true,
         "events": true
-      },
-      "packages": {
-        "@babel/register>clone-deep>is-plain-object": true,
-        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi>ansi-regex": true,
-        "gulp>glob-watcher>anymatch>micromatch>extend-shallow>is-extendable": true,
-        "webpack>micromatch>extend-shallow>assign-symbols": true,
-        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point>number-is-nan": true,        "gulp>gulp-cli>isobject": true,
-        "webpack>micromatch>define-property>is-descriptor": true,
-        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>code-point-at": true,
-        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
-        "gulp>glob-watcher>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
-        "3box>ipfs>kind-of": true,
-        "gulp>glob-watcher>anymatch>micromatch>define-property": true,
-        "gulp>glob-watcher>anymatch>micromatch>extend-shallow": true,
-        "gulp>glob-watcher>chokidar>braces": true,
-        "webpack>micromatch>arr-diff": true,
-        "webpack>micromatch>array-unique": true,
-        "webpack>micromatch>extglob": true,
-        "webpack>micromatch>fragment-cache": true,
-        "webpack>micromatch>nanomatch": true,
-        "webpack>micromatch>object.pick": true,
-        "webpack>micromatch>regex-not": true,
-        "webpack>micromatch>snapdragon": true,
-        "webpack>micromatch>to-regex": true
       },
       "globals": {
         "process": true
