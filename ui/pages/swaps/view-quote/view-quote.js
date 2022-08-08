@@ -504,7 +504,7 @@ export default function ViewQuote() {
     }
   }, [originalApproveAmount, approveAmount]);
 
-  // If it's not a Smart Transaction and ETH balance is neeced, we want to show a warning.
+  // If it's not a Smart Transaction and ETH balance is needed, we want to show a warning.
   const isNotStxAndEthBalanceIsNeeded =
     (!currentSmartTransactionsEnabled || !smartTransactionsOptInStatus) &&
     ethBalanceNeeded;
