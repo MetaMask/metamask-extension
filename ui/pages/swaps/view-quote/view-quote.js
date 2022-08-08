@@ -504,14 +504,23 @@ export default function ViewQuote() {
     }
   }, [originalApproveAmount, approveAmount]);
 
+  // If it's not a Smart Transaction and ETH balance is neeced, we want to show a warning.
+  const isNotStxAndEthBalanceIsNeeded =
+    (!currentSmartTransactionsEnabled || !smartTransactionsOptInStatus) &&
+    ethBalanceNeeded;
+
+  // If it's a Smart Transaction and ETH balance is needed, we want to show a warning.
+  const isStxAndEthBalanceIsNeeded =
+    currentSmartTransactionsEnabled &&
+    smartTransactionsOptInStatus &&
+    ethBalanceNeededStx;
+
+  // Indicates if we should show to a user a warning about insufficient funds for swapping.
   const showInsufficientWarning =
     (balanceError ||
       tokenBalanceNeeded ||
-      ((!currentSmartTransactionsEnabled || !smartTransactionsOptInStatus) &&
-        ethBalanceNeeded) ||
-      (currentSmartTransactionsEnabled &&
-        smartTransactionsOptInStatus &&
-        ethBalanceNeededStx)) &&
+      isNotStxAndEthBalanceIsNeeded ||
+      isStxAndEthBalanceIsNeeded) &&
     !warningHidden;
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
