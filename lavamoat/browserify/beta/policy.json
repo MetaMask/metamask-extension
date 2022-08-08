@@ -2201,8 +2201,8 @@
       }
     },
     "@babel/runtime": {
-      "packages": {
-        "@storybook/api>regenerator-runtime": true
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "@download/blockies": {
@@ -2318,8 +2318,7 @@
     },
     "@eth-optimism/contracts": {
       "packages": {
-        "ethers": true,
-        "ethers>@ethersproject/abstract-provider": true
+        "ethers": true
       }
     },
     "@ethereumjs/common": {
