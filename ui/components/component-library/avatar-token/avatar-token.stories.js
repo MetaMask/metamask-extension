@@ -34,9 +34,9 @@ export const DefaultStory = (args) => <AvatarToken {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const StoryWithHalo = (args) => <AvatarToken {...args} />;
+export const AvatarTokenWithHalo = (args) => <AvatarToken {...args} />;
 
-StoryWithHalo.storyName = 'Halo';
+AvatarTokenWithHalo.storyName = 'Halo';
 
 DefaultStory.args = {
   tokenName: 'ast',
@@ -44,7 +44,7 @@ DefaultStory.args = {
   size: SIZES.MD,
 };
 
-StoryWithHalo.args = {
+AvatarTokenWithHalo.args = {
   tokenName: 'ast',
   tokenImageUrl: './AST.png',
   size: SIZES.MD,
