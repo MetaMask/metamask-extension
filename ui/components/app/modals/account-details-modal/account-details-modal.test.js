@@ -30,14 +30,16 @@ describe('Account Details Modal', () => {
         name: 'Account 1',
       },
     },
-    accounts: [
-      {
-        address: '0xAddress',
-        lastSelected: 1637764711510,
-        name: 'Account 1',
-        balance: '0x543a5fb6caccf599',
-      },
-    ],
+    accounts: {
+      address: '0xAddress',
+      lastSelected: 1637764711510,
+      name: 'Account 1',
+      balance: '0x543a5fb6caccf599',
+    },
+    blockExplorerLinkText: {
+      firstPart: 'addBlockExplorer',
+      secondPart: '',
+    },
   };
 
   beforeEach(() => {
@@ -58,6 +60,12 @@ describe('Account Details Modal', () => {
   });
 
   it('opens new tab when view block explorer is clicked', () => {
+    wrapper.setProps({
+      blockExplorerLinkText: {
+        firstPart: 'viewOnEtherscan',
+        secondPart: 'blockExplorerAccountAction',
+      },
+    });
     const modalButton = wrapper.find('.account-details-modal__button');
     const etherscanLink = modalButton.first();
 
@@ -75,7 +83,10 @@ describe('Account Details Modal', () => {
 
   it('sets blockexplorerview text when block explorer url in rpcPrefs exists', () => {
     const blockExplorerUrl = 'https://block.explorer';
-    wrapper.setProps({ rpcPrefs: { blockExplorerUrl } });
+    wrapper.setProps({
+      rpcPrefs: { blockExplorerUrl },
+      blockExplorerLinkText: { firstPart: 'blockExplorerView' },
+    });
 
     const modalButton = wrapper.find('.account-details-modal__button');
     const blockExplorerLink = modalButton.first().shallow();

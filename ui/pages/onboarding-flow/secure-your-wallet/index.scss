@@ -14,14 +14,14 @@
     justify-content: space-between;
     width: 100%;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       flex-direction: row;
     }
 
     button {
       margin-bottom: 16px;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         + button {
           margin-left: 16px;
         }
@@ -42,7 +42,7 @@
     padding: 12px;
     border-radius: 10px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-inline-end: 43px;
     }
   }

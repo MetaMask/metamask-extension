@@ -39,11 +39,12 @@ const props = {
 
 describe('ConfirmApproveContent Component', () => {
   it('should render Confirm approve page correctly', () => {
-    const { queryByText, getByText, getAllByText } = renderComponent(props);
+    const { queryByText, getByText, getAllByText, getByTestId } =
+      renderComponent(props);
     expect(queryByText('metamask.github.io')).toBeInTheDocument();
-    expect(
-      queryByText('Give permission to access your TST?'),
-    ).toBeInTheDocument();
+    expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
+      ' Give permission to access your TST? ',
+    );
     expect(
       queryByText(
         'By granting permission, you are allowing the following contract to access your funds',

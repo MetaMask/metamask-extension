@@ -661,7 +661,10 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:hasPermissions`,
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
+        `${this.permissionController.name}:revokePermissions`,
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
+        `${this.approvalController.name}:addRequest`,
+        `${this.permissionController.name}:grantPermissions`,
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
@@ -709,6 +712,7 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
+      featureFlags: { dappsCanUpdateSnaps: true },
     });
 
     this.notificationController = new NotificationController({
@@ -1121,6 +1125,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.setupControllerEventSubscriptions();
 
+    // For more information about these legacy streams, see here:
+    // https://github.com/MetaMask/metamask-extension/issues/15491
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
 

@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "承認済みのアセット"
   },
-  "areYouDeveloper": {
-    "message": "開発者の方ですか？"
-  },
   "areYouSure": {
     "message": "よろしいですか？"
   },
@@ -2397,9 +2394,6 @@
     "message": "WebHIDでLedgerを接続するには、MetaMaskを全画面モードで開いてください。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "ソースコードを確認"
-  },
   "optional": {
     "message": "任意"
   },
@@ -3044,10 +3038,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "理解したことを確認するために、すべての項目にチェックを入れてください。"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "スナップ「$1」に重要なアクセス権を付与しようとしています。これは取り消し不可能で、「$1」によるアカウントとアセットのコントロールが可能になります。続行する前に、「$1」が信頼できることを確認してください。",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "このスナップが次のパーミッションをリクエストしています:"

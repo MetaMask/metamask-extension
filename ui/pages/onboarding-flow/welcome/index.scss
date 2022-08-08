@@ -15,7 +15,7 @@
     opacity: 1;
     color: var(--color-icon-default);
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       padding: 40px;
     }
   }

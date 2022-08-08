@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Activo aprobado"
   },
-  "areYouDeveloper": {
-    "message": "¿Usted es desarrollador?"
-  },
   "areYouSure": {
     "message": "¿Está seguro?"
   },
@@ -2397,9 +2394,6 @@
     "message": "Abra MetaMask en pantalla completa para conectar su Ledger a través de WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "Compruebe el código fuente"
-  },
   "optional": {
     "message": "Opcional"
   },
@@ -3044,10 +3038,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "Para confirmar que comprende, marque todo."
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Está otorgando acceso clave al complemento \"$1\". Esto es irrevocable y le otorga a \"$1\" el control de sus cuentas y activos. Asegúrese de confiar en \"$1\" antes de continuar.",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "Este complemento solicita los siguientes permisos:"
