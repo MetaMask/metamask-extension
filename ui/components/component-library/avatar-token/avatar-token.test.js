@@ -33,4 +33,11 @@ describe('AvatarToken', () => {
     const image = screen.getAllByRole('img', { hidden: true });
     expect(image[1]).toHaveClass('blur-halo-image');
   });
+
+  it('should render text showHalo is true and no image url is provided', () => {
+    const { getByText } = render(
+      <AvatarToken {...args} tokenImageUrl="" showHalo />,
+    );
+    expect(getByText('A')).toBeDefined();
+  });
 });
