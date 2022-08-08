@@ -122,7 +122,7 @@ async function start() {
     `mv3: ${bundleSizeStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
-    `typescript conversion: ${tsMigrationDashboardLink}`,
+    `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
