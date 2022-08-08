@@ -624,12 +624,12 @@ jobs:
           name: Run page load benchmark
           command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
       - store_artifacts:
-          path: user_actions
-          destination: user_actions
+          path: test-artifacts
+          destination: test-artifacts
       - persist_to_workspace:
           root: .
           paths:
-            - user_actions
+            - test-artifacts
 
   stats-module-load-init:
     executor: node-browsers-medium-plus
