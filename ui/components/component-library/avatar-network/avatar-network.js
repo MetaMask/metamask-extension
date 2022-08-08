@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
 
@@ -19,7 +19,10 @@ export const AvatarNetwork = ({
   showHalo,
   ...props
 }) => {
-  const [showFallback, setShowFallback] = useState(!networkImageUrl);
+  const [showFallback, setShowFallback] = useState(false);
+  useEffect(() => {
+    setShowFallback(!networkImageUrl);
+  }, [networkImageUrl]);
 
   const baseStyle = showHalo ? { position: `relative` } : {};
   const sizePercentage = showHalo ? '62.5%' : '100%';
