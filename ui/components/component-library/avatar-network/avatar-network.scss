@@ -1,0 +1,7 @@
+.blur-halo-image {
+  filter: blur(20px);
+  transform: scale(1.25);
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+}
