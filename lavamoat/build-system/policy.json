@@ -2505,7 +2505,7 @@
       "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
         "eslint-plugin-import>tsconfig-paths>strip-bom": true,
-        "minimist": true
+        "patch-package>minimist": true
       }
     },
     "eslint-plugin-import>tsconfig-paths>json5": {
