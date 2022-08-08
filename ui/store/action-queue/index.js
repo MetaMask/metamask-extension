@@ -1,38 +1,59 @@
 import pify from 'pify';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
+// // A simplified pify maybe?
+// function pify(apiObject) {
+//   return Object.keys(apiObject).reduce((promisifiedAPI, key) => {
+//     if (apiObject[key].apply) { // depending on our browser support we might use a nicer check for functions here
+//       promisifiedAPI[key] = function (...args) {
+//         return new Promise((resolve, reject) => {
+//           return apiObject[key](
+//             ...args,
+//             (err, result) => {
+//               if (err) {
+//                 reject(err);
+//               } else {
+//                 resolve(result);
+//               }
+//             },
+//           );
+//         });
+//       };
+//     }
+//     return promisifiedAPI;
+//   }, {});
+// }
+
 let background = null;
 let promisifiedBackground = null;
 
 const actionRetryQueue = [];
-const promisifiedActionRetryQueue = [];
 
-// Function below is used to add action to queue
-const addToActionQueue = (
-  queue,
-  actionId,
-  request,
-  resolveHandler,
-  rejectHandler,
-) => {
-  if (queue.some((act) => act.actionId === actionId)) {
+export function __TEST_CLEAR_QUEUE() {
+  actionRetryQueue.length = 0;
+}
+
+// add action to queue
+const addToActionQueue = (actionId, request, resolve, reject) => {
+  if (actionRetryQueue.some((act) => act.actionId === actionId)) {
     return;
   }
-  queue.push({
+  actionRetryQueue.push({
     actionId,
     request,
-    resolveHandler,
-    rejectHandler,
+    resolve,
+    reject,
   });
 };
 
-// Function below is used to remove action from queue on successful completion
-const removeFromActionQueue = (queue, actionId) => {
-  const index = queue.find((act) => act.actionId === actionId);
-  queue.splice(index, 1);
+// remove action from queue on successful completion
+// TODO: it should be possible to refactor the way the queue is drained to make this splicing unnecessary but I ran out of time.
+const removeFromActionQueue = (actionId) => {
+  const index = actionRetryQueue.find((act) => act.actionId === actionId);
+  actionRetryQueue.splice(index, 1);
 };
 
-// Function below invokes promisifiedBackground method in MV2 content
+// invokes promisifiedBackground method in MV2 content
 // In MV3 context the execution is:
 //   1. action is added to retry queue, along with resolve handler to be executed on completion of action
 //   2. is streams are connected promisifiedBackground method is called
@@ -40,33 +61,12 @@ const removeFromActionQueue = (queue, actionId) => {
 export const submitRequestToBackground = (
   method,
   args = [],
-  actionId = new Date().getTime(),
+  actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
 ) => {
   if (isManifestV3()) {
     return new Promise((resolve, reject) => {
-      addToActionQueue(
-        promisifiedActionRetryQueue,
-        actionId,
-        { method, args },
-        resolve,
-        reject,
-      );
-      if (background.connectionStream.readable) {
-        try {
-          promisifiedBackground[method](...args)
-            .then((result) => {
-              resolve(result);
-              removeFromActionQueue(promisifiedActionRetryQueue, actionId);
-            })
-            .catch((err) => {
-              removeFromActionQueue(promisifiedActionRetryQueue, actionId);
-              reject(err);
-            });
-        } catch (exp) {
-          removeFromActionQueue(promisifiedActionRetryQueue, actionId);
-          reject(exp);
-        }
-      }
+      addToActionQueue(actionId, { method, args }, resolve, reject);
+      drainActionRetryQueue();
     });
   }
   return promisifiedBackground[method](...args);
@@ -77,52 +77,51 @@ export const submitRequestToBackground = (
 export const callBackgroundMethod = (
   method,
   args = [],
-  onResolve,
-  actionId = new Date().getTime(),
+  callback,
+  actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
 ) => {
   if (isManifestV3()) {
-    addToActionQueue(actionRetryQueue, actionId, { method, args }, onResolve);
-    if (background.connectionStream.readable) {
+    const resolve = (value) => callback(null, value);
+    const reject = (err) => callback(err);
+
+    addToActionQueue(actionId, { method, args }, resolve, reject);
+    drainActionRetryQueue();
+  } else {
+    background[method](...args, callback);
+  }
+};
+
+// Clears list of pending action in actionRetryQueue
+// The results of background calls are wired up to the original promises that's been returned
+function drainActionRetryQueue() {
+  if (background.connectionStream.readable) {
+    // Iterating by index over a queue that's potentially being spliced and pushed to is not great. Let's copy.
+    const actionRetryQueueSnapshot = [...actionRetryQueue];
+    for (let i = 0; i < actionRetryQueueSnapshot.length; i++) {
+      const {
+        request: { method, args },
+        actionId,
+        resolve,
+        reject,
+      } = actionRetryQueueSnapshot[i];
       try {
-        background[method](...args, (err, result) => {
-          onResolve(err, result);
-          removeFromActionQueue(actionRetryQueue, actionId);
-        });
-      } catch (exp) {
-        removeFromActionQueue(actionRetryQueue, actionId);
-        throw exp;
+        promisifiedBackground[method](...args)
+          .then((result) => {
+            resolve(result);
+            removeFromActionQueue(actionId);
+          })
+          .catch((err) => {
+            reject(err);
+            removeFromActionQueue(actionId);
+          })
+          .catch((fatal) => console.error('fatal error', fatal)); // TODO - what do we do with this? Hoping to surface it somehow, otherwise a bug in removeFromActionQueue is swallowed.
+      } catch (err) {
+        removeFromActionQueue(actionId);
+        reject(err);
       }
     }
-  } else {
-    background[method](...args, onResolve);
   }
-};
-
-// Function below clears list of pending action in both
-// 1. promisifiedActionRetryQueue
-// 2. actionRetryQueue
-const clearPendingActions = async () => {
-  for (let i = 0; i < promisifiedActionRetryQueue.length; i++) {
-    const item = promisifiedActionRetryQueue[i];
-    submitRequestToBackground(
-      item.request.method,
-      item.request.args,
-      item.actionId,
-    )
-      .then(item.resolveHandler)
-      .catch(item.rejectHandler);
-  }
-
-  for (let i = 0; i < actionRetryQueue.length; i++) {
-    const item = actionRetryQueue[i];
-    callBackgroundMethod(
-      item.request.method,
-      item.request.args,
-      item.resolveHandler,
-      item.actionId,
-    );
-  }
-};
+}
 
 export async function _setBackgroundConnection(backgroundConnection) {
   background = backgroundConnection;
@@ -130,6 +129,6 @@ export async function _setBackgroundConnection(backgroundConnection) {
   if (isManifestV3()) {
     // This function call here will clear the queue of actions
     // pending while connection stream is not available.
-    clearPendingActions();
+    drainActionRetryQueue();
   }
 }
