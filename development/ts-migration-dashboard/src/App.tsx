@@ -87,8 +87,8 @@ export default function App() {
             These boxes are further partitioned by <em>level</em>. The level of
             a file is how many files you have to import before you reach that
             file in the whole codebase. For instance, if we have a file
-            <code>foo.js</code>, and that file imports <code>bar.js</code> and
-            <code>baz.js</code>, and <code>baz.js</code> imports
+            <code>foo.js</code>, and that file imports <code>bar.js</code> and{' '}
+            <code>baz.js</code>, and <code>baz.js</code> imports{' '}
             <code>qux.js</code>, then:
           </p>
 
