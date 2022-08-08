@@ -14,8 +14,8 @@ export default function SiteIcon({ icon = null, name = '', size, className }) {
 
 SiteIcon.propTypes = {
   /**
-   * Additional className to add to the root element of SiteIcon
-  */
+   * Additional className to add to the root element of SiteIcon.
+   */
   className: PropTypes.string,
   /**
    * The img src of the icon.
