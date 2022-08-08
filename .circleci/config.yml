@@ -387,7 +387,7 @@ jobs:
           at: .
       - run:
           name: Build TypeScript migration dashboard
-          command: yarn ts-migration-dashboard:build
+          command: yarn ts-migration:dashboard:build
       - persist_to_workspace:
           root: .
           paths:
@@ -762,7 +762,7 @@ jobs:
           name: ts-migration-dashboard:deploy
           command: |
             git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
-            yarn ts-migration-dashboard:deploy
+            yarn ts-migration:dashboard:deploy
 
   test-unit:
     executor: node-browsers
