@@ -1144,7 +1144,7 @@ export function cancelMsgs(msgDataList) {
                 return;
               case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
                 callBackgroundMethod(
-                  'cancelEncryptionPublicKeyMsg',
+                  'cancelEncryptionPublicKey',
                   [id],
                   (err) => {
                     if (err) {
@@ -3915,7 +3915,7 @@ export function addCustomNetwork(customRpc) {
 export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
   return async (dispatch) => {
     try {
-      await submitRequestToBackground('requestUserApproval', [
+      await submitRequestToBackground('requestAddNetworkApproval', [
         customRpc,
         originIsMetaMask,
       ]);
