@@ -53,8 +53,8 @@ describe('ConfirmApproveContent Component', () => {
     expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
     expect(queryByText('Hide full transaction details')).toBeInTheDocument();
 
-    expect(queryByText('Edit Permission')).toBeInTheDocument();
-    const editPermission = getByText('Edit Permission');
+    expect(queryByText('Edit permission')).toBeInTheDocument();
+    const editPermission = getByText('Edit permission');
     fireEvent.click(editPermission);
     expect(props.showEditApprovalPermissionModal).toHaveBeenCalledTimes(1);
 

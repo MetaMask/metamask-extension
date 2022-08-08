@@ -11,7 +11,7 @@ const createDownloadFolder = async () => {
 
 const stateLogsExist = async () => {
   try {
-    const stateLogs = `${downloadsFolder}/MetaMask State Logs.json`;
+    const stateLogs = `${downloadsFolder}/MetaMask state logs.json`;
     await fs.access(stateLogs);
     return true;
   } catch (e) {
@@ -43,12 +43,12 @@ describe('State logs', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Download State Logs
+        // Download state logs
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
-          text: 'Download State Logs',
+          text: 'Download state logs',
           tag: 'button',
         });
 

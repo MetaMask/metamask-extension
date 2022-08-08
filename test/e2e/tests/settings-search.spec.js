@@ -12,14 +12,14 @@ describe('Settings Search', function () {
     ],
   };
   const settingsSearch = {
-    general: 'Primary Currency',
-    advanced: 'State Logs',
+    general: 'Primary currency',
+    advanced: 'State logs',
     contacts: 'Contacts',
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
     experimental: 'Token Detection',
-    about: 'Terms of Use',
+    about: 'Terms of use',
   };
 
   it('should find element inside the General tab', async function () {

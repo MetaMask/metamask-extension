@@ -62,7 +62,7 @@ describe('Deploy contract and call contract methods', function () {
         );
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Contract Deployment');
+        assert.equal(completedTxText, 'Contract deployment');
 
         // calls and confirms a contract method where ETH is sent
         await driver.switchToWindow(dapp);

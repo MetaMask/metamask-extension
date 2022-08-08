@@ -44,7 +44,7 @@ export default function ImportTokenLink() {
         onClick={() => {
           history.push(IMPORT_TOKEN_ROUTE);
           trackEvent({
-            event: 'Clicked "Add Token"',
+            event: 'Clicked "Add token"',
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
               action: 'Token Menu',
