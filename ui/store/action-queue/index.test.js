@@ -22,7 +22,6 @@ describe('ActionQueue', () => {
     __TEST_CLEAR_QUEUE();
   });
   describe('submitRequestToBackground', () => {
-
     it('calls promisified background method if the stream is connected', () => {
       const background = {
         connectionStream: {
