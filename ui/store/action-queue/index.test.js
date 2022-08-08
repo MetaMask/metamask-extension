@@ -97,9 +97,6 @@ describe('ActionQueue', () => {
       await expect(
         submitRequestToBackground('backgroundFunction'),
       ).rejects.toThrow('test');
-      // await expect(async () => {
-      //   await submitRequestToBackground('backgroundFunction');
-      // }).toThrow('test');
     });
   });
 
@@ -172,25 +169,5 @@ describe('ActionQueue', () => {
       });
       expect(mockFn.called).toStrictEqual(true);
     });
-
-    // This one still needs fixing
-    // it('rejects if backgroundFunction called throws exception', async () => {
-    //   const background = {
-    //     connectionStream: {
-    //       readable: true,
-    //     },
-    //     backgroundFunction: async () => {
-    //       await Promise.resolve('test');
-    //     },
-    //   };
-    //   _setBackgroundConnection(background);
-    //   const mockFn = sinon.stub();
-    //   await new Promise((_, reject) => {
-    //     callBackgroundMethod('backgroundFunction', [], () => {
-    //       reject();
-    //     });
-    //   });
-    //   expect(mockFn.called).toStrictEqual(true);
-    // });
   });
 });
