@@ -24,10 +24,22 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
+const ini = require('ini');
 
 const bifyModuleGroups = require('bify-module-groups');
 
-const metamaskrc = require('rc')('metamask', {
+const configPath = path.resolve(__dirname, '..', '..', '.metamaskrc');
+let configContents = '';
+try {
+  configContents = readFileSync(configPath, {
+    encoding: 'utf8',
+  });
+} catch (error) {
+  if (error.code !== 'ENOENT') {
+    throw error;
+  }
+}
+const metamaskrc = {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
   INFURA_BETA_PROJECT_ID: process.env.INFURA_BETA_PROJECT_ID,
   INFURA_FLASK_PROJECT_ID: process.env.INFURA_FLASK_PROJECT_ID,
@@ -45,11 +57,13 @@ const metamaskrc = require('rc')('metamask', {
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
   SIWE_V1: process.env.SIWE_V1,
-});
+  ...ini.parse(configContents),
+};
 
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 const { BUILD_TARGETS } = require('./constants');
+const { logError } = require('./utils');
 
 const {
   createTask,
@@ -1040,7 +1054,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
-        console.error(error.stack || error);
+        logError(error);
         process.exit(1);
       });
     }
