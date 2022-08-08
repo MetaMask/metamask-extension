@@ -16,7 +16,7 @@
     padding: 8px 24px 8px 24px;
     position: relative;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       background: var(--color-background-alternative);
     }
 
@@ -42,7 +42,7 @@
 
         flex: 1 0 auto;
 
-        @media screen and (max-width: $break-small) {
+        @include screen-sm-max {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
@@ -52,18 +52,18 @@
     }
 
     &__search {
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         position: relative;
       }
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         position: absolute;
         right: 57px;
         top: 10px;
         width: 300px;
       }
 
-      @media screen and (min-width: $break-midpoint) {
+      @include screen-md-min {
         width: 400px;
       }
 
@@ -109,7 +109,7 @@
           }
 
           &__section-multiple-lines {
-            @media screen and (max-width: $break-small) {
+            @include screen-sm-max {
               margin-left: 10px;
             }
           }
@@ -144,7 +144,7 @@
     display: flex;
     flex-flow: row nowrap;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       display: none;
     }
   }
@@ -171,7 +171,7 @@
     align-items: center;
     padding: 16px 0;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: 69px;
       position: relative;
       text-align: center;
@@ -181,7 +181,7 @@
   &__sub-header-text {
     @include H4;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H5;
 
       width: 100%;
@@ -191,7 +191,7 @@
   &__back-button {
     display: none;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       display: block;
       margin-right: 8px;
       cursor: pointer;
@@ -215,14 +215,14 @@
       flex-direction: column;
       flex: 1 1 auto;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         flex: 0 0 40%;
         max-width: 197px;
         padding-top: 13px;
       }
 
       .tab-bar__tab {
-        @media screen and (min-width: $break-large) {
+        @include screen-sm-min {
           max-height: 50px;
         }
       }
@@ -234,7 +234,7 @@
       display: flex;
       flex-flow: column;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         display: none;
       }
     }
@@ -243,7 +243,7 @@
   &__body {
     padding: 12px 24px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       padding: 12px;
     }
   }
@@ -270,7 +270,7 @@
     flex-direction: column;
     margin-bottom: 20px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: initial;
       padding: 5px 0;
     }
@@ -344,7 +344,7 @@
     display: flex;
     flex-direction: column;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       max-width: 100%;
       width: 100%;
     }
@@ -380,13 +380,13 @@
     .settings-page {
       &__content {
         &__tabs {
-          @media screen and (max-width: $break-small) {
+          @include screen-sm-max {
             display: none;
           }
         }
 
         &__modules {
-          @media screen and (max-width: $break-small) {
+          @include screen-sm-max {
             display: block;
           }
         }

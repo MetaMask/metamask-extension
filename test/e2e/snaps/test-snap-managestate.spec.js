@@ -64,7 +64,7 @@ describe('Test Snap manageState', function () {
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Approve & Install',
+          text: 'Approve & install',
           tag: 'button',
         });
 

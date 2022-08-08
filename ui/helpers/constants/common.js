@@ -13,7 +13,7 @@ export const GAS_ESTIMATE_TYPES = {
 };
 
 let _supportLink = 'https://support.metamask.io';
-let _supportRequestLink = 'https://metamask.zendesk.com/hc/en-us/requests/new';
+let _supportRequestLink = 'https://metamask.zendesk.com/hc/en-us';
 const _contractAddressLink =
   'https://metamask.zendesk.com/hc/en-us/articles/360020028092-What-is-the-known-contract-address-warning-';
 
