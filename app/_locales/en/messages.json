@@ -587,6 +587,10 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmPageDialogSetApprovalForAll": {
+    "message": "You’re allowing access to all of your $1 NFTs plus any future NFTs in this collection. This should never be your default, no matter how secure a site may seem. Proceed with caution.",
+    "description": "$1 is the symbol of the token that are requesting to spend"
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },

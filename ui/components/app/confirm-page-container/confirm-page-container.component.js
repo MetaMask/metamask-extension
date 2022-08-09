@@ -169,7 +169,9 @@ export default class ConfirmPageContainer extends Component {
     const networkName =
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
-    const isSetApproveForAll = TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+    const isSetApproveForAll =
+      currentTransaction.type ===
+      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
 
     const { t } = this.context;
 
@@ -304,13 +306,20 @@ export default class ConfirmPageContainer extends Component {
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
+          {isSetApproveForAll && (
+            <Dialog type="error" className="confirm-page-container__dialog">
+              {t('confirmPageDialogSetApprovalForAll', [title])}
+            </Dialog>
+          )}
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
               onSubmit={onSubmit}
               submitText={t('confirm')}
-              submitButtonType={isSetApproveForAll ? 'danger-primary' : 'primary'}
+              submitButtonType={
+                isSetApproveForAll ? 'danger-primary' : 'primary'
+              }
               disabled={disabled}
             >
               {unapprovedTxCount > 1 && (

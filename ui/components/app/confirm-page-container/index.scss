@@ -3,6 +3,12 @@
 @import 'confirm-detail-row/index';
 @import 'confirm-page-container-navigation/index';
 
+.confirm-page-container {
+  &__dialog {
+    margin: 0.75rem 1rem;
+  }
+}
+
 .page-container {
   &__content-component-wrapper {
     height: 100%;
