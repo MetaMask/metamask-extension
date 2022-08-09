@@ -20,7 +20,7 @@ const backupExists = async () => {
   /*
    * userData.YYYY_MM_DD_HH_mm_SS e.g userData.2022_01_13_13_45_56
    * */
-  const userDataFileName = `userData.${date.getFullYear()}_${prefixZero(
+  const userDataFileName = `MetaMaskUserData.${date.getFullYear()}_${prefixZero(
     date.getMonth() + 1,
   )}_${prefixZero(date.getDay())}_${prefixZero(date.getHours())}_${prefixZero(
     date.getMinutes(),
