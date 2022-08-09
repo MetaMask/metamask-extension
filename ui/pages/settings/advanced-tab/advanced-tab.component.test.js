@@ -43,23 +43,23 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render correctly when threeBoxFeatureFlag', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+    expect(component.find('.settings-page__content-row')).toHaveLength(16);
   });
 
   it('should render backup button', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+    expect(component.find('.settings-page__content-row')).toHaveLength(16);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(9)
+        .at(10)
         .find('.settings-page__content-item'),
     ).toHaveLength(2);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(9)
+        .at(10)
         .find('.settings-page__content-item')
         .at(0)
         .find('.settings-page__content-description')
@@ -69,7 +69,7 @@ describe('AdvancedTab Component', () => {
     expect(
       component
         .find('.settings-page__content-row')
-        .at(9)
+        .at(10)
         .find('.settings-page__content-item')
         .at(1)
         .find('Button')
@@ -78,19 +78,19 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render restore button', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+    expect(component.find('.settings-page__content-row')).toHaveLength(16);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(10)
+        .at(11)
         .find('.settings-page__content-item'),
     ).toHaveLength(2);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(10)
+        .at(11)
         .find('.settings-page__content-item')
         .at(0)
         .find('.settings-page__content-description')
@@ -100,7 +100,7 @@ describe('AdvancedTab Component', () => {
     expect(
       component
         .find('.settings-page__content-row')
-        .at(10)
+        .at(11)
         .find('.settings-page__content-item')
         .at(1)
         .find('label')
