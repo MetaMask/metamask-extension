@@ -64,7 +64,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
 
           await driver.clickElement({ text: 'import tokens', tag: 'a' });
           await driver.clickElement({
-            text: 'Custom Token',
+            text: 'Custom token',
             tag: 'button',
           });
           await driver.waitForSelector('#custom-address');
@@ -74,13 +74,13 @@ describe.skip('Create token, approve token and approve token without gas', funct
           await driver.delay(2000);
 
           await driver.clickElement({
-            text: 'Add Custom Token',
+            text: 'Add custom token',
             tag: 'button',
           });
 
           await driver.delay(2000);
           await driver.clickElement({
-            text: 'Import Tokens',
+            text: 'Import tokens',
             tag: 'button',
           });
 
@@ -171,8 +171,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
 
           await driver.waitForSelector({
             // Selects only the very first transaction list item immediately following the 'Pending' header
-            css:
-              '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+            css: '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
             text: 'Approve Token spend limit',
           });
         },
@@ -230,8 +229,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
           await driver.clickElement({ text: 'Save', tag: 'button' });
 
           await driver.waitForSelector({
-            css:
-              '.confirm-approve-content__transaction-details-content__secondary-fee',
+            css: '.confirm-approve-content__transaction-details-content__secondary-fee',
             text: '0.0006 ETH',
           });
 
@@ -269,8 +267,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
           await driver.clickElement({ tag: 'button', text: 'Activity' });
           await driver.waitForSelector({
             // Select only the heading of the first entry in the transaction list.
-            css:
-              '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+            css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
             text: 'Approve Token spend limit',
           });
         },
@@ -331,8 +328,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
 
           await driver.waitForSelector({
             // Selects only the very first transaction list item immediately following the 'Pending' header
-            css:
-              '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+            css: '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
             text: 'Approve Token spend limit',
           });
 
@@ -347,8 +343,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           await driver.waitForSelector({
-            css:
-              '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+            css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
             text: 'Approve Token spend limit',
           });
         },

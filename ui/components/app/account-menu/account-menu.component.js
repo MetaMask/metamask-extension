@@ -219,6 +219,7 @@ export default class AccountMenu extends Component {
             showAccountDetail(identity.address);
           }}
           key={identity.address}
+          data-testid="account-menu__account"
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
@@ -230,6 +231,7 @@ export default class AccountMenu extends Component {
             <div className="account-menu__name">{identity.name || ''}</div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
+              data-testid="account-menu__balance"
               value={identity.balance}
               type={PRIMARY}
             />
@@ -356,7 +358,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Create Account',
+              event: 'Clicked Create account',
               properties: {
                 action: 'Main Menu',
                 legacy_event: true,

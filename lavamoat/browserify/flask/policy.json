@@ -2201,8 +2201,8 @@
       }
     },
     "@babel/runtime": {
-      "packages": {
-        "@storybook/api>regenerator-runtime": true
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "@download/blockies": {
@@ -2318,8 +2318,7 @@
     },
     "@eth-optimism/contracts": {
       "packages": {
-        "ethers": true,
-        "ethers>@ethersproject/abstract-provider": true
+        "ethers": true
       }
     },
     "@ethereumjs/common": {
@@ -3733,6 +3732,24 @@
         "@sentry/browser>@sentry/utils": true,
         "@sentry/browser>tslib": true,
         "localforage": true
+      }
+    },
+    "@spruceid/siwe-parser": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@spruceid/siwe-parser>apg-js": true
+      }
+    },
+    "@spruceid/siwe-parser>apg-js": {
+      "globals": {
+        "mode": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "@storybook/api>regenerator-runtime": {

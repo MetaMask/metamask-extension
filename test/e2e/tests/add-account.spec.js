@@ -34,7 +34,7 @@ describe('Add account', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -65,7 +65,7 @@ describe('Add account', function () {
         );
 
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -89,7 +89,7 @@ describe('Add account', function () {
 
         // generate a third accound
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '3rd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -146,7 +146,7 @@ describe('Add account', function () {
 
         // recreate a "2nd account"
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -175,7 +175,7 @@ describe('Add account', function () {
 
         // re-generate a third accound
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '3rd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -217,7 +217,7 @@ describe('Add account', function () {
         await driver.delay(regularDelayMs);
 
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -233,7 +233,7 @@ describe('Add account', function () {
 
         // import with private key
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+        await driver.clickElement({ text: 'Import account', tag: 'div' });
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey);

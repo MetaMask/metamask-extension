@@ -33,7 +33,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Add Network', tag: 'button' });
+        await driver.clickElement({ text: 'Add network', tag: 'button' });
 
         await driver.findElement('.networks-tab__sub-header-text');
 
@@ -83,7 +83,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Add Network', tag: 'button' });
+        await driver.clickElement({ text: 'Add network', tag: 'button' });
 
         await driver.findElement('.networks-tab__sub-header-text');
 
@@ -121,7 +121,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Add Network', tag: 'button' });
+        await driver.clickElement({ text: 'Add network', tag: 'button' });
 
         await driver.findElement('.networks-tab__sub-header-text');
 
@@ -132,8 +132,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
-          text:
-            'This Chain ID is currently used by the Localhost 8545 network.',
+          text: 'This Chain ID is currently used by the Localhost 8545 network.',
           tag: 'h6',
         });
 
@@ -214,7 +213,7 @@ describe('Stores custom RPC history', function () {
         await driver.delay(largeDelayMs);
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Add Network', tag: 'button' });
+        await driver.clickElement({ text: 'Add network', tag: 'button' });
 
         await driver.findVisibleElement('.settings-page__content');
         // // cancel new custom rpc

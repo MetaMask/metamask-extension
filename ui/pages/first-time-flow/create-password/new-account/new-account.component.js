@@ -28,12 +28,8 @@ export default class NewAccount extends PureComponent {
   };
 
   isValid() {
-    const {
-      password,
-      confirmPassword,
-      passwordError,
-      confirmPasswordError,
-    } = this.state;
+    const { password, confirmPassword, passwordError, confirmPasswordError } =
+      this.state;
 
     if (!password || !confirmPassword || password !== confirmPassword) {
       return false;
@@ -105,7 +101,7 @@ export default class NewAccount extends PureComponent {
         category: EVENT.CATEGORIES.ONBOARDING,
         event: 'Submit Password',
         properties: {
-          action: 'Create Password',
+          action: 'Create password',
           legacy_event: true,
         },
       });
@@ -121,7 +117,7 @@ export default class NewAccount extends PureComponent {
       category: EVENT.CATEGORIES.ONBOARDING,
       event: 'Check ToS',
       properties: {
-        action: 'Create Password',
+        action: 'Create password',
         legacy_event: true,
       },
     });
@@ -157,7 +153,7 @@ export default class NewAccount extends PureComponent {
                 category: EVENT.CATEGORIES.ONBOARDING,
                 event: 'Go Back from Onboarding Create',
                 properties: {
-                  action: 'Create Password',
+                  action: 'Create password',
                   legacy_event: true,
                 },
               });

@@ -127,9 +127,8 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
-  const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
-    0,
-  );
+  const [currentPendingConfirmation, setCurrentPendingConfirmation] =
+    useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);

@@ -59,19 +59,19 @@ const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   estimatedGasFeeTimeBounds: {},
 };
 
-const generateUseSelectorRouter = ({
-  checkNetworkAndAccountSupports1559Response,
-} = {}) => (selector) => {
-  if (selector === getSelectedAccount) {
-    return {
-      balance: '0x440aa47cc2556',
-    };
-  }
-  if (selector === checkNetworkAndAccountSupports1559) {
-    return checkNetworkAndAccountSupports1559Response;
-  }
-  return undefined;
-};
+const generateUseSelectorRouter =
+  ({ checkNetworkAndAccountSupports1559Response } = {}) =>
+  (selector) => {
+    if (selector === getSelectedAccount) {
+      return {
+        balance: '0x440aa47cc2556',
+      };
+    }
+    if (selector === checkNetworkAndAccountSupports1559) {
+      return checkNetworkAndAccountSupports1559Response;
+    }
+    return undefined;
+  };
 
 const configureEIP1559 = () => {
   useSelector.mockImplementation(

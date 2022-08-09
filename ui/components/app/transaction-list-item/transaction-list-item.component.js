@@ -50,9 +50,8 @@ function TransactionListItemInner({
   const history = useHistory();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
-  const [showCancelEditGasPopover, setShowCancelEditGasPopover] = useState(
-    false,
-  );
+  const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
+    useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559V2 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();

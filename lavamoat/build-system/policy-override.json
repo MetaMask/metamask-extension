@@ -13,6 +13,22 @@
         "@babel/preset-typescript": true
       }
     },
+    "@babel/eslint-parser": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/eslint-parser>eslint-scope": true,
+        "@babel/eslint-parser>eslint-visitor-keys": true,
+        "@babel/eslint-parser>semver": true,
+        "depcheck>@babel/parser": true,
+        "eslint": true
+      },
+      "globals": {
+        "process.versions": true
+      }
+    },
     "eslint>@eslint/eslintrc": {
       "builtin": {
         "assert": true,

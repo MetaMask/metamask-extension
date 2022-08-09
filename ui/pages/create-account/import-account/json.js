@@ -121,7 +121,7 @@ class JsonImportSubview extends Component {
             category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Imported Account with JSON',
             properties: {
-              action: 'Import Account',
+              action: 'Import account',
               legacy_event: true,
             },
           });
@@ -132,7 +132,7 @@ class JsonImportSubview extends Component {
             category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Error importing JSON',
             properties: {
-              action: 'Import Account',
+              action: 'Import account',
               legacy_event: true,
             },
           });

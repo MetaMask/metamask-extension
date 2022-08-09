@@ -42,9 +42,8 @@ const ConfirmPageContainerSummary = (props) => {
     TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
     TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
   ];
-  const isContractTypeTransaction = contractInitiatedTransactionType.includes(
-    transactionType,
-  );
+  const isContractTypeTransaction =
+    contractInitiatedTransactionType.includes(transactionType);
   let contractAddress;
   if (isContractTypeTransaction) {
     // If the transaction is TOKEN_METHOD_TRANSFER or TOKEN_METHOD_TRANSFER_FROM
