@@ -9,9 +9,13 @@ import {
   TOKEN_STANDARDS,
 } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = MINUTE * 3;
+const DEFAULT_INTERVAL_MV2 = MINUTE * 3;
+// FOR DEV PURPOSE -- NEED TO BE UPDATED TO 3 BEFORE MERGING
+const DEFAULT_INTERVAL_MV3 = 0.2;
+const DETECT_TOKEN_ALARM = 'DETECT_TOKEN';
 
 /**
  * A controller that polls for token exchange
@@ -32,7 +36,7 @@ export default class DetectTokensController {
    * @param config.trackMetaMetricsEvent
    */
   constructor({
-    interval = DEFAULT_INTERVAL,
+    interval = DEFAULT_INTERVAL_MV2,
     preferences,
     network,
     keyringMemStore,
@@ -188,7 +192,36 @@ export default class DetectTokensController {
       return;
     }
     this.detectNewTokens();
-    this.interval = DEFAULT_INTERVAL;
+    this.interval = DEFAULT_INTERVAL_MV2;
+  }
+
+  /**
+   * Restart/Reschedule token detection polling period and call detectNewTokens
+   * in case of address change or user session initialization.
+   *
+   */
+  /* eslint-disable no-undef */
+  rescheduleTokenDetectionPollingInMV3() {
+    if (!(this.isActive && this.selectedAddress)) {
+      return;
+    }
+    chrome.alarms.clear(DETECT_TOKEN_ALARM);
+    chrome.alarms.create(DETECT_TOKEN_ALARM, {
+      delayInMinutes: DEFAULT_INTERVAL_MV3,
+      periodInMinutes: DEFAULT_INTERVAL_MV3,
+    });
+
+    chrome.alarms.onAlarm.addListener((alarms) => {
+      console.log('Alarm triggered: ', alarms);
+      const alarm = chrome.alarms.get(DETECT_TOKEN_ALARM);
+      if (alarm) {
+        this.detectNewTokens();
+      }
+    });
+
+    chrome.alarms.getAll((alarms) => {
+      console.log('list all alarms: ', alarms);
+    });
   }
 
   getChainIdFromNetworkStore(network) {
@@ -200,13 +233,17 @@ export default class DetectTokensController {
    * @type {number}
    */
   set interval(interval) {
-    this._handle && clearInterval(this._handle);
-    if (!interval) {
-      return;
+    if (isManifestV3()) {
+      this.rescheduleTokenDetectionPollingInMV3();
+    } else {
+      this._handle && clearInterval(this._handle);
+      if (!interval) {
+        return;
+      }
+      this._handle = setInterval(() => {
+        this.detectNewTokens();
+      }, interval);
     }
-    this._handle = setInterval(() => {
-      this.detectNewTokens();
-    }, interval);
   }
 
   /**
