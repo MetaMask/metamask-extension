@@ -11,7 +11,7 @@ describe('Experimental Tab', () => {
     setUseTokenDetection: sinon.spy(),
   };
 
-  it('toggles Use Token detection', () => {
+  it('toggles Use token detection', () => {
     wrapper = mount(<ExperimentalTab.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -32,7 +32,7 @@ describe('Experimental Tab', () => {
         trackEvent: () => undefined,
       },
     });
-    const useTokenDetectionText = wrapper.find({ text: 'Use Token Detection' });
+    const useTokenDetectionText = wrapper.find({ text: 'Use token detection' });
     expect(useTokenDetectionText).toHaveLength(0);
   });
 });

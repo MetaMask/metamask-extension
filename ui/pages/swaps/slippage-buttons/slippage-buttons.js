@@ -49,7 +49,7 @@ export default function SlippageButtons({
     return 0;
   });
   const [open, setOpen] = useState(() => {
-    return currentSlippage !== SLIPPAGE.DEFAULT; // Only open Advanced Options by default if it's not default slippage.
+    return currentSlippage !== SLIPPAGE.DEFAULT; // Only open Advanced options by default if it's not default slippage.
   });
   const [inputRef, setInputRef] = useState(null);
 

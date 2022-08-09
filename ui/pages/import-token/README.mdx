@@ -7,11 +7,12 @@ import configureStore from '../../store/store';
 const store = configureStore(testData);
 const { metamask } = store.getState();
 
-export const PersonalAddress = () => <code>{metamask.selectedAddress}</code>
+export const PersonalAddress = () => <code>{metamask.selectedAddress}</code>;
 
 # ImportToken
 
 The `ImportToken` component allows a user to import custom tokens in one of two ways:
+
 1. By searching for one
 2. By importing one by `Token Contract Address`
 
@@ -21,9 +22,10 @@ The `ImportToken` component allows a user to import custom tokens in one of two 
 
 ## Example inputs
 
-An example input that works, to enable the `Add Custom Token` button is `0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`.
+An example input that works, to enable the `Add custom token` button is `0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`.
 
 ### Personal address error
+
 To show the personal address detected error, input the address <PersonalAddress/> in the `Token Contract Address` field.
 
 ## Props
