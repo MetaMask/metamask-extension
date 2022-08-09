@@ -27,15 +27,15 @@ export default function SnapUpdate({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const onCancel = useCallback(
-    () => rejectSnapUpdate(request.metadata.id),
-    [request, rejectSnapUpdate],
-  );
+  const onCancel = useCallback(() => rejectSnapUpdate(request.metadata.id), [
+    request,
+    rejectSnapUpdate,
+  ]);
 
-  const onSubmit = useCallback(
-    () => approveSnapUpdate(request),
-    [request, approveSnapUpdate],
-  );
+  const onSubmit = useCallback(() => approveSnapUpdate(request), [
+    request,
+    approveSnapUpdate,
+  ]);
 
   const shouldShowWarning = useMemo(
     () =>
@@ -76,7 +76,7 @@ export default function SnapUpdate({
             padding: [4, 4, 0, 4],
           }}
           variant={TYPOGRAPHY.H7}
-          tag="span"
+          as="span"
         >
           {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
         </Typography>
@@ -85,7 +85,7 @@ export default function SnapUpdate({
             padding: [2, 4, 0, 4],
           }}
           variant={TYPOGRAPHY.H7}
-          tag="span"
+          as="span"
         >
           {t('snapRequestsPermission')}
         </Typography>

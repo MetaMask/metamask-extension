@@ -28,15 +28,15 @@ export default function SnapInstall({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const onCancel = useCallback(
-    () => rejectSnapInstall(request.metadata.id),
-    [request, rejectSnapInstall],
-  );
+  const onCancel = useCallback(() => rejectSnapInstall(request.metadata.id), [
+    request,
+    rejectSnapInstall,
+  ]);
 
-  const onSubmit = useCallback(
-    () => approveSnapInstall(request),
-    [request, approveSnapInstall],
-  );
+  const onSubmit = useCallback(() => approveSnapInstall(request), [
+    request,
+    approveSnapInstall,
+  ]);
 
   const bip44EntropyPermissions =
     request.permissions &&
@@ -77,7 +77,7 @@ export default function SnapInstall({
             padding: [4, 4, 0, 4],
           }}
           variant={TYPOGRAPHY.H7}
-          tag="span"
+          as="span"
         >
           {t('snapRequestsPermission')}
         </Typography>
