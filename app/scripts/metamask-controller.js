@@ -1892,6 +1892,9 @@ export default class MetamaskController extends EventEmitter {
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
         smartTransactionsController,
       ),
+      clearSmartTransactionFees: smartTransactionsController.clearFees.bind(
+        smartTransactionsController,
+      ),
       submitSignedTransactions:
         smartTransactionsController.submitSignedTransactions.bind(
           smartTransactionsController,
