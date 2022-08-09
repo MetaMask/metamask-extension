@@ -105,12 +105,12 @@ describe('Account Menu', () => {
 
   describe('Create Account', () => {
     it('renders create account item', () => {
-      const createAccount = screen.getByText('Create Account');
+      const createAccount = screen.getByText('Create account');
       expect(createAccount).toBeInTheDocument();
     });
 
     it('calls toggle menu and push new-account route to history', () => {
-      const createAccount = screen.getByText('Create Account');
+      const createAccount = screen.getByText('Create account');
       fireEvent.click(createAccount);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
@@ -121,12 +121,12 @@ describe('Account Menu', () => {
 
   describe('Import Account', () => {
     it('renders import account item', () => {
-      const importAccount = screen.getByText('Import Account');
+      const importAccount = screen.getByText('Import account');
       expect(importAccount).toBeInTheDocument();
     });
 
     it('calls toggle menu and push /new-account/import route to history', () => {
-      const importAccount = screen.getByText('Import Account');
+      const importAccount = screen.getByText('Import account');
       fireEvent.click(importAccount);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
@@ -135,14 +135,14 @@ describe('Account Menu', () => {
     });
   });
 
-  describe('Connect Hardware Wallet', () => {
+  describe('Connect hardware wallet', () => {
     it('renders import account item', () => {
-      const connectHardwareWallet = screen.getByText('Connect Hardware Wallet');
+      const connectHardwareWallet = screen.getByText('Connect hardware wallet');
       expect(connectHardwareWallet).toBeInTheDocument();
     });
 
     it('calls toggle menu and push /new-account/connect route to history', () => {
-      const connectHardwareWallet = screen.getByText('Connect Hardware Wallet');
+      const connectHardwareWallet = screen.getByText('Connect hardware wallet');
       fireEvent.click(connectHardwareWallet);
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
@@ -155,12 +155,12 @@ describe('Account Menu', () => {
     global.platform = { openTab: sinon.spy() };
 
     it('renders import account item', () => {
-      const support = screen.getByText('Submit a Ticket');
+      const support = screen.getByText('Submit a ticket');
       expect(support).toBeInTheDocument();
     });
 
     it('opens support link when clicked', () => {
-      const support = screen.getByText('Submit a Ticket');
+      const support = screen.getByText('Submit a ticket');
       fireEvent.click(support);
       expect(global.platform.openTab.calledOnce).toStrictEqual(true);
     });

@@ -57,7 +57,7 @@ describe('Send ERC20 token to contract address', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+        await driver.clickElement({ text: 'Add token', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
