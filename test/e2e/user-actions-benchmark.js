@@ -29,9 +29,7 @@ async function loadAccount() {
     },
     async ({ driver }) => {
       await driver.navigate();
-      console.log('Before password input');
       await driver.fill('#password', 'correct horse battery staple');
-      console.log('After password input');
       await driver.press('#password', driver.Key.ENTER);
 
       await driver.clickElement('.account-menu__icon');
@@ -39,7 +37,6 @@ async function loadAccount() {
       await driver.clickElement({ text: 'Create Account', tag: 'div' });
       await driver.fill('.new-account-create-form input', '2nd account');
       await driver.clickElement({ text: 'Create', tag: 'button' });
-      console.log('After create account');
       await driver.waitForSelector({
         css: '.currency-display-component__text',
         text: '0',
@@ -60,11 +57,9 @@ async function confirmTx() {
       ganacheOptions,
     },
     async ({ driver }) => {
-      console.log('Before password input');
       await driver.navigate();
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
-      console.log('After password input');
 
       await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -75,7 +70,7 @@ async function confirmTx() {
 
       const inputAmount = await driver.findElement('.unit-input__input');
       await inputAmount.fill('1000');
-      console.log('After fill amount for send');
+
       await inputAmount.press(driver.Key.BACK_SPACE);
       await inputAmount.press(driver.Key.BACK_SPACE);
       await inputAmount.press(driver.Key.BACK_SPACE);
@@ -89,7 +84,6 @@ async function confirmTx() {
       await inputAmount.fill('1');
 
       await driver.clickElement({ text: 'Next', tag: 'button' });
-      console.log('After clicking next');
       const timestampBeforeAction = new Date();
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -104,10 +98,9 @@ async function confirmTx() {
       await driver.waitForSelector('.transaction-status--confirmed');
       const timestampAfterAction = new Date();
       loadingTimes = timestampAfterAction - timestampBeforeAction;
-      console.log('End testcase sendtx');
-      return loadingTimes;
     },
   );
+  return loadingTimes;
 }
 
 async function main() {
