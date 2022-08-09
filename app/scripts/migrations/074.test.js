@@ -1,7 +1,8 @@
-import migration72 from './072';
+import migration74 from './074';
 
 describe('migration #72', () => {
   it('should update the version metadata', async () => {
+    console.log(migration74);
     expect(Boolean(1)).toStrictEqual(true);
   });
 
