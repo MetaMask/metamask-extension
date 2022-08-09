@@ -2,12 +2,12 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { exitWithError } = require('../../development/lib/exit-with-error');
+const { convertToHexValue, withFixtures } = require('./helpers');
 const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { convertToHexValue, withFixtures } = require('./helpers');
+const { exitWithError } = require('../../development/lib/exit-with-error');
 
 const ganacheOptions = {
   accounts: [
