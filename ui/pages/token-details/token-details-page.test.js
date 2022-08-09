@@ -276,7 +276,7 @@ describe('TokenDetailsPage', () => {
   it('should render token contract address title in token details page', () => {
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
-    expect(getByText('Token Contract Address')).toBeInTheDocument();
+    expect(getByText('Token contract address')).toBeInTheDocument();
   });
 
   it('should render token contract address in token details page', () => {
@@ -296,7 +296,7 @@ describe('TokenDetailsPage', () => {
   it('should render token decimal title in token details page', () => {
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
-    expect(getByText('Token Decimal:')).toBeInTheDocument();
+    expect(getByText('Token decimal:')).toBeInTheDocument();
   });
 
   it('should render number of token decimals in token details page', () => {

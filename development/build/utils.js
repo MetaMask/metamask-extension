@@ -10,7 +10,7 @@ const { BuildType } = require('../lib/build-type');
  *
  * @param {string[]} platforms - A list of browsers to generate versions for.
  * @param {string} version - The current version.
- * @returns {Object} An object with the browser as the key and the browser-specific version object
+ * @returns {object} An object with the browser as the key and the browser-specific version object
  * as the value.  For example, the version `9.6.0-beta.1` would return the object
  * `{ firefox: { version: '9.6.0.beta1' }, chrome: { version: '9.6.0.1', version_name: '9.6.0-beta.1' } }`.
  */
@@ -51,6 +51,21 @@ function getBrowserVersionMap(platforms, version) {
   }, {});
 }
 
+/**
+ * Log an error to the console.
+ *
+ * This function includes a workaround for a SES bug that results in errors
+ * being printed to the console as `{}`. The workaround is to print the stack
+ * instead, which does work correctly.
+ *
+ * @see {@link https://github.com/endojs/endo/issues/944}
+ * @param {Error} error - The error to print
+ */
+function logError(error) {
+  console.error(error.stack || error);
+}
+
 module.exports = {
   getBrowserVersionMap,
+  logError,
 };

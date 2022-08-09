@@ -53,15 +53,9 @@
     margin: 0 4px;
   }
 
-  &__origin,
   &__address {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  &__origin {
-    /*rtl:ignore*/
-    direction: rtl;
   }
 }

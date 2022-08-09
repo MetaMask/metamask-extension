@@ -50,7 +50,7 @@ import React from 'react';
 
 import BuyIcon from '../icon/overview-buy-icon.component';
 
-// The mdx file to document component API and usage
+// The mdx file to document props and usage
 import README from './README.mdx';
 import Button from '.';
 
@@ -149,7 +149,7 @@ Now the storybook components are complete, the `README.mdx` documentation should
 
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
-<!-- import the component to use for the ArgsTable under ## Component API  -->
+<!-- import the component to use for the ArgsTable under ## Props  -->
 
 import Button from '.';
 
@@ -167,9 +167,9 @@ Buttons communicate actions that users can take.
   <Story id="ui-components-ui-button-button-stories-js--default-story" />
 </Canvas>
 
-## Component API
+## Props
 
-<!-- Display the component API using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
+<!-- Display the Props using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
 -->
 
 <ArgsTable of={Button} />

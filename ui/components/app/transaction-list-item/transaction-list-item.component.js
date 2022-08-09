@@ -39,6 +39,7 @@ import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import SiteOrigin from '../../ui/site-origin';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -49,9 +50,8 @@ function TransactionListItemInner({
   const history = useHistory();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
-  const [showCancelEditGasPopover, setShowCancelEditGasPopover] = useState(
-    false,
-  );
+  const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
+    useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559V2 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
@@ -191,16 +191,13 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
             />
-            <span
-              className={
-                subtitleContainsOrigin
-                  ? 'transaction-list-item__origin'
-                  : 'transaction-list-item__address'
-              }
-              title={subtitle}
-            >
-              {subtitle}
-            </span>
+            {subtitleContainsOrigin ? (
+              <SiteOrigin siteOrigin={subtitle} />
+            ) : (
+              <span className="transaction-list-item__address" title={subtitle}>
+                {subtitle}
+              </span>
+            )}
           </h3>
         }
         rightContent={

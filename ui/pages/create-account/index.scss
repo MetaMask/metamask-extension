@@ -4,7 +4,7 @@
 .new-account {
   width: 375px;
   background-color: var(--color-background-default);
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   z-index: 25;
   height: unset;
   overflow: auto;
@@ -14,7 +14,7 @@
     display: none;
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     position: absolute;
   }
 

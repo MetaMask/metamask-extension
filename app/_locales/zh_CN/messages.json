@@ -179,9 +179,6 @@
   "affirmAgree": {
     "message": "我同意"
   },
-  "aggregatorFeeCost": {
-    "message": "聚集器网络手续费"
-  },
   "alertDisableTooltip": {
     "message": "这个可以在“设置 > 提醒”中进行更改"
   },
@@ -232,12 +229,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "批准聚合商网络手续费"
-  },
-  "approvalTxGasCost": {
-    "message": "批准交易燃料成本"
   },
   "approve": {
     "message": "批准消费限额"
@@ -372,10 +363,10 @@
     "message": "购买"
   },
   "buyWithWyre": {
-    "message": "使用 Wyre 购买 ETH"
+    "message": "使用 Wyre 购买 $1"
   },
   "buyWithWyreDescription": {
-    "message": "您可以通过 Wyre 使用信用卡将 ETH 存入您的 MetaMask 账户。"
+    "message": "您可以通过 Wyre 使用信用卡将 $1 存入您的 MetaMask 账户。"
   },
   "bytes": {
     "message": "字节"
@@ -622,7 +613,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "使用$1来定制燃料价格。如果您不熟悉这可能会引起混淆。操作风险自付。",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
@@ -1017,10 +1008,6 @@
   "externalExtension": {
     "message": "外部扩展"
   },
-  "extraApprovalGas": {
-    "message": "+$1 批准燃料",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "失败"
   },
@@ -1246,7 +1233,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "使用$1来覆盖网络流量因像流行的 NFT 丢弃而出现的剧增。",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "高"
@@ -1390,7 +1377,7 @@
     "message": "已知接收方地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有可能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。了解更多关于 $1"
   },
   "kovan": {
     "message": "Kovan 测试网络"
@@ -1497,7 +1484,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "使用$1等待较便宜的价格。时间估计远不准确，因为价格有些难以预测。",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "低"
@@ -1532,7 +1519,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "使用$1按当前市场价格快速处理。",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "备忘"
@@ -1609,10 +1596,6 @@
   },
   "metametricsTitle": {
     "message": "加入 6M+ 用户来改进MetaMask"
-  },
-  "mismatchedChain": {
-    "message": "此链路的网络详细信息与我们的记录不匹配。我们建议您在继续操作之前$1。",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
   },
   "mismatchedChainLinkText": {
     "message": "验证网络详细信息",
@@ -1882,7 +1865,7 @@
   },
   "notifications8ActionText": {
     "message": "转到高级设置",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "从MetaMaskv10.4.0开始，您不再需要Ledger Live连接您的Ledger设备到Metamask。",
@@ -2056,7 +2039,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "首选Ledger连接类型",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "上一个"
@@ -2969,7 +2952,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 测试网络",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "代币"
@@ -3169,10 +3152,6 @@
   "unrecognizedChain": {
     "message": "这个自定义网络无法识别。我们建议您在继续操作之前$1",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "验证网络详细信息",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "当前不支持发送可收藏的 (ERC-721) 代币",

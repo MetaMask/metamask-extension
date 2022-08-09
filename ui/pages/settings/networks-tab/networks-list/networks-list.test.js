@@ -41,9 +41,9 @@ describe('NetworksList Component', () => {
     const { queryByText } = renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Ropsten Test Network')).toBeInTheDocument();
-    expect(queryByText('Rinkeby Test Network')).toBeInTheDocument();
-    expect(queryByText('Goerli Test Network')).toBeInTheDocument();
-    expect(queryByText('Kovan Test Network')).toBeInTheDocument();
+    expect(queryByText('Ropsten test network')).toBeInTheDocument();
+    expect(queryByText('Rinkeby test network')).toBeInTheDocument();
+    expect(queryByText('Goerli test network')).toBeInTheDocument();
+    expect(queryByText('Kovan test network')).toBeInTheDocument();
   });
 });

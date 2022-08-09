@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { updateSendAsset } from '../../../ducks/send';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
@@ -93,7 +93,7 @@ const TokenOverview = ({ className, token }) => {
               });
               try {
                 await dispatch(
-                  updateSendAsset({
+                  startNewDraftTransaction({
                     type: ASSET_TYPES.TOKEN,
                     details: token,
                   }),
@@ -120,7 +120,7 @@ const TokenOverview = ({ className, token }) => {
                   event: 'Swaps Opened',
                   category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: 'Token View',
+                    source: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
                     active_currency: token.symbol,
                   },
                 });

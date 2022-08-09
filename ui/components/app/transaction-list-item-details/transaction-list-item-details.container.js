@@ -1,20 +1,23 @@
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import {
   getAddressBook,
+  getBlockExplorerLinkText,
+  getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
+  getEnsResolutionByAddress,
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { metamask } = state;
-  const { ensResolutionsByAddress } = metamask;
   const { recipientAddress, senderAddress } = ownProps;
   let recipientEns;
   if (recipientAddress) {
     const address = toChecksumHexAddress(recipientAddress);
-    recipientEns = ensResolutionsByAddress[address] || '';
+    recipientEns = getEnsResolutionByAddress(state, address);
   }
   const addressBook = getAddressBook(state);
 
@@ -26,11 +29,15 @@ const mapStateToProps = (state, ownProps) => {
   };
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
 
+  const isCustomNetwork = getIsCustomNetwork(state);
+
   return {
     rpcPrefs,
     recipientEns,
     senderNickname: getNickName(senderAddress),
     recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
+    isCustomNetwork,
+    blockExplorerLinkText: getBlockExplorerLinkText(state),
   };
 };
 
@@ -42,7 +49,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
 )(TransactionListItemDetails);

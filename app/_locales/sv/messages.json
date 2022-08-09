@@ -137,10 +137,10 @@
     "message": "Din webbläsare stöds inte..."
   },
   "buyWithWyre": {
-    "message": "Köp ETH med Wyre"
+    "message": "Köp $1 med Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre låter dig använda ett kreditkort för att sätta in ETH direkt på ditt MetaMask-konto."
+    "message": "Wyre låter dig använda ett kreditkort för att sätta in $1 direkt på ditt MetaMask-konto."
   },
   "cancel": {
     "message": "Avbryt"

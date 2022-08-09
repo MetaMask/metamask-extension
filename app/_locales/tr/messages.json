@@ -62,6 +62,13 @@
     "message": "$1 bu varlığa erişebilir ve harcayabilir",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessYourWalletWithSRP": {
+    "message": "Gizli Kurtarma İfadenizle cüzdanınıza erişin"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask parolanızı kurtaramaz. Sahipliğinizi doğrulamak, cüzdanınızı yenilemek ve yeni bir parola belirlemek için Gizli Kurtarma İfadenizi kullanırız. İlk olarak, cüzdanınızı oluştururken size verilmiş olan Gizli Kurtarma İfadenizi girin. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Kameranıza erişim sağlanıyor..."
   },
@@ -150,8 +157,15 @@
   "addMemo": {
     "message": "Not ekleyin"
   },
+  "addMoreNetworks": {
+    "message": "manuel olarak daha fazla ağ ekleyin"
+  },
   "addNetwork": {
     "message": "Ağ ekle"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Bu ağ bağlantısı üçüncü taraflara dayalıdır. Bu bağlantı daha az güvenli olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Önerilen Tokenleri ekle"
@@ -192,9 +206,6 @@
   "affirmAgree": {
     "message": "Kabul Ediyorum"
   },
-  "aggregatorFeeCost": {
-    "message": "Toplayıcı ağ ücreti"
-  },
   "airgapVault": {
     "message": "AirGap Kasası"
   },
@@ -218,6 +229,10 @@
   },
   "alerts": {
     "message": "Uyarılar"
+  },
+  "allOfYour": {
+    "message": "Sahip olduğunuz tüm $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
   "allowExternalExtensionTo": {
     "message": "Bu harici uzantının şunu yapmasına izin ver:"
@@ -252,14 +267,12 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "approvalAndAggregatorTxFeeCost": {
-    "message": "Onaylayıcı ve toplayıcı ağ ücreti"
-  },
-  "approvalTxGasCost": {
-    "message": "Onaylayıcı İşlem Gaz Maliyeti"
-  },
   "approve": {
     "message": "Harcama limitini onayla"
+  },
+  "approveAllTokensTitle": {
+    "message": "Sahip olduğunuz tüm $1 için erişim izni verilsin mi?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
     "message": "Onayla ve Yükle"
@@ -279,9 +292,6 @@
   },
   "approvedAsset": {
     "message": "Onaylanan varlık"
-  },
-  "areYouDeveloper": {
-    "message": "Geliştirici misin?"
   },
   "areYouSure": {
     "message": "Emin misin?"
@@ -409,6 +419,14 @@
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
+  "buyCryptoWithCoinbasePay": {
+    "message": "Coinbase Pay ile 1 USD al",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "buyCryptoWithCoinbasePayDescription": {
+    "message": "Coinbase hesabınla kolayca kripto para satın alabilir veya transfer edebilirsin.",
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
   "buyCryptoWithMoonPay": {
     "message": "MoonPay ile $1 satın al",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -425,10 +443,10 @@
     "description": "$1 represents the crypto symbol to be purchased"
   },
   "buyWithWyre": {
-    "message": "Wyre ile ETH satın al"
+    "message": "Wyre ile $1 satın al"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre, doğrudan MetaMask hesabınıza ETH yatırma işlemleri için banka kartı kullanmanıza izin verir."
+    "message": "1000$'a kadar satın alma işlemlerinde kolay oryantasyon. Banka Kartı/Kredi Kartı, Apple Pay, Banka Transferlerini destekler. +100 ülkede kullanılabilir. Token'lar MetaMask Hesabına yatırılır"
   },
   "bytes": {
     "message": "Bayt"
@@ -456,8 +474,12 @@
     "message": "İşlemi $1 için, gaz ücretinin ağ tarafından tanınması amacıyla en az %10 oranında artırılması gerekir.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwap": {
-    "message": "Takası iptal et"
+  "cancelSwapForFee": {
+    "message": "~$1 için swap işlemini iptal edin",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "Swap işlemini ücretsiz iptal edin"
   },
   "cancellationGasFee": {
     "message": "İptal İşlemi Gaz Ücreti"
@@ -615,6 +637,9 @@
   "continue": {
     "message": "Devam et"
   },
+  "continueToCoinbasePay": {
+    "message": "Coinbase Pay'e devam et"
+  },
   "continueToMoonPay": {
     "message": "MoonPay'e devam et"
   },
@@ -640,7 +665,7 @@
     "message": "Sözleşme Etkileşimi"
   },
   "convertTokenToNFTDescription": {
-    "message": "Bu varlığın bir NFT olduğunu tespit ettik. Metamask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenden çıkarmak ve bir NFT olarak eklemek ister misin?"
+    "message": "Bu varlığın bir NFT olduğunu tespit ettik. MetaMask artık NFT'ler için tam yerel desteğe sahiptir. Bunu token listenden çıkarmak ve bir NFT olarak eklemek ister misin?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Bu varlığın bir NFT olarak eklendiğini tespit ettik. Token listenden çıkarmak ister misin?"
@@ -722,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Gaz fiyatını özelleştirmek için $1 kullanın. Bu, bilgi sahibi değilseniz kafa karıştırıcı olabilir. Riski size ait olmak üzere kullanın.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Ücretin artırılması işlem süresini kısaltabilir ancak bu garanti edilmez."
@@ -808,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "$1 yatır",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Açıklama"
@@ -1174,10 +1199,6 @@
   "externalExtension": {
     "message": "Harici Uzantı"
   },
-  "extraApprovalGas": {
-    "message": "+1$ onay gazı",
-    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
-  },
   "failed": {
     "message": "Başarısız oldu"
   },
@@ -1238,6 +1259,10 @@
     "message": "Tüm Flask API'leri deneyseldir. Önceden haber verilmeksizin değiştirilebilir veya kaldırılabilirler ya da kararlı MetaMask'e taşınmadan süresiz olarak Flask'ta kalabilirler. Bunları kendi sorumluluğunda kullan.",
     "description": "This message warns developers about unstable Flask APIs"
   },
+  "flaskWelcomeWarning4": {
+    "message": "Flask kullanırken normal MetaMask uzantınızı devre dışı bıraktığınızdan emin olun.",
+    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+  },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Riskleri kabul ediyorum",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
@@ -1266,6 +1291,9 @@
   },
   "functionApprove": {
     "message": "İşlev: Onayla"
+  },
+  "functionSetApprovalForAll": {
+    "message": "İşlev: TümüİçinOnayVer"
   },
   "functionType": {
     "message": "İşlev Türü"
@@ -1429,6 +1457,9 @@
   "hide": {
     "message": "Gizle"
   },
+  "hideFullTransactionDetails": {
+    "message": "Tam işlem bilgilerini gizle"
+  },
   "hideSeedPhrase": {
     "message": "Tohum ifadesini gizle"
   },
@@ -1450,13 +1481,19 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Popüler NFT düşüşleri gibi şeyler nedeniyle ağ trafiğindeki dalgalanmaları kapsayacak şekilde $1 kullanın.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "yüksek"
   },
   "history": {
     "message": "Geçmiş"
+  },
+  "ignoreAll": {
+    "message": "Tümünü yoksay"
+  },
+  "ignoreTokenWarning": {
+    "message": "Gizlediğiniz tokenler cüzdanınızda gösterilmez. Ancak, yine de onları bulup ekleyebilirsiniz."
   },
   "import": {
     "message": "İçe Aktar",
@@ -1506,6 +1543,10 @@
   },
   "importWallet": {
     "message": "Cüzdanı içe aktar"
+  },
+  "importWithCount": {
+    "message": "$1 tokeni içe aktar",
+    "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
   "importYourExisting": {
     "message": "Gizli Kurtarma İfadesi kullanarak mevcut cüzdanınızı içe aktarın"
@@ -1593,6 +1634,9 @@
   },
   "invalidSeedPhrase": {
     "message": "Gizli Kurtarma İfadesi geçersiz"
+  },
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "Giriş geçersiz! Gizli Kurtarma İfadesi büyük/küçük harf duyarlıdır."
   },
   "ipfsGateway": {
     "message": "IPFS Ağ Geçidi"
@@ -1701,6 +1745,9 @@
   "levelArrow": {
     "message": "seviye oku"
   },
+  "lightTheme": {
+    "message": "Aydınlık"
+  },
   "likeToImportTokens": {
     "message": "Bu tokenleri içe aktarmak ister misiniz?"
   },
@@ -1740,7 +1787,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Daha ucuz bir fiyat için beklemek için $1 kullanın. Fiyatlar bir şekilde öngörülemez oldukları için süre tahminleri çok daha az kesindir.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "düşük"
@@ -1784,7 +1831,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Mevcut piyasa fiyatında hızlı işleme almak için $1 kullanın.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "not"
@@ -1862,13 +1909,22 @@
   "metametricsTitle": {
     "message": "MetaMask'i geliştirmek için 6 milyondan fazla kullanıcıya katılın"
   },
-  "mismatchedChain": {
-    "message": "Bu zincir kimliği için ağ ayrıntıları kayıtlarımızla uyumlu değil. Devam etmeden önce şunu yapmanızı öneriyoruz: $1.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "mismatchedChainRecommendation": {
+    "message": "İlerlemeden önce şunu öneririz: $1.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "Kayıtlarımıza göre, ağ adı bu zincir kimliği ile doğru bir şekilde uyumlu olmayabilir."
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "Sunulan para birimi sembolü bu zincir kimliği için beklediğimiz sembolle uyumlu değil."
+  },
+  "mismatchedRpcUrl": {
+    "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
   },
   "missingNFT": {
     "message": "NFT'nizi görmüyor musunuz?"
@@ -1920,6 +1976,9 @@
   },
   "network": {
     "message": "Ağ:"
+  },
+  "networkAddedSuccessfully": {
+    "message": "Ağ başarılı bir şekilde eklendi!"
   },
   "networkDetails": {
     "message": "Ağ Bilgileri"
@@ -2014,6 +2073,13 @@
   "newToMetaMask": {
     "message": "MetaMask'te yeni misiniz?"
   },
+  "newTokensImportedMessage": {
+    "message": "$1 tokeni başarılı bir şekilde içe aktardın.",
+    "description": "$1 is the string of symbols of all the tokens imported"
+  },
+  "newTokensImportedTitle": {
+    "message": "Token içe aktarıldı"
+  },
   "newTotal": {
     "message": "Yeni Toplam"
   },
@@ -2029,6 +2095,9 @@
   "nextNonceWarning": {
     "message": "Geçici anahtar, önerilen $1 geçici anahtarından daha büyük",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nft": {
+    "message": "NFT"
   },
   "nftTokenIdPlaceholder": {
     "message": "Toplanabilir kimliğini girin"
@@ -2096,9 +2165,12 @@
   "notEnoughGas": {
     "message": "Yeterli Gaz Yok"
   },
+  "notifications": {
+    "message": "Bildirimler"
+  },
   "notifications10ActionText": {
     "message": "Ayarlarda ziyaret et",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Geliştirilmiş token algılama şu anda Ethereum Mainnet, Polygon, BSC ve Avalanche ağlarında mevcut. Daha fazlası gelecek!"
@@ -2122,10 +2194,20 @@
     "message": "Karanlık modu etkinleştir"
   },
   "notifications12Description": {
-    "message": "Karanlık Mod, sistem tercihlerine bağlı olarak yeni kullanıcılar için etkinleştirilecektir. Mevcut kullanıcılar için, Ayarlar -> Deneysel altında Karanlık Modu manuel olarak etkinleştir."
+    "message": "Uzantıda karanlık mod sonunda burada! Bunu açmak için Ayarlar -> Deneysel kısmına git ve ekran seçeneklerinden birini seç: Aydınlık, Karanlık, Sistem."
   },
   "notifications12Title": {
     "message": "Karanlık mod mu? Şimdi karanlık mod! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "Özel ağ listesini göster"
+  },
+  "notifications13Description": {
+    "message": "Artık şu popüler özel ağları kolayca ekleyebilirsiniz: Arbitrum, Avalanche, Binance Smart Chain, Fantom, Harmony, Optimism, Palm ve Polygon! Bu özelliği etkinleştirmek için Ayarlar -> Deneysel kısmına gidip \"Özel ağ listesini göster\" seçeneğini açın!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "Popüler Ağları Ekle"
   },
   "notifications1Description": {
     "message": "MetaMask Mobil kullanıcıları artık mobil cüzdanları içinde token takas edebilirler. Mobil uygulamayı edinmek ve takas yapmaya başlamak için QR kodunu tarayın.",
@@ -2193,7 +2275,7 @@
   },
   "notifications8ActionText": {
     "message": "Gelişmiş ayarlara git",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "MetaMask 10.4.0 sürümü itibariyle Kayıt Defteri cihazınızı Metamask'e bağlamak için artık Ledger Live'e ihtiyacınız yok.",
@@ -2215,6 +2297,19 @@
   },
   "notifications9Title": {
     "message": "👓 İşlemlerin okunmasını daha kolay hale getiriyoruz."
+  },
+  "notificationsEmptyText": {
+    "message": "Burada gösterilecek bir şey yok."
+  },
+  "notificationsHeader": {
+    "message": "Bildirimler"
+  },
+  "notificationsInfos": {
+    "message": "$1 tarihli bildirim: $2",
+    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
+  },
+  "notificationsMarkAllAsRead": {
+    "message": "Tümünü okundu olarak işaretle"
   },
   "numberOfNewTokensDetected": {
     "message": "Bu hesapta $1 yeni token bulundu",
@@ -2299,9 +2394,6 @@
     "message": "Kayıt defterinizi WebHID üzerinden bağlamak için MetaMask'i tam ekran açın.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "Kaynak kodunu kontrol et"
-  },
   "optional": {
     "message": "İsteğe bağlı"
   },
@@ -2313,6 +2405,12 @@
   },
   "origin": {
     "message": "Köken"
+  },
+  "osTheme": {
+    "message": "Sistem"
+  },
+  "padlock": {
+    "message": "Asma Kilit"
   },
   "parameters": {
     "message": "Parametreler"
@@ -2384,6 +2482,10 @@
     "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_longRunning": {
+    "message": "Süresiz çalıştır.",
+    "description": "The description for the `endowment:long-running` permission"
+  },
   "permission_manageBip44Keys": {
     "message": "\"$1\" hesaplarını ve varlıklarını kontrol et.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2413,9 +2515,12 @@
     "message": "+ $1 tane daha",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
+  "popularCustomNetworks": {
+    "message": "Popüler özel ağlar"
+  },
   "preferredLedgerConnectionType": {
     "message": "Tercih Edilen Kayıt Defteri Bağlantı Türü",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Takas hazırlanıyor..."
@@ -2587,6 +2692,9 @@
   "resetWalletWarning": {
     "message": "Devam etmeden önce doğru Gizli Kurtarma İfadesini kullandığından emin ol. Bunu geri alamazsın."
   },
+  "restartMetamask": {
+    "message": "MetaMask'i yeniden başlat"
+  },
   "restore": {
     "message": "Geri Yükle"
   },
@@ -2614,6 +2722,14 @@
   },
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
+  },
+  "revokeAllTokensTitle": {
+    "message": "Sahip olduğunuz tüm $1 için izin geri çekilsin mi?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "İzni geri çektiğinizde aşağıdaki $1 artık $2 alanınıza erişim sağlayamayacak",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
   "rinkeby": {
     "message": "Rinkeby Test Ağı"
@@ -2771,6 +2887,9 @@
   "sendAmount": {
     "message": "Tutarı Gönder"
   },
+  "sendBugReport": {
+    "message": "Bize bir hata raporu gönder."
+  },
   "sendSpecifiedTokens": {
     "message": "$1 Gönder",
     "description": "Symbol of the specified token"
@@ -2788,11 +2907,22 @@
     "message": "$1 Gönderiliyor",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
+  "sendingToTokenContractWarning": {
+    "message": "Uyarı: Para kaybı ile sonuçlanabilecek bir token sözleşmesi göndermek üzeresiniz. $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
   "setAdvancedPrivacySettings": {
     "message": "Gelişmiş gizlilik ayarlarını yapın"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
+  },
+  "setApprovalForAll": {
+    "message": "Tümüne Onay Ver"
+  },
+  "setApprovalForAllTitle": {
+    "message": "$1 için harcama limiti olmadan onay ver",
+    "description": "The token symbol that is being approved"
   },
   "settings": {
     "message": "Ayarlar"
@@ -2812,6 +2942,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Gaz fiyatı ve limit kontrollerini doğrudan gönder ve onayla ekranlarında göstermek için bunu seçin."
+  },
+  "showCustomNetworkList": {
+    "message": "Özel Ağ Listesini Göster"
+  },
+  "showCustomNetworkListDescription": {
+    "message": "Yeni bir ağ eklerken önceden doldurulan bilgilerle ağ listesini görüntülenmesi için bunu seçin."
   },
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında Dönüşümü göster"
@@ -2903,10 +3039,6 @@
   "snapInstallWarningCheck": {
     "message": "Anladığını doğrulamak için hepsini kontrol et."
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "\"$1\" snap'ine anahtar erişimi veriyorsun. Bu geri alınamaz ve hesapların ve varlıkların üzerinde \"1$\" kontrol sağlar. Devam etmeden önce \"$1\" öğesine güvendiğinden emin ol.",
-    "description": "The parameter is the name of the snap"
-  },
   "snapRequestsPermission": {
     "message": "Bu ek, aşağıdaki izinleri istiyor:"
   },
@@ -2921,6 +3053,9 @@
   },
   "snapsToggle": {
     "message": "Bir snap yalnızca etkinleştirilmişse çalışır"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Bazı ağlar güvenlik ve/veya gizlilik riskleri teşkil edebilir. Bir ağ eklemeden ve kullanmadan önce riskleri anlayın."
   },
   "somethingWentWrong": {
     "message": "Eyvah! Bir şeyler ters gitti."
@@ -3044,6 +3179,9 @@
     "message": "Cüzdanınızı doğrudan bilgisayara bağlayın. Kayıt defterinizin kilidini açın ve Ethereum uygulamasını açın. Donanım cüzdanı cihazınızın kullanımı hakkında daha fazla bilgi için $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillGettingMessage": {
+    "message": "Bu mesajı almaya devam mı ediyorsun?"
+  },
   "storePhrase": {
     "message": "Bu ifadeyi 1Password gibi bir parola yöneticisinde saklayın."
   },
@@ -3096,14 +3234,11 @@
   "stxFallbackUnavailable": {
     "message": "Akıllı İşlemler kullanılamazken bile token'larını değiştirebilirsin."
   },
-  "stxPendingFinalizing": {
-    "message": "Sonuçlandırılıyor..."
+  "stxPendingPrivatelySubmittingSwap": {
+    "message": "Swap işlemin özel olarak gönderiliyor..."
   },
-  "stxPendingOptimizingGas": {
-    "message": "Gas optimize ediliyor..."
-  },
-  "stxPendingPrivatelySubmitting": {
-    "message": "Takas özel olarak gönderiliyor..."
+  "stxPendingPubliclySubmittingSwap": {
+    "message": "Swap işlemin herkese açık olarak gönderiliyor..."
   },
   "stxSubDescription": {
     "message": "* Akıllı İşlemler, işlemini birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Takas'ının başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
@@ -3114,6 +3249,10 @@
   "stxSuccessDescription": {
     "message": "$1 artık kullanılabilir.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxSwapCompleteIn": {
+    "message": "Swap işleminin tamamlanmasına kalan süre <",
+    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "İşlem maliyetlerini azaltmak ve arızaları azaltmak için göndermeden önce işlemleri simüle et."
@@ -3192,10 +3331,6 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "$1 ile eşleşen token yok",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCompleteIn": {
-    "message": "Değiştirme işlemi şu süre içinde tamamlandı <",
-    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
@@ -3378,6 +3513,10 @@
   "swapSlippageNegative": {
     "message": "Fark en az sıfır olmalıdır"
   },
+  "swapSlippagePercent": {
+    "message": "%$1",
+    "description": "$1 is the amount of % for slippage"
+  },
   "swapSource": {
     "message": "Likidite kaynağı"
   },
@@ -3480,6 +3619,10 @@
   "switchNetworks": {
     "message": "Ağları Değiştir"
   },
+  "switchToNetwork": {
+    "message": "$1 ağına geçin",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "Bu hesaba geç"
   },
@@ -3567,7 +3710,7 @@
   },
   "toggleTestNetworks": {
     "message": "Test ağlarını $1",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -3610,6 +3753,10 @@
   },
   "tokenSymbol": {
     "message": "Token Sembolü"
+  },
+  "tokensFoundTitle": {
+    "message": "$1 yeni token bulundu",
+    "description": "$1 is the number of new tokens detected"
   },
   "tooltipApproveButton": {
     "message": "Anladım"
@@ -3732,6 +3879,9 @@
     "message": "$1 ile bağlantı kurmada sorun yaşıyoruz, $2 kısmını inceleyip tekrar deneyin.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
+  "troubleStarting": {
+    "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
+  },
   "troubleTokenBalances": {
     "message": "Token bakiyeleriniz yüklenirken sorun yaşadık. Burada görüntüleyebilirsiniz ",
     "description": "Followed by a link (here) to view token balances"
@@ -3754,6 +3904,9 @@
   "typePassword": {
     "message": "MetaMask parolanızı girin"
   },
+  "typeYourSRP": {
+    "message": "Gizli Kurtarma İfadenizi girin"
+  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -3773,6 +3926,9 @@
   "unknownCameraErrorTitle": {
     "message": "Eyvah! Bir şeyler ters gitti...."
   },
+  "unknownCollection": {
+    "message": "İsimsiz koleksiyon"
+  },
   "unknownNetwork": {
     "message": "Bilinmeyen Özel Ağ"
   },
@@ -3791,10 +3947,6 @@
   "unrecognizedChain": {
     "message": "Bu özel ağ tanınmadı. Devam etmeden önce $1 öneririz",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "ağ bilgilerini doğrula",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "Toplanabilir (ERC-721) tokenlerin gönderilmesi şu anda desteklenmiyor",
@@ -3888,7 +4040,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
-    "message": "Web sitemizi ziyaret edin"
+    "message": "Web sitemizi ziyaret et"
   },
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
@@ -3912,6 +4064,12 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Cüzdan oluşturma başarılı"
+  },
+  "wantToAddThisNetwork": {
+    "message": "Bu ağı eklemek istiyor musunuz?"
+  },
+  "warning": {
+    "message": "Uyarı"
   },
   "weak": {
     "message": "Zayıf"
@@ -3971,6 +4129,10 @@
   },
   "yesLetsTry": {
     "message": "Evet, deneyelim"
+  },
+  "youHaveAddedAll": {
+    "message": "Tüm popüler ağları eklediniz. $1 daha fazla ağ gekşefedebilir veya $2 seçeneğini seçebilirsiniz",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Bu özelliği kullanmak için kamera erişimine izin vermeniz gerekir."

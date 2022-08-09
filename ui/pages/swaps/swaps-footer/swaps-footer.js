@@ -38,7 +38,8 @@ export default function SwapsFooter({
           footerButtonClassName={classnames(
             'swaps-footer__custom-page-container-footer-button-class',
             {
-              'swaps-footer__custom-page-container-footer-button-class--single': hideCancel,
+              'swaps-footer__custom-page-container-footer-button-class--single':
+                hideCancel,
             },
           )}
           disabled={disabled}

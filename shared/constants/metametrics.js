@@ -9,7 +9,7 @@
  * event was triggered. Also included as full details of the current page in
  * page events.
  *
- * @typedef {Object} MetaMetricsPageObject
+ * @typedef {object} MetaMetricsPageObject
  * @property {string} [path] - the path of the current page (e.g /home)
  * @property {string} [title] - the title of the current page (e.g 'home')
  * @property {string} [url] - the fully qualified url of the current page
@@ -18,7 +18,7 @@
 /**
  * For metamask, this is the dapp that triggered an interaction
  *
- * @typedef {Object} MetaMetricsReferrerObject
+ * @typedef {object} MetaMetricsReferrerObject
  * @property {string} [url] - the origin of the dapp issuing the
  *  notification
  */
@@ -31,8 +31,8 @@
  * function, but still provides the consumer a way to override these values if
  * necessary.
  *
- * @typedef {Object} MetaMetricsContext
- * @property {Object} app - Application metadata.
+ * @typedef {object} MetaMetricsContext
+ * @property {object} app - Application metadata.
  * @property {string} app.name - the name of the application tracking the event
  * @property {string} app.version - the version of the application
  * @property {string} userAgent - the useragent string of the user
@@ -43,7 +43,7 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsEventPayload
+ * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
  * @property {string} [environmentType] - The type of environment this event
@@ -66,7 +66,7 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsEventOptions
+ * @typedef {object} MetaMetricsEventOptions
  * @property {boolean} [isOptIn] - happened during opt in/out workflow
  * @property {boolean} [flushImmediately] - When true will automatically flush
  *  the segment queue after tracking the event. Recommended if the result of
@@ -83,7 +83,7 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsEventFragment
+ * @typedef {object} MetaMetricsEventFragment
  * @property {string} successEvent - The event name to fire when the fragment
  *  is closed in an affirmative action.
  * @property {string} [failureEvent] - The event name to fire when the fragment
@@ -125,19 +125,19 @@
 /**
  * Represents the shape of data sent to the segment.track method.
  *
- * @typedef {Object} SegmentEventPayload
+ * @typedef {object} SegmentEventPayload
  * @property {string} [userId] - The metametrics id for the user
  * @property {string} [anonymousId] - An anonymousId that is used to track
  *  sensitive data while preserving anonymity.
  * @property {string} event - name of the event to track
- * @property {Object} properties - properties to attach to the event
+ * @property {object} properties - properties to attach to the event
  * @property {MetaMetricsContext} context - the context the event occurred in
  */
 
 /**
- * @typedef {Object} MetaMetricsPagePayload
+ * @typedef {object} MetaMetricsPagePayload
  * @property {string} name - The name of the page that was viewed
- * @property {Object} [params] - The variadic parts of the page url
+ * @property {object} [params] - The variadic parts of the page url
  *  example (route: `/asset/:asset`, path: `/asset/ETH`)
  *  params: { asset: 'ETH' }
  * @property {EnvironmentType} environmentType - the environment type that the
@@ -148,14 +148,14 @@
  */
 
 /**
- * @typedef {Object} MetaMetricsPageOptions
+ * @typedef {object} MetaMetricsPageOptions
  * @property {boolean} [isOptInPath] - is the current path one of the pages in
  *  the onboarding workflow? If true and participateInMetaMetrics is null track
  *  the page view
  */
 
 /**
- * @typedef {Object} Traits
+ * @typedef {object} Traits
  * @property {'address_book_entries'} ADDRESS_BOOK_ENTRIES - When the user
  *  adds or modifies addresses in address book the address_book_entries trait
  *  is identified.
@@ -164,6 +164,9 @@
  *  trait
  * @property {'networks_added'} NETWORKS_ADDED - when user modifies networks
  *  we identify the networks_added trait
+ * @property {'networks_without_ticker'} NETWORKS_WITHOUT_TICKER - when user
+ *  modifies networks we identify the networks_without_ticker trait for
+ *  networks without a ticker.
  * @property {'nft_autodetection_enabled'} NFT_AUTODETECTION_ENABLED - when Autodetect NFTs
  * feature is toggled we identify the nft_autodetection_enabled trait
  * @property {'number_of_accounts'} NUMBER_OF_ACCOUNTS - when identities
@@ -178,6 +181,8 @@
  * @property {'three_box_enabled'} THREE_BOX_ENABLED - when 3box feature is
  *  toggled we identify the 3box_enabled trait
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
+ * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
+ * identify the token_detection_enabled trait
  */
 
 /**
@@ -189,6 +194,7 @@ export const TRAITS = {
   ADDRESS_BOOK_ENTRIES: 'address_book_entries',
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   NETWORKS_ADDED: 'networks_added',
+  NETWORKS_WITHOUT_TICKER: 'networks_without_ticker',
   NFT_AUTODETECTION_ENABLED: 'nft_autodetection_enabled',
   NUMBER_OF_ACCOUNTS: 'number_of_accounts',
   NUMBER_OF_NFT_COLLECTIONS: 'number_of_nft_collections',
@@ -197,16 +203,20 @@ export const TRAITS = {
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
   THREE_BOX_ENABLED: 'three_box_enabled',
   THEME: 'theme',
+  TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
 };
 
 /**
- * @typedef {Object} MetaMetricsTraits
+ * @typedef {object} MetaMetricsTraits
  * @property {number} [address_book_entries] - The number of entries in the
  *  user's address book.
  * @property {'ledgerLive' | 'webhid' | 'u2f'} [ledger_connection_type] - the
  *  type of ledger connection set by user preference.
  * @property {Array<string>} [networks_added] - An array consisting of chainIds
  *  that indicate the networks a user has added to their MetaMask.
+ * @property {Array<string>} [networks_without_ticker] - An array consisting of
+ *  chainIds that indicate the networks added by the user that do not have a
+ *  ticker.
  * @property {number} [nft_autodetection_enabled] - does the user have the
  * use collection/nft detection enabled?
  * @property {number} [number_of_accounts] - A number representing the number
@@ -222,6 +232,7 @@ export const TRAITS = {
  * @property {boolean} [three_box_enabled] - does the user have 3box sync
  *  enabled?
  * @property {string} [theme] - which theme the user has selected
+ * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -241,7 +252,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
 };
 
 /**
- * @typedef {Object} SegmentInterface
+ * @typedef {object} SegmentInterface
  * @property {SegmentEventPayload[]} queue - A queue of events to be sent when
  *  the flushAt limit has been reached, or flushInterval occurs
  * @property {() => void} flush - Immediately flush the queue, resetting it to
@@ -251,7 +262,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
  *  callback: (err?: Error) => void
  * ) => void} track - Track an event with Segment, using the internal batching
  *  mechanism to optimize network requests
- * @property {(payload: Object) => void} page - Track a page view with Segment
+ * @property {(payload: object) => void} page - Track a page view with Segment
  * @property {() => void} identify - Identify an anonymous user. We do not
  *  currently use this method.
  */
@@ -265,10 +276,25 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
-  SIGNATURE_REQUESTED: 'Signature Requested',
+  ENCRYPTION_PUBLIC_KEY_APPROVED: 'Encryption Public Key Approved',
+  ENCRYPTION_PUBLIC_KEY_REJECTED: 'Encryption Public Key Rejected',
   ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  DECRYPTION_APPROVED: 'Decryption Approved',
+  DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
+  PERMISSIONS_APPROVED: 'Permissions Approved',
+  PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PROVIDER_METHOD_CALLED: 'Provider Method Called',
+  SIGNATURE_APPROVED: 'Signature Approved',
+  SIGNATURE_REJECTED: 'Signature Rejected',
+  SIGNATURE_REQUESTED: 'Signature Requested',
+  TOKEN_ADDED: 'Token Added',
+  TOKEN_DETECTED: 'Token Detected',
+  TOKEN_HIDDEN: 'Token Hidden',
+  NFT_ADDED: 'NFT Added',
+  TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
+  TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
 
 export const EVENT = {
@@ -287,5 +313,30 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+  },
+  SOURCE: {
+    NETWORK: {
+      POPULAR_NETWORK_LIST: 'popular_network_list',
+      CUSTOM_NETWORK_FORM: 'custom_network_form',
+    },
+    SWAPS: {
+      MAIN_VIEW: 'Main View',
+      TOKEN_VIEW: 'Token View',
+    },
+    TRANSACTION: {
+      USER: 'user',
+      DAPP: 'dapp',
+    },
+    TOKEN: {
+      CUSTOM: 'custom',
+      DETECTED: 'detected',
+      DAPP: 'dapp',
+      LIST: 'list',
+    },
+  },
+  LOCATION: {
+    TOKEN_DETECTION: 'token_detection',
+    TOKEN_MENU: 'token_menu',
+    TOKEN_DETAILS: 'token_details',
   },
 };

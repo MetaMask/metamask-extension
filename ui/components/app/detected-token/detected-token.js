@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { chain } from 'lodash';
 
 import {
-  importTokens,
+  addImportedTokens,
   ignoreTokens,
   setNewTokensImported,
 } from '../../../store/actions';
 import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+} from '../../../../shared/constants/transaction';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
 import DetectedTokenIgnoredPopover from './detected-token-ignored-popover/detected-token-ignored-popover';
 
@@ -26,8 +32,10 @@ const sortingBasedOnTokenSelection = (tokensDetected) => {
       .value()
   );
 };
+
 const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
@@ -37,26 +45,58 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       return tokenObj;
     }, {}),
   );
-  const [
-    showDetectedTokenIgnoredPopover,
-    setShowDetectedTokenIgnoredPopover,
-  ] = useState(false);
+  const [showDetectedTokenIgnoredPopover, setShowDetectedTokenIgnoredPopover] =
+    useState(false);
+
+  const importSelectedTokens = async (selectedTokens) => {
+    selectedTokens.forEach((importedToken) => {
+      trackEvent({
+        event: EVENT_NAMES.TOKEN_ADDED,
+        category: EVENT.CATEGORIES.WALLET,
+        sensitiveProperties: {
+          token_symbol: importedToken.symbol,
+          token_contract_address: importedToken.address,
+          token_decimal_precision: importedToken.decimals,
+          source: EVENT.SOURCE.TOKEN.DETECTED,
+          token_standard: TOKEN_STANDARDS.ERC20,
+          asset_type: ASSET_TYPES.TOKEN,
+        },
+      });
+    });
+    await dispatch(addImportedTokens(selectedTokens));
+    const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
+    dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+  };
 
   const handleClearTokensSelection = async () => {
-    // create a lodash chain on this object
-    const {
-      selected: selectedTokens,
-      deselected: deSelectedTokens,
-    } = sortingBasedOnTokenSelection(tokensListDetected);
+    const { selected: selectedTokens = [], deselected: deSelectedTokens = [] } =
+      sortingBasedOnTokenSelection(tokensListDetected);
 
     if (deSelectedTokens.length < detectedTokens.length) {
-      await dispatch(ignoreTokens(deSelectedTokens));
-      await dispatch(importTokens(selectedTokens));
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
-    } else {
-      await dispatch(ignoreTokens(deSelectedTokens));
+      await importSelectedTokens(selectedTokens);
     }
+    const tokensDetailsList = deSelectedTokens.map(
+      ({ symbol, address }) => `${symbol} - ${address}`,
+    );
+    trackEvent({
+      event: EVENT_NAMES.TOKEN_HIDDEN,
+      category: EVENT.CATEGORIES.WALLET,
+      sensitiveProperties: {
+        tokens: tokensDetailsList,
+        location: EVENT.LOCATION.TOKEN_DETECTION,
+        token_standard: TOKEN_STANDARDS.ERC20,
+        asset_type: ASSET_TYPES.TOKEN,
+      },
+    });
+    const deSelectedTokensAddresses = deSelectedTokens.map(
+      ({ address }) => address,
+    );
+    await dispatch(
+      ignoreTokens({
+        tokensToIgnore: deSelectedTokensAddresses,
+        dontShowLoadingIndicator: true,
+      }),
+    );
     setShowDetectedTokens(false);
   };
 
@@ -71,17 +111,13 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   };
 
   const onImport = async () => {
-    // create a lodash chain on this object
-    const { selected: selectedTokens } = sortingBasedOnTokenSelection(
-      tokensListDetected,
-    );
+    const { selected: selectedTokens = [] } =
+      sortingBasedOnTokenSelection(tokensListDetected);
 
     if (selectedTokens.length < detectedTokens.length) {
       setShowDetectedTokenIgnoredPopover(true);
     } else {
-      const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
-      await dispatch(importTokens(selectedTokens));
-      dispatch(setNewTokensImported(tokenSymbols.join(', ')));
+      await importSelectedTokens(selectedTokens);
       setShowDetectedTokens(false);
     }
   };

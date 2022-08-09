@@ -6,7 +6,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 export default function ColorIndicator({
   size = SIZES.SM,
   type = 'outlined',
-  color = COLORS.ICON_DEFAULT,
+  color = COLORS.ICON_MUTED,
   borderColor,
   iconClassName,
 }) {
@@ -19,7 +19,10 @@ export default function ColorIndicator({
   });
 
   return (
-    <div className={colorIndicatorClassName}>
+    <div
+      className={colorIndicatorClassName}
+      data-testid={`color-icon-${color}`}
+    >
       {iconClassName ? (
         <i className={classnames('color-indicator__icon', iconClassName)} />
       ) : (

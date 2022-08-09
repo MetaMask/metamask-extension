@@ -1,10 +1,11 @@
-import querystring from 'querystring';
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
+
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -17,17 +18,31 @@ const inpageContent = fs.readFileSync(
 const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
 const inpageBundle = inpageContent + inpageSuffix;
 
+// contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
+const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
+
+// stream channels
+const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 const PROVIDER = 'metamask-provider';
 
+// For more information about these legacy streams, see here:
+// https://github.com/MetaMask/metamask-extension/issues/15491
 // TODO:LegacyProvider: Delete
 const LEGACY_CONTENT_SCRIPT = 'contentscript';
 const LEGACY_INPAGE = 'inpage';
 const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
-if (shouldInjectProvider()) {
+const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+
+if (
+  window.location.origin === phishingPageUrl.origin &&
+  window.location.pathname === phishingPageUrl.pathname
+) {
+  setupPhishingStream();
+} else if (shouldInjectProvider()) {
   injectScript(inpageBundle);
   setupStreams();
 }
@@ -42,12 +57,58 @@ function injectScript(content) {
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
-    scriptTag.textContent = content;
+    // Inline scripts do not work in MV3 due to more strict security policy
+    if (isManifestV3()) {
+      scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
+    } else {
+      scriptTag.textContent = content;
+    }
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
   } catch (error) {
     console.error('MetaMask: Provider injection failed.', error);
   }
+}
+
+async function setupPhishingStream() {
+  // the transport-specific streams for communication between inpage and background
+  const pageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: PHISHING_WARNING_PAGE,
+  });
+  const extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  const extensionStream = new PortStream(extensionPort);
+
+  // create and connect channel muxers
+  // so we can handle the channels individually
+  const pageMux = new ObjectMultiplex();
+  pageMux.setMaxListeners(25);
+  const extensionMux = new ObjectMultiplex();
+  extensionMux.setMaxListeners(25);
+
+  pump(pageMux, pageStream, pageMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
+  );
+  pump(extensionMux, extensionStream, extensionMux, (err) => {
+    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+    window.postMessage(
+      {
+        target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
+        data: {
+          // this object gets passed to obj-multiplex
+          name: PHISHING_SAFELIST, // the obj-multiplex channel name
+          data: {
+            jsonrpc: '2.0',
+            method: 'METAMASK_STREAM_FAILURE',
+          },
+        },
+      },
+      window.location.origin,
+    );
+  });
+
+  // forward communication across inpage-background for these channels only
+  forwardTrafficBetweenMuxes(PHISHING_SAFELIST, pageMux, extensionMux);
 }
 
 /**
@@ -270,16 +331,17 @@ function documentElementCheck() {
  */
 function blockedDomainCheck() {
   const blockedDomains = [
-    'uscourts.gov',
-    'dropbox.com',
-    'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
     'adyen.com',
-    'gravityforms.com',
-    'harbourair.com',
     'ani.gamer.com.tw',
     'blueskybooking.com',
+    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
+    'docs.google.com',
+    'dropbox.com',
+    'gravityforms.com',
+    'harbourair.com',
     'sharefile.com',
+    'uscourts.gov',
+    'webbyawards.com',
   ];
   const currentUrl = window.location.href;
   let currentRegex;
@@ -298,12 +360,15 @@ function blockedDomainCheck() {
 
 /**
  * Redirects the current page to a phishing information page
+ *
+ * @param data
  */
-function redirectToPhishingWarning() {
-  console.debug('MetaMask: Routing to Phishing Warning component.');
-  const extensionURL = browser.runtime.getURL('phishing.html');
-  window.location.href = `${extensionURL}#${querystring.stringify({
-    hostname: window.location.hostname,
-    href: window.location.href,
-  })}`;
+function redirectToPhishingWarning(data = {}) {
+  console.debug('MetaMask: Routing to Phishing Warning page.');
+  const { hostname, href } = window.location;
+  const { newIssueUrl } = data;
+  const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
+
+  const querystring = new URLSearchParams({ hostname, href, newIssueUrl });
+  window.location.href = `${baseUrl}#${querystring}`;
 }

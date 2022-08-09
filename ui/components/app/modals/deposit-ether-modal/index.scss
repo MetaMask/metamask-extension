@@ -12,7 +12,7 @@
     flex: 1;
     align-items: center;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: 0;
     }
   }
@@ -31,7 +31,7 @@
       max-height: 60px;
     }
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       height: 60px;
     }
   }
@@ -45,7 +45,7 @@
     padding: 30px 0 20px;
     min-height: 170px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       min-height: 270px;
       flex-flow: column;
       justify-content: flex-start;
@@ -63,11 +63,11 @@
       flex: 0 0 auto;
       padding: 0 20px;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         width: 12rem;
       }
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         width: 100%;
         max-height: 6rem;
         padding-bottom: 20px;
@@ -83,7 +83,7 @@
       padding-bottom: 20px;
       align-self: flex-start;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         width: 15rem;
       }
 
@@ -102,7 +102,7 @@
       display: flex;
       justify-content: flex-end;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         min-width: 300px;
       }
     }

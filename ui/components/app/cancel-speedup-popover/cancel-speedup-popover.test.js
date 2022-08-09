@@ -24,10 +24,8 @@ const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN = new BigNumber(
   MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
   16,
 ).times(21000, 10);
-const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX = MAXGASCOST_ABOVE_MOCK_MEDIUM_BN.times(
-  1.1,
-  10,
-).toString(16);
+const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX =
+  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN.times(1.1, 10).toString(16);
 
 const EXPECTED_ETH_FEE_1 = hexWEIToDecETH(
   MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX,
@@ -40,18 +38,15 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI = new BigNumber(
   decGWEIToHexWEI(MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI),
   16,
 );
-const MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.div(
-  10,
-  10,
-).toString(16);
+const MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX =
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.div(10, 10).toString(16);
 
 const EXPECTED_ETH_FEE_2 = hexWEIToDecETH(
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.times(21000, 10).toString(16),
 );
 
-const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(
-  16,
-);
+const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16);
 
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -123,9 +118,9 @@ describe('CancelSpeedupPopover', () => {
     expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
   });
 
-  it('should have 🚀Speed Up in header if editGasMode is speedup', async () => {
+  it('should have 🚀Speed up in header if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
-    expect(screen.queryByText('🚀Speed Up')).toBeInTheDocument();
+    expect(screen.queryByText('🚀Speed up')).toBeInTheDocument();
   });
 
   it('information tooltip should contain the correct text if editGasMode is cancel', async () => {
@@ -142,7 +137,7 @@ describe('CancelSpeedupPopover', () => {
     expect(
       InfoTooltip.mock.calls[0][0].contentText.props.children[0],
     ).toStrictEqual(
-      'To Speed Up a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
+      'To Speed up a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
     );
   });
 

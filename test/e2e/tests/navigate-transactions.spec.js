@@ -14,7 +14,6 @@ describe('Navigate transactions', function () {
   it('should navigate the unapproved transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -150,7 +149,6 @@ describe('Navigate transactions', function () {
   it('should reject and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -182,7 +180,6 @@ describe('Navigate transactions', function () {
   it('should confirm and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -214,7 +211,6 @@ describe('Navigate transactions', function () {
   it('should reject and remove all unapproved transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: 'navigate-transactions',
         ganacheOptions,
         title: this.test.title,
@@ -226,7 +222,7 @@ describe('Navigate transactions', function () {
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
-        await driver.clickElement({ text: 'Reject All', tag: 'button' });
+        await driver.clickElement({ text: 'Reject all', tag: 'button' });
         const balance = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );

@@ -29,5 +29,5 @@ Setting.propTypes = {
   value: PropTypes.bool,
   setValue: PropTypes.func,
   title: PropTypes.string,
-  description: PropTypes.string,
+  description: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
 };

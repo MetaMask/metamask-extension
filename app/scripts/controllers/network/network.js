@@ -20,7 +20,6 @@ import {
   INFURA_BLOCKED_KEY,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../../shared/constants/network';
-import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -31,7 +30,7 @@ import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST) {
@@ -142,7 +141,7 @@ export default class NetworkController extends EventEmitter {
   /**
    * Method to return the latest block for the current network
    *
-   * @returns {Object} Block header
+   * @returns {object} Block header
    */
   getLatestBlock() {
     return new Promise((resolve, reject) => {
@@ -270,6 +269,11 @@ export default class NetworkController extends EventEmitter {
   getCurrentChainId() {
     const { type, chainId: configChainId } = this.getProviderConfig();
     return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId;
+  }
+
+  getCurrentRpcUrl() {
+    const { rpcUrl } = this.getProviderConfig();
+    return rpcUrl;
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {

@@ -70,7 +70,7 @@
   justify-content: stretch;
   min-height: 54px;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     max-width: 260px;
   }
 
@@ -93,7 +93,7 @@
 
     padding-bottom: 2px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H8;
     }
   }
@@ -103,7 +103,7 @@
 
     padding-bottom: 2px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H8;
     }
   }
@@ -195,7 +195,7 @@
     color: var(--color-text-default);
     width: 108px;
     height: 97px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.151579);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     border-radius: 6px;
     border: none;
 

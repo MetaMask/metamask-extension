@@ -62,7 +62,7 @@ describe('Deploy contract and call contract methods', function () {
         );
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Contract Deployment');
+        assert.equal(completedTxText, 'Contract deployment');
 
         // calls and confirms a contract method where ETH is sent
         await driver.switchToWindow(dapp);
@@ -103,7 +103,7 @@ describe('Deploy contract and call contract methods', function () {
         );
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
-          text: 'Withdraw',
+          text: 'Deposit',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);

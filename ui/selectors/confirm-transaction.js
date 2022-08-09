@@ -117,6 +117,29 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   },
 );
 
+export const unconfirmedMessagesHashSelector = createSelector(
+  unapprovedMsgsSelector,
+  unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
+  (
+    unapprovedMsgs = {},
+    unapprovedPersonalMsgs = {},
+    unapprovedDecryptMsgs = {},
+    unapprovedEncryptionPublicKeyMsgs = {},
+    unapprovedTypedMessages = {},
+  ) => {
+    return {
+      ...unapprovedMsgs,
+      ...unapprovedPersonalMsgs,
+      ...unapprovedDecryptMsgs,
+      ...unapprovedEncryptionPublicKeyMsgs,
+      ...unapprovedTypedMessages,
+    };
+  },
+);
+
 const unapprovedMsgCountSelector = (state) => state.metamask.unapprovedMsgCount;
 const unapprovedPersonalMsgCountSelector = (state) =>
   state.metamask.unapprovedPersonalMsgCount;
@@ -240,9 +263,8 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
-  const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
+  const networkAndAccountSupportsEIP1559 =
+    checkNetworkAndAccountSupports1559(state);
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
@@ -255,10 +277,8 @@ export const transactionFeeSelector = function (state, txData) {
       gasEstimationObject.gasPrice =
         txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasPrice);
     } else {
-      const {
-        suggestedMaxPriorityFeePerGas,
-        suggestedMaxFeePerGas,
-      } = selectedGasEstimates;
+      const { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } =
+        selectedGasEstimates;
       gasEstimationObject.maxFeePerGas =
         txData.txParams?.maxFeePerGas &&
         (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE || !suggestedMaxFeePerGas)
@@ -314,12 +334,10 @@ export const transactionFeeSelector = function (state, txData) {
     numberOfDecimals: 6,
   });
 
-  const hexMinimumTransactionFee = getMinimumGasTotalInHexWei(
-    gasEstimationObject,
-  );
-  const hexMaximumTransactionFee = getMaximumGasTotalInHexWei(
-    gasEstimationObject,
-  );
+  const hexMinimumTransactionFee =
+    getMinimumGasTotalInHexWei(gasEstimationObject);
+  const hexMaximumTransactionFee =
+    getMaximumGasTotalInHexWei(gasEstimationObject);
 
   const fiatMinimumTransactionFee = getTransactionFee({
     value: hexMinimumTransactionFee,

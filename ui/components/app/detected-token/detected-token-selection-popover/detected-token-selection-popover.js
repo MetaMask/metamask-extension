@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
@@ -19,11 +24,11 @@ const DetectedTokenSelectionPopover = ({
   sortingBasedOnTokenSelection,
 }) => {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const { selected: selectedTokens = [] } = sortingBasedOnTokenSelection(
-    tokensListDetected,
-  );
+  const { selected: selectedTokens = [] } =
+    sortingBasedOnTokenSelection(tokensListDetected);
   const numOfTokensImporting =
     selectedTokens.length === detectedTokens.length
       ? `All`
@@ -31,6 +36,17 @@ const DetectedTokenSelectionPopover = ({
 
   const onClose = () => {
     setShowDetectedTokens(false);
+    const eventTokensDetails = detectedTokens.map(
+      ({ address, symbol }) => `${symbol} - ${address}`,
+    );
+    trackEvent({
+      event: EVENT_NAMES.TOKEN_IMPORT_CANCELED,
+      category: EVENT.CATEGORIES.WALLET,
+      properties: {
+        source: EVENT.SOURCE.TOKEN.DETECTED,
+        tokens: eventTokensDetails,
+      },
+    });
   };
 
   const footer = (

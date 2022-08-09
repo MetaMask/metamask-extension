@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -41,7 +42,11 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
+import {
+  shortenAddress,
+  getAccountByAddress,
+  getURLHostName,
+} from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -76,7 +81,7 @@ import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
  * This will be used for all cases where this state key is accessed only for that
  * purpose.
  *
- * @param {Object} state - redux state object
+ * @param {object} state - redux state object
  */
 export function isNetworkLoading(state) {
   return state.metamask.network === 'loading';
@@ -199,7 +204,7 @@ export function checkNetworkOrAccountNotSupports1559(state) {
 /**
  * Checks if the current wallet is a hardware wallet.
  *
- * @param {Object} state
+ * @param {object} state
  * @returns {boolean}
  */
 export function isHardwareWallet(state) {
@@ -210,7 +215,7 @@ export function isHardwareWallet(state) {
 /**
  * Get a HW wallet type, e.g. "Ledger Hardware"
  *
- * @param {Object} state
+ * @param {object} state
  * @returns {string | undefined}
  */
 export function getHardwareWalletType(state) {
@@ -242,7 +247,7 @@ export function getAccountType(state) {
  * metadata that predates the switch to using chainId.
  *
  * @deprecated - use getCurrentChainId instead
- * @param {Object} state - redux state object
+ * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
@@ -375,6 +380,10 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getEnsResolutionByAddress(state, address) {
+  return state.metamask.ensResolutionsByAddress[address] || '';
+}
+
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
@@ -467,6 +476,24 @@ export function getTotalUnapprovedCount(state) {
     getUnapprovedTxCount(state) +
     pendingApprovalCount +
     getSuggestedAssetCount(state)
+  );
+}
+
+export function getTotalUnapprovedMessagesCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedDecryptMsgCount = 0,
+    unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedDecryptMsgCount +
+    unapprovedEncryptionPublicKeyMsgCount +
+    unapprovedTypedMessagesCount
   );
 }
 
@@ -617,7 +644,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 }
 
 /**
- * @typedef {Object} SwapsEthToken
+ * @typedef {object} SwapsEthToken
  * @property {string} symbol - The symbol for ETH, namely "ETH"
  * @property {string} name - The name of the ETH currency, "Ether"
  * @property {string} address - A substitute address for the metaswap-api to
@@ -693,8 +720,17 @@ export function getIsBuyableMoonPayChain(state) {
   return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
 }
 
+export function getIsBuyableWyreChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
+}
+export function getIsBuyableCoinbasePayChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state).toUpperCase();
+  const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
 }
 
@@ -714,23 +750,66 @@ export function getSnaps(state) {
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
   return Object.values(snaps).map((snap) => {
     return {
+      id: snap.id,
       tabMessage: () => snap.manifest.proposedName,
       descriptionMessage: () => snap.manifest.description,
       sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${window.btoa(
-        unescape(encodeURIComponent(snap.id)),
-      )}`,
+      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
       icon: 'fa fa-flask',
     };
   });
 });
+
+/**
+ * @typedef {object} Notification
+ * @property {string} id - A unique identifier for the notification
+ * @property {string} origin - A string identifing the snap origin
+ * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
+ * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the notification was read by the user
+ * @property {string} message - A string containing the notification message
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user.
+ *
+ * The returned notifications are sorted by date.
+ *
+ * @param {object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
+export function getNotifications(state) {
+  const notifications = Object.values(state.metamask.notifications);
+
+  const notificationsSortedByDate = notifications.sort(
+    (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+  );
+  return notificationsSortedByDate;
+}
+
+export function getUnreadNotifications(state) {
+  const notifications = getNotifications(state);
+
+  const unreadNotificationCount = notifications.filter(
+    (notification) => notification.readDate === null,
+  );
+
+  return unreadNotificationCount;
+}
+
+export const getUnreadNotificationsCount = createSelector(
+  getUnreadNotifications,
+  (notifications) => notifications.length,
+);
 ///: END:ONLY_INCLUDE_IN
 
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
- * @param {Object} state
- * @returns {Object}
+ * @param {object} state
+ * @returns {object}
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
@@ -748,16 +827,17 @@ function getAllowedAnnouncementIds(state) {
     6: false,
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    9: getIsMainnet(state),
+    9: false,
     10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
     11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
-    12: true,
+    12: false,
+    13: true,
   };
 }
 
 /**
- * @typedef {Object} Notification
- * @property {number} id - A unique identifier for the notification
+ * @typedef {object} Announcement
+ * @property {number} id - A unique identifier for the announcement
  * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
  */
 
@@ -769,7 +849,7 @@ function getAllowedAnnouncementIds(state) {
  *
  * The returned announcements are sorted by date.
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {Announcement[]} An array of announcements that can be shown to the user
  */
 
@@ -842,7 +922,7 @@ export function getTheme(state) {
  * To retrieve the tokenList produced by TokenListcontroller
  *
  * @param {*} state
- * @returns {Object}
+ * @returns {object}
  */
 export function getTokenList(state) {
   return state.metamask.tokenList;
@@ -987,4 +1067,54 @@ export function getDetectedTokensInCurrentNetwork(state) {
  */
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
+}
+
+/**
+ * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsCustomNetworkListEnabled(state) {
+  return state.metamask.customNetworkListEnabled;
+}
+
+export function getIsCustomNetwork(state) {
+  const chainId = getCurrentChainId(state);
+
+  return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
+}
+
+export function getBlockExplorerLinkText(
+  state,
+  accountDetailsModalComponent = false,
+) {
+  const isCustomNetwork = getIsCustomNetwork(state);
+  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+
+  let blockExplorerLinkText = {
+    firstPart: 'addBlockExplorer',
+    secondPart: '',
+  };
+
+  if (rpcPrefs.blockExplorerUrl) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? {
+          firstPart: 'blockExplorerView',
+          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+        }
+      : {
+          firstPart: 'viewinExplorer',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  } else if (isCustomNetwork === false) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? { firstPart: 'etherscanViewOn', secondPart: '' }
+      : {
+          firstPart: 'viewOnEtherscan',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  }
+
+  return blockExplorerLinkText;
 }

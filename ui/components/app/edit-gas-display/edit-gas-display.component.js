@@ -81,7 +81,7 @@ export default function EditGasDisplay({
   const isMainnet = useSelector(getIsMainnet);
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction.txParams);
+    !isLegacyTransaction(transaction?.txParams);
   const showAdvancedInlineGasIfPossible = useSelector(
     getAdvancedInlineGasShown,
   );
@@ -99,9 +99,8 @@ export default function EditGasDisplay({
     }
   }, [showAdvancedForm]);
 
-  const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
-    transaction,
-  );
+  const dappSuggestedAndTxParamGasFeesAreTheSame =
+    areDappSuggestedAndTxParamGasFeesTheSame(transaction);
 
   const requireDappAcknowledgement = Boolean(
     transaction?.dappSuggestedGasFees &&
@@ -217,8 +216,8 @@ export default function EditGasDisplay({
             hasGasErrors === false &&
             supportsEIP1559 && (
               <GasTiming
-                maxFeePerGas={maxFeePerGas}
-                maxPriorityFeePerGas={maxPriorityFeePerGas}
+                maxFeePerGas={maxFeePerGas.toString()}
+                maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
                 gasWarnings={gasWarnings}
               />
             )
@@ -280,7 +279,7 @@ export default function EditGasDisplay({
               onClick={() => {
                 setShowAdvancedForm(!showAdvancedForm);
                 trackEvent({
-                  event: 'Clicked "Advanced Options"',
+                  event: 'Clicked "Advanced options"',
                   category: EVENT.CATEGORIES.TRANSACTIONS,
                   properties: {
                     action: 'Edit Screen',

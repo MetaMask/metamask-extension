@@ -54,11 +54,14 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    *
    * @param e - Native animation event - React.AnimationEvent<HTMLDivElement>
    */
-  const triggerOnLongPressed = (e) => {
-    onLongPressed();
-    setHasTriggeredUnlock(true);
-    preventPropogation(e);
-  };
+  const triggerOnLongPressed = useCallback(
+    (e) => {
+      onLongPressed();
+      setHasTriggeredUnlock(true);
+      preventPropogation(e);
+    },
+    [onLongPressed],
+  );
 
   /**
    * 3. Reset animation states
@@ -160,7 +163,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         </div>
       </div>
     ) : null;
-  }, [isUnlocking, hasTriggeredUnlock, t]);
+  }, [isUnlocking, hasTriggeredUnlock, triggerOnLongPressed, t]);
 
   return (
     <Button

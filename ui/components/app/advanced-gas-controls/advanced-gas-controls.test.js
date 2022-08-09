@@ -22,7 +22,7 @@ describe('AdvancedGasControls Component', () => {
 
   it('should not render maxFee and maxPriorityFee inputs if supportsEIP1559 is false', () => {
     const { queryByText } = renderComponent({ supportsEIP1559: false });
-    expect(queryByText('Gas Limit')).toBeInTheDocument();
+    expect(queryByText('Gas limit')).toBeInTheDocument();
     expect(queryByText('Gas price')).toBeInTheDocument();
     expect(queryByText('Max fee')).not.toBeInTheDocument();
     expect(queryByText('Max priority fee')).not.toBeInTheDocument();
@@ -34,7 +34,7 @@ describe('AdvancedGasControls Component', () => {
       supportsEIP1559: true,
     });
     expect(queryByText('Gas price')).not.toBeInTheDocument();
-    expect(queryByText('Gas Limit')).toBeInTheDocument();
+    expect(queryByText('Gas limit')).toBeInTheDocument();
     expect(queryByText('Max fee')).toBeInTheDocument();
     expect(queryByText('Max priority fee')).toBeInTheDocument();
   });

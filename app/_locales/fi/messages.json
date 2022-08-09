@@ -137,10 +137,10 @@
     "message": "Selaintasi ei tueta..."
   },
   "buyWithWyre": {
-    "message": "Osta ETH:ta Wyrella"
+    "message": "Osta $1 :ta Wyrella"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre antaa sinun käyttää luottokorttia, jotta voit tallettaa ETH:ta suoraan MetaMask-tilillesi."
+    "message": "Wyre antaa sinun käyttää luottokorttia, jotta voit tallettaa $1 :ta suoraan MetaMask-tilillesi."
   },
   "bytes": {
     "message": "Tavua"

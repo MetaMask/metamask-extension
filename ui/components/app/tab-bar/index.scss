@@ -18,7 +18,7 @@
     background-color: unset;
     text-align: start;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       &:hover {
         opacity: 0.4;
       }
@@ -28,7 +28,7 @@
       }
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H4;
 
       border-bottom: 1px solid var(--color-border-muted);
@@ -38,14 +38,13 @@
     &__content {
       padding: 12px 18px;
       display: flex;
-      flex: 1 1 auto;
       align-items: center;
       position: relative;
 
       &__title {
         @include H4;
 
-        @media screen and (min-width: $break-large) {
+        @include screen-sm-min {
           @include H6;
         }
       }
@@ -53,7 +52,7 @@
       &__description {
         display: none;
 
-        @media screen and (max-width: $break-small) {
+        @include screen-sm-max {
           @include H6;
 
           display: block;
@@ -68,8 +67,9 @@
         justify-content: center;
         margin-inline-end: 16px;
         flex: 0 0 18px;
+        color: var(--color-icon-alternative);
 
-        @media screen and (min-width: $break-large) {
+        @include screen-sm-min {
           flex: 0 0 14px;
         }
       }
@@ -78,7 +78,7 @@
     &__caret {
       display: none;
 
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         display: block;
         margin-inline-start: auto;
         margin-inline-end: 8px;
