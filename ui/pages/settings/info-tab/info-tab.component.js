@@ -11,7 +11,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_FIELDS,
+} from '../../../../shared/constants/metametrics';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -91,13 +95,18 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
             onClick={() => {
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.SETTINGS,
-                event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
-                properties: {
-                  url: SUPPORT_LINK,
+              this.context.trackEvent(
+                {
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  properties: {
+                    url: SUPPORT_LINK,
+                  },
                 },
-              });
+                {
+                  contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                },
+              );
             }}
           >
             {t('supportCenter')}
@@ -122,13 +131,18 @@ export default class InfoTab extends PureComponent {
             rel="noopener noreferrer"
             className="info-tab__link-text"
             onClick={() => {
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.SETTINGS,
-                event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
-                properties: {
-                  url: SUPPORT_REQUEST_LINK,
+              this.context.trackEvent(
+                {
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                  properties: {
+                    url: SUPPORT_REQUEST_LINK,
+                  },
                 },
-              });
+                {
+                  contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                },
+              );
             }}
           >
             {t('contactUs')}

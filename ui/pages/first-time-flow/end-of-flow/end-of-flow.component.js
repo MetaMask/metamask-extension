@@ -6,7 +6,11 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { returnToOnboardingInitiatorTab } from '../onboarding-initiator-util';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_FIELDS,
+} from '../../../../shared/constants/metametrics';
 
 export default class EndOfFlowScreen extends PureComponent {
   static contextTypes = {
@@ -100,13 +104,18 @@ export default class EndOfFlowScreen extends PureComponent {
               rel="noopener noreferrer"
               href={SUPPORT_REQUEST_LINK}
               onClick={() => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.ONBOARDING,
-                  event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
-                  properties: {
-                    url: SUPPORT_REQUEST_LINK,
+                this.context.trackEvent(
+                  {
+                    category: EVENT.CATEGORIES.ONBOARDING,
+                    event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                    properties: {
+                      url: SUPPORT_REQUEST_LINK,
+                    },
                   },
-                });
+                  {
+                    contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                  },
+                );
               }}
             >
               <span className="first-time-flow__link-text">

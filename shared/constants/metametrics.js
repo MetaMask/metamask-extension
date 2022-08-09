@@ -350,3 +350,7 @@ export const EVENT = {
     TOKEN_DETAILS: 'token_details',
   },
 };
+
+export const CONTEXT_FIELDS = {
+  PAGE_TITLE: 'page_title',
+};

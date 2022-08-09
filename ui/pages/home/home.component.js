@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../helpers/constants/common';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_FIELDS,
+} from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
@@ -610,6 +614,7 @@ export default class Home extends PureComponent {
         !completedOnboarding) &&
       announcementsToShow &&
       showWhatsNewPopup;
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -684,13 +689,20 @@ export default class Home extends PureComponent {
                     rel="noopener noreferrer"
                     key="need-help-link"
                     onClick={() => {
-                      this.context.trackEvent({
-                        category: EVENT.CATEGORIES.HOME,
-                        event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
-                        properties: {
-                          url: SUPPORT_LINK,
+                      this.context.trackEvent(
+                        {
+                          category: EVENT.CATEGORIES.HOME,
+                          event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
                         },
-                      });
+                        {
+                          contextFieldsIntoProperties: [
+                            CONTEXT_FIELDS.PAGE_TITLE,
+                          ],
+                        },
+                      );
                     }}
                   >
                     {t('needHelpLinkText')}
