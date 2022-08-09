@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
+import Box from '../../ui/box/box';
 
 import {
   COLORS,
@@ -92,5 +93,5 @@ AvatarToken.propTypes = {
   /**
    * AvatarToken accepts all the props from BaseAvatar
    */
-  ...BaseAvatar.propTypes,
+  ...Box.propTypes,
 };

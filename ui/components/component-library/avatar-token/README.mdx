@@ -13,13 +13,39 @@ The `AvatarToken` is a component responsible for display of the image of a given
 
 ## Props
 
-The `AvatarToken` accepts all props below as well as all [BaseAvatar](/ui-components-component-library-base-avatar-base-avatar-stories-js--default-story) component props.
+The `AvatarToken` accepts all props below as well as all [Box](/ui-components-ui-box-box-stories-js--default-story) component props
 
 <ArgsTable of={AvatarToken} />
 
+### Size
+
+Use the `size` prop to set the size of the `AvatarToken`.
+
+Possible sizes include:
+
+- `xs` 16px
+- `sm` 24px
+- `md` 32px
+- `lg` 40px
+- `xl` 48px
+
+Defaults to `md`
+
+<Canvas>
+  <Story id="ui-components-component-library-base-avatar-base-avatar-stories-js--size" />
+</Canvas>
+
+### Background and border color
+
+Use the `backgroundColor` and `borderColor` prop to set the background and border colors of the avatar
+
+<Canvas>
+  <Story id="ui-components-component-library-base-avatar-base-avatar-stories-js--background-and-border-color" />
+</Canvas>
+
 ###  tokenName
 
-Use the ` tokenName` prop to set the initial alphabet of the `AvatarToken`.
+Use the ` tokenName` prop to set the initial letter of the `AvatarToken`.  This will be used as the fallback display if no image url is passed to the `tokenImageUrl` prop.
 
 ###  tokenImageUrl
 
@@ -30,6 +56,6 @@ Use the `tokenImageUrl` prop to set the image to be rendered of the `AvatarToken
 If we want to display the component with halo effect.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--avatar-token-with-halo" />
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--show-halo" />
 </Canvas>
 
