@@ -58,6 +58,7 @@ import {
   getMaxSlippage,
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
+  getSmartTransactionFees,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -100,6 +101,7 @@ import {
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
+  clearSmartTransactionFees,
 } from '../../../store/actions';
 import {
   countDecimals,
@@ -165,6 +167,7 @@ export default function BuildQuote({
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const smartTransactionFees = useSelector(getSmartTransactionFees);
   const smartTransactionsOptInPopoverDisplayed =
     smartTransactionsOptInStatus !== undefined;
   const currentSmartTransactionsError = useSelector(
@@ -469,6 +472,13 @@ export default function BuildQuote({
     dispatch(setReviewSwapClickedTimestamp());
     trackBuildQuotePageLoadedEvent();
   }, [dispatch, trackBuildQuotePageLoadedEvent]);
+
+  useEffect(() => {
+    if (smartTransactionsEnabled && smartTransactionFees?.tradeTxFees) {
+      // We want to clear STX fees, because we only want to use fresh ones on the View Quote page.
+      clearSmartTransactionFees();
+    }
+  }, [smartTransactionsEnabled, smartTransactionFees]);
 
   const BlockExplorerLink = () => {
     return (

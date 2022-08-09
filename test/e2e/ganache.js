@@ -19,6 +19,10 @@ class Ganache {
     await this._server.listen(port);
   }
 
+  getProvider() {
+    return this._server.provider;
+  }
+
   async quit() {
     if (!this._server) {
       throw new Error('Server not running yet');

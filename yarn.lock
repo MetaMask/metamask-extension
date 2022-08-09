@@ -3124,10 +3124,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-2.1.0.tgz#f76764ca54afc162fbfe563f1994b79ed4711bba"
   integrity sha512-wkFDdY4XtpF+XCqbgwhsrLRgEM/bYfIt47927JTQZQ2QxQYRbSZ6u0QygnVjIR1eqMteRGx2jtUUZ+bxYQTo/w==
 
-"@metamask/smart-transactions-controller@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-2.1.0.tgz#a1bfbdab05c0ecd93bac5587b8bc56336bc28cc5"
-  integrity sha512-nhvR44ELv/8iBVHaMT8D6B1KLwm9PAb7BSSLAiteDfncxHj7syNGD0nOFynzKp7TPQuRlPXdFo6Z8zXt6O/krg==
+"@metamask/smart-transactions-controller@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-2.3.0.tgz#8e451975fbfc624f7cd55b2d1bc406f78fe95119"
+  integrity sha512-ef8RolP/synZZ9RVMaRAApZmiUbRlAAs0Pt3u/R0+fXeB0NTdUljQ7TfKa4kfulcxW7EbSnJ7kNabeBinyE4vw==
   dependencies:
     "@metamask/controllers" "^30.0.0"
     "@types/lodash" "^4.14.176"
@@ -3174,10 +3174,10 @@
   dependencies:
     "@metamask/controllers" "^30.0.0"
 
-"@metamask/test-dapp@^5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.1.1.tgz#aadebf28542809650c57aa8f5a3489c748e1414f"
-  integrity sha512-Vast76cYR9vOvSH9Ut8y8LXZbDledUE2BkiLX+PGP5AOTp8Pn8V6jiYg1D/slBh7M8/Q/1AmdW9D0B+fw7esBQ==
+"@metamask/test-dapp@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.2.0.tgz#ecae2525e7b4d5ef42b7f478b33e3a25152789f8"
+  integrity sha512-/1nUFm6kzYB0xigrLHc+yzkunnrUoqfnsiLs7eUD+Qfl2Qn5G6C9tIj9cgAx72lWVtqoo2vBTP+55ZW8lDroYw==
 
 "@metamask/types@^1.1.0":
   version "1.1.0"

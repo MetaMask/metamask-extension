@@ -6,8 +6,8 @@ import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { exportAsFile } from '../../../../helpers/utils/util';
 import { EVENT } from '../../../../../shared/constants/metametrics';
+import { exportAsFile } from '../../../../../shared/modules/export-utils';
 import DraggableSeed from './draggable-seed.component';
 
 const EMPTY_SEEDS = Array(12).fill(null);

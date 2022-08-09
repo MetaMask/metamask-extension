@@ -399,6 +399,9 @@
   "backToAll": {
     "message": "Back to all"
   },
+  "backup": {
+    "message": "Backup"
+  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -407,6 +410,12 @@
   },
   "backupNow": {
     "message": "Backup now"
+  },
+  "backupUserData": {
+    "message": "Backup your data"
+  },
+  "backupUserDataDescription": {
+    "message": "You can backup user settings containing preferences and account addresses into a JSON file."
   },
   "balance": {
     "message": "Balance"
@@ -2771,6 +2780,18 @@
   },
   "restore": {
     "message": "Restore"
+  },
+  "restoreFailed": {
+    "message": "Can not restore your data from the file provided"
+  },
+  "restoreSuccessful": {
+    "message": "Your data has been restored successfully"
+  },
+  "restoreUserData": {
+    "message": "Restore user data"
+  },
+  "restoreUserDataDescription": {
+    "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
