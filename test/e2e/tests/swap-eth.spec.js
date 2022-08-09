@@ -29,7 +29,7 @@ describe('Swap Eth for another Token', function () {
         await driver.clickElement(
           '.wallet-overview__buttons .icon-button:nth-child(3)',
         );
-        await driver.clickElement({ text: 'Error details', tag: 'summary' })
+        await driver.clickElement({ text: 'Error details', tag: 'summary' });
         await driver.clickElement(
           '[class*="dropdown-search-list"] + div[class*="MuiFormControl-root MuiTextField-root"]',
         );
