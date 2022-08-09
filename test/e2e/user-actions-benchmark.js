@@ -43,7 +43,6 @@ async function loadAccount() {
       });
       const timestampAfterAction = new Date();
       loadingTimes = timestampAfterAction - timestampBeforeAction;
-      console.log('end of test');
     },
   );
   return loadingTimes;
