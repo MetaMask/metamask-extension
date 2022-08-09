@@ -169,6 +169,8 @@ export default class ConfirmPageContainer extends Component {
     const networkName =
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
+    const isSetApproveForAll = TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+
     const { t } = this.context;
 
     return (
@@ -308,6 +310,7 @@ export default class ConfirmPageContainer extends Component {
               cancelText={t('reject')}
               onSubmit={onSubmit}
               submitText={t('confirm')}
+              submitButtonType={isSetApproveForAll ? 'danger-primary' : 'primary'}
               disabled={disabled}
             >
               {unapprovedTxCount > 1 && (
