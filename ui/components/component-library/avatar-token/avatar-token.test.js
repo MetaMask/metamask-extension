@@ -23,7 +23,7 @@ describe('AvatarToken', () => {
     expect(image).toHaveAttribute('src', args.tokenImageUrl);
   });
 
-  it('should render Avatar Name Initial if no tokenImageUrl is provided', () => {
+  it('should render the first letter of the tokenName prop if no tokenImageUrl is provided', () => {
     const { getByText } = render(<AvatarToken {...args} tokenImageUrl="" />);
     expect(getByText('A')).toBeDefined();
   });
