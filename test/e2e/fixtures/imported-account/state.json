@@ -140,7 +140,7 @@
       "useBlockie": false,
       "useNonceField": false,
       "usePhishDetect": true,
-      "useTokenDetection": false
+      "useTokenDetection": true
     },
     "config": {},
     "firstTimeInfo": {
