@@ -733,17 +733,17 @@ describe('Box', () => {
     it('should render the Box with different html root elements', () => {
       const { container } = render(
         <>
-          <Box>Box as 'div' (default)</Box>
-          <Box as="ul">Box as 'ul'</Box>
-          <Box as="button">Box as 'button'</Box>
+          <Box>Box as div (default)</Box>
+          <Box as="ul">Box as ul</Box>
+          <Box as="button">Box as button</Box>
         </>,
       );
       expect(container.querySelector('div')).toHaveTextContent(
-        "Box as 'div' (default)",
+        'Box as div (default)',
       );
-      expect(container.querySelector('ul')).toHaveTextContent("Box as 'ul'");
+      expect(container.querySelector('ul')).toHaveTextContent('Box as ul');
       expect(container.querySelector('button')).toHaveTextContent(
-        "Box as 'button'",
+        'Box as button',
       );
     });
   });

@@ -27,15 +27,15 @@ export default function SnapUpdate({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const onCancel = useCallback(() => rejectSnapUpdate(request.metadata.id), [
-    request,
-    rejectSnapUpdate,
-  ]);
+  const onCancel = useCallback(
+    () => rejectSnapUpdate(request.metadata.id),
+    [request, rejectSnapUpdate],
+  );
 
-  const onSubmit = useCallback(() => approveSnapUpdate(request), [
-    request,
-    approveSnapUpdate,
-  ]);
+  const onSubmit = useCallback(
+    () => approveSnapUpdate(request),
+    [request, approveSnapUpdate],
+  );
 
   const shouldShowWarning = useMemo(
     () =>

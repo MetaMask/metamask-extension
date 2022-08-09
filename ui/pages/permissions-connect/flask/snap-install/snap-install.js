@@ -28,15 +28,15 @@ export default function SnapInstall({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const onCancel = useCallback(() => rejectSnapInstall(request.metadata.id), [
-    request,
-    rejectSnapInstall,
-  ]);
+  const onCancel = useCallback(
+    () => rejectSnapInstall(request.metadata.id),
+    [request, rejectSnapInstall],
+  );
 
-  const onSubmit = useCallback(() => approveSnapInstall(request), [
-    request,
-    approveSnapInstall,
-  ]);
+  const onSubmit = useCallback(
+    () => approveSnapInstall(request),
+    [request, approveSnapInstall],
+  );
 
   const bip44EntropyPermissions =
     request.permissions &&
