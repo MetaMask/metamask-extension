@@ -136,7 +136,7 @@ export default class RevealSeedPhrase extends PureComponent {
     const { history, onboardingInitiator } = this.props;
 
     return (
-      <div className="reveal-seed-phrase">
+      <div className="reveal-seed-phrase" data-testid="reveal-seed-phrase">
         <div className="seed-phrase__sections">
           <div className="seed-phrase__main">
             <Box marginBottom={4}>
