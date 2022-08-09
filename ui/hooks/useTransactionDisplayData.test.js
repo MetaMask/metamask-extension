@@ -118,7 +118,7 @@ const expectedResults = [
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
-    title: 'Contract Deployment',
+    title: 'Contract deployment',
     category: TRANSACTION_GROUP_CATEGORIES.INTERACTION,
     subtitle: 'metamask.github.io',
     subtitleContainsOrigin: true,
@@ -131,7 +131,7 @@ const expectedResults = [
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
-    title: 'Safe Transfer From',
+    title: 'Safe transfer from',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xe7d...dd98',
     subtitleContainsOrigin: true,

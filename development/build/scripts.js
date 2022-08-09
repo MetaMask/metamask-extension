@@ -63,6 +63,7 @@ const metamaskrc = {
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 const { BUILD_TARGETS } = require('./constants');
+const { logError } = require('./utils');
 
 const {
   createTask,
@@ -1053,7 +1054,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
-        console.error(error.stack || error);
+        logError(error);
         process.exit(1);
       });
     }

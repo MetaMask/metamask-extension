@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε 1 $ για να προσαρμόσετε την τιμή του τέλους συναλλαγής. Αυτό μπορεί να προκαλέσει σύγχυση, αν δεν είστε εξοικειωμένοι. Επεξεργαστείτε το με δικό σας ρίσκο.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Κατάθεση $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Περιγραφή"
@@ -1481,7 +1481,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε $1 για να καλύψετε απότομες αυξήσεις της κίνησης του δικτύου λόγω των δημοφιλών ξεκινημάτων NFT.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "υψηλό"
@@ -1787,7 +1787,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε 1 $ για να περιμένετε για μια φθηνότερη τιμή. Οι εκτιμήσεις του χρόνου είναι πολύ λιγότερο ακριβείς καθώς οι τιμές είναι κάπως απρόβλεπτες.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "χαμηλό"
@@ -1831,7 +1831,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε $1 για γρήγορη επεξεργασία στην τρέχουσα τιμή της αγοράς.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "σημείωμα"
@@ -2170,7 +2170,7 @@
   },
   "notifications10ActionText": {
     "message": "Μετάβαση στις Ρυθμίσεις",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Ο βελτιωμένος εντοπισμός token είναι προς το παρόν διαθέσιμος στα δίκτυα Ethereum Mainnet, Polygon, BSC και Avalanche. Περισσότερα προσεχώς!"
@@ -2275,7 +2275,7 @@
   },
   "notifications8ActionText": {
     "message": "Μεταβείτε στις Ρυθμίσεις για Προχωρημένους",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Από τη MetaMask v10.4.0 και μετά, δεν χρειάζεστε πλέον το Ledger Live για να συνδέσετε τη συσκευή Ledger με το MetaMask.",
@@ -2520,7 +2520,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Προτιμώμενος Τύπος Σύνδεσης Ledger",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
@@ -3710,7 +3710,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 δοκιμαστικά δίκτυα",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Διακριτικό"
