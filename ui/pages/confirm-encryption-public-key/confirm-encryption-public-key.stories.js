@@ -65,11 +65,7 @@ export default {
     },
   },
   args: {
-    fromAccount: {
-      address: metamask.accountArray[0].address,
-      balance: metamask.accountArray[0].balance,
-      name: metamask.accountArray[0].name,
-    },
+    fromAccount: metamask.accountArray[0],
     conversionRate: metamask.conversionRate,
     history: {
       push: action('history.push()'),
