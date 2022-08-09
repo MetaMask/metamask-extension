@@ -1,7 +1,4 @@
 {
-  "history": {
-    "mostRecentOverviewPage": "/"
-  },
   "appState": {
     "isLoading": false,
     "gasIsLoading": false,
@@ -10,6 +7,9 @@
       "detailView": null,
       "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
     }
+  },
+  "history": {
+    "mostRecentOverviewPage": "/"
   },
   "metamask": {
     "gasFeeEstimates": {
@@ -32,19 +32,10 @@
         "maxWaitTimeEstimate": 60000
       },
       "estimatedBaseFee": "18.074337783",
-      "historicalBaseFeeRange": [
-        "10.621659703",
-        "19.673392581"
-      ],
+      "historicalBaseFeeRange": ["10.621659703", "19.673392581"],
       "baseFeeTrend": "up",
-      "latestPriorityFeeRange": [
-        "1.5",
-        "17.536644176"
-      ],
-      "historicalPriorityFeeRange": [
-        "0.110624865",
-        "718.303816711"
-      ],
+      "latestPriorityFeeRange": ["1.5", "17.536644176"],
+      "historicalPriorityFeeRange": ["0.110624865", "718.303816711"],
       "priorityFeeTrend": "up",
       "networkCongestion": 0.87115
     },
@@ -54,7 +45,7 @@
       "showTestNetworks": true,
       "useNativeCurrencyAsPrimaryCurrency": true
     },
-    "ensResolutionsByAddress":{},
+    "ensResolutionsByAddress": {},
     "featureFlags": {
       "showIncomingTransactions": true
     },

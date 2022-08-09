@@ -29,17 +29,6 @@ describe('SeedPhrase Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should', () => {
-    const props = {
-      history: {
-        push: sinon.stub(),
-      },
-      verifySeedPhrase: sinon.stub().resolves(),
-    };
-
-    renderWithProvider(<SeedPhrase {...props} />);
-  });
-
   it('should render confirm seed phrase component with seed-phrase/confirm route', () => {
     const mockState = {
       metamask: {},

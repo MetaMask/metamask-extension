@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Name of the group should 1`] = `
+exports[`SignatureRequestOriginal should match snapshot 1`] = `
 <div>
   <div
     class="request-signature__container"
@@ -14,7 +14,7 @@ exports[`Name of the group should 1`] = `
       <div
         class="request-signature__header__text"
       >
-        Signature Request
+        Signature request
       </div>
       <div
         class="request-signature__header__tip-container"
