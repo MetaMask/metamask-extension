@@ -42,6 +42,7 @@ Box is a utility component that can be used for layout or as a base for other UI
 | borderWidth     | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2]                                                                                                                                                                                                                                  | -                  |
 | borderRadius    | [SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L74-L81) values or array of [SIZES](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L74-L81) values                         | -                  |
 | borderStyle     | [BORDER_STYLE](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L83-L88) values or array of [BORDER_STYLE](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js#L83-L88) values           | -                  |
+| as              | The polymorphic `as` prop allows you to change the root HTML element of the Box component. Defaults to 'div'                                                                                                                                                                            | 'div'              |
 
 ## Usage
 
@@ -134,13 +135,9 @@ import Box from '../ui/box';
 
 Use the `backgroundColor` prop along with the `COLORS` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-````jsx
-
 <Canvas>
   <Story id="ui-components-ui-box-box-stories-js--background-color" />
 </Canvas>
-
-**NOTE**: The `<Box/>` and `<Typography/>` color combinations above follow our design system color rules and should cover most general UI applications. Click "Show code" to see the code example. Do not use the [deprecated colors](#deprecated-colors)
 
 Example of importing `COLORS` object with `Box` component
 
@@ -151,7 +148,7 @@ import Box from '../ui/box';
 <Box backgroundColor={COLORS.BACKGROUND_DEFAULT}>
   <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BACKGROUND_DEFAULT</Typography>
 </Box>;
-````
+```
 
 ### Border Color
 
@@ -160,8 +157,6 @@ Use the `borderColor` prop along with the `COLORS` object from `ui/helpers/const
 <Canvas>
   <Story id="ui-components-ui-box-box-stories-js--border-color" />
 </Canvas>
-
-**NOTE**: The `<Box/>` and `<Typography/>` color combinations above follow our design system color rules and should cover most general UI applications. Click "Show code" to see the code example. Do not use the [deprecated colors](#deprecated-colors)
 
 Example of importing `COLORS` object with `Box` component
 
@@ -235,4 +230,20 @@ import Box from '../ui/box';
     example
   </Box>
 </Box>;
+```
+
+### As
+
+Use the `as` prop to change the root html element of the Box component
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--as" />
+</Canvas>
+
+```jsx
+import Box from '../../ui/box';
+
+<Box tag="ul">ul</Box>
+<Box tag="li">li</Box>
+<Box tag="button">button</Box>
 ```
