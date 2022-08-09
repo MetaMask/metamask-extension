@@ -358,7 +358,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Create Account',
+              event: 'Clicked Create account',
               properties: {
                 action: 'Main Menu',
                 legacy_event: true,

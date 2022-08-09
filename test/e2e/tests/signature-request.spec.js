@@ -55,7 +55,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
         const message = await driver.findElement(
           '.signature-request-message--node-value',
         );
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(
@@ -137,7 +137,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
         const messages = await driver.findElements(
           '.signature-request-message--node-value',
         );
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(
@@ -208,7 +208,7 @@ describe('Sign Typed Data Signature Request', function () {
         const message = await driver.findElements(
           '.request-signature__row-value',
         );
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(await message[0].getText(), 'Hi, Alice!');
         assert.equal(await message[1].getText(), '1337');
