@@ -73,7 +73,7 @@ export default class EndOfFlowScreen extends PureComponent {
     const { onboardingInitiator } = this.props;
 
     return (
-      <div className="end-of-flow">
+      <div className="end-of-flow" data-testid="end-of-flow">
         <MetaFoxLogo />
         <div className="end-of-flow__emoji">🎉</div>
         <div className="first-time-flow__header">{t('congratulations')}</div>
@@ -140,6 +140,7 @@ export default class EndOfFlowScreen extends PureComponent {
           type="primary"
           className="first-time-flow__button"
           onClick={this.onComplete}
+          data-testid="EOF-complete-button"
         >
           {t('endOfFlowMessage10')}
         </Button>

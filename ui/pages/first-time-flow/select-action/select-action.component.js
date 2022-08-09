@@ -66,6 +66,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleImport}
+                  data-testid="import-wallet-button"
                 >
                   {t('importWallet')}
                 </Button>
@@ -86,6 +87,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
+                  data-testid="create-wallet-button"
                 >
                   {t('createAWallet')}
                 </Button>

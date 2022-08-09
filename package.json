@@ -73,6 +73,7 @@
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:background:auto": "./development/generate-lavamoat-policies.sh",
+    "lavamoat:background:auto:dev": "./development/generate-lavamoat-policies.sh --dev",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
   },
   "resolutions": {
@@ -161,7 +162,7 @@
     "eth-json-rpc-infura": "^5.1.0",
     "eth-json-rpc-middleware": "^8.0.0",
     "eth-keyring-controller": "^7.0.2",
-    "eth-lattice-keyring": "^0.10.0",
+    "eth-lattice-keyring": "^0.11.0",
     "eth-method-registry": "^2.0.0",
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
@@ -249,7 +250,7 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^1.2.1",
-    "@metamask/test-dapp": "^5.1.1",
+    "@metamask/test-dapp": "^5.2.0",
     "@sentry/cli": "^1.58.0",
     "@storybook/addon-a11y": "^6.3.12",
     "@storybook/addon-actions": "^6.3.12",

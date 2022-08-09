@@ -3174,10 +3174,10 @@
   dependencies:
     "@metamask/controllers" "^30.0.0"
 
-"@metamask/test-dapp@^5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.1.1.tgz#aadebf28542809650c57aa8f5a3489c748e1414f"
-  integrity sha512-Vast76cYR9vOvSH9Ut8y8LXZbDledUE2BkiLX+PGP5AOTp8Pn8V6jiYg1D/slBh7M8/Q/1AmdW9D0B+fw7esBQ==
+"@metamask/test-dapp@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.2.0.tgz#ecae2525e7b4d5ef42b7f478b33e3a25152789f8"
+  integrity sha512-/1nUFm6kzYB0xigrLHc+yzkunnrUoqfnsiLs7eUD+Qfl2Qn5G6C9tIj9cgAx72lWVtqoo2vBTP+55ZW8lDroYw==
 
 "@metamask/types@^1.1.0":
   version "1.1.0"
@@ -11187,10 +11187,10 @@ eth-keyring-controller@^7.0.2:
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"
 
-eth-lattice-keyring@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.10.0.tgz#58b2c324415e556b896695465dc433b7617b166f"
-  integrity sha512-7ACODPpysTgQcPNiXUeTs6+SUcyH3lRZhiLeB0OzpcIFsO8/xwmWUePU7xAcrSYHwgqcToM/U4TN9Rtfa+apAQ==
+eth-lattice-keyring@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.11.0.tgz#7df63dc55d168f2a104ef469db78687fc181cb66"
+  integrity sha512-eFVP4uTvnNYLI3KbpPxqVv/AY9swbCH4ZfqDMsYEZ+vg1UQjnsXAxy4iIUuKR+cF4e8kCKK6hFtALEGxuilcJA==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
