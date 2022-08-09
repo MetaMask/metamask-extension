@@ -22,25 +22,25 @@ describe('ActionQueue', () => {
     __TEST_CLEAR_QUEUE();
   });
   describe('submitRequestToBackground', () => {
-    it('calls promisified background method if the stream is connected', () => {
+    it('calls promisified background method if the stream is connected', async () => {
       const background = {
         connectionStream: {
           readable: true,
         },
-        backgroundFunction1: sinon.stub(),
+        backgroundFunction1: sinon.stub().yields(),
       };
 
       _setBackgroundConnection(background);
-      submitRequestToBackground('backgroundFunction1');
+      await submitRequestToBackground('backgroundFunction1');
       expect(background.backgroundFunction1.called).toStrictEqual(true);
     });
 
-    it('does not calls promisified background method if the stream is not connected', () => {
+    it('does not calls promisified background method if the stream is not connected', async () => {
       const background = {
         connectionStream: {
           readable: false,
         },
-        backgroundFunction2: sinon.stub(),
+        backgroundFunction2: sinon.stub().yields(),
       };
 
       _setBackgroundConnection(background);
@@ -48,24 +48,23 @@ describe('ActionQueue', () => {
       expect(background.backgroundFunction2.called).toStrictEqual(false);
     });
 
-    it('calls promisified background method on stream reconnection', () => {
+    it('calls promisified background method on stream reconnection', async () => {
       // This is not an adequate simulation of what reconnection would look like
       const background = {
         connectionStream: {
           readable: false,
         },
-        backgroundFunction3: sinon.stub(),
+        backgroundFunction3: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
-      submitRequestToBackground('backgroundFunction3');
-      expect(background.backgroundFunction3.called).toStrictEqual(false);
+      const requestPromise = submitRequestToBackground('backgroundFunction3');
 
       background.connectionStream = {
         readable: true,
       };
       _setBackgroundConnection(background);
-      submitRequestToBackground('backgroundFunction3');
-      expect(background.backgroundFunction3.called).toStrictEqual(true);
+      await requestPromise;
+      expect(background.backgroundFunction3.calledOnce).toStrictEqual(true);
     });
 
     it('resolves if backgroundFunction resolves', async () => {
@@ -98,6 +97,94 @@ describe('ActionQueue', () => {
         submitRequestToBackground('backgroundFunction'),
       ).rejects.toThrow('test');
     });
+
+    it('processes the queue sequentially', async () => {
+      const trace = {};
+      const background = {
+        connectionStream: {
+          readable: false,
+        },
+        first: (cb) => {
+          setTimeout(() => {
+            trace.firstDone = Date.now();
+            cb(null, 'first');
+          }, 5);
+        },
+        second: (cb) => {
+          trace.secondStarted = Date.now();
+          setTimeout(() => cb(null, 'second'), 10);
+        },
+      };
+      _setBackgroundConnection(background);
+      const scheduled = Promise.all([
+        submitRequestToBackground('first'),
+        submitRequestToBackground('second'),
+      ]);
+      background.connectionStream.readable = true;
+      _setBackgroundConnection(background);
+      await scheduled;
+      expect(trace.firstDone).toBeLessThanOrEqual(trace.secondStarted);
+    });
+
+    it('ensures actions in queue will not repeat once finished', async () => {
+      const trace = { calls: 0 };
+      const background = {
+        connectionStream: {
+          readable: false,
+        },
+        first: (cb) => {
+          trace.calls += 1;
+          setTimeout(() => {
+            trace.firstDone = Date.now();
+            cb(null, 'first');
+          }, 5);
+        },
+        second: (cb) => {
+          trace.calls += 1;
+          trace.secondStarted = Date.now();
+          setTimeout(() => cb(null, 'second'), 10);
+        },
+      };
+      _setBackgroundConnection(background);
+      const scheduled = Promise.all([
+        submitRequestToBackground('first'),
+        submitRequestToBackground('second'),
+      ]);
+      background.connectionStream.readable = true;
+      _setBackgroundConnection(background);
+      await scheduled;
+      _setBackgroundConnection(background); // once all actions finished, this triggers draining the queue again
+      expect(trace.firstDone).toBeLessThanOrEqual(trace.secondStarted);
+      expect(trace.calls).toStrictEqual(2);
+    });
+
+    it('stops processng the queue if connection is lost', async () => {
+      const trace = {};
+      const background = {
+        connectionStream: {
+          readable: false,
+        },
+        first: (cb) => {
+          setTimeout(() => {
+            trace.firstDone = true;
+            background.connectionStream.readable = false;
+            cb(Error('lost connection'));
+          }, 5);
+        },
+        second: sinon.stub().yields(),
+      };
+      _setBackgroundConnection(background);
+      const scheduled = Promise.race([
+        submitRequestToBackground('first').catch(() => ({})),
+        submitRequestToBackground('second'),
+      ]);
+      background.connectionStream.readable = true;
+      _setBackgroundConnection(background);
+      await scheduled;
+      await Promise.resolve('one more tick'); // One asynchronous tick to avoid depending on implementation details
+      expect(trace.firstDone).toStrictEqual(true);
+      expect(background.second.called).toStrictEqual(false);
+    });
   });
 
   describe('callBackgroundMethod', () => {
@@ -105,12 +192,12 @@ describe('ActionQueue', () => {
       sinon.restore();
     });
 
-    it('calls background method if the stream is connected', () => {
+    it('calls background method if the stream is connected', async () => {
       const background = {
         connectionStream: {
           readable: true,
         },
-        backgroundFunction: sinon.stub(),
+        backgroundFunction: sinon.stub().yields(),
       };
 
       _setBackgroundConnection(background);
@@ -118,7 +205,7 @@ describe('ActionQueue', () => {
       expect(background.backgroundFunction.called).toStrictEqual(true);
     });
 
-    it('does not calls background method if the stream is not onnected', () => {
+    it('does not call background method if the stream is not connected', async () => {
       const background = {
         connectionStream: {
           readable: false,
@@ -131,12 +218,12 @@ describe('ActionQueue', () => {
       expect(background.backgroundFunction.called).toStrictEqual(false);
     });
 
-    it('calls background method on stream reconnection', () => {
+    it('calls background method on stream reconnection', async () => {
       const background = {
         connectionStream: {
           readable: false,
         },
-        backgroundFunction: sinon.stub(),
+        backgroundFunction: sinon.stub().yields(),
       };
       _setBackgroundConnection(background);
       callBackgroundMethod('backgroundFunction', [], () => ({}));
@@ -146,8 +233,7 @@ describe('ActionQueue', () => {
         readable: true,
       };
       _setBackgroundConnection(background);
-      callBackgroundMethod('backgroundFunction', [], () => ({}));
-      expect(background.backgroundFunction.called).toStrictEqual(true);
+      expect(background.backgroundFunction.calledOnce).toStrictEqual(true);
     });
 
     it('resolves if backgroundFunction called resolves', async () => {
@@ -156,18 +242,34 @@ describe('ActionQueue', () => {
           readable: true,
         },
         backgroundFunction: (cb) => {
-          return cb(null, 'test');
+          return cb(null, 'successViaCallback');
         },
       };
       _setBackgroundConnection(background);
-      const mockFn = sinon.stub();
-      await new Promise((resolve) => {
-        callBackgroundMethod('backgroundFunction', [], () => {
-          mockFn();
-          resolve('test');
+      const value = await new Promise((resolve) => {
+        callBackgroundMethod('backgroundFunction', [], (_err, result) => {
+          resolve(result);
         });
       });
-      expect(mockFn.called).toStrictEqual(true);
+      expect(value).toStrictEqual('successViaCallback');
+    });
+    it('rejects if backgroundFunction called rejects', async () => {
+      const errorViaCallback = Error('errorViaCallback');
+      const background = {
+        connectionStream: {
+          readable: true,
+        },
+        backgroundFunction: (cb) => {
+          return cb(errorViaCallback);
+        },
+      };
+      _setBackgroundConnection(background);
+      const value = await new Promise((resolve) => {
+        callBackgroundMethod('backgroundFunction', [], (err) => {
+          resolve(err);
+        });
+      });
+      expect(value).toStrictEqual(errorViaCallback);
     });
   });
 });

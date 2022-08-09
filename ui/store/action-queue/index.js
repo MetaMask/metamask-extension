@@ -44,6 +44,8 @@ const addToActionQueue = (actionId, request, resolve, reject) => {
     resolve,
     reject,
   });
+
+  processActionRetryQueue();
 };
 
 // remove action from queue on successful completion
@@ -56,7 +58,7 @@ const removeFromActionQueue = (actionId) => {
 // invokes promisifiedBackground method in MV2 content
 // In MV3 context the execution is:
 //   1. action is added to retry queue, along with resolve handler to be executed on completion of action
-//   2. is streams are connected promisifiedBackground method is called
+//   2. the queue is then immediately processed
 //   3. on completion of action either successfully or by throwing exception, action is removed from retry queue
 export const submitRequestToBackground = (
   method,
@@ -66,7 +68,6 @@ export const submitRequestToBackground = (
   if (isManifestV3()) {
     return new Promise((resolve, reject) => {
       addToActionQueue(actionId, { method, args }, resolve, reject);
-      drainActionRetryQueue();
     });
   }
   return promisifiedBackground[method](...args);
@@ -83,43 +84,53 @@ export const callBackgroundMethod = (
   if (isManifestV3()) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
-
     addToActionQueue(actionId, { method, args }, resolve, reject);
-    drainActionRetryQueue();
   } else {
     background[method](...args, callback);
   }
 };
 
+// A thenable like Promise.resolve() but it doesn't introduce an asynchronous delay.
+const syncThenable = {
+  then: (cb) => cb(),
+};
+
 // Clears list of pending action in actionRetryQueue
 // The results of background calls are wired up to the original promises that's been returned
-function drainActionRetryQueue() {
+// The first method on the queue gets called synchronously to make testing and reasoning about
+//  a single request to an open connection easier.
+function processActionRetryQueue() {
   if (background.connectionStream.readable) {
     // Iterating by index over a queue that's potentially being spliced and pushed to is not great. Let's copy.
     const actionRetryQueueSnapshot = [...actionRetryQueue];
-    for (let i = 0; i < actionRetryQueueSnapshot.length; i++) {
-      const {
-        request: { method, args },
-        actionId,
-        resolve,
-        reject,
-      } = actionRetryQueueSnapshot[i];
-      try {
-        promisifiedBackground[method](...args)
-          .then((result) => {
-            resolve(result);
-            removeFromActionQueue(actionId);
-          })
-          .catch((err) => {
-            reject(err);
-            removeFromActionQueue(actionId);
-          })
-          .catch((fatal) => console.error('fatal error', fatal)); // TODO - what do we do with this? Hoping to surface it somehow, otherwise a bug in removeFromActionQueue is swallowed.
-      } catch (err) {
-        removeFromActionQueue(actionId);
-        reject(err);
-      }
-    }
+    actionRetryQueueSnapshot.reduce(
+      (
+        previousPromise,
+        { request: { method, args }, actionId, resolve, reject },
+      ) => {
+        // eslint-disable-next-line consistent-return
+        return previousPromise.then(() => {
+          if (background.connectionStream.readable) {
+            try {
+              return promisifiedBackground[method](...args)
+                .then((result) => {
+                  removeFromActionQueue(actionId);
+                  resolve(result);
+                })
+                .catch((err) => {
+                  removeFromActionQueue(actionId);
+                  reject(err);
+                });
+            } catch (err) {
+              removeFromActionQueue(actionId);
+              reject(err);
+            }
+          }
+          return syncThenable;
+        });
+      },
+      syncThenable,
+    );
   }
 }
 
@@ -128,7 +139,7 @@ export async function _setBackgroundConnection(backgroundConnection) {
   promisifiedBackground = pify(background);
   if (isManifestV3()) {
     // This function call here will clear the queue of actions
-    // pending while connection stream is not available.
-    drainActionRetryQueue();
+    // collected while connection stream is not available.
+    processActionRetryQueue();
   }
 }
