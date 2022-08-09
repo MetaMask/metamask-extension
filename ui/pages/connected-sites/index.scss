@@ -26,6 +26,7 @@
 
   a {
     @include H6;
+    
     color: var(--color-primary-default);
     cursor: pointer;
   }
