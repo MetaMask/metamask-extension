@@ -26,6 +26,7 @@ setBackgroundConnection({
   setBackgroundSwapRouteState: jest.fn(),
   clearSwapsQuotes: jest.fn(),
   stopPollingForQuotes: jest.fn(),
+  clearSmartTransactionFees: jest.fn(),
 });
 
 describe('BuildQuote', () => {

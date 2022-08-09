@@ -3565,6 +3565,10 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
+export function clearSmartTransactionFees() {
+  promisifiedBackground.clearSmartTransactionFees();
+}
+
 export function fetchSmartTransactionFees(
   unsignedTransaction,
   approveTxParams,
@@ -3574,17 +3578,23 @@ export function fetchSmartTransactionFees(
       approveTxParams.value = '0x0';
     }
     try {
-      return await promisifiedBackground.fetchSmartTransactionFees(
-        unsignedTransaction,
-        approveTxParams,
-      );
+      const smartTransactionFees =
+        await promisifiedBackground.fetchSmartTransactionFees(
+          unsignedTransaction,
+          approveTxParams,
+        );
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+        payload: null,
+      });
+      return smartTransactionFees;
     } catch (e) {
       log.error(e);
       if (e.message.startsWith('Fetch error:')) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3647,7 +3657,7 @@ export function signAndSendSmartTransaction({
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3668,7 +3678,7 @@ export function updateSmartTransaction(uuid, txData) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3696,7 +3706,7 @@ export function cancelSmartTransaction(uuid) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
