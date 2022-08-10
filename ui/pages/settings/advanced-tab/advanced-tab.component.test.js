@@ -43,23 +43,23 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render correctly when threeBoxFeatureFlag', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+    expect(component.find('.settings-page__content-row')).toHaveLength(16);
   });
 
   it('should render backup button', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+    expect(component.find('.settings-page__content-row')).toHaveLength(16);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(9)
+        .at(10)
         .find('.settings-page__content-item'),
     ).toHaveLength(2);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(9)
+        .at(10)
         .find('.settings-page__content-item')
         .at(0)
         .find('.settings-page__content-description')
@@ -69,7 +69,7 @@ describe('AdvancedTab Component', () => {
     expect(
       component
         .find('.settings-page__content-row')
-        .at(9)
+        .at(10)
         .find('.settings-page__content-item')
         .at(1)
         .find('Button')
@@ -78,19 +78,19 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render restore button', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(15);
+    expect(component.find('.settings-page__content-row')).toHaveLength(16);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(10)
+        .at(11)
         .find('.settings-page__content-item'),
     ).toHaveLength(2);
 
     expect(
       component
         .find('.settings-page__content-row')
-        .at(10)
+        .at(11)
         .find('.settings-page__content-item')
         .at(0)
         .find('.settings-page__content-description')
@@ -100,7 +100,7 @@ describe('AdvancedTab Component', () => {
     expect(
       component
         .find('.settings-page__content-row')
-        .at(10)
+        .at(11)
         .find('.settings-page__content-item')
         .at(1)
         .find('label')
@@ -137,7 +137,7 @@ describe('AdvancedTab Component', () => {
       },
     );
 
-    const autoTimeout = component.find('.settings-page__content-row').at(8);
+    const autoTimeout = component.find('.settings-page__content-row').at(9);
     const textField = autoTimeout.find(TextField);
 
     textField.props().onChange({ target: { value: 1440 } });
@@ -148,14 +148,13 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should toggle show test networks', () => {
-    const testNetworks = component.find('.settings-page__content-row').at(6);
+    const testNetworks = component.find('.settings-page__content-row').at(7);
     const toggleButton = testNetworks.find(ToggleButton);
     toggleButton.first().simulate('toggle');
     expect(toggleTestnet.calledOnce).toStrictEqual(true);
   });
 
   it('should toggle token detection', () => {
-    process.env.TOKEN_DETECTION_V2 = true;
     component = shallow(
       <AdvancedTab
         ipfsGateway=""

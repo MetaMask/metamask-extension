@@ -5,7 +5,9 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import ContactList from '.';
 
 describe('Contact List', () => {
-  const store = configureMockStore([])({ metamask: {} });
+  const store = configureMockStore([])({
+    metamask: { provider: { chainId: '0x0' } },
+  });
 
   describe('given searchForContacts', () => {
     const selectRecipient = () => null;

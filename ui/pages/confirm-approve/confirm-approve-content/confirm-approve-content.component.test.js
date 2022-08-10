@@ -6,7 +6,9 @@ import { ERC20 } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({ metamask: {} });
+  const store = configureMockStore([])({
+    metamask: { provider: { chainId: '0x0' } },
+  });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
 

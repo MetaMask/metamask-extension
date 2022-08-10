@@ -97,6 +97,7 @@ import {
 } from '../../ui/helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -235,11 +236,35 @@ export default class MetamaskController extends EventEmitter {
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
+    const tokenListMessenger = this.controllerMessenger.getRestricted({
+      name: 'TokenListController',
+    });
+
+    this.tokenListController = new TokenListController({
+      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+      preventPollingOnNetworkRestart: true,
+      onNetworkStateChange: (cb) => {
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            provider: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        });
+      },
+      messenger: tokenListMessenger,
+      state: initState.TokenListController,
+    });
+
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       openPopup: opts.openPopup,
       network: this.networkController,
+      tokenListController: this.tokenListController,
       provider: this.provider,
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     });
@@ -438,27 +463,6 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    const tokenListMessenger = this.controllerMessenger.getRestricted({
-      name: 'TokenListController',
-    });
-
-    this.tokenListController = new TokenListController({
-      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            provider: {
-              ...networkState.provider,
-              chainId: hexToDecimal(networkState.provider.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
-
     this.phishingController = new PhishingController();
 
     this.announcementController = new AnnouncementController(
@@ -527,12 +531,16 @@ export default class MetamaskController extends EventEmitter {
         this.accountTracker.start();
         this.incomingTransactionsController.start();
         this.currencyRateController.start();
-        this.tokenListController.start();
+        if (this.preferencesController.store.getState().useTokenDetection) {
+          this.tokenListController.start();
+        }
       } else {
         this.accountTracker.stop();
         this.incomingTransactionsController.stop();
         this.currencyRateController.stop();
-        this.tokenListController.stop();
+        if (this.preferencesController.store.getState().useTokenDetection) {
+          this.tokenListController.stop();
+        }
       }
     });
 
@@ -753,26 +761,17 @@ export default class MetamaskController extends EventEmitter {
       },
     });
     ///: END:ONLY_INCLUDE_IN
-
-    process.env.TOKEN_DETECTION_V2
-      ? (this.detectTokensController = new DetectTokensController({
-          preferences: this.preferencesController,
-          tokensController: this.tokensController,
-          assetsContractController: this.assetsContractController,
-          network: this.networkController,
-          keyringMemStore: this.keyringController.memStore,
-          tokenList: this.tokenListController,
-          trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-            this.metaMetricsController,
-          ),
-        }))
-      : (this.detectTokensController = new DetectTokensController({
-          preferences: this.preferencesController,
-          tokensController: this.tokensController,
-          network: this.networkController,
-          keyringMemStore: this.keyringController.memStore,
-          tokenList: this.tokenListController,
-        }));
+    this.detectTokensController = new DetectTokensController({
+      preferences: this.preferencesController,
+      tokensController: this.tokensController,
+      assetsContractController: this.assetsContractController,
+      network: this.networkController,
+      keyringMemStore: this.keyringController.memStore,
+      tokenList: this.tokenListController,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
 
     this.addressBookController = new AddressBookController(
       undefined,
@@ -2244,7 +2243,14 @@ export default class MetamaskController extends EventEmitter {
       useTokenDetection,
     } = this.preferencesController.store.getState();
 
+    const isTokenDetectionInactiveInMainnet =
+      !useTokenDetection &&
+      this.networkController.store.getState().provider.chainId ===
+        MAINNET_CHAIN_ID;
     const { tokenList } = this.tokenListController.state;
+    const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
+      ? STATIC_MAINNET_TOKEN_LIST
+      : tokenList;
 
     const preferences = {
       currentLocale,
@@ -2267,13 +2273,11 @@ export default class MetamaskController extends EventEmitter {
           checksummedAccountAddress
         ].filter((asset) => {
           if (asset.isERC721 === undefined) {
-            // since the token.address from allTokens is checksumaddress
-            // asset.address have to be changed to lowercase when we are using dynamic list
-            const address = useTokenDetection
-              ? asset.address.toLowerCase()
-              : asset.address;
             // the tokenList will be holding only erc20 tokens
-            if (tokenList[address] !== undefined) {
+            if (
+              caseInSensitiveTokenList[asset.address?.toLowerCase()] !==
+              undefined
+            ) {
               return true;
             }
           } else if (asset.isERC721 === false) {

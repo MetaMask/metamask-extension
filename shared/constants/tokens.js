@@ -21,3 +21,18 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map(
  *  asset.
  * @property {boolean} [isERC721] - True when the asset is a ERC721 token.
  */
+export const STATIC_MAINNET_TOKEN_LIST = Object.keys(contractMap).reduce(
+  (acc, base) => {
+    const { logo, ...tokenMetadata } = contractMap[base];
+    return {
+      ...acc,
+      [base.toLowerCase()]: {
+        ...tokenMetadata,
+        address: base.toLowerCase(),
+        iconUrl: `images/contract/${logo}`,
+        aggregators: [],
+      },
+    };
+  },
+  {},
+);

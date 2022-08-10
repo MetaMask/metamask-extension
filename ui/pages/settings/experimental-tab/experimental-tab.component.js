@@ -16,8 +16,6 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useTokenDetection: PropTypes.bool,
-    setUseTokenDetection: PropTypes.func,
     useCollectibleDetection: PropTypes.bool,
     setUseCollectibleDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
@@ -49,42 +47,6 @@ export default class ExperimentalTab extends PureComponent {
   componentDidMount() {
     const { t } = this.context;
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
-  }
-
-  renderTokenDetectionToggle() {
-    const { t } = this.context;
-    const { useTokenDetection, setUseTokenDetection } = this.props;
-
-    return (
-      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('useTokenDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useTokenDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useTokenDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Token Detection',
-                  properties: {
-                    action: 'Token Detection',
-                    legacy_event: true,
-                  },
-                });
-                setUseTokenDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
   }
 
   renderCollectibleDetectionToggle() {
@@ -326,10 +288,6 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {/* TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */}
-        {process.env.TOKEN_DETECTION_V2
-          ? null
-          : this.renderTokenDetectionToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
         {this.renderEIP1559V2EnabledToggle()}

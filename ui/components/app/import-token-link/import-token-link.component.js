@@ -9,24 +9,29 @@ import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { getIsMainnet, getIsTokenDetectionSupported } from '../../../selectors';
+import {
+  getIsTokenDetectionSupported,
+  getIsTokenDetectionInactiveOnMainnet,
+} from '../../../selectors';
 
 export default function ImportTokenLink() {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
 
-  const isMainnet = useSelector(getIsMainnet);
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
+  const isTokenDetectionInactiveOnMainnet = useSelector(
+    getIsTokenDetectionInactiveOnMainnet,
+  );
 
-  const isTokenDetectionsupported =
-    isMainnet ||
-    (process.env.TOKEN_DETECTION_V2 && isTokenDetectionSupported) ||
+  const isTokenDetectionAvailable =
+    isTokenDetectionSupported ||
+    isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
 
   return (
     <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
-      {isTokenDetectionsupported && (
+      {isTokenDetectionAvailable && (
         <>
           <Button
             className="import-token-link__link"
@@ -53,7 +58,7 @@ export default function ImportTokenLink() {
           });
         }}
       >
-        {isTokenDetectionsupported
+        {isTokenDetectionAvailable
           ? t('importTokens')
           : t('importTokens').charAt(0).toUpperCase() +
             t('importTokens').slice(1)}

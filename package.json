@@ -121,7 +121,7 @@
     "@keystonehq/metamask-airgapped-keyring": "0.2.1",
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.31.0",
-    "@metamask/controllers": "^30.0.2",
+    "@metamask/controllers": "^30.1.0",
     "@metamask/design-tokens": "^1.8.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.13.0",
     "@metamask/eth-token-tracker": "^4.0.0",
