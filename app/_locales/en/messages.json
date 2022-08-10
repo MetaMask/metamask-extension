@@ -588,8 +588,7 @@
     "message": "Confirm"
   },
   "confirmPageDialogSetApprovalForAll": {
-    "message": "You’re allowing access to all of your $1 NFTs plus any future NFTs in this collection. This should never be your default, no matter how secure a site may seem. Proceed with caution.",
-    "description": "$1 is the symbol of the token that are requesting to spend"
+    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
