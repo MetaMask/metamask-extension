@@ -1,5 +1,9 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import {
+  ControllerMessenger,
+  TokenListController,
+} from '@metamask/controllers';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
 import NetworkController from './network';
@@ -9,6 +13,7 @@ describe('preferences controller', function () {
   let network;
   let currentChainId;
   let provider;
+  let tokenListController;
   const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
@@ -21,6 +26,16 @@ describe('preferences controller', function () {
     network.setInfuraProjectId('foo');
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      preventPollingOnNetworkRestart: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
 
     sandbox
       .stub(network, 'getLatestBlock')
@@ -35,6 +50,7 @@ describe('preferences controller', function () {
       migrateAddressBookState,
       network,
       provider,
+      tokenListController,
     });
   });
 

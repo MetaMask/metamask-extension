@@ -63,7 +63,7 @@ describe('ConfirmImportToken Component', () => {
   it('should render', () => {
     renderComponent();
 
-    const [title, importTokensBtn] = screen.queryAllByText('Import Tokens');
+    const [title, importTokensBtn] = screen.queryAllByText('Import tokens');
 
     expect(title).toBeInTheDocument(title);
     expect(
@@ -93,7 +93,7 @@ describe('ConfirmImportToken Component', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(IMPORT_TOKEN_ROUTE);
   });
 
-  it('should dispatch clearPendingTokens and redirect to the first token page when clicking the "Import Tokens" button', async () => {
+  it('should dispatch clearPendingTokens and redirect to the first token page when clicking the "Import tokens" button', async () => {
     const mockFirstPendingTokenAddress =
       '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1';
     const mockPendingTokens = {
@@ -113,7 +113,7 @@ describe('ConfirmImportToken Component', () => {
     renderComponent(mockPendingTokens);
 
     const importTokensBtn = screen.getByRole('button', {
-      name: 'Import Tokens',
+      name: 'Import tokens',
     });
 
     await fireEvent.click(importTokensBtn);

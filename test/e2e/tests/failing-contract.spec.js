@@ -49,7 +49,7 @@ describe('Failing contract interaction ', function () {
         );
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Contract Deployment');
+        assert.equal(completedTxText, 'Contract deployment');
 
         // calls failing contract method
         await driver.switchToWindow(dapp);

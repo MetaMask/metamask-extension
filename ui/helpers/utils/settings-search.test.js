@@ -10,27 +10,27 @@ const t = (key) => {
     case 'general':
       return 'General';
     case 'currencyConversion':
-      return 'Currency Conversion';
+      return 'Currency conversion';
     case 'primaryCurrencySetting':
-      return 'Primary Currency';
+      return 'Primary currency';
     case 'primaryCurrencySettingDescription':
       return 'Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency.';
     case 'currentLanguage':
-      return 'Current Language';
+      return 'Current language';
     case 'accountIdenticon':
-      return 'Current Language"';
+      return 'Current language"';
     case 'hideZeroBalanceTokens':
-      return 'Hide Tokens Without Balance';
+      return 'Hide tokens without balance';
     case 'advanced':
       return 'Advanced';
     case 'stateLogs':
-      return 'State Logs';
+      return 'State logs';
     case 'stateLogsDescription':
       return 'State logs contain your public account addresses and sent transactions.';
     case 'syncWithMobile':
       return 'Sync with mobile';
     case 'resetAccount':
-      return 'Reset Account';
+      return 'Reset account';
     case 'resetAccountDescription':
       return 'Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase.';
     case 'showAdvancedGasInline':
@@ -38,11 +38,11 @@ const t = (key) => {
     case 'showAdvancedGasInlineDescription':
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
-      return 'Show Hex Data';
+      return 'Show hex data';
     case 'showHexDataDescription':
       return 'Select this to show the hex data field on the send screen';
     case 'showFiatConversionInTestnets':
-      return 'Show Conversion on test networks';
+      return 'Show conversion on test networks';
     case 'showFiatConversionInTestnetsDescription':
       return 'Select this to show fiat conversion on test network';
     case 'showTestnetNetworks':
@@ -54,7 +54,7 @@ const t = (key) => {
     case 'nonceFieldDescription':
       return 'Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.';
     case 'autoLockTimeLimit':
-      return 'Auto-Lock Timer (minutes)';
+      return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
       return 'Set the idle time in minutes before MetaMask will become locked.';
     case 'syncWithThreeBox':
@@ -66,7 +66,7 @@ const t = (key) => {
     case 'ipfsGatewayDescription':
       return 'Enter the URL of the IPFS CID gateway to use for ENS content resolution.';
     case 'preferredLedgerConnectionType':
-      return 'Preferred Ledger Connection Type';
+      return 'Preferred ledger connection type';
     case 'dismissReminderField':
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
@@ -74,15 +74,15 @@ const t = (key) => {
     case 'Contacts':
       return 'Contacts';
     case 'securityAndPrivacy':
-      return 'Security & Privacy';
+      return 'Security & privacy';
     case 'revealSeedWords':
       return 'Reveal Secret Recovery Phrase';
     case 'showIncomingTransactions':
-      return 'Show Incoming Transactions';
+      return 'Show incoming transactions';
     case 'showIncomingTransactionsDescription':
       return 'Select this to use Etherscan to show incoming transactions in the transactions list';
     case 'usePhishingDetection':
-      return 'Use Phishing Detection';
+      return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
       return 'Display a warning for phishing domains targeting Ethereum users';
     case 'participateInMetaMetrics':
@@ -102,26 +102,21 @@ const t = (key) => {
     case 'ropsten':
       return 'Ropsten Test Network';
     case 'rinkeby':
-      return 'Rinkeby Test Network';
+      return 'Rinkeby test network';
     case 'goerli':
-      return 'Goerli Test Network';
+      return 'Goerli test network';
     case 'kovan':
-      return 'Kovan Test Network';
+      return 'Kovan test network';
     case 'localhost':
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    /** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
-    case 'useTokenDetection':
-      return 'Use Token Detection';
-    case 'useTokenDetectionDescription':
-      return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.';
     case 'tokenDetection':
       return 'Token detection';
-    case 'tokenDetectionToggleDescription':
-      return 'ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import.';
+    case 'tokenDetectionDescription':
+      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list.";
     case 'enableEIP1559V2':
-      return 'Enable Enhanced Gas Fee UI';
+      return 'Enable enhanced gas fee UI';
     case 'enableEIP1559V2Description':
       return "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. Learn more";
     case 'enableOpenSeaAPI':
@@ -141,13 +136,13 @@ const t = (key) => {
     case 'links':
       return 'Links';
     case 'privacyMsg':
-      return 'Privacy Policy';
+      return 'Privacy policy';
     case 'terms':
-      return 'Terms of Use';
+      return 'Terms of use';
     case 'attributions':
       return 'Attributions';
     case 'supportCenter':
-      return 'Visit our Support Center';
+      return 'Visit our support center';
     case 'visitWebSite':
       return 'Visit our web site';
     case 'contactUs':
@@ -172,7 +167,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(16);
     });
 
     it('should get good contact section number', () => {
@@ -195,7 +190,7 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        4,
+        3,
       );
     });
 

@@ -4,11 +4,11 @@
   justify-content: center;
   align-items: center;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     margin-bottom: 24px;
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     margin-bottom: 40px;
   }
 
@@ -29,7 +29,7 @@
     max-width: 620px;
     margin-bottom: 20px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-inline-start: 48px;
       margin-inline-end: 48px;
     }

@@ -24,10 +24,22 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
+const ini = require('ini');
 
 const bifyModuleGroups = require('bify-module-groups');
 
-const metamaskrc = require('rc')('metamask', {
+const configPath = path.resolve(__dirname, '..', '..', '.metamaskrc');
+let configContents = '';
+try {
+  configContents = readFileSync(configPath, {
+    encoding: 'utf8',
+  });
+} catch (error) {
+  if (error.code !== 'ENOENT') {
+    throw error;
+  }
+}
+const metamaskrc = {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
   INFURA_BETA_PROJECT_ID: process.env.INFURA_BETA_PROJECT_ID,
   INFURA_FLASK_PROJECT_ID: process.env.INFURA_FLASK_PROJECT_ID,
@@ -45,10 +57,13 @@ const metamaskrc = require('rc')('metamask', {
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
   SIWE_V1: process.env.SIWE_V1,
-});
+  ...ini.parse(configContents),
+};
 
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
+const { BUILD_TARGETS } = require('./constants');
+const { logError } = require('./utils');
 
 const {
   createTask,
@@ -74,6 +89,32 @@ const ENVIRONMENT = {
 };
 
 /**
+ * Returns whether the current build is a development build or not.
+ *
+ * @param {BUILD_TARGETS} buildTarget - The current build target.
+ * @returns Whether the current build is a development build.
+ */
+function isDevBuild(buildTarget) {
+  return (
+    buildTarget === BUILD_TARGETS.DEVELOPMENT ||
+    buildTarget === BUILD_TARGETS.E2E_TEST_DEV
+  );
+}
+
+/**
+ * Returns whether the current build is an e2e test build or not.
+ *
+ * @param {BUILD_TARGETS} buildTarget - The current build target.
+ * @returns Whether the current build is an e2e test build.
+ */
+function isTestBuild(buildTarget) {
+  return (
+    buildTarget === BUILD_TARGETS.E2E_TEST ||
+    buildTarget === BUILD_TARGETS.E2E_TEST_DEV
+  );
+}
+
+/**
  * Get a value from the configuration, and confirm that it is set.
  *
  * @param {string} key - The configuration key to retrieve.
@@ -94,7 +135,7 @@ function getConfigValue(key) {
  * @param {object} options - The Infura project ID options.
  * @param {BuildType} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
- * @param {boolean} options.testing - Whether the current build is a test build or not.
+ * @param {boolean} options.testing - Whether this is a test build or not.
  * @returns {string} The Infura project ID.
  */
 function getInfuraProjectId({ buildType, environment, testing }) {
@@ -223,21 +264,24 @@ function createScriptTasks({
   const core = {
     // dev tasks (live reload)
     dev: createTasksForScriptBundles({
+      buildTarget: BUILD_TARGETS.DEVELOPMENT,
       taskPrefix: 'scripts:core:dev',
-      devMode: true,
     }),
-    testDev: createTasksForScriptBundles({
-      taskPrefix: 'scripts:core:test-live',
-      devMode: true,
-      testing: true,
+    // production
+    prod: createTasksForScriptBundles({
+      buildTarget: BUILD_TARGETS.PRODUCTION,
+      taskPrefix: 'scripts:core:prod',
     }),
     // built for CI tests
     test: createTasksForScriptBundles({
+      buildTarget: BUILD_TARGETS.E2E_TEST,
       taskPrefix: 'scripts:core:test',
-      testing: true,
     }),
-    // production
-    prod: createTasksForScriptBundles({ taskPrefix: 'scripts:core:prod' }),
+    // built for CI test debugging
+    testDev: createTasksForScriptBundles({
+      buildTarget: BUILD_TARGETS.E2E_TEST_DEV,
+      taskPrefix: 'scripts:core:test-live',
+    }),
   };
 
   // high level tasks
@@ -251,26 +295,20 @@ function createScriptTasks({
    * parallel for a single type of build (e.g. dev, testing, production).
    *
    * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The build target that these
+   * JavaScript modules are intended for.
    * @param {string} options.taskPrefix - The prefix to use for the name of
    * each defined task.
-   * @param {boolean} [options.devMode] - Whether the build is being used for
-   * development.
-   * @param {boolean} [options.testing] - Whether the build is intended for
-   * running end-to-end (e2e) tests.
    */
-  function createTasksForScriptBundles({
-    taskPrefix,
-    devMode = false,
-    testing = false,
-  }) {
+  function createTasksForScriptBundles({ buildTarget, taskPrefix }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
         applyLavaMoat,
         browserPlatforms,
+        buildTarget,
         buildType,
-        devMode,
         entryFiles: standardEntryPoints.map((label) => {
           if (label === 'content-script') {
             return './app/vendor/trezor/content-script.js';
@@ -280,7 +318,6 @@ function createScriptTasks({
         ignoredFiles,
         policyOnly,
         shouldLintFenceFiles,
-        testing,
         version,
       }),
     );
@@ -289,24 +326,24 @@ function createScriptTasks({
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
-      createContentscriptBundle({ devMode, testing }),
+      createContentscriptBundle({ buildTarget }),
     );
 
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createDisableConsoleBundle({ devMode, testing }),
+      createDisableConsoleBundle({ buildTarget }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createSentryBundle({ devMode, testing }),
+      createSentryBundle({ buildTarget }),
     );
 
     // task for initiating browser livereload
     const initiateLiveReload = async () => {
-      if (devMode) {
+      if (isDevBuild(buildTarget)) {
         // trigger live reload when the bundles are updated
         // this is not ideal, but overcomes the limitations:
         // - run from the main process (not child process tasks)
@@ -343,23 +380,19 @@ function createScriptTasks({
    * Create a bundle for the "disable-console" module.
    *
    * @param {object} options - The build options.
-   * @param {boolean} options.devMode - Whether the build is being used for
-   * development.
-   * @param {boolean} options.testing - Whether the build is intended for
-   * running end-to-end (e2e) tests.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
    * @returns {Function} A function that creates the bundle.
    */
-  function createDisableConsoleBundle({ devMode, testing }) {
+  function createDisableConsoleBundle({ buildTarget }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
+      buildTarget,
       buildType,
       destFilepath: `${label}.js`,
-      devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
-      testing,
       policyOnly,
       shouldLintFenceFiles,
       version,
@@ -370,23 +403,19 @@ function createScriptTasks({
    * Create a bundle for the "sentry-install" module.
    *
    * @param {object} options - The build options.
-   * @param {boolean} options.devMode - Whether the build is being used for
-   * development.
-   * @param {boolean} options.testing - Whether the build is intended for
-   * running end-to-end (e2e) tests.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
    * @returns {Function} A function that creates the bundle.
    */
-  function createSentryBundle({ devMode, testing }) {
+  function createSentryBundle({ buildTarget }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
+      buildTarget,
       buildType,
       destFilepath: `${label}.js`,
-      devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
-      testing,
       policyOnly,
       shouldLintFenceFiles,
       version,
@@ -399,40 +428,35 @@ function createScriptTasks({
    * module.
    *
    * @param {object} options - The build options.
-   * @param {boolean} options.devMode - Whether the build is being used for
-   * development.
-   * @param {boolean} options.testing - Whether the build is intended for
-   * running end-to-end (e2e) tests.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
    * @returns {Function} A function that creates the bundles.
    */
-  function createContentscriptBundle({ devMode, testing }) {
+  function createContentscriptBundle({ buildTarget }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
     return composeSeries(
       createNormalBundle({
+        buildTarget,
         buildType,
         browserPlatforms,
         destFilepath: `${inpage}.js`,
-        devMode,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         ignoredFiles,
         policyOnly,
         shouldLintFenceFiles,
-        testing,
         version,
       }),
       createNormalBundle({
+        buildTarget,
         buildType,
         browserPlatforms,
         destFilepath: `${contentscript}.js`,
-        devMode,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         ignoredFiles,
         policyOnly,
         shouldLintFenceFiles,
-        testing,
         version,
       }),
     );
@@ -451,10 +475,9 @@ function createScriptTasks({
  * LavaMoat at runtime or not.
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
+ * @param {BUILD_TARGETS} options.buildTarget - The current build target.
  * @param {BuildType} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
- * @param {boolean} options.devMode - Whether the build is being used for
- * development.
  * @param {string[] | null} options.ignoredFiles - A list of files to exclude
  * from the current build.
  * @param {string[]} options.jsBundles - A list of JavaScript bundles to be
@@ -464,21 +487,18 @@ function createScriptTasks({
  * LavaMoat policy itself.
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
- * @param {boolean} options.testing - Whether the build is intended for
- * running end-to-end (e2e) tests.
  * @param {string} options.version - The current version of the extension.
  * @returns {Function} A function that creates the set of bundles.
  */
 async function createManifestV3AppInitializationBundle({
   applyLavaMoat,
   browserPlatforms,
+  buildTarget,
   buildType,
-  devMode,
   ignoredFiles,
   jsBundles,
   policyOnly,
   shouldLintFenceFiles,
-  testing,
   version,
 }) {
   const label = 'app-init';
@@ -502,14 +522,13 @@ async function createManifestV3AppInitializationBundle({
 
   await createNormalBundle({
     browserPlatforms: mv3BrowserPlatforms,
+    buildTarget,
     buildType,
     destFilepath: 'app-init.js',
-    devMode,
     entryFilepath: './app/scripts/app-init.js',
     extraEnvironmentVariables,
     ignoredFiles,
     label,
-    testing,
     policyOnly,
     shouldLintFenceFiles,
     version,
@@ -517,7 +536,7 @@ async function createManifestV3AppInitializationBundle({
 
   // Code below is used to set statsMode to true when testing in MV3
   // This is used to capture module initialisation stats using lavamoat.
-  if (testing) {
+  if (isTestBuild(buildTarget)) {
     const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
     writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
@@ -541,10 +560,9 @@ async function createManifestV3AppInitializationBundle({
  * LavaMoat at runtime or not.
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
+ * @param {BUILD_TARGETS} options.buildTarget - The current build target.
  * @param {BuildType} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
- * @param {boolean} options.devMode - Whether the build is being used for
- * development.
  * @param {string[]} options.entryFiles - A list of entry point file paths,
  * relative to the repository root directory.
  * @param {string[] | null} options.ignoredFiles - A list of files to exclude
@@ -554,21 +572,18 @@ async function createManifestV3AppInitializationBundle({
  * LavaMoat policy itself.
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
- * @param {boolean} options.testing - Whether the build is intended for
- * running end-to-end (e2e) tests.
  * @param {string} options.version - The current version of the extension.
  * @returns {Function} A function that creates the set of bundles.
  */
 function createFactoredBuild({
   applyLavaMoat,
   browserPlatforms,
+  buildTarget,
   buildType,
-  devMode,
   entryFiles,
   ignoredFiles,
   policyOnly,
   shouldLintFenceFiles,
-  testing,
   version,
 }) {
   return async function () {
@@ -578,25 +593,23 @@ function createFactoredBuild({
     const { bundlerOpts, events } = buildConfiguration;
 
     // devMode options
-    const reloadOnChange = Boolean(devMode);
-    const minify = Boolean(devMode) === false;
+    const reloadOnChange = isDevBuild(buildTarget);
+    const minify = !isDevBuild(buildTarget);
 
     const envVars = getEnvironmentVariables({
+      buildTarget,
       buildType,
-      devMode,
-      testing,
       version,
     });
     setupBundlerDefaults(buildConfiguration, {
+      buildTarget,
       buildType,
-      devMode,
       envVars,
       ignoredFiles,
       policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
-      testing,
     });
 
     // set bundle entries
@@ -725,13 +738,12 @@ function createFactoredBuild({
               await createManifestV3AppInitializationBundle({
                 applyLavaMoat,
                 browserPlatforms,
+                buildTarget,
                 buildType,
-                devMode,
                 ignoredFiles,
                 jsBundles,
                 policyOnly,
                 shouldLintFenceFiles,
-                testing,
                 version,
               });
             }
@@ -766,12 +778,11 @@ function createFactoredBuild({
  * @param {object} options - Build options.
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build the bundle for.
+ * @param {BUILD_TARGETS} options.buildTarget - The current build target.
  * @param {BuildType} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string} options.destFilepath - The file path the bundle should be
  * written to.
- * @param {boolean} options.devMode - Whether the build is being used for
- * development.
  * @param {string[]} options.entryFilepath - The entry point file path,
  * relative to the repository root directory.
  * @param {Record<string, unknown>} options.extraEnvironmentVariables - Extra
@@ -785,23 +796,20 @@ function createFactoredBuild({
  * LavaMoat policy itself.
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
- * @param {boolean} options.testing - Whether the build is intended for
- * running end-to-end (e2e) tests.
  * @param {string} options.version - The current version of the extension.
  * @returns {Function} A function that creates the bundle.
  */
 function createNormalBundle({
   browserPlatforms,
+  buildTarget,
   buildType,
   destFilepath,
-  devMode,
   entryFilepath,
   extraEnvironmentVariables,
   ignoredFiles,
   label,
   policyOnly,
   shouldLintFenceFiles,
-  testing,
   version,
 }) {
   return async function () {
@@ -811,28 +819,26 @@ function createNormalBundle({
     const { bundlerOpts, events } = buildConfiguration;
 
     // devMode options
+    const devMode = isDevBuild(buildTarget);
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
     const envVars = {
       ...getEnvironmentVariables({
+        buildTarget,
         buildType,
-        devMode,
-        testing,
         version,
       }),
       ...extraEnvironmentVariables,
     };
     setupBundlerDefaults(buildConfiguration, {
       buildType,
-      devMode,
       envVars,
       ignoredFiles,
       policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
-      testing,
     });
 
     // set bundle entries
@@ -874,15 +880,14 @@ function createBuildConfiguration() {
 function setupBundlerDefaults(
   buildConfiguration,
   {
+    buildTarget,
     buildType,
-    devMode,
     envVars,
     ignoredFiles,
     policyOnly,
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
-    testing,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -905,13 +910,13 @@ function setupBundlerDefaults(
     // Look for TypeScript files when walking the dependency tree
     extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: devMode || testing,
+    fullPaths: isDevBuild(buildTarget) || isTestBuild(buildTarget),
     // For sourcemaps
     debug: true,
   });
 
-  // Ensure react-devtools are not included in non-dev builds
-  if (!devMode || testing) {
+  // Ensure react-devtools is only included in dev builds
+  if (buildTarget !== BUILD_TARGETS.DEVELOPMENT) {
     bundlerOpts.manualIgnore.push('react-devtools');
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
@@ -937,7 +942,7 @@ function setupBundlerDefaults(
     }
 
     // Setup source maps
-    setupSourcemaps(buildConfiguration, { devMode });
+    setupSourcemaps(buildConfiguration, { buildTarget });
   }
 }
 
@@ -991,7 +996,7 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupSourcemaps(buildConfiguration, { devMode }) {
+function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
@@ -1000,7 +1005,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
       // Use inline source maps for development due to Chrome DevTools bug
       // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
       .push(
-        devMode
+        isDevBuild(buildTarget)
           ? sourcemaps.write()
           : sourcemaps.write('../sourcemaps', { addComment: false }),
       );
@@ -1049,7 +1054,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
-        console.error(error.stack || error);
+        logError(error);
         process.exit(1);
       });
     }
@@ -1071,49 +1076,53 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  * Get environment variables to inject in the current build.
  *
  * @param {object} options - Build options.
+ * @param {BUILD_TARGETS} options.buildTarget - The current build target.
  * @param {BuildType} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
- * @param {boolean} options.devMode - Whether the build is being used for
- * development.
- * @param {boolean} options.testing - Whether the build is intended for
- * running end-to-end (e2e) tests.
  * @param {string} options.version - The current version of the extension.
  * @returns {object} A map of environment variables to inject.
  */
-function getEnvironmentVariables({ buildType, devMode, testing, version }) {
-  const environment = getEnvironment({ devMode, testing });
+function getEnvironmentVariables({ buildTarget, buildType, version }) {
+  const environment = getEnvironment({ buildTarget });
   if (environment === ENVIRONMENT.PRODUCTION && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
   }
+
+  const devMode = isDevBuild(buildTarget);
+  const testing = isTestBuild(buildTarget);
   return {
+    COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
+    CONF: devMode ? metamaskrc : {},
+    IN_TEST: testing,
+    INFURA_PROJECT_ID: getInfuraProjectId({
+      buildType,
+      environment,
+      testing,
+    }),
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    IN_TEST: testing,
+    ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
-    PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-    CONF: devMode ? metamaskrc : {},
-    SENTRY_DSN: process.env.SENTRY_DSN,
-    SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
-    INFURA_PROJECT_ID: getInfuraProjectId({ buildType, environment, testing }),
+    PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, environment }),
+    SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
     SIWE_V1: metamaskrc.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
-    ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
-    COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
     TOKEN_DETECTION_V2: metamaskrc.TOKEN_DETECTION_V2 === '1',
   };
 }
 
-function getEnvironment({ devMode, testing }) {
+function getEnvironment({ buildTarget }) {
   // get environment slug
-  if (devMode) {
+  if (isDevBuild(buildTarget)) {
     return ENVIRONMENT.DEVELOPMENT;
-  } else if (testing) {
+  } else if (isTestBuild(buildTarget)) {
     return ENVIRONMENT.TESTING;
   } else if (process.env.CIRCLE_BRANCH === 'master') {
     return ENVIRONMENT.PRODUCTION;

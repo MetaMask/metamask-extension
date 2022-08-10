@@ -10,7 +10,7 @@
     justify-content: space-between;
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     width: 426px;
     flex: 1;
 
@@ -94,7 +94,7 @@
     align-items: center;
     margin-top: 12px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       border-top: none;
     }
 
@@ -108,7 +108,7 @@
     }
   }
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     &__title {
       position: initial;
     }
