@@ -11,22 +11,32 @@ describe('Deploy contract and call contract methods', function () {
       },
     ],
   };
+  const smartContract = 'hst';
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: 'connected-state',
         ganacheOptions,
+        smartContract,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
         // deploy contract
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement('#deployButton');
+        await driver.openNewPage(
+          `http://127.0.0.1:8080/?contract=${contractAddress}`,
+        );
+
+        // calls and confirms a contract method where ETH is sent
+        await driver.clickElement('#depositButton');
+
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -34,41 +44,7 @@ describe('Deploy contract and call contract methods', function () {
           'E2E Test Dapp',
           windowHandles,
         );
-        // displays the contract creation data
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({ text: 'Data', tag: 'button' });
-        await driver.findElement({ text: '127.0.0.1', tag: 'div' });
-        const confirmDataDiv = await driver.findElement(
-          '.confirm-page-container-content__data-box',
-        );
-        const confirmDataText = await confirmDataDiv.getText();
-        assert.ok(confirmDataText.includes('Origin:'));
-        assert.ok(confirmDataText.includes('127.0.0.1'));
-        assert.ok(confirmDataText.includes('Bytes:'));
-        assert.ok(confirmDataText.includes('675'));
 
-        // confirms a deploy contract transaction
-        await driver.clickElement({ text: 'Details', tag: 'button' });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
-        );
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Contract deployment');
-
-        // calls and confirms a contract method where ETH is sent
-        await driver.switchToWindow(dapp);
-        await driver.clickElement('#depositButton');
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
