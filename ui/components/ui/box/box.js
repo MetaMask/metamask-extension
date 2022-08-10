@@ -46,7 +46,6 @@ export const BACKGROUND_COLORS = pick(COLORS, [
   'LOCALHOST',
 ]);
 
-<<<<<<< HEAD
 export const BORDER_COLORS = pick(COLORS, [
   'BORDER_DEFAULT',
   'BORDER_MUTED',
@@ -73,25 +72,6 @@ export const BORDER_COLORS = pick(COLORS, [
   'TRANSPARENT',
   'LOCALHOST',
 ]);
-=======
-export const TextColors = [
-  COLORS.TEXT_DEFAULT,
-  COLORS.TEXT_ALTERNATIVE,
-  COLORS.TEXT_MUTED,
-  COLORS.OVERLAY_INVERSE,
-  COLORS.PRIMARY_DEFAULT,
-  COLORS.PRIMARY_INVERSE,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_INVERSE,
-  COLORS.ERROR_DEFAULT,
-  COLORS.ERROR_INVERSE,
-  COLORS.SUCCESS_DEFAULT,
-  COLORS.SUCCESS_INVERSE,
-  COLORS.WARNING_INVERSE,
-  COLORS.INFO_DEFAULT,
-  COLORS.INFO_INVERSE,
-];
->>>>>>> 295275e38 (replaced colors with TextColors)
 
 export const TEXT_COLORS = pick(COLORS, [
   'TEXT_DEFAULT',
@@ -112,17 +92,11 @@ export const TEXT_COLORS = pick(COLORS, [
 ]);
 const ValidSize = PropTypes.oneOf(Sizes);
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
-<<<<<<< HEAD
 export const ValidBackgroundColors = PropTypes.oneOf(
   Object.values(BACKGROUND_COLORS),
 );
 export const ValidBorderColors = PropTypes.oneOf(Object.values(BORDER_COLORS));
-export const ValidColors = PropTypes.oneOf(Object.values(TEXT_COLORS));
-=======
-export const ValidBackgroundColors = PropTypes.oneOf(BackgroundColors);
-export const ValidBorderColors = PropTypes.oneOf(BorderColors);
-export const ValidTextColors = PropTypes.oneOf(TextColors);
->>>>>>> 295275e38 (replaced colors with TextColors)
+export const ValidTextColors = PropTypes.oneOf(Object.values(TEXT_COLORS));
 
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([

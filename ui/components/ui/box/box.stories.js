@@ -14,11 +14,7 @@ import {
 
 import Typography from '../typography';
 
-<<<<<<< HEAD
 import Box, { BACKGROUND_COLORS, BORDER_COLORS, TEXT_COLORS } from './box';
-=======
-import Box, { BackgroundColors, BorderColors, TextColors } from './box';
->>>>>>> 295275e38 (replaced colors with TextColors)
 
 import README from './README.mdx';
 
@@ -71,11 +67,7 @@ export default {
       },
     },
     color: {
-<<<<<<< HEAD
       options: Object.values(TEXT_COLORS),
-=======
-      options: TextColors,
->>>>>>> 295275e38 (replaced colors with TextColors)
       control: 'select',
       table: { category: 'color' },
     },
