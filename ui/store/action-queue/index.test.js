@@ -204,6 +204,42 @@ describe('ActionQueue', () => {
       expect(trace.firstDone).toStrictEqual(true);
       expect(background.second.called).toStrictEqual(false);
     });
+
+    // Failing test for a race condition related to how items are removed from queue
+    it('avoids race conditions', async () => {
+      const trace = { first: 0, second: 0 };
+      const flowControl = {};
+      const background = {
+        connectionStream: {
+          readable: false,
+        },
+        first: (cb) => {
+          trace.first += 1;
+          setTimeout(() => {
+            flowControl.triggerRaceCondition();
+            cb(null, 'first');
+          }, 5);
+        },
+        second: (cb) => {
+          trace.second += 1;
+          setTimeout(() => cb(null, 'second'), 10);
+        },
+        third: sinon.stub().yields(),
+      };
+      flowControl.triggerRaceCondition = () => {
+        submitRequestToBackground('third');
+      };
+      _setBackgroundConnection(background);
+      const scheduled = Promise.all([
+        submitRequestToBackground('first'),
+        submitRequestToBackground('second'),
+      ]);
+      background.connectionStream.readable = true;
+      _setBackgroundConnection(background);
+      await scheduled;
+      expect(trace.first).toStrictEqual(1);
+      expect(trace.second).toStrictEqual(1);
+    });
   });
 
   describe('callBackgroundMethod', () => {
