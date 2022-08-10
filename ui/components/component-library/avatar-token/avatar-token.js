@@ -66,7 +66,7 @@ export const AvatarToken = ({
           {showHalo && (
             <img
               src={tokenImageUrl}
-              className={showHalo ? 'blur-halo-image' : ''}
+              className={showHalo ? 'avatar-image__halo--blur' : ''}
               aria-hidden="true"
               {...props}
             />
@@ -93,5 +93,6 @@ AvatarToken.propTypes = {
   /**
    * AvatarToken accepts all the props from BaseAvatar
    */
+  ...BaseAvatar.propTypes,
   ...Box.propTypes,
 };

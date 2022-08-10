@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  ALIGN_ITEMS,
-  COLORS,
-  DISPLAY,
-  SIZES,
-} from '../../../helpers/constants/design-system';
-
-import { BaseAvatar } from '../base-avatar';
+import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
 import { AvatarToken } from './avatar-token';
