@@ -4,7 +4,7 @@ import {
   NETWORK_TO_NAME_MAP,
   BUYABLE_CHAINS_MAP,
 } from '../../../../../shared/constants/network';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
 import Button from '../../../ui/button';
 import LogoMoonPay from '../../../ui/logo/logo-moonpay';
 import LogoWyre from '../../../ui/logo/logo-wyre';
@@ -144,10 +144,9 @@ export default class DepositEtherModal extends Component {
               onButtonClick: () => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.ACCOUNTS,
-                  event: 'Click buy Ether via Coinbase Pay',
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
                   properties: {
-                    action: 'Deposit Ether',
-                    legacy_event: true,
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.COINBASE,
                   },
                 });
                 toCoinbasePay(address, chainId);
@@ -162,10 +161,9 @@ export default class DepositEtherModal extends Component {
               onButtonClick: () => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.ACCOUNTS,
-                  event: 'Click buy Ether via Transak',
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
                   properties: {
-                    action: 'Deposit Ether',
-                    legacy_event: true,
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.TRANSAK,
                   },
                 });
                 toTransak(address, chainId);
@@ -180,10 +178,9 @@ export default class DepositEtherModal extends Component {
               onButtonClick: () => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.ACCOUNTS,
-                  event: 'Click buy Ether via MoonPay',
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
                   properties: {
-                    action: 'Deposit Ether',
-                    legacy_event: true,
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.MOONPAY,
                   },
                 });
                 toMoonPay(address, chainId);
@@ -198,10 +195,9 @@ export default class DepositEtherModal extends Component {
               onButtonClick: () => {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.ACCOUNTS,
-                  event: 'Click buy Ether via Wyre',
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
                   properties: {
-                    action: 'Deposit Ether',
-                    legacy_event: true,
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.WYRE,
                   },
                 });
                 toWyre(address, chainId);
@@ -215,7 +211,16 @@ export default class DepositEtherModal extends Component {
               title: t('directDepositCrypto', [symbol]),
               text: t('directDepositCryptoExplainer', [symbol]),
               buttonLabel: t('viewAccount'),
-              onButtonClick: () => this.goToAccountDetailsModal(),
+              onButtonClick: () => {
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.ACCOUNTS,
+                  event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
+                  properties: {
+                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SELF_DEPOSIT,
+                  },
+                });
+                this.goToAccountDetailsModal();
+              }
             })}
             {networkName &&
               this.renderRow({

@@ -20,13 +20,13 @@ export default function ViewOnBlockExplorer({
       <button
         onClick={() => {
           trackEvent({
-            event: 'Clicked Block Explorer Link',
+            event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
             category: EVENT.CATEGORIES.SWAPS,
             sensitiveProperties: sensitiveTrackingProperties,
             properties: {
-              link_type: 'Transaction Block Explorer',
-              action: 'Swap Transaction',
-              block_explorer_domain: blockExplorerHostName,
+              link_type: EVENT.EXTERNAL_LINK_TYPES.TRANSACTION_BLOCK_EXPLORER,
+              location: 'Swap Transaction',
+              url_domain: blockExplorerHostName,
             },
           });
           global.platform.openTab({ url: blockExplorerUrl });

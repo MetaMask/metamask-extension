@@ -8,7 +8,7 @@ import Box from '../../ui/box/box';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
@@ -49,11 +49,10 @@ export default function ImportTokenLink() {
         onClick={() => {
           history.push(IMPORT_TOKEN_ROUTE);
           trackEvent({
-            event: 'Clicked "Add token"',
+            event: EVENT_NAMES.TOKEN_IMPORT_BUTTON_CLICKED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Token Menu',
-              legacy_event: true,
+              location: 'Home',
             },
           });
         }}

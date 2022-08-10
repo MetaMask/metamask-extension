@@ -5,7 +5,10 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { 
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
@@ -210,10 +213,9 @@ export default class AccountMenu extends Component {
           onClick={() => {
             this.context.trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Switched Account',
+              event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                location: 'Main Menu',
               },
             });
             showAccountDetail(identity.address);
@@ -358,10 +360,10 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Create account',
+              event: EVENT_NAMES.NAV_CREATE_ACCOUNT_BUTTON_CLICKED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+                location: 'Main Menu',
               },
             });
             history.push(NEW_ACCOUNT_ROUTE);
@@ -374,10 +376,10 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Import Account',
+              event: EVENT_NAMES.NAV_IMPORT_ACCOUNT_BUTTON_CLICKED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                location: 'Main Menu',
               },
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
@@ -395,10 +397,10 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Connect Hardware',
+              event: EVENT_NAMES.NAV_CONNECT_HARDWARE_BUTTON_CLICKED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+                location: 'Main Menu',
               },
             });
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -459,10 +461,9 @@ export default class AccountMenu extends Component {
             history.push(SETTINGS_ROUTE);
             this.context.trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Opened Settings',
+              event: EVENT_NAMES.NAV_SETTINGS_OPENED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                location: 'Main Menu',
               },
             });
           }}

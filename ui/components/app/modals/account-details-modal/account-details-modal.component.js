@@ -8,7 +8,7 @@ import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
 export default class AccountDetailsModal extends Component {
@@ -70,11 +70,11 @@ export default class AccountDetailsModal extends Component {
       const accountLink = getAccountLink(address, chainId, rpcPrefs);
       this.context.trackEvent({
         category: EVENT.CATEGORIES.NAVIGATION,
-        event: 'Clicked Block Explorer Link',
+        event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
         properties: {
-          link_type: 'Account Tracker',
-          action: 'Account Details Modal',
-          block_explorer_domain: getURLHostName(accountLink),
+          link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+          location: 'Account Details Modal',
+          url_domain: getURLHostName(accountLink),
         },
       });
       global.platform.openTab({
@@ -120,7 +120,16 @@ export default class AccountDetailsModal extends Component {
           <Button
             type="secondary"
             className="account-details-modal__button"
-            onClick={() => showExportPrivateKeyModal()}
+            onClick={() => {
+              this.context.trackEvent({
+                category: EVENT.CATEGORIES.ACCOUNTS,
+                event: EVENT_NAMES.PRIVATE_KEY_EXPORT_SELECTED,
+                properties: {
+                  location: 'Account Details Modal',
+                },
+              });
+              showExportPrivateKeyModal()
+            }}
           >
             {this.context.t('exportPrivateKey')}
           </Button>
