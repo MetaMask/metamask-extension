@@ -277,8 +277,10 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
 
 export const EVENT_NAMES = {
   ACCOUNT_PASSWORD_CREATED: 'Account Password Created',
-  ACCOUNT_IMPORT_COMPLETED: 'Account Imported',
-  ACCOUNT_IMPORT_FAILED: 'Account Import Failed',
+  ACCOUNT_IMPORT_COMPLETED: 'Account Added',
+  ACCOUNT_IMPORT_FAILED: 'Account Add Failed',
+  ADD_ACCOUNT_COMPLETED: 'Account Added',
+  ADD_ACCOUNT_FAILED: 'Account Add Failed',
   APP_UNLOCKED: 'App Unlocked',
   APP_UNLOCKED_FAILED: 'App Unlocked Failed',
   APP_WINDOW_EXPANDED: 'App Window Expanded',
@@ -293,6 +295,7 @@ export const EVENT_NAMES = {
   NAV_ACCOUNT_DETAILS_OPENED: 'Account Details Opened',
   NAV_CONNECTED_SITES_OPENED: 'Connected Sites Opened',
   NAV_MAIN_MENU_OPENED: 'Main Menu Opened',
+  NAV_NETWORK_MENU_OPENED: 'Network Menu Opened',
   NAV_SETTINGS_OPENED: 'Settings Opened',
   NAV_ACCOUNT_SWITCHED: 'Account Switched',
   NAV_NETWORK_SWITCHED: 'Network Switched',
@@ -318,6 +321,7 @@ export const EVENT_NAMES = {
   SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_IMPORT_BUTTON_CLICKED: 'Import Token Button Clicked',
+  TOKEN_SCREEN_OPENED: 'Token Screen Opened',
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_HIDDEN: 'Token Hidden',
