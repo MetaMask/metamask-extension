@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Đã xảy ra sự cố và chúng tôi không thể hoàn tất hành động"
   },
-  "fakeTokenWarning": {
-    "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả phiên bản giả mạo của các token hiện tại. Tìm hiểu thêm về $1"
-  },
   "fast": {
     "message": "Nhanh"
   },
@@ -3739,12 +3736,6 @@
   "tokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token hiện có sẵn trên $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Mới! Tính năng phát hiện token được cải tiến hiện đã có sẵn trên Mạng chính thức của Ethereum dưới dạng một tính năng thử nghiệm. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "API token của ConsenSys sẽ tổng hợp danh sách token từ các danh sách token của nhiều bên thứ ba khác nhau. Tắt tính năng này sẽ ngừng phát hiện token mới được thêm vào ví của bạn, nhưng sẽ giữ lại tùy chọn tìm kiếm token để nhập."
-  },
   "tokenId": {
     "message": "ID Token"
   },
@@ -3978,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Hiển thị cảnh báo đối với các tên miền lừa đảo nhắm đến người dùng Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Sử Dụng Phát Hiện Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị các token mới được gửi vào ví của bạn. Hãy tắt tính năng này nếu bạn không muốn MetaMask lấy dữ liệu từ các dịch vụ đó."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Tự động hiển thị các token được gửi vào tài khoản của bạn có liên quan đến hoạt động trao đổi thông tin với các máy chủ bên thứ ba để tìm nạp hình ảnh của token. Các máy chủ đó sẽ có quyền truy cập vào địa chỉ IP của bạn."

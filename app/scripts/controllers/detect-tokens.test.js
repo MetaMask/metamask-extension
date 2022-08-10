@@ -7,24 +7,23 @@ import {
   ControllerMessenger,
   TokenListController,
   TokensController,
+  AssetsContractController,
 } from '@metamask/controllers';
-import {
-  MAINNET,
-  MAINNET_NETWORK_ID,
-  ROPSTEN,
-} from '../../../shared/constants/network';
+import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
 import PreferencesController from './preferences';
 
-const tokenIconsApiBaseUrl =
-  'https://static.metaswap.codefi.network/api/v1/tokenIcons';
-
 describe('DetectTokensController', function () {
-  let tokenListController;
   const sandbox = sinon.createSandbox();
-  let keyringMemStore, network, preferences, provider, tokensController;
+  let assetsContractController,
+    keyringMemStore,
+    network,
+    preferences,
+    provider,
+    tokensController,
+    tokenListController;
 
   const noop = () => undefined;
 
@@ -38,18 +37,44 @@ describe('DetectTokensController', function () {
     network.setInfuraProjectId('foo');
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
-    preferences = new PreferencesController({ network, provider });
-    tokensController = new TokensController({
-      onPreferencesStateChange: preferences.store.subscribe.bind(
-        preferences.store,
-      ),
-      onNetworkStateChange: network.store.subscribe.bind(network.store),
+
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      preventPollingOnNetworkRestart: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
+    await tokenListController.start();
+
+    preferences = new PreferencesController({
+      network,
+      provider,
+      tokenListController,
     });
     preferences.setAddresses([
       '0x7e57e2',
       '0xbc86727e770de68b1060c91f6bb6945c73e10388',
     ]);
     preferences.setUseTokenDetection(true);
+
+    tokensController = new TokensController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: network.store.subscribe.bind(network.store),
+    });
+
+    assetsContractController = new AssetsContractController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: network.store.subscribe.bind(network.store),
+    });
+
     sandbox
       .stub(network, 'getLatestBlock')
       .callsFake(() => Promise.resolve({}));
@@ -129,16 +154,6 @@ describe('DetectTokensController', function () {
       .get(`/tokens/3`)
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
-    const tokenListMessenger = new ControllerMessenger().getRestricted({
-      name: 'TokenListController',
-    });
-    tokenListController = new TokenListController({
-      chainId: '1',
-      onNetworkStateChange: sinon.spy(),
-      onPreferencesStateChange: sinon.spy(),
-      messenger: tokenListMessenger,
-    });
-    await tokenListController.start();
   });
 
   after(function () {
@@ -161,6 +176,7 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -177,7 +193,7 @@ describe('DetectTokensController', function () {
     sandbox.assert.calledThrice(stub);
   });
 
-  it('should not check tokens while on test network', async function () {
+  it('should not check and add tokens while on unsupported networks', async function () {
     sandbox.useFakeTimers();
     network.setProviderType(ROPSTEN);
     const tokenListMessengerRopsten = new ControllerMessenger().getRestricted({
@@ -196,17 +212,21 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const stub = sandbox.stub(controller, '_getTokenBalances');
+    const stub = sandbox.stub(
+      assetsContractController,
+      'getBalancesInSingleCall',
+    );
 
     await controller.detectNewTokens();
     sandbox.assert.notCalled(stub);
   });
 
-  it('should skip adding tokens listed in hiddenTokens array', async function () {
+  it('should skip adding tokens listed in ignoredTokens array', async function () {
     sandbox.useFakeTimers();
     network.setProviderType(MAINNET);
     const controller = new DetectTokensController({
@@ -215,53 +235,49 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
+      trackMetaMetricsEvent: noop,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
     const { tokenList } = tokenListController.state;
-    const erc20ContractAddresses = Object.keys(tokenList);
+    const tokenValues = Object.values(tokenList);
 
-    const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = tokenList[existingTokenAddress];
-    await tokensController.addToken(
-      existingTokenAddress,
-      existingToken.symbol,
-      existingToken.decimals,
-    );
-
-    const tokenAddressToSkip = erc20ContractAddresses[1];
-    const tokenToSkip = tokenList[tokenAddressToSkip];
-    await tokensController.addToken(
-      tokenAddressToSkip,
-      tokenToSkip.symbol,
-      tokenToSkip.decimals,
-    );
+    await tokensController.addDetectedTokens([
+      {
+        address: tokenValues[0].address,
+        symbol: tokenValues[0].symbol,
+        decimals: tokenValues[0].decimals,
+        aggregators: tokenValues[0].aggregators,
+        image: undefined,
+        isERC721: undefined,
+      },
+    ]);
 
     sandbox
-      .stub(controller, '_getTokenBalances')
+      .stub(assetsContractController, 'getBalancesInSingleCall')
       .callsFake((tokensToDetect) =>
         tokensToDetect.map((token) =>
-          token === tokenAddressToSkip ? new BigNumber(10) : 0,
+          token.address === tokenValues[1].address ? new BigNumber(10) : 0,
         ),
       );
+    await tokensController.ignoreTokens([tokenValues[1].address]);
 
-    await tokensController.ignoreTokens([tokenAddressToSkip]);
     await controller.detectNewTokens();
-
-    assert.deepEqual(tokensController.state.tokens, [
+    assert.deepEqual(tokensController.state.detectedTokens, [
       {
-        address: toChecksumHexAddress(existingTokenAddress),
-        decimals: existingToken.decimals,
-        symbol: existingToken.symbol,
-        aggregators: [],
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${existingTokenAddress}.png`,
-        isERC721: false,
+        address: toChecksumHexAddress(tokenValues[0].address),
+        decimals: tokenValues[0].decimals,
+        symbol: tokenValues[0].symbol,
+        aggregators: tokenValues[0].aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
   });
 
-  it('should check and add tokens while on main network', async function () {
+  it('should check and add tokens while on supported networks', async function () {
     sandbox.useFakeTimers();
     network.setProviderType(MAINNET);
     const controller = new DetectTokensController({
@@ -270,6 +286,8 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
+      trackMetaMetricsEvent: noop,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -279,107 +297,41 @@ describe('DetectTokensController', function () {
 
     const existingTokenAddress = erc20ContractAddresses[0];
     const existingToken = tokenList[existingTokenAddress];
-    await tokensController.addToken(
-      existingTokenAddress,
-      existingToken.symbol,
-      existingToken.decimals,
-    );
 
-    const tokenAddressToAdd = erc20ContractAddresses[1];
-    const tokenToAdd = tokenList[tokenAddressToAdd];
-
-    const contractAddressesToDetect = erc20ContractAddresses.filter(
-      (address) => address !== existingTokenAddress,
-    );
-    const indexOfTokenToAdd =
-      contractAddressesToDetect.indexOf(tokenAddressToAdd);
-    const balances = new Array(contractAddressesToDetect.length);
-
-    balances[indexOfTokenToAdd] = new BigNumber(10);
-
-    sandbox
-      .stub(controller, '_getTokenBalances')
-      .returns(Promise.resolve(balances));
-
-    await controller.detectNewTokens();
-    assert.deepEqual(tokensController.state.tokens, [
+    await tokensController.addDetectedTokens([
       {
-        address: toChecksumHexAddress(existingTokenAddress),
-        decimals: existingToken.decimals,
+        address: existingToken.address,
         symbol: existingToken.symbol,
-        isERC721: false,
-        aggregators: [],
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${existingTokenAddress}.png`,
-      },
-      {
-        address: toChecksumHexAddress(tokenAddressToAdd),
-        decimals: tokenToAdd.decimals,
-        symbol: tokenToAdd.symbol,
-        isERC721: false,
-        aggregators: [],
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${tokenAddressToAdd}.png`,
+        decimals: existingToken.decimals,
+        aggregators: existingToken.aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
-  });
-
-  it('should check and add tokens while on non-default Mainnet', async function () {
-    sandbox.useFakeTimers();
-    network.setRpcTarget('https://some-fake-RPC-endpoint.metamask.io', '0x1');
-    const controller = new DetectTokensController({
-      preferences,
-      network,
-      keyringMemStore,
-      tokenList: tokenListController,
-      tokensController,
-    });
-    controller.isOpen = true;
-    controller.isUnlocked = true;
-
-    const { tokenList } = tokenListController.state;
-    const erc20ContractAddresses = Object.keys(tokenList);
-
-    const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = tokenList[existingTokenAddress];
-    await tokensController.addToken(
-      existingTokenAddress,
-      existingToken.symbol,
-      existingToken.decimals,
-    );
-
     const tokenAddressToAdd = erc20ContractAddresses[1];
     const tokenToAdd = tokenList[tokenAddressToAdd];
-
-    const contractAddressesToDetect = erc20ContractAddresses.filter(
-      (address) => address !== existingTokenAddress,
-    );
-    const indexOfTokenToAdd =
-      contractAddressesToDetect.indexOf(tokenAddressToAdd);
-
-    const balances = new Array(contractAddressesToDetect.length);
-    balances[indexOfTokenToAdd] = new BigNumber(10);
-
     sandbox
-      .stub(controller, '_getTokenBalances')
-      .returns(Promise.resolve(balances));
-
+      .stub(assetsContractController, 'getBalancesInSingleCall')
+      .callsFake(() =>
+        Promise.resolve({ [tokenAddressToAdd]: new BigNumber(10) }),
+      );
     await controller.detectNewTokens();
-
-    assert.deepEqual(tokensController.state.tokens, [
+    assert.deepEqual(tokensController.state.detectedTokens, [
       {
         address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${existingTokenAddress}.png`,
-        isERC721: false,
-        aggregators: [],
+        aggregators: existingToken.aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
-        image: `${tokenIconsApiBaseUrl}/${MAINNET_NETWORK_ID}/${tokenAddressToAdd}.png`,
-        isERC721: false,
-        aggregators: [],
+        aggregators: tokenToAdd.aggregators,
+        image: undefined,
+        isERC721: undefined,
       },
     ]);
   });
@@ -392,6 +344,7 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -410,6 +363,7 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
     });
     controller.isOpen = true;
     controller.selectedAddress = '0x0';
@@ -427,10 +381,14 @@ describe('DetectTokensController', function () {
       keyringMemStore,
       tokenList: tokenListController,
       tokensController,
+      assetsContractController,
     });
     controller.isOpen = true;
     controller.isUnlocked = false;
-    const stub = sandbox.stub(controller, '_getTokenBalances');
+    const stub = sandbox.stub(
+      assetsContractController,
+      'getBalancesInSingleCall',
+    );
     clock.tick(180000);
     sandbox.assert.notCalled(stub);
   });
@@ -443,6 +401,7 @@ describe('DetectTokensController', function () {
       network,
       keyringMemStore,
       tokensController,
+      assetsContractController,
     });
     // trigger state update from preferences controller
     await preferences.setSelectedAddress(
@@ -450,7 +409,10 @@ describe('DetectTokensController', function () {
     );
     controller.isOpen = false;
     controller.isUnlocked = true;
-    const stub = sandbox.stub(controller, '_getTokenBalances');
+    const stub = sandbox.stub(
+      assetsContractController,
+      'getBalancesInSingleCall',
+    );
     clock.tick(180000);
     sandbox.assert.notCalled(stub);
   });

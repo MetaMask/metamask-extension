@@ -58,6 +58,7 @@ import {
   getMaxSlippage,
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
+  getSmartTransactionFees,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -66,7 +67,6 @@ import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getUseTokenDetection,
-  getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors';
@@ -100,6 +100,7 @@ import {
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
+  clearSmartTransactionFees,
 } from '../../../store/actions';
 import {
   countDecimals,
@@ -149,7 +150,6 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
-  const tokenList = useSelector(getTokenList, isEqual);
   const useTokenDetection = useSelector(getUseTokenDetection);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
@@ -165,6 +165,7 @@ export default function BuildQuote({
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const smartTransactionFees = useSelector(getSmartTransactionFees);
   const smartTransactionsOptInPopoverDisplayed =
     smartTransactionsOptInStatus !== undefined;
   const currentSmartTransactionsError = useSelector(
@@ -211,7 +212,7 @@ export default function BuildQuote({
     conversionRate,
     currentCurrency,
     chainId,
-    tokenList,
+    shuffledTokensList,
     useTokenDetection,
   );
 
@@ -469,6 +470,13 @@ export default function BuildQuote({
     dispatch(setReviewSwapClickedTimestamp());
     trackBuildQuotePageLoadedEvent();
   }, [dispatch, trackBuildQuotePageLoadedEvent]);
+
+  useEffect(() => {
+    if (smartTransactionsEnabled && smartTransactionFees?.tradeTxFees) {
+      // We want to clear STX fees, because we only want to use fresh ones on the View Quote page.
+      clearSmartTransactionFees();
+    }
+  }, [smartTransactionsEnabled, smartTransactionFees]);
 
   const BlockExplorerLink = () => {
     return (
