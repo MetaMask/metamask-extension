@@ -53,7 +53,7 @@ export default class AppHeader extends PureComponent {
     if (networkDropdownOpen === false) {
       this.context.trackEvent({
         category: EVENT.CATEGORIES.NAVIGATION,
-        event: EVENT_NAMES.NAV_MAIN_MENU_OPENED,
+        event: EVENT_NAMES.NAV_NETWORK_MENU_OPENED,
         properties: {
         },
       });
