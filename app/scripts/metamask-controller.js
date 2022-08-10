@@ -1124,6 +1124,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Lazily update the store with the current extension environment
     this.extension.runtime.getPlatformInfo().then(({ os }) => {
+      console.log('-')
       this.appStateController.setBrowserEnvironment(
         os,
         // This method is presently only supported by Firefox
