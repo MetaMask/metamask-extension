@@ -3666,7 +3666,7 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             { origin },
           ),
-        openPopup: this.opts.openPopup.bind(this.opts),
+        openPopup: this.opts.openPopup,
 
         // Custom RPC-related
         addCustomRpc: async ({

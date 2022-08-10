@@ -61,6 +61,7 @@ async function requestEthereumAccountsHandler(
     openPopup,
   },
 ) {
+  
   if (locks.has(origin)) {
     await openPopup();
   }
