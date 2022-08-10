@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { exportAsFile } from '../../../helpers/utils/util';
 import Copy from '../icon/copy-icon.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { exportAsFile } from '../../../../shared/modules/export-utils';
 
 function ExportTextContainer({ text = '' }) {
   const t = useI18nContext();

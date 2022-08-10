@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Nagkaproblema, at hindi namin makumpleto ang aksyon"
   },
-  "fakeTokenWarning": {
-    "message": "Sinuman ay maaaring gumawa ng token, kabilang ang paggawa ng mga pekeng bersyon ng mga umiiral na token. Alamin pa ang tungkol sa $1"
-  },
   "fast": {
     "message": "Mabilis"
   },
@@ -3739,12 +3736,6 @@
   "tokenDetectionAlertMessage": {
     "message": "Ang pagtukoy ng token ay kasalukuyang magagamit sa $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Bago! Ang pinahusay na pagtukoy ng token ay magagamit sa Ethereum Mainnet bilang isang pang-eksperimentong feature. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "Pinagsasama-sama ng ConsenSys’ token API ang listahan ng mga token mula sa maraming listahan ng token ng third party. Ang pag-off dito ay magpapahinto sa pagtuklas ng mga bagong token na madadagdag sa iyong wallet, ngunit pananatilihin ang opsyon sa paghahanap ng mga token para i-import."
-  },
   "tokenId": {
     "message": "Token ID"
   },
@@ -3978,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Magpakita ng babala para sa mga phishing domain na nagta-target sa mga user ng Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Gamitin ang Pag-detect ng Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Gumagamit kami ng mga third-party na API para makita at magpakita ng mga bagong token na ipinadala sa iyong wallet. I-off kung ayaw mong makuha ng MetaMask ang data mula sa mga serbisyong iyon."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."

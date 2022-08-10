@@ -778,6 +778,29 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
   };
 }
 
+export async function backupUserData() {
+  let backedupData;
+  try {
+    backedupData = await promisifiedBackground.backupUserData();
+  } catch (error) {
+    log.error(error.message);
+    throw error;
+  }
+
+  return backedupData;
+}
+
+export async function restoreUserData(jsonString) {
+  try {
+    await promisifiedBackground.restoreUserData(jsonString);
+  } catch (error) {
+    log.error(error.message);
+    throw error;
+  }
+
+  return true;
+}
+
 export function updateTransactionGasFees(txId, txGasFees) {
   return async (dispatch) => {
     let updatedTransaction;

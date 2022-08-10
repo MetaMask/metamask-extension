@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Ada yang salah, dan kami tidak dapat menyelesaikan tindakan"
   },
-  "fakeTokenWarning": {
-    "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari selengkapnya seputar $1"
-  },
   "fast": {
     "message": "Cepat"
   },
@@ -3739,12 +3736,6 @@
   "tokenDetectionAlertMessage": {
     "message": "Saat ini deteksi token tersedia di $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "Baru! Deteksi token yang ditingkatkan tersedia di Ethereum Mainnet sebagai fitur eksperimental. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "API token ConsenSys mengumpulkan daftar token dari berbagai daftar token pihak ketiga. Menonaktifkannya akan menghentikan deteksi token baru yang ditambahkan ke dompet Anda, tetapi Anda akan tetap memiliki opsi untuk mencari token yang akan diimpor."
-  },
   "tokenId": {
     "message": "ID token"
   },
@@ -3978,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Menampilkan peringatan untuk domain pengelabuan yang menargetkan pengguna Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Gunakan Deteksi Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan token baru yang dikirim ke dompet Anda. Matikan jika Anda tidak ingin MetaMask memakai data dari layanan tersebut."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Menampilkan token yang dikirim ke akun Anda secara otomatis yang melibatkan komunikasi dengan server pihak ketiga untuk mengambil gambar token. Server tersebut akan memiliki akses ke alamat IP Anda."

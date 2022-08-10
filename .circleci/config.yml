@@ -65,6 +65,9 @@ workflows:
       - prep-build-storybook:
           requires:
             - test-storybook
+      - prep-build-ts-migration-dashboard:
+          requires:
+            - prep-deps
       - test-lint:
           requires:
             - prep-deps
@@ -146,6 +149,7 @@ workflows:
             - prep-build-beta
             - prep-build-flask
             - prep-build-storybook
+            - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
             - benchmark
             - stats-module-load-init
@@ -165,6 +169,12 @@ workflows:
               only: develop
           requires:
             - prep-build-storybook
+      - job-publish-ts-migration-dashboard:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-ts-migration-dashboard
 
 jobs:
   create_release_pull_request:
@@ -368,6 +378,20 @@ jobs:
           root: .
           paths:
             - storybook-build
+
+  prep-build-ts-migration-dashboard:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build TypeScript migration dashboard
+          command: yarn ts-migration:dashboard:build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - development/ts-migration-dashboard/build
 
   test-storybook:
     executor: node-browsers
@@ -686,6 +710,9 @@ jobs:
       - store_artifacts:
           path: storybook-build
           destination: storybook
+      - store_artifacts:
+          path: development/ts-migration-dashboard/build
+          destination: ts-migration-dashboard
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
@@ -721,6 +748,21 @@ jobs:
           command: |
             git remote add storybook git@github.com:MetaMask/metamask-storybook.git
             yarn storybook:deploy
+
+  job-publish-ts-migration-dashboard:
+    executor: node-browsers
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: ts-migration-dashboard:deploy
+          command: |
+            git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
+            yarn ts-migration:dashboard:deploy
 
   test-unit:
     executor: node-browsers

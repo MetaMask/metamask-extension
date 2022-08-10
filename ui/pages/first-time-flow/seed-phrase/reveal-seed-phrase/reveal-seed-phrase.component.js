@@ -10,12 +10,12 @@ import {
   DEFAULT_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { exportAsFile } from '../../../../helpers/utils/util';
 import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
 import { returnToOnboardingInitiatorTab } from '../../onboarding-initiator-util';
+import { exportAsFile } from '../../../../../shared/modules/export-utils';
 
 export default class RevealSeedPhrase extends PureComponent {
   static contextTypes = {

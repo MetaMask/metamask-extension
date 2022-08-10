@@ -1214,9 +1214,6 @@
   "failureMessage": {
     "message": "出了点问题，我们无法完成此操作"
   },
-  "fakeTokenWarning": {
-    "message": "任何人都可以创建代币，包括创建现有代币的虚假版本。了解关于 $ 的更多详情"
-  },
   "fast": {
     "message": "快"
   },
@@ -3745,9 +3742,6 @@
   "tokenDetectionAlertMessage": {
     "message": "代币检测目前适用于 $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "新功能！以太坊主网上提供了经过改进的代币检测作为实验功能。$1"
-  },
   "tokenDetectionToggleDescription": {
     "message": "ConsenSys的代币API使用来自各种第三方的代币列表，汇总成一个代币列表。关闭它将会停止检测添加到您钱包中的新代币，但会保留搜索代币以导入的选项。"
   },
@@ -3984,12 +3978,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "显示针对 Ethereum 用户的网络钓鱼域名警告"
-  },
-  "useTokenDetection": {
-    "message": "使用代币检测"
-  },
-  "useTokenDetectionDescription": {
-    "message": "我们使用第三方 API 来检测和显示发送到您钱包的新代币。如果您不希望 MetaMask 从这些服务中提取数据，请关闭。"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "要自动显示发送到您账户的代币，需要与第三方服务器通信以获取代币的图像。这些服务器将拥有您的IP地址的访问权限。"
