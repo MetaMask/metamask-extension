@@ -596,6 +596,9 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmPageDialogSetApprovalForAll": {
+    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
