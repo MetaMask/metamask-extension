@@ -29,7 +29,23 @@ let promisifiedBackground = null;
 
 const actionRetryQueue = [];
 
-export function __TEST_CLEAR_QUEUE() {
+function failQueue() {
+  actionRetryQueue.forEach(({ reject }) =>
+    reject(
+      Error('Background operation cancelled while waiting for connection.'),
+    ),
+  );
+}
+
+/**
+ * Drops the entire actions queue. Rejects all actions in the queue unless silently==true
+ *
+ * @param {boolean} [silently]
+ */
+export function dropQueue(silently) {
+  if (!silently) {
+    failQueue();
+  }
   actionRetryQueue.length = 0;
 }
 
@@ -49,32 +65,48 @@ const addToActionQueue = (actionId, request, resolve, reject) => {
 };
 
 // remove action from queue on successful completion
-// TODO: it should be possible to refactor the way the queue is drained to make this splicing unnecessary but I ran out of time.
 const removeFromActionQueue = (actionId) => {
   const index = actionRetryQueue.find((act) => act.actionId === actionId);
   actionRetryQueue.splice(index, 1);
 };
 
-// invokes promisifiedBackground method in MV2 content
-// In MV3 context the execution is:
-//   1. action is added to retry queue, along with resolve handler to be executed on completion of action
-//   2. the queue is then immediately processed
-//   3. on completion of action either successfully or by throwing exception, action is removed from retry queue
-export const submitRequestToBackground = (
+/**
+ * Promise-style call to background method
+ * In MV2: invokes promisifiedBackground method directly.
+ * In MV3: action is added to retry queue, along with resolve handler to be executed on completion,
+ *  the queue is then immediately processed if background connection is available.
+ *  On completion (successful or error) the action is removed from the retry queue.
+ *
+ * @param {string} method - name of the background method
+ * @param {Array} [args] - arguments to that method, if any
+ * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue.
+ * @returns {Promise}
+ */
+export function submitRequestToBackground(
   method,
   args = [],
   actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
-) => {
+) {
   if (isManifestV3()) {
     return new Promise((resolve, reject) => {
       addToActionQueue(actionId, { method, args }, resolve, reject);
     });
   }
   return promisifiedBackground[method](...args);
-};
+}
 
-// Function is similar to submitRequestToBackground function above
-// except that it invokes method on background and not promisifiedBackground
+/**
+ * Callback-style call to background method
+ * In MV2: invokes promisifiedBackground method directly.
+ * In MV3: action is added to retry queue, along with resolve handler to be executed on completion,
+ *  the queue is then immediately processed if background connection is available.
+ *  On completion (successful or error) the action is removed from the retry queue.
+ *
+ * @param {string} method - name of the background method
+ * @param {Array} [args] - arguments to that method, if any
+ * @param callback - Node style (error, result) callback for finishing the operation
+ * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue.
+ */
 export const callBackgroundMethod = (
   method,
   args = [],
@@ -134,12 +166,18 @@ function processActionRetryQueue() {
   }
 }
 
+/**
+ * Sets/replaces the background connection reference
+ * Under MV3 it also triggers queue processing if the new background is connected
+ *
+ * @param {*} backgroundConnection
+ */
 export async function _setBackgroundConnection(backgroundConnection) {
   background = backgroundConnection;
   promisifiedBackground = pify(background);
   if (isManifestV3()) {
     // This function call here will clear the queue of actions
-    // collected while connection stream is not available.
+    // collected while connection stream was not available.
     processActionRetryQueue();
   }
 }

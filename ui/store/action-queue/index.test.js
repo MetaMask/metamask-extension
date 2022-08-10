@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 
 import {
-  __TEST_CLEAR_QUEUE,
+  dropQueue,
   callBackgroundMethod,
   submitRequestToBackground,
   _setBackgroundConnection,
@@ -19,7 +19,27 @@ jest.mock('../../../shared/modules/mv3.utils', () => {
 describe('ActionQueue', () => {
   afterEach(() => {
     sinon.restore();
-    __TEST_CLEAR_QUEUE();
+    dropQueue(true);
+  });
+
+  describe('dropQueue', () => {
+    it('rejects all pending actions by default', async () => {
+      const background = {
+        connectionStream: {
+          readable: false,
+        },
+        backgroundFunction: sinon.stub().yields(),
+      };
+
+      _setBackgroundConnection(background);
+      const result = submitRequestToBackground('backgroundFunction');
+      dropQueue();
+
+      await expect(result).rejects.toThrow(
+        'Background operation cancelled while waiting for connection.',
+      );
+      expect(background.backgroundFunction.called).toStrictEqual(false);
+    });
   });
   describe('submitRequestToBackground', () => {
     it('calls promisified background method if the stream is connected', async () => {
@@ -49,7 +69,6 @@ describe('ActionQueue', () => {
     });
 
     it('calls promisified background method on stream reconnection', async () => {
-      // This is not an adequate simulation of what reconnection would look like
       const background = {
         connectionStream: {
           readable: false,
