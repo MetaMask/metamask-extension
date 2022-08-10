@@ -227,7 +227,7 @@ describe('ActionQueue', () => {
         third: sinon.stub().yields(),
       };
       flowControl.triggerRaceCondition = () => {
-        submitRequestToBackground('third');
+        flowControl.waitFor = submitRequestToBackground('third');
       };
       _setBackgroundConnection(background);
       const scheduled = Promise.all([
@@ -237,8 +237,10 @@ describe('ActionQueue', () => {
       background.connectionStream.readable = true;
       _setBackgroundConnection(background);
       await scheduled;
+      await flowControl.waitFor;
       expect(trace.first).toStrictEqual(1);
       expect(trace.second).toStrictEqual(1);
+      expect(background.third.calledOnce).toStrictEqual(true);
     });
   });
 

@@ -64,12 +64,6 @@ const addToActionQueue = (actionId, request, resolve, reject) => {
   processActionRetryQueue();
 };
 
-// remove action from queue on successful completion
-const removeFromActionQueue = (actionId) => {
-  const index = actionRetryQueue.find((act) => act.actionId === actionId);
-  actionRetryQueue.splice(index, 1);
-};
-
 /**
  * Promise-style call to background method
  * In MV2: invokes promisifiedBackground method directly.
@@ -122,48 +116,40 @@ export const callBackgroundMethod = (
   }
 };
 
-// A thenable like Promise.resolve() but it doesn't introduce an asynchronous delay.
-const syncThenable = {
-  then: (cb) => cb(),
-};
+let processingQueue = false;
 
 // Clears list of pending action in actionRetryQueue
 // The results of background calls are wired up to the original promises that's been returned
 // The first method on the queue gets called synchronously to make testing and reasoning about
 //  a single request to an open connection easier.
-function processActionRetryQueue() {
-  if (background.connectionStream.readable) {
-    // Iterating by index over a queue that's potentially being spliced and pushed to is not great. Let's copy.
-    const actionRetryQueueSnapshot = [...actionRetryQueue];
-    actionRetryQueueSnapshot.reduce(
-      (
-        previousPromise,
-        { request: { method, args }, actionId, resolve, reject },
-      ) => {
-        // eslint-disable-next-line consistent-return
-        return previousPromise.then(() => {
-          if (background.connectionStream.readable) {
-            try {
-              return promisifiedBackground[method](...args)
-                .then((result) => {
-                  removeFromActionQueue(actionId);
-                  resolve(result);
-                })
-                .catch((err) => {
-                  removeFromActionQueue(actionId);
-                  reject(err);
-                });
-            } catch (err) {
-              removeFromActionQueue(actionId);
-              reject(err);
-            }
-          }
-          return syncThenable;
-        });
-      },
-      syncThenable,
-    );
+async function processActionRetryQueue() {
+  if (processingQueue) {
+    return;
   }
+  processingQueue = true;
+  try {
+    while (
+      background.connectionStream.readable &&
+      actionRetryQueue.length > 0
+    ) {
+      // If background disconnects and fails the action, the next one will not be taken off the queue.
+      // Retrying an action that failed because of connection loss while it was alreaedy ongoing is not supported.
+      const {
+        request: { method, args },
+        resolve,
+        reject,
+      } = actionRetryQueue.shift();
+      try {
+        resolve(await promisifiedBackground[method](...args));
+      } catch (err) {
+        reject(err);
+      }
+    }
+  } catch (e) {
+    // error in the queue mechanism itself, the action was malformed
+    console.error(e);
+  }
+  processingQueue = false;
 }
 
 /**
