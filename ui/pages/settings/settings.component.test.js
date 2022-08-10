@@ -10,18 +10,18 @@ describe('SettingsPage', () => {
   let wrapper;
 
   const props = {
-    isAddressEntryPage: false,
+    addNewNetwork: false,
+    addressName: '',
     backRoute: '/',
+    conversionDate: Date.now(),
     currentPath: '/settings',
+    initialBreadCrumbKey: undefined,
+    initialBreadCrumbRoute: undefined,
+    isAddressEntryPage: false,
+    isPopup: false,
     location: '/settings',
     mostRecentOverviewPage: '',
-    isPopup: false,
     pathnameI18nKey: undefined,
-    addressName: '',
-    initialBreadCrumbRoute: undefined,
-    initialBreadCrumbKey: undefined,
-    addNewNetwork: false,
-    conversionDate: Date.now(),
   };
 
   beforeEach(() => {
