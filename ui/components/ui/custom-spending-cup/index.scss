@@ -1,6 +1,10 @@
 .custom-spending-cup {
   width: 348px;
 
+  &__input-value-and-token-name {
+    font-weight: bold;
+  }
+
   &__warning-text-colour {
     color: var(--color-warning-default) !important;
   }
@@ -25,9 +29,5 @@
       margin-top: -29px;
       margin-right: 16px;
     }
-  }
-
-  &__lowerValue__enteredValueAndTokenName {
-    font-weight: bold;
   }
 }

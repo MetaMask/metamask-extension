@@ -27,13 +27,13 @@ export default function CustomSpendingCup({
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const getInputTextLogic = (inputNumber) => {
-    if (inputNumber <= currentTokenBalance && inputNumber !== '') {
+    if (inputNumber <= currentTokenBalance) {
       return {
         className: 'custom-spending-cup__lowerValue',
         description: t('inputLogicEqualOrSmallerNumber', [
           <span
             key="custom-spending-cup"
-            className="custom-spending-cup__lowerValue__enteredValueAndTokenName"
+            className="custom-spending-cup__input-value-and-token-name"
           >
             {inputNumber} {tokenName}
           </span>,
