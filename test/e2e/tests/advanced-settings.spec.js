@@ -41,7 +41,7 @@ describe('Advanced Settings', function () {
           '[data-testid="eth-overview__secondary-currency"]',
         );
         assert.equal(
-          await secondaryCurrency,
+          secondaryCurrency,
           true,
           `Secondary currency is not present`,
         );
@@ -66,7 +66,7 @@ describe('Advanced Settings', function () {
           '[data-testid="eth-overview__secondary-currency"]',
         );
         assert.equal(
-          await secondaryCurrency,
+          secondaryCurrency,
           false,
           `Secondary currency is present`,
         );
