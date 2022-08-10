@@ -38,7 +38,7 @@ export default class PreferencesController {
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: Boolean(process.env.TOKEN_DETECTION_V2),
+      useTokenDetection: false,
       useCollectibleDetection: false,
       openSeaEnabled: false,
       advancedGasFee: null,
@@ -79,6 +79,7 @@ export default class PreferencesController {
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
     this.migrateAddressBookState = opts.migrateAddressBookState;
+    this.tokenListController = opts.tokenListController;
 
     this._subscribeToInfuraAvailability();
 
@@ -131,6 +132,13 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
+    if (val) {
+      this.tokenListController.start();
+    } else {
+      this.tokenListController.clearingTokenListData();
+      this.tokenListController.stop();
+    }
   }
 
   /**
