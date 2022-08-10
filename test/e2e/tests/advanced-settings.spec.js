@@ -65,11 +65,7 @@ describe('Advanced Settings', function () {
         const secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
         );
-        assert.equal(
-          secondaryCurrency,
-          false,
-          `Secondary currency is present`,
-        );
+        assert.equal(secondaryCurrency, false, `Secondary currency is present`);
       },
     );
   });
