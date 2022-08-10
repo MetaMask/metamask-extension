@@ -393,12 +393,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.16.4":
+"@babel/parser@7.16.4", "@babel/parser@^7.12.5":
   version "7.16.4"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.4.tgz#d5f92f57cf2c74ffe9b37981c0e72fee7311372e"
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
 
-"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.5", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.6", "@babel/parser@^7.18.9":
+"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.6", "@babel/parser@^7.18.9":
   version "7.18.9"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.9.tgz#f2dde0c682ccc264a9a8595efd030a5cc8fd2539"
   integrity sha512-9uJveS9eY9DJ0t64YbIBZICtJy8a5QrDEVdiLCG97fVLpDTpGX7t8mMSb6OWw6Lrnjqj4O8zwjELX3dhoMgiBg==
@@ -3039,6 +3039,14 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
+
+"@metamask/noble-secp256k1-compat-wrapper@^1.0.3", secp256k1@4.0.2, secp256k1@^3.0.1, secp256k1@^3.6.1, secp256k1@^3.6.2, secp256k1@^4.0.0, secp256k1@^4.0.1, "secp256k1@npm:@metamask/noble-secp256k1-compat-wrapper@1.0.3":
+  name secp256k1
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@metamask/noble-secp256k1-compat-wrapper/-/noble-secp256k1-compat-wrapper-1.0.3.tgz#fdc5fb1c8d777264da2779671577c4182e301a2d"
+  integrity sha512-S102pmEH1UpLLa7f9oN+tV3v8c0wBmqZa7+sAtTFUsFg0DQvV4EIhRCYZgtJRLbaA7U6LXkPADac1DtHVyMFVw==
+  dependencies:
+    ethereum-cryptography "^1.1.2"
 
 "@metamask/object-multiplex@^1.1.0", "@metamask/object-multiplex@^1.2.0":
   version "1.2.0"
@@ -19863,14 +19871,6 @@ no-case@^3.0.3, no-case@^3.0.4:
   dependencies:
     lower-case "^2.0.2"
     tslib "^2.0.3"
-
-noble-secp256k1-compat-wrapper@^1.0.1, secp256k1@4.0.2, secp256k1@^3.0.1, secp256k1@^3.6.1, secp256k1@^3.6.2, secp256k1@^4.0.0, secp256k1@^4.0.1, "secp256k1@npm:noble-secp256k1-compat-wrapper@1.0.1":
-  name secp256k1
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/noble-secp256k1-compat-wrapper/-/noble-secp256k1-compat-wrapper-1.0.1.tgz#87b53ab79e7a6e6a3a23fd42a408eca0a1ec7f7a"
-  integrity sha512-WPBCXBQ3eKUZGp6DR5mVuK0EUpZs9CXNNCbnltGI7JSdB6Uvos95joBElIa55ysPmLTvMkpWFn8TNa4V/QAs+w==
-  dependencies:
-    ethereum-cryptography "^1.1.2"
 
 nock@^9.0.14:
   version "9.1.5"
