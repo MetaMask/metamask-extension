@@ -86,7 +86,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -485,12 +485,12 @@ export default function BuildQuote({
         key="build-quote-etherscan-link"
         onClick={() => {
           trackEvent({
-            event: 'Clicked Block Explorer Link',
+            event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
             category: EVENT.CATEGORIES.SWAPS,
             properties: {
-              link_type: 'Token Tracker',
-              action: 'Swaps Confirmation',
-              block_explorer_domain: getURLHostName(blockExplorerTokenLink),
+              link_type: EVENT.EXTERNAL_LINK_TYPES.TOKEN_TRACKER,
+              location: 'Swaps Confirmation',
+              url_domain: getURLHostName(blockExplorerTokenLink),
             },
           });
           global.platform.openTab({
