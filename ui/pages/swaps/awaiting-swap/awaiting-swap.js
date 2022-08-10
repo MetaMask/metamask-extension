@@ -11,7 +11,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 
 import {
@@ -170,7 +170,7 @@ export default function AwaitingSwap({
               },
             },
             {
-              contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
             },
           );
         }}

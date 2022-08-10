@@ -14,7 +14,7 @@ import {
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 
 export default class InfoTab extends PureComponent {
@@ -104,7 +104,7 @@ export default class InfoTab extends PureComponent {
                   },
                 },
                 {
-                  contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
                 },
               );
             }}
@@ -140,7 +140,7 @@ export default class InfoTab extends PureComponent {
                   },
                 },
                 {
-                  contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
                 },
               );
             }}

@@ -6,7 +6,7 @@ import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 
 class ErrorPage extends PureComponent {
@@ -57,7 +57,7 @@ class ErrorPage extends PureComponent {
               },
             },
             {
-              contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
             },
           );
         }}

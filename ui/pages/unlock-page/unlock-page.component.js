@@ -10,7 +10,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 
 export default class UnlockPage extends Component {
@@ -219,7 +219,9 @@ export default class UnlockPage extends Component {
                       },
                     },
                     {
-                      contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                      contextPropsIntoEventProperties: [
+                        CONTEXT_PROPS.PAGE_TITLE,
+                      ],
                     },
                   );
                 }}

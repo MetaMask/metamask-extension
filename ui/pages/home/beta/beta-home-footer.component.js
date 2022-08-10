@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -29,7 +29,7 @@ const BetaHomeFooter = () => {
               },
             },
             {
-              contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
             },
           );
         }}

@@ -17,7 +17,7 @@ import { captureException, captureMessage } from '@sentry/browser';
 import { omit } from 'lodash';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
-import { CONTEXT_FIELDS } from '../../shared/constants/metametrics';
+import { CONTEXT_PROPS } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
@@ -58,17 +58,17 @@ export function MetaMetricsProvider({ children }) {
   const location = useLocation();
   const context = useSegmentContext();
 
-  // Sometimes we want to track context fields inside the "properties" object.
-  const addContextFieldsIntoProperties = (payload, options) => {
-    const fields = options?.contextFieldsIntoProperties;
+  // Sometimes we want to track context properties inside the event's "properties" object.
+  const addContextPropsIntoEventProperties = (payload, options) => {
+    const fields = options?.contextPropsIntoEventProperties;
     if (!fields || fields.length === 0) {
       return;
     }
     if (!payload.properties) {
       payload.properties = {};
     }
-    if (fields.includes(CONTEXT_FIELDS.PAGE_TITLE)) {
-      payload.properties[CONTEXT_FIELDS.PAGE_TITLE] = context.page?.title;
+    if (fields.includes(CONTEXT_PROPS.PAGE_TITLE)) {
+      payload.properties[CONTEXT_PROPS.PAGE_TITLE] = context.page?.title;
     }
   };
 
@@ -77,7 +77,7 @@ export function MetaMetricsProvider({ children }) {
    */
   const trackEvent = useCallback(
     (payload, options) => {
-      addContextFieldsIntoProperties(payload, options);
+      addContextPropsIntoEventProperties(payload, options);
       trackMetaMetricsEvent(
         {
           ...payload,

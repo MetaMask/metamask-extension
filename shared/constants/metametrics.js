@@ -353,6 +353,6 @@ export const EVENT = {
 
 // Values below (e.g. 'location') can be used in the "properties"
 // tracking object as keys, e.g. { location: 'Home' }
-export const CONTEXT_FIELDS = {
+export const CONTEXT_PROPS = {
   PAGE_TITLE: 'location',
 };

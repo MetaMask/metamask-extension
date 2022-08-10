@@ -6,7 +6,7 @@ import { SUPPORT_LINK } from '../../helpers/constants/common';
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
@@ -698,8 +698,8 @@ export default class Home extends PureComponent {
                           },
                         },
                         {
-                          contextFieldsIntoProperties: [
-                            CONTEXT_FIELDS.PAGE_TITLE,
+                          contextPropsIntoEventProperties: [
+                            CONTEXT_PROPS.PAGE_TITLE,
                           ],
                         },
                       );

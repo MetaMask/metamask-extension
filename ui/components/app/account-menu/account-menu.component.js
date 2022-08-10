@@ -8,7 +8,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   EVENT,
   EVENT_NAMES,
-  CONTEXT_FIELDS,
+  CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
@@ -455,7 +455,7 @@ export default class AccountMenu extends Component {
                 },
               },
               {
-                contextFieldsIntoProperties: [CONTEXT_FIELDS.PAGE_TITLE],
+                contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
               },
             );
             global.platform.openTab({ url: supportLink });
