@@ -621,6 +621,7 @@ export default class MetaMetricsController {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
+      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
@@ -649,7 +650,6 @@ export default class MetaMetricsController {
       [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
-      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
     };
 
     if (!this.previousTraits) {
