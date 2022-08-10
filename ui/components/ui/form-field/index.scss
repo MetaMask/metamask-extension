@@ -16,6 +16,21 @@
     align-self: center;
   }
 
+  &__heading-title {
+    &__tooltip {
+      color: var(--color-text-alternative);
+      width: 180px;
+
+      &__warning-icon {
+        color: var(--color-warning-default) !important;
+      }
+
+      &__question-icon {
+        color: var(--color-icon-muted) !important;
+      }
+    }
+  }
+
   &__error,
   &__error h6 {
     color: var(--color-error-default) !important;
@@ -52,5 +67,17 @@
     &--warning {
       border-color: var(--color-warning-default);
     }
+
+    &--colour-value {
+      color: var(--color-warning-default);
+    }
+
+    &--max-button {
+      padding-right: 60px;
+    }
+  }
+
+  &__custom-spending-cup-text {
+    padding-top: 8px;
   }
 }

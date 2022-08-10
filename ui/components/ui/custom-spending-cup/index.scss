@@ -1,0 +1,33 @@
+.custom-spending-cup {
+  width: 348px;
+
+  &__warning-text-colour {
+    color: var(--color-warning-default) !important;
+  }
+
+  &__emptyState {
+    color: var(--color-text-alternative);
+  }
+
+  &__input {
+    width: 280px;
+
+    &--button {
+      background: none;
+      color: var(--color-primary-default);
+    }
+
+    &--max-button {
+      float: right;
+      position: relative;
+      color: var(--color-text-alternative);
+      background: none;
+      margin-top: -29px;
+      margin-right: 16px;
+    }
+  }
+
+  &__lowerValue__enteredValueAndTokenName {
+    font-weight: bold;
+  }
+}

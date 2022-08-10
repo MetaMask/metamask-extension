@@ -26,6 +26,7 @@ export default function FormField({
   TooltipCustomComponent,
   titleDetail = '',
   titleDetailWrapperProps,
+  coloredValue,
   error,
   onChange = undefined,
   value = 0,
@@ -42,6 +43,8 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
+  customSpendingCupText,
+  maxButton,
 }) {
   return (
     <div
@@ -115,6 +118,8 @@ export default function FormField({
             className={classNames('form-field__input', {
               'form-field__input--error': error,
               'form-field__input--warning': warning,
+              'form-field__input--colour-value': coloredValue,
+              'form-field__input--max-button': maxButton,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -127,6 +132,7 @@ export default function FormField({
             {...inputProps}
           />
         )}
+        {maxButton}
         {error && (
           <Typography
             color={COLORS.ERROR_DEFAULT}
@@ -161,6 +167,15 @@ export default function FormField({
             className="form-field__password-strength-text"
           >
             {passwordStrengthText}
+          </Typography>
+        )}
+        {customSpendingCupText && (
+          <Typography
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__custom-spending-cup-text"
+          >
+            {customSpendingCupText}
           </Typography>
         )}
       </Box>
@@ -277,4 +292,19 @@ FormField.propTypes = {
    * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
    */
   wrappingLabelProps: PropTypes.object,
+  /**
+  * Custom spending cup description
+  */
+ customSpendingCupText: PropTypes.oneOfType([
+   PropTypes.string,
+   PropTypes.object,
+ ]),
+ /**
+  * Max button inside input in CustomSpendingCup component
+  */
+ maxButton: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+ /**
+  * Show colored value
+  */
+ coloredValue: PropTypes.bool,
 };
