@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { memoize, pick } from 'lodash';
+import { memoize } from 'lodash';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,

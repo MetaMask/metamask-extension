@@ -59,6 +59,11 @@ export default {
       defaultValue: BLOCK_SIZES.HALF,
       table: { category: 'display' },
     },
+    color: {
+      options: TextColors,
+      control: 'select',
+      table: { category: 'color' },
+    },
     backgroundColor: {
       options: Object.values(BACKGROUND_COLORS),
       control: 'select',
@@ -66,11 +71,14 @@ export default {
         category: 'background',
       },
     },
+<<<<<<< HEAD
     color: {
       options: Object.values(TEXT_COLORS),
       control: 'select',
       table: { category: 'color' },
     },
+=======
+>>>>>>> 664f9a50f (fixed readme and storybook for box props)
     borderStyle: {
       options: Object.values(BORDER_STYLE),
       control: 'select',

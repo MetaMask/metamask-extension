@@ -120,8 +120,6 @@ or array of these values.
 import { DISPLAY } from '../../../helpers/constants/design-system';
 import Box from '../ui/box';
 
-
-
 <Box display={DISPLAY.BLOCK} />
 <Box display={DISPLAY.FLEX} />
 <Box display={DISPLAY.GRID} />
@@ -131,10 +129,36 @@ import Box from '../ui/box';
 <Box display={DISPLAY.NONE} />
 ```
 
+### Color
+
+The `color` prop can be used to set the color of the content in Box component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props.
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--color" />
+</Canvas>
+
+Example of importing `COLORS` object with `Box` component
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box
+  backgroundColor={COLORS.BACKGROUND_DEFAULT}
+  color={COLORS.ERROR_DEFAULT}
+>
+  Text goes here
+</Box>;
+```
+
 ### Background Color
 
 Use the `backgroundColor` prop along with the `COLORS` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 664f9a50f (fixed readme and storybook for box props)
 <Canvas>
   <Story id="ui-components-ui-box-box-stories-js--background-color" />
 </Canvas>
@@ -172,29 +196,6 @@ import Box from '../ui/box';
 </Box>;
 ```
 
-### Color
-
-The `color` prop can be used to set the color of the content in Box Component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props.
-
-<Canvas>
-  <Story id="ui-components-ui-box-box-stories-js--color" />
-</Canvas>
-
-**NOTE**: The `<Box/>` color combinations above follow our design system color rules and should cover most general UI applications. Click "Show code" to see the code example. Do not use the [deprecated colors](#deprecated-colors)
-
-Example of importing `COLORS` object with `Box` component
-
-```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
-import Box from '../ui/box';
-
-<Box
-  backgroundColor={COLORS.BACKGROUND_DEFAULT}
-  color={COLORS.ERROR_DEFAULT}
->
-  Text goes here
-</Box>;
-```
 
 ### Responsive Props
 
