@@ -762,6 +762,8 @@ jobs:
           name: ts-migration-dashboard:deploy
           command: |
             git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
+            git config user.name "MetaMask Bot"
+            git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
   test-unit:
