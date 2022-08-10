@@ -652,7 +652,7 @@ function createFactoredBuild({
         }),
         // cap files at 2 mb
         bifyModuleGroups.groupBySize({
-          sizeLimit: 2e6,
+          sizeLimit: 2e60,
           groupingMap: sizeGroupMap,
         }),
       );
