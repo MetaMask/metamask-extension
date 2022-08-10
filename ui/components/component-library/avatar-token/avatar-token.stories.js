@@ -41,6 +41,7 @@ const Template = (args) => {
 };
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
+
 export const Size = (args) => (
   <>
     <AvatarToken {...args} marginBottom={2} size={SIZES.XS} />
@@ -60,6 +61,7 @@ export const showHalo = Template.bind({});
 showHalo.args = {
   showHalo: true,
 };
+
 export const BackgroundAndBorderColor = (args) => (
   <>
     <AvatarToken
