@@ -19,7 +19,7 @@ const ganacheOptions = {
   ],
 };
 
-async function loadAccount() {
+async function loadNewAccount() {
   let loadingTimes;
 
   await withFixtures(
@@ -116,7 +116,7 @@ async function main() {
   );
 
   const results = {};
-  results.loadAccount = await loadAccount();
+  results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
   const { out } = argv;
 
