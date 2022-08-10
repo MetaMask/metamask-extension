@@ -105,18 +105,6 @@ workflows:
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
-      - test-mozilla-lint:
-          requires:
-            - prep-deps
-            - prep-build
-      - test-mozilla-lint-beta:
-          requires:
-            - prep-deps
-            - prep-build-beta
-      - test-mozilla-lint-flask:
-          requires:
-            - prep-deps
-            - prep-build-flask
       - all-tests-pass:
           requires:
             - validate-lavamoat-config
@@ -129,9 +117,6 @@ workflows:
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
-            - test-mozilla-lint
-            - test-mozilla-lint-beta
-            - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-chrome-snaps
@@ -840,48 +825,6 @@ jobs:
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
-
-  test-mozilla-lint:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
-
-  test-mozilla-lint-beta:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
-
-  test-mozilla-lint-flask:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move flask build to dist
-          command: mv ./dist-flask ./dist
-      - run:
-          name: Move flask zips to builds
-          command: mv ./builds-flask ./builds
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   all-tests-pass:
     executor: node-browsers
