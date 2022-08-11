@@ -8,6 +8,8 @@ import {
   JUSTIFY_CONTENT,
   DISPLAY,
   COLORS,
+  FLEX_DIRECTION,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
@@ -276,9 +278,11 @@ function getValues(pendingApproval, t, actions, history) {
         ],
         props: {
           variant: TYPOGRAPHY.H7,
-          align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
+            display: DISPLAY.FLEX,
+            flexDirection: FLEX_DIRECTION.COLUMN,
+            alignItems: ALIGN_ITEMS.CENTER,
           },
         },
       },

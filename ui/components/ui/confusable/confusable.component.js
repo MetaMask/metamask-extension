@@ -18,7 +18,7 @@ const Confusable = ({ input }) => {
     return (
       <Tooltip
         key={index.toString()}
-        tag="span"
+        as="span"
         position="top"
         title={
           zeroWidth
