@@ -737,8 +737,20 @@
   "contractDeployment": {
     "message": "Contract deployment"
   },
+  "contractDescription": {
+    "message": "To protect yourself against scammers, take a moment to verify contract details. Learn how to verify contract details."
+  },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "contractRequestingSpendingCap": {
+    "message": "Contract requesting spending cap"
+  },
+  "contractTitle": {
+    "message": "Contract details"
+  },
+  "contractToken": {
+    "message": "Token contract"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -2481,6 +2493,9 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openInBlockExplorer": {
+    "message": "Open in block explorer"
   },
   "optional": {
     "message": "Optional"

@@ -1,0 +1,104 @@
+.contract-details-modal {
+  background-color: var(--color-background-default);
+  border-radius: 8px;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  position: absolute;
+  width: 360px;
+  height: 491px;
+  left: 1px;
+  top: 225px;
+
+  &__content {
+    @extend %col-nowrap;
+
+    padding: 24px 16px 32px 16px;
+    border-bottom: 1px solid var(--color-border-muted);
+
+    &__header {
+      @include H4;
+
+      font-style: normal;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    &__description {
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 20px;
+      padding-top: 8px;
+    }
+
+    &__contract-subtitle {
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: left;
+      padding-top: 16px;
+      padding-bottom: 8px;
+    }
+
+    &__contract {
+      border: 1px solid var(--color-border-default);
+      border-radius: 4px;
+      display: flex;
+      width: 100%;
+
+      &__identicon {
+        margin: 16px 16px 38px 16px;
+      }
+
+      &__title {
+        @include H6;
+
+        font-weight: 700;
+        width: 176px;
+        height: 24px;
+        font-size: 16px;
+        margin-top: 16px;
+      }
+
+      &__addres {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        width: 176px;
+        height: 22px;
+        margin-bottom: 16px;
+      }
+
+      &__icon {
+        margin-left: 1px;
+        display: flex;
+      }
+
+      &__buttons {
+        padding: 18px 23px 40px 1px;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        background-color: var(--color-background-default);
+      }
+
+      &__button {
+        background-color: var(--color-background-default);
+      }
+
+      &__buttonCopy {
+        background-color: var(--color-background-default);
+      }
+    }
+  }
+
+  &__footer {
+    @extend %row-nowrap;
+
+    padding: 1rem;
+
+    button + button {
+      margin-left: 1rem;
+      height: 48px;
+    }
+  }
+}
