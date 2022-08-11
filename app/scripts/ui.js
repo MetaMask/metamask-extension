@@ -197,7 +197,8 @@ async function displayCriticalError(err, metamaskState) {
  */
 function connectToAccountManager(connectionStream, cb) {
   const mx = setupMultiplex(connectionStream);
-  setupControllerConnection(mx.createStream('controller'), cb);
+  const controllerConnectionStream = mx.createStream('controller');
+  setupControllerConnection(controllerConnectionStream, cb);
   setupWeb3Connection(mx.createStream('provider'));
 }
 
@@ -219,10 +220,10 @@ function setupWeb3Connection(connectionStream) {
 /**
  * Establishes a streamed connection to the background account manager
  *
- * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
+ * @param {PortDuplexStream} controllerConnectionStream - PortStream instance establishing a background connection
  * @param {Function} cb - Called when the remote account manager connection is established
  */
-function setupControllerConnection(connectionStream, cb) {
-  const backgroundRPC = metaRPCClientFactory(connectionStream);
+function setupControllerConnection(controllerConnectionStream, cb) {
+  const backgroundRPC = metaRPCClientFactory(controllerConnectionStream);
   cb(null, backgroundRPC);
 }
