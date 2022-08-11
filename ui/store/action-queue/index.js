@@ -39,6 +39,7 @@ function failQueue() {
 
 /**
  * Drops the entire actions queue. Rejects all actions in the queue unless silently==true
+ * Does not affect the single action that is currently being processed.
  *
  * @param {boolean} [silently]
  */
@@ -134,15 +135,23 @@ async function processActionRetryQueue() {
     ) {
       // If background disconnects and fails the action, the next one will not be taken off the queue.
       // Retrying an action that failed because of connection loss while it was alreaedy ongoing is not supported.
+      const item = actionRetryQueue.shift();
       const {
         request: { method, args },
         resolve,
         reject,
-      } = actionRetryQueue.shift();
+      } = item;
       try {
         resolve(await promisifiedBackground[method](...args));
       } catch (err) {
-        reject(err);
+        if (
+          background.DisconnectError && // necessary to not break compatibility with background stubs or non-default implementations
+          err instanceof background.DisconnectError
+        ) {
+          actionRetryQueue.unshift(item);
+        } else {
+          reject(err);
+        }
       }
     }
   } catch (e) {
@@ -162,8 +171,12 @@ export async function _setBackgroundConnection(backgroundConnection) {
   background = backgroundConnection;
   promisifiedBackground = pify(background);
   if (isManifestV3()) {
-    // This function call here will clear the queue of actions
-    // collected while connection stream was not available.
+    if (processingQueue) {
+      console.warn(
+        '_setBackgroundConnection called while a queue was processing and not disconnected yet',
+      );
+    }
+    // Process all actions collected while connection stream was not available.
     processActionRetryQueue();
   }
 }
