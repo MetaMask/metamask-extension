@@ -339,6 +339,7 @@ export const EVENT = {
   ACCOUNT_IMPORT_TYPES: {
     JSON: 'json',
     PRIVATE_KEY: 'private_key',
+    SRP: 'srp',
   },
   CATEGORIES: {
     ACCOUNTS: 'Accounts',
