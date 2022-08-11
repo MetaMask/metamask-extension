@@ -17,8 +17,8 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import { ETH } from '../helpers/constants/common';
 import { useEqualityCheck } from './useEqualityCheck';
-import { ETH } from 'ui/helpers/constants/common';
 
 export function getRenderableTokenData(
   token,
