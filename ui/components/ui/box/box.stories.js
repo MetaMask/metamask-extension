@@ -254,18 +254,18 @@ export const Padding = (args) => {
   return (
     <Box borderColor={COLORS.BORDER_MUTED}>
       <Box
+        {...args}
         padding={4}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_MUTED}
-        {...args}
       >
         Static padding
       </Box>
       <Box
+        {...args}
         padding={[4, 8, 12]}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_MUTED}
-        {...args}
       >
         Responsive padding changes based on breakpoint
       </Box>
@@ -276,41 +276,42 @@ export const Padding = (args) => {
 export const Color = (args) => {
   return (
     <>
-      <Box padding={3} color={COLORS.TEXT_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.TEXT_DEFAULT}>
         COLORS.TEXT_DEFAULT
       </Box>
-      <Box padding={3} color={COLORS.TEXT_ALTERNATIVE} {...args}>
+      <Box {...args} padding={3} color={COLORS.TEXT_ALTERNATIVE}>
         COLORS.TEXT_ALTERNATIVE
       </Box>
-      <Box padding={3} color={COLORS.TEXT_MUTED} {...args}>
+      <Box {...args} padding={3} color={COLORS.TEXT_MUTED}>
         COLORS.TEXT_MUTED
       </Box>
-      <Box padding={3} color={COLORS.PRIMARY_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.PRIMARY_DEFAULT}>
         COLORS.PRIMARY_DEFAULT
       </Box>
       <Box
+        {...args}
         padding={3}
         color={COLORS.PRIMARY_INVERSE}
         backgroundColor={COLORS.PRIMARY_DEFAULT}
-        {...args}
       >
         COLORS.PRIMARY_INVERSE
       </Box>
-      <Box padding={3} color={COLORS.ERROR_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.ERROR_DEFAULT}>
         COLORS.ERROR_DEFAULT
       </Box>
       <Box
+        {...args}
         padding={3}
         color={COLORS.ERROR_INVERSE}
         backgroundColor={COLORS.ERROR_DEFAULT}
-        {...args}
       >
         COLORS.ERROR_INVERSE
       </Box>
-      <Box padding={3} color={COLORS.SUCCESS_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.SUCCESS_DEFAULT}>
         COLORS.SUCCESS_DEFAULT
       </Box>
       <Box
+        {...args}
         padding={3}
         color={COLORS.SUCCESS_INVERSE}
         backgroundColor={COLORS.SUCCESS_DEFAULT}
@@ -318,10 +319,11 @@ export const Color = (args) => {
       >
         COLORS.SUCCESS_INVERSE
       </Box>
-      <Box padding={3} color={COLORS.WARNING_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT} {...args}>
         COLORS.WARNING_DEFAULT
       </Box>
       <Box
+        {...args}
         padding={3}
         color={COLORS.WARNING_INVERSE}
         backgroundColor={COLORS.WARNING_DEFAULT}
@@ -329,10 +331,11 @@ export const Color = (args) => {
       >
         COLORS.WARNING_INVERSE
       </Box>
-      <Box padding={3} color={COLORS.INFO_DEFAULT} {...args}>
+      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT} {...args}>
         COLORS.INFO_DEFAULT
       </Box>
       <Box
+        {...args}
         padding={3}
         color={COLORS.INFO_INVERSE}
         backgroundColor={COLORS.INFO_DEFAULT}
@@ -340,7 +343,7 @@ export const Color = (args) => {
       >
         COLORS.INFO_INVERSE
       </Box>
-      <Box padding={3} color={COLORS.INHERIT} {...args}>
+      <Box {...args} padding={3} color={COLORS.INHERIT} {...args}>
         COLORS.INHERIT
       </Box>
     </>
