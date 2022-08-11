@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import MetaFoxLogo from '../../../ui/metafox-logo';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 import { EVENT } from '../../../../../shared/constants/metametrics';

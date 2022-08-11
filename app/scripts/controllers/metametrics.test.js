@@ -688,6 +688,7 @@ describe('MetaMetricsController', function () {
 
       assert.deepEqual(traits, {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
+        [TRAITS.INSTALL_DATE_EXT]: '',
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID, '0xaf'],
         [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],
