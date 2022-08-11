@@ -26,6 +26,7 @@ setBackgroundConnection({
   setBackgroundSwapRouteState: jest.fn(),
   clearSwapsQuotes: jest.fn(),
   stopPollingForQuotes: jest.fn(),
+  clearSmartTransactionFees: jest.fn(),
 });
 
 describe('BuildQuote', () => {
@@ -36,10 +37,10 @@ describe('BuildQuote', () => {
     expect(getByText('Swap from')).toBeInTheDocument();
     expect(getByText('Swap to')).toBeInTheDocument();
     expect(getByText('ETH')).toBeInTheDocument();
-    expect(getByText('Slippage Tolerance')).toBeInTheDocument();
+    expect(getByText('Slippage tolerance')).toBeInTheDocument();
     expect(getByText('2%')).toBeInTheDocument();
     expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('Review Swap')).toBeInTheDocument();
+    expect(getByText('Review swap')).toBeInTheDocument();
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();

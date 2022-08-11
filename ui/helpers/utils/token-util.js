@@ -44,13 +44,7 @@ async function getDecimalsFromContract(tokenAddress) {
 }
 
 export function getTokenMetadata(tokenAddress, tokenList) {
-  const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
-    return {
-      ...acc,
-      [base.toLowerCase()]: tokenList[base],
-    };
-  }, {});
-  return tokenAddress && casedTokenList[tokenAddress.toLowerCase()];
+  return tokenAddress && tokenList[tokenAddress.toLowerCase()];
 }
 
 async function getSymbol(tokenAddress, tokenList) {
