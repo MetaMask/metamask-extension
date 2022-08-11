@@ -49,8 +49,9 @@ export default class ExportPrivateKeyModal extends Component {
       .then((privateKey) => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.PRIVATE_KEY_EXPORT_REVEALED,
+          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
           properties: {
+            key_type: EVENT.KEY_TYPES.PKEY,
           },
         });
       
@@ -62,8 +63,9 @@ export default class ExportPrivateKeyModal extends Component {
       .catch((e) => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.PRIVATE_KEY_EXPORT_FAILED,
+          event: EVENT_NAMES.KEY_EXPORT_FAILED,
           properties: {
+            key_type: EVENT.KEY_TYPES.PKEY,
             reason: 'incorrect_password',
           },
         });
@@ -101,8 +103,10 @@ export default class ExportPrivateKeyModal extends Component {
         onClick={() => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.KEYS,
-            event: EVENT_NAMES.PRIVATE_KEY_EXPORT_COPIED,
+            event: EVENT_NAMES.KEY_EXPORT_COPIED,
             properties: {
+              key_type: EVENT.KEY_TYPES.PKEY,
+              copy_method: 'clipboard',
             },
           });
           copyToClipboard(plainKey)
@@ -124,8 +128,9 @@ export default class ExportPrivateKeyModal extends Component {
             onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.PRIVATE_KEY_EXPORT_CANCELED,
+                event: EVENT_NAMES.KEY_EXPORT_CANCELED,
                 properties: {
+                  key_type: EVENT.KEY_TYPES.PKEY,
                 },
               });
               hideModal()
@@ -150,8 +155,9 @@ export default class ExportPrivateKeyModal extends Component {
             onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.PRIVATE_KEY_EXPORT_REQUESTED,
+                event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
                 properties: {
+                  key_type: EVENT.KEY_TYPES.PKEY,
                 },
               });
 

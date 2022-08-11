@@ -123,8 +123,9 @@ export default class AccountDetailsModal extends Component {
             onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.ACCOUNTS,
-                event: EVENT_NAMES.PRIVATE_KEY_EXPORT_SELECTED,
+                event: EVENT_NAMES.KEY_EXPORT_SELECTED,
                 properties: {
+                  key_type: EVENT.KEY_TYPES.PKEY,
                   location: 'Account Details Modal',
                 },
               });
