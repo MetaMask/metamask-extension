@@ -7,12 +7,8 @@ import { exportAsFile } from '../../../../shared/modules/export-utils';
 
 function ExportTextContainer({
   text = '',
-  clickHandlerCopy = () => {
-    // default to empty func
-  },
-  clickHandlerDownload = () => {
-    // default to empty func
-  },
+  onClickCopy = null,
+  onClickDownload = null,
 }) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
@@ -26,8 +22,8 @@ function ExportTextContainer({
         <div
           className="export-text-container__button export-text-container__button--copy"
           onClick={() => {
-            if (clickHandlerCopy) {
-              clickHandlerCopy();
+            if (onClickCopy) {
+              onClickCopy();
             }
             handleCopy(text);
           }}
@@ -40,8 +36,8 @@ function ExportTextContainer({
         <div
           className="export-text-container__button"
           onClick={() => {
-            if (clickHandlerDownload) {
-              clickHandlerDownload();
+            if (onClickDownload) {
+              onClickDownload();
             }
             exportAsFile('', text);
           }}
@@ -58,8 +54,8 @@ function ExportTextContainer({
 
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
-  clickHandlerCopy: PropTypes.func,
-  clickHandlerDownload: PropTypes.func,
+  onClickCopy: PropTypes.func,
+  onClickDownload: PropTypes.func,
 };
 
 export default React.memo(ExportTextContainer);

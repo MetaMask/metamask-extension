@@ -114,7 +114,7 @@ class RevealSeedPage extends Component {
         </label>
         <ExportTextContainer
           text={this.state.seedWords}
-          clickHandlerCopy={() => {
+          onClickCopy={() => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
               event: EVENT_NAMES.KEY_EXPORT_COPIED,
@@ -124,7 +124,7 @@ class RevealSeedPage extends Component {
               },
             });
           }}
-          clickHandlerDownload={() => {
+          onClickDownload={() => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
               event: EVENT_NAMES.KEY_EXPORT_COPIED,
