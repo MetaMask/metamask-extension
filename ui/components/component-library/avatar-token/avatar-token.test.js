@@ -17,26 +17,33 @@ describe('AvatarToken', () => {
   });
 
   it('should render image Avatar', () => {
-    render(<AvatarToken {...args} />);
+    render(<AvatarToken {...args} data-testid="avatar-token" />);
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', args.tokenImageUrl);
   });
 
   it('should render the first letter of the tokenName prop if no tokenImageUrl is provided', () => {
-    const { getByText } = render(<AvatarToken {...args} tokenImageUrl="" />);
+    const { getByText } = render(
+      <AvatarToken {...args} data-testid="avatar-token" tokenImageUrl="" />,
+    );
     expect(getByText('A')).toBeDefined();
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarToken {...args} showHalo />);
+    render(<AvatarToken {...args} data-testid="avatar-token" showHalo />);
     const image = screen.getAllByRole('img', { hidden: true });
-    expect(image[1]).toHaveClass('avatar-image__halo--blur');
+    expect(image[1]).toHaveClass('avatar-token__token-image--halo');
   });
 
   it('should render text showHalo is true and no image url is provided', () => {
     const { getByText } = render(
-      <AvatarToken {...args} tokenImageUrl="" showHalo />,
+      <AvatarToken
+        {...args}
+        tokenImageUrl=""
+        data-testid="avatar-token"
+        showHalo
+      />,
     );
     expect(getByText('A')).toBeDefined();
   });
