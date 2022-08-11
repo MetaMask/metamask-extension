@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
 import Box from '../../ui/box/box';
@@ -49,6 +50,10 @@ export const AvatarToken = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
+      className={classnames(
+        'base-avatar',
+        `base-avatar--size-${size} avatar-token`,
+      )}
       {...{ backgroundColor, borderColor, ...props }}
     >
       {showFallback ? (
