@@ -205,6 +205,18 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
+  await server
+    .forGet('https://min-api.cryptocompare.com/data/price')
+    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          USD: '1700',
+        },
+      };
+    });
+
   testSpecificMock(server);
 }
 
