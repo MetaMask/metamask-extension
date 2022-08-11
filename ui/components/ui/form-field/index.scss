@@ -18,15 +18,10 @@
 
   &__heading-title {
     &__tooltip {
-      color: var(--color-text-alternative);
       width: 180px;
 
       &__warning-icon {
         color: var(--color-warning-default) !important;
-      }
-
-      &__question-icon {
-        color: var(--color-icon-muted) !important;
       }
     }
   }

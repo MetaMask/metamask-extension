@@ -3356,8 +3356,8 @@
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
   },
-  "spendingCupInvalid": {
-    "message": "Spending cup invalid; must be a positive number"
+  "spendingCapInvalid": {
+    "message": "Spending cap invalid; must be a positive number"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",

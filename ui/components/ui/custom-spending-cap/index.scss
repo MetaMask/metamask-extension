@@ -1,16 +1,8 @@
-.custom-spending-cup {
+.custom-spending-cap {
   width: 348px;
 
   &__input-value-and-token-name {
-    font-weight: bold;
-  }
-
-  &__warning-text-colour {
-    color: var(--color-warning-default) !important;
-  }
-
-  &__emptyState {
-    color: var(--color-text-alternative);
+    display: contents;
   }
 
   &__input {

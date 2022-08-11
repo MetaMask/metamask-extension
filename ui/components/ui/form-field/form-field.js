@@ -43,7 +43,7 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
-  customSpendingCupText,
+  customSpendingCapText,
   maxButton,
 }) {
   return (
@@ -169,13 +169,13 @@ export default function FormField({
             {passwordStrengthText}
           </Typography>
         )}
-        {customSpendingCupText && (
+        {customSpendingCapText && (
           <Typography
             color={COLORS.TEXT_DEFAULT}
             variant={TYPOGRAPHY.H7}
             className="form-field__custom-spending-cup-text"
           >
-            {customSpendingCupText}
+            {customSpendingCapText}
           </Typography>
         )}
       </Box>
@@ -295,7 +295,7 @@ FormField.propTypes = {
   /**
   * Custom spending cup description
   */
- customSpendingCupText: PropTypes.oneOfType([
+  customSpendingCapText: PropTypes.oneOfType([
    PropTypes.string,
    PropTypes.object,
  ]),

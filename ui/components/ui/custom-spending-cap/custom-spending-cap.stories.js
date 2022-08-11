@@ -1,8 +1,8 @@
 import React from 'react';
-import CustomSpendingCup from './custom-spending-cup';
+import CustomSpendingCap from './custom-spending-cap';
 
 export default {
-  title: 'Components/UI/CustomSpendingCup',
+  title: 'Components/UI/CustomSpendingCap',
   id: __filename,
   argTypes: {
     tokenName: {
@@ -23,7 +23,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <CustomSpendingCup {...args} />;
+  return <CustomSpendingCap {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
