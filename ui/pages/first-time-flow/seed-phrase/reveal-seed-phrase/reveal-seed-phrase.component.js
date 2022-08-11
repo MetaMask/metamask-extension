@@ -79,6 +79,8 @@ export default class RevealSeedPhrase extends PureComponent {
       },
     });
 
+    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
+
     this.context.trackEvent({
       category: EVENT.CATEGORIES.ONBOARDING,
       event: EVENT_NAMES.NEW_WALLET_CREATED,
@@ -87,8 +89,6 @@ export default class RevealSeedPhrase extends PureComponent {
         legacy_event: true,
       },
     });
-
-    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
 
     if (onboardingInitiator) {
       await returnToOnboardingInitiatorTab(onboardingInitiator);
