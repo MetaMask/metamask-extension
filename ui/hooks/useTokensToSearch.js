@@ -8,6 +8,7 @@ import {
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
+  getUseTokenDetection,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
@@ -24,6 +25,7 @@ export function getRenderableTokenData(
   currentCurrency,
   chainId,
   shuffledTokenList,
+  useTokenDetection,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
@@ -57,7 +59,10 @@ export function getRenderableTokenData(
     (tokenData) => tokenData.address === address?.toLowerCase(),
   );
 
-  const usedIconUrl = tokenMetadata?.iconUrl || iconUrl || token?.image;
+  const tokenIconUrl = useTokenDetection
+    ? tokenMetadata?.iconUrl || iconUrl
+    : iconUrl || tokenMetadata?.iconUrl;
+  const usedIconUrl = tokenIconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
@@ -84,6 +89,7 @@ export function useTokensToSearch({
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const useTokenDetection = useSelector(getUseTokenDetection);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
@@ -96,6 +102,7 @@ export function useTokensToSearch({
     currentCurrency,
     chainId,
     shuffledTokensList,
+    useTokenDetection,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -136,6 +143,7 @@ export function useTokensToSearch({
         currentCurrency,
         chainId,
         shuffledTokensList,
+        useTokenDetection,
       );
       if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
         if (
