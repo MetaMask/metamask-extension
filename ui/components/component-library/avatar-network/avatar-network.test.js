@@ -25,7 +25,7 @@ describe('AvatarNetwork', () => {
     expect(image).toHaveAttribute('src', args.networkImageUrl);
   });
 
-  it('should render the first letter of the tokenName prop if no tokenImageUrl is provided', () => {
+  it('should render the first letter of the networkName prop if no networkImageUrl is provided', () => {
     const { getByText } = render(
       <AvatarNetwork
         data-testid="avatar-network"
@@ -39,13 +39,13 @@ describe('AvatarNetwork', () => {
   it('should render halo effect if showHalo is true and image url is there', () => {
     render(<AvatarNetwork data-testid="avatar-network" {...args} showHalo />);
     const image = screen.getAllByRole('img', { hidden: true });
-    expect(image[1]).toHaveClass('avatar-network __token-image--halo');
+    expect(image[1]).toHaveClass('avatar-network__token-image--halo');
   });
   it('should render text showHalo is true and no image url is provided', () => {
     const { getByText } = render(
       <AvatarNetwork
         {...args}
-        tokenImageUrl=""
+        networkImageUrl=""
         data-testid="avatar-network"
         showHalo
       />,
