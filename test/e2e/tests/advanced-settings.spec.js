@@ -37,12 +37,12 @@ describe('Advanced Settings', function () {
           '.settings-page__header__title-container__close-button',
         );
 
-        const secondaryCurrency = await driver.isElementPresent(
-          '[data-testid="eth-overview__secondary-currency"]',
+        const secondaryCurrency = await driver.findElement(
+          '[data-testid="eth-overview__secondary-currency"] .currency-display-component__suffix',
         );
         assert.equal(
-          secondaryCurrency,
-          true,
+          secondaryCurrency.getText(),
+          'USD',
           `Secondary currency is not present`,
         );
       },
