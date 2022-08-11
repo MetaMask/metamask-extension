@@ -659,6 +659,7 @@ describe('Box', () => {
       );
     });
   });
+
   describe('width, height', () => {
     it('should render the Box with the width class', () => {
       const { getByText } = render(
