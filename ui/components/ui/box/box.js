@@ -185,8 +185,8 @@ export default function Box({
   children,
   className,
   backgroundColor,
+  color = TEXT_COLORS.TEXT_DEFAULT,
   as = 'div',
-  color,
   ...props
 }) {
   const boxClassName = classnames(
@@ -227,7 +227,7 @@ export default function Box({
     borderColor &&
       generateClassNames('border-color', borderColor, isValidString),
     borderWidth && generateClassNames('border-width', borderWidth, isValidSize),
-
+    color && generateClassNames('color', color, isValidString),
     {
       // Auto applied classes
       // ---Borders---
@@ -313,11 +313,15 @@ Box.propTypes = {
     PropTypes.arrayOf(PropTypes.oneOf(Object.values(BLOCK_SIZES))),
   ]),
   backgroundColor: MultipleBackgroundColors,
-  color: MultipleTextColors,
   className: PropTypes.string,
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Box component
    * Defaults to 'div'
    */
   as: PropTypes.string,
+  /**
+   * The color of the Typography component Should use the COLOR object from
+   * ./ui/helpers/constants/design-system.js
+   */
+  color: ValidTextColors,
 };
