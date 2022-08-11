@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
+import Box from '../../ui/box/box';
 
 import {
   COLORS,
@@ -47,26 +48,23 @@ export const AvatarNetwork = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
-      data-test-id="avatar-network"
       {...{ backgroundColor, borderColor, ...props }}
     >
       {showFallback ? (
-        networkName?.[0].toUpperCase() ?? '?'
+        networkName?.[0]?.toUpperCase() ?? '?'
       ) : (
         <>
           <img
             onError={handleOnError}
             src={networkImageUrl}
             style={style}
-            alt={networkName || 'token'}
-            {...props}
+            alt={networkName || 'network avatar'}
           />
           {showHalo && (
             <img
               src={networkImageUrl}
-              className={showHalo ? 'blur-halo-image' : ''}
+              className={showHalo ? 'avatar-network__token-image--halo' : ''}
               aria-hidden="true"
-              {...props}
             />
           )}
         </>
@@ -89,7 +87,20 @@ AvatarNetwork.propTypes = {
    */
   showHalo: PropTypes.bool,
   /**
-   * AvatarNetwork accepts all the props from BaseAvatar
+   * The size of the AvatarNetwork
+   * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl',
    */
-  ...BaseAvatar.propTypes,
+  size: PropTypes.oneOf(Object.values(SIZES)),
+  /**
+   * The background color of the AvatarNetwork
+   */
+  backgroundColor: Box.propTypes.backgroundColor,
+  /**
+   * The background color of the AvatarNetwork
+   */
+  borderColor: Box.propTypes.borderColor,
+  /**
+   * AvatarNetwork accepts all the props from Box
+   */
+  ...Box.propTypes,
 };

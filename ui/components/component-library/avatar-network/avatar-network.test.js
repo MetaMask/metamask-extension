@@ -19,22 +19,37 @@ describe('AvatarNetwork', () => {
   });
 
   it('should render image of Avatar Network', () => {
-    render(<AvatarNetwork {...args} />);
+    render(<AvatarNetwork data-testid="avatar-network" {...args} />);
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
     expect(image).toHaveAttribute('src', args.networkImageUrl);
   });
 
-  it('should render Avatar Name Initial if no networkImageUrl is provided', () => {
+  it('should render the first letter of the tokenName prop if no tokenImageUrl is provided', () => {
     const { getByText } = render(
-      <AvatarNetwork {...args} networkImageUrl="" />,
+      <AvatarNetwork
+        data-testid="avatar-network"
+        {...args}
+        networkImageUrl=""
+      />,
     );
     expect(getByText('E')).toBeDefined();
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarNetwork {...args} showHalo />);
+    render(<AvatarNetwork data-testid="avatar-network" {...args} showHalo />);
     const image = screen.getAllByRole('img', { hidden: true });
-    expect(image[1]).toHaveClass('blur-halo-image');
+    expect(image[1]).toHaveClass('avatar-network __token-image--halo');
+  });
+  it('should render text showHalo is true and no image url is provided', () => {
+    const { getByText } = render(
+      <AvatarNetwork
+        {...args}
+        tokenImageUrl=""
+        data-testid="avatar-network"
+        showHalo
+      />,
+    );
+    expect(getByText('E')).toBeDefined();
   });
 });

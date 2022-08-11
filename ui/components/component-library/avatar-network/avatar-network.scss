@@ -1,6 +1,7 @@
-.blur-halo-image {
+.avatar-network__token-image--halo {
+  width: 100%;
+  height: auto;
   filter: blur(20px);
-  transform: scale(1.25);
   border-radius: 50%;
   position: absolute;
   z-index: 1;
