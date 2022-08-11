@@ -19,8 +19,11 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
   getIsSwapsChain,
+  getIsBuyableCoinbasePayToken,
+  getIsBuyableTransakToken,
 } from '../../../selectors/selectors';
 
+import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
 
@@ -48,6 +51,13 @@ const TokenOverview = ({ className, token }) => {
     token.symbol,
   );
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isTokenBuyableCoinbasePay = useSelector((state) =>
+    getIsBuyableCoinbasePayToken(state, token.symbol),
+  );
+  const isTokenBuyableTransak = useSelector((state) =>
+    getIsBuyableTransakToken(state, token.symbol),
+  );
+  const isBuyable = isTokenBuyableCoinbasePay || isTokenBuyableTransak;
 
   useEffect(() => {
     if (token.isERC721 && process.env.COLLECTIBLES_V1) {
@@ -80,6 +90,30 @@ const TokenOverview = ({ className, token }) => {
       }
       buttons={
         <>
+          {isBuyable && (
+            <IconButton
+              className="token-overview__button"
+              Icon={BuyIcon}
+              label={t('buy')}
+              onClick={() => {
+                trackEvent({
+                  event: 'Clicked Deposit: Token',
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  properties: {
+                    action: 'Home',
+                    legacy_event: true,
+                  },
+                });
+                dispatch(
+                  showModal({
+                    name: 'DEPOSIT_TOKEN',
+                    token,
+                  }),
+                );
+              }}
+              disabled={token.isERC721}
+            />
+          )}
           <IconButton
             className="token-overview__button"
             onClick={async () => {
