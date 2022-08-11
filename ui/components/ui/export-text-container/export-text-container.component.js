@@ -5,7 +5,15 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { exportAsFile } from '../../../../shared/modules/export-utils';
 
-function ExportTextContainer({ text = '', clickHandlerCopy = () => {}, clickHandlerDownload = () => {} }) {
+function ExportTextContainer({
+  text = '',
+  clickHandlerCopy = () => {
+    // default to empty func
+  },
+  clickHandlerDownload = () => {
+    // default to empty func
+  },
+}) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -19,7 +27,7 @@ function ExportTextContainer({ text = '', clickHandlerCopy = () => {}, clickHand
           className="export-text-container__button export-text-container__button--copy"
           onClick={() => {
             if (clickHandlerCopy) {
-              clickHandlerCopy()
+              clickHandlerCopy();
             }
             handleCopy(text);
           }}
@@ -33,9 +41,9 @@ function ExportTextContainer({ text = '', clickHandlerCopy = () => {}, clickHand
           className="export-text-container__button"
           onClick={() => {
             if (clickHandlerDownload) {
-              clickHandlerDownload()
+              clickHandlerDownload();
             }
-            exportAsFile('', text)
+            exportAsFile('', text);
           }}
         >
           <img src="images/download.svg" alt="" />

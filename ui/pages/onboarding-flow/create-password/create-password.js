@@ -30,10 +30,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { 
-  EVENT,
-  EVENT_NAMES,
-} from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default function CreatePassword({
   createNewAccount,
