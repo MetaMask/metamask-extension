@@ -49,7 +49,6 @@ export const AvatarToken = ({
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
       justifyContent={JUSTIFY_CONTENT.CENTER}
-      data-test-id="avatar-token"
       {...{ backgroundColor, borderColor, ...props }}
     >
       {showFallback ? (
@@ -60,15 +59,13 @@ export const AvatarToken = ({
             onError={handleOnError}
             src={tokenImageUrl}
             style={style}
-            alt={tokenName || 'token'}
-            {...props}
+            alt={tokenName || 'token avatar'}
           />
           {showHalo && (
             <img
               src={tokenImageUrl}
-              className={showHalo ? 'avatar-image__halo--blur' : ''}
+              className={showHalo ? 'avatar-token__token-image--halo' : ''}
               aria-hidden="true"
-              {...props}
             />
           )}
         </>
@@ -79,7 +76,7 @@ export const AvatarToken = ({
 
 AvatarToken.propTypes = {
   /**
-   * The tokenName accepts the string to render the first alphabet of the Avatar Name
+   * The tokenName accepts the string to render the first letter of the AvatarToken. This will be used as the fallback display if no image url is passed to the tokenImageUrl
    */
   tokenName: PropTypes.string,
   /**
@@ -91,8 +88,20 @@ AvatarToken.propTypes = {
    */
   showHalo: PropTypes.bool,
   /**
-   * AvatarToken accepts all the props from BaseAvatar
+   * The size of theAvatarToken.
+   * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl',
    */
-  ...BaseAvatar.propTypes,
+  size: PropTypes.oneOf(Object.values(SIZES)),
+  /**
+   * The background color of theAvatarToken
+   */
+  backgroundColor: Box.propTypes.backgroundColor,
+  /**
+   * The background color of theAvatarToken
+   */
+  borderColor: Box.propTypes.borderColor,
+  /**
+   * AvatarToken accepts all the props from Box
+   */
   ...Box.propTypes,
 };
