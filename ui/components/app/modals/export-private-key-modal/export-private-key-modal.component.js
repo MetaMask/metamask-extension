@@ -7,7 +7,10 @@ import copyToClipboard from 'copy-to-clipboard';
 import Button from '../../../ui/button';
 import AccountModalContainer from '../account-modal-container';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
-import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 
 export default class ExportPrivateKeyModal extends Component {
   static contextTypes = {
@@ -54,11 +57,11 @@ export default class ExportPrivateKeyModal extends Component {
             key_type: EVENT.KEY_TYPES.PKEY,
           },
         });
-      
+
         this.setState({
           privateKey,
           showWarning: false,
-        })
+        });
       })
       .catch((e) => {
         this.context.trackEvent({
@@ -70,7 +73,7 @@ export default class ExportPrivateKeyModal extends Component {
           },
         });
 
-        log.error(e)
+        log.error(e);
       });
   };
 
@@ -109,7 +112,7 @@ export default class ExportPrivateKeyModal extends Component {
               copy_method: 'clipboard',
             },
           });
-          copyToClipboard(plainKey)
+          copyToClipboard(plainKey);
         }}
       >
         {plainKey}
@@ -133,7 +136,7 @@ export default class ExportPrivateKeyModal extends Component {
                   key_type: EVENT.KEY_TYPES.PKEY,
                 },
               });
-              hideModal()
+              hideModal();
             }}
           >
             {this.context.t('cancel')}
@@ -142,7 +145,7 @@ export default class ExportPrivateKeyModal extends Component {
         {privateKey ? (
           <Button
             onClick={() => {
-              hideModal()
+              hideModal();
             }}
             type="primary"
             large
@@ -161,7 +164,7 @@ export default class ExportPrivateKeyModal extends Component {
                 },
               });
 
-              this.exportAccountAndGetPrivateKey(this.state.password, address)
+              this.exportAccountAndGetPrivateKey(this.state.password, address);
             }}
             type="primary"
             large

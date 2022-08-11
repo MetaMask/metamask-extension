@@ -4,10 +4,7 @@ import classnames from 'classnames';
 import Identicon from '../../ui/identicon';
 import MetaFoxLogo from '../../ui/metafox-logo';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { 
-  EVENT,
-  EVENT_NAMES,
-} from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import NetworkDisplay from '../network-display';
 
 export default class AppHeader extends PureComponent {
@@ -54,8 +51,7 @@ export default class AppHeader extends PureComponent {
       this.context.trackEvent({
         category: EVENT.CATEGORIES.NAVIGATION,
         event: EVENT_NAMES.NAV_NETWORK_MENU_OPENED,
-        properties: {
-        },
+        properties: {},
       });
       showNetworkDropdown();
     } else {
@@ -87,8 +83,7 @@ export default class AppHeader extends PureComponent {
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: EVENT_NAMES.NAV_MAIN_MENU_OPENED,
-                  properties: {
-                  },
+                  properties: {},
                 });
               toggleAccountMenu();
             }

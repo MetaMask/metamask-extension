@@ -8,7 +8,10 @@ import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
-import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
 export default class AccountDetailsModal extends Component {
@@ -129,7 +132,7 @@ export default class AccountDetailsModal extends Component {
                   location: 'Account Details Modal',
                 },
               });
-              showExportPrivateKeyModal()
+              showExportPrivateKeyModal();
             }}
           >
             {this.context.t('exportPrivateKey')}

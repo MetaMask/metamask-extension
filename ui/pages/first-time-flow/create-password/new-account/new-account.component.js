@@ -6,7 +6,10 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
 import TextField from '../../../../components/ui/text-field';
-import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
@@ -100,8 +103,7 @@ export default class NewAccount extends PureComponent {
       this.context.trackEvent({
         category: EVENT.CATEGORIES.ONBOARDING,
         event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
-        properties: {
-        },
+        properties: {},
       });
 
       history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);

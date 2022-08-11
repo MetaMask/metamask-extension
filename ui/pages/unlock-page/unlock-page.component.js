@@ -7,10 +7,7 @@ import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { 
-  EVENT,
-  EVENT_NAMES,
-} from '../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -51,6 +48,7 @@ export default class UnlockPage extends Component {
   };
 
   submitting = false;
+
   failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
@@ -100,10 +98,10 @@ export default class UnlockPage extends Component {
         showOptInModal();
       }
     } catch ({ message }) {
-      this.failed_attempts++;
+      this.failed_attempts += 1;
 
       if (message === 'Incorrect password') {
-        const newState = await forceUpdateMetamaskState();
+        // const newState = await forceUpdateMetamaskState();
         this.context.trackEvent({
           category: EVENT.CATEGORIES.NAVIGATION,
           event: EVENT_NAMES.APP_UNLOCKED_FAILED,

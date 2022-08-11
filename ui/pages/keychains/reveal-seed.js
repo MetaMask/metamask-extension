@@ -40,7 +40,7 @@ class RevealSeedPage extends Component {
             key_type: EVENT.KEY_TYPES.SRP,
           },
         });
-        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN })
+        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN });
       })
       .catch((error) => {
         this.context.trackEvent({
@@ -51,7 +51,7 @@ class RevealSeedPage extends Component {
             reason: error.message, // 'incorrect_password',
           },
         });
-        this.setState({ error: error.message })
+        this.setState({ error: error.message });
       });
   }
 
@@ -112,8 +112,8 @@ class RevealSeedPage extends Component {
         <label className="reveal-seed__label">
           {t('yourPrivateSeedPhrase')}
         </label>
-        <ExportTextContainer 
-          text={this.state.seedWords} 
+        <ExportTextContainer
+          text={this.state.seedWords}
           clickHandlerCopy={() => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
@@ -122,7 +122,7 @@ class RevealSeedPage extends Component {
                 key_type: EVENT.KEY_TYPES.SRP,
                 copy_method: 'clipboard',
               },
-            })
+            });
           }}
           clickHandlerDownload={() => {
             trackEvent({
@@ -132,9 +132,9 @@ class RevealSeedPage extends Component {
                 key_type: EVENT.KEY_TYPES.SRP,
                 copy_method: 'file_download',
               },
-            })
+            });
           }}
-          />
+        />
       </div>
     );
   }
@@ -161,7 +161,7 @@ class RevealSeedPage extends Component {
                   key_type: EVENT.KEY_TYPES.SRP,
                 },
               });
-              this.props.history.push(this.props.mostRecentOverviewPage)
+              this.props.history.push(this.props.mostRecentOverviewPage);
             }}
           >
             {this.context.t('cancel')}
@@ -178,7 +178,7 @@ class RevealSeedPage extends Component {
                   key_type: EVENT.KEY_TYPES.SRP,
                 },
               });
-              this.handleSubmit(event)
+              this.handleSubmit(event);
             }}
             disabled={this.state.password === ''}
           >

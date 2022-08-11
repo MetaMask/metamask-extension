@@ -10,10 +10,7 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { 
-  EVENT,
-  EVENT_NAMES,
-} from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   DEVICE_NAMES,
@@ -260,7 +257,7 @@ class ConnectHardwareForm extends Component {
           properties: {
             account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
             account_hardware_type: device,
-            // account_hardware_version: null, 
+            // account_hardware_version: null,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -272,7 +269,7 @@ class ConnectHardwareForm extends Component {
           properties: {
             account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
             account_hardware_type: device,
-            // account_hardware_version: null, 
+            // account_hardware_version: null,
             error: e.message,
           },
         });

@@ -4,7 +4,10 @@ import {
   NETWORK_TO_NAME_MAP,
   BUYABLE_CHAINS_MAP,
 } from '../../../../../shared/constants/network';
-import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import Button from '../../../ui/button';
 import LogoMoonPay from '../../../ui/logo/logo-moonpay';
 import LogoWyre from '../../../ui/logo/logo-wyre';
@@ -216,11 +219,12 @@ export default class DepositEtherModal extends Component {
                   category: EVENT.CATEGORIES.ACCOUNTS,
                   event: EVENT_NAMES.ONRAMP_PROVIDER_SELECTED,
                   properties: {
-                    onramp_provider_type: EVENT.ONRAMP_PROVIDER_TYPES.SELF_DEPOSIT,
+                    onramp_provider_type:
+                      EVENT.ONRAMP_PROVIDER_TYPES.SELF_DEPOSIT,
                   },
                 });
                 this.goToAccountDetailsModal();
-              }
+              },
             })}
             {networkName &&
               this.renderRow({
