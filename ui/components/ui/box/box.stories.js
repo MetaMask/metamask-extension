@@ -14,7 +14,7 @@ import {
 
 import Typography from '../typography';
 
-import Box, { BackgroundColors, BorderColors } from './box';
+import Box, { BACKGROUND_COLORS, BORDER_COLORS, TEXT_COLORS } from './box';
 
 import README from './README.mdx';
 
@@ -60,11 +60,16 @@ export default {
       table: { category: 'display' },
     },
     backgroundColor: {
-      options: BackgroundColors,
+      options: Object.values(BACKGROUND_COLORS),
       control: 'select',
       table: {
         category: 'background',
       },
+    },
+    color: {
+      options: Object.values(TEXT_COLORS),
+      control: 'select',
+      table: { category: 'color' },
     },
     borderStyle: {
       options: Object.values(BORDER_STYLE),
@@ -78,7 +83,7 @@ export default {
       table: { category: 'border' },
     },
     borderColor: {
-      options: BorderColors,
+      options: Object.values(BORDER_COLORS),
       control: 'select',
       defaultValue: COLORS.BORDER_DEFAULT,
       table: { category: 'border' },
@@ -423,6 +428,28 @@ export const As = (args) => {
       <Box as="li">li</Box>
       <Box as="button">button</Box>
       <Box as="header">header</Box>
+    </>
+  );
+};
+
+export const Color = () => {
+  return (
+    <>
+      <Box padding={3} color={COLORS.TEXT_DEFAULT}>
+        <Typography>COLORS.TEXT_DEFAULT</Typography>
+      </Box>
+      <Box padding={3} color={COLORS.PRIMARY_DEFAULT}>
+        COLORS.PRIMARY_DEFAULT
+      </Box>
+      <Box padding={3} color={COLORS.SECONDARY_DEFAULT}>
+        COLORS.SECONDARY_DEFAULT
+      </Box>
+      <Box padding={3} color={COLORS.ERROR_DEFAULT}>
+        COLORS.ERROR_DEFAULT
+      </Box>
+      <Box padding={3} color={COLORS.SUCCESS_DEFAULT}>
+        COLORS.SUCCESS_DEFAULT
+      </Box>
     </>
   );
 };

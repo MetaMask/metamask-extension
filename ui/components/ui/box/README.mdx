@@ -172,6 +172,30 @@ import Box from '../ui/box';
 </Box>;
 ```
 
+### Color
+
+The `color` prop can be used to set the color of the content in Box Component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props.
+
+<Canvas>
+  <Story id="ui-components-ui-box-box-stories-js--color" />
+</Canvas>
+
+**NOTE**: The `<Box/>` color combinations above follow our design system color rules and should cover most general UI applications. Click "Show code" to see the code example. Do not use the [deprecated colors](#deprecated-colors)
+
+Example of importing `COLORS` object with `Box` component
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box
+  backgroundColor={COLORS.BACKGROUND_DEFAULT}
+  color={COLORS.ERROR_DEFAULT}
+>
+  Text goes here
+</Box>;
+```
+
 ### Responsive Props
 
 The box component provides a responsive props api in the form of array props. Array props are inspired by [styled-systems array props](https://styled-system.com/guides/array-props). The responsive props follow a mobile first methodology with the first item in the array applying the style to the base level size e.g. `0px` and up. The second item overwrites the first items styles at the next breakpoint.
