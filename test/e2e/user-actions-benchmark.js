@@ -34,7 +34,7 @@ async function loadNewAccount() {
 
       await driver.clickElement('.account-menu__icon');
       const timestampBeforeAction = new Date();
-      await driver.clickElement({ text: 'Create Account', tag: 'div' });
+      await driver.clickElement({ text: 'Create account', tag: 'div' });
       await driver.fill('.new-account-create-form input', '2nd account');
       await driver.clickElement({ text: 'Create', tag: 'button' });
       await driver.waitForSelector({
