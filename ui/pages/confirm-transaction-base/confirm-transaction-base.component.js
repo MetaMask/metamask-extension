@@ -837,7 +837,7 @@ export default class ConfirmTransactionBase extends Component {
     if (customTokenAmount) {
       txData.customTokenAmount = customTokenAmount;
       txData.finalApprovalAmount = customTokenAmount;
-    } else {
+    } else if (dappProposedTokenAmount !== undefined) {
       txData.finalApprovalAmount = dappProposedTokenAmount;
     }
 

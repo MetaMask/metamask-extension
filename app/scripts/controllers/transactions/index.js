@@ -2132,15 +2132,7 @@ export default class TransactionController extends EventEmitter {
     ].includes(type);
 
     const contractMethodNames = {
-      CONTRACT_INTERACTION: 'Mint Collectibles',
       APPROVE: 'Approve',
-      SAFE_TRANSFER_FROM: 'Safe Transfer From',
-      SET_APPROVAL_FOR_ALL: 'Set Approval For All',
-      TRANSFER: 'Transfer',
-      TRANSFER_FROM: 'Transfer From',
-      SMART: 'Smart',
-      SWAP: 'Swap',
-      SWAP_APPROVAL: 'Swap Approval',
     };
 
     const customTokenAmount = transactions[id]?.customTokenAmount;
