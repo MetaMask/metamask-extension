@@ -41,7 +41,7 @@ describe('Advanced Settings', function () {
           '[data-testid="eth-overview__secondary-currency"] .currency-display-component__suffix',
         );
         assert.equal(
-          secondaryCurrency.getText(),
+          await secondaryCurrency.getText(),
           'USD',
           `Secondary currency is not present`,
         );
