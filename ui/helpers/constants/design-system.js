@@ -54,6 +54,7 @@ export const COLORS = {
   GOERLI: 'goerli',
   TRANSPARENT: 'transparent',
   LOCALHOST: 'localhost',
+  INHERIT: 'inherit',
 };
 
 export const TYPOGRAPHY = {
