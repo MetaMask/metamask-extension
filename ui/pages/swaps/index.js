@@ -136,8 +136,8 @@ export default function Swap() {
     checkNetworkAndAccountSupports1559,
   );
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  const tokenList = useSelector(getTokenList);
-  const shuffledTokensList = shuffle(Object.entries(tokenList));
+  const tokenList = useSelector(getTokenList, isEqual);
+  const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
