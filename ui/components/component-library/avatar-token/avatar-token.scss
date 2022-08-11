@@ -1,6 +1,7 @@
 .avatar-token__token-image--halo {
   filter: blur(20px);
-  transform: scale(1.25);
+  width: 100%;
+  height: auto;
   border-radius: 50%;
   position: absolute;
   z-index: 1;

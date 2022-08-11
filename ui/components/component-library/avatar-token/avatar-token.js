@@ -52,7 +52,7 @@ export const AvatarToken = ({
       {...{ backgroundColor, borderColor, ...props }}
     >
       {showFallback ? (
-        tokenName?.[0].toUpperCase() ?? '?'
+        tokenName?.[0]?.toUpperCase() ?? '?'
       ) : (
         <>
           <img
