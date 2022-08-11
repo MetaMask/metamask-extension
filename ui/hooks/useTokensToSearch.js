@@ -57,7 +57,7 @@ export function getRenderableTokenData(
     (tokenData) => tokenData.address === address?.toLowerCase(),
   );
 
-  const usedIconUrl = iconUrl || tokenMetadata?.iconUrl || token?.image;
+  const usedIconUrl = tokenMetadata?.iconUrl || iconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
