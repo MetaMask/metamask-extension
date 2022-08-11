@@ -6,7 +6,7 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
 import TextField from '../../../../components/ui/text-field';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../../shared/constants/metametrics';
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
@@ -99,10 +99,8 @@ export default class NewAccount extends PureComponent {
 
       this.context.trackEvent({
         category: EVENT.CATEGORIES.ONBOARDING,
-        event: 'Submit Password',
+        event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
         properties: {
-          action: 'Create password',
-          legacy_event: true,
         },
       });
 
@@ -113,15 +111,6 @@ export default class NewAccount extends PureComponent {
   };
 
   toggleTermsCheck = () => {
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'Check ToS',
-      properties: {
-        action: 'Create password',
-        legacy_event: true,
-      },
-    });
-
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }));
@@ -149,14 +138,6 @@ export default class NewAccount extends PureComponent {
           <a
             onClick={(e) => {
               e.preventDefault();
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: 'Go Back from Onboarding Create',
-                properties: {
-                  action: 'Create password',
-                  legacy_event: true,
-                },
-              });
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
             }}
             href="#"
