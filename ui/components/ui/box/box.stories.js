@@ -4,6 +4,9 @@ import {
   BLOCK_SIZES,
   BORDER_STYLE,
   COLORS,
+  TEXT_COLORS,
+  BORDER_COLORS,
+  BACKGROUND_COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
@@ -14,7 +17,7 @@ import {
 
 import Typography from '../typography';
 
-import Box, { BACKGROUND_COLORS, BORDER_COLORS, TEXT_COLORS } from './box';
+import Box from './box';
 
 import README from './README.mdx';
 

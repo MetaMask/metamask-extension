@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { memoize, pick } from 'lodash';
+import { memoize } from 'lodash';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
   BORDER_STYLE,
-  COLORS,
+  BACKGROUND_COLORS,
+  BORDER_COLORS,
+  TEXT_COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
@@ -18,78 +20,7 @@ import {
 
 const BASE_CLASS_NAME = 'box';
 const Sizes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-export const BACKGROUND_COLORS = pick(COLORS, [
-  'BACKGROUND_DEFAULT',
-  'BACKGROUND_ALTERNATIVE',
-  'OVERLAY_DEFAULT',
-  'PRIMARY_DEFAULT',
-  'PRIMARY_ALTERNATIVE',
-  'PRIMARY_MUTED',
-  'ERROR_DEFAULT',
-  'ERROR_ALTERNATIVE',
-  'ERROR_MUTED',
-  'WARNING_DEFAULT',
-  'WARNING_ALTERNATIVE',
-  'WARNING_MUTED',
-  'SUCCESS_DEFAULT',
-  'SUCCESS_ALTERNATIVE',
-  'SUCCESS_MUTED',
-  'INFO_DEFAULT',
-  'INFO_ALTERNATIVE',
-  'INFO_MUTED',
-  'MAINNET',
-  'ROPSTEN',
-  'KOVAN',
-  'RINKEBY',
-  'GOERLI',
-  'TRANSPARENT',
-  'LOCALHOST',
-]);
 
-export const BORDER_COLORS = pick(COLORS, [
-  'BORDER_DEFAULT',
-  'BORDER_MUTED',
-  'PRIMARY_DEFAULT',
-  'PRIMARY_ALTERNATIVE',
-  'PRIMARY_MUTED',
-  'ERROR_DEFAULT',
-  'ERROR_ALTERNATIVE',
-  'ERROR_MUTED',
-  'WARNING_DEFAULT',
-  'WARNING_ALTERNATIVE',
-  'WARNING_MUTED',
-  'SUCCESS_DEFAULT',
-  'SUCCESS_ALTERNATIVE',
-  'SUCCESS_MUTED',
-  'INFO_DEFAULT',
-  'INFO_ALTERNATIVE',
-  'INFO_MUTED',
-  'MAINNET',
-  'ROPSTEN',
-  'KOVAN',
-  'RINKEBY',
-  'GOERLI',
-  'TRANSPARENT',
-  'LOCALHOST',
-]);
-
-export const TEXT_COLORS = pick(COLORS, [
-  'TEXT_DEFAULT',
-  'TEXT_ALTERNATIVE',
-  'TEXT_MUTED',
-  'OVERLAY_INVERSE',
-  'PRIMARY_DEFAULT',
-  'PRIMARY_INVERSE',
-  'SECONDARY_DEFAULT',
-  'SECONDARY_INVERSE',
-  'ERROR_DEFAULT',
-  'ERROR_INVERSE',
-  'SUCCESS_DEFAULT',
-  'SUCCESS_INVERSE',
-  'WARNING_INVERSE',
-  'INFO_DEFAULT',
-  'INFO_INVERSE',
-]);
 const ValidSize = PropTypes.oneOf(Sizes);
 const ValidSizeAndAuto = PropTypes.oneOf([...Sizes, 'auto']);
 export const ValidBackgroundColors = PropTypes.oneOf(
