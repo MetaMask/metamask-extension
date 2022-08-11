@@ -34,7 +34,7 @@ exports[`SwapsFooter renders the component with initial props 1`] = `
     <div
       class="swaps-footer__bottom-text"
     >
-      Terms of Service
+      Terms of service
     </div>
   </div>
 </div>

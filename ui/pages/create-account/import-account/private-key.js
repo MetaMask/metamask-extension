@@ -48,7 +48,7 @@ class PrivateKeyImportView extends Component {
             category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Imported Account with Private Key',
             properties: {
-              action: 'Import Account',
+              action: 'Import account',
               legacy_event: true,
             },
           });
@@ -60,7 +60,7 @@ class PrivateKeyImportView extends Component {
             category: EVENT.CATEGORIES.ACCOUNTS,
             event: 'Error importing with Private Key',
             properties: {
-              action: 'Import Account',
+              action: 'Import account',
               legacy_event: true,
             },
           });

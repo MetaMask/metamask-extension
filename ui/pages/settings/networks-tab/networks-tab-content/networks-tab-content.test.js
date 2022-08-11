@@ -52,16 +52,16 @@ describe('NetworksTabContent Component', () => {
       renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Ropsten Test Network')).toBeInTheDocument();
-    expect(queryByText('Rinkeby Test Network')).toBeInTheDocument();
-    expect(queryByText('Goerli Test Network')).toBeInTheDocument();
-    expect(queryByText('Kovan Test Network')).toBeInTheDocument();
+    expect(queryByText('Ropsten test network')).toBeInTheDocument();
+    expect(queryByText('Rinkeby test network')).toBeInTheDocument();
+    expect(queryByText('Goerli test network')).toBeInTheDocument();
+    expect(queryByText('Kovan test network')).toBeInTheDocument();
 
-    expect(queryByText('Network Name')).toBeInTheDocument();
+    expect(queryByText('Network name')).toBeInTheDocument();
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency Symbol')).toBeInTheDocument();
-    expect(queryByText('Block Explorer URL')).toBeInTheDocument();
+    expect(queryByText('Currency symbol')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL')).toBeInTheDocument();
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
 

@@ -1,13 +1,12 @@
 import React from 'react';
 import sinon from 'sinon';
+import { fireEvent, screen } from '@testing-library/react';
 import { tick } from '../../../../test/lib/tick';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import EndOfFlowScreen from './end-of-flow.container';
 
 describe('End of Flow Screen', () => {
-  let wrapper;
-
   const props = {
     history: {
       push: sinon.stub(),
@@ -16,18 +15,17 @@ describe('End of Flow Screen', () => {
   };
 
   beforeEach(() => {
-    wrapper = mountWithRouter(<EndOfFlowScreen.WrappedComponent {...props} />);
+    renderWithProvider(<EndOfFlowScreen.WrappedComponent {...props} />);
   });
 
-  it('renders', () => {
-    expect(wrapper).toHaveLength(1);
+  it('should render', () => {
+    const endOfFlow = screen.queryByTestId('end-of-flow');
+    expect(endOfFlow).toBeInTheDocument();
   });
 
   it('should navigate to the default route on click', async () => {
-    const endOfFlowButton = wrapper.find(
-      '.btn-primary.first-time-flow__button',
-    );
-    endOfFlowButton.simulate('click');
+    const endOfFlowButton = screen.getByTestId('EOF-complete-button');
+    fireEvent.click(endOfFlowButton);
 
     await tick();
 

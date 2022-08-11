@@ -12,13 +12,13 @@ describe('Settings Search', function () {
     ],
   };
   const settingsSearch = {
-    general: 'Primary Currency',
-    advanced: 'State Logs',
+    general: 'Primary currency',
+    advanced: 'State logs',
     contacts: 'Contacts',
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Token Detection',
+    experimental: 'Enable Enhanced Gas Fee UI',
     about: 'Terms of Use',
   };
 
