@@ -626,7 +626,7 @@ export default function BuildQuote({
                 {t('stxDescription')}
               </Typography>
               <Typography
-                tag="ul"
+                as="ul"
                 variant={TYPOGRAPHY.H7}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
@@ -637,7 +637,7 @@ export default function BuildQuote({
                 <li>
                   {t('stxBenefit4')}
                   <Typography
-                    tag="span"
+                    as="span"
                     fontWeight={FONT_WEIGHT.NORMAL}
                     variant={TYPOGRAPHY.H7}
                   >
@@ -652,7 +652,7 @@ export default function BuildQuote({
               >
                 {t('stxSubDescription')}&nbsp;
                 <Typography
-                  tag="span"
+                  as="span"
                   fontWeight={FONT_WEIGHT.BOLD}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.TEXT_ALTERNATIVE}

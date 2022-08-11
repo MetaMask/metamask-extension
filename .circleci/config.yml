@@ -784,7 +784,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
+            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
       - checkout
       - attach_workspace:
           at: .
@@ -792,6 +792,8 @@ jobs:
           name: ts-migration-dashboard:deploy
           command: |
             git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
+            git config user.name "MetaMask Bot"
+            git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
   test-unit:

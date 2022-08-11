@@ -77,7 +77,7 @@ export default function SnapInstall({
             padding: [4, 4, 0, 4],
           }}
           variant={TYPOGRAPHY.H7}
-          tag="span"
+          as="span"
         >
           {t('snapRequestsPermission')}
         </Typography>

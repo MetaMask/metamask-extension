@@ -166,6 +166,10 @@ export default {
       control: 'select',
       table: { category: 'padding' },
     },
+    as: {
+      control: 'select',
+      options: ['div', 'ul', 'li', 'span', 'a', 'button'],
+    },
   },
 };
 
@@ -403,6 +407,22 @@ export const ResponsiveProps = () => {
           example
         </Box>
       </Box>
+    </>
+  );
+};
+
+export const As = (args) => {
+  return (
+    <>
+      <Typography marginBottom={4}>
+        You can change the root element of the Box component using the as prop.
+        Inspect the below elements to see the underlying HTML elements
+      </Typography>
+      <Box {...args}>div(default)</Box>
+      <Box as="ul">ul</Box>
+      <Box as="li">li</Box>
+      <Box as="button">button</Box>
+      <Box as="header">header</Box>
     </>
   );
 };

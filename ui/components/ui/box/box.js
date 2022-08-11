@@ -227,6 +227,7 @@ export default function Box({
   children,
   className,
   backgroundColor,
+  as = 'div',
   ...props
 }) {
   const boxClassName = classnames(
@@ -284,10 +285,11 @@ export default function Box({
   if (typeof children === 'function') {
     return children(boxClassName);
   }
+  const Component = as;
   return (
-    <div className={boxClassName} {...props}>
+    <Component className={boxClassName} {...props}>
       {children}
-    </div>
+    </Component>
   );
 }
 
@@ -351,4 +353,9 @@ Box.propTypes = {
   ]),
   backgroundColor: MultipleBackgroundColors,
   className: PropTypes.string,
+  /**
+   * The polymorphic `as` prop allows you to change the root HTML element of the Box component
+   * Defaults to 'div'
+   */
+  as: PropTypes.string,
 };
