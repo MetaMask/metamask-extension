@@ -148,4 +148,18 @@ describe('metaRPCClientFactory', () => {
 
     jest.useRealTimers();
   });
+
+  it('fail request with DisconnectError if underlying stream is closed', async () => {
+    jest.useFakeTimers();
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    const errorPromise = new Promise(() => metaRPCClient.getState());
+
+    streamTest.destroy();
+    jest.runOnlyPendingTimers();
+    await expect(errorPromise).rejects.toThrow('disconnected');
+
+    jest.useRealTimers();
+  });
 });
