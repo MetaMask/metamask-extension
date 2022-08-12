@@ -17,7 +17,12 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
-import { ETH } from '../helpers/constants/common';
+import {
+  ETH_SYMBOL,
+  MATIC_SYMBOL,
+  BNB_SYMBOL,
+  AVALANCHE_SYMBOL,
+} from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
@@ -57,11 +62,16 @@ export function getRenderableTokenData(
       )
     : '';
 
-  const tokenIconUrl =
-    symbol === ETH
-      ? iconUrl
-      : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
+  const tokenIconUrl = [
+    ETH_SYMBOL,
+    BNB_SYMBOL,
+    MATIC_SYMBOL,
+    AVALANCHE_SYMBOL,
+  ].includes(symbol)
+    ? iconUrl
+    : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
   const usedIconUrl = tokenIconUrl || tokenList[address?.toLowerCase()]?.iconUrl || token?.image;
+  
   return {
     ...token,
     primaryLabel: symbol,
