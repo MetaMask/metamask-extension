@@ -58,7 +58,7 @@ function injectScript(content) {
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
     // Inline scripts do not work in MV3 due to more strict security policy
-    if (isManifestV3()) {
+    if (isManifestV3) {
       scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
     } else {
       scriptTag.textContent = content;
