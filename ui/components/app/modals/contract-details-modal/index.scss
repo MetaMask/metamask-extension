@@ -1,12 +1,5 @@
 .contract-details-modal {
   background-color: var(--color-background-default);
-  border-radius: 8px;
-  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-  position: absolute;
-  width: 360px;
-  height: 491px;
-  left: 1px;
-  top: 225px;
 
   &__content {
     @extend %col-nowrap;
@@ -53,17 +46,17 @@
         @include H6;
 
         font-weight: 700;
-        width: 176px;
         height: 24px;
         font-size: 16px;
         margin-top: 16px;
+        width: 150px;
       }
 
       &__addres {
         font-style: normal;
         font-weight: 400;
         font-size: 14px;
-        width: 176px;
+        width: 150px;
         height: 22px;
         margin-bottom: 16px;
       }

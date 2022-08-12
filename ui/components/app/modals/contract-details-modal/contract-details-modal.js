@@ -8,12 +8,13 @@ import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../ui/identicon/identicon.component';
 import { ellipsify } from '../../../../pages/send/send.utils';
+import Popover from '../../../ui/popover';
 
 export default function ContractDetailsModal({ onClose, address, tokenName }) {
   const t = useI18nContext();
 
   return (
-    <div className="contract-details-modal">
+    <Popover className="contract-details-modal">
       <Box className="contract-details-modal__content">
         <div className="contract-details-modal__content__header">
           {t('contractTitle')}
@@ -47,7 +48,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 className="contract-details-modal__content__contract__buttonCopy"
                 type="link"
               >
-                <CopyContractDetails size={20} />
+                <CopyContractDetails size={16} />
               </button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
@@ -56,7 +57,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 type="link"
               >
                 <IconBlockExplorer
-                  size={18}
+                  size={14}
                   color="var(--color-icon-default)"
                 />
               </button>
@@ -89,7 +90,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 className="contract-details-modal__content__contract__buttonCopy"
                 type="link"
               >
-                <CopyContractDetails size={20} />
+                <CopyContractDetails size={16} />
               </button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
@@ -98,7 +99,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 type="link"
               >
                 <IconBlockExplorer
-                  size={18}
+                  size={14}
                   color="var(--color-icon-default)"
                 />
               </button>
@@ -117,7 +118,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
         </Button>
         <Button type="primary">{t('confirm')}</Button>
       </Box>
-    </div>
+    </Popover>
   );
 }
 
