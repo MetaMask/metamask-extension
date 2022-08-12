@@ -3,9 +3,7 @@ import SafeEventEmitter from 'safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../ui/helpers/constants/critical-error';
 
-class DisconnectError extends Error {
-
-}
+class DisconnectError extends Error {}
 
 class MetaRPCClient {
   constructor(connectionStream) {
