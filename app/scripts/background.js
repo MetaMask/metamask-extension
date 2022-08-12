@@ -22,6 +22,9 @@ import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTFICIATION_CLOSE,
   REJECT_NOTFICIATION_CLOSE_SIG,
+  EVENT,
+  EVENT_NAMES,
+  TRAITS,
 } from '../../shared/constants/metametrics';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
@@ -69,6 +72,7 @@ let notificationIsOpen = false;
 let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
+let controller;
 
 // state persistence
 const inTest = process.env.IN_TEST;
@@ -314,7 +318,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   // MetaMask Controller
   //
 
-  const controller = new MetamaskController({
+  controller = new MetamaskController({
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
@@ -751,12 +755,32 @@ async function openPopup() {
   });
 }
 
+// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
+const addAppInstalledEvent = () => {
+  if (controller) {
+    controller.metaMetricsController.updateTraits({
+      [TRAITS.INSTALL_DATE_EXT]: new Date().toISOString().split('T')[0], // yyyy-mm-dd
+    });
+    controller.metaMetricsController.addEventBeforeMetricsOptIn({
+      category: EVENT.CATEGORIES.APP,
+      event: EVENT_NAMES.APP_INSTALLED,
+      properties: {},
+    });
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
+    addAppInstalledEvent();
+  }, 1000);
+};
+
 // On first install, open a new tab with MetaMask
 browser.runtime.onInstalled.addListener(({ reason }) => {
   if (
     reason === 'install' &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
+    addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
 });
