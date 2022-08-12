@@ -51,18 +51,19 @@ export function dropQueue(silently) {
 }
 
 // add action to queue
-const addToActionQueue = (actionId, request, resolve, reject) => {
-  if (actionRetryQueue.some((act) => act.actionId === actionId)) {
+const addToActionQueueAndRun = (item) => {
+  if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
-  actionRetryQueue.push({
-    actionId,
-    request,
-    resolve,
-    reject,
-  });
 
-  processActionRetryQueue();
+  if (background.connectionStream.readable) {
+    executeAction({
+      action: item,
+      disconnectSideeffect: () => actionRetryQueue.push(item),
+    });
+  } else {
+    actionRetryQueue.push(item);
+  }
 };
 
 /**
@@ -74,7 +75,7 @@ const addToActionQueue = (actionId, request, resolve, reject) => {
  *
  * @param {string} method - name of the background method
  * @param {Array} [args] - arguments to that method, if any
- * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue.
+ * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue waiting for a retry.
  * @returns {Promise}
  */
 export function submitRequestToBackground(
@@ -84,7 +85,12 @@ export function submitRequestToBackground(
 ) {
   if (isManifestV3()) {
     return new Promise((resolve, reject) => {
-      addToActionQueue(actionId, { method, args }, resolve, reject);
+      addToActionQueueAndRun({
+        actionId,
+        request: { method, args },
+        resolve,
+        reject,
+      });
     });
   }
   return promisifiedBackground[method](...args);
@@ -111,11 +117,36 @@ export const callBackgroundMethod = (
   if (isManifestV3()) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
-    addToActionQueue(actionId, { method, args }, resolve, reject);
+    addToActionQueueAndRun({
+      actionId,
+      request: { method, args },
+      resolve,
+      reject,
+    });
   } else {
     background[method](...args, callback);
   }
 };
+
+async function executeAction({ action, disconnectSideeffect }) {
+  const {
+    request: { method, args },
+    resolve,
+    reject,
+  } = action;
+  try {
+    resolve(await promisifiedBackground[method](...args));
+  } catch (err) {
+    if (
+      background.DisconnectError && // necessary to not break compatibility with background stubs or non-default implementations
+      err instanceof background.DisconnectError
+    ) {
+      disconnectSideeffect(action);
+    } else {
+      reject(err);
+    }
+  }
+}
 
 let processingQueue = false;
 
@@ -136,23 +167,10 @@ async function processActionRetryQueue() {
       // If background disconnects and fails the action, the next one will not be taken off the queue.
       // Retrying an action that failed because of connection loss while it was alreaedy ongoing is not supported.
       const item = actionRetryQueue.shift();
-      const {
-        request: { method, args },
-        resolve,
-        reject,
-      } = item;
-      try {
-        resolve(await promisifiedBackground[method](...args));
-      } catch (err) {
-        if (
-          background.DisconnectError && // necessary to not break compatibility with background stubs or non-default implementations
-          err instanceof background.DisconnectError
-        ) {
-          actionRetryQueue.unshift(item);
-        } else {
-          reject(err);
-        }
-      }
+      await executeAction({
+        action: item,
+        disconnectSideeffect: () => actionRetryQueue.unshift(item),
+      });
     }
   } catch (e) {
     // error in the queue mechanism itself, the action was malformed

@@ -1,7 +1,7 @@
+import sinon from 'sinon';
 import PortStream from 'extension-port-stream';
 import { setupMultiplex } from '../../../app/scripts/lib/stream-utils';
 import metaRPCClientFactory from '../../../app/scripts/lib/metaRPCClientFactory';
-import sinon from 'sinon';
 
 import {
   dropQueue,

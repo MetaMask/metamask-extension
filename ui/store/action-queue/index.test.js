@@ -117,7 +117,33 @@ describe('ActionQueue', () => {
       ).rejects.toThrow('test');
     });
 
-    it('processes the queue sequentially', async () => {
+    it('calls methods in parallel when connection available', async () => {
+      const trace = {};
+      const background = {
+        connectionStream: {
+          readable: true,
+        },
+        first: (cb) => {
+          setTimeout(() => {
+            trace.firstDone = Date.now();
+            cb(null, 'first');
+          }, 5);
+        },
+        second: (cb) => {
+          trace.secondStarted = Date.now();
+          setTimeout(() => cb(null, 'second'), 10);
+        },
+      };
+      _setBackgroundConnection(background);
+      const scheduled = Promise.all([
+        submitRequestToBackground('first'),
+        submitRequestToBackground('second'),
+      ]);
+      await scheduled;
+      expect(trace.firstDone).toBeGreaterThan(trace.secondStarted);
+    });
+
+    it('processes the queue sequentially when connection is restored', async () => {
       const trace = {};
       const background = {
         connectionStream: {
