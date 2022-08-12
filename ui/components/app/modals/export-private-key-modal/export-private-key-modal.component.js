@@ -104,6 +104,7 @@ export default class ExportPrivateKeyModal extends Component {
       <div
         className="export-private-key-modal__private-key-display"
         onClick={() => {
+          copyToClipboard(plainKey);
           this.context.trackEvent({
             category: EVENT.CATEGORIES.KEYS,
             event: EVENT_NAMES.KEY_EXPORT_COPIED,
@@ -112,7 +113,6 @@ export default class ExportPrivateKeyModal extends Component {
               copy_method: 'clipboard',
             },
           });
-          copyToClipboard(plainKey);
         }}
       >
         {plainKey}
