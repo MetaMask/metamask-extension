@@ -784,7 +784,7 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
 export async function backupUserData() {
   let backedupData;
   try {
-    backedupData = await promisifiedBackground.backupUserData();
+    backedupData = await submitRequestToBackground('backupUserData');
   } catch (error) {
     log.error(error.message);
     throw error;
@@ -795,7 +795,7 @@ export async function backupUserData() {
 
 export async function restoreUserData(jsonString) {
   try {
-    await promisifiedBackground.restoreUserData(jsonString);
+    await submitRequestToBackground('restoreUserData', [jsonString]);
   } catch (error) {
     log.error(error.message);
     throw error;
