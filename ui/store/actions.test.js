@@ -19,6 +19,9 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    identities: {
+      '0xFirstAddress': {},
+    },
     cachedBalances: {
       '0x1': {
         '0xFirstAddress': '0x0',
