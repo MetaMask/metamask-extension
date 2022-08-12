@@ -36,7 +36,7 @@ const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
-describe.only('MetaMaskController', function () {
+describe('MetaMaskController', function () {
   let metamaskController;
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
