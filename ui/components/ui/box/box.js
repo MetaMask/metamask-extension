@@ -227,7 +227,6 @@ export default function Box({
     borderColor &&
       generateClassNames('border-color', borderColor, isValidString),
     borderWidth && generateClassNames('border-width', borderWidth, isValidSize),
-    color && generateClassNames('color', color, isValidString),
     {
       // Auto applied classes
       // ---Borders---
