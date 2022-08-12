@@ -68,18 +68,6 @@ async function confirmTx() {
       );
 
       const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.fill('1000');
-
-      await inputAmount.press(driver.Key.BACK_SPACE);
-      await inputAmount.press(driver.Key.BACK_SPACE);
-      await inputAmount.press(driver.Key.BACK_SPACE);
-      await driver.wait(async () => {
-        const sendDialogMsgs = await driver.findElements(
-          '.send-v2__form div.dialog',
-        );
-        return sendDialogMsgs.length === 1;
-      }, 10000);
-
       await inputAmount.fill('1');
 
       await driver.clickElement({ text: 'Next', tag: 'button' });
