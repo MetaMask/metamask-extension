@@ -1059,7 +1059,7 @@ export function deleteExpiredNotifications() {
 
         return Boolean(
           notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
+          new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -2445,6 +2445,18 @@ export function buyEth(opts) {
   };
 }
 
+export function buyToken(opts) {
+  return async (dispatch) => {
+    const url = await getBuyUrl(opts);
+    if (url) {
+      global.platform.openTab({ url });
+      dispatch({
+        type: actionConstants.BUY_TOKEN,
+      });
+    }
+  };
+}
+
 export function setFeatureFlag(feature, activated, notificationType) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2791,12 +2803,12 @@ export function setPendingTokens(pendingTokens) {
   const tokens =
     address && symbol && decimals >= 0 <= 36
       ? {
-          ...selectedTokens,
-          [address]: {
-            ...customToken,
-            isCustom: true,
-          },
-        }
+        ...selectedTokens,
+        [address]: {
+          ...customToken,
+          isCustom: true,
+        },
+      }
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {

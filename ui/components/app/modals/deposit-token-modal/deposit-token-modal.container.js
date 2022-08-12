@@ -11,7 +11,7 @@ import {
   getIsBuyableTransakToken,
 } from '../../../../selectors/selectors';
 import {
-  buyEth,
+  buyToken,
   hideModal,
   hideWarning,
   showModal,
@@ -35,10 +35,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     toCoinbasePay: (address, chainId, symbol) => {
-      dispatch(buyEth({ service: 'coinbase', address, chainId, symbol }));
+      dispatch(buyToken({ service: 'coinbase', address, chainId, symbol }));
     },
     toTransak: (address, chainId, symbol) => {
-      dispatch(buyEth({ service: 'transak', address, chainId, symbol }));
+      dispatch(buyToken({ service: 'transak', address, chainId, symbol }));
     },
     hideModal: () => {
       dispatch(hideModal());
@@ -49,7 +49,7 @@ function mapDispatchToProps(dispatch) {
     showAccountDetailModal: () => {
       dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
     },
-    toFaucet: (chainId) => dispatch(buyEth({ chainId })),
+    toFaucet: (chainId) => dispatch(buyToken({ chainId })),
   };
 }
 

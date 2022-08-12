@@ -52,6 +52,7 @@ export const SHOW_LOADING = 'SHOW_LOADING_INDICATION';
 export const HIDE_LOADING = 'HIDE_LOADING_INDICATION';
 
 export const BUY_ETH = 'BUY_ETH';
+export const BUY_TOKEN = 'BUY_TOKEN';
 
 export const TOGGLE_ACCOUNT_MENU = 'TOGGLE_ACCOUNT_MENU';
 
