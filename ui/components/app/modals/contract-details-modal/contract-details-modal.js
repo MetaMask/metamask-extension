@@ -9,11 +9,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../ui/identicon/identicon.component';
 import { ellipsify } from '../../../../pages/send/send.utils';
 
-export default function ContractDetailsModal({
-  onClose = null,
-  address,
-  tokenName,
-}) {
+export default function ContractDetailsModal({ onClose, address, tokenName }) {
   const t = useI18nContext();
 
   return (
@@ -23,7 +19,7 @@ export default function ContractDetailsModal({
           {t('contractTitle')}
         </div>
         <div className="contract-details-modal__content__description">
-          {t('contractDescription')}
+          {t('contractDescription')} {t('contractDescriptionLink')}
         </div>
 
         <div className="contract-details-modal__content__contract-subtitle">
@@ -51,7 +47,7 @@ export default function ContractDetailsModal({
                 className="contract-details-modal__content__contract__buttonCopy"
                 type="link"
               >
-                <CopyContractDetails />
+                <CopyContractDetails size={20} />
               </button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
@@ -93,7 +89,7 @@ export default function ContractDetailsModal({
                 className="contract-details-modal__content__contract__buttonCopy"
                 type="link"
               >
-                <CopyContractDetails />
+                <CopyContractDetails size={20} />
               </button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>

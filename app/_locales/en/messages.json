@@ -738,7 +738,10 @@
     "message": "Contract deployment"
   },
   "contractDescription": {
-    "message": "To protect yourself against scammers, take a moment to verify contract details. Learn how to verify contract details."
+    "message": "To protect yourself against scammers, take a moment to verify contract details."
+  },
+  "contractDescriptionLink": {
+    "message": "Learn how to verify contract details."
   },
   "contractInteraction": {
     "message": "Contract interaction"

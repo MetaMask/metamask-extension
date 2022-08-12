@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const IconBlockExplorer = ({ className }) => (
+const IconBlockExplorer = ({ className, size }) => (
   <svg
     className={className}
-    width="16"
-    height="16"
+    width={size}
+    height={size}
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -29,6 +29,10 @@ IconBlockExplorer.propTypes = {
    * Additional className
    */
   className: PropTypes.string,
+  /**
+   * The size of the Icon
+   */
+  size: PropTypes.number.isRequired,
 };
 
 export default IconBlockExplorer;

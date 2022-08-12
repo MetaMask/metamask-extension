@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CopyContractDetails = ({ className }) => (
+const CopyContractDetails = ({ className, size }) => (
   <svg
     className={className}
-    width="18"
-    height="18"
+    width={size}
+    height={size}
     viewBox="0 0 18 18"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +30,10 @@ CopyContractDetails.propTypes = {
    * Additional className
    */
   className: PropTypes.string,
+  /**
+   * The size of the Icon
+   */
+  size: PropTypes.number.isRequired,
 };
 
 export default CopyContractDetails;
