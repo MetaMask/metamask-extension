@@ -56,7 +56,7 @@ export function useTokenDisplayValue(
     }
 
     return calcTokenAmount(tokenValue, token.decimals).toString(10);
-  }, [shouldCalculateTokenValue, tokenValue, token]);
+  }, [shouldCalculateTokenValue, tokenData, token]);
 
   return displayValue;
 }
