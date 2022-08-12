@@ -3666,7 +3666,7 @@ export async function setSmartTransactionsOptInStatus(
 }
 
 export function clearSmartTransactionFees() {
-  promisifiedBackground.clearSmartTransactionFees();
+  submitRequestToBackground('clearSmartTransactionFees');
 }
 
 export function fetchSmartTransactionFees(
