@@ -2269,6 +2269,7 @@ export function signTransaction() {
       await dispatch(
         updateTransactionSendFlowHistory(
           draftTransaction.id,
+          unapprovedTx.txMeta.sendFlowHistory.length,
           draftTransaction.history,
         ),
       );
