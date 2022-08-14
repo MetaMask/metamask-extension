@@ -9,6 +9,7 @@ export const KEYRING_TYPES = {
   LATTICE: 'Lattice Hardware',
   QR: 'QR Hardware Wallet Device',
   IMPORTED: 'Simple Key Pair',
+  ONEKEY: 'OneKey Hardware',
 };
 
 export const DEVICE_NAMES = {
@@ -16,6 +17,7 @@ export const DEVICE_NAMES = {
   TREZOR: 'trezor',
   QR: 'QR Hardware',
   LATTICE: 'lattice',
+  ONEKEY: 'onekey',
 };
 
 export const KEYRING_NAMES = {
@@ -23,6 +25,7 @@ export const KEYRING_NAMES = {
   TREZOR: 'Trezor',
   QR: 'QR',
   LATTICE: 'Lattice1',
+  ONEKEY: 'OneKey',
 };
 
 /**
@@ -48,3 +51,8 @@ export const TRANSPORT_STATES = {
   DEVICE_OPEN_FAILURE: 'DEVICE_OPEN_FAILURE',
   UNKNOWN_FAILURE: 'UNKNOWN_FAILURE',
 };
+
+export const ONEKEY_USB_DEVICE_FILTERS = [
+  { vendorId: 0x1209, productId: 0x53c0 },
+  { vendorId: 0x1209, productId: 0x53c1 },
+];

@@ -39,6 +39,7 @@ export default function reduceApp(state = {}, action) {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
       lattice: `m/44'/60'/0'/0`,
+      onekey: `m/44'/60'/0'/0`,
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,
@@ -56,6 +57,7 @@ export default function reduceApp(state = {}, action) {
     smartTransactionsErrorMessageDismissed: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
+    onekeyWebUsbConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
     sendInputCurrencySwitched: false,
@@ -389,6 +391,11 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         ledgerTransportStatus: action.value,
       };
+    case actionConstants.SET_WEBUSB_CONNECTED_STATUS:
+      return {
+        ...appState,
+        onekeyWebUsbConnectedStatus: action.value,
+      };
     case actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH:
       return {
         ...appState,
@@ -430,6 +437,10 @@ export function setLedgerTransportStatus(value) {
   return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, value };
 }
 
+export function setOneKeyWebUsbConnectedStatus(value) {
+  return { type: actionConstants.SET_WEBUSB_CONNECTED_STATUS, value };
+}
+
 // Selectors
 export function getQrCodeData(state) {
   return state.appState.qrCodeData;
@@ -445,6 +456,10 @@ export function getLedgerWebHidConnectedStatus(state) {
 
 export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
+}
+
+export function getOneKeyWebUsbConnectedStatus(state) {
+  return state.appState.onekeyWebUsbConnectedStatus;
 }
 
 export function toggleCurrencySwitch() {

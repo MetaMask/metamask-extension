@@ -20,6 +20,7 @@ import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import OneKeyKeyring from 'eth-onekey-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
@@ -566,6 +567,7 @@ export default class MetamaskController extends EventEmitter {
       LedgerBridgeKeyring,
       LatticeKeyring,
       QRHardwareKeyring,
+      OneKeyKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -2312,6 +2314,7 @@ export default class MetamaskController extends EventEmitter {
       ledger: [],
       trezor: [],
       lattice: [],
+      onekey: [],
     };
 
     // transactions
@@ -2431,6 +2434,9 @@ export default class MetamaskController extends EventEmitter {
       case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
+      case DEVICE_NAMES.ONEKEY:
+        keyringName = OneKeyKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -2448,7 +2454,10 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
-    if (deviceName === DEVICE_NAMES.TREZOR) {
+    if (
+      deviceName === DEVICE_NAMES.TREZOR ||
+      deviceName === DEVICE_NAMES.ONEKEY
+    ) {
       const model = keyring.getModel();
       this.appStateController.setTrezorModel(model);
     }
@@ -2541,6 +2550,7 @@ export default class MetamaskController extends EventEmitter {
       case KEYRING_TYPES.LATTICE:
       case KEYRING_TYPES.QR:
       case KEYRING_TYPES.LEDGER:
+      case KEYRING_TYPES.ONEKEY:
         return 'hardware';
       case KEYRING_TYPES.IMPORTED:
         return 'imported';
@@ -2561,6 +2571,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
       case KEYRING_TYPES.TREZOR:
+      case KEYRING_TYPES.ONEKEY:
         return keyring.getModel();
       case KEYRING_TYPES.QR:
         return keyring.getName();
@@ -3104,6 +3115,14 @@ export default class MetamaskController extends EventEmitter {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
+      }
+
+      case KEYRING_TYPES.ONEKEY: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('OneKey does not support eth_getEncryptionPublicKey.'),
+          );
+        });
       }
 
       default: {
@@ -4332,6 +4351,13 @@ export default class MetamaskController extends EventEmitter {
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
+    }
+
+    const [onekeyKeyring] = this.keyringController.getKeyringsByType(
+      KEYRING_TYPES.ONEKEY,
+    );
+    if (onekeyKeyring) {
+      onekeyKeyring.dispose();
     }
 
     const [ledgerKeyring] = this.keyringController.getKeyringsByType(

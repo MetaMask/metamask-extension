@@ -57,6 +57,11 @@
     &__img {
       width: 95px;
     }
+
+    &-single {
+      max-width: 150px;
+      max-height: 100px;
+    }
   }
 
   &__btn.selected {

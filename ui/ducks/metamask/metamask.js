@@ -440,6 +440,19 @@ export function isAddressLedger(state, address) {
 }
 
 /**
+ * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a OneKey keyring
+ *
+ * @param {object} state - the redux state object
+ * @param {string} address - the address to search for among all keyring addresses
+ * @returns {boolean} true if the passed address is part of a OneKey keyring, and false otherwise
+ */
+export function isAddressOneKey(state, address) {
+  const keyring = findKeyringForAddress(state, address);
+
+  return keyring?.type === KEYRING_TYPES.ONEKEY;
+}
+
+/**
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
  * in state)
  *

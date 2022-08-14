@@ -6,6 +6,7 @@ import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
+import LogoOneKey from '../../../components/ui/logo/logo-onekey';
 
 import {
   DEVICE_NAMES,
@@ -78,6 +79,7 @@ export default class SelectHardware extends Component {
       <button
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === DEVICE_NAMES.QR,
+          'hw-connect__btn-single': true,
         })}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.QR })}
       >
@@ -86,9 +88,22 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToOneKeyButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === DEVICE_NAMES.ONEKEY,
+        })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.ONEKEY })}
+      >
+        <LogoOneKey className="hw-connect__btn__img" ariaLabel="OneKey" />
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
-      <>
+      <div>
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
@@ -97,10 +112,16 @@ export default class SelectHardware extends Component {
           className="hw-connect__btn-wrapper"
           style={{ margin: '10px 0 0 0' }}
         >
+          {this.renderConnectToOneKeyButton()}
           {this.renderConnectToLatticeButton()}
+        </div>
+        <div
+          className="hw-connect__btn-wrapper"
+          style={{ margin: '10px 0 0 0' }}
+        >
           {this.renderConnectToQRButton()}
         </div>
-      </>
+      </div>
     );
   }
 
@@ -167,6 +188,8 @@ export default class SelectHardware extends Component {
         return this.renderLatticeTutorialSteps();
       case DEVICE_NAMES.QR:
         return this.renderQRHardwareWalletSteps();
+      case DEVICE_NAMES.ONEKEY:
+        return this.renderOneKeyTutorialSteps();
       default:
         return '';
     }
@@ -376,6 +399,47 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // TODO: i18n Text
+  renderOneKeyTutorialSteps() {
+    const steps = [
+      {
+        asset: 'plug-in-wallet',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1OneKeyWallet'),
+        message: this.context.t('step1OneKeyWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="onekey-support-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img

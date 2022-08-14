@@ -39,6 +39,7 @@ import {
   DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
+  ONEKEY_USB_DEVICE_FILTERS,
 } from '../../shared/constants/hardware-wallets';
 import { EVENT } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
@@ -438,6 +439,16 @@ export function connectHardware(deviceName, page, hdPath, t) {
         );
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
+        }
+      }
+
+      if (deviceName === DEVICE_NAMES.ONEKEY) {
+        const connectedDevice = await window.navigator.usb.requestDevice({
+          filters: ONEKEY_USB_DEVICE_FILTERS,
+        });
+        if (!connectedDevice) {
+          // TODO: i18n text
+          throw new Error('do not has onekey device');
         }
       }
 

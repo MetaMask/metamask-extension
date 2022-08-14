@@ -34,6 +34,9 @@ export default function KeyRingLabel({ keyring }) {
     case KEYRING_TYPES.LATTICE:
       label = KEYRING_NAMES.LATTICE;
       break;
+    case KEYRING_TYPES.ONEKEY:
+      label = KEYRING_NAMES.ONEKEY;
+      break;
     default:
       return null;
   }
