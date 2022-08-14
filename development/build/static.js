@@ -148,6 +148,14 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `globalthis.js`,
     },
     {
+      src: `./node_modules/@weizman/snow/snow.prod.js`,
+      dest: `snow.js`,
+    },
+    {
+      src: `./app/scripts/use-snow.js`,
+      dest: `use-snow.js`,
+    },
+    {
       src: shouldIncludeLockdown
         ? `./node_modules/ses/dist/lockdown.umd.min.js`
         : EMPTY_JS_FILE,
