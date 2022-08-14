@@ -20,8 +20,6 @@ export const ValidColors = [
   COLORS.OVERLAY_INVERSE,
   COLORS.PRIMARY_DEFAULT,
   COLORS.PRIMARY_INVERSE,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_INVERSE,
   COLORS.ERROR_DEFAULT,
   COLORS.ERROR_INVERSE,
   COLORS.SUCCESS_DEFAULT,
@@ -57,7 +55,7 @@ export default function Typography({
   align,
   overflowWrap,
   title,
-  tag,
+  as,
   margin,
   marginTop = 1,
   marginRight,
@@ -67,7 +65,7 @@ export default function Typography({
   className,
   children,
 }) {
-  let Tag = tag ?? variant;
+  let Tag = as ?? variant;
   let strongTagFontWeight;
 
   if (Tag === 'strong') {
@@ -147,9 +145,9 @@ Typography.propTypes = {
    */
   overflowWrap: PropTypes.oneOf(Object.values(OVERFLOW_WRAP)),
   /**
-   * Changes the root html element tag of the Typography component.
+   * Changes the root html element of the Typography component.
    */
-  tag: PropTypes.oneOf(ValidTags),
+  as: PropTypes.oneOf(ValidTags),
   /**
    * Adds margin to the Typography component should use valid size
    */

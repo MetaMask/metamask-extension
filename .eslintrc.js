@@ -9,6 +9,7 @@ module.exports = {
     'builds/**/*',
     'development/chromereload.js',
     'development/charts/**',
+    'development/ts-migration-dashboard/build/**',
     'dist/**/*',
     'node_modules/**/*',
   ],

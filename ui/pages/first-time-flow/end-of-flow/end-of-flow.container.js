@@ -1,11 +1,13 @@
 import { connect } from 'react-redux';
+
 import { getOnboardingInitiator } from '../../../selectors';
 import { setCompletedOnboarding } from '../../../store/actions';
+import { EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import EndOfFlow from './end-of-flow.component';
 
 const firstTimeFlowTypeNameMap = {
-  create: 'New Wallet Created',
-  import: 'New Wallet Imported',
+  create: EVENT_NAMES.NEW_WALLET_CREATED,
+  import: EVENT_NAMES.NEW_WALLET_IMPORTED,
 };
 
 const mapStateToProps = (state) => {

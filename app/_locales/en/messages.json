@@ -399,6 +399,9 @@
   "backToAll": {
     "message": "Back to all"
   },
+  "backup": {
+    "message": "Backup"
+  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -407,6 +410,12 @@
   },
   "backupNow": {
     "message": "Backup now"
+  },
+  "backupUserData": {
+    "message": "Backup your data"
+  },
+  "backupUserDataDescription": {
+    "message": "You can backup user settings containing preferences and account addresses into a JSON file."
   },
   "balance": {
     "message": "Balance"
@@ -586,6 +595,9 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "confirmPageDialogSetApprovalForAll": {
+    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
@@ -827,6 +839,9 @@
   },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Before manually importing a token, make sure you trust it. Learn about $1."
+  },
+  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
+    "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
   },
   "customerSupport": {
     "message": "customer support"
@@ -1275,9 +1290,6 @@
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
-  "fakeTokenWarning": {
-    "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn more about $1"
-  },
   "fast": {
     "message": "Fast"
   },
@@ -1593,6 +1605,12 @@
   "importNFTs": {
     "message": "Import NFTs"
   },
+  "importSelectedTokens": {
+    "message": "Import selected tokens?"
+  },
+  "importSelectedTokensDescription": {
+    "message": "Only the tokens you've selected will appear in your wallet. You can always import hidden tokens later by searching for them."
+  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -1618,6 +1636,9 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "inYourSettings": {
+    "message": "in your Settings"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -2768,6 +2789,18 @@
   "restore": {
     "message": "Restore"
   },
+  "restoreFailed": {
+    "message": "Can not restore your data from the file provided"
+  },
+  "restoreSuccessful": {
+    "message": "Your data has been restored successfully"
+  },
+  "restoreUserData": {
+    "message": "Restore user data"
+  },
+  "restoreUserDataDescription": {
+    "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
+  },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
     "description": "$1 is the date at which the data was backed up"
@@ -3826,17 +3859,17 @@
   "tokenDetectionAlertMessage": {
     "message": "Token detection is currently available on $1. $2"
   },
-  "tokenDetectionAnnouncement": {
-    "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys’ token API aggregates a list of tokens from various third party token lists. Turning it off will stop detecting new tokens added to your wallet, but will keep the option to search for tokens to import."
+  "tokenDetectionDescription": {
+    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
   },
   "tokenId": {
     "message": "Token ID"
   },
   "tokenList": {
     "message": "Token lists:"
+  },
+  "tokenScamSecurityRisk": {
+    "message": "token scams and security risks"
   },
   "tokenSymbol": {
     "message": "Token symbol"
@@ -4069,12 +4102,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
-  },
-  "useTokenDetection": {
-    "message": "Use token detection"
-  },
-  "useTokenDetectionDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."

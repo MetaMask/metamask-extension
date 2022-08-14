@@ -39,6 +39,7 @@ describe('Import Token', () => {
         frequentRpcListDetail: [],
         identities: {},
         selectedAddress: '0x1231231',
+        useTokenDetection: true,
       },
       history: {
         mostRecentOverviewPage: '/',

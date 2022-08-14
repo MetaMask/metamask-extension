@@ -146,7 +146,7 @@ export default function CreateNewVault({
             className="create-new-vault__terms-label"
             htmlFor="create-new-vault__terms-checkbox"
           >
-            <Typography tag="span">{termsOfUse}</Typography>
+            <Typography as="span">{termsOfUse}</Typography>
           </label>
         </div>
       ) : null}

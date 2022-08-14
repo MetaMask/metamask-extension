@@ -1,13 +1,12 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  createDownloadFolder,
+} = require('../helpers');
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
-
-const createDownloadFolder = async () => {
-  await fs.rm(downloadsFolder, { recursive: true, force: true });
-  await fs.mkdir(downloadsFolder, { recursive: true });
-};
 
 const stateLogsExist = async () => {
   try {
@@ -38,7 +37,7 @@ describe('State logs', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await createDownloadFolder();
+        await createDownloadFolder(downloadsFolder);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);

@@ -97,7 +97,7 @@ export default function SeedPhraseIntro() {
           >
             <Box marginBottom={4}>
               <Typography
-                tag="span"
+                as="span"
                 color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
@@ -108,7 +108,7 @@ export default function SeedPhraseIntro() {
             </Box>
             <Box marginBottom={4}>
               <Typography
-                tag="span"
+                as="span"
                 color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
@@ -124,7 +124,7 @@ export default function SeedPhraseIntro() {
             </Box>
             <Box marginBottom={4}>
               <Typography
-                tag="span"
+                as="span"
                 color={COLORS.TEXT_DEFAULT}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ display: 'block' }}
