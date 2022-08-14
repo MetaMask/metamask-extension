@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "अपने हार्डवेयर वॉलेट से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का उपयोग करने की आवश्यकता है।"
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "अपने लेजर को WebUSB के जरिये कनेक्ट करने के लिए यहां क्लिक करें",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "अपने लेजर को WebHID के जरिये कनेक्ट करने के लिए यहां क्लिक करें",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "फिशिंग डिटेक्शन अलर्ट $1 के साथ संचार पर निर्भर करते हैं। jsDeliver की पहुंच आपके IP पते तक होगी। $2 देखें।",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "पुष्टि पर क्लिक करने से पहले:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "OneKey वॉलेट में प्लग इन करें और इसे अनलॉक करें।"
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "अपने वॉलेट को सीधे अपने कंप्यूटर से कनेक्ट करें। अपने हार्डवेयर वॉलेट डिवाइस के उपयोग के बारे में अधिक जानकारी के लिए, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "एक दुर्भावनापूर्ण नेटवर्क प्रदाता ब्लॉकचेन की स्थिति के बारे में झूठ बोल सकता है और आपकी नेटवर्क गतिविधि को रिकॉर्ड कर सकता है। केवल उन कस्टम नेटवर्क को जोड़ें, जिन पर आप भरोसा करते हैं।"
   },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "अपने लेजर को WebUSB के माध्यम से कनेक्ट करने के लिए MetaMask को पूर्ण स्क्रीन में खोलें।",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "अपने लेजर को WebHID के माध्यम से कनेक्ट करने के लिए MetaMask को पूर्ण स्क्रीन में खोलें।",

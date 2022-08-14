@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Nhấn vào đây để kết nối với thiết bị OneKey của bạn qua WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Nhấn vào đây để kết nối với thiết bị Ledger của bạn qua WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "Thông báo phát hiện dấu hiệu lừa đảo tùy thuộc vào quá trình truyền tin với $1. jsDeliver sẽ có quyền truy cập vào địa chỉ IP của bạn. Xem $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "Trước khi nhấn xác nhận:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "Cắm ví OneKey và mở khóa."
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "Kết nối ví của bạn trực tiếp với máy tính. Để biết thêm thông tin về cách sử dụng thiết bị ví cứng của bạn, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "Một nhà cung cấp mạng độc hại có thể nói dối về trạng thái của chuỗi khối và ghi lại hoạt động của bạn trên mạng. Chỉ thêm các mạng tùy chỉnh mà bạn tin tưởng."
   },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Mở MetaMask ở chế độ toàn màn hình để kết nối thiết bị OneKey của bạn qua WebUSB.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Mở MetaMask ở chế độ toàn màn hình để kết nối thiết bị Ledger của bạn qua WebHID.",

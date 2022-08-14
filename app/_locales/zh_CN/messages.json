@@ -404,6 +404,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在谷歌浏览器（Google Chrome）上使用 MetaMask 才能连接到您的硬件钱包。"
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "点击这里通过WebUSB连接到您的OneKey",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "点击这里通过WebHID连接到您的Ledger",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -1954,11 +1958,25 @@
     "message": "钓鱼侦测警报依赖于与 $1的通信。jsDeliver 将能访问您的 IP 地址。查看 $2。",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "点击确认前："
+  },
+  "onekeyWalletStepOne": {
+    "message": "插入 OneKey 钱包并解锁。"
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "将您的钱包直接连接到电脑。若要了解有关使用硬件钱包设备的更多信息，$1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "恶意网络提供商可能会显示区块链的状态并记录您的网络活动。只添加您信任的自定义网络。"
   },
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
+  },
+  "openFullScreenForOneKeyWebUSB": {
+    "message": "全屏打开MetaMask以通过WebUSB连接您的OneKey。",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their OneKey via webusb."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "全屏打开MetaMask以通过WebHID连接您的ledger。",

@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "ここをクリックして、WebUSBでOneKeyを接続します",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "ここをクリックして、WebHIDでLedgerを接続します",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "フィッシング検出アラートには$1との通信が必要です。jsDeliverはユーザーのIPアドレスにアクセスします。$2をご覧ください。",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "確認をクリックする前:に:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "OneKey ウォレットを接続し、ロックを解除します。"
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "コンピューターにウォレットを直接接続します。ハードウェアウォレットデバイスの使い方の詳細については、$1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "悪意のあるネットワーク プロバイダーは、ブロックチェーンのステータスを偽り、ユーザーのネットワークアクティビティを記録することがあります。信頼するカスタムネットワークのみを追加してください。"
   },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。"
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "WebUSBでOneKeyを接続するには、MetaMaskを全画面モードで開いてください。",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "WebHIDでLedgerを接続するには、MetaMaskを全画面モードで開いてください。",

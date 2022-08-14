@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Κάντε κλικ εδώ για να συνδέσετε το OneKey σας μέσω WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Κάντε κλικ εδώ για να συνδέσετε το Ledger σας μέσω WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "Οι ειδοποιήσεις ανίχνευσης Απάτης Ηλεκτρονικού Ψαρέματος βασίζονται στην επικοινωνία με το $1. Το jsDeliver θα έχει πρόσβαση στη διεύθυνση IP σας. Δείτε $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "Πριν κάνετε κλικ στην επιβεβαίωση:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "Συνδέστε το πορτοφόλι OneKey και ξεκλειδώστε το."
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "Κατεβάστε, ρυθμίστε και εισάγετε τον κωδικό πρόσβασής σας για να ξεκλειδώσετε το $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "Ένας κακόβουλος πάροχος δικτύου μπορεί να πει ψέμματα για την κατάσταση του blockchain και να καταγράψει τη δραστηριότητα του δικτύου σας. Να προσθέτετε μόνο προσαρμοσμένα δίκτυα που εμπιστεύεστε."
   },
   "onlyConnectTrust": {
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το OneKey σας μέσω WebUSB.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το ledger σας μέσω WebHID.",

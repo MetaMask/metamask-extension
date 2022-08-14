@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "WebUSB를 통해 OneKey을 연결하려면 여기를 클릭하세요.",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID를 통해 Ledger을 연결하려면 여기를 클릭하세요.",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "피싱 감지 경보는 $1과(와)의 통신에 의존합니다. jsDeliver는 귀하의 IP 주소에 액세스할 수 있습니다. $2 보기.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "확인을 클릭하기 전:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "OneKey 지갑을 연결하고 잠금을 해제하십시오."
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "지갑을 컴퓨터에 바로 연결합니다. 하드웨어 지갑 장치를 사용하는 방법에 관한 자세한 내용은 $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
   },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "전체 화면에서 MetaMask를 열어 WebHID를 통해 OneKey를 연결합니다.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "전체 화면에서 MetaMask를 열어 WebHID를 통해 Ledger를 연결합니다.",

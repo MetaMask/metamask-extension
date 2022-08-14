@@ -576,6 +576,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Click here to connect your OneKey via WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2469,11 +2473,25 @@
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "Prior to clicking confirm:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "Plug in OneKey wallet and unlock it."
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Open MetaMask in full screen to connect your OneKey via WebUSB.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",

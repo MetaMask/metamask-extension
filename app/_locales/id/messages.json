@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Klik di sini untuk menghubungkan OneKey Anda melalui WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Klik di sini untuk menghubungkan Ledger Anda melalui WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "Peringatan deteksi pengelabuan bergantung pada komunikasi dengan $1. jsDeliver akan mendapat akses ke alamat IP Anda. Lihat $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "Sebelum mengeklik konfirmasi:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "Sambungkan dompet OneKey"
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "Hubungkan dompet Anda langsung ke komputer. Untuk selengkapnya seputar penggunaan perangkat dompet perangkat keras Anda, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Buka MetaMask dalam layar penuh untuk menghubungkan OneKey Anda melalui WebUSB.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka MetaMask dalam layar penuh untuk menghubungkan ledger Anda melalui WebHID.",

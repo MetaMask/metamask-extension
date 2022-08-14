@@ -503,6 +503,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Donanım Cüzdanınıza bağlamak için MetaMask'ı Google Chrome'da kullanmanız gerekir."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "WebUSB üzerinden Kayıt Defterinizi bağlamak için tıklayın",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID üzerinden Kayıt Defterinizi bağlamak için tıklayın",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2381,11 +2385,25 @@
     "message": "Kimlik avı tespiti uyarıları $1 ile iletişime bağlıdır. jsDeliver IP adresinize erişim sağlayacaktır. Şunu görüntüleyin: $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "Onayla düğmesine tıklamadan önce:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "OneKey cüzdanınızı bağlayın"
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "Cüzdanınızı doğrudan bilgisayara bağlayın. Donanım cüzdanı cihazını kullanma hakkında daha fazla bilgi için $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "Kötü amaçlı bir ağ sağlayıcı blokzincir durumu hakkında yalan söyleyebilir ve ağ aktivitenizi kaydedebilir. Sadece güvendiğiniz özel ağları ekleyin."
   },
   "onlyConnectTrust": {
     "message": "Sadece güvendiğiniz sitelere bağlayın."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Kayıt defterinizi WebUSB üzerinden bağlamak için MetaMask'i tam ekran açın.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Kayıt defterinizi WebHID üzerinden bağlamak için MetaMask'i tam ekran açın.",

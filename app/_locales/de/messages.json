@@ -495,6 +495,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrem Hardware-Wallet zu verbinden."
   },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Klicken Sie hier, um Ihren OneKey über WebUSB zu verbinden",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Klicken Sie hier, um Ihren Ledger über WebHID zu verbinden",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2344,11 +2348,25 @@
     "message": "Phishing-Warnungen basieren auf der Kommunikation mit $1. jsDeliver hat Zugriff auf Ihre IP-Adresse. $2 ansehen.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekeyConnectionInstructionHeader": {
+    "message": "Vor dem Klicken bestätigen:"
+  },
+  "onekeyWalletStepOne": {
+    "message": "Schließen Sie OneKey Wallet an und entsperren Sie es."
+  },
+  "onekeyWalletStepOneMsg": {
+    "message": "Schließen Sie Ihre Wallet direkt an Ihren Computer an. Für weitere Informationen zur Verwendung Ihrer Hardware-Wallet, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "onlyAddTrustedNetworks": {
     "message": "Ein betrügerischer Netzwerkanbieter kann bezüglich des Status der Blockchain täuschen und Ihre Netzwerkaktivitäten aufzeichnen. Fügen Sie nur vertrauenswürdige Netzwerke hinzu."
   },
   "onlyConnectTrust": {
     "message": "Verbinden Sie sich nur mit Sites, denen Sie vertrauen."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren OneKey über WebUSB zu verbinden.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
