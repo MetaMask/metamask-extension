@@ -58,6 +58,7 @@ export default {
     },
     hardwareWalletRequiresConnection: { control: 'boolean' },
     isLedgerWallet: { control: 'boolean' },
+    isOneKeyWallet: { control: 'boolean' },
     nativeCurrency: { control: 'text' },
     txData: { control: 'object' },
     clearConfirmTransaction: { action: 'Clean Confirm' },

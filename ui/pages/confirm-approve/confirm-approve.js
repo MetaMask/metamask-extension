@@ -18,6 +18,7 @@ import { TransactionModalContextProvider } from '../../contexts/transaction-moda
 import {
   getNativeCurrency,
   isAddressLedger,
+  isAddressOneKey,
 } from '../../ducks/metamask/metamask';
 import {
   getCurrentCurrency,
@@ -43,6 +44,10 @@ import ConfirmApproveContent from './confirm-approve-content';
 
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);
+};
+
+const isAddressOneKeyByFromAddress = (address) => (state) => {
+  return isAddressOneKey(state, address);
 };
 
 export default function ConfirmApprove({
@@ -80,6 +85,9 @@ export default function ConfirmApprove({
   );
   const fromAddressIsLedger = useSelector(
     isAddressLedgerByFromAddress(userAddress),
+  );
+  const fromAddressIsOneKey = useSelector(
+    isAddressOneKeyByFromAddress(userAddress),
   );
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
@@ -251,6 +259,7 @@ export default function ConfirmApprove({
               warning={submitWarning}
               txData={transaction}
               fromAddressIsLedger={fromAddressIsLedger}
+              fromAddressIsOneKey={fromAddressIsOneKey}
               chainId={chainId}
               rpcPrefs={rpcPrefs}
               isContract={isContract}

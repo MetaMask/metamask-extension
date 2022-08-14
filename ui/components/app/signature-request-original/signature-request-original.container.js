@@ -17,6 +17,7 @@ import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/conf
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
+  isAddressOneKey,
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
@@ -29,6 +30,7 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
+  const isOneKeyWallet = isAddressOneKey(state, from);
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
 
@@ -39,6 +41,7 @@ function mapStateToProps(state, ownProps) {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     hardwareWalletRequiresConnection,
     isLedgerWallet,
+    isOneKeyWallet,
     nativeCurrency: getNativeCurrency(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),

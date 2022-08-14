@@ -42,6 +42,7 @@ import {
   updateGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
+  isAddressOneKey,
 } from '../../ducks/metamask/metamask';
 
 import {
@@ -189,6 +190,7 @@ const mapStateToProps = (state, ownProps) => {
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
+  const fromAddressIsOnekey = isAddressOneKey(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
 
   const hardwareWalletRequiresConnection =
@@ -243,6 +245,7 @@ const mapStateToProps = (state, ownProps) => {
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     showLedgerSteps: fromAddressIsLedger,
+    showOneKeySteps: fromAddressIsOnekey,
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,

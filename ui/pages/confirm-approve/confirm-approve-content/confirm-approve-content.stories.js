@@ -82,6 +82,9 @@ export default {
     fromAddressIsLedger: {
       control: 'boolean',
     },
+    fromAddressIsOneKey: {
+      control: 'boolean',
+    },
     chainId: {
       control: 'text',
     },

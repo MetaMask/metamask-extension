@@ -4,6 +4,7 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
+import OneKeyInstructionField from '../onekey-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { EVENT } from '../../../../shared/constants/metametrics';
@@ -38,6 +39,7 @@ export default class SignatureRequestOriginal extends Component {
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
+    isOneKeyWallet: PropTypes.bool,
     nativeCurrency: PropTypes.string.isRequired,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
@@ -351,6 +353,11 @@ export default class SignatureRequestOriginal extends Component {
         {this.props.isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField showDataInstruction />
+          </div>
+        ) : null}
+        {this.props.isOneKeyWallet ? (
+          <div className="confirm-approve-content__onekey-instruction-wrapper">
+            <OneKeyInstructionField />
           </div>
         ) : null}
         {this.renderFooter()}

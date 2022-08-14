@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
+import OneKeyInstructionField from '../onekey-instruction-field';
 import { sanitizeMessage } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
@@ -27,6 +28,10 @@ export default class SignatureRequest extends PureComponent {
      * Check if the wallet is ledget wallet or not
      */
     isLedgerWallet: PropTypes.bool,
+    /**
+     * Check if the wallet is OneKey wallet or not
+     */
+    isOneKeyWallet: PropTypes.bool,
     /**
      * Handler for cancel button
      */
@@ -71,6 +76,7 @@ export default class SignatureRequest extends PureComponent {
       cancel,
       sign,
       isLedgerWallet,
+      isOneKeyWallet,
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
@@ -136,6 +142,11 @@ export default class SignatureRequest extends PureComponent {
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField showDataInstruction />
+          </div>
+        ) : null}
+        {isOneKeyWallet ? (
+          <div className="confirm-approve-content__ledger-instruction-wrapper">
+            <OneKeyInstructionField showDataInstruction />
           </div>
         ) : null}
         <Message

@@ -3,7 +3,10 @@ import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
 } from '../../../selectors';
-import { isAddressLedger } from '../../../ducks/metamask/metamask';
+import {
+  isAddressLedger,
+  isAddressOneKey,
+} from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request.component';
@@ -16,9 +19,11 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
+  const isOneKeyWallet = isAddressOneKey(state, from);
 
   return {
     isLedgerWallet,
+    isOneKeyWallet,
     hardwareWalletRequiresConnection,
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
@@ -26,8 +31,12 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { allAccounts, isLedgerWallet, hardwareWalletRequiresConnection } =
-    stateProps;
+  const {
+    allAccounts,
+    isLedgerWallet,
+    isOneKeyWallet,
+    hardwareWalletRequiresConnection,
+  } = stateProps;
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -67,6 +76,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     cancel,
     sign,
     isLedgerWallet,
+    isOneKeyWallet,
     hardwareWalletRequiresConnection,
   };
 }

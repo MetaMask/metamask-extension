@@ -45,6 +45,7 @@ import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
+import OneKeyInstructionField from '../../components/app/onekey-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 
 import {
@@ -141,6 +142,7 @@ export default class ConfirmTransactionBase extends Component {
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
+    showOneKeySteps: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -323,6 +325,7 @@ export default class ConfirmTransactionBase extends Component {
       maxPriorityFeePerGas,
       isMainnet,
       showLedgerSteps,
+      showOneKeySteps,
       supportsEIP1559,
       isMultiLayerFeeNetwork,
       nativeCurrency,
@@ -641,6 +644,8 @@ export default class ConfirmTransactionBase extends Component {
             showDataInstruction={Boolean(txData.txParams?.data)}
           />
         ) : null}
+
+        {showOneKeySteps ? <OneKeyInstructionField /> : null}
       </div>
     );
   }

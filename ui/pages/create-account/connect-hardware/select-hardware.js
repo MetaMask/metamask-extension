@@ -414,14 +414,13 @@ export default class SelectHardware extends Component {
     );
   }
 
-  // TODO: i18n Text
   renderOneKeyTutorialSteps() {
     const steps = [
       {
         asset: 'plug-in-wallet',
         dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step1OneKeyWallet'),
-        message: this.context.t('step1OneKeyWalletMsg', [
+        title: this.context.t('onekeyWalletStepOne'),
+        message: this.context.t('onekeyWalletStepOneMsg', [
           <a
             className="hw-connect__msg-link"
             href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"

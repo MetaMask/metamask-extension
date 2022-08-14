@@ -28,6 +28,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
+import OneKeyInstructionField from '../../../components/app/onekey-instruction-field';
 import {
   ERC1155,
   ERC20,
@@ -69,6 +70,7 @@ export default class ConfirmApproveContent extends Component {
     warning: PropTypes.string,
     txData: PropTypes.object,
     fromAddressIsLedger: PropTypes.bool,
+    fromAddressIsOneKey: PropTypes.bool,
     chainId: PropTypes.string,
     tokenAddress: PropTypes.string,
     rpcPrefs: PropTypes.object,
@@ -586,6 +588,7 @@ export default class ConfirmApproveContent extends Component {
       warning,
       txData,
       fromAddressIsLedger,
+      fromAddressIsOneKey,
       toAddress,
       chainId,
       rpcPrefs,
@@ -800,6 +803,12 @@ export default class ConfirmApproveContent extends Component {
             <LedgerInstructionField
               showDataInstruction={Boolean(txData.txParams?.data)}
             />
+          </div>
+        ) : null}
+
+        {fromAddressIsOneKey ? (
+          <div className="confirm-approve-content__onekey-instruction-wrapper">
+            <OneKeyInstructionField />
           </div>
         ) : null}
 

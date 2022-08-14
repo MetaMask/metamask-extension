@@ -25,6 +25,7 @@ export default {
     },
     hardwareWalletRequiresConnection: { control: 'boolean' },
     isLedgerWallet: { control: 'boolean' },
+    isOneKeyWallet: { control: 'boolean' },
     clearConfirmTransaction: { action: 'Clean Confirm' },
     cancel: { action: 'Cancel' },
     sign: { action: 'Sign' },
