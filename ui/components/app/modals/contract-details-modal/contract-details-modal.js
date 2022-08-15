@@ -20,7 +20,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
           {t('contractTitle')}
         </div>
         <div className="contract-details-modal__content__description">
-          {t('contractDescription')} {t('contractDescriptionLink')}
+          {t('contractDescription')}
         </div>
 
         <div className="contract-details-modal__content__contract-subtitle">
@@ -37,7 +37,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
               {tokenName || ellipsify(address)}
             </div>
             {tokenName && (
-              <div className="contract-details-modal__content__contract__addresss">
+              <div className="contract-details-modal__content__contract__address">
                 {ellipsify(address)}
               </div>
             )}
@@ -48,7 +48,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 className="contract-details-modal__content__contract__buttonCopy"
                 type="link"
               >
-                <CopyContractDetails size={16} />
+                <CopyContractDetails size={18} />
               </button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
@@ -79,7 +79,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
               {tokenName || ellipsify(address)}
             </div>
             {tokenName && (
-              <div className="contract-details-modal__content__contract__addresss">
+              <div className="contract-details-modal__content__contract__address">
                 {ellipsify(address)}
               </div>
             )}
@@ -90,7 +90,7 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 className="contract-details-modal__content__contract__buttonCopy"
                 type="link"
               >
-                <CopyContractDetails size={16} />
+                <CopyContractDetails size={18} />
               </button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
