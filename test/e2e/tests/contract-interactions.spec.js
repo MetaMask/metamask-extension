@@ -11,7 +11,7 @@ describe('Deploy contract and call contract methods', function () {
       },
     ],
   };
-  const smartContract = 'hst';
+  const smartContract = 'piggybank';
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
@@ -56,8 +56,9 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
+        await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
         await driver.waitForSelector(
@@ -85,7 +86,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(3)',
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
           { timeout: 10000 },
         );
         await driver.waitForSelector(
@@ -95,7 +96,7 @@ describe('Deploy contract and call contract methods', function () {
           },
           { timeout: 10000 },
         );
-
+        
         // renders the correct ETH balance
         await driver.switchToWindow(extension);
         const balance = await driver.waitForSelector(
