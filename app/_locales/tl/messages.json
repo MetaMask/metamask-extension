@@ -503,13 +503,13 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Hardware Wallet."
   },
-  "clickToConnectOneKeyViaWebUSB": {
-    "message": "Mag-click dito upang ikonekta ang iyong OneKey sa pamamagitan ng WebUSB",
-    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
-  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Mag-click dito upang ikonekta ang iyong Ledger sa pamamagitan ng WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Mag-click dito upang ikonekta ang iyong OneKey sa pamamagitan ng WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
   },
   "clickToRevealSeed": {
     "message": "Mag-click dito para ipakita ang mga lihim na salita"
@@ -2401,12 +2401,12 @@
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
   },
-  "openFullScreenForOneKeyWebUsb": {
-    "message": "Buksan ang MetaMask sa buong screen para ikonekta ang OneKey mo sa pamamagitan ng WebUSB.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Buksan ang MetaMask sa buong screen para ikonekta ang ledger mo sa pamamagitan ng WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Buksan ang MetaMask sa buong screen para ikonekta ang OneKey mo sa pamamagitan ng WebUSB.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "optional": {

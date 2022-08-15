@@ -495,13 +495,13 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrem Hardware-Wallet zu verbinden."
   },
-  "clickToConnectOneKeyViaWebUSB": {
-    "message": "Klicken Sie hier, um Ihren OneKey über WebUSB zu verbinden",
-    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
-  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Klicken Sie hier, um Ihren Ledger über WebHID zu verbinden",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Klicken Sie hier, um Ihren OneKey über WebUSB zu verbinden",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
   },
   "clickToRevealSeed": {
     "message": "Hier klicken, um Geheimwörter zu enthüllen"
@@ -2364,12 +2364,12 @@
   "onlyConnectTrust": {
     "message": "Verbinden Sie sich nur mit Sites, denen Sie vertrauen."
   },
-  "openFullScreenForOneKeyWebUsb": {
-    "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren OneKey über WebUSB zu verbinden.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren Ledger über WebHID zu verbinden.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Öffnen Sie MetaMask im Vollbildmodus, um Ihren OneKey über WebUSB zu verbinden.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "optional": {

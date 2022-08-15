@@ -503,13 +503,13 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
   },
-  "clickToConnectOneKeyViaWebUSB": {
-    "message": "Klik di sini untuk menghubungkan OneKey Anda melalui WebUSB",
-    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
-  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Klik di sini untuk menghubungkan Ledger Anda melalui WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Klik di sini untuk menghubungkan OneKey Anda melalui WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
   },
   "clickToRevealSeed": {
     "message": "Klik di sini untuk membuka kata rahasia"
@@ -2401,12 +2401,12 @@
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
-  "openFullScreenForOneKeyWebUsb": {
-    "message": "Buka MetaMask dalam layar penuh untuk menghubungkan OneKey Anda melalui WebUSB.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka MetaMask dalam layar penuh untuk menghubungkan ledger Anda melalui WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Buka MetaMask dalam layar penuh untuk menghubungkan OneKey Anda melalui WebUSB.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "optional": {

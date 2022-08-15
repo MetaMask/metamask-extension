@@ -503,13 +503,13 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
   },
-  "clickToConnectOneKeyViaWebUSB": {
-    "message": "Κάντε κλικ εδώ για να συνδέσετε το OneKey σας μέσω WebUSB",
-    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
-  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Κάντε κλικ εδώ για να συνδέσετε το Ledger σας μέσω WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "Κάντε κλικ εδώ για να συνδέσετε το OneKey σας μέσω WebUSB",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
   },
   "clickToRevealSeed": {
     "message": "Κάντε κλικ εδώ για να αποκαλύψετε μυστικές λέξεις"
@@ -2401,12 +2401,12 @@
   "onlyConnectTrust": {
     "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε."
   },
-  "openFullScreenForOneKeyWebUsb": {
-    "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το OneKey σας μέσω WebUSB.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το ledger σας μέσω WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "Ανοίξτε το MetaMask σε πλήρη οθόνη για να συνδέσετε το OneKey σας μέσω WebUSB.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "optional": {

@@ -506,13 +506,13 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
   },
-  "clickToConnectOneKeyViaWebUSB": {
-    "message": "点击这里通过WebUSB连接到您的OneKey",
-    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
-  },
   "clickToConnectLedgerViaWebHID": {
     "message": "点击这里以通过 WebHID 连接您的 Ledger",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToConnectOneKeyViaWebUSB": {
+    "message": "点击这里通过WebUSB连接到您的OneKey",
+    "description": "Text that can be clicked to open a browser popup for connecting the OneKey device via webusb"
   },
   "clickToRevealSeed": {
     "message": "点击此处以显示助记词"
@@ -2404,13 +2404,13 @@
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
   },
-  "openFullScreenForOneKeyWebUsb": {
-    "message": "全屏打开MetaMask以通过WebUSB连接您的OneKey。",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their OneKey via webusb."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "全屏打开 MetaMask 以通过 WebHID 连接您的 ledger。",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openFullScreenForOneKeyWebUsb": {
+    "message": "全屏打开MetaMask以通过WebUSB连接您的OneKey。",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their OneKey via webusb."
   },
   "openSourceCode": {
     "message": "检查源代码"
