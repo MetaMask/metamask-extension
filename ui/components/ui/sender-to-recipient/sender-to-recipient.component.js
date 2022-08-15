@@ -101,7 +101,7 @@ export function RecipientWithAddress({
   onRecipientClick,
   addressOnly,
   recipientNickname,
-  recipientEns,
+  recipientDomain,
   recipientName,
 }) {
   const t = useI18nContext();
@@ -124,10 +124,10 @@ export function RecipientWithAddress({
         <div className="sender-to-recipient__name">
           {addressOnly
             ? recipientNickname ||
-              recipientEns ||
+              recipientDomain ||
               shortenAddress(checksummedRecipientAddress)
             : recipientNickname ||
-              recipientEns ||
+              recipientDomain ||
               recipientName ||
               t('newContract')}
         </div>
@@ -145,7 +145,7 @@ export function RecipientWithAddress({
 RecipientWithAddress.propTypes = {
   checksummedRecipientAddress: PropTypes.string,
   recipientName: PropTypes.string,
-  recipientEns: PropTypes.string,
+  recipientDomain: PropTypes.string,
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
@@ -175,7 +175,7 @@ export default function SenderToRecipient({
   senderName,
   recipientNickname,
   recipientName,
-  recipientEns,
+  recipientDomain,
   onRecipientClick,
   onSenderClick,
   recipientAddress,
@@ -203,7 +203,7 @@ export default function SenderToRecipient({
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
           recipientNickname={recipientNickname}
-          recipientEns={recipientEns}
+          recipientDomain={recipientDomain}
           recipientName={recipientName}
         />
       ) : (
@@ -225,7 +225,7 @@ SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
   recipientName: PropTypes.string,
-  recipientEns: PropTypes.string,
+  recipientDomain: PropTypes.string,
   recipientAddress: PropTypes.string,
   recipientNickname: PropTypes.string,
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),

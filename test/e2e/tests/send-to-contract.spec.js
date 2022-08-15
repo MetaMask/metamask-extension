@@ -68,7 +68,7 @@ describe('Send ERC20 token to contract address', function () {
 
         // Type contract address
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Search, public address (0x), ENS, or UD"]',
           tokenAddressText,
         );
 

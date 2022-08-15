@@ -54,7 +54,7 @@ describe('Threebox', function () {
         await driver.clickElement('.address-book__link');
         await driver.fill('#nickname', 'Test User Name 11');
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Search, public address (0x), ENS, or UD"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.delay(largeDelayMs * 2);

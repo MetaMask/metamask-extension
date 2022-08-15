@@ -2678,7 +2678,7 @@
     "message": "Recents"
   },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or ENS"
+    "message": "Search, public address (0x), ENS, or UD"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
