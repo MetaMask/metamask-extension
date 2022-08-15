@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Deploy contract and call contract methods', function () {
   const ganacheOptions = {
@@ -11,7 +12,7 @@ describe('Deploy contract and call contract methods', function () {
       },
     ],
   };
-  const smartContract = 'piggybank';
+  const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
