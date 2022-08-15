@@ -13461,9 +13461,9 @@ graphql-subscriptions@^1.1.0:
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
 gridplus-sdk@^2.2.0:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-2.2.2.tgz#68a794fa74eb8b6bb84c0b0c59199b8f8bf027ec"
-  integrity sha512-PKWxrRn4aOTEKPwLwMEHJvUwQgmKbRxE4c3XaKpUNaQimEOZkh9u+caw3/ePvzAOzsRXlk/kIx+Ok+IeEO3Idg==
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-2.2.4.tgz#1d05fcb460b1670cc4b051796f93cbea1fbce2f4"
+  integrity sha512-zjG5w5t3mLwBwMPHmfg6AlfaHoV5hKHQE7tFM7IEYnxQYwQG0MSgFghIZFNcp2R0SnG3A8coFhLoSaX/+9SdPA==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
