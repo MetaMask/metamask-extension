@@ -116,6 +116,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
+import UdController from './controllers/ud';
 import NetworkController, { NETWORK_EVENTS } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
@@ -495,6 +496,16 @@ export default class MetamaskController extends EventEmitter {
 
     this.ensController = new EnsController({
       provider: this.provider,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
+      onNetworkDidChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
+    });
+
+    this.udController = new UdController({
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
@@ -1098,6 +1109,7 @@ export default class MetamaskController extends EventEmitter {
         BackupController: this.backupController,
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
+        UdController: this.udController.store,
         ApprovalController: this.approvalController,
         AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
@@ -1517,6 +1529,7 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       detectTokensController,
       ensController,
+      udController,
       gasFeeController,
       keyringController,
       metaMetricsController,
@@ -1741,6 +1754,10 @@ export default class MetamaskController extends EventEmitter {
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
+      
+      // UdController
+      tryReverseResolveAddress:
+      udController.reverseResolveAddress.bind(udController),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
