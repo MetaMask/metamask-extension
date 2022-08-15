@@ -257,7 +257,6 @@ class ConnectHardwareForm extends Component {
           properties: {
             account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
             account_hardware_type: device,
-            // account_hardware_version: null,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -269,7 +268,6 @@ class ConnectHardwareForm extends Component {
           properties: {
             account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
             account_hardware_type: device,
-            // account_hardware_version: null,
             error: e.message,
           },
         });
