@@ -110,7 +110,7 @@ export default function OneKeyInstructionField() {
                 >
                   {environmentTypeIsFullScreen
                     ? t('clickToConnectOneKeyViaWebUSB')
-                    : t('openFullScreenForOneKeyWebUSB')}
+                    : t('openFullScreenForOneKeyWebUsb')}
                 </Button>
               </span>,
               // webusbConnectedStatus !== WEBUSB_CONNECTED_STATUSES.CONNECTED,
