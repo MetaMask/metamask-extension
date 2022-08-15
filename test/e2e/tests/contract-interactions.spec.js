@@ -34,11 +34,11 @@ describe('Deploy contract and call contract methods', function () {
           `http://127.0.0.1:8080/?contract=${contractAddress}`,
         );
 
-        // calls and confirms a contract method where ETH is sent
-        const depositButton = await driver.findClickableElement(
-          '#depositButton',
+        // wait for deployed contract, calls and confirms a contract method where ETH is sent
+        await driver.findClickableElement(
+          '#deployButton',
         );
-        await depositButton.click();
+        await driver.clickElement('#depositButton');
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
