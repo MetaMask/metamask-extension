@@ -3040,14 +3040,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
   integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
 
-"@metamask/noble-secp256k1-compat-wrapper@^1.0.3", secp256k1@4.0.2, secp256k1@^3.0.1, secp256k1@^3.6.1, secp256k1@^3.6.2, secp256k1@^4.0.0, secp256k1@^4.0.1, "secp256k1@npm:@metamask/noble-secp256k1-compat-wrapper@1.0.3":
-  name secp256k1
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@metamask/noble-secp256k1-compat-wrapper/-/noble-secp256k1-compat-wrapper-1.0.3.tgz#fdc5fb1c8d777264da2779671577c4182e301a2d"
-  integrity sha512-S102pmEH1UpLLa7f9oN+tV3v8c0wBmqZa7+sAtTFUsFg0DQvV4EIhRCYZgtJRLbaA7U6LXkPADac1DtHVyMFVw==
-  dependencies:
-    ethereum-cryptography "^1.1.2"
-
 "@metamask/object-multiplex@^1.1.0", "@metamask/object-multiplex@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.2.0.tgz#38fc15c142f61939391e1b9a8eed679696c7e4f4"
@@ -24548,6 +24540,13 @@ scss-parser@^1.0.4:
   integrity sha512-RZOtvCmCnwkDo7kdcYBi807Y5EoTIxJ34AgEgJNDmOH1jl0/xG0FyYZFbH6Ga3Iwu7q8LSdxJ4C5UkzNXjQxKQ==
   dependencies:
     invariant "2.2.4"
+
+secp256k1@4.0.2, secp256k1@^3.0.1, secp256k1@^3.6.1, secp256k1@^3.6.2, secp256k1@^4.0.0, secp256k1@^4.0.1, "secp256k1@npm:@metamask/noble-secp256k1-compat-wrapper@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@metamask/noble-secp256k1-compat-wrapper/-/noble-secp256k1-compat-wrapper-1.0.3.tgz#fdc5fb1c8d777264da2779671577c4182e301a2d"
+  integrity sha512-S102pmEH1UpLLa7f9oN+tV3v8c0wBmqZa7+sAtTFUsFg0DQvV4EIhRCYZgtJRLbaA7U6LXkPADac1DtHVyMFVw==
+  dependencies:
+    ethereum-cryptography "^1.1.2"
 
 select@^1.1.2:
   version "1.1.2"
