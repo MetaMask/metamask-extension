@@ -27,13 +27,13 @@ describe('AvatarToken', () => {
     const { getByText } = render(
       <AvatarToken {...args} data-testid="avatar-token" tokenImageUrl="" />,
     );
-    expect(getByText('A')).toBeDefined();
+    expect(getByText('a')).toBeDefined();
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
     render(<AvatarToken {...args} data-testid="avatar-token" showHalo />);
     const image = screen.getAllByRole('img', { hidden: true });
-    expect(image[1]).toHaveClass('avatar-token__token-image--halo');
+    expect(image[1]).toHaveClass('avatar-token__token-image--size-reduced');
   });
 
   it('should render text showHalo is true and no image url is provided', () => {
@@ -45,6 +45,6 @@ describe('AvatarToken', () => {
         showHalo
       />,
     );
-    expect(getByText('A')).toBeDefined();
+    expect(getByText('a')).toBeDefined();
   });
 });
