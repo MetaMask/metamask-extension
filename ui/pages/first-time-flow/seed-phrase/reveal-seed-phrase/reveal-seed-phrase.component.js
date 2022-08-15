@@ -10,7 +10,10 @@ import {
   DEFAULT_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 import { returnToOnboardingInitiatorTab } from '../../onboarding-initiator-util';
 import { exportAsFile } from '../../../../../shared/modules/export-utils';
 
@@ -77,6 +80,15 @@ export default class RevealSeedPhrase extends PureComponent {
     });
 
     await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
+
+    this.context.trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.NEW_WALLET_CREATED,
+      properties: {
+        action: 'Onboarding Complete',
+        legacy_event: true,
+      },
+    });
 
     if (onboardingInitiator) {
       await returnToOnboardingInitiatorTab(onboardingInitiator);

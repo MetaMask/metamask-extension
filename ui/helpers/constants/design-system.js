@@ -4,6 +4,9 @@
  * should match the property. When detailing a collection of things, it should
  * match the plural form of the thing. e.g. COLORS, TYPOGRAPHY
  */
+
+import { pick } from 'lodash';
+
 export const COLORS = {
   BACKGROUND_DEFAULT: 'background-default',
   BACKGROUND_ALTERNATIVE: 'background-alternative',
@@ -22,11 +25,6 @@ export const COLORS = {
   PRIMARY_MUTED: 'primary-muted',
   PRIMARY_INVERSE: 'primary-inverse',
   PRIMARY_DISABLED: 'primary-disabled',
-  SECONDARY_DEFAULT: 'secondary-default',
-  SECONDARY_ALTERNATIVE: 'secondary-alternative',
-  SECONDARY_MUTED: 'secondary-muted',
-  SECONDARY_INVERSE: 'secondary-inverse',
-  SECONDARY_DISABLED: 'secondary-disabled',
   ERROR_DEFAULT: 'error-default',
   ERROR_ALTERNATIVE: 'error-alternative',
   ERROR_MUTED: 'error-muted',
@@ -52,10 +50,82 @@ export const COLORS = {
   KOVAN: 'kovan',
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
-  TRANSPARENT: 'transparent',
   LOCALHOST: 'localhost',
+  TRANSPARENT: 'transparent',
+  INHERIT: 'inherit',
 };
+export const BACKGROUND_COLORS = pick(COLORS, [
+  'BACKGROUND_DEFAULT',
+  'BACKGROUND_ALTERNATIVE',
+  'OVERLAY_DEFAULT',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_ALTERNATIVE',
+  'PRIMARY_MUTED',
+  'ERROR_DEFAULT',
+  'ERROR_ALTERNATIVE',
+  'ERROR_MUTED',
+  'WARNING_DEFAULT',
+  'WARNING_ALTERNATIVE',
+  'WARNING_MUTED',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_ALTERNATIVE',
+  'SUCCESS_MUTED',
+  'INFO_DEFAULT',
+  'INFO_ALTERNATIVE',
+  'INFO_MUTED',
+  'MAINNET',
+  'ROPSTEN',
+  'KOVAN',
+  'RINKEBY',
+  'GOERLI',
+  'TRANSPARENT',
+  'LOCALHOST',
+]);
 
+export const BORDER_COLORS = pick(COLORS, [
+  'BORDER_DEFAULT',
+  'BORDER_MUTED',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_ALTERNATIVE',
+  'PRIMARY_MUTED',
+  'ERROR_DEFAULT',
+  'ERROR_ALTERNATIVE',
+  'ERROR_MUTED',
+  'WARNING_DEFAULT',
+  'WARNING_ALTERNATIVE',
+  'WARNING_MUTED',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_ALTERNATIVE',
+  'SUCCESS_MUTED',
+  'INFO_DEFAULT',
+  'INFO_ALTERNATIVE',
+  'INFO_MUTED',
+  'MAINNET',
+  'ROPSTEN',
+  'KOVAN',
+  'RINKEBY',
+  'GOERLI',
+  'TRANSPARENT',
+  'LOCALHOST',
+]);
+
+export const TEXT_COLORS = pick(COLORS, [
+  'TEXT_DEFAULT',
+  'TEXT_ALTERNATIVE',
+  'TEXT_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
 export const TYPOGRAPHY = {
   H1: 'h1',
   H2: 'h2',
@@ -72,6 +142,7 @@ export const TYPOGRAPHY = {
 const NONE = 'none';
 
 export const SIZES = {
+  XXS: 'xxs',
   XS: 'xs',
   SM: 'sm',
   MD: 'md',
