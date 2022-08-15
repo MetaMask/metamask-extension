@@ -36,7 +36,6 @@ describe('Deploy contract and call contract methods', function () {
 
         // calls and confirms a contract method where ETH is sent
         await driver.clickElement('#depositButton');
-
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -96,7 +95,7 @@ describe('Deploy contract and call contract methods', function () {
           },
           { timeout: 10000 },
         );
-        
+
         // renders the correct ETH balance
         await driver.switchToWindow(extension);
         const balance = await driver.waitForSelector(
