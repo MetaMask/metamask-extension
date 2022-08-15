@@ -35,9 +35,7 @@ describe('Deploy contract and call contract methods', function () {
         );
 
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
-        await driver.findClickableElement(
-          '#deployButton',
-        );
+        await driver.findClickableElement('#deployButton');
         await driver.clickElement('#depositButton');
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
