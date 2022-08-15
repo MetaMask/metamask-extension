@@ -16,75 +16,33 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
   return (
     <Popover className="contract-details-modal">
       <Box className="contract-details-modal__content">
-        <div className="contract-details-modal__content__header">
+        <Box className="contract-details-modal__content__header">
           {t('contractTitle')}
-        </div>
-        <div className="contract-details-modal__content__description">
+        </Box>
+        <Box className="contract-details-modal__content__description">
           {t('contractDescription')}
-        </div>
-
-        <div className="contract-details-modal__content__contract-subtitle">
-          {t('contractToken')}
-        </div>
-        <Box className="contract-details-modal__content__contract">
-          <Identicon
-            className="contract-details-modal__content__contract__identicon"
-            address={address}
-            diameter={24}
-          />
-          <div data-testid="recipient">
-            <div className="contract-details-modal__content__contract__title">
-              {tokenName || ellipsify(address)}
-            </div>
-            {tokenName && (
-              <div className="contract-details-modal__content__contract__address">
-                {ellipsify(address)}
-              </div>
-            )}
-          </div>
-          <div className="contract-details-modal__content__contract__buttons">
-            <Tooltip title={t('copyToClipboard')}>
-              <button
-                className="contract-details-modal__content__contract__buttonCopy"
-                type="link"
-              >
-                <CopyContractDetails size={18} />
-              </button>
-            </Tooltip>
-            <Tooltip title={t('openInBlockExplorer')}>
-              <button
-                className="contract-details-modal__content__contract__button"
-                type="link"
-              >
-                <IconBlockExplorer
-                  size={14}
-                  color="var(--color-icon-default)"
-                />
-              </button>
-            </Tooltip>
-          </div>
         </Box>
 
-        <div className="contract-details-modal__content__contract-subtitle">
-          {t('contractRequestingSpendingCap')}
-        </div>
+        <Box className="contract-details-modal__content__contract-subtitle">
+          {t('contractToken')}
+        </Box>
         <Box className="contract-details-modal__content__contract">
           <Identicon
             className="contract-details-modal__content__contract__identicon"
             address={address}
             diameter={24}
           />
-          <div data-testid="recipient">
-            <div className="contract-details-modal__content__contract__title">
+          <Box data-testid="recipient">
+            <Box className="contract-details-modal__content__contract__title">
               {tokenName || ellipsify(address)}
-            </div>
+            </Box>
             {tokenName && (
-              <div className="contract-details-modal__content__contract__address">
+              <Box className="contract-details-modal__content__contract__address">
                 {ellipsify(address)}
-              </div>
+              </Box>
             )}
-          </div>
-          <div className="contract-details-modal__content__contract__buttons">
+          </Box>
+          <Box className="contract-details-modal__content__contract__buttons">
             <Tooltip title={t('copyToClipboard')}>
               <button
                 className="contract-details-modal__content__contract__buttonCopy"
@@ -104,7 +62,49 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                 />
               </button>
             </Tooltip>
-          </div>
+          </Box>
+        </Box>
+
+        <Box className="contract-details-modal__content__contract-subtitle">
+          {t('contractRequestingSpendingCap')}
+        </Box>
+        <Box className="contract-details-modal__content__contract">
+          <Identicon
+            className="contract-details-modal__content__contract__identicon"
+            address={address}
+            diameter={24}
+          />
+          <Box data-testid="recipient">
+            <Box className="contract-details-modal__content__contract__title">
+              {tokenName || ellipsify(address)}
+            </Box>
+            {tokenName && (
+              <Box className="contract-details-modal__content__contract__address">
+                {ellipsify(address)}
+              </Box>
+            )}
+          </Box>
+          <Box className="contract-details-modal__content__contract__buttons">
+            <Tooltip title={t('copyToClipboard')}>
+              <button
+                className="contract-details-modal__content__contract__buttonCopy"
+                type="link"
+              >
+                <CopyContractDetails size={18} />
+              </button>
+            </Tooltip>
+            <Tooltip title={t('openInBlockExplorer')}>
+              <button
+                className="contract-details-modal__content__contract__button"
+                type="link"
+              >
+                <IconBlockExplorer
+                  size={14}
+                  color="var(--color-icon-default)"
+                />
+              </button>
+            </Tooltip>
+          </Box>
         </Box>
       </Box>
       <Box className="contract-details-modal__footer">
