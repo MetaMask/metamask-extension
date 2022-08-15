@@ -80,9 +80,6 @@ function renderBackgroundColor(color) {
     case COLORS.PRIMARY_INVERSE:
       bgColor = COLORS.PRIMARY_DEFAULT;
       break;
-    case COLORS.SECONDARY_INVERSE:
-      bgColor = COLORS.SECONDARY_DEFAULT;
-      break;
     case COLORS.ERROR_INVERSE:
       bgColor = COLORS.ERROR_DEFAULT;
       break;
