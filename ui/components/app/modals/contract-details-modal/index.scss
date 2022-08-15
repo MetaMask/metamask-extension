@@ -1,36 +1,36 @@
 .contract-details-modal {
   background-color: var(--color-background-default);
   width: 360px !important;
-  height: 491px;
 
   &__content {
-    @extend %col-nowrap;
-
     padding: 24px 16px 32px 16px;
     border-bottom: 1px solid var(--color-border-muted);
 
     &__header {
       font-style: normal;
-      line-height: 25px;
       font-weight: 700;
-      width: 126px;
       font-size: 16px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
     }
 
     &__description {
+      font-style: normal;
+      font-weight: 400;
       font-size: 12px;
-      width: 328px;
-      font-weight: 300;
       line-height: 20px;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.25px;
       padding-top: 8px;
       color: var(--color-text-alternative);
-      height: 63px;
     }
 
     &__contract-subtitle {
-      font-size: 14px;
       font-style: normal;
       font-weight: 400;
+      font-size: 14px;
       line-height: 20px;
       display: flex;
       align-items: center;
@@ -66,11 +66,6 @@
         height: 22px;
         line-height: 22px;
         margin-bottom: 16px;
-      }
-
-      &__icon {
-        margin-left: 1px;
-        display: flex;
       }
 
       &__buttons {

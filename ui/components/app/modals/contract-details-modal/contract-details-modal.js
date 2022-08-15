@@ -19,9 +19,9 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
         <Box className="contract-details-modal__content__header">
           {t('contractTitle')}
         </Box>
-        <Box className="contract-details-modal__content__description">
+        <div className="contract-details-modal__content__description">
           {t('contractDescription')}
-        </Box>
+        </div>
 
         <Box className="contract-details-modal__content__contract-subtitle">
           {t('contractToken')}
@@ -37,9 +37,9 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
               {tokenName || ellipsify(address)}
             </Box>
             {tokenName && (
-              <Box className="contract-details-modal__content__contract__address">
+              <div className="contract-details-modal__content__contract__address">
                 {ellipsify(address)}
-              </Box>
+              </div>
             )}
           </Box>
           <Box className="contract-details-modal__content__contract__buttons">
@@ -79,9 +79,9 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
               {tokenName || ellipsify(address)}
             </Box>
             {tokenName && (
-              <Box className="contract-details-modal__content__contract__address">
+              <div className="contract-details-modal__content__contract__address">
                 {ellipsify(address)}
-              </Box>
+              </div>
             )}
           </Box>
           <Box className="contract-details-modal__content__contract__buttons">
