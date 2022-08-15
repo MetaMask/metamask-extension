@@ -101,7 +101,7 @@ export function RecipientWithAddress({
   onRecipientClick,
   addressOnly,
   recipientNickname,
-  recipientEns,
+  recipientDomain,
   recipientName,
   recipientMetadataName,
 }) {
@@ -181,7 +181,7 @@ RecipientWithAddress.propTypes = {
   checksummedRecipientAddress: PropTypes.string,
   recipientName: PropTypes.string,
   recipientMetadataName: PropTypes.string,
-  recipientEns: PropTypes.string,
+  recipientDomain: PropTypes.string,
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
@@ -212,7 +212,7 @@ export default function SenderToRecipient({
   recipientNickname,
   recipientName,
   recipientMetadataName,
-  recipientEns,
+  recipientDomain,
   onRecipientClick,
   onSenderClick,
   recipientAddress,
@@ -243,7 +243,7 @@ export default function SenderToRecipient({
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
           recipientNickname={recipientNickname}
-          recipientEns={recipientEns}
+          recipientDomain={recipientDomain}
           recipientName={recipientName}
           recipientMetadataName={recipientMetadataName}
         />
@@ -267,7 +267,7 @@ SenderToRecipient.propTypes = {
   senderAddress: PropTypes.string,
   recipientName: PropTypes.string,
   recipientMetadataName: PropTypes.string,
-  recipientEns: PropTypes.string,
+  recipientDomain: PropTypes.string,
   recipientAddress: PropTypes.string,
   recipientNickname: PropTypes.string,
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
