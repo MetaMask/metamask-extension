@@ -135,7 +135,7 @@ chrome.runtime.onMessage.addListener(() => {
 chrome.scripting.registerContentScripts([
   {
     id: 'inpage',
-    matches: ['http://*/*', 'https://*/*'],
+    matches: ['file://*/*', 'http://*/*', 'https://*/*'],
     js: ['inpage.js'],
     runAt: 'document_start',
     world: 'MAIN',
