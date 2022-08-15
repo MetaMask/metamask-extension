@@ -47,6 +47,7 @@
   ],
   "default_locale": "en",
   "description": "__MSG_appDescription__",
+  "host_permissions": ["file://*/*", "http://*/*", "https://*/*"],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -61,6 +62,7 @@
   "name": "__MSG_appName__",
   "permissions": [
     "storage",
+    "scripting",
     "unlimitedStorage",
     "clipboardWrite",
     "http://localhost:8545/",
