@@ -139,6 +139,9 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
+      - user-actions-benchmark:
+          requires:
+            - prep-build-test
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
@@ -152,6 +155,7 @@ workflows:
             - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
             - benchmark
+            - user-actions-benchmark
             - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
@@ -624,6 +628,32 @@ jobs:
           root: .
           paths:
             - test-artifacts
+    
+  user-actions-benchmark:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Run page load benchmark
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
 
   stats-module-load-init:
     executor: node-browsers-medium-plus
@@ -754,7 +784,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
+            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
       - checkout
       - attach_workspace:
           at: .
