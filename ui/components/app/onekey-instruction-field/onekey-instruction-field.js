@@ -54,7 +54,6 @@ export default function OneKeyInstructionField() {
 
   useEffect(() => {
     const initialConnectedDeviceCheck = async () => {
-      console.log('initialConnectedDeviceCheck: ', webusbConnectedStatus);
       if (webusbConnectedStatus !== WEBHID_CONNECTED_STATUSES.CONNECTED) {
         const devices = await window.navigator.usb.getDevices();
         const webusbIsConnected = devices.some((device) => {
@@ -84,6 +83,7 @@ export default function OneKeyInstructionField() {
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('onekeyConnectionInstructionHeader'))}
             {renderInstructionStep(`- ${t('onekeyWalletStepOne')}`)}
+            {/* Always show the button for connected devices, so that users with multiple OneKey devices can switch between devices */}
             {renderInstructionStep(
               <span>
                 <Button
@@ -113,8 +113,6 @@ export default function OneKeyInstructionField() {
                     : t('openFullScreenForOneKeyWebUsb')}
                 </Button>
               </span>,
-              // webusbConnectedStatus !== WEBUSB_CONNECTED_STATUSES.CONNECTED,
-              // COLORS.SECONDARY_DEFAULT,
             )}
           </div>
         </Dialog>
