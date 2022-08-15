@@ -1,5 +1,6 @@
 const semver = require('semver');
 const { BuildType } = require('../lib/build-type');
+const {readFileSync, writeFileSync} = require("fs");
 
 /**
  * Map the current version to a format that is compatible with each browser.
@@ -65,7 +66,22 @@ function logError(error) {
   console.error(error.stack || error);
 }
 
+function wrapAgainstScuttling(file, natives = []) {
+  const content = readFileSync(file, 'utf8');
+  const native = `{${natives.map((n) => `${n}, `)}}`;
+  const fileOutput = `
+(function(){
+  const ${native} = globalThis;
+  with ({window: ${native}}) {
+    ${content}
+  }
+}());
+      `;
+  writeFileSync(file, fileOutput);
+}
+
 module.exports = {
   getBrowserVersionMap,
   logError,
+  wrapAgainstScuttling,
 };

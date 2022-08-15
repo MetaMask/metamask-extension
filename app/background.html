@@ -8,12 +8,10 @@
     <script src="./sentry-install.js" type="text/javascript" charset="utf-8"></script>
     {{@if(it.applyLavaMoat)}}
       <script src="./runtime-lavamoat.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./lockdown-more.js" type="text/javascript" charset="utf-8"></script>
       <script src="./policy-load.js" type="text/javascript" charset="utf-8"></script>
     {{#else}}
       <script src="./lockdown-install.js" type="text/javascript" charset="utf-8"></script>
       <script src="./lockdown-run.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./lockdown-more.js" type="text/javascript" charset="utf-8"></script>
       <script src="./runtime-cjs.js" type="text/javascript" charset="utf-8"></script>
     {{/if}}
     {{@each(it.jsBundles) => val}}

@@ -63,7 +63,7 @@ const metamaskrc = {
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
 const { BUILD_TARGETS } = require('./constants');
-const { logError } = require('./utils');
+const { logError, wrapAgainstScuttling } = require('./utils');
 
 const {
   createTask,
@@ -689,6 +689,10 @@ function createFactoredBuild({
       if (policyOnly) {
         return;
       }
+
+      // wrap sentry so it will still have access to natives after LM scuttling
+      wrapAgainstScuttling('./dist/chrome/sentry-install.js', ['Object']);
+
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
