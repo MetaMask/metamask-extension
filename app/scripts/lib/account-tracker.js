@@ -294,7 +294,6 @@ export default class AccountTracker {
         break;
 
       default:
-        console.log('addresses = ', addresses);
         await Promise.all(addresses.map(this._updateAccount.bind(this)));
     }
   }
