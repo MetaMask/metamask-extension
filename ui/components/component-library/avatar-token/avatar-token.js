@@ -44,7 +44,7 @@ export const AvatarToken = ({
         showHalo && 'avatar-token--with-halo',
         className,
       )}
-      {...{ backgroundColor, borderColor, ...props }}
+      {...{ backgroundColor, borderColor, color, ...props }}
     >
       {showFallback ? (
         tokenName?.[0] ?? '?'
