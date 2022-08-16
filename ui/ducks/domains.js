@@ -211,6 +211,7 @@ export function lookupEnsName(domainName) {
 export function resolveUNS(ensName){
   const resolution = new Resolution();
   console.log("here in resolveUNS");
+  console.log(resolution.addr(ensName, "ETH"));
   return resolution.addr(ensName, "ETH");
 }
 
