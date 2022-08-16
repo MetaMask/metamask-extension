@@ -107,6 +107,7 @@ describe('MetaMaskController', function () {
       assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
     });
   });
+
   describe('#addToken', function () {
     const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
     const symbol = 'LINK';

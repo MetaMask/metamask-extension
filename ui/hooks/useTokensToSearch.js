@@ -30,7 +30,8 @@ export function getRenderableTokenData(
   if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
     contractExchangeRate = 1;
   } else if (string && conversionRate > 0) {
-    // This condition improves performance significantly.
+    // This condition improves performance significantly, because it only gets a contract exchange rate
+    // if a token amount is truthy and conversion rate is higher than 0.
     contractExchangeRate = contractExchangeRates[toChecksumHexAddress(address)];
   }
   const formattedFiat =
