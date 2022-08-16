@@ -149,4 +149,5 @@ export default function SendTransactionScreen() {
       {content}
     </div>
   );
+  
 }

@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Ud from './ud';
 
@@ -9,31 +8,25 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_X_ERROR_ADDRESS = '0x';
 
 export default class UdController {
-  constructor({ uDomain, onNetworkDidChange, getCurrentChainId } = {}) {
+  constructor({ uDomain, onNetworkDidChange} = {}) {
     const initState = {
       domainResolutionsByAddress: {},
     };
 
     this._uDomain = uDomain;
     if (!this._uDomain) {
-      const chainId = getCurrentChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      if (Ens.getNetworkEnsSupport(network)) {
         this._uDomain = new Ud({});
-      }
     }
 
     this.store = new ObservableStore(initState);
     onNetworkDidChange(() => {
       this.store.putState(initState);
-      const chainId = getCurrentChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      if (Ens.getNetworkEnsSupport(network)) {
-        this._uDomain = new Ud({});
-      } else {
-        delete this._uDomain;
-      }
+      this._uDomain = new Ud({});
     });
+  }
+
+  reverseResolveDomain(address) {
+    return this._reverseResolveDomain(toChecksumHexAddress(address));
   }
 
   async _reverseResolveDomain(address) {

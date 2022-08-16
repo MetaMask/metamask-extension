@@ -515,9 +515,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.udController = new UdController({
-      getCurrentChainId: this.networkController.getCurrentChainId.bind(
-        this.networkController,
-      ),
       onNetworkDidChange: this.networkController.on.bind(
         this.networkController,
         NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -1737,7 +1734,7 @@ export default class MetamaskController extends EventEmitter {
       
       // UdController
       tryReverseResolveDomain:
-      udController.reverseResolveAddress.bind(udController),
+        udController.reverseResolveDomain.bind(udController),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),

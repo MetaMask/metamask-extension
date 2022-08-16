@@ -27,6 +27,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
+import Resolution from "@unstoppabledomains/resolution";
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -205,6 +206,12 @@ export function lookupEnsName(domainName) {
       );
     }
   };
+}
+
+export function resolveUNS(ensName){
+  const resolution = new Resolution();
+  console.log("here in resolveUNS");
+  return resolution.addr(ensName, "ETH");
 }
 
 export function getDomainResolution(state) {
