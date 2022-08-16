@@ -32,6 +32,9 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+const TEST_SEED =
+  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
@@ -105,6 +108,32 @@ describe('MetaMaskController', function () {
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
       assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
+    });
+  });
+
+  describe('#createNewVaultAndRestore', function () {
+    it('two successive calls with same inputs give same result', async function () {
+      const result1 = await metamaskController.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
+      const result2 = await metamaskController.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
+      assert.deepEqual(result1, result2);
+    });
+  });
+
+  describe('#createNewVaultAndKeychain', function () {
+    it('two successive calls with same inputs give same result', async function () {
+      const result1 = await metamaskController.createNewVaultAndKeychain(
+        'test@123',
+      );
+      const result2 = await metamaskController.createNewVaultAndKeychain(
+        'test@123',
+      );
+      assert.deepEqual(result1, result2);
     });
   });
 });
