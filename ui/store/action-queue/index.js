@@ -83,7 +83,7 @@ export function submitRequestToBackground(
   args = [],
   actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
 ) {
-  if (isManifestV3()) {
+  if (isManifestV3) {
     return new Promise((resolve, reject) => {
       addToActionQueueAndRun({
         actionId,
@@ -114,7 +114,7 @@ export const callBackgroundMethod = (
   callback,
   actionId = Date.now() + Math.random(), // current date is not guaranteed to be unique
 ) => {
-  if (isManifestV3()) {
+  if (isManifestV3) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
     addToActionQueueAndRun({
@@ -188,7 +188,7 @@ async function processActionRetryQueue() {
 export async function _setBackgroundConnection(backgroundConnection) {
   background = backgroundConnection;
   promisifiedBackground = pify(background);
-  if (isManifestV3()) {
+  if (isManifestV3) {
     if (processingQueue) {
       console.warn(
         '_setBackgroundConnection called while a queue was processing and not disconnected yet',
