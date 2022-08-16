@@ -364,8 +364,8 @@ export default class MetaMetricsController {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
     }
-    // TODO: Uncomment the line below once we have a "Sorry to see you go" page ready.
-    // this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+
+    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 
