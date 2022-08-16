@@ -20,7 +20,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../../shared/modules/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 
@@ -302,11 +302,8 @@ export default class AdvancedTab extends PureComponent {
                 event.preventDefault();
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Reset Account',
-                  properties: {
-                    action: 'Reset Account',
-                    legacy_event: true,
-                  },
+                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  properties: {},
                 });
                 showResetAccountConfirmationModal();
               }}
