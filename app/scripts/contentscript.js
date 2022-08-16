@@ -40,17 +40,16 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
-if (
-  window.location.origin === phishingPageUrl.origin &&
-  window.location.pathname === phishingPageUrl.pathname
-) {
-  setupPhishingStream();
-} else if (shouldInjectProvider()) {
-  if (!isManifestV3) {
-    injectScript(inpageBundle);
-  }
-  initStreams();
-}
+let extensionMux,
+  legacyExtensionMux,
+  legacyPageMux,
+  legacyPageStream,
+  pageMux,
+  pageStream,
+  phishingStream;
+
+let extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+let extensionStream = new PortStream(extensionPort);
 
 /**
  * Injects a script tag into the current document
@@ -75,203 +74,210 @@ function injectScript(content) {
  */
 function setupPhishingStream() {
   // the transport-specific streams for communication between inpage and background
-  const pageStream = new WindowPostMessageStream({
+  const pagePhishingStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: PHISHING_WARNING_PAGE,
   });
-  const extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  const extensionStream = new PortStream(extensionPort);
+  const extensionPhishingPort = browser.runtime.connect({
+    name: CONTENT_SCRIPT,
+  });
+  const extensionPhishingStream = new PortStream(extensionPhishingPort);
 
   // create and connect channel muxers
   // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex();
+  const pagePhishingMux = new ObjectMultiplex();
+  pagePhishingMux.setMaxListeners(25);
+  const extensionPhishingMux = new ObjectMultiplex();
+  extensionPhishingMux.setMaxListeners(25);
+
+  pump(pagePhishingMux, pagePhishingStream, pagePhishingMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
+  );
+  pump(
+    extensionPhishingMux,
+    extensionPhishingStream,
+    extensionPhishingMux,
+    (err) => {
+      logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+      window.postMessage(
+        {
+          target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
+          data: {
+            // this object gets passed to obj-multiplex
+            name: PHISHING_SAFELIST, // the obj-multiplex channel name
+            data: {
+              jsonrpc: '2.0',
+              method: 'METAMASK_STREAM_FAILURE',
+            },
+          },
+        },
+        window.location.origin,
+      );
+    },
+  );
+
+  // forward communication across inpage-background for these channels only
+  forwardTrafficBetweenMuxes(
+    PHISHING_SAFELIST,
+    pagePhishingMux,
+    extensionPhishingMux,
+  );
+}
+
+/**
+ * Creates and connects channel multiplexes to handle the channels individually
+ */
+const setupPageStreams = () => {
+  console.log('setupPageStreams called');
+
+  pageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: INPAGE,
+  });
+
+  pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
-  const extensionMux = new ObjectMultiplex();
+
+  extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
+  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
+
   pump(extensionMux, extensionStream, extensionMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-    window.postMessage(
-      {
-        target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
-        data: {
-          // this object gets passed to obj-multiplex
-          name: PHISHING_SAFELIST, // the obj-multiplex channel name
-          data: {
-            jsonrpc: '2.0',
-            method: 'METAMASK_STREAM_FAILURE',
-          },
-        },
-      },
-      window.location.origin,
-    );
+    notifyInpageOfStreamFailure();
   });
 
-  // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxes(PHISHING_SAFELIST, pageMux, extensionMux);
+  /** forward communication across inpage-background for these channels only */
+  forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
+
+  /** connect "phishing" channel to warning system */
+  phishingStream = extensionMux.createStream('phishing');
+  phishingStream.once('data', redirectToPhishingWarning);
+};
+
+/**
+ * Destroying the destination streams of the pump (should) destroy the streams before it
+ *
+ * @todo
+ * - Remove text (should) above after confirming this works
+ * - Answer questions:
+ *   1. is it necessary to manually set allowHalfOpen to false?
+ *      "If false then the stream will automatically end the writable side when the readable side ends"
+ *   2 is it necessary to removeAllListeners if we're calling destroy?
+ *
+ * - is there an unpump method similar to unpipe?
+ * @see {@link https://nodejs.org/dist/v18.0.0/docs/api/stream.html#duplex-and-transform-streams}
+ * @see {@link https://github.com/mafintosh/pump#readme}
+ */
+const destroyPageStreams = () => {
+  extensionMux.allowHalfOpen = false;
+  extensionMux.removeAllListeners();
+  extensionMux.destroy();
+
+  pageMux.allowHalfOpen = false;
+  pageMux.removeAllListeners();
+  pageMux.destroy();
+
+  legacyPageMux.allowHalfOpen = false;
+  legacyPageMux.removeAllListeners();
+  legacyPageMux.destroy();
+
+  legacyExtensionMux.allowHalfOpen = false;
+  legacyExtensionMux.removeAllListeners();
+  legacyExtensionMux.destroy();
+
+  pageStream.allowHalfOpen = false;
+  pageStream.removeAllListeners();
+  pageStream.destroy();
+};
+
+/**
+ * Resets the extension stream with new streams and attach event listeners to the extension port.
+ */
+const resetSteamAndListeners = () => {
+  console.log('resetSteamAndListeners called');
+
+  extensionPort.onDisconnect.removeListener(resetSteamAndListeners);
+
+  /**
+   * The message below will try to activate service worker
+   * in MV3 is likely that reason of stream closing is service worker going in-active
+   */
+  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+  destroyPageStreams();
+
+  extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  extensionStream = new PortStream(extensionPort);
+
+  setupPageStreams();
+  setupLegacyStreams();
+
+  extensionPort.onDisconnect.addListener(resetSteamAndListeners);
+};
+
+/**
+ * Sets up two-way communication streams between the
+ * browser extension and local per-page browser context.
+ *
+ * @todo LegacyProvider: Delete
+ */
+function setupLegacyStreams() {
+  console.log('setupLegacyStreams called');
+
+  legacyPageStream = new WindowPostMessageStream({
+    name: LEGACY_CONTENT_SCRIPT,
+    target: LEGACY_INPAGE,
+  });
+
+  legacyPageMux = new ObjectMultiplex();
+  legacyPageMux.setMaxListeners(25);
+  legacyExtensionMux = new ObjectMultiplex();
+  legacyExtensionMux.setMaxListeners(25);
+
+  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
+  );
+  pump(
+    legacyExtensionMux,
+    extensionStream,
+    getNotificationTransformStream(),
+    legacyExtensionMux,
+    (err) => {
+      logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
+      notifyInpageOfStreamFailure();
+    },
+  );
+
+  forwardNamedTrafficBetweenMuxes(
+    LEGACY_PROVIDER,
+    PROVIDER,
+    legacyPageMux,
+    legacyExtensionMux,
+  );
+  forwardTrafficBetweenMuxes(
+    LEGACY_PUBLIC_CONFIG,
+    legacyPageMux,
+    legacyExtensionMux,
+  );
 }
 
 /**
  * Sets up two-way communication streams between the
  * browser extension and local per-page browser context.
  */
-function initStreams() {
-  console.log('initStreams called');
+const initPageStreams = () => {
+  console.log('initPageStreams called');
 
-  // the transport-specific streams for communication between inpage and background
-  let pageStream, legacyPageStream;
-
-  let pageMux, extensionMux, phishingStream, legacyPageMux, legacyExtensionMux;
-
-  let extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  let extensionStream = new PortStream(extensionPort);
-
-  /**
-   * Creates and connects channel multiplexes to handle the channels individually
-   */
-  const setupStreams = () => {
-    console.log('setupStreams called');
-
-    pageStream = new WindowPostMessageStream({
-      name: CONTENT_SCRIPT,
-      target: INPAGE,
-    });
-
-    pageMux = new ObjectMultiplex();
-    pageMux.setMaxListeners(25);
-
-    extensionMux = new ObjectMultiplex();
-    extensionMux.setMaxListeners(25);
-    extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
-
-    pump(pageMux, pageStream, pageMux, (err) =>
-      logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
-    );
-
-    pump(extensionMux, extensionStream, extensionMux, (err) => {
-      logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-      notifyInpageOfStreamFailure();
-    });
-
-    /** forward communication across inpage-background for these channels only */
-    forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
-
-    /** connect "phishing" channel to warning system */
-    phishingStream = extensionMux.createStream('phishing');
-    phishingStream.once('data', redirectToPhishingWarning);
-  };
-
-  /**
-   * Destroying the destination streams of the pump (should) destroy the streams before it
-   *
-   * @todo
-   * - Remove text (should) above after confirming this works
-   * - Answer questions:
-   *   1. is it necessary to manually set allowHalfOpen to false?
-   *      "If false then the stream will automatically end the writable side when the readable side ends"
-   *   2 is it necessary to removeAllListeners?
-   *
-   * - is there an unpump method similar to unpipe?
-   * @see {@link https://nodejs.org/dist/v18.0.0/docs/api/stream.html#duplex-and-transform-streams}
-   * @see {@link https://github.com/mafintosh/pump#readme}
-   */
-  const destroyStreams = () => {
-    extensionMux.allowHalfOpen = false;
-    extensionMux.removeAllListeners();
-    extensionMux.destroy();
-
-    pageMux.allowHalfOpen = false;
-    pageMux.removeAllListeners();
-    pageMux.destroy();
-
-    legacyPageMux.allowHalfOpen = false;
-    legacyPageMux.removeAllListeners();
-    legacyPageMux.destroy();
-
-    legacyExtensionMux.allowHalfOpen = false;
-    legacyExtensionMux.removeAllListeners();
-    legacyExtensionMux.destroy();
-  };
-
-  /**
-   * Resets the extension stream with new streams and attach event listeners to the extension port.
-   */
-  const resetSteamAndListeners = () => {
-    console.log('resetSteamAndListeners called');
-
-    extensionPort.onDisconnect.removeListener(resetSteamAndListeners);
-
-    /**
-     * The message below will try to activate service worker
-     * in MV3 is likely that reason of stream closing is service worker going in-active
-     */
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
-    destroyStreams();
-
-    extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-    extensionStream = new PortStream(extensionPort);
-
-    setupStreams();
-    setupLegacyStreams(extensionStream);
-
-    extensionPort.onDisconnect.addListener(resetSteamAndListeners);
-  };
-
-  /**
-   * Sets up two-way communication streams between the
-   * browser extension and local per-page browser context.
-   *
-   * @todo LegacyProvider: Delete
-   */
-  function setupLegacyStreams() {
-    console.log('setupLegacyStreams called');
-
-    legacyPageStream = new WindowPostMessageStream({
-      name: LEGACY_CONTENT_SCRIPT,
-      target: LEGACY_INPAGE,
-    });
-
-    legacyPageMux = new ObjectMultiplex();
-    legacyPageMux.setMaxListeners(25);
-    legacyExtensionMux = new ObjectMultiplex();
-    legacyExtensionMux.setMaxListeners(25);
-
-    pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
-      logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
-    );
-    pump(
-      legacyExtensionMux,
-      extensionStream,
-      getNotificationTransformStream(),
-      legacyExtensionMux,
-      (err) => {
-        logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
-        notifyInpageOfStreamFailure();
-      },
-    );
-
-    forwardNamedTrafficBetweenMuxes(
-      LEGACY_PROVIDER,
-      PROVIDER,
-      legacyPageMux,
-      legacyExtensionMux,
-    );
-    forwardTrafficBetweenMuxes(
-      LEGACY_PUBLIC_CONFIG,
-      legacyPageMux,
-      legacyExtensionMux,
-    );
-  }
-
-  setupStreams();
+  setupPageStreams();
   setupLegacyStreams();
 
   extensionPort.onDisconnect.addListener(resetSteamAndListeners);
-}
+};
 
 function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName);
@@ -364,3 +370,19 @@ function redirectToPhishingWarning(data = {}) {
   const querystring = new URLSearchParams({ hostname, href, newIssueUrl });
   window.location.href = `${baseUrl}#${querystring}`;
 }
+
+const start = () => {
+  if (
+    window.location.origin === phishingPageUrl.origin &&
+    window.location.pathname === phishingPageUrl.pathname
+  ) {
+    setupPhishingStream();
+  } else if (shouldInjectProvider()) {
+    if (!isManifestV3) {
+      injectScript(inpageBundle);
+    }
+    initPageStreams();
+  }
+};
+
+start();
