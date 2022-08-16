@@ -5,7 +5,10 @@ import {
   INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes';
 import CreateNewVault from '../../../../components/app/create-new-vault';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
@@ -24,12 +27,12 @@ export default class ImportWithSeedPhrase extends PureComponent {
     this._onBeforeUnload = () =>
       this.context.trackEvent({
         category: EVENT.CATEGORIES.ONBOARDING,
-        event: 'Close window on import screen',
+        event: EVENT_NAMES.WALLET_SETUP_FAILED,
         properties: {
-          action: 'Import Seed Phrase',
-          legacy_event: true,
-          errorLabel: 'Seed Phrase Error',
-          errorMessage: this.state.seedPhraseError,
+          account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+          account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.SRP,
+          reason: 'Seed Phrase Error',
+          error: this.state.seedPhraseError,
         },
       });
     window.addEventListener('beforeunload', this._onBeforeUnload);
@@ -46,10 +49,10 @@ export default class ImportWithSeedPhrase extends PureComponent {
     await onSubmit(password, seedPhrase);
     this.context.trackEvent({
       category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'Import Complete',
+      event: EVENT_NAMES.WALLET_CREATED,
       properties: {
-        action: 'Import Seed Phrase',
-        legacy_event: true,
+        account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+        account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.SRP,
       },
     });
 
@@ -69,10 +72,11 @@ export default class ImportWithSeedPhrase extends PureComponent {
               e.preventDefault();
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.ONBOARDING,
-                event: 'Go Back from Onboarding Import',
+                event: EVENT_NAMES.WALLET_SETUP_CANCELED,
                 properties: {
-                  action: 'Import Seed Phrase',
-                  legacy_event: true,
+                  account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                  account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.SRP,
+                  text: 'Back',
                 },
               });
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
