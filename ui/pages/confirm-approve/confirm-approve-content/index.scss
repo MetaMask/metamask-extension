@@ -18,12 +18,10 @@
   }
 
   &__icon-display-content {
-    display: flex;
-    height: 51px;
-    width: 65%;
+    height: 40px;
     margin-top: 16px;
     padding: 12px 12px 14px 12px;
-    border: 1px solid var(--color-border-default);
+    border: 1px solid var(--color-border-muted);
     box-sizing: border-box;
     border-radius: 100px;
     align-items: center;
@@ -33,22 +31,6 @@
   &__metafoxlogo,
   &__siteinfo {
     position: absolute;
-  }
-
-  &__metafoxlogo {
-    .app-header {
-      &__metafox-logo--horizontal {
-        display: none;
-      }
-
-      &__metafox-logo--icon {
-        display: block;
-      }
-    }
-  }
-
-  &__siteinfo {
-    left: 39px;
   }
 
   &__address-display-content {
@@ -62,9 +44,11 @@
   }
 
   &__siteimage-identicon {
-    width: 33px;
-    height: 33px;
-    border: solid var(--color-border-muted);
+    width: 24px;
+    height: 24px;
+    margin-top: 4px;
+    box-shadow: none;
+    background: none;
   }
 
   &__address-identicon {
