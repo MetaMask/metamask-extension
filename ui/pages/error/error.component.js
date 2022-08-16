@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../shared/constants/metametrics';
 
 class ErrorPage extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -41,6 +47,20 @@ class ErrorPage extends PureComponent {
         key="metamaskSupportLink"
         rel="noopener noreferrer"
         href={SUPPORT_REQUEST_LINK}
+        onClick={() => {
+          this.context.trackEvent(
+            {
+              category: EVENT.CATEGORIES.ERROR,
+              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              properties: {
+                url: SUPPORT_REQUEST_LINK,
+              },
+            },
+            {
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+            },
+          );
+        }}
       >
         <span className="error-page__link-text">{this.context.t('here')}</span>
       </a>
