@@ -2,14 +2,14 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ROPSTEN_CHAIN_ID } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import MenuBar from './menu-bar';
 
 const initState = {
   activeTab: {},
   metamask: {
     provider: {
-      chainId: ROPSTEN_CHAIN_ID,
+      chainId: CHAIN_IDS.ROPSTEN,
     },
     selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     identities: {

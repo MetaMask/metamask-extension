@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  NETWORK_TYPE_RPC,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import LockIcon from '../../../../components/ui/lock-icon';
 import IconCheck from '../../../../components/ui/icon/icon-check';
@@ -41,7 +41,8 @@ const NetworksListItem = ({
   const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
   const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
-    provider.type !== NETWORK_TYPE_RPC && currentProviderType === provider.type;
+    provider.type !== NETWORK_TYPES.RPC &&
+    currentProviderType === provider.type;
   const listItemNetworkIsCurrentProvider =
     !networkIsSelected &&
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
@@ -115,12 +116,12 @@ const NetworksListItem = ({
           'networks-tab__networks-list-name--selected':
             displayNetworkListItemAsSelected,
           'networks-tab__networks-list-name--disabled':
-            currentProviderType !== NETWORK_TYPE_RPC &&
+            currentProviderType !== NETWORK_TYPES.RPC &&
             !displayNetworkListItemAsSelected,
         })}
       >
         {label || t(labelKey)}
-        {currentProviderType !== NETWORK_TYPE_RPC && (
+        {currentProviderType !== NETWORK_TYPES.RPC && (
           <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
         )}
       </div>

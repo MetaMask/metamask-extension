@@ -14,19 +14,7 @@ import log from 'loglevel';
 import pify from 'pify';
 import Web3 from 'web3';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
-import {
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-  BSC_CHAIN_ID,
-  OPTIMISM_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
-  FANTOM_CHAIN_ID,
-  ARBITRUM_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -216,77 +204,77 @@ export default class AccountTracker {
     const chainId = this.getCurrentChainId();
 
     switch (chainId) {
-      case MAINNET_CHAIN_ID:
+      case CHAIN_IDS.MAINNET:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS,
         );
         break;
 
-      case RINKEBY_CHAIN_ID:
+      case CHAIN_IDS.RINKEBY:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
         );
         break;
 
-      case ROPSTEN_CHAIN_ID:
+      case CHAIN_IDS.ROPSTEN:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
         );
         break;
 
-      case KOVAN_CHAIN_ID:
+      case CHAIN_IDS.KOVAN:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
         );
         break;
 
-      case GOERLI_CHAIN_ID:
+      case CHAIN_IDS.GOERLI:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
         );
         break;
 
-      case BSC_CHAIN_ID:
+      case CHAIN_IDS.BSC:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_BSC,
         );
         break;
 
-      case OPTIMISM_CHAIN_ID:
+      case CHAIN_IDS.OPTIMISM:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
         );
         break;
 
-      case POLYGON_CHAIN_ID:
+      case CHAIN_IDS.POLYGON:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
         );
         break;
 
-      case AVALANCHE_CHAIN_ID:
+      case CHAIN_IDS.AVALANCHE:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
         );
         break;
 
-      case FANTOM_CHAIN_ID:
+      case CHAIN_IDS.FANTOM:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
         );
         break;
 
-      case ARBITRUM_CHAIN_ID:
+      case CHAIN_IDS.ARBITRUM:
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,

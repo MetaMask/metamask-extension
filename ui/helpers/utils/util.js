@@ -6,14 +6,7 @@ import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
 import slip44 from '@metamask/slip44';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  LOCALHOST_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
@@ -52,12 +45,12 @@ export function formatDateWithYearContext(
 export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
-    chainId === MAINNET_CHAIN_ID ||
-    chainId === ROPSTEN_CHAIN_ID ||
-    chainId === RINKEBY_CHAIN_ID ||
-    chainId === KOVAN_CHAIN_ID ||
-    chainId === GOERLI_CHAIN_ID ||
-    chainId === LOCALHOST_CHAIN_ID
+    chainId === CHAIN_IDS.MAINNET ||
+    chainId === CHAIN_IDS.ROPSTEN ||
+    chainId === CHAIN_IDS.RINKEBY ||
+    chainId === CHAIN_IDS.KOVAN ||
+    chainId === CHAIN_IDS.GOERLI ||
+    chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
   }

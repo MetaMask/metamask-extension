@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { warn } from 'loglevel';
 import { MINUTE } from '../../../shared/constants/time';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -97,14 +97,14 @@ export default class DetectTokensController {
     }
     if (
       !this.useTokenDetection &&
-      this.getChainIdFromNetworkStore(this._network) !== MAINNET_CHAIN_ID
+      this.getChainIdFromNetworkStore(this._network) !== CHAIN_IDS.MAINNET
     ) {
       return;
     }
 
     const isTokenDetectionInactiveInMainnet =
       !this.useTokenDetection &&
-      this.getChainIdFromNetworkStore(this._network) === MAINNET_CHAIN_ID;
+      this.getChainIdFromNetworkStore(this._network) === CHAIN_IDS.MAINNET;
     const { tokenList } = this._tokenList.state;
 
     const tokenListUsed = isTokenDetectionInactiveInMainnet

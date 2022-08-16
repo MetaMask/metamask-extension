@@ -4,21 +4,16 @@ import { memoize } from 'lodash';
 ///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
-  MAINNET_CHAIN_ID,
   TEST_CHAINS,
-  NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
-  OPTIMISM_CHAIN_ID,
-  OPTIMISM_TESTNET_CHAIN_ID,
   BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -99,7 +94,7 @@ export function getNetworkIdentifier(state) {
 
 export function getMetricsNetworkIdentifier(state) {
   const { provider } = state.metamask;
-  return provider.type === NETWORK_TYPE_RPC ? provider.rpcUrl : provider.type;
+  return provider.type === NETWORK_TYPES.RPC ? provider.rpcUrl : provider.type;
 }
 
 export function getCurrentChainId(state) {
@@ -525,7 +520,7 @@ export function getSuggestedAssets(state) {
 
 export function getIsMainnet(state) {
   const chainId = getCurrentChainId(state);
-  return chainId === MAINNET_CHAIN_ID;
+  return chainId === CHAIN_IDS.MAINNET;
 }
 
 export function getIsTestnet(state) {
@@ -980,8 +975,8 @@ export function getFrequentRpcListDetail(state) {
 
 export function getIsOptimism(state) {
   return (
-    getCurrentChainId(state) === OPTIMISM_CHAIN_ID ||
-    getCurrentChainId(state) === OPTIMISM_TESTNET_CHAIN_ID
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
+    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
   );
 }
 
@@ -1028,13 +1023,13 @@ export function getIsAdvancedGasFeeDefault(state) {
 export const getTokenDetectionSupportNetworkByChainId = (state) => {
   const chainId = getCurrentChainId(state);
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
       return MAINNET_DISPLAY_NAME;
-    case BSC_CHAIN_ID:
+    case CHAIN_IDS.BSC:
       return BSC_DISPLAY_NAME;
-    case POLYGON_CHAIN_ID:
+    case CHAIN_IDS.POLYGON:
       return POLYGON_DISPLAY_NAME;
-    case AVALANCHE_CHAIN_ID:
+    case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
     default:
       return '';
@@ -1050,10 +1045,10 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
 export function getIsDynamicTokenListAvailable(state) {
   const chainId = getCurrentChainId(state);
   return [
-    MAINNET_CHAIN_ID,
-    BSC_CHAIN_ID,
-    POLYGON_CHAIN_ID,
-    AVALANCHE_CHAIN_ID,
+    CHAIN_IDS.MAINNET,
+    CHAIN_IDS.BSC,
+    CHAIN_IDS.POLYGON,
+    CHAIN_IDS.AVALANCHE,
   ].includes(chainId);
 }
 

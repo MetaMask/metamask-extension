@@ -46,9 +46,8 @@ import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.uti
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   HARDFORKS,
-  MAINNET,
-  NETWORK_TYPE_RPC,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
+  NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import {
   determineTransactionAssetType,
@@ -257,7 +256,7 @@ export default class TransactionController extends EventEmitter {
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
-    if (type !== NETWORK_TYPE_RPC) {
+    if (type !== NETWORK_TYPES.RPC) {
       return new Common({
         chain: type,
         hardfork,
@@ -286,7 +285,11 @@ export default class TransactionController extends EventEmitter {
       networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
     };
 
-    return Common.forCustomChain(MAINNET, customChainParams, hardfork);
+    return Common.forCustomChain(
+      NETWORK_TYPES.MAINNET,
+      customChainParams,
+      hardfork,
+    );
   }
 
   /**
