@@ -734,7 +734,7 @@ describe('MetaMaskController', function () {
     });
 
     it('#addNewAccount', async function () {
-      await metamaskController.addNewAccount();
+      await metamaskController.addNewAccount(1);
       const getAccounts =
         await metamaskController.keyringController.getAccounts();
       assert.equal(getAccounts.length, 2);

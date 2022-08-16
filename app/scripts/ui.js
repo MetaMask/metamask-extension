@@ -35,7 +35,7 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
  * if service worker is inactive it is reactivated and script re-loaded
  * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
  */
-if (isManifestV3()) {
+if (isManifestV3) {
   setInterval(() => {
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
   }, WORKER_KEEP_ALIVE_INTERVAL);
@@ -62,7 +62,7 @@ async function start() {
    * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
    * Code below ensures that UI is rendered only after background is ready.
    */
-  if (isManifestV3()) {
+  if (isManifestV3) {
     /*
      * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
      * Code below ensures that UI is rendered only after CONNECTION_READY message is received thus background is ready.
@@ -197,7 +197,8 @@ async function displayCriticalError(err, metamaskState) {
  */
 function connectToAccountManager(connectionStream, cb) {
   const mx = setupMultiplex(connectionStream);
-  setupControllerConnection(mx.createStream('controller'), cb);
+  const controllerConnectionStream = mx.createStream('controller');
+  setupControllerConnection(controllerConnectionStream, cb);
   setupWeb3Connection(mx.createStream('provider'));
 }
 
@@ -219,10 +220,10 @@ function setupWeb3Connection(connectionStream) {
 /**
  * Establishes a streamed connection to the background account manager
  *
- * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
+ * @param {PortDuplexStream} controllerConnectionStream - PortStream instance establishing a background connection
  * @param {Function} cb - Called when the remote account manager connection is established
  */
-function setupControllerConnection(connectionStream, cb) {
-  const backgroundRPC = metaRPCClientFactory(connectionStream);
+function setupControllerConnection(controllerConnectionStream, cb) {
+  const backgroundRPC = metaRPCClientFactory(controllerConnectionStream);
   cb(null, backgroundRPC);
 }
