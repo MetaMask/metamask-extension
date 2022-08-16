@@ -300,6 +300,8 @@ export const EVENT_NAMES = {
   KEY_EXPORT_CANCELED: 'Key Export Canceled',
   KEY_EXPORT_REVEALED: 'Key Material Revealed',
   KEY_EXPORT_COPIED: 'Key Material Copied',
+  METRICS_OPT_IN: 'Metrics Opt In',
+  METRICS_OPT_OUT: 'Metrics Opt Out',
   NAV_ACCOUNT_MENU_OPENED: 'Account Menu Opened',
   NAV_ACCOUNT_DETAILS_OPENED: 'Account Details Opened',
   NAV_CONNECTED_SITES_OPENED: 'Connected Sites Opened',
