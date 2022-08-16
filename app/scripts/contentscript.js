@@ -225,7 +225,6 @@ function initStreams() {
    * Sets up two-way communication streams between the
    * browser extension and local per-page browser context.
    *
-   * @param {PortStream} extensionStream
    * @todo LegacyProvider: Delete
    */
   function setupLegacyStreams() {
