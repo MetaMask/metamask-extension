@@ -36,7 +36,7 @@ export default class UdController {
     });
   }
 
-  async _reverseResolveAddress(address) {
+  async _reverseResolveDomain(address) {
     if (!this._uDomain) {
       return undefined;
     }

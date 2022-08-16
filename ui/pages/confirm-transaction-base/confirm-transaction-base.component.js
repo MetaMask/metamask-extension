@@ -56,6 +56,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  tryReverseResolveDomain,
 } from '../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -137,6 +138,7 @@ export default class ConfirmTransactionBase extends Component {
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     tryReverseResolveAddress: PropTypes.func.isRequired,
+    tryReverseResolveDomain: PropTypes.func.isRequired,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
@@ -189,6 +191,7 @@ export default class ConfirmTransactionBase extends Component {
       customNonceValue,
       toAddress,
       tryReverseResolveAddress,
+      tryReverseResolveDomain,
       isEthGasPrice,
       setDefaultHomeActiveTabName,
     } = this.props;
@@ -230,6 +233,9 @@ export default class ConfirmTransactionBase extends Component {
 
     if (toAddress && toAddress !== prevToAddress) {
       tryReverseResolveAddress(toAddress);
+    }
+    if (toAddress && toAddress !== prevToAddress) {
+      tryReverseResolveDomain(toAddress);
     }
 
     if (isEthGasPrice !== prevIsEthGasPrice) {
@@ -1055,6 +1061,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      tryReverseResolveDomain,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -1070,6 +1077,9 @@ export default class ConfirmTransactionBase extends Component {
     getNextNonce();
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
+    }
+    if (toAddress) {
+      tryReverseResolveDomain(toAddress);
     }
 
     /**
