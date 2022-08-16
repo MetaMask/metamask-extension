@@ -165,10 +165,9 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const { showResultMessage, restoreSuccessful } = this.state;
 
-    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 14;
     return (
       <div
-        ref={this.settingsRefs[settingsRefIndex]}
+        ref={this.settingsRefs[15]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-restore"
       >
@@ -209,10 +208,9 @@ export default class AdvancedTab extends PureComponent {
 
   renderUserDataBackup() {
     const { t } = this.context;
-    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 13;
     return (
       <div
-        ref={this.settingsRefs[settingsRefIndex]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
       >
