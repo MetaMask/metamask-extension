@@ -9,23 +9,51 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../ui/identicon/identicon.component';
 import { ellipsify } from '../../../../pages/send/send.utils';
 import Popover from '../../../ui/popover';
+import Typography from '../../../ui/typography';
+import {
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+  DISPLAY,
+  COLORS,
+  JUSTIFY_CONTENT,
+} from '../../../../helpers/constants/design-system';
 
 export default function ContractDetailsModal({ onClose, address, tokenName }) {
   const t = useI18nContext();
 
   return (
     <Popover className="contract-details-modal">
-      <Box className="contract-details-modal__content">
-        <Box className="contract-details-modal__content__header">
+      <Box
+        paddingTop={6}
+        paddingRight={4}
+        paddingBottom={8}
+        paddingLeft={4}
+        className="contract-details-modal__content"
+      >
+        <Typography
+          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TYPOGRAPHY.H5}
+          display={DISPLAY.FLEX}
+          boxProps={{ marginTop: 0, marginBottom: 0 }}
+        >
           {t('contractTitle')}
-        </Box>
-        <div className="contract-details-modal__content__description">
+        </Typography>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          display={DISPLAY.FLEX}
+          color={COLORS.TEXT_ALTERNATIVE}
+          boxProps={{ marginTop: 2, marginBottom: 0 }}
+        >
           {t('contractDescription')}
-        </div>
-
-        <Box className="contract-details-modal__content__contract-subtitle">
+        </Typography>
+        <Typography
+          variant={TYPOGRAPHY.H6}
+          display={DISPLAY.FLEX}
+          marginTop={4}
+          marginBottom={2}
+        >
           {t('contractToken')}
-        </Box>
+        </Typography>
         <Box className="contract-details-modal__content__contract">
           <Identicon
             className="contract-details-modal__content__contract__identicon"
@@ -33,41 +61,53 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
             diameter={24}
           />
           <Box data-testid="recipient">
-            <Box className="contract-details-modal__content__contract__title">
+            <Typography
+              fontWeight={FONT_WEIGHT.BOLD}
+              variant={TYPOGRAPHY.H5}
+              marginTop={4}
+            >
               {tokenName || ellipsify(address)}
-            </Box>
+            </Typography>
             {tokenName && (
-              <div className="contract-details-modal__content__contract__address">
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                display={DISPLAY.FLEX}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
                 {ellipsify(address)}
-              </div>
+              </Typography>
             )}
           </Box>
-          <Box className="contract-details-modal__content__contract__buttons">
+          <Box
+            paddingTop={2}
+            paddingRight={1}
+            justifyContent={JUSTIFY_CONTENT.FLEX_END}
+            className="contract-details-modal__content__contract__buttons"
+          >
             <Tooltip title={t('copyToClipboard')}>
-              <button
-                className="contract-details-modal__content__contract__buttonCopy"
-                type="link"
-              >
-                <CopyContractDetails size={18} />
-              </button>
+              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
+                <CopyContractDetails size={17} />
+              </Button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
-              <button
-                className="contract-details-modal__content__contract__button"
-                type="link"
-              >
+              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
                 <IconBlockExplorer
-                  size={14}
+                  size={13}
                   color="var(--color-icon-default)"
                 />
-              </button>
+              </Button>
             </Tooltip>
           </Box>
         </Box>
 
-        <Box className="contract-details-modal__content__contract-subtitle">
+        <Typography
+          variant={TYPOGRAPHY.H6}
+          display={DISPLAY.FLEX}
+          marginTop={4}
+          marginBottom={2}
+        >
           {t('contractRequestingSpendingCap')}
-        </Box>
+        </Typography>
         <Box className="contract-details-modal__content__contract">
           <Identicon
             className="contract-details-modal__content__contract__identicon"
@@ -75,39 +115,45 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
             diameter={24}
           />
           <Box data-testid="recipient">
-            <Box className="contract-details-modal__content__contract__title">
+            <Typography
+              fontWeight={FONT_WEIGHT.BOLD}
+              variant={TYPOGRAPHY.H5}
+              marginTop={4}
+            >
               {tokenName || ellipsify(address)}
-            </Box>
+            </Typography>
             {tokenName && (
-              <div className="contract-details-modal__content__contract__address">
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                display={DISPLAY.FLEX}
+                color={COLORS.TEXT_ALTERNATIVE}
+              >
                 {ellipsify(address)}
-              </div>
+              </Typography>
             )}
           </Box>
-          <Box className="contract-details-modal__content__contract__buttons">
+          <Box
+            paddingTop={2}
+            justifyContent={JUSTIFY_CONTENT.FLEX_END}
+            className="contract-details-modal__content__contract__buttons"
+          >
             <Tooltip title={t('copyToClipboard')}>
-              <button
-                className="contract-details-modal__content__contract__buttonCopy"
-                type="link"
-              >
-                <CopyContractDetails size={18} />
-              </button>
+              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
+                <CopyContractDetails size={17} />
+              </Button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
-              <button
-                className="contract-details-modal__content__contract__button"
-                type="link"
-              >
+              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
                 <IconBlockExplorer
-                  size={14}
+                  size={13}
                   color="var(--color-icon-default)"
                 />
-              </button>
+              </Button>
             </Tooltip>
           </Box>
         </Box>
       </Box>
-      <Box className="contract-details-modal__footer">
+      <Box display={DISPLAY.FLEX} className="contract-details-modal__footer">
         <Button
           type="secondary"
           onClick={() => {
