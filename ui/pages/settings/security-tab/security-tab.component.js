@@ -7,7 +7,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -65,10 +65,10 @@ export default class SecurityTab extends PureComponent {
                 event.preventDefault();
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Reveal Seed Phrase',
+                  event: EVENT_NAMES.KEY_EXPORT_SELECTED,
                   properties: {
-                    action: 'Reveal Seed Phrase',
-                    legacy_event: true,
+                    key_type: EVENT.KEY_TYPES.SRP,
+                    location: 'Settings',
                   },
                 });
                 history.push(REVEAL_SEED_ROUTE);

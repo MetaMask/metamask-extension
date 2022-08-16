@@ -21,7 +21,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
@@ -48,12 +48,12 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
 
   const openBlockExplorer = () => {
     trackEvent({
-      event: 'Clicked Block Explorer Link',
+      event: EVENT_NAMES.EXTERNAL_LINK_CLICKED,
       category: EVENT.CATEGORIES.NAVIGATION,
       properties: {
-        link_type: 'Account Tracker',
-        action: 'Account Options',
-        block_explorer_domain: getURLHostName(addressLink),
+        link_type: EVENT.EXTERNAL_LINK_TYPES.ACCOUNT_TRACKER,
+        location: 'Account Options',
+        url_domain: getURLHostName(addressLink),
       },
     });
     global.platform.openTab({
@@ -94,11 +94,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         <MenuItem
           onClick={() => {
             trackEvent({
-              event: 'Clicked Expand View',
+              event: EVENT_NAMES.APP_WINDOW_EXPANDED,
               category: EVENT.CATEGORIES.NAVIGATION,
               properties: {
-                action: 'Account Options',
-                legacy_event: true,
+                location: 'Account Options',
               },
             });
             global.platform.openExtensionInBrowser();
@@ -114,11 +113,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
           trackEvent({
-            event: 'Viewed Account Details',
+            event: EVENT_NAMES.NAV_ACCOUNT_DETAILS_OPENED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Account Options',
-              legacy_event: true,
+              location: 'Account Options',
             },
           });
           onClose();
@@ -131,11 +129,10 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         data-testid="account-options-menu__connected-sites"
         onClick={() => {
           trackEvent({
-            event: 'Opened Connected Sites',
+            event: EVENT_NAMES.NAV_CONNECTED_SITES_OPENED,
             category: EVENT.CATEGORIES.NAVIGATION,
             properties: {
-              action: 'Account Options',
-              legacy_event: true,
+              location: 'Account Options',
             },
           });
           history.push(CONNECTED_ROUTE);
