@@ -366,7 +366,9 @@ export function addNewAccount() {
 
     let newIdentities;
     try {
-      const { identities } = await promisifiedBackground.addNewAccount();
+      const { identities } = await promisifiedBackground.addNewAccount(
+        Object.keys(oldIdentities).length,
+      );
       newIdentities = identities;
     } catch (error) {
       dispatch(displayWarning(error.message));

@@ -44,7 +44,7 @@ if (
 ) {
   setupPhishingStream();
 } else if (shouldInjectProvider()) {
-  if (!isManifestV3()) {
+  if (!isManifestV3) {
     injectScript(inpageBundle);
   }
   setupStreams();
