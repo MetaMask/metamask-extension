@@ -69,7 +69,7 @@ export default class EnsInput extends Component {
     // Empty ENS state if input is empty
     // maybe scan ENS
     if (isValidDomainName(input)) {
-      //lookupEnsName(input);
+      lookupEnsName(input);
       resolveUNS(input);
     } else {
       resetEnsResolution();

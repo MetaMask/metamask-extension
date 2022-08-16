@@ -199,9 +199,26 @@ export function lookupEnsName(ensName) {
 
 export function resolveUNS(ensName){
   const resolution = new Resolution();
-  console.log("here in resolveUNS");
   console.log(resolution.addr(ensName, "ETH"));
-  return resolution.addr(ensName, "ETH");
+  return resolution
+    .addr(ensName, "ETH")
+    .catch((error) => {
+      if (error.code === 'UnregisteredDomain') {
+          console.log('Domain is not registered')
+      }
+      if (error.code === 'RecordNotFound') {
+          console.log('Crypto record is not found (or empty)')
+      }
+      if (error.code === 'UnspecifiedResolver') {
+          console.log('Domain is not configured (empty resolver)')
+      }
+      if (error.code === 'UnsupportedDomain') {
+          console.log('Domain is not supported')
+      }
+      if (error.code === 'ResolutionError') {
+        console.log('Domain is not supported')
+    }
+  });
 }
 
 export function getEnsResolution(state) {
