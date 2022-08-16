@@ -3,6 +3,8 @@ import SafeEventEmitter from 'safe-event-emitter';
 import createRandomId from '../../../shared/modules/random-id';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../ui/helpers/constants/critical-error';
 
+class DisconnectError extends Error {}
+
 class MetaRPCClient {
   constructor(connectionStream) {
     this.connectionStream = connectionStream;
@@ -12,6 +14,7 @@ class MetaRPCClient {
     this.connectionStream.on('data', this.handleResponse.bind(this));
     this.connectionStream.on('end', this.close.bind(this));
     this.responseHandled = {};
+    this.DisconnectError = DisconnectError;
   }
 
   send(id, payload, cb) {
@@ -47,6 +50,13 @@ class MetaRPCClient {
   close() {
     this.notificationChannel.removeAllListeners();
     this.uncaughtErrorChannel.removeAllListeners();
+    // fail all unfinished requests
+    for (const [id, handler] of this.requests) {
+      if (!this.responseHandled[id]) {
+        this.responseHandled[id] = true;
+        handler(new DisconnectError('disconnected'));
+      }
+    }
   }
 
   handleResponse(data) {
