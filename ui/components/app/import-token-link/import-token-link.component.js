@@ -35,6 +35,7 @@ export default function ImportTokenLink() {
         <>
           <Button
             className="import-token-link__link"
+            data-testid="refresh-list-button"
             type="link"
             onClick={() => detectNewTokens()}
           >
@@ -45,6 +46,7 @@ export default function ImportTokenLink() {
       )}
       <Button
         className="import-token-link__link"
+        data-testid="import-token-button"
         type="link"
         onClick={() => {
           history.push(IMPORT_TOKEN_ROUTE);
