@@ -393,12 +393,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.16.4":
+"@babel/parser@7.16.4", "@babel/parser@^7.12.5":
   version "7.16.4"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.4.tgz#d5f92f57cf2c74ffe9b37981c0e72fee7311372e"
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
 
-"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.5", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.6", "@babel/parser@^7.18.9":
+"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.6", "@babel/parser@^7.18.9":
   version "7.18.9"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.9.tgz#f2dde0c682ccc264a9a8595efd030a5cc8fd2539"
   integrity sha512-9uJveS9eY9DJ0t64YbIBZICtJy8a5QrDEVdiLCG97fVLpDTpGX7t8mMSb6OWw6Lrnjqj4O8zwjELX3dhoMgiBg==
@@ -1238,6 +1238,11 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
+
+"@chainsafe/strip-comments@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@chainsafe/strip-comments/-/strip-comments-1.0.7.tgz#0ee02a54b6f03eaf8b50b2585a3624fef6e38220"
+  integrity sha512-90E6eM5qbtv5LxaL2gvV5o8J/RmGzipMrbsWu1xe2/cRiROXmRDt+uhCIxwbpJETXosVGoU1rwEyIhgWF2E/QA==
 
 "@choojs/findup@^0.2.1":
   version "0.2.1"
@@ -3191,6 +3196,13 @@
   dependencies:
     "@metamask/controllers" "^30.0.0"
 
+"@metamask/snap-utils@^0.18.1":
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-utils/-/snap-utils-0.18.1.tgz#3c85d2d15ce1eac7e55f8ce00500ef7ff51a5aaf"
+  integrity sha512-2QVkgSkeeyjwKvxIZTuqudo5hMkn6IbI74Kzx/yJEOuK28MYyxx1FrPKlu7yTG2ZRJQ1zM9pBMHPF3XhZ4manA==
+  dependencies:
+    "@chainsafe/strip-comments" "^1.0.7"
+
 "@metamask/test-dapp@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.2.0.tgz#ecae2525e7b4d5ef42b7f478b33e3a25152789f8"
@@ -3205,6 +3217,13 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-2.0.0.tgz#fe7e970416a256751c429f4a5e96aec6c4366ba7"
   integrity sha512-AZ63AhRxAZXll+/SEiyEXgrxuAL4yOj0ny4V36VgPmTDvt+7GrmVJWrQF3o5PZZWV6ooaHZ9291RZHRcKZm0HA==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+
+"@metamask/utils@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/utils/-/utils-2.1.0.tgz#a65eaa0932b863383844ec323e05e293d8e718ab"
+  integrity sha512-4PHdo5B1ifpw6GbsdlDpp8oqA++rddSmt2pWBHtIGGL2tQMvmfHdaDDSns4JP9iC+AbMogVcUpv5Vt8ow1zsRA==
   dependencies:
     fast-deep-equal "^3.1.3"
 
