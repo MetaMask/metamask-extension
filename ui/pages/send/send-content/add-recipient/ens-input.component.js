@@ -27,6 +27,7 @@ export default class EnsInput extends Component {
     onChange: PropTypes.func.isRequired,
     onReset: PropTypes.func.isRequired,
     lookupEnsName: PropTypes.func.isRequired,
+    resolveUNS: PropTypes.func.isRequired,
     initializeEnsSlice: PropTypes.func.isRequired,
     resetEnsResolution: PropTypes.func.isRequired,
   };
@@ -56,6 +57,7 @@ export default class EnsInput extends Component {
       internalSearch,
       onChange,
       lookupEnsName,
+      resolveUNS,
       resetEnsResolution,
     } = this.props;
     const input = value.trim();
@@ -67,7 +69,9 @@ export default class EnsInput extends Component {
     // Empty ENS state if input is empty
     // maybe scan ENS
     if (isValidDomainName(input)) {
+      console.log("looking up domain")
       lookupEnsName(input);
+      resolveUNS(input);
     } else {
       resetEnsResolution();
       if (

@@ -4011,6 +4011,20 @@
         "browserify>browser-resolve": true
       }
     },
+    "@unstoppabledomains/resolution": {
+      "globals": {
+        "__values": true
+      },
+      "packages": {
+        "@unstoppabledomains/resolution>@ethersproject/abi": true,
+        "@unstoppabledomains/resolution>cross-fetch": true,
+        "@unstoppabledomains/resolution>crypto-js": true,
+        "@unstoppabledomains/resolution>elliptic": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethers>@ethersproject/keccak256>js-sha3": true
+      }
+    },
     "@unstoppabledomains/resolution>@ethersproject/abi": {
       "globals": {
         "console.log": true
@@ -4034,6 +4048,16 @@
         "FormData": true,
         "URLSearchParams.prototype.isPrototypeOf": true,
         "XMLHttpRequest": true
+      }
+    },
+    "@unstoppabledomains/resolution>crypto-js": {
+      "globals": {
+        "crypto": true,
+        "define": true,
+        "msCrypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@unstoppabledomains/resolution>elliptic": {
@@ -4880,6 +4904,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
+        "ActiveXObject": true,
         "AggregateError": true,
         "Buffer": true,
         "DO_NOT_EXPORT_CRC": true,
@@ -4895,6 +4920,7 @@
         "console": true,
         "crypto": true,
         "define": true,
+        "document": true,
         "intToBuffer": true,
         "location": true,
         "msCrypto": true,
