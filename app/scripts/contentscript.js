@@ -36,6 +36,8 @@ const LEGACY_INPAGE = 'inpage';
 const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 if (
@@ -68,7 +70,10 @@ function injectScript(content) {
   }
 }
 
-async function setupPhishingStream() {
+/**
+ * @todo need to reset streams here
+ */
+function setupPhishingStream() {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
@@ -112,42 +117,87 @@ async function setupPhishingStream() {
 /**
  * Sets up two-way communication streams between the
  * browser extension and local per-page browser context.
- *
  */
-async function setupStreams() {
+function setupStreams() {
+  console.log('setupStreams called');
+
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: INPAGE,
   });
-  const extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  const extensionStream = new PortStream(extensionPort);
 
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex();
-  pageMux.setMaxListeners(25);
-  const extensionMux = new ObjectMultiplex();
-  extensionMux.setMaxListeners(25);
-  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
+  let extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  let extensionStream = new PortStream(extensionPort);
 
-  pump(pageMux, pageStream, pageMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
-  );
-  pump(extensionMux, extensionStream, extensionMux, (err) => {
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-    notifyInpageOfStreamFailure();
-  });
+  /**
+   * Creates and connects channel multiplexes to handle the channels individually
+   */
+  const setupMuxes = () => {
+    console.log('setupMuxes called');
 
-  // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
+    const pageMux = new ObjectMultiplex();
+    pageMux.setMaxListeners(25);
 
-  // connect "phishing" channel to warning system
-  const phishingStream = extensionMux.createStream('phishing');
-  phishingStream.once('data', redirectToPhishingWarning);
+    const extensionMux = new ObjectMultiplex();
+    extensionMux.setMaxListeners(25);
+    extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
-  // TODO:LegacyProvider: Delete
-  // handle legacy provider
+    pump(pageMux, pageStream, pageMux, (err) =>
+      logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
+    );
+    pump(extensionMux, extensionStream, extensionMux, (err) => {
+      logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+      notifyInpageOfStreamFailure();
+    });
+
+    /** forward communication across inpage-background for these channels only */
+    forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
+
+    /** connect "phishing" channel to warning system */
+    const phishingStream = extensionMux.createStream('phishing');
+    phishingStream.once('data', redirectToPhishingWarning);
+  };
+
+  /**
+   * Resets the extension stream with new streams and attach event listeners to the extension port.
+   */
+  const resetSteamAndListeners = () => {
+    console.log('resetSteamAndListeners called');
+
+    extensionPort.onDisconnect.removeListener(resetSteamAndListeners);
+
+    /**
+     * The message below will try to activate service worker
+     * in MV3 is likely that reason of stream closing is service worker going in-active
+     */
+    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+    extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+    extensionStream = new PortStream(extensionPort);
+
+    setupMuxes();
+    setupLegacyStreamAndMuxes(extensionStream);
+
+    extensionPort.onDisconnect.addListener(resetSteamAndListeners);
+  };
+
+  setupMuxes();
+  setupLegacyStreamAndMuxes(extensionStream);
+
+  extensionPort.onDisconnect.addListener(resetSteamAndListeners);
+}
+
+/**
+ * Sets up two-way communication streams between the
+ * browser extension and local per-page browser context.
+ *
+ * @param {PortStream} extensionStream
+ * @todo LegacyProvider: Delete
+ */
+function setupLegacyStreamAndMuxes(extensionStream) {
+  console.log('setupLegacyStreamAndMuxes called');
+
   const legacyPageStream = new WindowPostMessageStream({
     name: LEGACY_CONTENT_SCRIPT,
     target: LEGACY_INPAGE,
