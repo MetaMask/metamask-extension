@@ -33,6 +33,8 @@ export const AvatarToken = ({
     setShowFallback(true);
   };
 
+  const fallbackString = tokenName && tokenName[0] ? tokenName[0] : '?';
+
   return (
     <BaseAvatar
       size={size}
@@ -47,7 +49,7 @@ export const AvatarToken = ({
       {...{ backgroundColor, borderColor, color, ...props }}
     >
       {showFallback ? (
-        tokenName?.[0] ?? '?'
+        fallbackString
       ) : (
         <>
           {showHalo && (
