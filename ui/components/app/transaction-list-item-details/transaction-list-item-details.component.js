@@ -44,6 +44,7 @@ export default class TransactionListItemDetails extends PureComponent {
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
+    tryReverseResolveDomain: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
     transactionStatus: PropTypes.func,
@@ -122,10 +123,13 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props;
+    const { recipientAddress, tryReverseResolveAddress,  tryReverseResolveDomain} = this.props;
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
+    }
+    if (recipientAddress) {
+      tryReverseResolveDomain(recipientAddress);
     }
   }
 

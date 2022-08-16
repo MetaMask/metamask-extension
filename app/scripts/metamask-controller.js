@@ -1756,7 +1756,7 @@ export default class MetamaskController extends EventEmitter {
         ensController.reverseResolveAddress.bind(ensController),
       
       // UdController
-      tryReverseResolveAddress:
+      tryReverseResolveDomain:
       udController.reverseResolveAddress.bind(udController),
 
       // KeyringController

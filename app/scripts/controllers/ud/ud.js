@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import Resolution from "@unstoppabledomains/resolution";
 
 export default class Ud{
