@@ -26,7 +26,7 @@ export default class NewAccountCreateForm extends Component {
         .then(() => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ADD_ACCOUNT_COMPLETED,
+            event: EVENT_NAMES.ACCOUNT_ADDED,
             properties: {
               account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
             },
@@ -36,7 +36,7 @@ export default class NewAccountCreateForm extends Component {
         .catch((e) => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ADD_ACCOUNT_FAILED,
+            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
             properties: {
               account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
               error: e.message,

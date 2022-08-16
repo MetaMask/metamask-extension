@@ -46,7 +46,7 @@ class PrivateKeyImportView extends Component {
         if (selectedAddress) {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_IMPORT_COMPLETED,
+            event: EVENT_NAMES.ACCOUNT_ADDED,
             properties: {
               account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
               account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
@@ -58,7 +58,7 @@ class PrivateKeyImportView extends Component {
           displayWarning(t('importAccountError'));
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_IMPORT_FAILED,
+            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
             properties: {
               account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
               account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,

@@ -278,12 +278,11 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
+  ACCOUNT_ADDED: 'Account Added',
+  ACCOUNT_ADD_SELECTED: 'Account Add Selected',
+  ACCOUNT_ADD_FAILED: 'Account Add Failed',
   ACCOUNT_PASSWORD_CREATED: 'Account Password Created',
-  ACCOUNT_IMPORT_COMPLETED: 'Account Added',
-  ACCOUNT_IMPORT_FAILED: 'Account Add Failed',
   ACCOUNT_RESET: 'Account Reset',
-  ADD_ACCOUNT_COMPLETED: 'Account Added',
-  ADD_ACCOUNT_FAILED: 'Account Add Failed',
   APP_INSTALLED: 'App Installed',
   APP_UNLOCKED: 'App Unlocked',
   APP_UNLOCKED_FAILED: 'App Unlocked Failed',
@@ -309,9 +308,6 @@ export const EVENT_NAMES = {
   NAV_SETTINGS_OPENED: 'Settings Opened',
   NAV_ACCOUNT_SWITCHED: 'Account Switched',
   NAV_NETWORK_SWITCHED: 'Network Switched',
-  NAV_CREATE_ACCOUNT_BUTTON_CLICKED: 'Account Add Selected',
-  NAV_IMPORT_ACCOUNT_BUTTON_CLICKED: 'Account Add Selected',
-  NAV_CONNECT_HARDWARE_BUTTON_CLICKED: 'Account Add Selected',
   NAV_BUY_BUTTON_CLICKED: 'Buy Button Clicked',
   NAV_SEND_BUTTON_CLICKED: 'Send Button Clicked',
   NAV_SWAP_BUTTON_CLICKED: 'Swap Button Clicked',

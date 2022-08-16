@@ -119,7 +119,7 @@ class JsonImportSubview extends Component {
           history.push(mostRecentOverviewPage);
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_IMPORT_COMPLETED,
+            event: EVENT_NAMES.ACCOUNT_ADDED,
             properties: {
               account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
               account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.JSON,
@@ -130,7 +130,7 @@ class JsonImportSubview extends Component {
           displayWarning(t('importAccountError'));
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_IMPORT_FAILED,
+            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
             properties: {
               account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
               account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.JSON,

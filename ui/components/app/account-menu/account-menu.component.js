@@ -361,7 +361,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_CREATE_ACCOUNT_BUTTON_CLICKED,
+              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
               properties: {
                 account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
                 location: 'Main Menu',
@@ -377,7 +377,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_IMPORT_ACCOUNT_BUTTON_CLICKED,
+              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
               properties: {
                 account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
                 location: 'Main Menu',
@@ -398,7 +398,7 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: EVENT_NAMES.NAV_CONNECT_HARDWARE_BUTTON_CLICKED,
+              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
               properties: {
                 account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
                 location: 'Main Menu',
