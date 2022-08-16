@@ -25,11 +25,6 @@ export const COLORS = {
   PRIMARY_MUTED: 'primary-muted',
   PRIMARY_INVERSE: 'primary-inverse',
   PRIMARY_DISABLED: 'primary-disabled',
-  SECONDARY_DEFAULT: 'secondary-default',
-  SECONDARY_ALTERNATIVE: 'secondary-alternative',
-  SECONDARY_MUTED: 'secondary-muted',
-  SECONDARY_INVERSE: 'secondary-inverse',
-  SECONDARY_DISABLED: 'secondary-disabled',
   ERROR_DEFAULT: 'error-default',
   ERROR_ALTERNATIVE: 'error-alternative',
   ERROR_MUTED: 'error-muted',
@@ -55,8 +50,8 @@ export const COLORS = {
   KOVAN: 'kovan',
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
-  TRANSPARENT: 'transparent',
   LOCALHOST: 'localhost',
+  TRANSPARENT: 'transparent',
   INHERIT: 'inherit',
 };
 export const BACKGROUND_COLORS = pick(COLORS, [
@@ -121,15 +116,15 @@ export const TEXT_COLORS = pick(COLORS, [
   'OVERLAY_INVERSE',
   'PRIMARY_DEFAULT',
   'PRIMARY_INVERSE',
-  'SECONDARY_DEFAULT',
-  'SECONDARY_INVERSE',
   'ERROR_DEFAULT',
   'ERROR_INVERSE',
   'SUCCESS_DEFAULT',
   'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
   'WARNING_INVERSE',
   'INFO_DEFAULT',
   'INFO_INVERSE',
+  'INHERIT',
 ]);
 export const TYPOGRAPHY = {
   H1: 'h1',
@@ -147,6 +142,7 @@ export const TYPOGRAPHY = {
 const NONE = 'none';
 
 export const SIZES = {
+  XXS: 'xxs',
   XS: 'xs',
   SM: 'sm',
   MD: 'md',

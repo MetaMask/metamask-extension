@@ -3,7 +3,7 @@
 exports[`ViewOnBlockExplorer renders the component with initial props 1`] = `
 <div>
   <div
-    class="box view-on-block-explorer box--margin-top-6 box--flex-direction-row"
+    class="box view-on-block-explorer box--margin-top-6 box--flex-direction-row box--color-text-default"
   >
     <button>
       View Swap at etherscan.io

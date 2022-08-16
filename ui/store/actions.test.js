@@ -20,6 +20,9 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    identities: {
+      '0xFirstAddress': {},
+    },
     cachedBalances: {
       '0x1': {
         '0xFirstAddress': '0x0',
@@ -388,7 +391,7 @@ describe('Actions', () => {
         metamask: { identities: {}, ...defaultState.metamask },
       });
 
-      const addNewAccount = background.addNewAccount.callsFake((cb) =>
+      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
         cb(null, {
           identities: {},
         }),
@@ -396,14 +399,14 @@ describe('Actions', () => {
 
       _setBackgroundConnection(background);
 
-      await store.dispatch(actions.addNewAccount());
+      await store.dispatch(actions.addNewAccount(1));
       expect(addNewAccount.callCount).toStrictEqual(1);
     });
 
     it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
-      background.addNewAccount.callsFake((cb) => {
+      background.addNewAccount.callsFake((_, cb) => {
         cb(new Error('error'));
       });
 
@@ -415,7 +418,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await expect(store.dispatch(actions.addNewAccount())).rejects.toThrow(
+      await expect(store.dispatch(actions.addNewAccount(1))).rejects.toThrow(
         'error',
       );
 
