@@ -26,61 +26,78 @@ export default function NetworkAccountBalanceHeader({
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.ROW}
-      paddingTop={4}
-      paddingRight={4}
-      paddingBottom={5}
-      paddingLeft={4}
+      padding={4}
+      className="network-account-balance-header"
+      alignItems={ALIGN_ITEMS.CENTER}
     >
-      <Box alignItems={ALIGN_ITEMS.CENTER}>
-        <Identicon address={accountAddress} diameter={40} />
-      </Box>
-      <Box>
-        <Identicon
-          address={accountAddress}
-          diameter={22}
-          imageBorder
-          image="./images/eth_badge.svg"
-          className="network-account-balance-header__ident-icon-ethereum"
-        />
-      </Box>
       <Box
-        alignItems={ALIGN_ITEMS.FLEX_START}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        alignItems={ALIGN_ITEMS.CENTER}
+        gap={2}
+        className="network-account-balance-header__network-account"
+        marginRight={5}
       >
-        <Box>
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
+        <Box
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.ROW}
+          alignItems={ALIGN_ITEMS.CENTER}
+        >
+          <Identicon address={accountAddress} diameter={32} />
+          <Identicon
+            address={accountAddress}
+            diameter={16}
+            imageBorder
+            image="./images/eth_badge.svg"
+            className="network-account-balance-header__network-account__ident-icon-ethereum"
+          />
+        </Box>
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={ALIGN_ITEMS.FLEX_START}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          className="network-account-balance-header__network-account__network-and-account-values"
+        >
+          <Typography
+            variant={TYPOGRAPHY.H7}
+            color={COLORS.TEXT_ALTERNATIVE}
+            marginBottom={0}
+          >
             {networkName}
           </Typography>
-        </Box>
-        <Box>
+
           <Typography
             variant={TYPOGRAPHY.H6}
             color={COLORS.TEXT_DEFAULT}
             fontWeight={FONT_WEIGHT.BOLD}
+            marginTop={0}
           >
             {accountName}
           </Typography>
         </Box>
       </Box>
       <Box
+        display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.FLEX_END}
-        marginLeft={10}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        className="network-account-balance-header__balance-box"
       >
-        <Box>
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_ALTERNATIVE}>
-            {t('balance')}
-          </Typography>
-        </Box>
-        <Box>
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.TEXT_DEFAULT}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
-            {accountBalance} {tokenName}
-          </Typography>
-        </Box>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.TEXT_ALTERNATIVE}
+          marginBottom={0}
+        >
+          {t('balance')}
+        </Typography>
+
+        <Typography
+          variant={TYPOGRAPHY.H6}
+          color={COLORS.TEXT_DEFAULT}
+          fontWeight={FONT_WEIGHT.BOLD}
+          marginTop={0}
+        >
+          {accountBalance} {tokenName}
+        </Typography>
       </Box>
     </Box>
   );

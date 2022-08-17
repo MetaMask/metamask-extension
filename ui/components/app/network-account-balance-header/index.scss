@@ -1,6 +1,23 @@
 .network-account-balance-header {
-  &__ident-icon-ethereum {
-    margin-inline-start: -15px;
-    margin-inline-end: 8px;
+  width: 360px;
+  height: 69px;
+  border-top: 1px solid var(--color-border-muted);
+  border-bottom: 1px solid var(--color-border-muted);
+
+  &__network-account {
+    width: 202px;
+
+    &__ident-icon-ethereum {
+      margin-inline-start: -10px;
+      margin-top: -20px;
+    }
+
+    &__network-and-account-values {
+      width: 162px;
+    }
+  }
+
+  &__balance-box {
+    width: 105px;
   }
 }
