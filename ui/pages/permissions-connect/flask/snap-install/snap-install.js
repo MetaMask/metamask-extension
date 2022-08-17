@@ -56,22 +56,6 @@ export default function SnapInstall({
   const getCoinType = (bip44EntropyPermission) =>
     bip44EntropyPermission?.split('_').slice(-1);
 
-  console.log(
-    bip32EntropyPermissions.reduce(
-      (target, permission, i) => [
-        ...target,
-        permission.caveats[0].value.map(({ path, curve }) => ({
-          id: `key-access-bip32-${i}`,
-          message: t('snapInstallWarningKeyAccess', [
-            targetSubjectMetadata.name,
-            `${path.join('/')} (${curve})`,
-          ]),
-        })),
-      ],
-      [],
-    ),
-  );
-
   return (
     <Box
       className="page-container snap-install"
