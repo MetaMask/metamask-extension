@@ -53,6 +53,19 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
+    unsLookup: (state, action) => {
+      // first clear out the previous state
+      state.resolution = null;
+      state.error = null;
+      state.warning = null;
+      const { address, ensName, error } = action.payload;
+
+      isValidDomainName(ensName);
+      log.error(error);
+      state.resolution = address;
+      state.error = null;
+      state.warning = null;
+    },
     domainLookup: (state, action) => {
       // first clear out the previous state
       state.resolution = null;
@@ -134,6 +147,7 @@ export default reducer;
 const {
   disableDomainLookup,
   domainLookup,
+  unsLookup,
   enableDomainLookup,
   ensNotSupported,
   resetDomainResolution,
@@ -209,28 +223,48 @@ export function lookupEnsName(domainName) {
 }
 
 export function resolveUNS(ensName){
-  const resolution = new Resolution();
-  console.log(resolution.addr(ensName, "ETH"));
-  return resolution
-    .addr(ensName, "ETH")
-    .catch((error) => {
-      if (error.code === 'UnregisteredDomain') {
-          console.log('Domain is not registered')
-      }
-      if (error.code === 'RecordNotFound') {
-          console.log('Crypto record is not found (or empty)')
-      }
-      if (error.code === 'UnspecifiedResolver') {
-          console.log('Domain is not configured (empty resolver)')
-      }
-      if (error.code === 'UnsupportedDomain') {
-          console.log('Domain is not supported')
-      }
-      if (error.code === 'ResolutionError') {
-        console.log('Domain is not supported')
+  return async (dispatch, getState) => {
+    let state = getState();
+    if (state[name].stage === 'UNINITIALIZED') {
+      await dispatch(initializeEnsSlice());
     }
-  });
-}
+    let address;
+    let error;
+    const resolution = new Resolution();
+    console.log(resolution.addr(ensName, "ETH"));
+    address = await resolution
+      .addr(ensName, "ETH")
+      .catch((error) => {
+        if (error.code === 'UnregisteredDomain') {
+            console.log('Domain is not registered')
+            error = error.code
+        }
+        if (error.code === 'RecordNotFound') {
+            console.log('Crypto record is not found (or empty)')
+            error = error.code
+        }
+        if (error.code === 'UnspecifiedResolver') {
+            console.log('Domain is not configured (empty resolver)')
+            error = error.code
+        }
+        if (error.code === 'UnsupportedDomain') {
+            console.log('Domain is not supported')
+            error = error.code
+        }
+        if (error.code === 'ResolutionError') {
+           console.log('Domain is not supported')
+           error = error.code
+        }
+      });
+    await dispatch(
+      unsLookup({
+        ensName,
+        address,
+        error,
+      }),
+    );
+  }
+};
 
 export function getDomainResolution(state) {
   return state[name].resolution;
