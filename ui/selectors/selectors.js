@@ -1180,9 +1180,8 @@ export function getIsNetworkUsed(state) {
 
 export function getHasAnyAccountWithNoFundsOnNetwork(state) {
   const balances = getMetaMaskCachedBalances(state) ?? {};
-  const hasAnAccountWithNoFundsOnNetwork = Object.values(balances).indexOf(
-    '0x0',
-  );
+  const hasAnAccountWithNoFundsOnNetwork =
+    Object.values(balances).indexOf('0x0');
 
   return hasAnAccountWithNoFundsOnNetwork !== -1;
 }

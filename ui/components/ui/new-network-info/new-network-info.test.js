@@ -4,8 +4,8 @@ import nock from 'nock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import NewNetworkInfo from './new-network-info';
 
-const fetchWithCache = require('../../../helpers/utils/fetch-with-cache')
-  .default;
+const fetchWithCache =
+  require('../../../helpers/utils/fetch-with-cache').default;
 
 const state = {
   metamask: {

@@ -43,9 +43,8 @@ function mapStateToProps(state) {
     theme: getTheme(state),
     sendStage: getSendStage(state),
     isNetworkUsed: getIsNetworkUsed(state),
-    hasAnAccountWithNoFundsOnNetwork: getHasAnyAccountWithNoFundsOnNetwork(
-      state,
-    ),
+    hasAnAccountWithNoFundsOnNetwork:
+      getHasAnyAccountWithNoFundsOnNetwork(state),
   };
 }
 
