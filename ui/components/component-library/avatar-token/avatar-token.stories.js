@@ -72,7 +72,7 @@ showHalo.args = {
   showHalo: true,
 };
 
-export const BackgroundAndBorderColor = (args) => (
+export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken
       {...args}
@@ -104,6 +104,6 @@ export const BackgroundAndBorderColor = (args) => (
     />
   </Box>
 );
-BackgroundAndBorderColor.args = {
+ColorBackgroundColorAndBorderColor.args = {
   tokenImageUrl: '',
 };

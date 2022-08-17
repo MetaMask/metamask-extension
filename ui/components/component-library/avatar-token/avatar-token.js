@@ -95,10 +95,6 @@ AvatarToken.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(SIZES)),
   /**
-   * The children to be rendered inside the AvatarToken
-   */
-  children: PropTypes.node,
-  /**
    * The background color of the AvatarToken
    * Defaults to COLORS.BACKGROUND_ALTERNATIVE
    */
