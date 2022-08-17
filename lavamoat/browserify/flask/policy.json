@@ -3487,11 +3487,11 @@
         "@metamask/controllers": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods>@metamask/snap-utils": true,
+        "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
         "@metamask/snap-controllers>@metamask/execution-environments": true,
         "@metamask/snap-controllers>@metamask/obs-store": true,
         "@metamask/snap-controllers>@metamask/post-message-stream": true,
-        "@metamask/snap-controllers>@metamask/utils": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
         "@metamask/snap-controllers>gunzip-maybe": true,
@@ -3568,8 +3568,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true,
-        "@metamask/snap-controllers>@metamask/utils": true
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true
       }
     },
     "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": {
@@ -3590,11 +3590,6 @@
     "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/utils": {
-      "packages": {
-        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/snap-controllers>concat-stream": {
