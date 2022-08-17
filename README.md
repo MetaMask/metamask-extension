@@ -95,6 +95,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   * There are two sets of LavaMoat policy files:
     * The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`.
       * These should be regenerated whenever the production dependencies for the background change.
+      * Use `yarn lavamoat:background:auto:dev` during local development. Add `--help` for usage.
     * The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
       * This should be regenerated whenever the dependencies used by the build system itself change.
   * Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
