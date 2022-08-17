@@ -51,8 +51,11 @@ import {
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { stopPollingForQuotes } from '../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  stopPollingForQuotes,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -301,7 +304,8 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
