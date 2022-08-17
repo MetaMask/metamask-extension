@@ -1,0 +1,18 @@
+.contract-token-values {
+  align-items: center;
+  justify-content: center;
+
+  &__address-identicon {
+    margin-inline-end: 8px;
+  }
+
+  &__copy-adress {
+    padding-right: 7px;
+    padding-left: 10px;
+  }
+
+  &__block-explorer {
+    padding-left: 7px;
+    padding-right: 10px;
+  }
+}

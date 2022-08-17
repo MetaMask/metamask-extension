@@ -39,6 +39,8 @@ import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
+import CopyContractDetails from './copy-contract-details';
+import IconBlockExplorer from './icon-block-explorer';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -163,6 +165,8 @@ export const DefaultStory = (args) => (
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
         <IconItem Component={<IconEyeSlash {...args} />} />
+        <IconItem Component={<CopyContractDetails {...args} />} />
+        <IconItem Component={<IconBlockExplorer {...args} />} />
       </div>
     </Box>
   </div>
@@ -317,3 +321,17 @@ PreloaderStory.args = {
   size: 40,
 };
 PreloaderStory.storyName = 'Preloader';
+
+export const CopyContractDetailsStory = (args) => (
+  <CopyContractDetails {...args} />
+);
+CopyContractDetailsStory.args = {
+  size: 40,
+};
+CopyContractDetailsStory.storyName = 'CopyContractDetails';
+
+export const IconBlockExplorerStory = (args) => <IconBlockExplorer {...args} />;
+IconBlockExplorerStory.args = {
+  size: 40,
+};
+IconBlockExplorerStory.storyName = 'IconBlockExplorer';
