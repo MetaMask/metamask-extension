@@ -44,10 +44,33 @@ export default function SnapInstall({
       v.startsWith('snap_getBip44Entropy_'),
     );
 
-  const shouldShowWarning = bip44EntropyPermissions?.length > 0;
+  const bip32EntropyPermissions =
+    request.permissions &&
+    Object.entries(request.permissions)
+      .filter(([key]) => key === 'snap_getBip32Entropy')
+      .map(([_key, value]) => value);
+
+  const shouldShowWarning =
+    bip32EntropyPermissions.length > 0 || bip44EntropyPermissions?.length > 0;
 
   const getCoinType = (bip44EntropyPermission) =>
     bip44EntropyPermission?.split('_').slice(-1);
+
+  console.log(
+    bip32EntropyPermissions.reduce(
+      (target, permission, i) => [
+        ...target,
+        permission.caveats[0].value.map(({ path, curve }) => ({
+          id: `key-access-bip32-${i}`,
+          message: t('snapInstallWarningKeyAccess', [
+            targetSubjectMetadata.name,
+            `${path.join('/')} (${curve})`,
+          ]),
+        })),
+      ],
+      [],
+    ),
+  );
 
   return (
     <Box
@@ -107,17 +130,34 @@ export default function SnapInstall({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          warnings={bip44EntropyPermissions.map((permission, i) => {
-            const coinType = getCoinType(permission);
-            return {
-              id: `key-access-${i}`,
-              message: t('snapInstallWarningKeyAccess', [
-                targetSubjectMetadata.name,
-                coinTypeToProtocolName(coinType) ||
-                  t('unrecognizedProtocol', [coinType]),
-              ]),
-            };
-          })}
+          warnings={[
+            ...bip32EntropyPermissions
+              .reduce(
+                (target, permission, i) => [
+                  ...target,
+                  permission.caveats[0].value.map(({ path, curve }) => ({
+                    id: `key-access-bip32-${path.join('/')}-${curve}-${i}`,
+                    message: t('snapInstallWarningKeyAccess', [
+                      targetSubjectMetadata.name,
+                      `${path.join('/')} (${curve})`,
+                    ]),
+                  })),
+                ],
+                [],
+              )
+              .flat(),
+            ...bip44EntropyPermissions.map((permission, i) => {
+              const coinType = getCoinType(permission);
+              return {
+                id: `key-access-bip44-${i}`,
+                message: t('snapInstallWarningKeyAccess', [
+                  targetSubjectMetadata.name,
+                  coinTypeToProtocolName(coinType) ||
+                    t('unrecognizedProtocol', [coinType]),
+                ]),
+              };
+            }),
+          ]}
         />
       )}
     </Box>
