@@ -198,10 +198,10 @@ const destroyPageStreams = () => {
 /**
  * Resets the extension stream with new streams and attach event listeners to the extension port.
  */
-const resetSteamAndListeners = () => {
-  console.log('resetSteamAndListeners called');
+const resetStreamAndListeners = () => {
+  console.log('resetStreamAndListeners called');
 
-  extensionPort.onDisconnect.removeListener(resetSteamAndListeners);
+  extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   /**
    * The message below will try to activate service worker
@@ -217,7 +217,7 @@ const resetSteamAndListeners = () => {
   setupPageStreams();
   setupLegacyStreams();
 
-  extensionPort.onDisconnect.addListener(resetSteamAndListeners);
+  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
 
 /**
@@ -276,7 +276,7 @@ const initPageStreams = () => {
   setupPageStreams();
   setupLegacyStreams();
 
-  extensionPort.onDisconnect.addListener(resetSteamAndListeners);
+  extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
 
 function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
