@@ -80,21 +80,17 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
           </Box>
           <Box
             paddingTop={2}
-            paddingRight={1}
             justifyContent={JUSTIFY_CONTENT.FLEX_END}
             className="contract-details-modal__content__contract__buttons"
           >
             <Tooltip title={t('copyToClipboard')}>
               <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <CopyContractDetails size={17} />
+                <CopyContractDetails />
               </Button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
               <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <IconBlockExplorer
-                  size={13}
-                  color="var(--color-icon-default)"
-                />
+                <IconBlockExplorer />
               </Button>
             </Tooltip>
           </Box>
@@ -139,15 +135,12 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
           >
             <Tooltip title={t('copyToClipboard')}>
               <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <CopyContractDetails size={17} />
+                <CopyContractDetails />
               </Button>
             </Tooltip>
             <Tooltip title={t('openInBlockExplorer')}>
               <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <IconBlockExplorer
-                  size={13}
-                  color="var(--color-icon-default)"
-                />
+                <IconBlockExplorer />
               </Button>
             </Tooltip>
           </Box>
