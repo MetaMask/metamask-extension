@@ -75,7 +75,7 @@ export default function ExperimentalArea({ redirectTo }) {
   };
 
   return (
-    <div className="experimental-area">
+    <div className="experimental-area" data-testid="experimental-area">
       <div className="logo">{METAMASK_LOGO}</div>
       <div className="experimental-text">{EXPERIMENTAL_AREA}</div>
       <div className="text">
