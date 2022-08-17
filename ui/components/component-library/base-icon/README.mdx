@@ -20,18 +20,16 @@ The `BaseIcon` accepts all props below as well as all [Box](/ui-components-ui-bo
 
 ### Size
 
-Use the `size` prop to set the size of the `BaseIcon`
+Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `BaseIcon`. Defaults to `SIZES.SM`
 
 Possible sizes include:
 
-- `xxs` 10px
-- `xs` 12px
-- `sm` 16px
-- `md` 20px
-- `lg` 24px
-- `xl` 32px
-
-Defaults to `sm`
+- `SIZES.XXS` 10px
+- `SIZES.XS` 12px
+- `SIZES.SM` 16px
+- `SIZES.MD` 20px
+- `SIZES.LG` 24px
+- `SIZES.XL` 32px
 
 <Canvas>
   <Story id="ui-components-component-library-base-icon-base-icon-stories-js--size" />
@@ -51,7 +49,7 @@ import { BaseIcon } from '../ui/component-library';
 
 ### Color
 
-The `color` prop sets the color of the `BaseIcon`. Defaults to `'inherit'` which will use the text color of the parent element. This is useful for inline icons.
+Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of `BaseIcon`. Defaults to `COLORS.INHERIT` which will use the text color of the parent element. This is useful for inline icons.
 
 <Canvas>
   <Story id="ui-components-component-library-base-icon-base-icon-stories-js--color" />

@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import {
+  SIZES,
+  COLORS,
+  ICON_COLORS,
+} from '../../../helpers/constants/design-system';
 
 export const BaseIcon = ({
   className,
   size = SIZES.MD,
-  color = 'inherit',
+  color = COLORS.INHERIT,
   children,
   ...props
 }) => {
@@ -33,9 +37,10 @@ BaseIcon.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(SIZES)),
   /**
-   * The color of the icon. Defaults to 'inherit'.
+   * The color of the icon.
+   * Defaults to COLORS.INHERIT.
    */
-  color: PropTypes.string,
+  color: PropTypes.oneOf(Object.values(ICON_COLORS)),
   /**
    * An additional className to apply to the icon.
    */

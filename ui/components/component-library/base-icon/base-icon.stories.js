@@ -80,11 +80,7 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <>
-    <BaseIcon {...args} />
-  </>
-);
+export const DefaultStory = (args) => <BaseIcon {...args} />;
 
 DefaultStory.storyName = 'Default';
 
