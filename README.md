@@ -100,7 +100,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   * Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
   * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
   macOS and Windows users may see extraneous changes relating to optional dependencies.
-  * If you keep getting policy failures at runtime after regenerating the policy files, try a clean install by doing `rm -rf node_modules/` and then regenerating the policy files.
+  * If you keep getting policy failures even after regenerating the policy files, try regenerating the policies after a clean install by doing:
+    * `rm -rf node_modules/ && yarn setup && yarn lavamoat:auto`
   * Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
   Refer to the LavaMoat documentation or ask for help if you run into any issues.
 
