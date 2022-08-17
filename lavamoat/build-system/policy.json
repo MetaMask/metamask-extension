@@ -582,10 +582,10 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "depcheck>@babel/traverse>globals": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -2791,9 +2791,9 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
+        "eslint>@eslint/eslintrc>globals": true,
         "eslint>@eslint/eslintrc>strip-json-comments": true,
         "eslint>ajv": true,
-        "eslint>globals": true,
         "eslint>minimatch": true,
         "globby>ignore": true,
         "madge>debug": true
