@@ -679,6 +679,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
         'ExecutionService:terminateAllSnaps',
+        'ExecutionService:handleRpcRequest',
       ],
     });
 
