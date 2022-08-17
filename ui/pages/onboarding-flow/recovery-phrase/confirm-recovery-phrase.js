@@ -54,7 +54,10 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   };
 
   return (
-    <div className="recovery-phrase__confirm">
+    <div
+      className="recovery-phrase__confirm"
+      data-testid="confirm-recovery-phrase"
+    >
       <ThreeStepProgressBar
         stage={threeStepStages.RECOVERY_PHRASE_CONFIRM}
         marginBottom={4}

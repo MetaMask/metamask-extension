@@ -19,7 +19,10 @@ export default function OnboardingPinExtension() {
   const history = useHistory();
 
   return (
-    <div className="onboarding-pin-extension">
+    <div
+      className="onboarding-pin-extension"
+      data-testid="onboarding-pin-extension"
+    >
       <Typography
         variant={TYPOGRAPHY.H2}
         align={TEXT_ALIGN.CENTER}

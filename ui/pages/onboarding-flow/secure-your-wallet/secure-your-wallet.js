@@ -55,7 +55,7 @@ export default function SecureYourWallet() {
 
   const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';
   return (
-    <div className="secure-your-wallet">
+    <div className="secure-your-wallet" data-testid="secure-your-wallet">
       {showSkipSRPBackupPopover && (
         <SkipSRPBackup handleClose={() => setShowSkipSRPBackupPopover(false)} />
       )}

@@ -168,7 +168,7 @@ export default class UnlockPage extends Component {
 
     return (
       <div className="unlock-page__container">
-        <div className="unlock-page">
+        <div className="unlock-page" data-testid="unlock-page">
           <div className="unlock-page__mascot-container">
             <Mascot
               animationEventEmitter={this.animationEventEmitter}
