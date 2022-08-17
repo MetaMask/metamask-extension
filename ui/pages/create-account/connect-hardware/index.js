@@ -10,7 +10,7 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   DEVICE_NAMES,
@@ -253,10 +253,10 @@ class ConnectHardwareForm extends Component {
       .then((_) => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.ACCOUNTS,
-          event: `Connected Account with: ${device}`,
+          event: EVENT_NAMES.ACCOUNT_ADDED,
           properties: {
-            action: 'Connected Hardware Wallet',
-            legacy_event: true,
+            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_hardware_type: device,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -264,10 +264,10 @@ class ConnectHardwareForm extends Component {
       .catch((e) => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.ACCOUNTS,
-          event: 'Error connecting hardware wallet',
+          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
           properties: {
-            action: 'Connected Hardware Wallet',
-            legacy_event: true,
+            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_hardware_type: device,
             error: e.message,
           },
         });

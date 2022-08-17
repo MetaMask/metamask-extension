@@ -28,7 +28,7 @@ import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import WalletOverview from './wallet-overview';
 
@@ -84,11 +84,12 @@ const TokenOverview = ({ className, token }) => {
             className="token-overview__button"
             onClick={async () => {
               trackEvent({
-                event: 'Clicked Send: Token',
+                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
                 category: EVENT.CATEGORIES.NAVIGATION,
                 properties: {
-                  action: 'Home',
-                  legacy_event: true,
+                  token_symbol: token.symbol,
+                  location: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
+                  text: 'Send',
                 },
               });
               try {
@@ -117,11 +118,12 @@ const TokenOverview = ({ className, token }) => {
             onClick={() => {
               if (isSwapsChain) {
                 trackEvent({
-                  event: 'Swaps Opened',
+                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
                   category: EVENT.CATEGORIES.SWAPS,
                   properties: {
-                    source: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
-                    active_currency: token.symbol,
+                    token_symbol: token.symbol,
+                    location: EVENT.SOURCE.SWAPS.TOKEN_VIEW,
+                    text: 'Swap',
                   },
                 });
                 dispatch(
