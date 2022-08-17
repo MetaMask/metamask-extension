@@ -70,8 +70,9 @@ export function getRenderableTokenData(
   ].includes(symbol)
     ? iconUrl
     : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
-  const usedIconUrl = tokenIconUrl || tokenList[address?.toLowerCase()]?.iconUrl || token?.image;
-  
+  const usedIconUrl =
+    tokenIconUrl || tokenList[address?.toLowerCase()]?.iconUrl || token?.image;
+
   return {
     ...token,
     primaryLabel: symbol,

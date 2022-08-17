@@ -66,13 +66,9 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-<<<<<<< HEAD
   getTokenList,
-=======
->>>>>>> a71f1c000 (using tokenList object instead of shuffledTokenList to improve performance)
   isHardwareWallet,
   getHardwareWalletType,
-  getTokenList,
 } from '../../../selectors';
 
 import {
