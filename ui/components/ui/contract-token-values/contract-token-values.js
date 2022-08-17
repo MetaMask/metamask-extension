@@ -48,7 +48,7 @@ export default function ContractTokenValues({ address, tokenName }) {
               handleCopy(address);
             }}
           >
-            <CopyContractDetails size={17} />
+            <CopyContractDetails />
           </Button>
         </Tooltip>
         <Tooltip title={t('openInBlockExplorer')}>
@@ -57,7 +57,7 @@ export default function ContractTokenValues({ address, tokenName }) {
             type="link"
             className="contract-token-values__block-explorer"
           >
-            <IconBlockExplorer size={13} />
+            <IconBlockExplorer />
           </Button>
         </Tooltip>
       </Box>
