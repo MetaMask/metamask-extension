@@ -196,17 +196,13 @@ export default function EditGasDisplay({
             supportsEIP1559 &&
             estimatedMaximumFiat !== undefined && (
               <>
-                <Typography
-                  tag="span"
-                  key="label"
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
+                <Typography as="span" key="label" fontWeight={FONT_WEIGHT.BOLD}>
                   {t('editGasSubTextFeeLabel')}
                 </Typography>
-                <Typography tag="span" key="secondary">
+                <Typography as="span" key="secondary">
                   {estimatedMaximumFiat}
                 </Typography>
-                <Typography tag="span" key="primary">
+                <Typography as="span" key="primary">
                   {`(${estimatedMaximumNative})`}
                 </Typography>
               </>
@@ -279,7 +275,7 @@ export default function EditGasDisplay({
               onClick={() => {
                 setShowAdvancedForm(!showAdvancedForm);
                 trackEvent({
-                  event: 'Clicked "Advanced Options"',
+                  event: 'Clicked "Advanced options"',
                   category: EVENT.CATEGORIES.TRANSACTIONS,
                   properties: {
                     action: 'Edit Screen',

@@ -659,6 +659,40 @@ describe('Box', () => {
       );
     });
   });
+
+  describe('color', () => {
+    it('should render the Box with the color class', () => {
+      const { getByText } = render(
+        <Box color={COLORS.TEXT_DEFAULT}>Box content</Box>,
+      );
+      expect(getByText('Box content')).toHaveClass('box--color-text-default');
+    });
+    it('should render the Box with the responsive color classes', () => {
+      const { getByText } = render(
+        <Box
+          color={[
+            COLORS.TEXT_DEFAULT,
+            COLORS.PRIMARY_DEFAULT,
+            COLORS.ERROR_DEFAULT,
+            COLORS.SUCCESS_DEFAULT,
+          ]}
+        >
+          Box content
+        </Box>,
+      );
+      expect(getByText('Box content')).toHaveClass('box--color-text-default');
+      expect(getByText('Box content')).toHaveClass(
+        'box--sm:color-primary-default',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--md:color-error-default',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--lg:color-success-default',
+      );
+    });
+  });
+
   describe('width, height', () => {
     it('should render the Box with the width class', () => {
       const { getByText } = render(
@@ -727,6 +761,24 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--sm:height-1/4');
       expect(getByText('Box content')).toHaveClass('box--md:height-max');
       expect(getByText('Box content')).toHaveClass('box--lg:height-min');
+    });
+  });
+  describe('polymorphic "as" prop', () => {
+    it('should render the Box with different html root elements', () => {
+      const { container } = render(
+        <>
+          <Box>Box as div (default)</Box>
+          <Box as="ul">Box as ul</Box>
+          <Box as="button">Box as button</Box>
+        </>,
+      );
+      expect(container.querySelector('div')).toHaveTextContent(
+        'Box as div (default)',
+      );
+      expect(container.querySelector('ul')).toHaveTextContent('Box as ul');
+      expect(container.querySelector('button')).toHaveTextContent(
+        'Box as button',
+      );
     });
   });
 });

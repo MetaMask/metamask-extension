@@ -1,17 +1,15 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 import sinon from 'sinon';
+import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.container';
 
 describe('Signature Request', () => {
-  let wrapper;
-
   const mockStore = {
     metamask: {
       provider: {
-        type: 'transparent',
+        type: 'rpc',
       },
       accounts: {
         '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
@@ -51,12 +49,7 @@ describe('Signature Request', () => {
   };
 
   beforeEach(() => {
-    wrapper = mountWithRouter(
-      <Provider store={store}>
-        <SignatureRequest.WrappedComponent {...props} />
-      </Provider>,
-      store,
-    );
+    renderWithProvider(<SignatureRequest.WrappedComponent {...props} />, store);
   });
 
   afterEach(() => {
@@ -64,15 +57,17 @@ describe('Signature Request', () => {
   });
 
   it('cancel', () => {
-    const cancelButton = wrapper.find('button.btn-secondary');
-    cancelButton.simulate('click');
+    const cancelButton = screen.getByTestId('signature-cancel-button');
+
+    fireEvent.click(cancelButton);
 
     expect(props.cancel.calledOnce).toStrictEqual(true);
   });
 
   it('sign', () => {
-    const signButton = wrapper.find('button.btn-primary');
-    signButton.simulate('click');
+    const signButton = screen.getByTestId('signature-sign-button');
+
+    fireEvent.click(signButton);
 
     expect(props.sign.calledOnce).toStrictEqual(true);
   });

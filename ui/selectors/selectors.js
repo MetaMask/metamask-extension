@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -41,14 +42,18 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
+import {
+  shortenAddress,
+  getAccountByAddress,
+  getURLHostName,
+} from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
-
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import {
@@ -725,7 +730,7 @@ export function getIsBuyableCoinbasePayChain(state) {
 }
 
 export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state).toUpperCase();
+  const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
 }
 
@@ -823,8 +828,8 @@ function getAllowedAnnouncementIds(state) {
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
     9: false,
-    10: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
-    11: Boolean(process.env.TOKEN_DETECTION_V2) && !process.env.IN_TEST,
+    10: true,
+    11: true,
     12: false,
     13: true,
   };
@@ -914,13 +919,19 @@ export function getTheme(state) {
 }
 
 /**
- * To retrieve the tokenList produced by TokenListcontroller
+ * To retrieve the token list for use throughout the UI. Will return the remotely fetched list
+ * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
  * @returns {object}
  */
 export function getTokenList(state) {
-  return state.metamask.tokenList;
+  const isTokenDetectionInactiveOnMainnet =
+    getIsTokenDetectionInactiveOnMainnet(state);
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : state.metamask.tokenList;
+  return caseInSensitiveTokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
@@ -1009,6 +1020,8 @@ export function getIsAdvancedGasFeeDefault(state) {
 }
 
 /**
+ * To get the name of the network that support token detection based in chainId.
+ *
  * @param state
  * @returns string e.g. ethereum, bsc or polygon
  */
@@ -1028,13 +1041,13 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
   }
 };
 /**
- * To check for the chainId that supports token detection ,
+ * To check if teh chainId supports token detection ,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
  *
  * @param {*} state
  * @returns Boolean
  */
-export function getIsTokenDetectionSupported(state) {
+export function getIsDynamicTokenListAvailable(state) {
   const chainId = getCurrentChainId(state);
   return [
     MAINNET_CHAIN_ID,
@@ -1065,6 +1078,50 @@ export function getNewTokensImported(state) {
 }
 
 /**
+ * To check if the token detection is OFF and the network is Mainnet
+ * so that the user can skip third party token api fetch
+ * and use the static tokenlist from contract-metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionInactiveOnMainnet(state) {
+  const isMainnet = getIsMainnet(state);
+  const useTokenDetection = getUseTokenDetection(state);
+
+  return !useTokenDetection && isMainnet;
+}
+
+/**
+ * To check for the chainId that supports token detection ,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionSupported(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return useTokenDetection && isDynamicTokenListAvailable;
+}
+
+/**
+ * To check if the token detection is OFF for the token detection supported networks
+ * and the network is not Mainnet
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
+  const useTokenDetection = getUseTokenDetection(state);
+  const isMainnet = getIsMainnet(state);
+  const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
+
+  return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
+}
+
+/**
  * To get the `customNetworkListEnabled` value which determines whether we use the custom network list
  *
  * @param {*} state
@@ -1072,4 +1129,44 @@ export function getNewTokensImported(state) {
  */
 export function getIsCustomNetworkListEnabled(state) {
   return state.metamask.customNetworkListEnabled;
+}
+
+export function getIsCustomNetwork(state) {
+  const chainId = getCurrentChainId(state);
+
+  return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
+}
+
+export function getBlockExplorerLinkText(
+  state,
+  accountDetailsModalComponent = false,
+) {
+  const isCustomNetwork = getIsCustomNetwork(state);
+  const rpcPrefs = getRpcPrefsForCurrentProvider(state);
+
+  let blockExplorerLinkText = {
+    firstPart: 'addBlockExplorer',
+    secondPart: '',
+  };
+
+  if (rpcPrefs.blockExplorerUrl) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? {
+          firstPart: 'blockExplorerView',
+          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+        }
+      : {
+          firstPart: 'viewinExplorer',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  } else if (isCustomNetwork === false) {
+    blockExplorerLinkText = accountDetailsModalComponent
+      ? { firstPart: 'etherscanViewOn', secondPart: '' }
+      : {
+          firstPart: 'viewOnEtherscan',
+          secondPart: 'blockExplorerAccountAction',
+        };
+  }
+
+  return blockExplorerLinkText;
 }

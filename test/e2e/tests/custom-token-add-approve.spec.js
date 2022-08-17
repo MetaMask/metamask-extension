@@ -64,7 +64,7 @@ describe.skip('Create token, approve token and approve token without gas', funct
 
           await driver.clickElement({ text: 'import tokens', tag: 'a' });
           await driver.clickElement({
-            text: 'Custom Token',
+            text: 'Custom token',
             tag: 'button',
           });
           await driver.waitForSelector('#custom-address');
@@ -74,13 +74,13 @@ describe.skip('Create token, approve token and approve token without gas', funct
           await driver.delay(2000);
 
           await driver.clickElement({
-            text: 'Add Custom Token',
+            text: 'Add custom token',
             tag: 'button',
           });
 
           await driver.delay(2000);
           await driver.clickElement({
-            text: 'Import Tokens',
+            text: 'Import tokens',
             tag: 'button',
           });
 

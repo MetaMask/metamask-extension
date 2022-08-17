@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
@@ -18,12 +19,12 @@ import {
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default function CreationSuccessful() {
   const firstTimeFlowTypeNameMap = {
-    create: 'New Wallet Created',
-    import: 'New Wallet Imported',
+    create: EVENT_NAMES.NEW_WALLET_CREATED,
+    import: EVENT_NAMES.NEW_WALLET_IMPORTED,
   };
   const history = useHistory();
   const t = useI18nContext();

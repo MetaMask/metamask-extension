@@ -209,7 +209,6 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>async-iterator-all": true,
         "3box>ipfs>async-iterator-to-pull-stream": true,
         "3box>ipfs>async-iterator-to-stream": true,
@@ -288,7 +287,8 @@
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "browserify>timers-browserify": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs-mini": {
@@ -303,17 +303,6 @@
       },
       "packages": {
         "nanoid": true
-      }
-    },
-    "3box>ipfs>async": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "lodash": true
       }
     },
     "3box>ipfs>async-iterator-to-pull-stream": {
@@ -385,11 +374,11 @@
     },
     "3box>ipfs>datastore-core": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>datastore-core>pull-many": true,
         "3box>ipfs>interface-datastore": true,
         "3box>ipfs>pull-stream": true,
-        "browserify>buffer": true
+        "browserify>buffer": true,
+        "gh-pages>async": true
       }
     },
     "3box>ipfs>datastore-pubsub": {
@@ -399,7 +388,7 @@
         "3box>ipfs>multibase": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "3box>ipfs>dlv": {
@@ -421,7 +410,6 @@
     },
     "3box>ipfs>interface-datastore": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>class-is": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>interface-datastore>uuid": true,
@@ -429,7 +417,8 @@
         "3box>ipfs>pull-stream": true,
         "browserify>buffer": true,
         "browserify>os-browserify": true,
-        "browserify>path-browserify": true
+        "browserify>path-browserify": true,
+        "gh-pages>async": true
       }
     },
     "3box>ipfs>interface-datastore>uuid": {
@@ -446,7 +435,6 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>cids": true,
         "3box>ipfs>ipfs-bitswap>bignumber.js": true,
         "3box>ipfs>ipfs-bitswap>just-debounce-it": true,
@@ -461,7 +449,8 @@
         "3box>ipfs>pull-stream": true,
         "browserify>assert": true,
         "browserify>events": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs>ipfs-bitswap>bignumber.js": {
@@ -506,7 +495,7 @@
     },
     "3box>ipfs>ipfs-block-service": {
       "packages": {
-        "3box>ipfs>async": true
+        "gh-pages>async": true
       }
     },
     "3box>ipfs>ipfs-mfs": {
@@ -531,7 +520,7 @@
         "browserify>assert": true,
         "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "3box>ipfs>ipfs-mfs>hamt-sharding": {
@@ -562,7 +551,6 @@
     },
     "3box>ipfs>ipfs-repo": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>base32.js": true,
         "3box>ipfs>cids": true,
         "3box>ipfs>datastore-core": true,
@@ -578,7 +566,8 @@
         "browserify>buffer": true,
         "browserify>path-browserify": true,
         "browserify>timers-browserify": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs>ipfs-repo>bignumber.js": {
@@ -692,6 +681,7 @@
         "3box>ipfs>ipfs-unixfs": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-batch": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-first": true,
+        "3box>ipfs>ipfs-unixfs-importer>deep-extend": true,
         "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": true,
         "3box>ipfs>ipld-dag-pb": true,
         "3box>ipfs>ipld-raw>multihashing-async": true,
@@ -699,7 +689,12 @@
         "3box>ipfs>multihashes": true,
         "3box>ipfs>superstruct": true,
         "browserify>buffer": true,
-        "rc>deep-extend": true
+        "madge>rc>deep-extend": true
+      }
+    },
+    "3box>ipfs>ipfs-unixfs-importer>deep-extend": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": {
@@ -822,7 +817,7 @@
         "3box>ipfs>protons": true,
         "base32-encode": true,
         "browserify>buffer": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "3box>ipfs>is-ipfs": {
@@ -845,7 +840,6 @@
     },
     "3box>ipfs>libp2p": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>fsm-event": true,
         "3box>ipfs>libp2p-websockets": true,
@@ -861,7 +855,8 @@
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "browserify>process": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -871,13 +866,13 @@
         "setInterval": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>mafmt": true,
         "3box>ipfs>multiaddr": true,
         "3box>ipfs>peer-id": true,
         "3box>ipfs>peer-info": true,
         "browserify>events": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs>libp2p-crypto": {
@@ -886,7 +881,6 @@
         "msCrypto": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>bs58": true,
         "3box>ipfs>libp2p-crypto>asn1.js": true,
         "3box>ipfs>libp2p-crypto>iso-random-stream": true,
@@ -896,6 +890,7 @@
         "3box>tweetnacl": true,
         "browserify>buffer": true,
         "ethereumjs-util>ethereum-cryptography>browserify-aes": true,
+        "gh-pages>async": true,
         "mockttp>node-forge": true
       }
     },
@@ -918,10 +913,10 @@
     },
     "3box>ipfs>libp2p-crypto>libp2p-crypto-secp256k1": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>bs58": true,
         "3box>ipfs>libp2p-crypto>libp2p-crypto-secp256k1>multihashing-async": true,
-        "eth-trezor-keyring>hdkey>secp256k1": true
+        "eth-trezor-keyring>hdkey>secp256k1": true,
+        "gh-pages>async": true
       }
     },
     "3box>ipfs>libp2p-crypto>libp2p-crypto-secp256k1>multihashing-async": {
@@ -962,7 +957,6 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>base32.js": true,
         "3box>ipfs>cids": true,
         "3box>ipfs>err-code": true,
@@ -990,7 +984,8 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "promise-to-callback": true
       }
     },
@@ -1045,7 +1040,6 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>interface-datastore": true,
         "3box>ipfs>libp2p-crypto": true,
@@ -1053,6 +1047,7 @@
         "3box>ipfs>merge-options": true,
         "3box>ipfs>pull-stream": true,
         "browserify>buffer": true,
+        "gh-pages>async": true,
         "mockttp>node-forge": true
       }
     },
@@ -1068,14 +1063,14 @@
     },
     "3box>ipfs>libp2p-record": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>libp2p-record>buffer-split": true,
         "3box>ipfs>libp2p-record>multihashing-async": true,
         "3box>ipfs>protons": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "browserify>insert-module-globals>is-buffer": true
+        "browserify>insert-module-globals>is-buffer": true,
+        "gh-pages>async": true
       }
     },
     "3box>ipfs>libp2p-record>buffer-split": {
@@ -1100,7 +1095,6 @@
     },
     "3box>ipfs>libp2p-secio": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>libp2p-crypto": true,
         "3box>ipfs>libp2p-secio>multihashing-async": true,
         "3box>ipfs>libp2p-secio>pull-handshake": true,
@@ -1113,7 +1107,8 @@
         "3box>ipfs>pull-stream": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -1160,7 +1155,6 @@
     },
     "3box>ipfs>libp2p-webrtc-star": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>class-is": true,
         "3box>ipfs>libp2p-webrtc-star>simple-peer": true,
         "3box>ipfs>libp2p-webrtc-star>socket.io-client": true,
@@ -1172,7 +1166,8 @@
         "3box>ipfs>pull-mplex>interface-connection": true,
         "3box>ipfs>stream-to-pull-stream": true,
         "browserify>events": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -1187,8 +1182,8 @@
         "3box>ipfs>libp2p-webrtc-star>simple-peer>get-browser-rtc": true,
         "3box>ipfs>libp2p-webrtc-star>simple-peer>readable-stream": true,
         "browserify>buffer": true,
-        "eslint>debug": true,
         "ethereumjs-wallet>randombytes": true,
+        "madge>debug": true,
         "pumpify>inherits": true
       }
     },
@@ -1383,12 +1378,12 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>libp2p-websocket-star-multi>libp2p-websocket-star": true,
         "3box>ipfs>mafmt": true,
         "3box>ipfs>multiaddr": true,
         "browserify>events": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -1397,7 +1392,6 @@
         "console.error": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>class-is": true,
         "3box>ipfs>libp2p-crypto": true,
         "3box>ipfs>libp2p-webrtc-star>socket.io-client": true,
@@ -1410,7 +1404,8 @@
         "3box>ipfs>pull-stream": true,
         "browserify>buffer": true,
         "browserify>events": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true,
         "uuid": true
       }
@@ -1460,7 +1455,7 @@
         "3box>ipfs>multiaddr-to-uri": true,
         "3box>ipfs>pull-mplex>interface-connection": true,
         "browserify>os-browserify": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "3box>ipfs>libp2p-websockets>pull-ws": {
@@ -1489,7 +1484,7 @@
       "packages": {
         "3box>ipfs>libp2p>libp2p-connection-manager>latency-monitor": true,
         "browserify>events": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "3box>ipfs>libp2p>libp2p-connection-manager>latency-monitor": {
@@ -1524,17 +1519,16 @@
     },
     "3box>ipfs>libp2p>libp2p-floodsub": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>libp2p-secio>pull-length-prefixed": true,
         "3box>ipfs>libp2p>libp2p-floodsub>libp2p-pubsub": true,
         "3box>ipfs>pull-stream": true,
         "browserify>assert": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs>libp2p>libp2p-floodsub>libp2p-pubsub": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>bs58": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>libp2p-crypto": true,
@@ -1546,7 +1540,8 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs>libp2p>libp2p-floodsub>libp2p-pubsub>time-cache": {
@@ -1566,12 +1561,11 @@
         "3box>ipfs>libp2p-secio>pull-handshake": true,
         "3box>ipfs>pull-stream": true,
         "browserify>events": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "3box>ipfs>libp2p>libp2p-switch": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>class-is": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>fsm-event": true,
@@ -1589,7 +1583,8 @@
         "3box>ipfs>pull-stream": true,
         "browserify>assert": true,
         "browserify>events": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -1601,7 +1596,6 @@
     },
     "3box>ipfs>libp2p>libp2p-switch>libp2p-circuit": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>libp2p-secio>pull-handshake": true,
         "3box>ipfs>libp2p-secio>pull-length-prefixed": true,
         "3box>ipfs>mafmt": true,
@@ -1612,7 +1606,8 @@
         "3box>ipfs>pull-mplex>interface-connection": true,
         "3box>ipfs>pull-stream": true,
         "browserify>events": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -1632,7 +1627,6 @@
     },
     "3box>ipfs>libp2p>libp2p-switch>multistream-select": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>err-code": true,
         "3box>ipfs>libp2p-secio>pull-handshake": true,
         "3box>ipfs>libp2p-secio>pull-length-prefixed": true,
@@ -1642,7 +1636,8 @@
         "3box>ipfs>varint": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eslint>debug": true,
+        "gh-pages>async": true,
+        "madge>debug": true,
         "pump>once": true
       }
     },
@@ -1774,12 +1769,12 @@
     },
     "3box>ipfs>peer-id": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>class-is": true,
         "3box>ipfs>libp2p-crypto": true,
         "3box>ipfs>multihashes": true,
         "browserify>assert": true,
-        "browserify>buffer": true
+        "browserify>buffer": true,
+        "gh-pages>async": true
       }
     },
     "3box>ipfs>peer-info": {
@@ -1807,7 +1802,6 @@
     },
     "3box>ipfs>pull-mplex": {
       "packages": {
-        "3box>ipfs>async": true,
         "3box>ipfs>pull-abortable": true,
         "3box>ipfs>pull-mplex>interface-connection": true,
         "3box>ipfs>pull-mplex>looper": true,
@@ -1817,7 +1811,8 @@
         "3box>ipfs>varint": true,
         "browserify>buffer": true,
         "browserify>events": true,
-        "eslint>debug": true
+        "gh-pages>async": true,
+        "madge>debug": true
       }
     },
     "3box>ipfs>pull-mplex>interface-connection": {
@@ -2201,8 +2196,8 @@
       }
     },
     "@babel/runtime": {
-      "packages": {
-        "@storybook/api>regenerator-runtime": true
+      "globals": {
+        "regeneratorRuntime": "write"
       }
     },
     "@download/blockies": {
@@ -2318,8 +2313,7 @@
     },
     "@eth-optimism/contracts": {
       "packages": {
-        "ethers": true,
-        "ethers>@ethersproject/abstract-provider": true
+        "ethers": true
       }
     },
     "@ethereumjs/common": {
@@ -2824,7 +2818,6 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ipfs>async": true,
         "@ethereumjs/tx": true,
         "@metamask/controllers>web3-provider-engine>backoff": true,
         "@metamask/controllers>web3-provider-engine>eth-block-tracker": true,
@@ -2838,6 +2831,7 @@
         "browserify>util": true,
         "eth-json-rpc-filters": true,
         "eth-json-rpc-infura": true,
+        "gh-pages>async": true,
         "lavamoat>json-stable-stringify": true,
         "watchify>xtend": true
       }
@@ -3168,75 +3162,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/providers>@metamask/object-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "end-of-stream": true,
-        "pump>once": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/rpc-methods": {
-      "packages": {
-        "@metamask/controllers": true,
-        "@metamask/rpc-methods>@metamask/key-tree": true,
-        "@metamask/rpc-methods>@metamask/utils": true,
-        "@metamask/snap-controllers": true,
-        "eth-rpc-errors": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree": {
-      "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true,
-        "setTimeout": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": {
-      "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/utils": {
-      "packages": {
-        "eslint>fast-deep-equal": true
-      }
-    },
     "@metamask/smart-transactions-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -3274,327 +3199,9 @@
         "setTimeout": true
       }
     },
-    "@metamask/snap-controllers": {
-      "globals": {
-        "URL": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "document.getElementById": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controllers": true,
-        "@metamask/providers>@metamask/object-multiplex": true,
-        "@metamask/rpc-methods>@metamask/utils": true,
-        "@metamask/snap-controllers>@metamask/browser-passworder": true,
-        "@metamask/snap-controllers>@metamask/execution-environments": true,
-        "@metamask/snap-controllers>@metamask/obs-store": true,
-        "@metamask/snap-controllers>@metamask/post-message-stream": true,
-        "@metamask/snap-controllers>ajv": true,
-        "@metamask/snap-controllers>concat-stream": true,
-        "@metamask/snap-controllers>gunzip-maybe": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream": true,
-        "@metamask/snap-controllers>nanoid": true,
-        "@metamask/snap-controllers>readable-web-to-node-stream": true,
-        "@metamask/snap-controllers>tar-stream": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "eslint>fast-deep-equal": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
-        "pump": true,
-        "semver": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/browser-passworder": {
-      "globals": {
-        "btoa": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.decrypt": true,
-        "crypto.subtle.deriveKey": true,
-        "crypto.subtle.encrypt": true,
-        "crypto.subtle.importKey": true
-      },
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2": true,
-        "browserify>stream-browserify": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": true,
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream": {
-      "globals": {
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "location.origin": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/rpc-methods>@metamask/utils": true,
-        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "vinyl>cloneable-readable>process-nextick-args": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/snap-controllers>ajv": {
-      "packages": {
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/snap-controllers>concat-stream": {
-      "packages": {
-        "@metamask/snap-controllers>concat-stream>readable-stream": true,
-        "browserify>buffer": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snap-controllers>concat-stream>readable-stream": {
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe": {
-      "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>browserify-zlib": true,
-        "@metamask/snap-controllers>gunzip-maybe>is-deflate": true,
-        "@metamask/snap-controllers>gunzip-maybe>is-gzip": true,
-        "@metamask/snap-controllers>gunzip-maybe>peek-stream": true,
-        "@metamask/snap-controllers>gunzip-maybe>pumpify": true,
-        "@metamask/snap-controllers>gunzip-maybe>through2": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>browserify-zlib": {
-      "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>browserify-zlib>pako": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>peek-stream": {
-      "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>peek-stream>duplexify": true,
-        "@metamask/snap-controllers>gunzip-maybe>peek-stream>through2": true,
-        "browserify>buffer": true,
-        "terser>source-map-support>buffer-from": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>peek-stream>duplexify": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>peek-stream>through2": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>pumpify": {
-      "packages": {
-        "@metamask/snap-controllers>gunzip-maybe>pumpify>duplexify": true,
-        "@metamask/snap-controllers>gunzip-maybe>pumpify>pump": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>pumpify>duplexify": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>pumpify>pump": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "end-of-stream": true,
-        "pump>once": true
-      }
-    },
-    "@metamask/snap-controllers>gunzip-maybe>through2": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>process-nextick-args": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
     "@metamask/snap-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/snap-controllers>readable-web-to-node-stream": {
-      "packages": {
-        "@metamask/snap-controllers>readable-web-to-node-stream>readable-stream": true
-      }
-    },
-    "@metamask/snap-controllers>readable-web-to-node-stream>readable-stream": {
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snap-controllers>tar-stream": {
-      "packages": {
-        "@metamask/snap-controllers>tar-stream>bl": true,
-        "@metamask/snap-controllers>tar-stream>fs-constants": true,
-        "@metamask/snap-controllers>tar-stream>readable-stream": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "browserify>util": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snap-controllers>tar-stream>bl": {
-      "packages": {
-        "@metamask/snap-controllers>tar-stream>readable-stream": true,
-        "browserify>buffer": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snap-controllers>tar-stream>fs-constants": {
-      "packages": {
-        "browserify>constants-browserify": true
-      }
-    },
-    "@metamask/snap-controllers>tar-stream>readable-stream": {
-      "packages": {
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -3735,6 +3342,24 @@
         "localforage": true
       }
     },
+    "@spruceid/siwe-parser": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@spruceid/siwe-parser>apg-js": true
+      }
+    },
+    "@spruceid/siwe-parser>apg-js": {
+      "globals": {
+        "mode": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
     "@storybook/api>regenerator-runtime": {
       "globals": {
         "regeneratorRuntime": "write"
@@ -3766,8 +3391,8 @@
         "@truffle/codec>web3-utils": true,
         "browserify>buffer": true,
         "browserify>util": true,
-        "eslint>debug": true,
         "gulp-dart-sass>lodash.clonedeep": true,
+        "madge>debug": true,
         "semver": true
       }
     },
@@ -3990,7 +3615,7 @@
         "@truffle/codec>web3-utils": true,
         "@truffle/decoder>@truffle/source-map-utils": true,
         "@truffle/decoder>bn.js": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "@truffle/decoder>@truffle/source-map-utils": {
@@ -4000,7 +3625,7 @@
         "@truffle/decoder>@truffle/source-map-utils>@truffle/code-utils": true,
         "@truffle/decoder>@truffle/source-map-utils>json-pointer": true,
         "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": true,
-        "eslint>debug": true
+        "madge>debug": true
       }
     },
     "@truffle/decoder>@truffle/source-map-utils>@truffle/code-utils": {
@@ -4554,19 +4179,6 @@
     "enzyme>is-regex>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
-      }
-    },
-    "eslint>debug": {
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "eslint>debug>ms": true
       }
     },
     "eslint>optionator>fast-levenshtein": {
@@ -5823,6 +5435,17 @@
         "define": true
       }
     },
+    "gh-pages>async": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "lodash": true
+      }
+    },
     "globalthis>define-properties": {
       "packages": {
         "globalthis>define-properties>has-property-descriptors": true,
@@ -5910,6 +5533,24 @@
     "luxon": {
       "globals": {
         "Intl": true
+      }
+    },
+    "madge>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "madge>debug>ms": true
+      }
+    },
+    "madge>rc>deep-extend": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "mockttp>node-forge": {
@@ -6063,11 +5704,6 @@
         "prop-types": true,
         "qrcode.react>qr.js": true,
         "react": true
-      }
-    },
-    "rc>deep-extend": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "react": {
@@ -6564,11 +6200,6 @@
         "jsdom>request>is-typedarray": true
       }
     },
-    "terser>source-map-support>buffer-from": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
     "textarea-caret": {
       "globals": {
         "document.body.appendChild": true,
@@ -6589,11 +6220,6 @@
     "vinyl>clone": {
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "vinyl>cloneable-readable>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
       }
     },
     "web3": {

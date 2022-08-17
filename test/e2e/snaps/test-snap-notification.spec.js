@@ -64,7 +64,7 @@ describe('Test Snap Notification', function () {
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Approve & Install',
+          text: 'Approve & install',
           tag: 'button',
         });
 

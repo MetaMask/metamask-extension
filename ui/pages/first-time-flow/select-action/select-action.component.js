@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
@@ -13,9 +14,11 @@ export default class SelectAction extends PureComponent {
     isInitialized: PropTypes.bool,
     setFirstTimeFlowType: PropTypes.func,
     nextRoute: PropTypes.string,
+    metaMetricsId: PropTypes.string,
   };
 
   static contextTypes = {
+    trackEvent: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -28,12 +31,46 @@ export default class SelectAction extends PureComponent {
   }
 
   handleCreate = () => {
+    const { metaMetricsId } = this.props;
+    const { trackEvent } = this.context;
     this.props.setFirstTimeFlowType('create');
+    trackEvent(
+      {
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: 'Selected Create New Wallet',
+        properties: {
+          action: 'Import or Create',
+          legacy_event: true,
+        },
+      },
+      {
+        isOptIn: true,
+        metaMetricsId,
+        flushImmediately: true,
+      },
+    );
     this.props.history.push(INITIALIZE_CREATE_PASSWORD_ROUTE);
   };
 
   handleImport = () => {
+    const { metaMetricsId } = this.props;
+    const { trackEvent } = this.context;
     this.props.setFirstTimeFlowType('import');
+    trackEvent(
+      {
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: 'Selected Import Wallet',
+        properties: {
+          action: 'Import or Create',
+          legacy_event: true,
+        },
+      },
+      {
+        isOptIn: true,
+        metaMetricsId,
+        flushImmediately: true,
+      },
+    );
     this.props.history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE);
   };
 
@@ -66,6 +103,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleImport}
+                  data-testid="import-wallet-button"
                 >
                   {t('importWallet')}
                 </Button>
@@ -86,6 +124,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
+                  data-testid="create-wallet-button"
                 >
                   {t('createAWallet')}
                 </Button>

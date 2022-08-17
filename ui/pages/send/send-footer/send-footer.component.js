@@ -20,7 +20,6 @@ export default class SendFooter extends Component {
     toAccounts: PropTypes.array,
     sendStage: PropTypes.string,
     sendErrors: PropTypes.object,
-    gasEstimateType: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     cancelTx: PropTypes.func,
     draftTransactionID: PropTypes.string,
@@ -53,14 +52,7 @@ export default class SendFooter extends Component {
 
   async onSubmit(event) {
     event.preventDefault();
-    const {
-      addToAddressBookIfNew,
-      sign,
-      to,
-      toAccounts,
-      history,
-      gasEstimateType,
-    } = this.props;
+    const { addToAddressBookIfNew, sign, to, toAccounts, history } = this.props;
     const { trackEvent } = this.context;
 
     // TODO: add nickname functionality
@@ -74,7 +66,6 @@ export default class SendFooter extends Component {
         properties: {
           action: 'Edit Screen',
           legacy_event: true,
-          gasChanged: gasEstimateType,
         },
       });
       history.push(CONFIRM_TRANSACTION_ROUTE);

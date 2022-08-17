@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Ativo aprovado"
   },
-  "areYouDeveloper": {
-    "message": "Você é desenvolvedor?"
-  },
   "areYouSure": {
     "message": "Tem certeza?"
   },
@@ -750,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Use $1 para personalizar o preço do gás. Isso pode parecer confuso se você não estiver familiarizado. Interaja por sua conta e risco.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas isso não é garantido."
@@ -836,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Depositar $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Descrição"
@@ -1214,9 +1211,6 @@
   "failureMessage": {
     "message": "Ocorreu algum erro e não conseguimos concluir a ação"
   },
-  "fakeTokenWarning": {
-    "message": "Qualquer um pode criar um token, incluindo versões falsas de tokens existentes. Saiba mais sobre $1"
-  },
   "fast": {
     "message": "Rápido"
   },
@@ -1484,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Alta probabilidade, mesmo em mercados voláteis. Use $1 para cobrir picos no tráfego de rede em razão de coisas como quedas em NFTs populares.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "alta"
@@ -1790,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Use $1 para aguardar um preço mais baixo. As estimativas de tempo são muito menos exatas, pois os preços são relativamente imprevisíveis.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "baixa"
@@ -1834,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Use $1 para um processamento rápido pelo preço atual de mercado.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "memorando"
@@ -2173,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "Veja em configurações",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "A detecção aperfeiçoada de tokens está atualmente disponível nas redes Ethereum Mainnet, Polygon, BSC e Avalanche. Há outras por vir!"
@@ -2278,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "Ir para Configurações Avançadas",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "A partir da MetaMask v10.4.0, não é mais necessário o Ledger Live para conectar o seu dispositivo Ledger à MetaMask.",
@@ -2396,9 +2390,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Abra a MetaMask em tela cheia para conectar sua ledger por meio do WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Verifique o código-fonte"
   },
   "optional": {
     "message": "Opcional"
@@ -2526,7 +2517,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Tipo de conexão preferencial com o Ledger",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Preparando swap..."
@@ -3044,10 +3035,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "Para confirmar que você entende, marque todas."
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Você está concedendo ao snap \"$1\" acesso à sua chave. Isso é irrevogável e concede a \"$1\" controle sobre suas contas e ativos. Certifique-se de que confia em \"$1\" antes de prosseguir.",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "Esse snap está solicitando as seguintes permissões:"
@@ -3720,7 +3707,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -3748,12 +3735,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "A detecção de tokens está atualmente disponível em $1. $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Novidade! A detecção aprimorada de token está disponível na Mainnet do Ethereum como uma funcionalidade experimental. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "A API de token da ConsenSys agrega uma lista de tokens de várias listas de tokens de terceiros. Se você desativá-la, não haverá detecção de novos tokens adicionados à sua carteira, mas continuará com a opção de procurar tokens para importar."
   },
   "tokenId": {
     "message": "ID do token"
@@ -3988,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Exibir uma advertência para os domínios de phishing destinados a usuários do Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Usar detecção de tokens"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Utilizamos APIs terceirizadas para detectar e exibir novos tokens enviados à sua carteira. Desative essa opção se não deseja que a MetaMask extraia dados desses serviços."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "A exibição automática de tokens enviados para a sua conta envolve a comunicação com servidores de terceiros para buscar as imagens dos tokens. Esses servidores terão acesso ao seu endereço IP."

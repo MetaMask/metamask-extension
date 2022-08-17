@@ -125,7 +125,6 @@ SelectQuotePopover.propTypes = {
   onClose: PropTypes.func,
   onSubmit: PropTypes.func,
   swapToSymbol: PropTypes.string,
-  renderableData: PropTypes.array,
   quoteDataRows: PropTypes.arrayOf(QUOTE_DATA_ROWS_PROPTYPES_SHAPE),
   initialAggId: PropTypes.string,
   onQuoteDetailsIsOpened: PropTypes.func,

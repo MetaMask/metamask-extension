@@ -51,6 +51,21 @@ function getBrowserVersionMap(platforms, version) {
   }, {});
 }
 
+/**
+ * Log an error to the console.
+ *
+ * This function includes a workaround for a SES bug that results in errors
+ * being printed to the console as `{}`. The workaround is to print the stack
+ * instead, which does work correctly.
+ *
+ * @see {@link https://github.com/endojs/endo/issues/944}
+ * @param {Error} error - The error to print
+ */
+function logError(error) {
+  console.error(error.stack || error);
+}
+
 module.exports = {
   getBrowserVersionMap,
+  logError,
 };

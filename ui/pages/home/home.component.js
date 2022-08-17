@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../helpers/constants/common';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
@@ -73,6 +78,7 @@ function shouldCloseNotificationPopup({
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -608,6 +614,7 @@ export default class Home extends PureComponent {
         !completedOnboarding) &&
       announcementsToShow &&
       showWhatsNewPopup;
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -681,6 +688,22 @@ export default class Home extends PureComponent {
                     target="_blank"
                     rel="noopener noreferrer"
                     key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent(
+                        {
+                          category: EVENT.CATEGORIES.HOME,
+                          event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
+                        },
+                        {
+                          contextPropsIntoEventProperties: [
+                            CONTEXT_PROPS.PAGE_TITLE,
+                          ],
+                        },
+                      );
+                    }}
                   >
                     {t('needHelpLinkText')}
                   </a>,

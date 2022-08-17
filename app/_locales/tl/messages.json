@@ -293,9 +293,6 @@
   "approvedAsset": {
     "message": "Aprubadong asset"
   },
-  "areYouDeveloper": {
-    "message": "Isa ka bang developer?"
-  },
   "areYouSure": {
     "message": "Sigurado ka ba?"
   },
@@ -750,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para i-customize ang presyo ng gas. Ito ay maaaring nakakalito kung hindi ka pamilyar. Harapin ang sarili mong panganib.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
@@ -836,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Magdeposito ng $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Deskripsyon"
@@ -1214,9 +1211,6 @@
   "failureMessage": {
     "message": "Nagkaproblema, at hindi namin makumpleto ang aksyon"
   },
-  "fakeTokenWarning": {
-    "message": "Sinuman ay maaaring gumawa ng token, kabilang ang paggawa ng mga pekeng bersyon ng mga umiiral na token. Alamin pa ang tungkol sa $1"
-  },
   "fast": {
     "message": "Mabilis"
   },
@@ -1484,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 upang pagtakpan ang mga surge sa network traffic dahil sa mga bagay tulad ng popular na pagbagsak ng NFT.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "mataas"
@@ -1790,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para maghintay ng mas murang presyo. Ang mga pagtatantya sa oras ay hindi gaanong tumpak dahil ang mga presyo ay medyo hindi mahuhulaan.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "mababa"
@@ -1834,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para sa pagproseso sa kasalukuyang market price.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "memo"
@@ -2173,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "Bisitahin sa mga setting",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Ang pinahusay na pagtukoy ng token ay kasalukuyang magagamit sa Ethereum Mainnet, Polygon, BSC, at mga Avalanche network. Marami pang darating!"
@@ -2278,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "Magpunta sa Advanced Settings",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Para sa MetaMask v10.4.0, hindi mo na kailangang ikonekta ang Ledger Live sa iyong Ledger device sa MetaMask.",
@@ -2396,9 +2390,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Buksan ang MetaMask sa buong screen para ikonekta ang ledger mo sa pamamagitan ng WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "openSourceCode": {
-    "message": "Suriin ang code ng pinagmulan"
   },
   "optional": {
     "message": "Opsyonal"
@@ -2526,7 +2517,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Napiling Uri ng Ledger Connection",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Inihahanda ang pagpapalit..."
@@ -3044,10 +3035,6 @@
   },
   "snapInstallWarningCheck": {
     "message": "Para kumpirmahing naunawaan mo, tsekan lahat."
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Ipinagkakaloob mo ang key access sa snap \"$1\". Hindi ito maaaring bawiin at ipinagkakaloob sa \"$1\" ang kontrol sa iyong mga account at mga asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
-    "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
     "message": "Hinihiling ng snap na ito ang mga sumusunod na pahintulot:"
@@ -3720,7 +3707,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 na test network",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -3748,12 +3735,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "Ang pagtukoy ng token ay kasalukuyang magagamit sa $1. $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Bago! Ang pinahusay na pagtukoy ng token ay magagamit sa Ethereum Mainnet bilang isang pang-eksperimentong feature. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "Pinagsasama-sama ng ConsenSys’ token API ang listahan ng mga token mula sa maraming listahan ng token ng third party. Ang pag-off dito ay magpapahinto sa pagtuklas ng mga bagong token na madadagdag sa iyong wallet, ngunit pananatilihin ang opsyon sa paghahanap ng mga token para i-import."
   },
   "tokenId": {
     "message": "Token ID"
@@ -3988,12 +3969,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Magpakita ng babala para sa mga phishing domain na nagta-target sa mga user ng Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Gamitin ang Pag-detect ng Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Gumagamit kami ng mga third-party na API para makita at magpakita ng mga bagong token na ipinadala sa iyong wallet. I-off kung ayaw mong makuha ng MetaMask ang data mula sa mga serbisyong iyon."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."

@@ -1,5 +1,5 @@
 .onboarding-metametrics {
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -37,7 +37,7 @@
     margin-top: 24px;
     width: 100%;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-top: 40px;
       justify-content: space-between;
       display: flex;
@@ -46,7 +46,7 @@
     button {
       margin-bottom: 24px;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         width: 200px;
       }
     }

@@ -13,6 +13,24 @@
         "@babel/preset-typescript": true
       }
     },
+    "@babel/eslint-parser": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/eslint-parser>eslint-scope": true,
+        "@babel/eslint-parser>eslint-visitor-keys": true,
+        "@babel/eslint-parser>semver": true,
+        "@babel/parser": true,
+        "depcheck>@babel/parser": true,
+        "eslint": true
+      },
+      "globals": {
+        "process.versions": true
+      }
+    },
     "eslint>@eslint/eslintrc": {
       "builtin": {
         "assert": true,
@@ -96,11 +114,12 @@
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
-        "eslint>debug": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
-        "typescript": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
-        "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true
+        "eslint>debug": true,
+        "madge>debug": true,
+        "typescript": true
       }
     },
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": {
