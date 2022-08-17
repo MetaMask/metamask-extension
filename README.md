@@ -93,9 +93,8 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
   * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
 * The LavaMoat policy files. The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details:
   * There are two sets of LavaMoat policy files:
-    * The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`.
+    * The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`. Add `--help` for usage.
       * These should be regenerated whenever the production dependencies for the background change.
-      * Use `yarn lavamoat:background:auto:dev` during local development. Add `--help` for usage.
     * The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
       * This should be regenerated whenever the dependencies used by the build system itself change.
   * Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
