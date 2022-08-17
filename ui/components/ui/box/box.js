@@ -185,7 +185,7 @@ export default function Box({
   children,
   className,
   backgroundColor,
-  color = TEXT_COLORS.TEXT_DEFAULT,
+  color,
   as = 'div',
   ...props
 }) {
