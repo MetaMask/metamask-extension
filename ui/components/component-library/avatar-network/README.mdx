@@ -12,7 +12,7 @@ The ` AvatarNetwork` is a component responsible for display of the image of a gi
 
 ## Props
 
-The `AvatarNetwork` accepts all props below as well as all [Box](/ui-components-ui-box-box-stories-js--default-story) component props
+The `AvatarNetwork` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story) component props
 
 <ArgsTable of={AvatarNetwork} />
 
@@ -34,14 +34,6 @@ Defaults to `md`
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--size" />
 </Canvas>
 
-### Background and border color
-
-Use the `backgroundColor` and `borderColor` prop to set the background and border colors of the avatar
-
-<Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--background-and-border-color" />
-</Canvas>
-
 ###  networkName
 
 Use the ` networkName` prop to set the initial alphabet of the `AvatarNetwork`.
@@ -50,10 +42,18 @@ Use the ` networkName` prop to set the initial alphabet of the `AvatarNetwork`.
 
 Use the `networkImageUrl` prop to set the image to be rendered of the `AvatarNetwork`.
 
-## showHalo
+### Show Halo
 
-If we want to display the component with halo effect.
+If we want to display the component with halo effect. Only works if an image url is supplied to `networkImageUrl`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--avatar-network-with-halo" />
+</Canvas>
+
+### Color, Background Color And Border Color
+
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--color-background-color-and-border-color" />
 </Canvas>

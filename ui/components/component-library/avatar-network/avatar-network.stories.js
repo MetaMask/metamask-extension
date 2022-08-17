@@ -1,14 +1,25 @@
 import React from 'react';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import {
+  COLORS,
+  SIZES,
+  DISPLAY,
+  ALIGN_ITEMS,
+} from '../../../helpers/constants/design-system';
 
-// import README from './README.mdx';
+import Box from '../../ui/box/box';
+
+import README from './README.mdx';
 import { AvatarNetwork } from './avatar-network';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',
   id: __filename,
   component: AvatarNetwork,
-
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   argTypes: {
     size: {
       control: 'select',
@@ -40,13 +51,13 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
-  <>
-    <AvatarNetwork {...args} marginBottom={2} size={SIZES.XS} />
-    <AvatarNetwork {...args} marginBottom={2} size={SIZES.SM} />
-    <AvatarNetwork {...args} marginBottom={2} size={SIZES.MD} />
-    <AvatarNetwork {...args} marginBottom={2} size={SIZES.LG} />
-    <AvatarNetwork {...args} marginBottom={2} size={SIZES.XL} />
-  </>
+  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <AvatarNetwork {...args} size={SIZES.XS} />
+    <AvatarNetwork {...args} size={SIZES.SM} />
+    <AvatarNetwork {...args} size={SIZES.MD} />
+    <AvatarNetwork {...args} size={SIZES.LG} />
+    <AvatarNetwork {...args} size={SIZES.XL} />
+  </Box>
 );
 export const networkName = Template.bind({});
 networkName.args = {
@@ -59,8 +70,8 @@ showHalo.args = {
   showHalo: true,
 };
 
-export const BackgroundAndBorderColor = (args) => (
-  <>
+export const ColorBackgroundColorAndBorderColor = (args) => (
+  <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarNetwork
       {...args}
       backgroundColor={COLORS.KOVAN}
@@ -89,8 +100,8 @@ export const BackgroundAndBorderColor = (args) => (
       networkName="R"
       color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
     />
-  </>
+  </Box>
 );
-BackgroundAndBorderColor.args = {
+ColorBackgroundColorAndBorderColor.args = {
   networkImageUrl: '',
 };
