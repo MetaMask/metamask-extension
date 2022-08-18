@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.18.4]
+
 ## [10.18.3]
 ### Fixed
 - Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
@@ -3107,7 +3109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.4...HEAD
+[10.18.4]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...v10.18.4
 [10.18.3]: https://github.com/MetaMask/metamask-extension/compare/v10.18.2...v10.18.3
 [10.18.2]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...v10.18.2
 [10.18.1]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...v10.18.1
