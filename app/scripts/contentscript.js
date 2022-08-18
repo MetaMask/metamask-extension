@@ -169,8 +169,7 @@ const setupPageStreams = () => {
  * - Answer questions:
  *   1. is it necessary to manually set allowHalfOpen to false?
  *      "If false then the stream will automatically end the writable side when the readable side ends"
- *   2 is it necessary to removeAllListeners if we're calling destroy? - I believe calling destroy
- *     removes all listeners.
+ *   2 is it necessary to removeAllListeners if we're calling destroy?
  *
  * - is there an unpump method similar to unpipe?
  * @see {@link https://nodejs.org/dist/v18.0.0/docs/api/stream.html#duplex-and-transform-streams}
