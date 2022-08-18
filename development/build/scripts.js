@@ -1099,7 +1099,7 @@ function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
-    METAMASK_DEBUG: devMode,
+    METAMASK_DEBUG: true,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
