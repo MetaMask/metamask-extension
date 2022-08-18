@@ -4,6 +4,9 @@ import {
   SIZES,
   DISPLAY,
   ALIGN_ITEMS,
+  TEXT_COLORS,
+  BACKGROUND_COLORS,
+  BORDER_COLORS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -24,6 +27,18 @@ export default {
     size: {
       control: 'select',
       options: Object.values(SIZES),
+    },
+    color: {
+      options: Object.values(TEXT_COLORS),
+      control: 'select',
+    },
+    backgroundColor: {
+      options: Object.values(BACKGROUND_COLORS),
+      control: 'select',
+    },
+    borderColor: {
+      options: Object.values(BORDER_COLORS),
+      control: 'select',
     },
     tokenName: {
       control: 'text',
