@@ -24,6 +24,7 @@ import {
   getNewCollectibleAddedMessage,
   getNewTokensImported,
   getPermissionSubjects,
+  getShowPortfolioTooltip,
 } from '../../selectors';
 
 import {
@@ -31,6 +32,7 @@ import {
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
+  hidePortfolioTooltip,
   requestAccountsPermissionWithId,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
@@ -152,6 +154,7 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showPortfolioTooltip: getShowPortfolioTooltip(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
@@ -189,6 +192,7 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>

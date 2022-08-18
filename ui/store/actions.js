@@ -3765,6 +3765,10 @@ export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
 }
 
+export function hidePortfolioTooltip() {
+  return promisifiedBackground.setShowPortfolioTooltip(false);
+}
+
 export function setCollectiblesDetectionNoticeDismissed() {
   return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
 }

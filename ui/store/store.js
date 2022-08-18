@@ -1,10 +1,11 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
+import logger from 'redux-logger'
 import rootReducer from '../ducks';
 
 export default function configureStore(initialState) {
-  let storeEnhancers = applyMiddleware(thunkMiddleware);
+  let storeEnhancers = applyMiddleware(thunkMiddleware, logger);
 
   if (process.env.METAMASK_DEBUG && !process.env.IN_TEST) {
     const composeEnhancers = composeWithDevTools({

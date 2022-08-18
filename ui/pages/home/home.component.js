@@ -51,6 +51,7 @@ import {
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import Tooltip from '../../components/ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
@@ -116,6 +117,8 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
+    showPortfolioTooltip: PropTypes.bool.isRequired,
+    hidePortfolioTooltip: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
@@ -598,6 +601,8 @@ export default class Home extends PureComponent {
       announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
+      showPortfolioTooltip,
+      hidePortfolioTooltip,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
@@ -617,8 +622,8 @@ export default class Home extends PureComponent {
       ((completedOnboarding && firstTimeFlowType === 'import') ||
         !completedOnboarding) &&
       announcementsToShow &&
-      showWhatsNewPopup;
-
+      showWhatsNewPopup &&
+      !showPortfolioTooltip;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -648,27 +653,59 @@ export default class Home extends PureComponent {
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
-                <div
-                  className="home__subheader-link"
-                  onClick={async () => {
-                    if (permissionsSubjects[process.env.METALABS_URL]) {
-                      global.platform.openTab({
-                        url: process.env.METALABS_URL,
-                      });
-                    } else {
-                      const id = await requestAccountsPermissionWithId(
-                        process.env.METALABS_URL,
-                      );
-                      addPostApprovalRedirectURL(process.env.METALABS_URL);
-                      history.push(`${CONNECT_ROUTE}/${id}`);
-                    }
-                  }}
+                <Tooltip
+                  position="bottom"
+                  open={showPortfolioTooltip}
+                  interactive
+                  theme="home__subheader-link--tooltip"
+                  html={
+                    <div>
+                      <div className="home__subheader-link--tooltip-content-header">
+                        <div className="home__subheader-link--tooltip-content-header-text">
+                          {t('new')}
+                        </div>
+                        <button
+                          className="home__subheader-link--tooltip-content-header-button"
+                          onClick={() => {
+                            console.log('close tooltip');
+                            hidePortfolioTooltip();
+                          }}
+                        >
+                          <i className="fa fa-times" />
+                        </button>
+                      </div>
+                      <div>
+                        {t('tryOur')}&nbsp;
+                        <span className="home__subheader-link--tooltip-content-text-bold">
+                          {t('betaPortfolioSite')}
+                        </span>
+                        &nbsp;{t('keepTapsOnTokens')}
+                      </div>
+                    </div>
+                  }
                 >
-                  <IconChart />
-                  <div className="home__subheader-link--text">
-                    {t('goToPortfolio')}
+                  <div
+                    className="home__subheader-link"
+                    onClick={async () => {
+                      if (permissionsSubjects[process.env.METALABS_URL]) {
+                        global.platform.openTab({
+                          url: process.env.METALABS_URL,
+                        });
+                      } else {
+                        const id = await requestAccountsPermissionWithId(
+                          process.env.METALABS_URL,
+                        );
+                        addPostApprovalRedirectURL(process.env.METALABS_URL);
+                        history.push(`${CONNECT_ROUTE}/${id}`);
+                      }
+                    }}
+                  >
+                    <IconChart />
+                    <div className="home__subheader-link--text">
+                      {t('portfolioSite')}
+                    </div>
                   </div>
-                </div>
+                </Tooltip>
               }
             >
               <Tab
