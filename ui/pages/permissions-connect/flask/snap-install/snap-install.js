@@ -48,10 +48,10 @@ export default function SnapInstall({
     request.permissions &&
     Object.entries(request.permissions)
       .filter(([key]) => key === 'snap_getBip32Entropy')
-      .map(([_key, value]) => value);
+      .map(([, value]) => value);
 
   const shouldShowWarning =
-    bip32EntropyPermissions.length > 0 || bip44EntropyPermissions?.length > 0;
+    bip32EntropyPermissions?.length > 0 || bip44EntropyPermissions?.length > 0;
 
   const getCoinType = (bip44EntropyPermission) =>
     bip44EntropyPermission?.split('_').slice(-1);
@@ -115,21 +115,15 @@ export default function SnapInstall({
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
           warnings={[
-            ...bip32EntropyPermissions
-              .reduce(
-                (target, permission, i) => [
-                  ...target,
-                  permission.caveats[0].value.map(({ path, curve }) => ({
-                    id: `key-access-bip32-${path.join('/')}-${curve}-${i}`,
-                    message: t('snapInstallWarningKeyAccess', [
-                      targetSubjectMetadata.name,
-                      `${path.join('/')} (${curve})`,
-                    ]),
-                  })),
-                ],
-                [],
-              )
-              .flat(),
+            ...bip32EntropyPermissions.flatMap((permission, i) =>
+              permission.caveats[0].value.map(({ path, curve }) => ({
+                id: `key-access-bip32-${path.join('/')}-${curve}-${i}`,
+                message: t('snapInstallWarningKeyAccess', [
+                  targetSubjectMetadata.name,
+                  `${path.join('/')} (${curve})`,
+                ]),
+              })),
+            ),
             ...bip44EntropyPermissions.map((permission, i) => {
               const coinType = getCoinType(permission);
               return {

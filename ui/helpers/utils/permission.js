@@ -33,7 +33,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
   },
   [RestrictedMethods.snap_getBip32Entropy]: {
-    label: (t, _permissionName, permissionValue) => {
+    label: (t, _, permissionValue) => {
       return permissionValue.caveats[0].value.map(({ path, curve }) =>
         t('permission_manageBip32Keys', [
           <span className="permission-label-item" key={path.join('/')}>

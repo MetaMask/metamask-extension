@@ -43,12 +43,10 @@ export default function PermissionsConnectPermissionList({ permissions }) {
   return (
     <div className="permissions-connect-permission-list">
       {Object.entries(permissions).reduce(
-        (target, [permissionName, permissionValue]) => {
-          return [
-            ...target,
-            ...getDescriptionNodes(t, permissionName, permissionValue),
-          ];
-        },
+        (target, [permissionName, permissionValue]) =>
+          target.concat(
+            getDescriptionNodes(t, permissionName, permissionValue),
+          ),
         [],
       )}
     </div>
