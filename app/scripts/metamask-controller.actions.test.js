@@ -90,10 +90,8 @@ describe('MetaMaskController', function () {
 
     it('two successive calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
-      const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
-        metamaskController.addNewAccount(1),
-        Promise.resolve(1).then(() => metamaskController.addNewAccount(1)),
-      ]);
+      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
+      const addNewAccountResult2 = await metamaskController.addNewAccount(1);
       assert.deepEqual(
         Object.keys(addNewAccountResult1.identities),
         Object.keys(addNewAccountResult2.identities),
@@ -105,6 +103,27 @@ describe('MetaMaskController', function () {
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
       assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
+    });
+  });
+
+  describe('#addCustomNetwork', function () {
+    const customRpc = {
+      chainId: '0x1',
+      chainName: 'DUMMY_CHAIN_NAME',
+      rpcUrl: 'DUMMY_RPCURL',
+      ticker: 'DUMMY_TICKER',
+      blockExplorerUrl: 'DUMMY_EXPLORER',
+    };
+    it('two calls with same accountCount give same result', async function () {
+      await metamaskController.addCustomNetwork(customRpc);
+      const rpcList1Length =
+        metamaskController.preferencesController.store.getState()
+          .frequentRpcListDetail.length;
+      await metamaskController.addCustomNetwork(customRpc);
+      const rpcList2Length =
+        metamaskController.preferencesController.store.getState()
+          .frequentRpcListDetail.length;
+      assert.equal(rpcList1Length, rpcList2Length);
     });
   });
 });

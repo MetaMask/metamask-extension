@@ -329,19 +329,21 @@ export default class MetaMetricsController {
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
   updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
-    // TODO: Change it to the right URL once it's available.
-
     const query = {};
     if (participateInMetaMetrics) {
       // We only want to track these things if a user opted into metrics.
-      query.id = metaMetricsId;
+      query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.environment;
       query.av = this.version;
     }
     const queryString = new URLSearchParams(query);
-    this.extension.runtime.setUninstallURL(
-      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
-    );
+
+    // this.extension not currently defined in tests
+    if (this.extension && this.extension.runtime) {
+      this.extension.runtime.setUninstallURL(
+        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+      );
+    }
   }
 
   /**
@@ -364,8 +366,8 @@ export default class MetaMetricsController {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
     }
-    // TODO: Uncomment the line below once we have a "Sorry to see you go" page ready.
-    // this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+
+    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 

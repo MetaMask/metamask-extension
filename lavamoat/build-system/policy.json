@@ -193,6 +193,7 @@
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
         "@babel/core>@babel/types>to-fast-properties": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }

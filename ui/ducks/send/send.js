@@ -381,6 +381,7 @@ export const draftTransactionInitialState = {
     gasTotal: '0x0',
     maxFeePerGas: '0x0',
     maxPriorityFeePerGas: '0x0',
+    wasManuallyEdited: false,
   },
   history: [],
   id: null,
@@ -1057,19 +1058,15 @@ const slice = createSlice({
           draftTransaction.transactionType =
             TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
         } else {
-          // Until we remove the old UI we don't want to automatically update
-          // gasPrice if the user has already manually changed the field value.
-          // When receiving a new estimate the isAutomaticUpdate property will be
-          // on the payload (and set to true). If isAutomaticUpdate is true,
-          // then we check if the previous estimate was '0x0' or if the previous
-          // gasPrice equals the previous gasEstimate. if either of those cases
-          // are true then we update the gasPrice otherwise we skip it because
-          // it indicates the user has ejected from the estimates by modifying
-          // the field.
+          if (action.payload.manuallyEdited) {
+            draftTransaction.gas.wasManuallyEdited = true;
+          }
+
+          // Update the gas price if it has not been manually edited,
+          // or if this current action is a manual edit.
           if (
-            action.payload.isAutomaticUpdate !== true ||
-            state.gasPriceEstimate === '0x0' ||
-            draftTransaction.gas.gasPrice === state.gasPriceEstimate
+            !draftTransaction.gas.wasManuallyEdited ||
+            action.payload.manuallyEdited
           ) {
             draftTransaction.gas.gasPrice = addHexPrefix(
               action.payload.gasPrice,
@@ -1821,6 +1818,7 @@ export function updateGasPrice(gasPrice) {
       actions.updateGasFees({
         gasPrice,
         transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        manuallyEdited: true,
       }),
     );
   };

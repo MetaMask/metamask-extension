@@ -15,10 +15,15 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(1);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(2);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
+
+      // TODO: Use `SnapCaveatType` from `rpc-methods` when it's exported.
+      expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
+        'permittedDerivationPaths',
+      );
     });
 
     describe('restrictReturnedAccounts', () => {

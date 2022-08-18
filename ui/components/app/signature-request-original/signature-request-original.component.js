@@ -141,6 +141,7 @@ export default class SignatureRequestOriginal extends Component {
         </div>
         {targetSubjectMetadata?.iconUrl ? (
           <SiteIcon
+            className="request-signature__origin-icon"
             icon={targetSubjectMetadata.iconUrl}
             name={
               getURLHostName(targetSubjectMetadata.origin) ||
