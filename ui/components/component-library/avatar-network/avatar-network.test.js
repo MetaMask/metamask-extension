@@ -41,7 +41,8 @@ describe('AvatarNetwork', () => {
     const image = screen.getAllByRole('img', { hidden: true });
     expect(image[1]).toHaveClass('avatar-network__network-image--size-reduced');
   });
-  it('should render the first letter of the networkName prop when  showHalo is true and no image url is provided', () => {
+
+  it('should render the first letter of the networkName prop when showHalo is true and no image url is provided', () => {
     const { getByText } = render(
       <AvatarNetwork
         {...args}

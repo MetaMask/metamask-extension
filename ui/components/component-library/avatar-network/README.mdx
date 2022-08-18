@@ -4,7 +4,7 @@ import { AvatarNetwork } from './avatar-network';
 
 # AvatarNetwork
 
-The ` AvatarNetwork` is a component responsible for display of the image of a given network
+The `AvatarNetwork` is a component responsible for display of the image of a given network
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--default-story" />
@@ -34,20 +34,28 @@ Defaults to `md`
   <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--size" />
 </Canvas>
 
-###  networkName
+###  Network Name
 
-Use the ` networkName` prop to set the initial alphabet of the `AvatarNetwork`.
+Use the `networkName` prop to set the initial alphabet of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `networkImageUrl` prop.
 
-###  networkImageUrl
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-name" />
+</Canvas>
+
+###  Network Image Url
 
 Use the `networkImageUrl` prop to set the image to be rendered of the `AvatarNetwork`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-image-url" />
+</Canvas>
 
 ### Show Halo
 
 If we want to display the component with halo effect. Only works if an image url is supplied to `networkImageUrl`
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--avatar-network-with-halo" />
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--show-halo" />
 </Canvas>
 
 ### Color, Background Color And Border Color
@@ -55,5 +63,5 @@ If we want to display the component with halo effect. Only works if an image url
 Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
 
 <Canvas>
-  <Story id="ui-components-component-library-avatar-token-avatar-token-stories-js--color-background-color-and-border-color" />
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--color-background-color-and-border-color" />
 </Canvas>

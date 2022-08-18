@@ -68,7 +68,7 @@ export const AvatarNetwork = ({
             }
             onError={handleOnError}
             src={networkImageUrl}
-            alt={networkName || 'avatar network'}
+            alt={networkName || 'network avatar'}
           />
         </>
       )}
