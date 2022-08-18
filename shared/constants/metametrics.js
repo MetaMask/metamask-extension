@@ -313,7 +313,6 @@ export const EVENT_NAMES = {
   NAV_BUY_BUTTON_CLICKED: 'Buy Button Clicked',
   NAV_SEND_BUTTON_CLICKED: 'Send Button Clicked',
   NAV_SWAP_BUTTON_CLICKED: 'Swap Button Clicked',
-  SRP_SKIP_BACKUP: 'SRP Skip Backup Selected',
   SRP_TO_CONFIRM_BACKUP: 'SRP Backup Confirm Displayed',
   WALLET_SETUP_STARTED: 'Wallet Setup Selected',
   WALLET_SETUP_CANCELED: 'Wallet Setup Canceled',

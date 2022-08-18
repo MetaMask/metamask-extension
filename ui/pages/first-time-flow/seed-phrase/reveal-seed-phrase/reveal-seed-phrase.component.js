@@ -71,12 +71,6 @@ export default class RevealSeedPhrase extends PureComponent {
       .then(() => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.ONBOARDING,
-          event: EVENT_NAMES.SRP_SKIP_BACKUP,
-          properties: {},
-        });
-
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.ONBOARDING,
           event: EVENT_NAMES.WALLET_CREATED,
           properties: {
             account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
