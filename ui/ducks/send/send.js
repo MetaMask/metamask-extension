@@ -381,7 +381,7 @@ export const draftTransactionInitialState = {
     gasTotal: '0x0',
     maxFeePerGas: '0x0',
     maxPriorityFeePerGas: '0x0',
-    manuallyEdited: false,
+    wasManuallyEdited: false,
   },
   history: [],
   id: null,
@@ -1059,10 +1059,15 @@ const slice = createSlice({
             TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
         } else {
           if (action.payload.manuallyEdited) {
-            draftTransaction.gas.manuallyEdited = true;
+            draftTransaction.gas.wasManuallyEdited = true;
           }
 
-          if (!draftTransaction.gas.manuallyEdited) {
+          // Update the gas price if it has not been manually edited,
+          // or if this current action is a manual edit.
+          if (
+            !draftTransaction.gas.wasManuallyEdited ||
+            action.payload.manuallyEdited
+          ) {
             draftTransaction.gas.gasPrice = addHexPrefix(
               action.payload.gasPrice,
             );
