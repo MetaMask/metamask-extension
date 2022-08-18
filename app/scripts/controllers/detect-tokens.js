@@ -233,7 +233,7 @@ export default class DetectTokensController {
    * @type {number}
    */
   set interval(interval) {
-    if (isManifestV3()) {
+    if (isManifestV3) {
       this.rescheduleTokenDetectionPollingInMV3();
     } else {
       this._handle && clearInterval(this._handle);

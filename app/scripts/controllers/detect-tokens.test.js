@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
-import browser from 'webextension-polyfill';
+import * as browser from '../../../ui/__mocks__/webextension-polyfill';
 import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
 import {
