@@ -71,7 +71,11 @@ const DetectedTokenSelectionPopover = ({
   return (
     <Popover
       className="detected-token-selection-popover"
-      title={t('tokensFoundTitle', [detectedTokens.length])}
+      title={
+        detectedTokens.length === 1
+          ? t('tokenFoundTitle')
+          : t('tokensFoundTitle', [detectedTokens.length])
+      }
       onClose={onClose}
       footer={footer}
     >
