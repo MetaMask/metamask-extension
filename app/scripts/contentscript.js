@@ -3,7 +3,8 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
-import { obj as createThoughStream } from 'through2';
+/** @todo uncomment Legacy Provider Support */
+// import { obj as createThoughStream } from 'through2';
 
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -31,9 +32,10 @@ const PROVIDER = 'metamask-provider';
 // For more information about these legacy streams, see here:
 // https://github.com/MetaMask/metamask-extension/issues/15491
 // TODO:LegacyProvider: Delete
-const LEGACY_CONTENT_SCRIPT = 'contentscript';
-const LEGACY_INPAGE = 'inpage';
-const LEGACY_PROVIDER = 'provider';
+/** @todo uncomment Legacy Provider Support */
+// const LEGACY_CONTENT_SCRIPT = 'contentscript';
+// const LEGACY_INPAGE = 'inpage';
+// const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
@@ -41,15 +43,15 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 let extensionMux,
-  legacyExtensionMux,
-  legacyPageMux,
-  legacyPageStream,
+  extensionPort,
+  extensionStream,
   pageMux,
   pageStream,
   phishingStream;
 
-let extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-let extensionStream = new PortStream(extensionPort);
+// legacyExtensionMux,
+// legacyPageMux,
+// legacyPageStream,
 
 /**
  * Injects a script tag into the current document
@@ -70,7 +72,7 @@ function injectScript(content) {
 }
 
 /**
- * @todo need to reset streams here
+ * @todo support phishing stream when Service Worker restarts
  */
 function setupPhishingStream() {
   // the transport-specific streams for communication between inpage and background
@@ -167,7 +169,8 @@ const setupPageStreams = () => {
  * - Answer questions:
  *   1. is it necessary to manually set allowHalfOpen to false?
  *      "If false then the stream will automatically end the writable side when the readable side ends"
- *   2 is it necessary to removeAllListeners if we're calling destroy?
+ *   2 is it necessary to removeAllListeners if we're calling destroy? - I believe calling destroy
+ *     removes all listeners.
  *
  * - is there an unpump method similar to unpipe?
  * @see {@link https://nodejs.org/dist/v18.0.0/docs/api/stream.html#duplex-and-transform-streams}
@@ -182,17 +185,18 @@ const destroyPageStreams = () => {
   pageMux.removeAllListeners();
   pageMux.destroy();
 
-  legacyPageMux.allowHalfOpen = false;
-  legacyPageMux.removeAllListeners();
-  legacyPageMux.destroy();
-
-  legacyExtensionMux.allowHalfOpen = false;
-  legacyExtensionMux.removeAllListeners();
-  legacyExtensionMux.destroy();
-
   pageStream.allowHalfOpen = false;
   pageStream.removeAllListeners();
   pageStream.destroy();
+
+  /** @todo uncomment Legacy Provider Support */
+  // legacyPageMux.allowHalfOpen = false;
+  // legacyPageMux.removeAllListeners();
+  // legacyPageMux.destroy();
+
+  // legacyExtensionMux.allowHalfOpen = false;
+  // legacyExtensionMux.removeAllListeners();
+  // legacyExtensionMux.destroy();
 };
 
 /**
@@ -215,7 +219,9 @@ const resetStreamAndListeners = () => {
   extensionStream = new PortStream(extensionPort);
 
   setupPageStreams();
-  setupLegacyStreams();
+
+  /** @todo uncomment Legacy Provider Support */
+  // setupLegacyStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
@@ -225,46 +231,47 @@ const resetStreamAndListeners = () => {
  * browser extension and local per-page browser context.
  *
  * @todo LegacyProvider: Delete
+ * @todo uncomment
  */
-function setupLegacyStreams() {
-  console.log('setupLegacyStreams called');
+// function setupLegacyStreams() {
+//   console.log('setupLegacyStreams called');
 
-  legacyPageStream = new WindowPostMessageStream({
-    name: LEGACY_CONTENT_SCRIPT,
-    target: LEGACY_INPAGE,
-  });
+//   legacyPageStream = new WindowPostMessageStream({
+//     name: LEGACY_CONTENT_SCRIPT,
+//     target: LEGACY_INPAGE,
+//   });
 
-  legacyPageMux = new ObjectMultiplex();
-  legacyPageMux.setMaxListeners(25);
-  legacyExtensionMux = new ObjectMultiplex();
-  legacyExtensionMux.setMaxListeners(25);
+//   legacyPageMux = new ObjectMultiplex();
+//   legacyPageMux.setMaxListeners(25);
+//   legacyExtensionMux = new ObjectMultiplex();
+//   legacyExtensionMux.setMaxListeners(25);
 
-  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
-  );
-  pump(
-    legacyExtensionMux,
-    extensionStream,
-    getNotificationTransformStream(),
-    legacyExtensionMux,
-    (err) => {
-      logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
-      notifyInpageOfStreamFailure();
-    },
-  );
+//   pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+//     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
+//   );
+//   pump(
+//     legacyExtensionMux,
+//     extensionStream,
+//     getNotificationTransformStream(),
+//     legacyExtensionMux,
+//     (err) => {
+//       logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
+//       notifyInpageOfStreamFailure();
+//     },
+//   );
 
-  forwardNamedTrafficBetweenMuxes(
-    LEGACY_PROVIDER,
-    PROVIDER,
-    legacyPageMux,
-    legacyExtensionMux,
-  );
-  forwardTrafficBetweenMuxes(
-    LEGACY_PUBLIC_CONFIG,
-    legacyPageMux,
-    legacyExtensionMux,
-  );
-}
+//   forwardNamedTrafficBetweenMuxes(
+//     LEGACY_PROVIDER,
+//     PROVIDER,
+//     legacyPageMux,
+//     legacyExtensionMux,
+//   );
+//   forwardTrafficBetweenMuxes(
+//     LEGACY_PUBLIC_CONFIG,
+//     legacyPageMux,
+//     legacyExtensionMux,
+//   );
+// }
 
 /**
  * Sets up two-way communication streams between the
@@ -273,8 +280,13 @@ function setupLegacyStreams() {
 const initPageStreams = () => {
   console.log('initPageStreams called');
 
+  extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  extensionStream = new PortStream(extensionPort);
+
   setupPageStreams();
-  setupLegacyStreams();
+
+  /** @todo uncomment Legacy Provider Support */
+  // setupLegacyStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
@@ -291,35 +303,35 @@ function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
 }
 
 // TODO:LegacyProvider: Delete
-function forwardNamedTrafficBetweenMuxes(
-  channelAName,
-  channelBName,
-  muxA,
-  muxB,
-) {
-  const channelA = muxA.createStream(channelAName);
-  const channelB = muxB.createStream(channelBName);
-  pump(channelA, channelB, channelA, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic between channels "${channelAName}" and "${channelBName}" failed.`,
-      error,
-    ),
-  );
-}
+// function forwardNamedTrafficBetweenMuxes(
+//   channelAName,
+//   channelBName,
+//   muxA,
+//   muxB,
+// ) {
+//   const channelA = muxA.createStream(channelAName);
+//   const channelB = muxB.createStream(channelBName);
+//   pump(channelA, channelB, channelA, (error) =>
+//     console.debug(
+//       `MetaMask: Muxed traffic between channels "${channelAName}" and "${channelBName}" failed.`,
+//       error,
+//     ),
+//   );
+// }
 
 // TODO:LegacyProvider: Delete
-function getNotificationTransformStream() {
-  return createThoughStream((chunk, _, cb) => {
-    if (chunk?.name === PROVIDER) {
-      if (chunk.data?.method === 'metamask_accountsChanged') {
-        chunk.data.method = 'wallet_accountsChanged';
-        chunk.data.result = chunk.data.params;
-        delete chunk.data.params;
-      }
-    }
-    cb(null, chunk);
-  });
-}
+// function getNotificationTransformStream() {
+//   return createThoughStream((chunk, _, cb) => {
+//     if (chunk?.name === PROVIDER) {
+//       if (chunk.data?.method === 'metamask_accountsChanged') {
+//         chunk.data.method = 'wallet_accountsChanged';
+//         chunk.data.result = chunk.data.params;
+//         delete chunk.data.params;
+//       }
+//     }
+//     cb(null, chunk);
+//   });
+// }
 
 /**
  * Error handler for page to extension stream disconnections
