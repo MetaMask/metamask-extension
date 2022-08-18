@@ -123,6 +123,12 @@ export default class AddRecipient extends Component {
         addressBookEntryName || userInput,
         'ENS resolution',
       );
+    } else if (unsResolution && !recipient.error){
+      content = this.renderExplicitAddress(
+        unsResolution,
+        addressBookEntryName || userInput,
+        'UNS resolution'
+      );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
     }

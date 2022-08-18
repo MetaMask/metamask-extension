@@ -21,15 +21,19 @@ import {
   getDomainWarning,
 } from '../../../../ducks/domains';
 import AddRecipient from './add-recipient.component';
+import { 
+  getUnsError, 
+  getUnsResolution,
+  getUnsWarning, 
+} from '../../../../ducks/uns';
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 
 function mapStateToProps(state) {
   const domainResolution = getDomainResolution(state);
-
   let addressBookEntryName = '';
-  if (domainResolution) {
-    const addressBookEntry = getAddressBookEntry(state, domainResolution) || {};
+  if (ensResolution) {
+    const addressBookEntry = getAddressBookEntry(state, ensResolution) || {};
     addressBookEntryName = addressBookEntry.name;
   }
 

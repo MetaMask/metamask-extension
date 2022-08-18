@@ -19,16 +19,10 @@ import {
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
-  UNS_NOT_REGISTERED,
-  UNS_RECORD_NOT_FOUND,
-  UNS_UNSPECIFIED_RESOLVER,
-  UNS_RESOLUTION_ERROR,
-  UNS_CONFUSING_ERROR,
-  UNS_UNKNOWN_ERROR,
+
 } from '../pages/send/send.constants';
 import { 
-  isValidDomainName, 
-  isValidUnstoppableDomainName
+  isValidDomainName,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
@@ -36,7 +30,6 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
-import Resolution from "@unstoppabledomains/resolution";
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
