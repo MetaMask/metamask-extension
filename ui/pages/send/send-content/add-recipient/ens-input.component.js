@@ -11,6 +11,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+
 export default class EnsInput extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -31,11 +32,14 @@ export default class EnsInput extends Component {
     lookupEnsName: PropTypes.func.isRequired,
     resolveUNS: PropTypes.func.isRequired,
     initializeEnsSlice: PropTypes.func.isRequired,
+    initializeUnsSlice: PropTypes.func.isRequired,
+    resetUnsResolution: PropTypes.func.isRequired,
     resetEnsResolution: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
     this.props.initializeEnsSlice();
+    this.props.initializeUnsSlice();
   }
 
   onPaste = (event) => {
@@ -61,6 +65,7 @@ export default class EnsInput extends Component {
       lookupEnsName,
       resolveUNS,
       resetEnsResolution,
+      resetUnsResolution,
     } = this.props;
     const input = value.trim();
 
@@ -71,10 +76,14 @@ export default class EnsInput extends Component {
     // Empty ENS state if input is empty
     // maybe scan ENS
     if (isValidUnstoppableDomainName(input) !== null) {
-      resolveUNS(input)
-    } else if (isValidDomainName(input)) {
+      resetEnsResolution(); 
+      resolveUNS(input);
+      resetEnsResolution(); 
+       
+    } else if (isValidDomainName(input) && !isValidUnstoppableDomainName(input)) {
         lookupEnsName(input);
     } else {
+      resetUnsResolution();
       resetEnsResolution();
       if (
         onValidAddressTyped &&

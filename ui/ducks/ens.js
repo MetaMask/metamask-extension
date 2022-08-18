@@ -19,16 +19,10 @@ import {
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
-  UNS_NOT_REGISTERED,
-  UNS_RECORD_NOT_FOUND,
-  UNS_UNSPECIFIED_RESOLVER,
-  UNS_RESOLUTION_ERROR,
-  UNS_CONFUSING_ERROR,
-  UNS_UNKNOWN_ERROR,
+
 } from '../pages/send/send.constants';
 import { 
-  isValidDomainName, 
-  isValidUnstoppableDomainName
+  isValidDomainName,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
@@ -36,7 +30,6 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
-import Resolution from "@unstoppabledomains/resolution";
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -59,42 +52,6 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    unsLookup: (state, action) => {
-      // first clear out the previous state
-      state.resolution = null;
-      state.error = null;
-      state.warning = null;
-      const { address, ensName, error } = action.payload;
-
-      if (error) {
-        if (isValidUnstoppableDomainName(ensName)) {
-          state.error =
-            error.code === 'UnregisteredDomain'
-              ? UNS_NOT_REGISTERED
-              : UNS_RESOLUTION_ERROR;
-        } else if (error.code === 'RecordNotFound') {
-          state.error = UNS_RECORD_NOT_FOUND;
-        } else if (error.code === 'UnspecifiedResolver') {
-          state.error = UNS_UNSPECIFIED_RESOLVER;
-        }else {
-          log.error(error);
-          state.error = UNS_UNKNOWN_ERROR;
-        }
-      } else if (address) {
-        if (address === BURN_ADDRESS) {
-          state.error = UNS_NOT_REGISTERED;
-        } else if (address === ZERO_X_ERROR_ADDRESS) {
-          state.error = UNS_RESOLUTION_ERROR;
-        } else {
-          state.resolution = address;
-        }
-        if (isValidUnstoppableDomainName(address) && isConfusing(address)) {
-          state.warning = UNS_CONFUSING_ERROR;
-        }
-      } else {
-        state.error = UNS_NOT_REGISTERED;
-      }
-    },
     ensLookup: (state, action) => {
       // first clear out the previous state
       state.resolution = null;
@@ -173,7 +130,6 @@ export default reducer;
 const {
   disableEnsLookup,
   ensLookup,
-  unsLookup,
   enableEnsLookup,
   ensNotSupported,
   resetEnsResolution,
@@ -242,31 +198,6 @@ export function lookupEnsName(ensName) {
     }
   };
 }
-
-export function resolveUNS(ensName){
-  return async (dispatch, getState) => {
-    let state = getState();
-    if (state[name].stage === 'UNINITIALIZED') {
-      await dispatch(initializeEnsSlice());
-    }
-    let address;
-    let error;
-    const resolution = new Resolution();
-    console.log(resolution.addr(ensName, "ETH"));
-    address = await resolution
-      .addr(ensName, "ETH")
-      .catch((err) => {
-        error = err.code
-      });
-    await dispatch(
-      unsLookup({
-        ensName,
-        address,
-        error,
-      }),
-    );
-  }
-};
 
 export function getEnsResolution(state) {
   return state[name].resolution;

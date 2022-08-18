@@ -116,7 +116,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
-import UdController from './controllers/ud';
+//import UdController from './controllers/ud';
 import NetworkController, { NETWORK_EVENTS } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
@@ -505,12 +505,12 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.udController = new UdController({
-      onNetworkDidChange: this.networkController.on.bind(
-        this.networkController,
-        NETWORK_EVENTS.NETWORK_DID_CHANGE,
-      ),
-    });
+    // this.udController = new UdController({
+    //   onNetworkDidChange: this.networkController.on.bind(
+    //     this.networkController,
+    //     NETWORK_EVENTS.NETWORK_DID_CHANGE,
+    //   ),
+    // });
 
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
@@ -1106,7 +1106,7 @@ export default class MetamaskController extends EventEmitter {
         BackupController: this.backupController,
         SwapsController: this.swapsController.store,
         EnsController: this.ensController.store,
-        UdController: this.udController.store,
+        // UdController: this.udController.store,
         ApprovalController: this.approvalController,
         AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
@@ -1526,7 +1526,7 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       detectTokensController,
       ensController,
-      udController,
+      // udController,
       gasFeeController,
       keyringController,
       metaMetricsController,
@@ -1752,9 +1752,9 @@ export default class MetamaskController extends EventEmitter {
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
       
-      // UdController
-      tryReverseResolveDomain:
-        udController.reverseResolveDomain.bind(udController),
+      // // UdController
+      // tryReverseResolveDomain:
+      //   udController.reverseResolveDomain.bind(udController),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),

@@ -21,15 +21,24 @@ import {
   getEnsWarning,
 } from '../../../../ducks/ens';
 import AddRecipient from './add-recipient.component';
+import { 
+  getUnsError, 
+  getUnsResolution,
+  getUnsWarning, 
+} from '../../../../ducks/uns';
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 
 function mapStateToProps(state) {
   const ensResolution = getEnsResolution(state);
-
+  const unsResolution = getUnsResolution(state);
   let addressBookEntryName = '';
   if (ensResolution) {
     const addressBookEntry = getAddressBookEntry(state, ensResolution) || {};
+    addressBookEntryName = addressBookEntry.name;
+  }
+  if (unsResolution) {
+    const addressBookEntry = getAddressBookEntry(state, unsResolution) || {};
     addressBookEntryName = addressBookEntry.name;
   }
 
@@ -44,6 +53,9 @@ function mapStateToProps(state) {
     ensResolution,
     ensError: getEnsError(state),
     ensWarning: getEnsWarning(state),
+    unsResolution,
+    unsError: getUnsError(state),
+    unsWarning: getUnsWarning(state),
     nonContacts: addressBook.filter(({ name }) => !name),
     ownedAccounts,
     isUsingMyAccountsForRecipientSearch:

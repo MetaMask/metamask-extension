@@ -19,6 +19,9 @@ export default class AddRecipient extends Component {
     ensResolution: PropTypes.string,
     ensError: PropTypes.string,
     ensWarning: PropTypes.string,
+    unsResolution: PropTypes.string,
+    unsError: PropTypes.string,
+    unsWarning: PropTypes.string,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
@@ -103,6 +106,7 @@ export default class AddRecipient extends Component {
   render() {
     const {
       ensResolution,
+      unsResolution,
       recipient,
       userInput,
       addressBookEntryName,
@@ -122,6 +126,12 @@ export default class AddRecipient extends Component {
         ensResolution,
         addressBookEntryName || userInput,
         'ENS resolution',
+      );
+    } else if (unsResolution && !recipient.error){
+      content = this.renderExplicitAddress(
+        unsResolution,
+        addressBookEntryName || userInput,
+        'UNS resolution'
       );
     } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
@@ -233,10 +243,21 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const { ensError, recipient, ensWarning } = this.props;
+    const { ensError, recipient, ensWarning, unsError, unsWarning } = this.props;
     const { t } = this.context;
-
-    if (ensError || (recipient.error && recipient.error !== 'required')) {
+    if (unsError || (recipient.error && recipient.error !== 'required')) {
+      return (
+        <Dialog type="error" className="send_error-dialog">
+        {t(unsError ?? recipient.error)}
+        </Dialog>
+      );
+    } else if (unsWarning || recipient.warning) {
+      return (
+        <Dialog type="warning" className="send_error-dialog">
+        {t(unsWarning ?? recipient.warning)}
+        </Dialog>
+      );
+    } else if (ensError || (recipient.error && recipient.error !== 'required')) {
       return (
         <Dialog type="error" className="send__error-dialog">
           {t(ensError ?? recipient.error)}

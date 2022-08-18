@@ -4,6 +4,7 @@ import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
 import sendReducer from './send/send';
 import ensReducer from './ens';
+import unsReducer from './uns';
 import appStateReducer from './app/app';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
 import gasReducer from './gas/gas.duck';
@@ -18,6 +19,7 @@ export default combineReducers({
   metamask: metamaskReducer,
   appState: appStateReducer,
   ENS: ensReducer,
+  UNS: unsReducer,
   history: historyReducer,
   send: sendReducer,
   confirmTransaction: confirmTransactionReducer,
