@@ -39,27 +39,34 @@ export default function ContractTokenValues({ address, tokenName }) {
         </Typography>
       </Box>
       <Box display={DISPLAY.FLEX}>
-        <Tooltip title={copied ? t('copiedExclamation') : t('copyToClipboard')}>
-          <Button
-            backgroundColor={COLORS.BACKGROUND_DEFAULT}
-            type="link"
-            className="contract-token-values__copy-adress"
-            onClick={() => {
-              handleCopy(address);
-            }}
+        <Box className="contract-token-values__copy-adress">
+          <Tooltip
+            position="top"
+            title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
-            <CopyContractDetails />
-          </Button>
-        </Tooltip>
-        <Tooltip title={t('openInBlockExplorer')}>
-          <Button
-            backgroundColor={COLORS.BACKGROUND_DEFAULT}
-            type="link"
-            className="contract-token-values__block-explorer"
-          >
-            <IconBlockExplorer />
-          </Button>
-        </Tooltip>
+            <Button
+              backgroundColor={COLORS.BACKGROUND_DEFAULT}
+              type="link"
+              className="contract-token-values__copy-adress__button"
+              onClick={() => {
+                handleCopy(address);
+              }}
+            >
+              <CopyContractDetails />
+            </Button>
+          </Tooltip>
+        </Box>
+        <Box className="contract-token-values__block-explorer">
+          <Tooltip position="top" title={t('openInBlockExplorer')}>
+            <Button
+              backgroundColor={COLORS.BACKGROUND_DEFAULT}
+              type="link"
+              className="contract-token-values__block-explorer__button"
+            >
+              <IconBlockExplorer />
+            </Button>
+          </Tooltip>
+        </Box>
       </Box>
     </Box>
   );

@@ -9,12 +9,18 @@
   }
 
   &__copy-adress {
-    padding-right: 7px;
-    padding-left: 10px;
+    margin-inline-start: 10px;
+
+    &__button {
+      padding: 0;
+    }
   }
 
   &__block-explorer {
-    padding-left: 7px;
-    padding-right: 10px;
+    margin-inline-start: 14px;
+
+    &__button {
+      padding: 0;
+    }
   }
 }
