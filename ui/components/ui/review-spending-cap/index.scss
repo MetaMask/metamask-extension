@@ -1,0 +1,33 @@
+.review-spending-cap {
+  &__heading {
+    width: 100%;
+  }
+
+  &__heading-title {
+    &__tooltip {
+      width: 180px;
+
+      &__warning-icon {
+        color: var(--color-warning-default);
+      }
+
+      &__question-icon {
+        color: var(--color-icon-muted);
+      }
+    }
+  }
+
+  &__heading-detail {
+    flex-grow: 1;
+    align-self: center;
+
+    &__button {
+      background: none;
+      color: var(--color-primary-default);
+    }
+  }
+
+  i {
+    font-size: $font-size-h7;
+  }
+}

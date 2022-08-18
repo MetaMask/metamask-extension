@@ -429,6 +429,9 @@
   "basic": {
     "message": "Basic"
   },
+  "beCareful": {
+    "message": "Be careful"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
@@ -830,6 +833,9 @@
   },
   "customSpendLimit": {
     "message": "Custom spend limit"
+  },
+  "customSpendingCap": {
+    "message": "Custom spending cap"
   },
   "customToken": {
     "message": "Custom token"
@@ -2834,6 +2840,9 @@
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
   },
+  "revokeSpendingCapTooltipText": {
+    "message": "This contract will be unable to spend any more of your current or future tokens."
+  },
   "rinkeby": {
     "message": "Rinkeby test network"
   },
@@ -4188,6 +4197,10 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "warningTooltipText": {
+    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Weak"
