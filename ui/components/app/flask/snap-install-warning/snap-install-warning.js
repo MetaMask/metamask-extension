@@ -66,7 +66,7 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
       title={t('areYouSure')}
       footer={<SnapInstallWarningFooter />}
       headerProps={{ padding: [6, 6, 0] }}
-      contentProps={{ padding: [0, 6, 4] }}
+      contentProps={{ padding: [6, 4] }}
       footerProps={{ padding: [4, 6] }}
     >
       <Typography variant={TYPOGRAPHY.H6} boxProps={{ paddingBottom: 4 }}>

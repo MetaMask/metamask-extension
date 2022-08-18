@@ -130,7 +130,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
       this.state;
 
     return (
-      <div className="confirm-seed-phrase">
+      <div className="confirm-seed-phrase" data-testid="confirm-seed-phrase">
         <div className="confirm-seed-phrase__back-button">
           <a
             onClick={(e) => {

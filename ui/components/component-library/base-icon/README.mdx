@@ -1,0 +1,77 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { BaseIcon } from './base-icon';
+
+### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+
+# BaseIcon
+
+The `BaseIcon` is the base component for all icons. It is used in conjunction with a script to create all icons it should not be used directly.
+
+<Canvas>
+  <Story id="ui-components-component-library-base-icon-base-icon-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `BaseIcon` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={BaseIcon} />
+
+### Size
+
+Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `BaseIcon`. Defaults to `SIZES.SM`
+
+Possible sizes include:
+
+- `SIZES.XXS` 10px
+- `SIZES.XS` 12px
+- `SIZES.SM` 16px
+- `SIZES.MD` 20px
+- `SIZES.LG` 24px
+- `SIZES.XL` 32px
+
+<Canvas>
+  <Story id="ui-components-component-library-base-icon-base-icon-stories-js--size" />
+</Canvas>
+
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { BaseIcon } from '../ui/component-library';
+
+<BaseIcon size={SIZES.XXS} />
+<BaseIcon size={SIZES.XS} />
+<BaseIcon size={SIZES.SM} />
+<BaseIcon size={SIZES.MD} />
+<BaseIcon size={SIZES.LG} />
+<BaseIcon size={SIZES.XL} />
+```
+
+### Color
+
+Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of `BaseIcon`. Defaults to `COLORS.INHERIT` which will use the text color of the parent element. This is useful for inline icons.
+
+<Canvas>
+  <Story id="ui-components-component-library-base-icon-base-icon-stories-js--color" />
+</Canvas>
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import { BaseIcon } from '../ui/component-library';
+
+<BaseIcon color={COLORS.INHERIT} />
+<BaseIcon color={COLORS.ICON_DEFAULT} />
+<BaseIcon color={COLORS.ICON_ALTERNATIVE} />
+<BaseIcon color={COLORS.ICON_MUTED} />
+<BaseIcon color={COLORS.OVERLAY_INVERSE} />
+<BaseIcon color={COLORS.PRIMARY_DEFAULT} />
+<BaseIcon color={COLORS.PRIMARY_INVERSE} />
+<BaseIcon color={COLORS.ERROR_DEFAULT} />
+<BaseIcon color={COLORS.ERROR_INVERSE} />
+<BaseIcon color={COLORS.SUCCESS_DEFAULT} />
+<BaseIcon color={COLORS.SUCCESS_INVERSE} />
+<BaseIcon color={COLORS.WARNING_DEFAULT} />
+<BaseIcon color={COLORS.WARNING_INVERSE} />
+<BaseIcon color={COLORS.INFO_DEFAULT} />
+<BaseIcon color={COLORS.INFO_INVERSE} />
+```

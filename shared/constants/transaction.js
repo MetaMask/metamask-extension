@@ -190,6 +190,24 @@ export const SMART_TRANSACTION_STATUSES = {
 };
 
 /**
+ * Types that are specific to the transaction approval amount.
+ *
+ * @typedef {object} TransactionApprovalAmountType
+ * @property {'custom'} CUSTOM - The user has edited the token amount.
+ * @property {'revoke'} REVOKE - The selected amount (either CUSTOM or DAPP_PROPOSED) is 0.
+ * @property {'dapp_proposed'} DAPP_PROPOSED - The dapp proposed token amount.
+ */
+
+/**
+ * @type {TransactionApprovalAmountType}
+ */
+export const TRANSACTION_APPROVAL_AMOUNT_TYPE = {
+  CUSTOM: 'custom',
+  REVOKE: 'revoke',
+  DAPP_PROPOSED: 'dapp_proposed',
+};
+
+/**
  * Transaction Group Category is a MetaMask construct to categorize the intent
  * of a group of transactions for purposes of displaying in the UI
  *
@@ -254,6 +272,16 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  epoch time (ms).
  * @property {string} contractMethodName - A string representing a name of
  * transaction contract method.
+ * @property {string} customTokenAmount - The custom token amount is the amount
+ * set by the user
+ * @property {string} dappProposedTokenAmount - The dapp proposed token amount
+ * @property {string} currentTokenBalance - The balance of the token that is
+ * being send
+ * @property {string} originalApprovalAmount - The original approval amount
+ * is the originally dapp proposed token amount
+ * @property {string} finalApprovalAmount - The chosen amount which will be the
+ * same as the originally proposed token amount if the user does not edit the
+ * amount or will be a custom token amount set by the user
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
  * @property {string} originalType - When we speed up a transaction,

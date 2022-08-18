@@ -214,10 +214,9 @@ export default class AccountMenu extends Component {
           onClick={() => {
             this.context.trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Switched Account',
+              event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                location: 'Main Menu',
               },
             });
             showAccountDetail(identity.address);
@@ -362,10 +361,10 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Create account',
+              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+                location: 'Main Menu',
               },
             });
             history.push(NEW_ACCOUNT_ROUTE);
@@ -378,10 +377,10 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Import Account',
+              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                location: 'Main Menu',
               },
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
@@ -399,10 +398,10 @@ export default class AccountMenu extends Component {
             toggleAccountMenu();
             trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Clicked Connect Hardware',
+              event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+                location: 'Main Menu',
               },
             });
             if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
@@ -475,10 +474,9 @@ export default class AccountMenu extends Component {
             history.push(SETTINGS_ROUTE);
             this.context.trackEvent({
               category: EVENT.CATEGORIES.NAVIGATION,
-              event: 'Opened Settings',
+              event: EVENT_NAMES.NAV_SETTINGS_OPENED,
               properties: {
-                action: 'Main Menu',
-                legacy_event: true,
+                location: 'Main Menu',
               },
             });
           }}

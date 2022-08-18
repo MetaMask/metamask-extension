@@ -100,7 +100,7 @@ const initApp = async (remotePort) => {
   log.info('MetaMask initialization complete.');
 };
 
-if (isManifestV3()) {
+if (isManifestV3) {
   browser.runtime.onConnect.addListener(initApp);
 } else {
   // initialization flow
@@ -360,7 +360,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     },
   );
 
-  setupSentryGetStateGlobal(controller.store);
+  setupSentryGetStateGlobal(controller);
 
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
@@ -402,7 +402,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
   //
   // connect to other contexts
   //
-  if (isManifestV3() && remoteSourcePort) {
+  if (isManifestV3 && remoteSourcePort) {
     connectRemote(remoteSourcePort);
   }
 
@@ -476,7 +476,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3()) {
+      if (isManifestV3) {
         // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
         // This ensures that UI is initialised only after background is ready
         // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
@@ -605,7 +605,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
       label = String(count);
     }
     // browserAction has been replaced by action in MV3
-    if (isManifestV3()) {
+    if (isManifestV3) {
       browser.action.setBadgeText({ text: label });
       browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
     } else {
@@ -788,11 +788,11 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 function setupSentryGetStateGlobal(store) {
   global.getSentryState = function () {
     const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
+    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
     return {
       browser: window.navigator.userAgent,
       store: debugState,
-      version: global.platform.getVersion(),
+      version: platform.getVersion(),
     };
   };
 }

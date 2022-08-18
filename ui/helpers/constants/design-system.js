@@ -126,6 +126,25 @@ export const TEXT_COLORS = pick(COLORS, [
   'INFO_INVERSE',
   'INHERIT',
 ]);
+
+export const ICON_COLORS = pick(COLORS, [
+  'ICON_DEFAULT',
+  'ICON_ALTERNATIVE',
+  'ICON_MUTED',
+  'OVERLAY_INVERSE',
+  'PRIMARY_DEFAULT',
+  'PRIMARY_INVERSE',
+  'ERROR_DEFAULT',
+  'ERROR_INVERSE',
+  'SUCCESS_DEFAULT',
+  'SUCCESS_INVERSE',
+  'WARNING_DEFAULT',
+  'WARNING_INVERSE',
+  'INFO_DEFAULT',
+  'INFO_INVERSE',
+  'INHERIT',
+]);
+
 export const TYPOGRAPHY = {
   H1: 'h1',
   H2: 'h2',
@@ -137,6 +156,17 @@ export const TYPOGRAPHY = {
   H8: 'h8',
   H9: 'h9',
   Paragraph: 'p',
+};
+
+export const TEXT = {
+  DISPLAY_MD: 'display-md',
+  HEADING_LG: 'heading-lg',
+  HEADING_MD: 'heading-md',
+  HEADING_SM: 'heading-sm',
+  BODY_LG: 'body-lg-medium',
+  BODY_MD: 'body-md',
+  BODY_SM: 'body-sm',
+  BODY_XS: 'body-xs',
 };
 
 const NONE = 'none';
@@ -250,8 +280,15 @@ export const TEXT_ALIGN = {
   END: 'end',
 };
 
+export const TEXT_TRANSFORM = {
+  UPPERCASE: 'uppercase',
+  LOWERCASE: 'lowercase',
+  CAPITALIZE: 'capitalize',
+};
+
 export const FONT_WEIGHT = {
   BOLD: 'bold',
+  MEDIUM: 'medium',
   NORMAL: 'normal',
 };
 
