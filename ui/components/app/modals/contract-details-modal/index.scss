@@ -16,6 +16,14 @@
 
       &__buttons {
         flex-grow: 1;
+
+        &__copy.btn-link {
+          padding: 0;
+        }
+
+        &__block-explorer.btn-link {
+          padding: 0;
+        }
       }
     }
   }

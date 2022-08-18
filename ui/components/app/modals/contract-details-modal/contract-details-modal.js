@@ -79,20 +79,29 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
             )}
           </Box>
           <Box
-            paddingTop={2}
             justifyContent={JUSTIFY_CONTENT.FLEX_END}
             className="contract-details-modal__content__contract__buttons"
           >
-            <Tooltip title={t('copyToClipboard')}>
-              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <CopyContractDetails />
-              </Button>
-            </Tooltip>
-            <Tooltip title={t('openInBlockExplorer')}>
-              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <IconBlockExplorer />
-              </Button>
-            </Tooltip>
+            <Box marginTop={5} marginRight={5}>
+              <Tooltip position="top" title={t('copyToClipboard')}>
+                <Button
+                  className="contract-details-modal__content__contract__buttons__copy"
+                  type="link"
+                >
+                  <CopyContractDetails />
+                </Button>
+              </Tooltip>
+            </Box>
+            <Box marginTop={5} marginRight={5}>
+              <Tooltip position="top" title={t('openInBlockExplorer')}>
+                <Button
+                  className="contract-details-modal__content__contract__buttons__block-explorer"
+                  type="link"
+                >
+                  <IconBlockExplorer />
+                </Button>
+              </Tooltip>
+            </Box>
           </Box>
         </Box>
 
@@ -129,20 +138,29 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
             )}
           </Box>
           <Box
-            paddingTop={2}
             justifyContent={JUSTIFY_CONTENT.FLEX_END}
             className="contract-details-modal__content__contract__buttons"
           >
-            <Tooltip title={t('copyToClipboard')}>
-              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <CopyContractDetails />
-              </Button>
-            </Tooltip>
-            <Tooltip title={t('openInBlockExplorer')}>
-              <Button backgroundColor={COLORS.BACKGROUND_DEFAULT} type="link">
-                <IconBlockExplorer />
-              </Button>
-            </Tooltip>
+            <Box marginTop={5} marginRight={5}>
+              <Tooltip position="top" title={t('copyToClipboard')}>
+                <Button
+                  className="contract-details-modal__content__contract__buttons__copy"
+                  type="link"
+                >
+                  <CopyContractDetails />
+                </Button>
+              </Tooltip>
+            </Box>
+            <Box marginTop={5} marginRight={5}>
+              <Tooltip position="top" title={t('openInBlockExplorer')}>
+                <Button
+                  className="contract-details-modal__content__contract__buttons__block-explorer"
+                  type="link"
+                >
+                  <IconBlockExplorer />
+                </Button>
+              </Tooltip>
+            </Box>
           </Box>
         </Box>
       </Box>
