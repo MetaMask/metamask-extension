@@ -48,11 +48,8 @@ export default class RevealSeedPhrase extends PureComponent {
 
     this.context.trackEvent({
       category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'Advance to Verify',
-      properties: {
-        action: 'Seed Phrase Setup',
-        legacy_event: true,
-      },
+      event: EVENT_NAMES.SRP_TO_CONFIRM_BACKUP,
+      properties: {},
     });
 
     if (!isShowingSeedPhrase) {
@@ -70,25 +67,30 @@ export default class RevealSeedPhrase extends PureComponent {
       onboardingInitiator,
     } = this.props;
 
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'Remind me later',
-      properties: {
-        action: 'Seed Phrase Setup',
-        legacy_event: true,
-      },
-    });
-
-    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)]);
-
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: EVENT_NAMES.NEW_WALLET_CREATED,
-      properties: {
-        action: 'Onboarding Complete',
-        legacy_event: true,
-      },
-    });
+    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
+      .then(() => {
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ONBOARDING,
+          event: EVENT_NAMES.WALLET_CREATED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+            is_backup_skipped: true,
+          },
+        });
+      })
+      .catch((error) => {
+        console.error(error.message);
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ONBOARDING,
+          event: EVENT_NAMES.WALLET_SETUP_FAILED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+            is_backup_skipped: true,
+            reason: 'Seed Phrase Creation Error',
+            error: error.message,
+          },
+        });
+      });
 
     if (onboardingInitiator) {
       await returnToOnboardingInitiatorTab(onboardingInitiator);
@@ -119,11 +121,8 @@ export default class RevealSeedPhrase extends PureComponent {
             onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.ONBOARDING,
-                event: 'Revealed Words',
-                properties: {
-                  action: 'Seed Phrase Setup',
-                  legacy_event: true,
-                },
+                event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+                properties: {},
               });
               this.setState({ isShowingSeedPhrase: true });
             }}

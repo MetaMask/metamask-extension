@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { INITIALIZE_SELECT_ACTION_ROUTE } from '../../../helpers/constants/routes';
 
 export default class MetaMetricsOptIn extends Component {
@@ -113,7 +113,7 @@ export default class MetaMetricsOptIn extends Component {
                     await trackEvent(
                       {
                         category: EVENT.CATEGORIES.ONBOARDING,
-                        event: 'Metrics Opt In',
+                        event: EVENT_NAMES.METRICS_OPT_IN,
                         properties: {
                           action: 'Metrics Option',
                           legacy_event: true,
