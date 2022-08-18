@@ -40,7 +40,6 @@ export default function ReviewSpendingCap({
         flexDirection={FLEX_DIRECTION.ROW}
         display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.CENTER}
-        marginTop={1}
         className="review-spending-cap__heading"
       >
         <Box
