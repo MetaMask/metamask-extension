@@ -61,11 +61,11 @@
       },
       "packages": {
         "3box>3box-orbitdb-plugins>ipfs-log>json-stringify-deterministic": true,
+        "3box>3box-orbitdb-plugins>ipfs-log>p-each-series": true,
         "3box>3box-orbitdb-plugins>ipfs-log>p-map": true,
         "3box>3box-orbitdb-plugins>ipfs-log>p-whilst": true,
         "3box>orbit-db>orbit-db-io": true,
-        "browserify>buffer": true,
-        "jest>@jest/core>p-each-series": true
+        "browserify>buffer": true
       }
     },
     "3box>3id-resolver": {

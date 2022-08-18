@@ -1,3 +1,7 @@
+// Importing MDX in tests is *broken* for jest versions greater than 27.
+// Until https://github.com/storybookjs/storybook/issues/15916 is resolved
+// we can't run this test file.
+/* eslint-disable */
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 
