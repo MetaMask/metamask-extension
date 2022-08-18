@@ -1,0 +1,67 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarNetwork } from './avatar-network';
+
+# AvatarNetwork
+
+The `AvatarNetwork` is a component responsible for display of the image of a given network
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `AvatarNetwork` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story) component props
+
+<ArgsTable of={AvatarNetwork} />
+
+### Size
+
+Use the `size` prop to set the size of the `AvatarNetwork`.
+
+Possible sizes include:
+
+- `xs` 16px
+- `sm` 24px
+- `md` 32px
+- `lg` 40px
+- `xl` 48px
+
+Defaults to `md`
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--size" />
+</Canvas>
+
+###  Network Name
+
+Use the `networkName` prop to set the initial alphabet of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `networkImageUrl` prop.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-name" />
+</Canvas>
+
+###  Network Image Url
+
+Use the `networkImageUrl` prop to set the image to be rendered of the `AvatarNetwork`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--network-image-url" />
+</Canvas>
+
+### Show Halo
+
+If we want to display the component with halo effect. Only works if an image url is supplied to `networkImageUrl`
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--show-halo" />
+</Canvas>
+
+### Color, Background Color And Border Color
+
+Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-network-avatar-network-stories-js--color-background-color-and-border-color" />
+</Canvas>
