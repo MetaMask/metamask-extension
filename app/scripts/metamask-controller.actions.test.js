@@ -111,7 +111,7 @@ describe('MetaMaskController', function () {
     const symbol = 'LINK';
     const decimals = 18;
 
-    it('two parallel calls with same details give same result', async function () {
+    it('two parallel calls with same token details give same result', async function () {
       const supportsInterfaceStub = sinon
         .stub()
         .returns(Promise.resolve(false));
@@ -137,7 +137,7 @@ describe('MetaMaskController', function () {
       ticker: 'DUMMY_TICKER',
       blockExplorerUrl: 'DUMMY_EXPLORER',
     };
-    it('two calls with same accountCount give same result', async function () {
+    it('two successive calls with custom RPC details give same result', async function () {
       await metamaskController.addCustomNetwork(customRpc);
       const rpcList1Length =
         metamaskController.preferencesController.store.getState()
