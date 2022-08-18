@@ -8,8 +8,13 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+<<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
 
 export default class DomainInput extends Component {
+=======
+import { isValidUnstoppableDomainName } from '../../../../helpers/utils/util';
+export default class EnsInput extends Component {
+>>>>>>> f5e2cf334 (adds TLD constant, UNS domain validation, & updates the input logic to avoid ENS & UNS crossfire):ui/pages/send/send-content/add-recipient/ens-input.component.js
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -68,12 +73,10 @@ export default class DomainInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-    if (isValidDomainName(input)) {
-      if (!input.includes(".eth")){
-        resolveUNS(input);
-      } else{
+    if (isValidUnstoppableDomainName(input) !== null) {
+      resolveUNS(input)
+    } else if (isValidDomainName(input)) {
         lookupEnsName(input);
-      }
     } else {
       resetDomainResolution();
       if (
