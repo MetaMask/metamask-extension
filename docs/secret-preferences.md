@@ -7,4 +7,3 @@ One example is our "sync with mobile" feature, which didn't make sense to roll o
 To enable features like this, first open the background console, and then you can use the global method `global.setPreference(key, value)`.
 
 For example, if the feature flag was a boolean was called `useNativeCurrencyAsPrimaryCurrency`, you might type `setPreference('useNativeCurrencyAsPrimaryCurrency', true)`.
-
