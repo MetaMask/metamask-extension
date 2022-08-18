@@ -31,7 +31,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
       expect(specification).toMatchObject({
         targetKey: expect.stringMatching(/^(snap_|wallet_)/u),
         methodImplementation: expect.any(Function),
-        allowedCaveats: null,
       });
     });
   });
