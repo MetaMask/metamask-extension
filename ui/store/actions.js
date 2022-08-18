@@ -507,6 +507,18 @@ export function unlockHardwareWalletAccounts(
   };
 }
 
+export function analyzeForOneKey(deviceName) {
+  log.debug(`background.analyzeForOneKey`, deviceName);
+  return async () => {
+    try {
+      await promisifiedBackground.analyzeForOneKey(deviceName);
+    } catch (e) {
+      log.error(e);
+      throw e;
+    }
+  };
+}
+
 export function showQrScanner() {
   return (dispatch) => {
     dispatch(

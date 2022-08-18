@@ -240,6 +240,10 @@ class ConnectHardwareForm extends Component {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
 
+    if (device === DEVICE_NAMES.TREZOR) {
+      this.props.analyzeForOneKey(device);
+    }
+
     const description =
       MEW_PATH === path
         ? this.context.t('hardwareWalletLegacyDescription')
@@ -356,6 +360,7 @@ ConnectHardwareForm.propTypes = {
   hideAlert: PropTypes.func,
   unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
+  analyzeForOneKey: PropTypes.func,
   history: PropTypes.object,
   chainId: PropTypes.string,
   rpcPrefs: PropTypes.object,
@@ -405,6 +410,8 @@ const mapDispatchToProps = (dispatch) => {
         ),
       );
     },
+    analyzeForOneKey: (deviceName) =>
+      dispatch(actions.analyzeForOneKey(deviceName)),
     showAlert: (msg) => dispatch(actions.showAlert(msg)),
     hideAlert: () => dispatch(actions.hideAlert()),
   };

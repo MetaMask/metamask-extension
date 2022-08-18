@@ -69,6 +69,7 @@ import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
   KEYRING_TYPES,
+  ONEKEY_VENDOR,
 } from '../../shared/constants/hardware-wallets';
 import {
   CaveatTypes,
@@ -1595,6 +1596,7 @@ export default class MetamaskController extends EventEmitter {
         this.attemptLedgerTransportCreation.bind(this),
       establishLedgerTransportPreference:
         this.establishLedgerTransportPreference.bind(this),
+      analyzeForOneKey: this.analyzeForOneKey.bind(this),
 
       // qr hardware devices
       submitQRHardwareCryptoHDKey:
@@ -2456,6 +2458,31 @@ export default class MetamaskController extends EventEmitter {
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
+  }
+
+  /**
+   * Statistics on whether the currently created account is from a OneKey hardware wallet
+   *
+   * @param deviceName - only accept trezor, because they use the same protocol
+   */
+  async analyzeForOneKey(deviceName) {
+    if (deviceName !== DEVICE_NAMES.TREZOR) {
+      return;
+    }
+    const keyring = await this.keyringController.getKeyringsByType(
+      TrezorKeyring.type,
+    )[0];
+    if (!keyring) {
+      return;
+    }
+    const vendor = keyring.getVendor && keyring.getVendor();
+    // We added the getVendor function to trezor's keyring to differentiate between vendors.
+    // When the hardware wallet is unlocked, calling this method will get the vendor name: trezor or onekey.
+    // When the device is not unlocked, the default value is undefined.
+    // Some statistical code can be added here.
+    if (vendor === ONEKEY_VENDOR) {
+      log.info('MetaMaskController - This is the OneKey Hardware Wallet');
+    }
   }
 
   async attemptLedgerTransportCreation() {
