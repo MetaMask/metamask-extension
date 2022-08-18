@@ -45,7 +45,6 @@ export default function ContractTokenValues({ address, tokenName }) {
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
             <Button
-              backgroundColor={COLORS.BACKGROUND_DEFAULT}
               type="link"
               className="contract-token-values__copy-adress__button"
               onClick={() => {
@@ -59,7 +58,6 @@ export default function ContractTokenValues({ address, tokenName }) {
         <Box className="contract-token-values__block-explorer">
           <Tooltip position="top" title={t('openInBlockExplorer')}>
             <Button
-              backgroundColor={COLORS.BACKGROUND_DEFAULT}
               type="link"
               className="contract-token-values__block-explorer__button"
             >
