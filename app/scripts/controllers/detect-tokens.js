@@ -12,7 +12,7 @@ import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL_MV2 = MINUTE * 3;
+const DEFAULT_INTERVAL = MINUTE * 3;
 // FOR DEV PURPOSE -- NEED TO BE UPDATED TO 3 BEFORE MERGING
 const DEFAULT_INTERVAL_MV3 = 0.2;
 const DETECT_TOKEN_ALARM = 'DETECT_TOKEN';
@@ -36,7 +36,7 @@ export default class DetectTokensController {
    * @param config.trackMetaMetricsEvent
    */
   constructor({
-    interval = DEFAULT_INTERVAL_MV2,
+    interval = DEFAULT_INTERVAL,
     preferences,
     network,
     keyringMemStore,
@@ -192,7 +192,7 @@ export default class DetectTokensController {
       return;
     }
     this.detectNewTokens();
-    this.interval = DEFAULT_INTERVAL_MV2;
+    this.interval = DEFAULT_INTERVAL;
   }
 
   /**
@@ -219,9 +219,9 @@ export default class DetectTokensController {
       }
     });
 
-    chrome.alarms.getAll((alarms) => {
-      console.log('list all alarms: ', alarms);
-    });
+    // chrome.alarms.getAll((alarms) => {
+    //   console.log('list all alarms: ', alarms);
+    // });
   }
 
   getChainIdFromNetworkStore(network) {

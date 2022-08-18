@@ -89,6 +89,7 @@ const browserPolyfillMock = {
       addListener: () => undefined,
     },
     getPlatformInfo: async () => 'mac',
+    // getManifest: () => { manifest_version: 2}
   },
 };
 
