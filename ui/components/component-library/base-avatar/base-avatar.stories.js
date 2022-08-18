@@ -4,8 +4,11 @@ import {
   COLORS,
   DISPLAY,
   SIZES,
+  TEXT_COLORS,
+  BACKGROUND_COLORS,
+  BORDER_COLORS,
 } from '../../../helpers/constants/design-system';
-import { ValidBackgroundColors, ValidBorderColors } from '../../ui/box';
+
 import Box from '../../ui/box/box';
 
 import README from './README.mdx';
@@ -42,12 +45,16 @@ export default {
       control: 'select',
       options: Object.values(SIZES),
     },
+    color: {
+      options: Object.values(TEXT_COLORS),
+      control: 'select',
+    },
     backgroundColor: {
-      options: ValidBackgroundColors,
+      options: Object.values(BACKGROUND_COLORS),
       control: 'select',
     },
     borderColor: {
-      options: ValidBorderColors,
+      options: Object.values(BORDER_COLORS),
       control: 'select',
     },
     display: {
@@ -79,6 +86,7 @@ export default {
   },
   args: {
     size: SIZES.MD,
+    color: COLORS.TEXT_DEFAULT,
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderColor: COLORS.BORDER_DEFAULT,
   },
@@ -90,11 +98,11 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <BaseAvatar {...args} marginBottom={2} size={SIZES.XS} />
-    <BaseAvatar {...args} marginBottom={2} size={SIZES.SM} />
-    <BaseAvatar {...args} marginBottom={2} size={SIZES.MD} />
-    <BaseAvatar {...args} marginBottom={2} size={SIZES.LG} />
-    <BaseAvatar {...args} marginBottom={2} size={SIZES.XL} />
+    <BaseAvatar {...args} size={SIZES.XS} />
+    <BaseAvatar {...args} size={SIZES.SM} />
+    <BaseAvatar {...args} size={SIZES.MD} />
+    <BaseAvatar {...args} size={SIZES.LG} />
+    <BaseAvatar {...args} size={SIZES.XL} />
   </Box>
 );
 
@@ -123,13 +131,14 @@ export const Children = (args) => (
   </Box>
 );
 
-export const BackgroundAndBorderColor = (args) => (
+export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <BaseAvatar {...args}>B</BaseAvatar>
     <BaseAvatar
       {...args}
       backgroundColor={COLORS.KOVAN}
       borderColor={COLORS.KOVAN}
+      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
     >
       K
     </BaseAvatar>
@@ -144,6 +153,7 @@ export const BackgroundAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
+      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
     >
       G
     </BaseAvatar>
@@ -151,6 +161,7 @@ export const BackgroundAndBorderColor = (args) => (
       {...args}
       backgroundColor={COLORS.ROPSTEN}
       borderColor={COLORS.ROPSTEN}
+      color={COLORS.PRIMARY_INVERSE} // TO DO: Update once test network colors have been added to design tokens
     >
       R
     </BaseAvatar>

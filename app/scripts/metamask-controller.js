@@ -649,7 +649,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.5.2',
+        'https://metamask.github.io/iframe-execution-environment/0.6.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -679,6 +679,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
         'ExecutionService:terminateAllSnaps',
+        'ExecutionService:handleRpcRequest',
       ],
     });
 
@@ -2634,30 +2635,41 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
+   * @param accountCount
    * @returns {} keyState
    */
-  async addNewAccount() {
+  async addNewAccount(accountCount) {
     const primaryKeyring =
       this.keyringController.getKeyringsByType('HD Key Tree')[0];
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
     const { keyringController } = this;
-    const oldAccounts = await keyringController.getAccounts();
-    const keyState = await keyringController.addNewAccount(primaryKeyring);
-    const newAccounts = await keyringController.getAccounts();
+    const { identities: oldIdentities } =
+      this.preferencesController.store.getState();
 
-    await this.verifySeedPhrase();
+    if (Object.keys(oldIdentities).length === accountCount) {
+      const oldAccounts = await keyringController.getAccounts();
+      const keyState = await keyringController.addNewAccount(primaryKeyring);
+      const newAccounts = await keyringController.getAccounts();
 
-    this.preferencesController.setAddresses(newAccounts);
-    newAccounts.forEach((address) => {
-      if (!oldAccounts.includes(address)) {
-        this.preferencesController.setSelectedAddress(address);
-      }
-    });
+      await this.verifySeedPhrase();
 
-    const { identities } = this.preferencesController.store.getState();
-    return { ...keyState, identities };
+      this.preferencesController.setAddresses(newAccounts);
+      newAccounts.forEach((address) => {
+        if (!oldAccounts.includes(address)) {
+          this.preferencesController.setSelectedAddress(address);
+        }
+      });
+
+      const { identities } = this.preferencesController.store.getState();
+      return { ...keyState, identities };
+    }
+
+    return {
+      ...keyringController.memStore.getState(),
+      identities: oldIdentities,
+    };
   }
 
   /**

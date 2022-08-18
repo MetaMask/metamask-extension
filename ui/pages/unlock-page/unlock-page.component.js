@@ -53,6 +53,8 @@ export default class UnlockPage extends Component {
 
   submitting = false;
 
+  failed_attempts = 0;
+
   animationEventEmitter = new EventEmitter();
 
   UNSAFE_componentWillMount() {
@@ -83,10 +85,9 @@ export default class UnlockPage extends Component {
       this.context.trackEvent(
         {
           category: EVENT.CATEGORIES.NAVIGATION,
-          event: 'Success',
+          event: EVENT_NAMES.APP_UNLOCKED,
           properties: {
-            action: 'Unlock',
-            legacy_event: true,
+            failed_attempts: this.failed_attempts,
           },
         },
         {
@@ -101,16 +102,16 @@ export default class UnlockPage extends Component {
         showOptInModal();
       }
     } catch ({ message }) {
+      this.failed_attempts += 1;
+
       if (message === 'Incorrect password') {
-        const newState = await forceUpdateMetamaskState();
+        await forceUpdateMetamaskState();
         this.context.trackEvent({
           category: EVENT.CATEGORIES.NAVIGATION,
-          event: 'Incorrect Password',
+          event: EVENT_NAMES.APP_UNLOCKED_FAILED,
           properties: {
-            action: 'Unlock',
-            legacy_event: true,
-            numberOfTokens: newState.tokens.length,
-            numberOfAccounts: Object.keys(newState.accounts).length,
+            reason: 'incorrect_password',
+            failed_attempts: this.failed_attempts,
           },
         });
       }

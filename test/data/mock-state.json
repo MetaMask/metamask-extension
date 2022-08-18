@@ -8,7 +8,44 @@
       "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
     }
   },
+  "history": {
+    "mostRecentOverviewPage": "/"
+  },
   "metamask": {
+    "gasFeeEstimates": {
+      "low": {
+        "suggestedMaxPriorityFeePerGas": "1.233864249",
+        "suggestedMaxFeePerGas": "19.308202033",
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 30000
+      },
+      "medium": {
+        "suggestedMaxPriorityFeePerGas": "1.5",
+        "suggestedMaxFeePerGas": "25.900356008",
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 45000
+      },
+      "high": {
+        "suggestedMaxPriorityFeePerGas": "2",
+        "suggestedMaxFeePerGas": "32.726374232",
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 60000
+      },
+      "estimatedBaseFee": "18.074337783",
+      "historicalBaseFeeRange": ["10.621659703", "19.673392581"],
+      "baseFeeTrend": "up",
+      "latestPriorityFeeRange": ["1.5", "17.536644176"],
+      "historicalPriorityFeeRange": ["0.110624865", "718.303816711"],
+      "priorityFeeTrend": "up",
+      "networkCongestion": 0.87115
+    },
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": true,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "ensResolutionsByAddress": {},
     "featureFlags": {
       "showIncomingTransactions": true
     },
@@ -37,6 +74,8 @@
         "1559": true
       }
     },
+    "frequentRpcListDetail": [],
+    "subjectMetadata": {},
     "notifications": {
       "test": {
         "id": "test",
