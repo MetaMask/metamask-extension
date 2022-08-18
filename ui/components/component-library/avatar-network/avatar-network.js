@@ -24,6 +24,7 @@ export const AvatarNetwork = ({
   ...props
 }) => {
   const [showFallback, setShowFallback] = useState(false);
+
   useEffect(() => {
     setShowFallback(!networkImageUrl);
   }, [networkImageUrl]);
