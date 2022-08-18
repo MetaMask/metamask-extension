@@ -19,6 +19,8 @@ describe('PermissionController specifications', () => {
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
+
+      // TODO: Use `SnapCaveatType` from `rpc-methods` when it's exported.
       expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
         'permittedDerivationPaths',
       );
