@@ -1,7 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import jazzicon from '@metamask/jazzicon';
-import { usePrevious } from '../../../hooks/usePrevious';
 import iconFactoryGenerator from '../../../helpers/utils/icon-factory';
 
 const iconFactory = iconFactoryGenerator(jazzicon);
@@ -18,37 +17,23 @@ function Jazzicon({
   style,
   tokenList = {},
 }) {
-  const container = useRef();
-  const prevAddress = usePrevious(address);
-  const prevDiameter = usePrevious(diameter);
+  const image = useMemo(() => {
+    const imageNode = iconFactory.iconForAddress(
+      address,
+      diameter,
+      tokenList[address.toLowerCase()],
+    );
 
-  useEffect(() => {
-    const removeExistingChildren = () => {
-      const { children } = container.current;
+    return imageNode.outerHTML;
+  }, [address, diameter, tokenList]);
 
-      for (let i = 0; i < children.length; i++) {
-        container.current.removeChild(children[i]);
-      }
-    };
-
-    const appendJazzicon = () => {
-      const image = iconFactory.iconForAddress(
-        address,
-        diameter,
-        tokenList[address.toLowerCase()],
-      );
-      container.current.appendChild(image);
-    };
-
-    appendJazzicon();
-
-    if (address !== prevAddress || diameter !== prevDiameter) {
-      removeExistingChildren();
-      appendJazzicon();
-    }
-  }, [prevAddress, prevDiameter, address, diameter, tokenList]);
-
-  return <div className={className} ref={container} style={style} />;
+  return (
+    <div
+      className={className}
+      style={style}
+      dangerouslySetInnerHTML={{ __html: image }}
+    />
+  );
 }
 
 Jazzicon.propTypes = {
