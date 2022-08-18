@@ -8,6 +8,7 @@ import {
   COLORS,
   FONT_WEIGHT,
   ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
@@ -29,13 +30,13 @@ export default function NetworkAccountBalanceHeader({
       padding={4}
       className="network-account-balance-header"
       alignItems={ALIGN_ITEMS.CENTER}
+      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
     >
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         alignItems={ALIGN_ITEMS.CENTER}
         gap={2}
-        className="network-account-balance-header__network-account"
         marginRight={5}
       >
         <Box
@@ -56,7 +57,6 @@ export default function NetworkAccountBalanceHeader({
           display={DISPLAY.FLEX}
           alignItems={ALIGN_ITEMS.FLEX_START}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          className="network-account-balance-header__network-account__network-and-account-values"
         >
           <Typography
             variant={TYPOGRAPHY.H7}
@@ -80,7 +80,6 @@ export default function NetworkAccountBalanceHeader({
         display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.FLEX_END}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        className="network-account-balance-header__balance-box"
       >
         <Typography
           variant={TYPOGRAPHY.H7}
