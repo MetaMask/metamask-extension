@@ -4072,9 +4072,24 @@
     "message": "$1 (Unrecognized protocol)",
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
+  "unsConfusingError": {
+    "message": "We have detected a confusable character in the domain name. Check the domain name to avoid a potential scam."
+  },
   "unsendableAsset": {
     "message": "Sending collectible (ERC-721) tokens is not currently supported",
     "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+  },
+  "unsNoRecord": {
+    "message": "Crypto record is not found (or empty)."
+  },
+  "unsNoResolver": {
+    "message": "Domain is not configured (empty resolver)."
+  },
+  "unsResolutionError": {
+    "message": "Domain is not registered."
+  },
+  "unsUnknownError": {
+    "message": "UNS Lookup Failed."
   },
   "unverifiedContractAddressMessage": {
     "message": "We cannot verify this contract. Make sure you trust this address."

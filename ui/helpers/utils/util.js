@@ -107,7 +107,7 @@ export function isValidDomainName(address) {
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
     .match(
-      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9]*[-a-z0-9]*[a-z0-9]*[a-z0-9]*[a-z0-9]*[a-z0-9]*[a-z0-9]*[a-z0-9]*[a-z0-9]*[a-z0-9]$/u,
+      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     );
   return match !== null;
 }

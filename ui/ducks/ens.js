@@ -19,8 +19,17 @@ import {
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
+  UNS_NOT_REGISTERED,
+  UNS_RECORD_NOT_FOUND,
+  UNS_UNSPECIFIED_RESOLVER,
+  UNS_RESOLUTION_ERROR,
+  UNS_CONFUSING_ERROR,
+  UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
-import { isValidDomainName } from '../helpers/utils/util';
+import { 
+  isValidDomainName, 
+  isValidUnstoppableDomainName
+} from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,
@@ -57,11 +66,34 @@ const slice = createSlice({
       state.warning = null;
       const { address, ensName, error } = action.payload;
 
-      isValidDomainName(ensName);
-      log.error(error);
-      state.resolution = address;
-      state.error = null;
-      state.warning = null;
+      if (error) {
+        if (isValidUnstoppableDomainName(ensName)) {
+          state.error =
+            error.code === 'UnregisteredDomain'
+              ? UNS_NOT_REGISTERED
+              : UNS_RESOLUTION_ERROR;
+        } else if (error.code === 'RecordNotFound') {
+          state.error = UNS_RECORD_NOT_FOUND;
+        } else if (error.code === 'UnspecifiedResolver') {
+          state.error = UNS_UNSPECIFIED_RESOLVER;
+        }else {
+          log.error(error);
+          state.error = UNS_UNKNOWN_ERROR;
+        }
+      } else if (address) {
+        if (address === BURN_ADDRESS) {
+          state.error = UNS_NOT_REGISTERED;
+        } else if (address === ZERO_X_ERROR_ADDRESS) {
+          state.error = UNS_RESOLUTION_ERROR;
+        } else {
+          state.resolution = address;
+        }
+        if (isValidUnstoppableDomainName(address) && isConfusing(address)) {
+          state.warning = UNS_CONFUSING_ERROR;
+        }
+      } else {
+        state.error = UNS_NOT_REGISTERED;
+      }
     },
     ensLookup: (state, action) => {
       // first clear out the previous state
@@ -223,27 +255,8 @@ export function resolveUNS(ensName){
     console.log(resolution.addr(ensName, "ETH"));
     address = await resolution
       .addr(ensName, "ETH")
-      .catch((error) => {
-        if (error.code === 'UnregisteredDomain') {
-            console.log('Domain is not registered')
-            error = error.code
-        }
-        if (error.code === 'RecordNotFound') {
-            console.log('Crypto record is not found (or empty)')
-            error = error.code
-        }
-        if (error.code === 'UnspecifiedResolver') {
-            console.log('Domain is not configured (empty resolver)')
-            error = error.code
-        }
-        if (error.code === 'UnsupportedDomain') {
-            console.log('Domain is not supported')
-            error = error.code
-        }
-        if (error.code === 'ResolutionError') {
-           console.log('Domain is not supported')
-           error = error.code
-        }
+      .catch((err) => {
+        error = err.code
       });
     await dispatch(
       unsLookup({

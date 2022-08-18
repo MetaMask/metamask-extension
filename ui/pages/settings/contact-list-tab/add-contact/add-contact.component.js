@@ -4,7 +4,10 @@ import { debounce } from 'lodash';
 import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import { isValidDomainName } from '../../../../helpers/utils/util';
+import { 
+  isValidDomainName,
+  isValidUnstoppableDomainName 
+} from '../../../../helpers/utils/util';
 import EnsInput from '../../../send/send-content/add-recipient/ens-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
@@ -64,8 +67,9 @@ export default class AddContact extends PureComponent {
       !isBurnAddress(address) &&
       isValidHexAddress(address, { mixedCaseUseChecksum: true });
     const validEnsAddress = isValidDomainName(address);
+    const validUnsAddress = isValidUnstoppableDomainName(address);
 
-    if (valid || validEnsAddress || address === '') {
+    if (valid || validEnsAddress || validUnsAddress || address === '') {
       this.setState({ error: '', ethAddress: address });
     } else {
       this.setState({ error: INVALID_RECIPIENT_ADDRESS_ERROR });

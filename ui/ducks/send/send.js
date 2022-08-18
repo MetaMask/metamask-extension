@@ -78,6 +78,7 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
+  isValidUnstoppableDomainName,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -1364,7 +1365,9 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
-              !isValidDomainName(state.recipientInput))
+              !isValidDomainName(state.recipientInput)
+              &&
+              !isValidUnstoppableDomainName(state.recipientInput))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR

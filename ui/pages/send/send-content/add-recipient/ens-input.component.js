@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
-import { isValidDomainName } from '../../../../helpers/utils/util';
+import { 
+  isValidDomainName,
+  isValidUnstoppableDomainName 
+} from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-import { isValidUnstoppableDomainName } from '../../../../helpers/utils/util';
 export default class EnsInput extends Component {
   static contextTypes = {
     t: PropTypes.func,
