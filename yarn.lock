@@ -2914,10 +2914,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/design-tokens@^1.6.0", "@metamask/design-tokens@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.8.0.tgz#072f455d23e4650ee81681ef066a99a56a9b573a"
-  integrity sha512-EO0WaMRPcegh2EPWdmAqtFX0aZ7hO0NyJasUQyVrYeN1XNGUC2WzXfqwaI0wSV79NE/WEE3c9g5se+MQMExLew==
+"@metamask/design-tokens@^1.6.0", "@metamask/design-tokens@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.9.0.tgz#2b173c671f36b0d3faa2e31ea4bf66e811a7ff49"
+  integrity sha512-L3oIhbE7MVQgiX7bEqdlU32jNyLbYXCj9sJNCOzACIHycB1TIO8TS34dEI7FAf9pC8o0qvMI3k8ur+SD9myVxw==
 
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
