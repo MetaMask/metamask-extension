@@ -168,6 +168,9 @@ export default function ConfirmApprove({
         identiconAddress={toAddress}
         showAccountInHeader
         title={tokensText}
+        customTokenAmount={String(customPermissionAmount)}
+        dappProposedTokenAmount={tokenAmount}
+        currentTokenBalance={tokenBalance}
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
