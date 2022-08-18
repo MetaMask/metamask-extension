@@ -37,9 +37,6 @@ function Jazzicon({
         diameter,
         tokenList[address.toLowerCase()],
       );
-
-      console.log({ image });
-
       container.current.appendChild(image);
     };
 
