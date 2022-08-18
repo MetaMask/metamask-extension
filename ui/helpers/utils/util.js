@@ -14,6 +14,9 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import {
+  ALLOWED_UNSTOPPABLE_TLDS,
+} from '../../../shared/constants/uns';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
@@ -21,6 +24,8 @@ import {
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
 import { toBigNumber } from '../../../shared/modules/conversion.utils';
+import { includes } from 'lodash';
+import { ALL } from 'dns';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -106,6 +111,16 @@ export function isValidDomainName(address) {
     );
   return match !== null;
 }
+
+export function isValidUnstoppableDomainName(address) {
+  let valid = null;
+  ALLOWED_UNSTOPPABLE_TLDS.forEach((tld, i) => {
+  if (address.includes(tld)) {
+    valid = address;
+  }
+  })
+  return valid;
+ }
 
 export function isOriginContractAddress(to, sendTokenAddress) {
   if (!to || !sendTokenAddress) {

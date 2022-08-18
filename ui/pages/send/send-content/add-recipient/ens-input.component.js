@@ -8,7 +8,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-
+import { isValidUnstoppableDomainName } from '../../../../helpers/utils/util';
 export default class EnsInput extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -68,12 +68,10 @@ export default class EnsInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-    if (isValidDomainName(input)) {
-      if (!input.includes(".eth")){
-        resolveUNS(input);
-      } else{
+    if (isValidUnstoppableDomainName(input) !== null) {
+      resolveUNS(input)
+    } else if (isValidDomainName(input)) {
         lookupEnsName(input);
-      }
     } else {
       resetEnsResolution();
       if (
