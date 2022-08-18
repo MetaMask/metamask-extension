@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Uncategorized
+- Fix setting of gasPrice when on non-eip 1559 networks ([#15628](https://github.com/MetaMask/metamask-extension/pull/15628))
+- Stop injecting provider on docs.google.com ([#15459](https://github.com/MetaMask/metamask-extension/pull/15459))
+- Fix 'block link explorer on custom networks' ([#13870](https://github.com/MetaMask/metamask-extension/pull/13870))
+- Updates `eth-lattice-keyring` to v0.10.0 ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
+- remove audit exclusion ([#15346](https://github.com/MetaMask/metamask-extension/pull/15346))
+- Remove decentralized 4byte function signature registry since it contains incorrect signatures and we can't algorithmically check for best option when 4byte.directory is down ([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
+- fix filetype audit ([#15334](https://github.com/MetaMask/metamask-extension/pull/15334))
+- Fix Provider Tracking Metrics ([#15082](https://github.com/MetaMask/metamask-extension/pull/15082))
+- Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
+- Version v10.18.4
 
 ## [10.18.4]
 
