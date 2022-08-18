@@ -37,7 +37,7 @@ import {
   truthyString,
   validateData,
 } from '../../../shared/lib/swaps-utils';
-import { SECOND } from 'shared/constants/time';
+import { SECOND } from '../../../shared/constants/time';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';

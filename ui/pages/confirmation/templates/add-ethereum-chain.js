@@ -13,7 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import fetchWithCache from 'shared/lib/fetch-with-cache';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',

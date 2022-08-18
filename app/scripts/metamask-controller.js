@@ -95,6 +95,10 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import {
+  getTokenValueParam,
+  hexToDecimal,
+} from '../../shared/lib/metamask-controller-utils';
+import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
@@ -150,10 +154,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import {
-  getTokenValueParam,
-  hexToDecimal,
-} from 'shared/lib/metamask-controller-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

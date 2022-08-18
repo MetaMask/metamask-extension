@@ -11,7 +11,7 @@ import {
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from 'shared/lib/ui-utils';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 
 export default class UnlockPage extends Component {
   static contextTypes = {

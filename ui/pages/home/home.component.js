@@ -50,13 +50,13 @@ import {
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import Tooltip from '../../components/ui/tooltip';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
-import { SUPPORT_LINK } from 'shared/lib/ui-utils';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
