@@ -1410,7 +1410,7 @@ describe('Send Slice', () => {
             type: 'send/updateGasFees',
             payload: {
               gasPrice: '0x0',
-              wasManuallyEdited: true,
+              manuallyEdited: true,
               transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
             },
           },
