@@ -554,6 +554,25 @@ describe('Actions', () => {
     });
   });
 
+  describe('#analyzeForOneKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls analyzeForOneKey in background', async () => {
+      const store = mockStore();
+
+      const analyzeForOneKey = background.analyzeForOneKey.callsFake((_, cb) =>
+        cb(),
+      );
+
+      actions._setBackgroundConnection(background);
+
+      await store.dispatch(actions.analyzeForOneKey(DEVICE_NAMES.TREZOR));
+      expect(analyzeForOneKey.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#unlockHardwareWalletAccount', () => {
     afterEach(() => {
       sinon.restore();
