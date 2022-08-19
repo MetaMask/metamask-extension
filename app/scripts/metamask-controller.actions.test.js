@@ -111,8 +111,8 @@ describe('MetaMaskController', function () {
 
   describe('#importAccountWithStrategy', function () {
     it('two sequential calls with same strategy give same result', async function () {
-      let keyrinControllerState1;
-      let keyrinControllerState2;
+      let keyringControllerState1;
+      let keyringControllerState2;
       const importPrivkey =
         '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
 
@@ -122,7 +122,7 @@ describe('MetaMaskController', function () {
           importPrivkey,
         ]),
         Promise.resolve(1).then(() => {
-          keyrinControllerState1 = JSON.stringify(
+          keyringControllerState1 = JSON.stringify(
             metamaskController.keyringController.memStore.getState(),
           );
           metamaskController.importAccountWithStrategy('Private Key', [
@@ -130,12 +130,12 @@ describe('MetaMaskController', function () {
           ]);
         }),
         Promise.resolve(2).then(() => {
-          keyrinControllerState2 = JSON.stringify(
+          keyringControllerState2 = JSON.stringify(
             metamaskController.keyringController.memStore.getState(),
           );
         }),
       ]);
-      assert.deepEqual(keyrinControllerState1, keyrinControllerState2);
+      assert.deepEqual(keyringControllerState1, keyringControllerState2);
     });
   });
 
@@ -161,6 +161,7 @@ describe('MetaMaskController', function () {
       const result2 = await metamaskController.createNewVaultAndKeychain(
         'test@123',
       );
+      assert.notEqual(result1, undefined);
       assert.deepEqual(result1, result2);
     });
   });
