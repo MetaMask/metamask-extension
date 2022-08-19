@@ -15,10 +15,13 @@ import {
 <<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
 
 export default class DomainInput extends Component {
+<<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
 =======
 import { isValidUnstoppableDomainName } from '../../../../helpers/utils/util';
 export default class EnsInput extends Component {
 >>>>>>> f5e2cf334 (adds TLD constant, UNS domain validation, & updates the input logic to avoid ENS & UNS crossfire):ui/pages/send/send-content/add-recipient/ens-input.component.js
+=======
+>>>>>>> c4dca2c53 (Rename files and add missing UNS references):ui/pages/send/send-content/add-recipient/ens-input.component.js
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -77,6 +80,7 @@ export default class EnsInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
+<<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
     if (isValidUnstoppableDomainName(input) !== null) {
       resetEnsResolution();
       // if(prepareResolutionCall() === 'NATIVE'){
@@ -86,6 +90,15 @@ export default class EnsInput extends Component {
       resetEnsResolution(); 
        
     } else if (!isValidUnstoppableDomainName(input) && isValidDomainName(input) ) {
+=======
+    if (isValidUnstoppableDomainName(input)) {
+      resetEnsResolution(); 
+      resolveUNS(input);
+      resetEnsResolution();
+       
+    } else if (isValidDomainName(input) && !isValidUnstoppableDomainName(input)) {
+        resetUnsResolution();
+>>>>>>> c4dca2c53 (Rename files and add missing UNS references):ui/pages/send/send-content/add-recipient/ens-input.component.js
         lookupEnsName(input);
     } else {
       resetDomainResolution();
@@ -108,16 +121,16 @@ export default class EnsInput extends Component {
     const hasSelectedAddress = Boolean(selectedAddress);
 
     return (
-      <div className={classnames('ens-input', className)}>
+      <div className={classnames('domain-input', className)}>
         <div
-          className={classnames('ens-input__wrapper', {
-            'ens-input__wrapper__status-icon--error': false,
-            'ens-input__wrapper__status-icon--valid': false,
-            'ens-input__wrapper--valid': hasSelectedAddress,
+          className={classnames('domain-input__wrapper', {
+            'domain-input__wrapper__status-icon--error': false,
+            'domain-input__wrapper__status-icon--valid': false,
+            'domain-input__wrapper--valid': hasSelectedAddress,
           })}
         >
           <i
-            className={classnames('ens-input__wrapper__status-icon', 'fa', {
+            className={classnames('domain-input__wrapper__status-icon', 'fa', {
               'fa-check-circle': hasSelectedAddress,
               'fa-search': !hasSelectedAddress,
             })}
@@ -129,19 +142,19 @@ export default class EnsInput extends Component {
           />
           {hasSelectedAddress ? (
             <>
-              <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
-                <div className="ens-input__selected-input__title">
+              <div className="domain-input__wrapper__input domain-input__wrapper__input--selected">
+                <div className="domain-input__selected-input__title">
                   {selectedName || selectedAddress}
                 </div>
                 {selectedName !== selectedAddress && (
-                  <div className="ens-input__selected-input__subtitle">
+                  <div className="domain-input__selected-input__subtitle">
                     {selectedAddress}
                   </div>
                 )}
               </div>
               <button
                 onClick={this.props.onReset}
-                className="ens-input__wrapper__action-icon-button"
+                className="domain-input__wrapper__action-icon-button"
               >
                 <i
                   className="fa fa-times"
@@ -155,7 +168,7 @@ export default class EnsInput extends Component {
           ) : (
             <>
               <input
-                className="ens-input__wrapper__input"
+                className="domain-input__wrapper__input"
                 type="text"
                 dir="auto"
                 placeholder={t('recipientAddressPlaceholder')}
@@ -164,10 +177,10 @@ export default class EnsInput extends Component {
                 spellCheck="false"
                 value={selectedAddress || userInput}
                 autoFocus
-                data-testid="ens-input"
+                data-testid="domain-input"
               />
               <button
-                className="ens-input__wrapper__action-icon-button"
+                className="domain-input__wrapper__action-icon-button"
                 onClick={() => {
                   if (userInput) {
                     this.props.onReset();

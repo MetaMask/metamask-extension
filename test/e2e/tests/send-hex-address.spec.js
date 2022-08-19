@@ -38,7 +38,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
-          css: '.ens-input__selected-input__title',
+          css: '.domain-input__selected-input__title',
           text: hexPrefixedAddress,
         });
         await driver.wait(async () => {
@@ -89,7 +89,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
-          css: '.ens-input__selected-input__title',
+          css: '.domain-input__selected-input__title',
           text: hexPrefixedAddress,
         });
         await driver.wait(async () => {
@@ -184,7 +184,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
-          css: '.ens-input__selected-input__title',
+          css: '.domain-input__selected-input__title',
           text: hexPrefixedAddress,
         });
         await driver.wait(async () => {
@@ -274,7 +274,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
-          css: '.ens-input__selected-input__title',
+          css: '.domain-input__selected-input__title',
           text: hexPrefixedAddress,
         });
         await driver.wait(async () => {

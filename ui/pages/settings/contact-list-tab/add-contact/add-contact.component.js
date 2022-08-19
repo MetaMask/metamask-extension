@@ -94,6 +94,7 @@ export default class AddContact extends PureComponent {
         }}
         onReset={() => {
           this.props.resetDomainResolution();
+          this.props.resetUnsResolution();
           this.setState({ ethAddress: '', input: '' });
         }}
         userInput={this.state.input}
@@ -103,14 +104,22 @@ export default class AddContact extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { history, addToAddressBook, domainError, domainResolution } =
+    const { history, addToAddressBook, domainError, domainsResolution, unsError, unResolution } =
       this.props;
 
-    const errorToRender = domainError || this.state.error;
+    const errorToRender = domainError || unsError ||this.state.error;
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
         {domainResolution && (
+          <div className="address-book__view-contact__group">
+            <Identicon address={domainResolution} diameter={60} />
+            <div className="address-book__view-contact__group__value">
+              {domainResolution}
+            </div>
+          </div>
+        )}
+        {unsResolution && (
           <div className="address-book__view-contact__group">
             <Identicon address={domainResolution} diameter={60} />
             <div className="address-book__view-contact__group__value">
