@@ -398,12 +398,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.16.4":
+"@babel/parser@7.16.4", "@babel/parser@^7.12.5":
   version "7.16.4"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.4.tgz#d5f92f57cf2c74ffe9b37981c0e72fee7311372e"
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
 
-"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.5", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.10", "@babel/parser@^7.18.11":
+"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.10", "@babel/parser@^7.18.11":
   version "7.18.11"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.11.tgz#68bb07ab3d380affa9a3f96728df07969645d2d9"
   integrity sha512-9JKn5vN+hDt0Hdqn1PiJ2guflwP+B6Ga8qbDuoF0PzzVhrzsKIJo8yGqVk6CmMHiMei9w1C1Bp9IMJSIK+HPIQ==
@@ -3148,10 +3148,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-2.1.0.tgz#f76764ca54afc162fbfe563f1994b79ed4711bba"
   integrity sha512-wkFDdY4XtpF+XCqbgwhsrLRgEM/bYfIt47927JTQZQ2QxQYRbSZ6u0QygnVjIR1eqMteRGx2jtUUZ+bxYQTo/w==
 
-"@metamask/smart-transactions-controller@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-2.3.0.tgz#8e451975fbfc624f7cd55b2d1bc406f78fe95119"
-  integrity sha512-ef8RolP/synZZ9RVMaRAApZmiUbRlAAs0Pt3u/R0+fXeB0NTdUljQ7TfKa4kfulcxW7EbSnJ7kNabeBinyE4vw==
+"@metamask/smart-transactions-controller@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-2.3.1.tgz#01f3d5e7b1a59782749ee17f19a400434dbbd2c9"
+  integrity sha512-nfMNtXxs/1JEfPomc7P4NuuUCWW2sRxzmKEJZPW1TdSk/Ey1jcf2az42uhYN6brzpt+YEXJFWfS3q6syi1PRmQ==
   dependencies:
     "@metamask/controllers" "^30.0.0"
     "@types/lodash" "^4.14.176"
