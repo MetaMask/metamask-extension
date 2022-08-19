@@ -22,7 +22,7 @@ ignores:
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
   - '@metamask/design-tokens' # Only imported in index.css
-  - '@tsconfig/node14' # required dynamically by TS, used in tsconfig.json
+  - '@tsconfig/node16' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta
