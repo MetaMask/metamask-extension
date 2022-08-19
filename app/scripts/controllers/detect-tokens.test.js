@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
-import * as browser from '../../../ui/__mocks__/webextension-polyfill';
 import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
 import {
@@ -12,7 +11,6 @@ import {
 } from '@metamask/controllers';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-// import * as mv3Utils from '../../../shared/modules/mv3.utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
 import PreferencesController from './preferences';
@@ -86,26 +84,6 @@ describe('DetectTokensController', function () {
     sandbox
       .stub(tokensController, '_detectIsERC721')
       .returns(Promise.resolve(false));
-    // sandbox.replace(browser, 'runtime', {getManifest: () => Promise.resolve({manifest_version: 2})})
-    // sandbox.replace(browser, 'runtime', {
-    //   getManifest: sinon.stub().returns(Promise.resolve({ manifest_version: 2 })),
-    // });
-    // sandbox.replace(browser, 'runtime', {
-    //   getManifest: sinon.stub(),
-    // },);
-    // browser.runtime.getManifest.({
-    //   manifest_version: '2',
-    // });
-    // sandbox.stub(browser.runtime, 'getManifest').returns(Promise.resolve({ manifest_version: 2 }))//, {getManifest: ()=> {return { manifest_version: '2'}}});
-    // sandbox.replace(browser, 'runtime', {getManifest: sinon.stub()}).returns({ manifest_version: '2'})
-    // sandbox
-    //   .stub(mv3Utils, 'mv3Utils').returns(true);
-    // .callsFake(() => {return false});
-    // sandbox.stub(mv3Utils, 'isManifestV3');
-    // mv3Utils.isManifestV3.callsFake(() => {
-    //     return false;
-    //   });
-    // sandbox.stub(mv3Utils, 'isManifestV3').returned(false);
     nock('https://token-api.metaswap.codefi.network')
       .get(`/tokens/1`)
       .reply(200, [
