@@ -12,6 +12,8 @@ import {
   TYPOGRAPHY,
   DISPLAY,
   COLORS,
+  ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import Button from '../button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -21,7 +23,12 @@ export default function ContractTokenValues({ address, tokenName }) {
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
-    <Box display={DISPLAY.FLEX} className="contract-token-values">
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.CENTER}
+      justifyContent={JUSTIFY_CONTENT.CENTER}
+      className="contract-token-values"
+    >
       <Identicon
         className="contract-token-values__address-identicon"
         address={address}
