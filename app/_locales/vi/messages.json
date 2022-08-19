@@ -2308,10 +2308,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Đánh dấu đã đọc tất cả"
   },
-  "numberOfNewTokensDetected": {
-    "message": "Tìm thấy $1 token mới trong tài khoản này",
-    "description": "$1 is the number of new tokens detected"
-  },
   "ofTextNofM": {
     "message": "trên"
   },

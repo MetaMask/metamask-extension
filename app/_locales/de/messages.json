@@ -2271,10 +2271,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Alle als gelesen markieren"
   },
-  "numberOfNewTokensDetected": {
-    "message": "$1 neue Tokens in diesem Konto gefunden",
-    "description": "$1 is the number of new tokens detected"
-  },
   "ofTextNofM": {
     "message": "von"
   },

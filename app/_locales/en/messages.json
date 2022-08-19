@@ -2396,9 +2396,12 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
-  "numberOfNewTokensDetected": {
+  "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
+  },
+  "numberOfNewTokensDetectedSingular": {
+    "message": "1 new token found in this account"
   },
   "ofTextNofM": {
     "message": "of"
@@ -3865,6 +3868,9 @@
   },
   "tokenDetectionDescription": {
     "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
+  },
+  "tokenFoundTitle": {
+    "message": "1 new token found"
   },
   "tokenId": {
     "message": "Token ID"
