@@ -398,12 +398,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@7.16.4":
+"@babel/parser@7.16.4", "@babel/parser@^7.12.5":
   version "7.16.4"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.4.tgz#d5f92f57cf2c74ffe9b37981c0e72fee7311372e"
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
 
-"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.5", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.10", "@babel/parser@^7.18.11":
+"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.18.10", "@babel/parser@^7.18.11":
   version "7.18.11"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.11.tgz#68bb07ab3d380affa9a3f96728df07969645d2d9"
   integrity sha512-9JKn5vN+hDt0Hdqn1PiJ2guflwP+B6Ga8qbDuoF0PzzVhrzsKIJo8yGqVk6CmMHiMei9w1C1Bp9IMJSIK+HPIQ==
@@ -2874,9 +2874,9 @@
   integrity sha512-zfZKwLFOVrQS8vTFoeoNCG9JhqmK4oyembGiGVVpUAYD9BHVZnd9WpicGoUC07ROXLEyQuAK9AJZNBtqwwzfEQ==
 
 "@metamask/controllers@^30.0.0", "@metamask/controllers@^30.1.0":
-  version "30.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-30.1.0.tgz#157d0afca156f1f37a89fbb864c4ee5c64d23af0"
-  integrity sha512-480mQafsYKbl0q7YgV820mrPCUtWgLLVH/s8ozNT6/ZVX3sBU0FBhNKeCalewhn0HRfMRnLe8pvHCKIH30k/0w==
+  version "30.3.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-30.3.0.tgz#64ad8be538b75226a14f667db05c4ca02c75533f"
+  integrity sha512-6KtRIEBAcXeF/ozsP2I7T7hFv1X0mf30ygWcgApKdQEYXAERAaBz0S9ENC8OsFULUj5MFPBfUKIDaeGNOq6MvQ==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
