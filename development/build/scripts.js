@@ -24,45 +24,19 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
-const ini = require('ini');
 
 const bifyModuleGroups = require('bify-module-groups');
 
-const configPath = path.resolve(__dirname, '..', '..', '.metamaskrc');
-let configContents = '';
-try {
-  configContents = readFileSync(configPath, {
-    encoding: 'utf8',
-  });
-} catch (error) {
-  if (error.code !== 'ENOENT') {
-    throw error;
-  }
-}
-const metamaskrc = {
-  INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
-  INFURA_BETA_PROJECT_ID: process.env.INFURA_BETA_PROJECT_ID,
-  INFURA_FLASK_PROJECT_ID: process.env.INFURA_FLASK_PROJECT_ID,
-  INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
-  ONBOARDING_V2: process.env.ONBOARDING_V2,
-  COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
-  PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
-  SEGMENT_HOST: process.env.SEGMENT_HOST,
-  SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
-  SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
-  SEGMENT_FLASK_WRITE_KEY: process.env.SEGMENT_FLASK_WRITE_KEY,
-  SEGMENT_PROD_WRITE_KEY: process.env.SEGMENT_PROD_WRITE_KEY,
-  SENTRY_DSN_DEV:
-    process.env.SENTRY_DSN_DEV ||
-    'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
-  SIWE_V1: process.env.SIWE_V1,
-  ...ini.parse(configContents),
-};
-
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
-const { BUILD_TARGETS } = require('./constants');
-const { logError } = require('./utils');
+const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
+const { getConfig, getProductionConfig } = require('./config');
+const {
+  isDevBuild,
+  isTestBuild,
+  getEnvironment,
+  logError,
+} = require('./utils');
 
 const {
   createTask,
@@ -75,80 +49,27 @@ const {
 } = require('./transforms/remove-fenced-code');
 
 /**
- * The build environment. This describes the environment this build was produced in.
- */
-const ENVIRONMENT = {
-  DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
-  OTHER: 'other',
-  PULL_REQUEST: 'pull-request',
-  RELEASE_CANDIDATE: 'release-candidate',
-  STAGING: 'staging',
-  TESTING: 'testing',
-};
-
-/**
- * Returns whether the current build is a development build or not.
- *
- * @param {BUILD_TARGETS} buildTarget - The current build target.
- * @returns Whether the current build is a development build.
- */
-function isDevBuild(buildTarget) {
-  return (
-    buildTarget === BUILD_TARGETS.DEVELOPMENT ||
-    buildTarget === BUILD_TARGETS.E2E_TEST_DEV
-  );
-}
-
-/**
- * Returns whether the current build is an e2e test build or not.
- *
- * @param {BUILD_TARGETS} buildTarget - The current build target.
- * @returns Whether the current build is an e2e test build.
- */
-function isTestBuild(buildTarget) {
-  return (
-    buildTarget === BUILD_TARGETS.E2E_TEST ||
-    buildTarget === BUILD_TARGETS.E2E_TEST_DEV
-  );
-}
-
-/**
- * Get a value from the configuration, and confirm that it is set.
- *
- * @param {string} key - The configuration key to retrieve.
- * @returns {string} The config entry requested.
- * @throws {Error} Throws if the requested key is missing.
- */
-function getConfigValue(key) {
-  const value = metamaskrc[key];
-  if (!value) {
-    throw new Error(`Missing config entry for '${key}'`);
-  }
-  return value;
-}
-
-/**
  * Get the appropriate Infura project ID.
  *
  * @param {object} options - The Infura project ID options.
  * @param {BuildType} options.buildType - The current build type.
+ * @param {object} options.config - The environment variable configuration.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.
  * @returns {string} The Infura project ID.
  */
-function getInfuraProjectId({ buildType, environment, testing }) {
+function getInfuraProjectId({ buildType, config, environment, testing }) {
   if (testing) {
     return '00000000000000000000000000000000';
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks.
-    return metamaskrc.INFURA_PROJECT_ID;
+    return config.INFURA_PROJECT_ID;
   } else if (buildType === BuildType.main) {
-    return getConfigValue('INFURA_PROD_PROJECT_ID');
+    return config.INFURA_PROD_PROJECT_ID;
   } else if (buildType === BuildType.beta) {
-    return getConfigValue('INFURA_BETA_PROJECT_ID');
+    return config.INFURA_BETA_PROJECT_ID;
   } else if (buildType === BuildType.flask) {
-    return getConfigValue('INFURA_FLASK_PROJECT_ID');
+    return config.INFURA_FLASK_PROJECT_ID;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -158,19 +79,20 @@ function getInfuraProjectId({ buildType, environment, testing }) {
  *
  * @param {object} options - The Segment write key options.
  * @param {BuildType} options.buildType - The current build type.
+ * @param {object} options.config - The environment variable configuration.
  * @param {keyof ENVIRONMENT} options.environment - The current build environment.
  * @returns {string} The Segment write key.
  */
-function getSegmentWriteKey({ buildType, environment }) {
+function getSegmentWriteKey({ buildType, config, environment }) {
   if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
-    return metamaskrc.SEGMENT_WRITE_KEY;
+    return config.SEGMENT_WRITE_KEY;
   } else if (buildType === BuildType.main) {
-    return getConfigValue('SEGMENT_PROD_WRITE_KEY');
+    return config.SEGMENT_PROD_WRITE_KEY;
   } else if (buildType === BuildType.beta) {
-    return getConfigValue('SEGMENT_BETA_WRITE_KEY');
+    return config.SEGMENT_BETA_WRITE_KEY;
   } else if (buildType === BuildType.flask) {
-    return getConfigValue('SEGMENT_FLASK_WRITE_KEY');
+    return config.SEGMENT_FLASK_WRITE_KEY;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -179,11 +101,12 @@ function getSegmentWriteKey({ buildType, environment }) {
  * Get the URL for the phishing warning page, if it has been set.
  *
  * @param {object} options - The phishing warning page options.
+ * @param {object} options.config - The environment variable configuration.
  * @param {boolean} options.testing - Whether this is a test build or not.
  * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
  */
-function getPhishingWarningPageUrl({ testing }) {
-  let phishingWarningPageUrl = metamaskrc.PHISHING_WARNING_PAGE_URL;
+function getPhishingWarningPageUrl({ config, testing }) {
+  let phishingWarningPageUrl = config.PHISHING_WARNING_PAGE_URL;
 
   if (!phishingWarningPageUrl) {
     phishingWarningPageUrl = testing
@@ -259,34 +182,34 @@ function createScriptTasks({
   shouldLintFenceFiles,
   version,
 }) {
-  // internal tasks
-  const core = {
+  // high level tasks
+  return {
     // dev tasks (live reload)
     dev: createTasksForScriptBundles({
-      buildTarget: BUILD_TARGETS.DEVELOPMENT,
+      buildTarget: BUILD_TARGETS.DEV,
       taskPrefix: 'scripts:core:dev',
+    }),
+    // production-like distributable build
+    dist: createTasksForScriptBundles({
+      buildTarget: BUILD_TARGETS.DIST,
+      taskPrefix: 'scripts:core:dist',
     }),
     // production
     prod: createTasksForScriptBundles({
-      buildTarget: BUILD_TARGETS.PRODUCTION,
+      buildTarget: BUILD_TARGETS.PROD,
       taskPrefix: 'scripts:core:prod',
     }),
     // built for CI tests
     test: createTasksForScriptBundles({
-      buildTarget: BUILD_TARGETS.E2E_TEST,
+      buildTarget: BUILD_TARGETS.TEST,
       taskPrefix: 'scripts:core:test',
     }),
     // built for CI test debugging
     testDev: createTasksForScriptBundles({
-      buildTarget: BUILD_TARGETS.E2E_TEST_DEV,
+      buildTarget: BUILD_TARGETS.TEST_DEV,
       taskPrefix: 'scripts:core:test-live',
     }),
   };
-
-  // high level tasks
-
-  const { dev, test, testDev, prod } = core;
-  return { dev, test, testDev, prod };
 
   /**
    * Define tasks for building the JavaScript modules used by the extension.
@@ -595,7 +518,7 @@ function createFactoredBuild({
     const reloadOnChange = isDevBuild(buildTarget);
     const minify = !isDevBuild(buildTarget);
 
-    const envVars = getEnvironmentVariables({
+    const envVars = await getEnvironmentVariables({
       buildTarget,
       buildType,
       version,
@@ -823,11 +746,11 @@ function createNormalBundle({
     const minify = Boolean(devMode) === false;
 
     const envVars = {
-      ...getEnvironmentVariables({
+      ...(await getEnvironmentVariables({
         buildTarget,
         buildType,
         version,
-      }),
+      })),
       ...extraEnvironmentVariables,
     };
     setupBundlerDefaults(buildConfiguration, {
@@ -915,7 +838,7 @@ function setupBundlerDefaults(
   });
 
   // Ensure react-devtools is only included in dev builds
-  if (buildTarget !== BUILD_TARGETS.DEVELOPMENT) {
+  if (buildTarget !== BUILD_TARGETS.DEV) {
     bundlerOpts.manualIgnore.push('react-devtools');
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
@@ -1081,20 +1004,22 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  * @param {string} options.version - The current version of the extension.
  * @returns {object} A map of environment variables to inject.
  */
-function getEnvironmentVariables({ buildTarget, buildType, version }) {
+async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const environment = getEnvironment({ buildTarget });
-  if (environment === ENVIRONMENT.PRODUCTION && !process.env.SENTRY_DSN) {
-    throw new Error('Missing SENTRY_DSN environment variable');
-  }
+  const config =
+    environment === ENVIRONMENT.PRODUCTION
+      ? await getProductionConfig(buildType)
+      : await getConfig();
 
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
   return {
-    COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
-    CONF: devMode ? metamaskrc : {},
+    COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
+    CONF: devMode ? config : {},
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
+      config,
       environment,
       testing,
     }),
@@ -1103,37 +1028,17 @@ function getEnvironmentVariables({ buildTarget, buildType, version }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
-    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ testing }),
-    PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
-    PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
-    SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
-    SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, environment }),
-    SENTRY_DSN: process.env.SENTRY_DSN,
-    SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
-    SIWE_V1: metamaskrc.SIWE_V1 === '1',
-    SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
+    ONBOARDING_V2: config.ONBOARDING_V2 === '1',
+    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
+    PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',
+    PUBNUB_SUB_KEY: config.PUBNUB_SUB_KEY || '',
+    SEGMENT_HOST: config.SEGMENT_HOST,
+    SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
+    SENTRY_DSN: config.SENTRY_DSN,
+    SENTRY_DSN_DEV: config.SENTRY_DSN_DEV,
+    SIWE_V1: config.SIWE_V1 === '1',
+    SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
   };
-}
-
-function getEnvironment({ buildTarget }) {
-  // get environment slug
-  if (isDevBuild(buildTarget)) {
-    return ENVIRONMENT.DEVELOPMENT;
-  } else if (isTestBuild(buildTarget)) {
-    return ENVIRONMENT.TESTING;
-  } else if (process.env.CIRCLE_BRANCH === 'master') {
-    return ENVIRONMENT.PRODUCTION;
-  } else if (
-    /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
-  ) {
-    return ENVIRONMENT.RELEASE_CANDIDATE;
-  } else if (process.env.CIRCLE_BRANCH === 'develop') {
-    return ENVIRONMENT.STAGING;
-  } else if (process.env.CIRCLE_PULL_REQUEST) {
-    return ENVIRONMENT.PULL_REQUEST;
-  }
-  return ENVIRONMENT.OTHER;
 }
 
 function renderHtmlFile({
