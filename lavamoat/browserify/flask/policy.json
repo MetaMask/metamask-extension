@@ -5215,6 +5215,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
+        "ActiveXObject": true,
         "AggregateError": true,
         "Buffer": true,
         "DO_NOT_EXPORT_CRC": true,
@@ -5230,6 +5231,7 @@
         "console": true,
         "crypto": true,
         "define": true,
+        "document": true,
         "intToBuffer": true,
         "location": true,
         "msCrypto": true,
