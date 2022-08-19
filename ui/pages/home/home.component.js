@@ -119,6 +119,8 @@ export default class Home extends PureComponent {
     hideWhatsNewPopup: PropTypes.func.isRequired,
     showPortfolioTooltip: PropTypes.bool.isRequired,
     hidePortfolioTooltip: PropTypes.func.isRequired,
+    portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
+    setPortfolioTooltipWasShownInThisSession: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
@@ -603,6 +605,8 @@ export default class Home extends PureComponent {
       hideWhatsNewPopup,
       showPortfolioTooltip,
       hidePortfolioTooltip,
+      portfolioTooltipWasShownInThisSession,
+      setPortfolioTooltipWasShownInThisSession,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
@@ -623,7 +627,8 @@ export default class Home extends PureComponent {
         !completedOnboarding) &&
       announcementsToShow &&
       showWhatsNewPopup &&
-      !showPortfolioTooltip;
+      !showPortfolioTooltip &&
+      !portfolioTooltipWasShownInThisSession;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -667,8 +672,8 @@ export default class Home extends PureComponent {
                         <button
                           className="home__subheader-link--tooltip-content-header-button"
                           onClick={() => {
-                            console.log('close tooltip');
                             hidePortfolioTooltip();
+                            setPortfolioTooltipWasShownInThisSession();
                           }}
                         >
                           <i className="fa fa-times" />

@@ -54,6 +54,8 @@ import {
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
   addPostApprovalRedirectURL,
+  getPortfolioTooltipWasShownInThisSession,
+  setPortfolioTooltipWasShownInThisSession,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
@@ -155,6 +157,8 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showPortfolioTooltip: getShowPortfolioTooltip(state),
+    portfolioTooltipWasShownInThisSession:
+      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
@@ -216,6 +220,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(requestAccountsPermissionWithId(origin)),
   addPostApprovalRedirectURL: (url) =>
     dispatch(addPostApprovalRedirectURL(url)),
+  setPortfolioTooltipWasShownInThisSession: () =>
+    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

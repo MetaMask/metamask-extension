@@ -58,6 +58,7 @@ export default function reduceApp(state = {}, action) {
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
+    portfolioTooltipWasShownInThisSession: false,
     sendInputCurrencySwitched: false,
     newTokensImported: '',
     newCustomNetworkAdded: {},
@@ -322,6 +323,12 @@ export default function reduceApp(state = {}, action) {
         newCollectibleAddedMessage: action.value,
       };
 
+    case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
+      return {
+        ...appState,
+        portfolioTooltipWasShownInThisSession: true,
+      };
+
     case actionConstants.LOADING_METHOD_DATA_STARTED:
       return {
         ...appState,
@@ -429,6 +436,12 @@ export function hideWhatsNewPopup() {
   };
 }
 
+export function setPortfolioTooltipWasShownInThisSession() {
+  return {
+    type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
+  };
+}
+
 export function toggleGasLoadingAnimation(value) {
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
 }
@@ -464,6 +477,10 @@ export function getLedgerWebHidConnectedStatus(state) {
 
 export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
+}
+
+export function getPortfolioTooltipWasShownInThisSession(state) {
+  return state.appState.portfolioTooltipWasShownInThisSession;
 }
 
 export function toggleCurrencySwitch() {
