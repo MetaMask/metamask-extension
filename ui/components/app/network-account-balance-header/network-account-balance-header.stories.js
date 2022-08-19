@@ -2,7 +2,7 @@ import React from 'react';
 import NetworkAccountBalanceHeader from './network-account-balance-header';
 
 export default {
-  title: 'Components/APP/NetworkAccountBalanceHeader',
+  title: 'Components/App/NetworkAccountBalanceHeader',
   id: __filename,
   argTypes: {
     networkName: {
