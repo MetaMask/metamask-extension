@@ -276,8 +276,8 @@ const resetStreamAndListeners = () => {
  * Sets up two-way communication streams between the
  * browser extension and local per-page browser context.
  */
-const initPageStreams = () => {
-  console.log('initPageStreams called');
+const initStreams = () => {
+  console.log('initStreams called');
 
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
@@ -392,7 +392,7 @@ const start = () => {
     if (!isManifestV3) {
       injectScript(inpageBundle);
     }
-    initPageStreams();
+    initStreams();
   }
 };
 
