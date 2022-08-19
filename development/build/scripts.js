@@ -47,6 +47,7 @@ const metamaskrc = {
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
   PHISHING_WARNING_PAGE_URL: process.env.PHISHING_WARNING_PAGE_URL,
+  TOKEN_ALLOWANCE_IMPROVEMENTS: process.env.TOKEN_ALLOWANCE_IMPROVEMENTS,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
@@ -1113,6 +1114,8 @@ function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
     SIWE_V1: metamaskrc.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
+    TOKEN_ALLOWANCE_IMPROVEMENTS:
+      metamaskrc.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
   };
 }
 
