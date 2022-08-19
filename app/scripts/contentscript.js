@@ -129,8 +129,8 @@ function setupPhishingStream() {
 /**
  * Creates and connects channel multiplexes to handle the channels individually
  */
-const setupPageStreams = () => {
-  console.log('setupPageStreams called');
+const setupStreams = () => {
+  console.log('setupStreams called');
 
   pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
@@ -217,7 +217,7 @@ const resetStreamAndListeners = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
-  setupPageStreams();
+  setupStreams();
 
   /** @todo uncomment Legacy Provider Support */
   // setupLegacyStreams();
@@ -282,7 +282,7 @@ const initStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
-  setupPageStreams();
+  setupStreams();
 
   /** @todo uncomment Legacy Provider Support */
   // setupLegacyStreams();
