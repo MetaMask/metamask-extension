@@ -132,7 +132,16 @@ export default function FormField({
             {...inputProps}
           />
         )}
-        {maxButton}
+        {maxButton && (
+          <Box
+            className="form-field__max-button"
+            textAlign={TEXT_ALIGN.END}
+            marginRight={4}
+            marginBottom={3}
+          >
+            {maxButton}
+          </Box>
+        )}
         {error && (
           <Typography
             color={COLORS.ERROR_DEFAULT}
@@ -300,7 +309,7 @@ FormField.propTypes = {
    PropTypes.object,
  ]),
  /**
-  * Max button inside input in CustomSpendingCup component
+  * Max button inside input in CustomSpendingCap component
   */
  maxButton: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
  /**

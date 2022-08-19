@@ -1,12 +1,10 @@
 .custom-spending-cap {
-  width: 348px;
-
   &__input-value-and-token-name {
     display: contents;
   }
 
   &__input {
-    width: 280px;
+    width: 100%;
 
     &--button {
       background: none;
@@ -14,12 +12,8 @@
     }
 
     &--max-button {
-      float: right;
-      position: relative;
       color: var(--color-text-alternative);
       background: none;
-      margin-top: -29px;
-      margin-right: 16px;
     }
   }
 }

@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../box';
-import FormField from '../form-field';
-import Typography from '../typography';
+import Box from '../../ui/box';
+import FormField from '../../ui/form-field';
+import Typography from '../../ui/typography';
 import {
   ALIGN_ITEMS,
   COLORS,
@@ -14,6 +14,7 @@ import {
   JUSTIFY_CONTENT,
   SIZES,
 } from '../../../helpers/constants/design-system';
+import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
   tokenName,
@@ -84,13 +85,18 @@ export default function CustomSpendingCap({
         ])
       : t('inputLogicEmptyState');
 
+  const customSpendingCapMarginProps = {
+    marginBottom: 2,
+    marginRight: 0,
+  };
+
   return (
     <Box
       className="custom-spending-cap"
       borderRadius={SIZES.SM}
-      paddingTop={4}
-      paddingRight={2}
-      paddingLeft={2}
+      paddingTop={2}
+      paddingRight={6}
+      paddingLeft={6}
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.FLEX_START}
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -99,10 +105,7 @@ export default function CustomSpendingCap({
     >
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
-        marginTop={4}
-        marginRight={6}
-        marginLeft={6}
-        marginBottom={4}
+        display={DISPLAY.BLOCK}
         className="custom-spending-cap__input"
       >
         <FormField
@@ -111,8 +114,12 @@ export default function CustomSpendingCap({
           customSpendingCapText={
             value ? customSpendingCapText : inputLogicEmptyStateText
           }
-          tooltipIcon={value ? value > currentTokenBalance : ''}
-          tooltipContentText={value ? chooseTooltipContentText : ''}
+          customTooltipComponent={
+            <CustomSpendingCapTooltip
+              tooltipContentText={value ? chooseTooltipContentText : ''}
+              tooltipIcon={value ? value > currentTokenBalance : ''}
+            />
+          }
           onChange={handleChange}
           titleText={t('customSpendingCap')}
           placeholder={t('enterANumber')}
@@ -134,6 +141,7 @@ export default function CustomSpendingCap({
               {value > currentTokenBalance ? t('edit') : t('useDefault')}
             </button>
           }
+          titleDetailProps={customSpendingCapMarginProps}
           maxButton={
             <button
               className="custom-spending-cap__input--max-button"

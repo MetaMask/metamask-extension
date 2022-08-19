@@ -2,7 +2,7 @@ import React from 'react';
 import CustomSpendingCap from './custom-spending-cap';
 
 export default {
-  title: 'Components/UI/CustomSpendingCap',
+  title: 'Components/App/CustomSpendingCap',
   id: __filename,
   argTypes: {
     tokenName: {

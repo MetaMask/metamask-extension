@@ -68,8 +68,12 @@
     }
 
     &--max-button {
-      padding-right: 60px;
+      padding-inline-end: 60px;
     }
+  }
+
+  &__max-button {
+    margin-top: -30px;
   }
 
   &__custom-spending-cup-text {
