@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
@@ -17,32 +17,14 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setCompletedOnboarding } from '../../../store/actions';
-import { getFirstTimeFlowType } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default function CreationSuccessful() {
-  const firstTimeFlowTypeNameMap = {
-    create: EVENT_NAMES.NEW_WALLET_CREATED,
-    import: EVENT_NAMES.NEW_WALLET_IMPORTED,
-  };
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-
-  const trackEvent = useContext(MetaMetricsContext);
 
   const onComplete = async () => {
     await dispatch(setCompletedOnboarding());
-    trackEvent({
-      event: firstTimeFlowTypeNameMap[firstTimeFlowType],
-      category: EVENT.CATEGORIES.ONBOARDING,
-      properties: {
-        action: 'Onboarding Complete',
-        legacy_event: true,
-      },
-    });
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
   return (

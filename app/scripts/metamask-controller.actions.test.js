@@ -165,6 +165,29 @@ describe('MetaMaskController', function () {
     });
   });
 
+  describe('#addToken', function () {
+    const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
+    const symbol = 'LINK';
+    const decimals = 18;
+
+    it('two parallel calls with same token details give same result', async function () {
+      const supportsInterfaceStub = sinon
+        .stub()
+        .returns(Promise.resolve(false));
+      sinon
+        .stub(metamaskController.tokensController, '_createEthersContract')
+        .callsFake(() =>
+          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
+        );
+
+      const [token1, token2] = await Promise.all([
+        metamaskController.getApi().addToken(address, symbol, decimals),
+        metamaskController.getApi().addToken(address, symbol, decimals),
+      ]);
+      assert.deepEqual(token1, token2);
+    });
+  });
+
   describe('#addCustomNetwork', function () {
     const customRpc = {
       chainId: '0x1',
@@ -173,7 +196,7 @@ describe('MetaMaskController', function () {
       ticker: 'DUMMY_TICKER',
       blockExplorerUrl: 'DUMMY_EXPLORER',
     };
-    it('two calls with same accountCount give same result', async function () {
+    it('two successive calls with custom RPC details give same result', async function () {
       await metamaskController.addCustomNetwork(customRpc);
       const rpcList1Length =
         metamaskController.preferencesController.store.getState()
