@@ -32,6 +32,9 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+const TEST_SEED =
+  'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
@@ -103,6 +106,63 @@ describe('MetaMaskController', function () {
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
       assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
+    });
+  });
+
+  describe('#importAccountWithStrategy', function () {
+    it('two sequential calls with same strategy give same result', async function () {
+      let keyringControllerState1;
+      let keyringControllerState2;
+      const importPrivkey =
+        '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
+
+      await metamaskController.createNewVaultAndKeychain('test@123');
+      await Promise.all([
+        metamaskController.importAccountWithStrategy('Private Key', [
+          importPrivkey,
+        ]),
+        Promise.resolve(1).then(() => {
+          keyringControllerState1 = JSON.stringify(
+            metamaskController.keyringController.memStore.getState(),
+          );
+          metamaskController.importAccountWithStrategy('Private Key', [
+            importPrivkey,
+          ]);
+        }),
+        Promise.resolve(2).then(() => {
+          keyringControllerState2 = JSON.stringify(
+            metamaskController.keyringController.memStore.getState(),
+          );
+        }),
+      ]);
+      assert.deepEqual(keyringControllerState1, keyringControllerState2);
+    });
+  });
+
+  describe('#createNewVaultAndRestore', function () {
+    it('two successive calls with same inputs give same result', async function () {
+      const result1 = await metamaskController.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
+      const result2 = await metamaskController.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
+      assert.deepEqual(result1, result2);
+    });
+  });
+
+  describe('#createNewVaultAndKeychain', function () {
+    it('two successive calls with same inputs give same result', async function () {
+      const result1 = await metamaskController.createNewVaultAndKeychain(
+        'test@123',
+      );
+      const result2 = await metamaskController.createNewVaultAndKeychain(
+        'test@123',
+      );
+      assert.notEqual(result1, undefined);
+      assert.deepEqual(result1, result2);
     });
   });
 
