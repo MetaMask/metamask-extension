@@ -10,7 +10,7 @@ import {
   initializeUnsSlice,
   resetUnsResolution,
 } from '../../../../ducks/uns';
-import EnsInput from './ens-input.component';
+import DomainInput from './domain-input.component';
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -23,4 +23,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(EnsInput);
+export default connect(null, mapDispatchToProps)(DomainInput);

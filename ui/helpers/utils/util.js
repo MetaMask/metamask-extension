@@ -16,7 +16,8 @@ import {
 } from '../../../shared/constants/network';
 import {
   ALLOWED_UNSTOPPABLE_TLDS,
-} from '../../../shared/constants/uns';
+  ALLOWED_ENS_TLDS,
+} from '../../../shared/constants/tld';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
@@ -101,14 +102,14 @@ export function addressSummary(
 
 export function isValidDomainName(address) {
   const match = punycode
-    .toASCII(address)
-    .toLowerCase()
-    // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
-    // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
-    // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
-    .match(
-      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
-    );
+   .toASCII(address)
+   .toLowerCase()
+   // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
+   // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
+   // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
+   .match(
+     /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
+   );
   return match !== null;
 }
 

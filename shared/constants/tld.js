@@ -9,4 +9,4 @@ export const ALLOWED_UNSTOPPABLE_TLDS = [
     '.blockchain',
     '.888',
     '.zil'
-    ];
+];

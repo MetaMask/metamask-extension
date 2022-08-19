@@ -160,7 +160,7 @@ export function resolveUNS(unsName){
     let address;
     let error;
     const resolution = new Resolution();
-    console.log(resolution.addr(unsName, state.metamask.nativeCurrency));
+    // console.log(resolution.addr(unsName, state.metamask.nativeCurrency));
     address = await resolution
       .addr(unsName, state.metamask.nativeCurrency)
       .catch((err) => {

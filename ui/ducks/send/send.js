@@ -87,6 +87,7 @@ import {
 } from '../metamask/metamask';
 
 import { resetEnsResolution } from '../ens';
+import { resetUnsResolution } from '../uns';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -2200,6 +2201,7 @@ export function resetRecipientInput() {
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetEnsResolution());
+    await dispatch(resetUnsResolution());
     await dispatch(validateRecipientUserInput());
   };
 }

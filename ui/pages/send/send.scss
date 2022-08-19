@@ -164,7 +164,7 @@
   }
 }
 
-.ens-input {
+.domain-input {
   @extend %row-nowrap;
 
   &__wrapper {
@@ -216,7 +216,7 @@
     &--valid {
       border-color: var(--color-primary-default);
 
-      .ens-input__wrapper {
+      .domain-input__wrapper {
         &__input {
           @extend %col-nowrap;
 
