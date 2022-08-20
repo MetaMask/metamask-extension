@@ -3,8 +3,7 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
-/** @todo uncomment Legacy Provider Support */
-// import { obj as createThoughStream } from 'through2';
+import { obj as createThoughStream } from 'through2';
 
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -32,27 +31,30 @@ const PROVIDER = 'metamask-provider';
 // For more information about these legacy streams, see here:
 // https://github.com/MetaMask/metamask-extension/issues/15491
 // TODO:LegacyProvider: Delete
-/** @todo uncomment Legacy Provider Support */
-// const LEGACY_CONTENT_SCRIPT = 'contentscript';
-// const LEGACY_INPAGE = 'inpage';
-// const LEGACY_PROVIDER = 'provider';
+const LEGACY_CONTENT_SCRIPT = 'contentscript';
+const LEGACY_INPAGE = 'inpage';
+const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
+
+let legacyExtMux,
+  legacyExtMuxChannel,
+  legacyExtMuxPublicConfigChannel,
+  legacyPageMux,
+  legacyPageMuxLegacyProviderChannel,
+  legacyPageMuxPublicConfigChannel,
+  notificationTransformStream;
 
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
 let extensionMux,
+  extensionMuxChannel,
   extensionPort,
   extensionPhishingStream,
   extensionStream,
   pageMux,
-  pageMuxChannel,
-  extensionMuxChannel;
-
-// legacyExtensionMux,
-// legacyPageMux,
-// legacyPageStream,
+  pageMuxChannel;
 
 /**
  * Injects a script tag into the current document
@@ -134,6 +136,7 @@ function setupPageStreams() {
     target: INPAGE,
   });
 
+  // create and connect channel muxers so we can handle the channels individually
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
@@ -144,11 +147,11 @@ function setupPageStreams() {
   pageMuxChannel = pageMux.createStream(PROVIDER);
 }
 
-/** Creates and connects extension channel multiplexes to handle the channels individually */
 const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
+  // create and connect channel muxers so we can handle the channels individually
   extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
@@ -184,6 +187,88 @@ const destroyExtensionStreams = () => {
 };
 
 /**
+ * Sets up two-way communication streams between the
+ * browser extension and local per-page browser context.
+ *
+ * TODO:LegacyProvider: Delete
+ */
+const setupLegacyPageStreams = () => {
+  const legacyPageStream = new WindowPostMessageStream({
+    name: LEGACY_CONTENT_SCRIPT,
+    target: LEGACY_INPAGE,
+  });
+
+  legacyPageMux = new ObjectMultiplex();
+  legacyPageMux.setMaxListeners(25);
+
+  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
+  );
+
+  legacyPageMuxLegacyProviderChannel =
+    legacyPageMux.createStream(LEGACY_PROVIDER);
+  legacyPageMuxPublicConfigChannel =
+    legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+};
+
+const setupLegacyExtensionStreams = () => {
+  legacyExtMux = new ObjectMultiplex();
+  legacyExtMux.setMaxListeners(25);
+
+  notificationTransformStream = getNotificationTransformStream();
+  pump(
+    legacyExtMux,
+    extensionStream,
+    notificationTransformStream,
+    legacyExtMux,
+    (err) => {
+      logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
+      notifyInpageOfStreamFailure();
+    },
+  );
+
+  legacyExtMuxChannel = legacyExtMux.createStream(PROVIDER);
+  pump(
+    legacyPageMuxLegacyProviderChannel,
+    legacyExtMuxChannel,
+    legacyPageMuxLegacyProviderChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic between channels "${LEGACY_PROVIDER}" and "${PROVIDER}" failed.`,
+        error,
+      ),
+  );
+
+  legacyExtMuxPublicConfigChannel =
+    legacyExtMux.createStream(LEGACY_PUBLIC_CONFIG);
+  pump(
+    legacyPageMuxPublicConfigChannel,
+    legacyExtMuxPublicConfigChannel,
+    legacyPageMuxPublicConfigChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${LEGACY_PUBLIC_CONFIG}" failed.`,
+        error,
+      ),
+  );
+};
+
+/** Destroys all of the extension streams */
+const destroyLegacyExtensionStreams = () => {
+  legacyPageMuxLegacyProviderChannel.removeAllListeners();
+  legacyPageMuxPublicConfigChannel.removeAllListeners();
+
+  legacyExtMux.removeAllListeners();
+  legacyExtMux.destroy();
+
+  legacyExtMuxChannel.removeAllListeners();
+  legacyExtMuxChannel.destroy();
+
+  legacyExtMuxPublicConfigChannel.removeAllListeners();
+  legacyExtMuxPublicConfigChannel.destroy();
+};
+
+/**
  * Resets the extension stream with new streams and attaches event listeners to the extension port.
  */
 const resetStreamAndListeners = () => {
@@ -198,58 +283,11 @@ const resetStreamAndListeners = () => {
   destroyExtensionStreams();
   setupExtensionStreams();
 
-  /** @todo uncomment Legacy Provider Support */
-  // setupLegacyStreams();
+  destroyLegacyExtensionStreams();
+  setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
-
-/**
- * Sets up two-way communication streams between the
- * browser extension and local per-page browser context.
- *
- * @todo LegacyProvider: Delete
- * @todo uncomment
- */
-// function setupLegacyStreams() {
-//   console.log('setupLegacyStreams called');
-
-//   legacyPageStream = new WindowPostMessageStream({
-//     name: LEGACY_CONTENT_SCRIPT,
-//     target: LEGACY_INPAGE,
-//   });
-
-//   legacyPageMux = new ObjectMultiplex();
-//   legacyPageMux.setMaxListeners(25);
-//   legacyExtensionMux = new ObjectMultiplex();
-//   legacyExtensionMux.setMaxListeners(25);
-
-//   pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
-//     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
-//   );
-//   pump(
-//     legacyExtensionMux,
-//     extensionStream,
-//     getNotificationTransformStream(),
-//     legacyExtensionMux,
-//     (err) => {
-//       logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
-//       notifyInpageOfStreamFailure();
-//     },
-//   );
-
-//   forwardNamedTrafficBetweenMuxes(
-//     LEGACY_PROVIDER,
-//     PROVIDER,
-//     legacyPageMux,
-//     legacyExtensionMux,
-//   );
-//   forwardTrafficBetweenMuxes(
-//     LEGACY_PUBLIC_CONFIG,
-//     legacyPageMux,
-//     legacyExtensionMux,
-//   );
-// }
 
 /**
  * Sets up two-way communication streams between the
@@ -259,8 +297,9 @@ const initStreams = () => {
   setupPageStreams();
   setupExtensionStreams();
 
-  /** @todo uncomment Legacy Provider Support */
-  // setupLegacyStreams();
+  // TODO:LegacyProvider: Delete
+  setupLegacyPageStreams();
+  setupLegacyExtensionStreams();
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
@@ -277,35 +316,18 @@ function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
 }
 
 // TODO:LegacyProvider: Delete
-// function forwardNamedTrafficBetweenMuxes(
-//   channelAName,
-//   channelBName,
-//   muxA,
-//   muxB,
-// ) {
-//   const channelA = muxA.createStream(channelAName);
-//   const channelB = muxB.createStream(channelBName);
-//   pump(channelA, channelB, channelA, (error) =>
-//     console.debug(
-//       `MetaMask: Muxed traffic between channels "${channelAName}" and "${channelBName}" failed.`,
-//       error,
-//     ),
-//   );
-// }
-
-// TODO:LegacyProvider: Delete
-// function getNotificationTransformStream() {
-//   return createThoughStream((chunk, _, cb) => {
-//     if (chunk?.name === PROVIDER) {
-//       if (chunk.data?.method === 'metamask_accountsChanged') {
-//         chunk.data.method = 'wallet_accountsChanged';
-//         chunk.data.result = chunk.data.params;
-//         delete chunk.data.params;
-//       }
-//     }
-//     cb(null, chunk);
-//   });
-// }
+function getNotificationTransformStream() {
+  return createThoughStream((chunk, _, cb) => {
+    if (chunk?.name === PROVIDER) {
+      if (chunk.data?.method === 'metamask_accountsChanged') {
+        chunk.data.method = 'wallet_accountsChanged';
+        chunk.data.result = chunk.data.params;
+        delete chunk.data.params;
+      }
+    }
+    cb(null, chunk);
+  });
+}
 
 /**
  * Error handler for page to extension stream disconnections
