@@ -248,8 +248,10 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={0}
+                marginTop={3}
+                marginRight={0}
                 marginBottom={3}
+                marginLeft={3}
               >
                 {t('blockies')}
               </Typography>
