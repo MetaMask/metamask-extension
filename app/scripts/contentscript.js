@@ -37,11 +37,11 @@ const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
 let legacyExtMux,
-  legacyExtMuxChannel,
-  legacyExtMuxPublicConfigChannel,
+  legacyExtChannel,
+  legacyExtPublicConfigChannel,
   legacyPageMux,
   legacyPageMuxLegacyProviderChannel,
-  legacyPageMuxPublicConfigChannel,
+  legacyPagePublicConfigChannel,
   notificationTransformStream;
 
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
@@ -56,12 +56,12 @@ let phishingExtensionChannel,
   phishingPageMux;
 
 let extensionMux,
-  extensionMuxChannel,
+  extensionChannel,
   extensionPort,
   extensionPhishingStream,
   extensionStream,
   pageMux,
-  pageMuxChannel;
+  pageChannel;
 
 /**
  * Injects a script tag into the current document
@@ -198,7 +198,7 @@ const setupPageStreams = () => {
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
-  pageMuxChannel = pageMux.createStream(PROVIDER);
+  pageChannel = pageMux.createStream(PROVIDER);
 };
 
 const setupExtensionStreams = () => {
@@ -216,8 +216,8 @@ const setupExtensionStreams = () => {
   });
 
   // forward communication across inpage-background for these channels only
-  extensionMuxChannel = extensionMux.createStream(PROVIDER);
-  pump(pageMuxChannel, extensionMuxChannel, pageMuxChannel, (error) =>
+  extensionChannel = extensionMux.createStream(PROVIDER);
+  pump(pageChannel, extensionChannel, pageChannel, (error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
       error,
@@ -231,13 +231,13 @@ const setupExtensionStreams = () => {
 
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
-  pageMuxChannel.removeAllListeners();
+  pageChannel.removeAllListeners();
 
   extensionMux.removeAllListeners();
   extensionMux.destroy();
 
-  extensionMuxChannel.removeAllListeners();
-  extensionMuxChannel.destroy();
+  extensionChannel.removeAllListeners();
+  extensionChannel.destroy();
 };
 
 /**
@@ -261,7 +261,7 @@ const setupLegacyPageStreams = () => {
 
   legacyPageMuxLegacyProviderChannel =
     legacyPageMux.createStream(LEGACY_PROVIDER);
-  legacyPageMuxPublicConfigChannel =
+  legacyPagePublicConfigChannel =
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
 };
 
@@ -281,10 +281,10 @@ const setupLegacyExtensionStreams = () => {
     },
   );
 
-  legacyExtMuxChannel = legacyExtMux.createStream(PROVIDER);
+  legacyExtChannel = legacyExtMux.createStream(PROVIDER);
   pump(
     legacyPageMuxLegacyProviderChannel,
-    legacyExtMuxChannel,
+    legacyExtChannel,
     legacyPageMuxLegacyProviderChannel,
     (error) =>
       console.debug(
@@ -293,12 +293,12 @@ const setupLegacyExtensionStreams = () => {
       ),
   );
 
-  legacyExtMuxPublicConfigChannel =
+  legacyExtPublicConfigChannel =
     legacyExtMux.createStream(LEGACY_PUBLIC_CONFIG);
   pump(
-    legacyPageMuxPublicConfigChannel,
-    legacyExtMuxPublicConfigChannel,
-    legacyPageMuxPublicConfigChannel,
+    legacyPagePublicConfigChannel,
+    legacyExtPublicConfigChannel,
+    legacyPagePublicConfigChannel,
     (error) =>
       console.debug(
         `MetaMask: Muxed traffic for channel "${LEGACY_PUBLIC_CONFIG}" failed.`,
@@ -310,16 +310,16 @@ const setupLegacyExtensionStreams = () => {
 /** Destroys all of the legacy extension streams */
 const destroyLegacyExtensionStreams = () => {
   legacyPageMuxLegacyProviderChannel.removeAllListeners();
-  legacyPageMuxPublicConfigChannel.removeAllListeners();
+  legacyPagePublicConfigChannel.removeAllListeners();
 
   legacyExtMux.removeAllListeners();
   legacyExtMux.destroy();
 
-  legacyExtMuxChannel.removeAllListeners();
-  legacyExtMuxChannel.destroy();
+  legacyExtChannel.removeAllListeners();
+  legacyExtChannel.destroy();
 
-  legacyExtMuxPublicConfigChannel.removeAllListeners();
-  legacyExtMuxPublicConfigChannel.destroy();
+  legacyExtPublicConfigChannel.removeAllListeners();
+  legacyExtPublicConfigChannel.destroy();
 };
 
 /**
