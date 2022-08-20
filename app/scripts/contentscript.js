@@ -48,10 +48,10 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
-let phishingExtensionChannel,
-  phishingExtensionMux,
-  phishingExtensionPort,
-  phishingExtensionStream,
+let phishingExtChannel,
+  phishingExtMux,
+  phishingExtPort,
+  phishingExtStream,
   phishingPageChannel,
   phishingPageMux;
 
@@ -99,63 +99,53 @@ function setupPhishingPageStreams() {
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
 }
 
-const setupPhishingExtensionStream = () => {
-  phishingExtensionPort = browser.runtime.connect({
+const setupPhishingExtStream = () => {
+  phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  phishingExtensionStream = new PortStream(phishingExtensionPort);
+  phishingExtStream = new PortStream(phishingExtPort);
 
   // create and connect channel muxers so we can handle the channels individually
-  phishingExtensionMux = new ObjectMultiplex();
-  phishingExtensionMux.setMaxListeners(25);
+  phishingExtMux = new ObjectMultiplex();
+  phishingExtMux.setMaxListeners(25);
 
-  pump(
-    phishingExtensionMux,
-    phishingExtensionStream,
-    phishingExtensionMux,
-    (err) => {
-      logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-      window.postMessage(
-        {
-          target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
+  pump(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
+    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+    window.postMessage(
+      {
+        target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
+        data: {
+          // this object gets passed to obj-multiplex
+          name: PHISHING_SAFELIST, // the obj-multiplex channel name
           data: {
-            // this object gets passed to obj-multiplex
-            name: PHISHING_SAFELIST, // the obj-multiplex channel name
-            data: {
-              jsonrpc: '2.0',
-              method: 'METAMASK_STREAM_FAILURE',
-            },
+            jsonrpc: '2.0',
+            method: 'METAMASK_STREAM_FAILURE',
           },
         },
-        window.location.origin,
-      );
-    },
-  );
+      },
+      window.location.origin,
+    );
+  });
 
   // forward communication across inpage-background for these channels only
-  phishingExtensionChannel =
-    phishingExtensionMux.createStream(PHISHING_SAFELIST);
-  pump(
-    phishingPageChannel,
-    phishingExtensionChannel,
-    phishingPageChannel,
-    (error) =>
-      console.debug(
-        `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
-        error,
-      ),
+  phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
+  pump(phishingPageChannel, phishingExtChannel, phishingPageChannel, (error) =>
+    console.debug(
+      `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
+      error,
+    ),
   );
 };
 
 /** Destroys all of the phishing extension streams */
-const destroyPhishingExtensionStreams = () => {
+const destroyPhishingExtStreams = () => {
   phishingPageChannel.removeAllListeners();
 
-  phishingExtensionMux.removeAllListeners();
-  phishingExtensionMux.destroy();
+  phishingExtMux.removeAllListeners();
+  phishingExtMux.destroy();
 
-  phishingExtensionChannel.removeAllListeners();
-  phishingExtensionChannel.destroy();
+  phishingExtChannel.removeAllListeners();
+  phishingExtChannel.destroy();
 };
 
 /**
@@ -170,15 +160,15 @@ const resetPhishingStreamAndListeners = () => {
    */
   browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
-  destroyPhishingExtensionStreams();
-  setupPhishingExtensionStream();
+  destroyPhishingExtStreams();
+  setupPhishingExtStream();
 
   extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
 const initPhishingStreams = () => {
   setupPhishingPageStreams();
-  setupPhishingExtensionStream();
+  setupPhishingExtStream();
 
   extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
