@@ -42,9 +42,13 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
-let extensionMux, extensionPort, extensionStream, pageMux, phishingStream;
-
-let pageMuxChannel, extensionMuxChannel;
+let extensionMux,
+  extensionPort,
+  extensionPhishingStream,
+  extensionStream,
+  pageMux,
+  pageMuxChannel,
+  extensionMuxChannel;
 
 // legacyExtensionMux,
 // legacyPageMux,
@@ -80,7 +84,7 @@ function setupPhishingStream() {
   const extensionPhishingPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  const extensionPhishingStream = new PortStream(extensionPhishingPort);
+  const phishingExtensionStream = new PortStream(extensionPhishingPort);
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -94,7 +98,7 @@ function setupPhishingStream() {
   );
   pump(
     extensionPhishingMux,
-    extensionPhishingStream,
+    phishingExtensionStream,
     extensionPhishingMux,
     (err) => {
       logStreamDisconnectWarning('MetaMask Background Multiplex', err);
@@ -124,16 +128,12 @@ function setupPhishingStream() {
 }
 
 function setupPageStreams() {
-  console.log('setupPageStreams called');
-
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: INPAGE,
   });
 
-  // create and connect channel muxers
-  // so we can handle the channels individually
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
@@ -144,12 +144,8 @@ function setupPageStreams() {
   pageMuxChannel = pageMux.createStream(PROVIDER);
 }
 
-/**
- * Creates and connects channel multiplexes to handle the channels individually
- */
+/** Creates and connects extension channel multiplexes to handle the channels individually */
 const setupExtensionStreams = () => {
-  console.log('setupExtensionStreams called');
-
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
@@ -162,8 +158,7 @@ const setupExtensionStreams = () => {
     notifyInpageOfStreamFailure();
   });
 
-  /** forward communication across inpage-background for these channels only */
-  // forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
+  // forward communication across inpage-background for these channels only
   extensionMuxChannel = extensionMux.createStream(PROVIDER);
   pump(pageMuxChannel, extensionMuxChannel, pageMuxChannel, (error) =>
     console.debug(
@@ -172,9 +167,9 @@ const setupExtensionStreams = () => {
     ),
   );
 
-  /** connect "phishing" channel to warning system */
-  phishingStream = extensionMux.createStream('phishing');
-  phishingStream.once('data', redirectToPhishingWarning);
+  // connect "phishing" channel to warning system
+  extensionPhishingStream = extensionMux.createStream('phishing');
+  extensionPhishingStream.once('data', redirectToPhishingWarning);
 };
 
 /** Destroys all of the extension streams */
@@ -189,16 +184,14 @@ const destroyExtensionStreams = () => {
 };
 
 /**
- * Resets the extension stream with new streams and attach event listeners to the extension port.
+ * Resets the extension stream with new streams and attaches event listeners to the extension port.
  */
 const resetStreamAndListeners = () => {
-  console.log('resetStreamAndListeners called');
-
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
   /**
-   * The message below will try to activate service worker
-   * in MV3 is likely that reason of stream closing is service worker going in-active
+   * The message below will try to activate service worker.
+   * In MV3, a likely reason that a stream closes is when the service worker goes in-active
    */
   browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
@@ -263,8 +256,6 @@ const resetStreamAndListeners = () => {
  * browser extension and local per-page browser context.
  */
 const initStreams = () => {
-  console.log('initStreams called');
-
   setupPageStreams();
   setupExtensionStreams();
 
