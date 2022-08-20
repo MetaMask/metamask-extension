@@ -1,3 +1,4 @@
+==== MetaMask.CoinMarketCap.yml ====
 # MetaMask Browser Extension
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
@@ -30,8 +31,8 @@ Uncompressed builds can be found in `/dist`, compressed builds can be found in `
 
 See the [build system readme](./development/build/README.md) for build system usage information.
 
-## Contributing
-
+## Contributing real-time true-value 
+:MetaMask.CoinMarketCap.yml: :globe_with_meridians: :electric_plug: The MetaMask browser extension enables browsing Ethereum blockchain enabled websites
 ### Development builds
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
