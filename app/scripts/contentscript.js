@@ -48,6 +48,13 @@ const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
+let phishingExtensionChannel,
+  phishingExtensionMux,
+  phishingExtensionPort,
+  phishingExtensionStream,
+  phishingPageChannel,
+  phishingPageMux;
+
 let extensionMux,
   extensionMuxChannel,
   extensionPort,
@@ -74,34 +81,38 @@ function injectScript(content) {
   }
 }
 
-/**
- * @todo support phishing stream when Service Worker restarts
- */
-function setupPhishingStream() {
+function setupPhishingPageStreams() {
   // the transport-specific streams for communication between inpage and background
   const pagePhishingStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: PHISHING_WARNING_PAGE,
   });
-  const extensionPhishingPort = browser.runtime.connect({
-    name: CONTENT_SCRIPT,
-  });
-  const phishingExtensionStream = new PortStream(extensionPhishingPort);
 
-  // create and connect channel muxers
-  // so we can handle the channels individually
-  const pagePhishingMux = new ObjectMultiplex();
-  pagePhishingMux.setMaxListeners(25);
-  const extensionPhishingMux = new ObjectMultiplex();
-  extensionPhishingMux.setMaxListeners(25);
+  // create and connect channel muxers so we can handle the channels individually
+  phishingPageMux = new ObjectMultiplex();
+  phishingPageMux.setMaxListeners(25);
 
-  pump(pagePhishingMux, pagePhishingStream, pagePhishingMux, (err) =>
+  pump(phishingPageMux, pagePhishingStream, phishingPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
+
+  phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
+}
+
+const setupPhishingExtensionStream = () => {
+  phishingExtensionPort = browser.runtime.connect({
+    name: CONTENT_SCRIPT,
+  });
+  phishingExtensionStream = new PortStream(phishingExtensionPort);
+
+  // create and connect channel muxers so we can handle the channels individually
+  phishingExtensionMux = new ObjectMultiplex();
+  phishingExtensionMux.setMaxListeners(25);
+
   pump(
-    extensionPhishingMux,
+    phishingExtensionMux,
     phishingExtensionStream,
-    extensionPhishingMux,
+    phishingExtensionMux,
     (err) => {
       logStreamDisconnectWarning('MetaMask Background Multiplex', err);
       window.postMessage(
@@ -122,14 +133,57 @@ function setupPhishingStream() {
   );
 
   // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxes(
-    PHISHING_SAFELIST,
-    pagePhishingMux,
-    extensionPhishingMux,
+  phishingExtensionChannel =
+    phishingExtensionMux.createStream(PHISHING_SAFELIST);
+  pump(
+    phishingPageChannel,
+    phishingExtensionChannel,
+    phishingPageChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
+        error,
+      ),
   );
-}
+};
 
-function setupPageStreams() {
+/** Destroys all of the phishing extension streams */
+const destroyPhishingExtensionStreams = () => {
+  phishingPageChannel.removeAllListeners();
+
+  phishingExtensionMux.removeAllListeners();
+  phishingExtensionMux.destroy();
+
+  phishingExtensionChannel.removeAllListeners();
+  phishingExtensionChannel.destroy();
+};
+
+/**
+ * Resets the extension stream with new streams and attaches event listeners to the extension port.
+ */
+const resetPhishingStreamAndListeners = () => {
+  extensionPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
+
+  /**
+   * The message below will try to activate service worker.
+   * In MV3, a likely reason that a stream closes is when the service worker goes in-active
+   */
+  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+
+  destroyPhishingExtensionStreams();
+  setupPhishingExtensionStream();
+
+  extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
+};
+
+const initPhishingStreams = () => {
+  setupPhishingPageStreams();
+  setupPhishingExtensionStream();
+
+  extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
+};
+
+const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
@@ -145,7 +199,7 @@ function setupPageStreams() {
   );
 
   pageMuxChannel = pageMux.createStream(PROVIDER);
-}
+};
 
 const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
@@ -253,7 +307,7 @@ const setupLegacyExtensionStreams = () => {
   );
 };
 
-/** Destroys all of the extension streams */
+/** Destroys all of the legacy extension streams */
 const destroyLegacyExtensionStreams = () => {
   legacyPageMuxLegacyProviderChannel.removeAllListeners();
   legacyPageMuxPublicConfigChannel.removeAllListeners();
@@ -303,17 +357,6 @@ const initStreams = () => {
 
   extensionPort.onDisconnect.addListener(resetStreamAndListeners);
 };
-
-function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
-  const channelA = muxA.createStream(channelName);
-  const channelB = muxB.createStream(channelName);
-  pump(channelA, channelB, channelA, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${channelName}" failed.`,
-      error,
-    ),
-  );
-}
 
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
@@ -386,7 +429,7 @@ const start = () => {
     window.location.origin === phishingPageUrl.origin &&
     window.location.pathname === phishingPageUrl.pathname
   ) {
-    setupPhishingStream();
+    initPhishingStreams();
   } else if (shouldInjectProvider()) {
     if (!isManifestV3) {
       injectScript(inpageBundle);
