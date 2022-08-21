@@ -6,7 +6,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
 import Button from '../button';
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
