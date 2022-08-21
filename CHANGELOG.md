@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.18.3]
 ### Fixed
 - Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
+- Expanded permission_ethereumAccounts spanish translation ([#15660](https://github.com/MetaMask/metamask-extension/pull/15660))
 
 ## [10.18.2]
 ### Changed
