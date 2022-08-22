@@ -22,6 +22,10 @@ import {
   MATIC_SYMBOL,
   BNB_SYMBOL,
   AVALANCHE_SYMBOL,
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
 } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
@@ -62,16 +66,14 @@ export function getRenderableTokenData(
       )
     : '';
 
-  const tokenIconUrl = [
-    ETH_SYMBOL,
-    BNB_SYMBOL,
-    MATIC_SYMBOL,
-    AVALANCHE_SYMBOL,
-  ].includes(symbol)
-    ? iconUrl
-    : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
-  const usedIconUrl =
-    tokenIconUrl || tokenList[address?.toLowerCase()]?.iconUrl || token?.image;
+  const tokenIconUrl =
+    (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
+    (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
+    (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
+    (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
+      ? iconUrl
+      : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
+  const usedIconUrl = tokenIconUrl || token?.image;
 
   return {
     ...token,
