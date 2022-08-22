@@ -83,6 +83,7 @@
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard"
   },
   "resolutions": {
+    "**/@babel/parser": "7.16.4",
     "**/regenerator-runtime": "^0.13.7",
     "**/caniuse-lite": "^1.0.30001312",
     "**/cross-fetch": "^3.1.5",
@@ -100,7 +101,6 @@
     "3box/**/libp2p-keychain/node-forge": "^1.3.0",
     "3box/ipfs/libp2p-webrtc-star/socket.io/engine.io": "^4.0.0",
     "analytics-node/axios": "^0.21.2",
-    "depcheck/@babel/parser": "7.16.4",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
     "pubnub/superagent-proxy": "^3.0.0",
