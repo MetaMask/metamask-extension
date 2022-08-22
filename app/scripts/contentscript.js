@@ -87,7 +87,7 @@ function injectScript(content) {
 
 function setupPhishingPageStreams() {
   // the transport-specific streams for communication between inpage and background
-  const pagePhishingStream = new WindowPostMessageStream({
+  const phishingPageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: PHISHING_WARNING_PAGE,
   });
@@ -97,7 +97,7 @@ function setupPhishingPageStreams() {
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
 
-  pump(phishingPageMux, pagePhishingStream, phishingPageMux, (err) =>
+  pump(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
