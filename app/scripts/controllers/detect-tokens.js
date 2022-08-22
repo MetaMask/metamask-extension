@@ -9,13 +9,13 @@ import {
   TOKEN_STANDARDS,
 } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { DETECT_TOKEN_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
 // FOR DEV PURPOSE -- NEED TO BE UPDATED TO 3 BEFORE MERGING
 const DEFAULT_INTERVAL_MV3 = 0.2;
-const DETECT_TOKEN_ALARM = 'DETECT_TOKEN';
 
 /**
  * A controller that polls for token exchange
@@ -211,17 +211,12 @@ export default class DetectTokensController {
       periodInMinutes: DEFAULT_INTERVAL_MV3,
     });
 
-    chrome.alarms.onAlarm.addListener((alarms) => {
-      console.log('Alarm triggered: ', alarms);
+    chrome.alarms.onAlarm.addListener(() => {
       const alarm = chrome.alarms.get(DETECT_TOKEN_ALARM);
       if (alarm) {
         this.detectNewTokens();
       }
     });
-
-    // chrome.alarms.getAll((alarms) => {
-    //   console.log('list all alarms: ', alarms);
-    // });
   }
 
   getChainIdFromNetworkStore(network) {
@@ -233,13 +228,13 @@ export default class DetectTokensController {
    * @type {number}
    */
   set interval(interval) {
+    if (!interval) {
+      return;
+    }
     if (isManifestV3) {
       this.rescheduleTokenDetectionPollingInMV3();
     } else {
       this._handle && clearInterval(this._handle);
-      if (!interval) {
-        return;
-      }
       this._handle = setInterval(() => {
         this.detectNewTokens();
       }, interval);
