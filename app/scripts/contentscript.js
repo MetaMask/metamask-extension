@@ -92,7 +92,8 @@ function setupPhishingPageStreams() {
     target: PHISHING_WARNING_PAGE,
   });
 
-  // create and connect channel muxers so we can handle the channels individually
+  // create and connect channel muxers
+  // so we can handle the channels individually
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
 
@@ -109,7 +110,8 @@ const setupPhishingExtStream = () => {
   });
   phishingExtStream = new PortStream(phishingExtPort);
 
-  // create and connect channel muxers so we can handle the channels individually
+  // create and connect channel muxers
+  // so we can handle the channels individually
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
 
@@ -188,7 +190,8 @@ const setupPageStreams = () => {
     target: INPAGE,
   });
 
-  // create and connect channel muxers so we can handle the channels individually
+  // create and connect channel muxers
+  // so we can handle the channels individually
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
@@ -203,7 +206,8 @@ const setupExtensionStreams = () => {
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
 
-  // create and connect channel muxers so we can handle the channels individually
+  // create and connect channel muxers
+  // so we can handle the channels individually
   extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
