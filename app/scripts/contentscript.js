@@ -159,7 +159,7 @@ const destroyPhishingExtStreams = () => {
  * and creates a new event listener to the reestablished extension port.
  */
 const resetPhishingStreamAndListeners = () => {
-  extensionPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
+  phishingExtPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
 
   /**
    * The message below will try to activate service worker.
@@ -170,7 +170,7 @@ const resetPhishingStreamAndListeners = () => {
   destroyPhishingExtStreams();
   setupPhishingExtStream();
 
-  extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
+  phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
 /**
@@ -182,7 +182,7 @@ const initPhishingStreams = () => {
   setupPhishingPageStreams();
   setupPhishingExtStream();
 
-  extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
+  phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
 /**
