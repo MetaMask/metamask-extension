@@ -29,12 +29,10 @@ export default function ContractTokenValues({ address, tokenName }) {
       justifyContent={JUSTIFY_CONTENT.CENTER}
       className="contract-token-values"
     >
-      <Identicon
-        className="contract-token-values__address-identicon"
-        address={address}
-        diameter={24}
-      />
-      <Box data-testid="recipient">
+      <Box marginRight={2} marginTop={2} marginBottom={2}>
+        <Identicon address={address} diameter={24} />
+      </Box>
+      <Box>
         <Typography
           variant={TYPOGRAPHY.H2}
           fontWeight={FONT_WEIGHT.BOLD}
