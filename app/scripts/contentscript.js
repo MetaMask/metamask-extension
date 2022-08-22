@@ -81,6 +81,10 @@ function injectScript(content) {
   }
 }
 
+/**
+ * PHISHING STREAM LOGIC
+ */
+
 function setupPhishingPageStreams() {
   // the transport-specific streams for communication between inpage and background
   const pagePhishingStream = new WindowPostMessageStream({
@@ -173,6 +177,10 @@ const initPhishingStreams = () => {
   extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
+/**
+ * INPAGE - EXTENSION STREAM LOGIC
+ */
+
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
@@ -229,6 +237,10 @@ const destroyExtensionStreams = () => {
   extensionChannel.removeAllListeners();
   extensionChannel.destroy();
 };
+
+/**
+ * LEGACY STREAM LOGIC
+ */
 
 /**
  * Sets up two-way communication streams between the
