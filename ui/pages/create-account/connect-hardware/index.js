@@ -16,6 +16,7 @@ import {
   DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
 } from '../../../../shared/constants/hardware-wallets';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -288,7 +289,7 @@ class ConnectHardwareForm extends Component {
             this.state.device,
             // eslint-disable-next-line react/jsx-key
             <a
-              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="hardware-connection-guide"
               target="_blank"
               rel="noopener noreferrer"

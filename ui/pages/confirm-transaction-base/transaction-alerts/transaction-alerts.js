@@ -11,6 +11,7 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -74,7 +75,7 @@ const TransactionAlerts = ({
               {t('learnCancelSpeeedup', [
                 <a
                   key="cancelSpeedUpInfo"
-                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction"
+                  href={ZENDESK_URLS.SPEEDUP_CANCEL}
                   rel="noopener noreferrer"
                   target="_blank"
                 >

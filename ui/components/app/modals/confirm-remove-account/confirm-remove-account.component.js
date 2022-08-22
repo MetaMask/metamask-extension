@@ -5,6 +5,7 @@ import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
 import { EVENT } from '../../../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
@@ -108,7 +109,7 @@ export default class ConfirmRemoveAccount extends Component {
               className="confirm-remove-account__link"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
+              href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
             >
               {t('learnMore')}
             </a>

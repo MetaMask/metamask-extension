@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Dropdown from '../../../components/ui/dropdown';
 
 // Subviews
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
@@ -48,7 +49,7 @@ export default class AccountImportSubview extends Component {
               className="new-account-info-link"
               onClick={() => {
                 global.platform.openTab({
-                  url: 'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+                  url: ZENDESK_URLS.IMPORTED_ACCOUNTS,
                 });
               }}
             >

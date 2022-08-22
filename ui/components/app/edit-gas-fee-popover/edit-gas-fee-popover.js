@@ -15,6 +15,7 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import AppLoadingSpinner from '../app-loading-spinner';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
@@ -95,7 +96,7 @@ const EditGasFeePopover = () => {
                     key="learnMoreLink"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas"
+                    href={ZENDESK_URLS.USER_GUIDE_GAS}
                   >
                     {t('learnMore')}
                   </a>,
