@@ -740,6 +740,11 @@ export default class TransactionController extends EventEmitter {
    * Validates and generates a txMeta with defaults and puts it in txStateManager
    * store.
    *
+   * actionId is used to uniquely identify a request to create a transaction.
+   * Only 1 transaction will be created for multiple requests with same actionId.
+   * actionId is fix used for make the action idempotent to deal with scenario when
+   * action is invoked multiple times with same parameters in MV3 due to service worker re-start.
+   *
    * @param txParams
    * @param origin
    * @param transactionType
