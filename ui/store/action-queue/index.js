@@ -51,7 +51,7 @@ export function dropQueue(silently) {
 }
 
 // add action to queue
-const addToActionQueueAndRun = (item) => {
+const executeActionOrAddtoRetryQueue = (item) => {
   if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
@@ -85,7 +85,7 @@ export function submitRequestToBackground(
 ) {
   if (isManifestV3) {
     return new Promise((resolve, reject) => {
-      addToActionQueueAndRun({
+      executeActionOrAddtoRetryQueue({
         actionId,
         request: { method, args },
         resolve,
@@ -117,7 +117,7 @@ export const callBackgroundMethod = (
   if (isManifestV3) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
-    addToActionQueueAndRun({
+    executeActionOrAddtoRetryQueue({
       actionId,
       request: { method, args },
       resolve,
