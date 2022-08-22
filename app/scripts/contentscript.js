@@ -155,7 +155,8 @@ const destroyPhishingExtStreams = () => {
 };
 
 /**
- * Resets the extension stream with new streams and attaches event listeners to the extension port.
+ * Resets the extension stream with new streams to channel with the phishing page streams,
+ * and creates a new event listener to the reestablished extension port.
  */
 const resetPhishingStreamAndListeners = () => {
   extensionPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
@@ -172,6 +173,11 @@ const resetPhishingStreamAndListeners = () => {
   extensionPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
 
+/**
+ * Initializes two-way communication streams between the browser extension and
+ * the phishing page context. This function also creates an event listener to
+ * reset the streams if the service worker resets.
+ */
 const initPhishingStreams = () => {
   setupPhishingPageStreams();
   setupPhishingExtStream();
@@ -246,12 +252,7 @@ const destroyExtensionStreams = () => {
  * LEGACY STREAM LOGIC
  */
 
-/**
- * Sets up two-way communication streams between the
- * browser extension and local per-page browser context.
- *
- * TODO:LegacyProvider: Delete
- */
+// TODO:LegacyProvider: Delete
 const setupLegacyPageStreams = () => {
   const legacyPageStream = new WindowPostMessageStream({
     name: LEGACY_CONTENT_SCRIPT,
@@ -271,6 +272,7 @@ const setupLegacyPageStreams = () => {
     legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
 };
 
+// TODO:LegacyProvider: Delete
 const setupLegacyExtensionStreams = () => {
   legacyExtMux = new ObjectMultiplex();
   legacyExtMux.setMaxListeners(25);
@@ -313,7 +315,10 @@ const setupLegacyExtensionStreams = () => {
   );
 };
 
-/** Destroys all of the legacy extension streams */
+/**
+ * Destroys all of the legacy extension streams
+ * TODO:LegacyProvider: Delete
+ */
 const destroyLegacyExtensionStreams = () => {
   legacyPageMuxLegacyProviderChannel.removeAllListeners();
   legacyPagePublicConfigChannel.removeAllListeners();
@@ -329,7 +334,8 @@ const destroyLegacyExtensionStreams = () => {
 };
 
 /**
- * Resets the extension stream with new streams and attaches event listeners to the extension port.
+ * Resets the extension stream with new streams to channel with the in page streams,
+ * and creates a new event listener to the reestablished extension port.
  */
 const resetStreamAndListeners = () => {
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
@@ -350,8 +356,9 @@ const resetStreamAndListeners = () => {
 };
 
 /**
- * Sets up two-way communication streams between the
- * browser extension and local per-page browser context.
+ * Initializes two-way communication streams between the browser extension and
+ * the local per-page browser context. This function also creates an event listener to
+ * reset the streams if the service worker resets.
  */
 const initStreams = () => {
   setupPageStreams();
