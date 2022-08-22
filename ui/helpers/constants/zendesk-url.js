@@ -11,6 +11,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
   PASSWORD_ARTICLE:
     'https://metamask.zendesk.com/hc/en-us/articles/4404722782107',
+  CUSTOMIZE_NONCE:
+    'https://metamask.zendesk.com/hc/en-us/articles/7417499333531-How-to-customize-a-transaction-nonce',
 };
 
 export default ZENDESK_URLS;
