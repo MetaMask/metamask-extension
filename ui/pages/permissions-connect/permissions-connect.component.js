@@ -159,12 +159,11 @@ export default class PermissionConnect extends Component {
   }
 
   selectAccounts = (addresses) => {
-    const { history, confirmPermissionPath } = this.props;
     this.setState(
       {
         selectedAccountAddresses: addresses,
       },
-      () => history.push(`${confirmPermissionPath}${history.location.search}`),
+      () => this.props.history.push(this.props.confirmPermissionPath),
     );
   };
 

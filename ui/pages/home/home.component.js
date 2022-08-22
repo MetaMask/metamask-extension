@@ -153,9 +153,6 @@ export default class Home extends PureComponent {
     newCustomNetworkAdded: PropTypes.object,
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
-    requestAccountsPermissionWithId: PropTypes.func,
-    permissionsSubjects: PropTypes.object,
-    addPostApprovalRedirectURL: PropTypes.func,
   };
 
   state = {
@@ -611,9 +608,6 @@ export default class Home extends PureComponent {
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
-      requestAccountsPermissionWithId,
-      permissionsSubjects,
-      addPostApprovalRedirectURL,
     } = this.props;
 
     if (forgottenPassword) {
@@ -692,17 +686,9 @@ export default class Home extends PureComponent {
                   <div
                     className="home__subheader-link"
                     onClick={async () => {
-                      if (permissionsSubjects[process.env.METALABS_URL]) {
-                        global.platform.openTab({
-                          url: process.env.METALABS_URL,
-                        });
-                      } else {
-                        const id = await requestAccountsPermissionWithId(
-                          process.env.METALABS_URL,
-                        );
-                        addPostApprovalRedirectURL(process.env.METALABS_URL);
-                        history.push(`${CONNECT_ROUTE}/${id}`);
-                      }
+                      global.platform.openTab({
+                        url: process.env.METALABS_URL,
+                      });
                     }}
                   >
                     <IconChart />

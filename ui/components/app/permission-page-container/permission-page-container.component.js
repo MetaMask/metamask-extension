@@ -21,8 +21,6 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
-    postApprovalRedirectURL: PropTypes.string,
-    clearPostApprovalRedirectURL: PropTypes.func,
   };
 
   static defaultProps = {
@@ -81,22 +79,7 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest(request.metadata.id);
   };
 
-  postApprovalRedirect = (request) => {
-    const { postApprovalRedirectURL, clearPostApprovalRedirectURL } =
-      this.props;
-
-    if (
-      postApprovalRedirectURL &&
-      request?.metadata?.origin === postApprovalRedirectURL
-    ) {
-      clearPostApprovalRedirectURL();
-      global.platform.openTab({
-        url: `${postApprovalRedirectURL}?metamaskEntry=ext`,
-      });
-    }
-  };
-
-  onSubmit = async () => {
+  onSubmit = () => {
     const {
       request: _request,
       approvePermissionsRequest,
@@ -119,8 +102,7 @@ export default class PermissionPageContainer extends Component {
     });
 
     if (Object.keys(request.permissions).length > 0) {
-      await approvePermissionsRequest(request);
-      this.postApprovalRedirect(request);
+      approvePermissionsRequest(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
     }

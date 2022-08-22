@@ -23,7 +23,6 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
   getNewTokensImported,
-  getPermissionSubjects,
   getShowPortfolioTooltip,
 } from '../../selectors';
 
@@ -33,7 +32,6 @@ import {
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
   hidePortfolioTooltip,
-  requestAccountsPermissionWithId,
   setShowRestorePromptToFalse,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
@@ -53,7 +51,6 @@ import {
   setThreeBoxLastUpdated,
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
-  addPostApprovalRedirectURL,
   getPortfolioTooltipWasShownInThisSession,
   setPortfolioTooltipWasShownInThisSession,
 } from '../../ducks/app/app';
@@ -166,7 +163,6 @@ const mapStateToProps = (state) => {
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
-    permissionsSubjects: getPermissionSubjects(state),
   };
 };
 
@@ -216,10 +212,6 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
-  requestAccountsPermissionWithId: (origin) =>
-    dispatch(requestAccountsPermissionWithId(origin)),
-  addPostApprovalRedirectURL: (url) =>
-    dispatch(addPostApprovalRedirectURL(url)),
   setPortfolioTooltipWasShownInThisSession: () =>
     dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
