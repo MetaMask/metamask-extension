@@ -50,6 +50,7 @@ import {
 } from '../../../../shared/constants/network';
 import {
   determineTransactionAssetType,
+  determineTransactionContractCode,
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
@@ -694,6 +695,45 @@ export default class TransactionController extends EventEmitter {
     return this._getTransaction(txId);
   }
 
+  transactionHasGasDefaults(txMeta) {
+    return txMeta.txParams.gasPrice || txMeta.txParams.maxPriorityFeePerGas;
+  }
+
+  async addTransactionGasDefaults(txMeta) {
+    if (this.transactionHasGasDefaults(txMeta)) {
+      return txMeta;
+    }
+
+    const contractCode = await determineTransactionContractCode(
+      txMeta.txParams,
+      this.query,
+    );
+
+    let updateTxMeta = txMeta;
+    try {
+      updateTxMeta = await this.addTxGasDefaults(txMeta, contractCode);
+    } catch (error) {
+      log.warn(error);
+      updateTxMeta = this.txStateManager.getTransaction(txMeta.id);
+      updateTxMeta.loadingDefaults = false;
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'Failed to calculate gas defaults.',
+      );
+      throw error;
+    }
+
+    updateTxMeta.loadingDefaults = false;
+
+    // save txMeta
+    this.txStateManager.updateTransaction(
+      updateTxMeta,
+      'Added new unapproved transaction.',
+    );
+
+    return updateTxMeta;
+  }
+
   // ====================================================================================================================================================
 
   /**
@@ -704,6 +744,7 @@ export default class TransactionController extends EventEmitter {
    * @param origin
    * @param transactionType
    * @param sendFlowHistory
+   * @param actionId
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
@@ -711,6 +752,7 @@ export default class TransactionController extends EventEmitter {
     origin,
     transactionType,
     sendFlowHistory = [],
+    actionId,
   ) {
     if (
       transactionType !== undefined &&
@@ -719,6 +761,16 @@ export default class TransactionController extends EventEmitter {
       throw new Error(
         `TransactionController - invalid transactionType value: ${transactionType}`,
       );
+    }
+
+    if (actionId) {
+      let existingTxMeta =
+        this.txStateManager.getTransactionWithActionId(actionId);
+      if (existingTxMeta) {
+        this.emit('newUnapprovedTx', existingTxMeta);
+        existingTxMeta = this.addTransactionGasDefaults(existingTxMeta);
+        return existingTxMeta;
+      }
     }
 
     // validate
@@ -738,6 +790,10 @@ export default class TransactionController extends EventEmitter {
       origin,
       sendFlowHistory,
     });
+
+    if (actionId) {
+      txMeta.actionId = actionId;
+    }
 
     if (origin === ORIGIN_METAMASK) {
       // Assert the from address is the selected address
@@ -760,10 +816,7 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const { type, getCodeResponse } = await determineTransactionType(
-      txParams,
-      this.query,
-    );
+    const { type } = await determineTransactionType(txParams, this.query);
     txMeta.type = transactionType || type;
 
     // ensure value
@@ -774,25 +827,7 @@ export default class TransactionController extends EventEmitter {
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
-    try {
-      txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse);
-    } catch (error) {
-      log.warn(error);
-      txMeta = this.txStateManager.getTransaction(txMeta.id);
-      txMeta.loadingDefaults = false;
-      this.txStateManager.updateTransaction(
-        txMeta,
-        'Failed to calculate gas defaults.',
-      );
-      throw error;
-    }
-
-    txMeta.loadingDefaults = false;
-    // save txMeta
-    this.txStateManager.updateTransaction(
-      txMeta,
-      'Added new unapproved transaction.',
-    );
+    txMeta = this.addTransactionGasDefaults(txMeta);
 
     return txMeta;
   }

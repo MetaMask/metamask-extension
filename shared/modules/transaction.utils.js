@@ -132,6 +132,19 @@ export function parseStandardTokenTransactionData(data) {
 }
 
 /**
+ * Determines the contractCode of the transaction by analyzing the txParams.
+ *
+ * @param {object} txParams - Parameters for the transaction
+ * @param {EthQuery} query - EthQuery instance
+ * @returns {InferTransactionTypeResult}
+ */
+export async function determineTransactionContractCode(txParams, query) {
+  const { to } = txParams;
+  const { contractCode } = await readAddressAsContract(query, to);
+  return contractCode;
+}
+
+/**
  * Determines the type of the transaction by analyzing the txParams.
  * This method will return one of the types defined in shared/constants/transactions
  * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
