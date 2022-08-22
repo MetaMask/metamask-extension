@@ -130,12 +130,13 @@ export const callBackgroundMethod = (
 
 async function executeAction({ action, disconnectSideeffect }) {
   const {
+    actionId,
     request: { method, args },
     resolve,
     reject,
   } = action;
   try {
-    resolve(await promisifiedBackground[method](...args));
+    resolve(await promisifiedBackground[method](...args, actionId));
   } catch (err) {
     if (
       background.DisconnectError && // necessary to not break compatibility with background stubs or non-default implementations
