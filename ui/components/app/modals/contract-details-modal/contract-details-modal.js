@@ -16,6 +16,8 @@ import {
   DISPLAY,
   COLORS,
   JUSTIFY_CONTENT,
+  SIZES,
+  BORDER_STYLE,
 } from '../../../../helpers/constants/design-system';
 
 export default function ContractDetailsModal({ onClose, address, tokenName }) {
@@ -54,7 +56,13 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
         >
           {t('contractToken')}
         </Typography>
-        <Box className="contract-details-modal__content__contract">
+        <Box
+          display={DISPLAY.FLEX}
+          borderRadius={SIZES.SM}
+          borderStyle={BORDER_STYLE.SOLID}
+          borderColor={COLORS.BORDER_DEFAULT}
+          className="contract-details-modal__content__contract"
+        >
           <Identicon
             className="contract-details-modal__content__contract__identicon"
             address={address}
@@ -113,7 +121,13 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
         >
           {t('contractRequestingSpendingCap')}
         </Typography>
-        <Box className="contract-details-modal__content__contract">
+        <Box
+          display={DISPLAY.FLEX}
+          borderRadius={SIZES.SM}
+          borderStyle={BORDER_STYLE.SOLID}
+          borderColor={COLORS.BORDER_DEFAULT}
+          className="contract-details-modal__content__contract"
+        >
           <Identicon
             className="contract-details-modal__content__contract__identicon"
             address={address}
@@ -164,7 +178,14 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
           </Box>
         </Box>
       </Box>
-      <Box display={DISPLAY.FLEX} className="contract-details-modal__footer">
+      <Box
+        display={DISPLAY.FLEX}
+        paddingTop={6}
+        paddingRight={4}
+        paddingBottom={6}
+        paddingLeft={4}
+        className="contract-details-modal__footer"
+      >
         <Button
           type="secondary"
           onClick={() => {

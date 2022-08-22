@@ -1,15 +1,10 @@
 .contract-details-modal {
-  background-color: var(--color-background-default);
   width: 360px !important;
 
   &__content {
     border-bottom: 1px solid var(--color-border-muted);
 
     &__contract {
-      border: 1px solid var(--color-border-default);
-      border-radius: 4px;
-      display: flex;
-
       &__identicon {
         margin: 16px 16px 38px 16px;
       }
@@ -29,8 +24,6 @@
   }
 
   &__footer {
-    padding: 24px 16px;
-
     button + button {
       margin-left: 1rem;
     }
