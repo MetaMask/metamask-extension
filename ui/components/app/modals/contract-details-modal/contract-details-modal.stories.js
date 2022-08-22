@@ -25,7 +25,7 @@ export default {
   },
   args: {
     tokenName: 'DAI',
-    address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   },
 };
 
