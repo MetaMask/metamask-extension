@@ -14,6 +14,7 @@ import {
 import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 const CustomizeNonce = ({
   hideModal,
@@ -69,9 +70,9 @@ const CustomizeNonce = ({
               className="customize-nonce-modal__link"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360015489251"
+              href={ZENDESK_URLS.CUSTOMIZE_NONCE}
             >
-              {t('learnMore')}
+              {t('learnMoreUpperCase')}
             </Button>
           </Typography>
         </Box>
