@@ -1,0 +1,85 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { BaseIcon } from '../base-icon';
+
+###
+
+# Icons
+
+A selection of reusable svg icon react components generated using the `BaseIcon` component and [SVGR](https://react-svgr.com/docs/getting-started/)
+
+<Canvas>
+  <Story id="ui-components-component-library-icons-icons-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+All icon components accept all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={BaseIcon} />
+
+### Size
+
+Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of the icons. Defaults to `SIZES.SM`
+
+Possible sizes include:
+
+- `SIZES.XXS` 10px
+- `SIZES.XS` 12px
+- `SIZES.SM` 16px
+- `SIZES.MD` 20px
+- `SIZES.LG` 24px
+- `SIZES.XL` 32px
+
+<Canvas>
+  <Story id="ui-components-component-library-icons-icons-stories-js--size" />
+</Canvas>
+
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { IconAddSquareFilled } from '../ui/component-library/icons';
+
+<IconAddSquareFilled size={SIZES.XXS} />
+<IconAddSquareFilled size={SIZES.XS} />
+<IconAddSquareFilled size={SIZES.SM} />
+<IconAddSquareFilled size={SIZES.MD} />
+<IconAddSquareFilled size={SIZES.LG} />
+<IconAddSquareFilled size={SIZES.XL} />
+```
+
+### Color
+
+Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of the icons. Defaults to `COLORS.INHERIT` which will use the text color of the parent element. This is useful for inline icons.
+
+<Canvas>
+  <Story id="ui-components-component-library-icons-icons-stories-js--color" />
+</Canvas>
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+import { IconAddSquareFilled } from '../ui/component-library';
+
+<IconAddSquareFilled color={COLORS.INHERIT} />
+<IconAddSquareFilled color={COLORS.ICON_DEFAULT} />
+<IconAddSquareFilled color={COLORS.ICON_ALTERNATIVE} />
+<IconAddSquareFilled color={COLORS.ICON_MUTED} />
+<IconAddSquareFilled color={COLORS.OVERLAY_INVERSE} />
+<IconAddSquareFilled color={COLORS.PRIMARY_DEFAULT} />
+<IconAddSquareFilled color={COLORS.PRIMARY_INVERSE} />
+<IconAddSquareFilled color={COLORS.ERROR_DEFAULT} />
+<IconAddSquareFilled color={COLORS.ERROR_INVERSE} />
+<IconAddSquareFilled color={COLORS.SUCCESS_DEFAULT} />
+<IconAddSquareFilled color={COLORS.SUCCESS_INVERSE} />
+<IconAddSquareFilled color={COLORS.WARNING_DEFAULT} />
+<IconAddSquareFilled color={COLORS.WARNING_INVERSE} />
+<IconAddSquareFilled color={COLORS.INFO_DEFAULT} />
+<IconAddSquareFilled color={COLORS.INFO_INVERSE} />
+```
+
+### Icons Search
+
+Use the icon search to find icons
+
+<Canvas>
+  <Story id="ui-components-component-library-icons-icons-stories-js--icon-search" />
+</Canvas>

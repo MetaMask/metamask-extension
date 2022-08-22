@@ -1,0 +1,17 @@
+export const security = [
+  'IconEyeFilled',
+  'IconEyeSlashFilled',
+  'IconSecurityTickFilled',
+  'IconSecurityCrossFilled',
+  'IconSecuritySlashFilled',
+  'IconSecurityKeyFilled',
+  'IconSecuritySearchFilled',
+  'IconSecurityUserFilled',
+  'IconSecurityTimeFilled',
+  'IconSecurityCardFilled',
+  'IconPasswordCheckFilled',
+  'IconKeyFilled',
+  'IconLockCircleFilled',
+  'IconLockFilled',
+  'IconLockSlashFilled',
+];

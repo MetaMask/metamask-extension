@@ -53,3 +53,6 @@ notes.txt
 
 # TypeScript
 tsout/
+
+# Generated icons
+ui/components/component-library/icons/lib
