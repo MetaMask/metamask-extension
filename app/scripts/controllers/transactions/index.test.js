@@ -334,11 +334,14 @@ describe('Transaction Controller', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d';
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
-    let getSelectedAddress, getPermittedAccounts;
+    let getSelectedAddress, getPermittedAccounts, getDefaultGasFees;
     beforeEach(function () {
       getSelectedAddress = sinon
         .stub(txController, 'getSelectedAddress')
         .returns(selectedAddress);
+      getDefaultGasFees = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .returns({});
       getPermittedAccounts = sinon
         .stub(txController, 'getPermittedAccounts')
         .returns([selectedAddress]);
@@ -347,6 +350,7 @@ describe('Transaction Controller', function () {
     afterEach(function () {
       getSelectedAddress.restore();
       getPermittedAccounts.restore();
+      getDefaultGasFees.restore();
     });
 
     it('should add an unapproved transaction and return a valid txMeta', async function () {
