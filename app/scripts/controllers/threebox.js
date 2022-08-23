@@ -225,9 +225,8 @@ export default class ThreeBoxController {
       PreferencesController: preferences,
       AddressBookController: addressBook,
     };
-    const initialMigrationState = migrator.generateInitialState(
-      formattedStateBackup,
-    );
+    const initialMigrationState =
+      migrator.generateInitialState(formattedStateBackup);
     const migratedState = await migrator.migrateData(initialMigrationState);
     return {
       preferences: migratedState.data.PreferencesController,

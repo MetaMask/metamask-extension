@@ -110,7 +110,7 @@
   &__open-dropdown,
   &__open-to-dropdown {
     max-height: 330px;
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
     position: absolute;
     width: 100%;
   }
@@ -141,7 +141,7 @@
   &__open-to-dropdown {
     max-height: 194px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       max-height: 276px;
     }
   }

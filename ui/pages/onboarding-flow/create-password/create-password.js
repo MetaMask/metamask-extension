@@ -30,7 +30,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 export default function CreatePassword({
   createNewAccount,
@@ -140,7 +140,7 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         trackEvent({
-          event: 'Submit Password',
+          event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
           category: EVENT.CATEGORIES.ONBOARDING,
         });
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);

@@ -10,7 +10,7 @@ const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const { getVersion } = require('../lib/get-version');
 const { BuildType } = require('../lib/build-type');
-const { TASKS } = require('./constants');
+const { TASKS, ENVIRONMENT } = require('./constants');
 const {
   createTask,
   composeSeries,
@@ -22,17 +22,14 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { getBrowserVersionMap } = require('./utils');
+const { getBrowserVersionMap, getEnvironment } = require('./utils');
+const { getConfig, getProductionConfig } = require('./config');
+const { BUILD_TARGETS } = require('./constants');
 
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
 require('loose-envify');
 require('globalthis');
-require('@babel/plugin-proposal-object-rest-spread');
-require('@babel/plugin-transform-runtime');
-require('@babel/plugin-proposal-class-properties');
-require('@babel/plugin-proposal-optional-chaining');
-require('@babel/plugin-proposal-nullish-coalescing-operator');
 require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/preset-typescript');
@@ -55,9 +52,12 @@ require('eslint-plugin-react');
 require('eslint-plugin-react-hooks');
 require('eslint-plugin-jest');
 
-defineAndRunBuildTasks();
+defineAndRunBuildTasks().catch((error) => {
+  console.error(error.stack || error);
+  process.exitCode = 1;
+});
 
-function defineAndRunBuildTasks() {
+async function defineAndRunBuildTasks() {
   const {
     applyLavaMoat,
     buildType,
@@ -68,7 +68,7 @@ function defineAndRunBuildTasks() {
     shouldLintFenceFiles,
     skipStats,
     version,
-  } = parseArgv();
+  } = await parseArgv();
 
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
@@ -140,6 +140,17 @@ function defineAndRunBuildTasks() {
     ),
   );
 
+  // build production-like distributable build
+  createTask(
+    TASKS.DIST,
+    composeSeries(
+      clean,
+      styleTasks.prod,
+      composeParallel(scriptTasks.dist, staticTasks.prod, manifestTasks.prod),
+      zip,
+    ),
+  );
+
   // build for prod release
   createTask(
     TASKS.PROD,
@@ -152,7 +163,7 @@ function defineAndRunBuildTasks() {
   );
 
   // build just production scripts, for LavaMoat policy generation purposes
-  createTask(TASKS.SCRIPTS_PROD, scriptTasks.prod);
+  createTask(TASKS.SCRIPTS_DIST, scriptTasks.dist);
 
   // build for CI testing
   createTask(
@@ -169,19 +180,21 @@ function defineAndRunBuildTasks() {
   createTask(TASKS.styles, styleTasks.prod);
 
   // Finally, start the build process by running the entry task.
-  runTask(entryTask, { skipStats });
+  await runTask(entryTask, { skipStats });
 }
 
-function parseArgv() {
+async function parseArgv() {
   const { argv } = yargs(hideBin(process.argv))
     .usage('$0 <task> [options]', 'Build the MetaMask extension.', (_yargs) =>
       _yargs
         .positional('task', {
           description: `The task to run. There are a number of main tasks, each of which calls other tasks internally. The main tasks are:
 
-prod: Create an optimized build for a production environment.
-
 dev: Create an unoptimized, live-reloading build for local development.
+
+dist: Create an optimized production-like for a non-production environment.
+
+prod: Create an optimized build for a production environment.
 
 test: Create an optimized build for running e2e tests.
 
@@ -258,6 +271,18 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
   const shouldLintFenceFiles = lintFenceFiles ?? !/dev/iu.test(task);
 
   const version = getVersion(buildType, buildVersion);
+
+  const highLevelTasks = Object.values(BUILD_TARGETS);
+  if (highLevelTasks.includes(task)) {
+    const environment = getEnvironment({ buildTarget: task });
+    if (environment === ENVIRONMENT.PRODUCTION) {
+      // Output ignored, this is only called to ensure config is validated
+      await getProductionConfig(buildType);
+    } else {
+      // Output ignored, this is only called to ensure config is validated
+      await getConfig();
+    }
+  }
 
   return {
     applyLavaMoat,

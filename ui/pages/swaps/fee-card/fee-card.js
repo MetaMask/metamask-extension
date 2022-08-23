@@ -118,7 +118,7 @@ export default function FeeCard({
                 secondaryFee?.maxFee !== undefined && (
                   <>
                     <Typography
-                      tag="span"
+                      as="span"
                       fontWeight={FONT_WEIGHT.BOLD}
                       color={COLORS.TEXT_ALTERNATIVE}
                       variant={TYPOGRAPHY.H7}

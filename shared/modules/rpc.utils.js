@@ -1,7 +1,6 @@
-import { SECOND } from '../constants/time';
 import getFetchWithTimeout from './fetch-with-timeout';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * Makes a JSON RPC request to the given URL, with the given RPC method and params.

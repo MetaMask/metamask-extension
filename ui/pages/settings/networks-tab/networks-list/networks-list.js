@@ -23,12 +23,10 @@ const NetworksList = ({
     searchedNetworks.length === 0 && searchQuery === ''
       ? networksToRender
       : searchedNetworks;
-  const searchedNetworksToRenderThatAreNotTestNetworks = searchedNetworksToRender.filter(
-    (network) => !network.isATestNetwork,
-  );
-  const searchedNetworksToRenderThatAreTestNetworks = searchedNetworksToRender.filter(
-    (network) => network.isATestNetwork,
-  );
+  const searchedNetworksToRenderThatAreNotTestNetworks =
+    searchedNetworksToRender.filter((network) => !network.isATestNetwork);
+  const searchedNetworksToRenderThatAreTestNetworks =
+    searchedNetworksToRender.filter((network) => network.isATestNetwork);
 
   return (
     <div

@@ -1,0 +1,16 @@
+diff --git a/node_modules/@types/madge/index.d.ts b/node_modules/@types/madge/index.d.ts
+index f2a8652..3a26bfe 100755
+--- a/node_modules/@types/madge/index.d.ts
++++ b/node_modules/@types/madge/index.d.ts
+@@ -265,6 +265,10 @@ declare namespace madge {
+          *
+          * @default undefined
+          */
+-        dependencyFilter?: (id: string) => boolean;
++        dependencyFilter?: (
++          dependencyFilePath: string,
++          traversedFilePath: string,
++          baseDir: string,
++        ) => boolean;
+     }
+ }

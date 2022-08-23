@@ -35,7 +35,7 @@ const modalContainerBaseStyle = {
   border: '1px solid var(--color-border-default)',
   borderRadius: '8px',
   backgroundColor: 'var(--color-background-default)',
-  boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
+  boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
 };
 
 const modalContainerLaptopStyle = {
@@ -54,7 +54,7 @@ const accountModalStyle = {
   mobileModalStyle: {
     width: '95%',
     // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
     borderRadius: '4px',
     top: '10%',
     transform: 'none',
@@ -65,7 +65,7 @@ const accountModalStyle = {
   laptopModalStyle: {
     width: '335px',
     // top: 'calc(33% + 45px)',
-    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
     borderRadius: '4px',
     top: '10%',
     transform: 'none',
@@ -89,7 +89,7 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
+      boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
       top: '0',
       display: 'flex',
     },
@@ -100,7 +100,7 @@ const MODALS = {
       left: '0',
       right: '0',
       margin: '0 auto',
-      boxShadow: '0 0 6px 0 rgba(0,0,0,0.3)',
+      boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
       borderRadius: '7px',
       transform: 'none',
       height: 'calc(80% - 20px)',
@@ -117,7 +117,7 @@ const MODALS = {
     mobileModalStyle: {
       width: '95%',
       top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
       transform: 'none',
       left: '0',
       right: '0',
@@ -127,7 +127,7 @@ const MODALS = {
     laptopModalStyle: {
       width: '375px',
       top: '10%',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
       transform: 'none',
       left: '0',
       right: '0',

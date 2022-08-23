@@ -2,7 +2,7 @@
   min-height: 250.72px;
   border-radius: 4px;
   background-color: var(--color-background-default);
-  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 
   &__container {
     padding: 24px 27px 21px;

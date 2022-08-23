@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -11,13 +11,13 @@
     position: relative;
     height: 100%;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
       top: 0;
       box-shadow: none;
     }
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       height: 620px;
     }
 
@@ -153,7 +153,6 @@
     display: flex;
     flex-flow: column;
     flex: 1 1 auto;
-    height: 0;
   }
 
   &__origin-row {
@@ -166,6 +165,10 @@
   &__origin-label {
     flex-grow: 1;
     margin-right: 5px;
+  }
+
+  &__origin-icon {
+    flex: 0 0 24px;
   }
 
   &__origin {
@@ -193,7 +196,7 @@
 
   &__rows {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     border-top: 1px solid var(--color-border-default);
     display: flex;

@@ -36,7 +36,8 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
         className={classnames(
           'connected-accounts-permissions__list-container',
           {
-            'connected-accounts-permissions__list-container--expanded': expanded,
+            'connected-accounts-permissions__list-container--expanded':
+              expanded,
           },
         )}
       >

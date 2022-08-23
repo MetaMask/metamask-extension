@@ -20,7 +20,7 @@ const logWeb3ShimUsage = {
 export default logWeb3ShimUsage;
 
 /**
- * @typedef {Object} LogWeb3ShimUsageOptions
+ * @typedef {object} LogWeb3ShimUsageOptions
  * @property {Function} sendMetrics - A function that registers a metrics event.
  * @property {Function} getWeb3ShimUsageState - A function that gets web3 shim
  * usage state for the given origin.

@@ -198,7 +198,7 @@ function updateChainIds(networkEntries, chainId) {
  *
  * @param localhostTokens
  * @param rpcTokens
- * @returns {Array<Object>}
+ * @returns {Array<object>}
  */
 function mergeTokenArrays(localhostTokens, rpcTokens) {
   const localhostTokensMap = tokenArrayToMap(localhostTokens);

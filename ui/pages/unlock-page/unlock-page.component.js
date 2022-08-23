@@ -7,7 +7,11 @@ import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { EVENT } from '../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../shared/constants/metametrics';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -49,6 +53,8 @@ export default class UnlockPage extends Component {
 
   submitting = false;
 
+  failed_attempts = 0;
+
   animationEventEmitter = new EventEmitter();
 
   UNSAFE_componentWillMount() {
@@ -79,10 +85,9 @@ export default class UnlockPage extends Component {
       this.context.trackEvent(
         {
           category: EVENT.CATEGORIES.NAVIGATION,
-          event: 'Success',
+          event: EVENT_NAMES.APP_UNLOCKED,
           properties: {
-            action: 'Unlock',
-            legacy_event: true,
+            failed_attempts: this.failed_attempts,
           },
         },
         {
@@ -97,16 +102,16 @@ export default class UnlockPage extends Component {
         showOptInModal();
       }
     } catch ({ message }) {
+      this.failed_attempts += 1;
+
       if (message === 'Incorrect password') {
-        const newState = await forceUpdateMetamaskState();
+        await forceUpdateMetamaskState();
         this.context.trackEvent({
           category: EVENT.CATEGORIES.NAVIGATION,
-          event: 'Incorrect Password',
+          event: EVENT_NAMES.APP_UNLOCKED_FAILED,
           properties: {
-            action: 'Unlock',
-            legacy_event: true,
-            numberOfTokens: newState.tokens.length,
-            numberOfAccounts: Object.keys(newState.accounts).length,
+            reason: 'incorrect_password',
+            failed_attempts: this.failed_attempts,
           },
         });
       }
@@ -205,6 +210,22 @@ export default class UnlockPage extends Component {
                 target="_blank"
                 rel="noopener noreferrer"
                 key="need-help-link"
+                onClick={() => {
+                  this.context.trackEvent(
+                    {
+                      category: EVENT.CATEGORIES.NAVIGATION,
+                      event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                      properties: {
+                        url: SUPPORT_LINK,
+                      },
+                    },
+                    {
+                      contextPropsIntoEventProperties: [
+                        CONTEXT_PROPS.PAGE_TITLE,
+                      ],
+                    },
+                  );
+                }}
               >
                 {t('needHelpLinkText')}
               </a>,

@@ -8,7 +8,11 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
 
 import {
   getCurrentChainId,
@@ -17,7 +21,6 @@ import {
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
-  getSwapsDefaultToken,
 } from '../../../selectors';
 
 import {
@@ -34,10 +37,8 @@ import {
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
-  setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
-import Box from '../../../components/ui/box';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -50,16 +51,20 @@ import {
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { stopPollingForQuotes } from '../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  stopPollingForQuotes,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
+import CreateNewSwap from '../create-new-swap';
+import ViewOnBlockExplorer from '../view-on-block-explorer';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
-import ViewOnEtherScanLink from './view-on-ether-scan-link';
 
 export default function AwaitingSwap({
   swapComplete,
@@ -85,11 +90,8 @@ export default function AwaitingSwap({
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-
-  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
-    false,
-  );
+  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
+    useState(false);
 
   let feeinUnformattedFiat;
 
@@ -141,11 +143,6 @@ export default function AwaitingSwap({
     { blockExplorerUrl: baseNetworkUrl },
   );
 
-  const isCustomBlockExplorerUrl = Boolean(
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
-      rpcPrefs.blockExplorerUrl,
-  );
-
   let headerText;
   let statusImage;
   let descriptionText;
@@ -166,6 +163,20 @@ export default function AwaitingSwap({
         href={SUPPORT_LINK}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => {
+          trackEvent(
+            {
+              category: EVENT.CATEGORIES.SWAPS,
+              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              properties: {
+                url: SUPPORT_LINK,
+              },
+            },
+            {
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+            },
+          );
+        }}
       >
         {new URL(SUPPORT_LINK).hostname}
       </a>,
@@ -173,10 +184,9 @@ export default function AwaitingSwap({
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
     content = blockExplorerUrl && (
-      <ViewOnEtherScanLink
-        txHash={txHash}
+      <ViewOnBlockExplorer
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
       />
     );
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
@@ -221,10 +231,9 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnEtherScanLink
-        txHash={txHash}
+      <ViewOnBlockExplorer
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
       />
     );
   } else if (!errorKey && swapComplete) {
@@ -240,34 +249,12 @@ export default function AwaitingSwap({
       </span>,
     ]);
     content = blockExplorerUrl && (
-      <ViewOnEtherScanLink
-        txHash={txHash}
+      <ViewOnBlockExplorer
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
+        sensitiveTrackingProperties={sensitiveProperties}
       />
     );
   }
-
-  const MakeAnotherSwap = () => {
-    return (
-      <Box marginBottom={3}>
-        <a
-          href="#"
-          onClick={async () => {
-            trackEvent({
-              event: 'Make Another Swap',
-              category: EVENT.CATEGORIES.SWAPS,
-              sensitiveProperties,
-            });
-            await dispatch(navigateBackToBuildQuote(history));
-            dispatch(setSwapsFromToken(defaultSwapsToken));
-          }}
-        >
-          {t('makeAnotherSwap')}
-        </a>
-      </Box>
-    );
-  };
 
   useEffect(() => {
     if (errorKey) {
@@ -291,7 +278,9 @@ export default function AwaitingSwap({
         <div className="awaiting-swap__main-description">{descriptionText}</div>
         {content}
       </div>
-      {!errorKey && swapComplete ? <MakeAnotherSwap /> : null}
+      {!errorKey && swapComplete ? (
+        <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
+      ) : null}
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
@@ -315,7 +304,8 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}

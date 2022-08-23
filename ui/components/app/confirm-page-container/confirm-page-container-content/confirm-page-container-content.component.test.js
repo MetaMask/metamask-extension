@@ -70,7 +70,7 @@ describe('Confirm Page Container Content', () => {
     expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
     expect(getByText('Confirm').closest('button')).toBeDisabled();
     expect(
-      getByText('Transaction Error. Exception thrown in contract code.'),
+      getByText('Transaction error. Exception thrown in contract code.'),
     ).toBeInTheDocument();
 
     const cancelButton = getByText('Reject');
@@ -91,7 +91,7 @@ describe('Confirm Page Container Content', () => {
       ),
     ).not.toBeInTheDocument();
     expect(
-      queryByText('Transaction Error. Exception thrown in contract code.'),
+      queryByText('Transaction error. Exception thrown in contract code.'),
     ).not.toBeInTheDocument();
     expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
 

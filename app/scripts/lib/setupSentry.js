@@ -103,7 +103,33 @@ export default function setupSentry({ release, getState }) {
     environment,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: (report) => {
+      if (getState) {
+        const appState = getState();
+        if (!appState?.store?.metamask?.participateInMetaMetrics) {
+          return null;
+        }
+      } else {
+        return null;
+      }
+      return rewriteReport(report);
+    },
+    beforeBreadcrumb(breadcrumb) {
+      if (getState) {
+        const appState = getState();
+        if (
+          Object.values(appState).length &&
+          (!appState?.store?.metamask?.participateInMetaMetrics ||
+            !appState?.store?.metamask?.completedOnboarding ||
+            breadcrumb?.category === 'ui.input')
+        ) {
+          return null;
+        }
+      } else {
+        return null;
+      }
+      return breadcrumb;
+    },
   });
 
   function rewriteReport(report) {
