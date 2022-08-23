@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
+import { formatIconUrlWithProxy } from '@metamask/controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
@@ -16,6 +17,16 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import {
+  ETH_SYMBOL,
+  MATIC_SYMBOL,
+  BNB_SYMBOL,
+  AVALANCHE_SYMBOL,
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+} from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
@@ -55,8 +66,15 @@ export function getRenderableTokenData(
       )
     : '';
 
-  const usedIconUrl =
-    iconUrl || tokenList[address?.toLowerCase()]?.iconUrl || token?.image;
+  const tokenIconUrl =
+    (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
+    (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
+    (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
+    (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
+      ? iconUrl
+      : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
+  const usedIconUrl = tokenIconUrl || token?.image;
+
   return {
     ...token,
     primaryLabel: symbol,
