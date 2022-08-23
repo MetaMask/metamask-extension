@@ -37,10 +37,26 @@ function Jazzicon({
 }
 
 Jazzicon.propTypes = {
+  /**
+   * Address used for generating random image
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Add custom css class
+   */
   className: PropTypes.string,
+  /**
+   * Sets the width and height of the inner img element
+   * Jazzicon accepts a pixel diameter
+   */
   diameter: PropTypes.number,
+  /**
+   * Add inline style for the component
+   */
   style: PropTypes.object,
+  /**
+   * Add list of token in object
+   */
   tokenList: PropTypes.object,
 };
 
