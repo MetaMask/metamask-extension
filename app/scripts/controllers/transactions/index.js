@@ -696,10 +696,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   async addTransactionGasDefaults(txMeta) {
-    // if (txMeta.txParams.gasPrice || txMeta.txParams.maxPriorityFeePerGas) {
-    //   return txMeta;
-    // }
-
     const contractCode = await determineTransactionContractCode(
       txMeta.txParams,
       this.query,
@@ -721,7 +717,8 @@ export default class TransactionController extends EventEmitter {
 
     updateTxMeta.loadingDefaults = false;
 
-    // save txMeta
+    // The history note used here 'Added new unapproved transaction.' is confusing update call only updated the gas defaults.
+    // We need to improve `this.addTransaction` to accept history note and change note here.
     this.txStateManager.updateTransaction(
       updateTxMeta,
       'Added new unapproved transaction.',
