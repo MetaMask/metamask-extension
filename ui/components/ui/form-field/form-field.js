@@ -10,6 +10,7 @@ import {
   DISPLAY,
   TYPOGRAPHY,
   FONT_WEIGHT,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 
 import NumericInput from '../numeric-input/numeric-input.component';
@@ -18,9 +19,13 @@ import InfoTooltip from '../info-tooltip/info-tooltip';
 export default function FormField({
   dataTestId,
   titleText,
+  TitleTextCustomComponent,
   titleUnit,
+  TitleUnitCustomComponent,
   tooltipText,
+  TooltipCustomComponent,
   titleDetail,
+  titleDetailWrapperProps,
   error,
   onChange,
   value,
@@ -43,37 +48,48 @@ export default function FormField({
     >
       <label>
         <div className="form-field__heading">
-          <div className="form-field__heading-title">
-            {titleText && (
-              <Typography
-                tag={TYPOGRAPHY.H6}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H6}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {titleText}
-              </Typography>
-            )}
-            {titleUnit && (
-              <Typography
-                tag={TYPOGRAPHY.H6}
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {titleUnit}
-              </Typography>
-            )}
-            {tooltipText && (
-              <InfoTooltip position="top" contentText={tooltipText} />
-            )}
-          </div>
+          <Box
+            className="form-field__heading-title"
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+          >
+            {TitleTextCustomComponent
+              ? TitleTextCustomComponent
+              : titleText && (
+                  <Typography
+                    tag={TYPOGRAPHY.H6}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                    variant={TYPOGRAPHY.H6}
+                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                  >
+                    {titleText}
+                  </Typography>
+                )}
+            {TitleUnitCustomComponent
+              ? TitleUnitCustomComponent
+              : titleUnit && (
+                  <Typography
+                    tag={TYPOGRAPHY.H6}
+                    variant={TYPOGRAPHY.H6}
+                    color={COLORS.TEXT_ALTERNATIVE}
+                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                  >
+                    {titleUnit}
+                  </Typography>
+                )}
+            {TooltipCustomComponent
+              ? TooltipCustomComponent
+              : tooltipText && (
+                  <InfoTooltip position="top" contentText={tooltipText} />
+                )}
+          </Box>
           {titleDetail && (
             <Box
               className="form-field__heading-detail"
               textAlign={TEXT_ALIGN.END}
               marginBottom={3}
               marginRight={2}
+              {...titleDetailWrapperProps}
             >
               {titleDetail}
             </Box>
@@ -157,17 +173,39 @@ FormField.propTypes = {
    */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
+   * A custom component to replace the title text Typography component
+   * titleText will be ignored if this is provided
+   */
+  TitleTextCustomComponent: PropTypes.node,
+  /**
    * Show unit (eg. ETH)
    */
   titleUnit: PropTypes.string,
+  /**
+   * A custom component to replace the title unit Typography component
+   * titleUnit will be ignored if this is provided
+   */
+  TitleUnitCustomComponent: PropTypes.node,
   /**
    * Add Tooltip and text content
    */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
+   * A custom component to replace the tooltip component
+   * tooltipText will be ignored if this is provided
+   */
+  TooltipCustomComponent: PropTypes.node,
+  /**
    * Show content (text, image, component) in title
    */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Props to pass to wrapping Box component of the titleDetail component
+   * Accepts all props of the Box component
+   */
+  titleDetailWrapperProps: {
+    ...Box.PropTypes,
+  },
   /**
    * Show error message
    */
