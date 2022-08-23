@@ -1005,7 +1005,7 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@sentry/browser>tslib": {
+    "@sentry/utils>tslib": {
       "globals": {
         "define": true
       }
@@ -1088,7 +1088,7 @@
     },
     "@typescript-eslint/eslint-plugin>tsutils": {
       "packages": {
-        "@sentry/browser>tslib": true,
+        "@sentry/utils>tslib": true,
         "typescript": true
       }
     },
