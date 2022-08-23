@@ -53,35 +53,32 @@ export default function FormField({
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
           >
-            {TitleTextCustomComponent
-              ? TitleTextCustomComponent
-              : titleText && (
-                  <Typography
-                    tag={TYPOGRAPHY.H6}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                    variant={TYPOGRAPHY.H6}
-                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                  >
-                    {titleText}
-                  </Typography>
-                )}
-            {TitleUnitCustomComponent
-              ? TitleUnitCustomComponent
-              : titleUnit && (
-                  <Typography
-                    tag={TYPOGRAPHY.H6}
-                    variant={TYPOGRAPHY.H6}
-                    color={COLORS.TEXT_ALTERNATIVE}
-                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                  >
-                    {titleUnit}
-                  </Typography>
-                )}
-            {TooltipCustomComponent
-              ? TooltipCustomComponent
-              : tooltipText && (
-                  <InfoTooltip position="top" contentText={tooltipText} />
-                )}
+            {TitleTextCustomComponent ||
+              (titleText && (
+                <Typography
+                  tag={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H6}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {titleText}
+                </Typography>
+              ))}
+            {TitleUnitCustomComponent ||
+              (titleUnit && (
+                <Typography
+                  tag={TYPOGRAPHY.H6}
+                  variant={TYPOGRAPHY.H6}
+                  color={COLORS.TEXT_ALTERNATIVE}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {titleUnit}
+                </Typography>
+              ))}
+            {TooltipCustomComponent ||
+              (tooltipText && (
+                <InfoTooltip position="top" contentText={tooltipText} />
+              ))}
           </Box>
           {titleDetail && (
             <Box
