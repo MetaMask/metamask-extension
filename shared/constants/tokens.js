@@ -36,3 +36,6 @@ export const STATIC_MAINNET_TOKEN_LIST = Object.keys(contractMap).reduce(
   },
   {},
 );
+
+export const TOKEN_API_METASWAP_CODEFI_URL =
+  'https://token-api.metaswap.codefi.network/tokens/';

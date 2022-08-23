@@ -13,3 +13,19 @@ index eb41a0a..3f891ea 100644
        // deps,
        // source: sourceMeta.code
      }
+diff --git a/node_modules/@lavamoat/lavapack/src/runtime.js b/node_modules/@lavamoat/lavapack/src/runtime.js
+index 58f76f3..53df0e7 100644
+--- a/node_modules/@lavamoat/lavapack/src/runtime.js
++++ b/node_modules/@lavamoat/lavapack/src/runtime.js
+@@ -11160,6 +11160,11 @@ function makePrepareRealmGlobalFromConfig ({ createFunctionWrapper }) {
+         rootPackageCompartment.globalThis[ref] = rootPackageCompartment.globalThis
+       }
+ 
++      // Allow root compartment to expose things to the initial execution environment of the realm.
++      // This is intended to support passing data to shims run before lockdown.
++      globalThis.rootGlobals = {}
++      rootPackageCompartment.globalThis.rootGlobals = globalThis.rootGlobals
++
+       // save the compartment for use by other modules in the package
+       packageCompartmentCache.set(rootPackageName, rootPackageCompartment)
+ 
