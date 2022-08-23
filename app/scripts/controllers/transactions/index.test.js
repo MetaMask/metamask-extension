@@ -372,6 +372,62 @@ describe('Transaction Controller', function () {
       assert.deepEqual(txMeta, memTxMeta);
     });
 
+    it('should add only 1 unapproved transaction when called twice with same actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1, transactionCount2);
+    });
+
+    it('should add multiple transactions when called with different actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '00000',
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1 + 1, transactionCount2);
+    });
+
     it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
       providerResultStub.eth_gasPrice = '4a817c800';
       txController.once('newUnapprovedTx', (txMetaFromEmit) => {

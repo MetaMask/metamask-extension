@@ -94,7 +94,7 @@ jest.mock('lodash', () => ({
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  addUnapprovedTransaction: jest.fn((_w, _x, _y, _z, cb) => {
+  addUnapprovedTransaction: jest.fn((_v, _w, _x, _y, _z, cb) => {
     cb(null);
   }),
   updateTransactionSendFlowHistory: jest.fn((_x, _y, cb) => cb(null)),
