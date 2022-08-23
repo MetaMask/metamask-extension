@@ -735,8 +735,8 @@ export default class TransactionController extends EventEmitter {
    *
    * actionId is used to uniquely identify a request to create a transaction.
    * Only 1 transaction will be created for multiple requests with same actionId.
-   * actionId is fix used for make the action idempotent to deal with scenario when
-   * action is invoked multiple times with same parameters in MV3 due to service worker re-start.
+   * actionId is fix used for making this action idempotent to deal with scenario when
+   * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
    *
    * @param txParams
    * @param origin
@@ -761,6 +761,7 @@ export default class TransactionController extends EventEmitter {
       );
     }
 
+    // In transaction is found for same action id, do not create a new transaction.
     if (actionId) {
       let existingTxMeta =
         this.txStateManager.getTransactionWithActionId(actionId);
@@ -789,6 +790,7 @@ export default class TransactionController extends EventEmitter {
       sendFlowHistory,
     });
 
+    // Add actionId to txMeta to check if same actionId is seen again
     if (actionId) {
       txMeta.actionId = actionId;
     }
