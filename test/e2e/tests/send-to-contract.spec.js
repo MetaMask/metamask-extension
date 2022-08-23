@@ -1,7 +1,9 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Send ERC20 token to contract address', function () {
+  const smartContract = SMART_CONTRACTS.HST;
   const ganacheOptions = {
     accounts: [
       {
@@ -17,39 +19,27 @@ describe('Send ERC20 token to contract address', function () {
         dapp: true,
         fixtures: 'connected-state',
         ganacheOptions,
+        smartContract,
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
         // Create TST
-        await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement('#createToken');
-        await driver.waitUntilXWindowHandles(3);
+        await driver.openNewPage(
+          `http://127.0.0.1:8080/?contract=${contractAddress}`,
+        );
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
-        const dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(dapp);
-        const tokenAddress = await driver.waitForSelector({
-          css: '#tokenAddress',
-          text: '0x',
-        });
-        const tokenAddressText = await tokenAddress.getText();
 
         // Add token
-        await driver.switchToWindow(dapp);
+        await driver.findClickableElement('#deployButton');
         await driver.clickElement('#watchAsset');
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -69,7 +59,7 @@ describe('Send ERC20 token to contract address', function () {
         // Type contract address
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
-          tokenAddressText,
+          contractAddress,
         );
 
         // Verify warning

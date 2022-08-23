@@ -7,6 +7,6 @@ export default create({
   brandTitle: 'MetaMask Storybook',
 
   // Typography
-  fontBase: 'Euclid, Roboto, Helvetica, Arial, sans-serif',
+  fontBase: 'Euclid Circular B, Roboto, Helvetica, Arial, sans-serif',
   fontCode: 'Inconsolata, monospace',
 });

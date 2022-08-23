@@ -20,7 +20,6 @@ export default class EndOfFlowScreen extends PureComponent {
 
   static propTypes = {
     history: PropTypes.object,
-    completionMetaMetricsName: PropTypes.string,
     setCompletedOnboarding: PropTypes.func,
     onboardingInitiator: PropTypes.exact({
       location: PropTypes.string,
@@ -37,16 +36,8 @@ export default class EndOfFlowScreen extends PureComponent {
   }
 
   async _onOnboardingComplete() {
-    const { setCompletedOnboarding, completionMetaMetricsName } = this.props;
+    const { setCompletedOnboarding } = this.props;
     await setCompletedOnboarding();
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: completionMetaMetricsName,
-      properties: {
-        action: 'Onboarding Complete',
-        legacy_event: true,
-      },
-    });
   }
 
   onComplete = async () => {

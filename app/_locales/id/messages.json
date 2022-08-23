@@ -2308,10 +2308,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
   },
-  "numberOfNewTokensDetected": {
-    "message": "$1 token baru ditemukan di akun ini",
-    "description": "$1 is the number of new tokens detected"
-  },
   "ofTextNofM": {
     "message": "dari"
   },

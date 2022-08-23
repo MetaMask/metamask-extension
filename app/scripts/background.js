@@ -360,7 +360,7 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     },
   );
 
-  setupSentryGetStateGlobal(controller.store);
+  setupSentryGetStateGlobal(controller);
 
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
@@ -788,11 +788,11 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 function setupSentryGetStateGlobal(store) {
   global.getSentryState = function () {
     const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
+    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
     return {
       browser: window.navigator.userAgent,
       store: debugState,
-      version: global.platform.getVersion(),
+      version: platform.getVersion(),
     };
   };
 }
