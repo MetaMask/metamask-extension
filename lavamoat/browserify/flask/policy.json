@@ -3846,9 +3846,9 @@
       },
       "packages": {
         "@sentry/browser>@sentry/core": true,
-        "@sentry/browser>@sentry/types": true,
-        "@sentry/browser>@sentry/utils": true,
-        "@sentry/browser>tslib": true
+        "@sentry/types": true,
+        "@sentry/utils": true,
+        "@sentry/utils>tslib": true
       }
     },
     "@sentry/browser>@sentry/core": {
@@ -3859,9 +3859,9 @@
       "packages": {
         "@sentry/browser>@sentry/core>@sentry/hub": true,
         "@sentry/browser>@sentry/core>@sentry/minimal": true,
-        "@sentry/browser>@sentry/types": true,
-        "@sentry/browser>@sentry/utils": true,
-        "@sentry/browser>tslib": true
+        "@sentry/types": true,
+        "@sentry/utils": true,
+        "@sentry/utils>tslib": true
       }
     },
     "@sentry/browser>@sentry/core>@sentry/hub": {
@@ -3870,18 +3870,32 @@
         "setInterval": true
       },
       "packages": {
-        "@sentry/browser>@sentry/types": true,
-        "@sentry/browser>@sentry/utils": true,
-        "@sentry/browser>tslib": true
+        "@sentry/types": true,
+        "@sentry/utils": true,
+        "@sentry/utils>tslib": true
       }
     },
     "@sentry/browser>@sentry/core>@sentry/minimal": {
       "packages": {
         "@sentry/browser>@sentry/core>@sentry/hub": true,
-        "@sentry/browser>tslib": true
+        "@sentry/utils>tslib": true
       }
     },
-    "@sentry/browser>@sentry/utils": {
+    "@sentry/integrations": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/types": true,
+        "@sentry/utils": true,
+        "@sentry/utils>tslib": true,
+        "localforage": true
+      }
+    },
+    "@sentry/utils": {
       "globals": {
         "CustomEvent": true,
         "DOMError": true,
@@ -3899,27 +3913,13 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>tslib": true,
+        "@sentry/utils>tslib": true,
         "browserify>process": true
       }
     },
-    "@sentry/browser>tslib": {
+    "@sentry/utils>tslib": {
       "globals": {
         "define": true
-      }
-    },
-    "@sentry/integrations": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/browser>@sentry/types": true,
-        "@sentry/browser>@sentry/utils": true,
-        "@sentry/browser>tslib": true,
-        "localforage": true
       }
     },
     "@spruceid/siwe-parser": {
