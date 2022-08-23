@@ -58,6 +58,10 @@ AvatarBadge.propTypes = {
    * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl',
    */
   size: PropTypes.oneOf(Object.values(SIZES)),
+  /**
+   * The position of the AvatarBadge
+   * Possible values could be 'top', 'bottom',
+   */
   badgePosition: PropTypes.oneOf(badgePosition),
   /**
    * The children to be rendered inside the AvatarBadge
