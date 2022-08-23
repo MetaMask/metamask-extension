@@ -695,14 +695,10 @@ export default class TransactionController extends EventEmitter {
     return this._getTransaction(txId);
   }
 
-  transactionHasGasDefaults(txMeta) {
-    return txMeta.txParams.gasPrice || txMeta.txParams.maxPriorityFeePerGas;
-  }
-
   async addTransactionGasDefaults(txMeta) {
-    if (this.transactionHasGasDefaults(txMeta)) {
-      return txMeta;
-    }
+    // if (txMeta.txParams.gasPrice || txMeta.txParams.maxPriorityFeePerGas) {
+    //   return txMeta;
+    // }
 
     const contractCode = await determineTransactionContractCode(
       txMeta.txParams,
