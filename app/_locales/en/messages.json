@@ -369,6 +369,9 @@
   "assets": {
     "message": "Assets"
   },
+  "attemptSendingAssets": {
+    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
+  },
   "attemptToCancel": {
     "message": "Attempt to cancel?"
   },
@@ -582,6 +585,9 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToManuallyAdd": {
+    "message": "Click here to manually add the tokens."
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
@@ -2040,6 +2046,10 @@
   },
   "name": {
     "message": "Name"
+  },
+  "nativeToken": {
+    "message": "The native token on this network is $1. It is the token used for gas fees.",
+    "description": "$1 represents the name of the native token on the current network"
   },
   "needCryptoInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
@@ -3762,6 +3772,9 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
+  "switchedTo": {
+    "message": "You have switched to"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -3828,6 +3841,9 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "thingsToKeep": {
+    "message": "Things to keep in mind:"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -3889,6 +3905,9 @@
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
+  },
+  "tokenShowUp": {
+    "message": "Your tokens may not automatically show up in your wallet."
   },
   "tokenSymbol": {
     "message": "Token symbol"
