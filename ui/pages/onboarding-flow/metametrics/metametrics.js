@@ -17,14 +17,9 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-
-const firstTimeFlowTypeNameMap = {
-  create: 'Selected Create New Wallet',
-  import: 'Selected Import Wallet',
-};
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -35,8 +30,6 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const firstTimeSelectionMetaMetricsName =
-    firstTimeFlowTypeNameMap[firstTimeFlowType];
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -50,7 +43,7 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: 'Metrics Opt In',
+            event: EVENT_NAMES.METRICS_OPT_IN,
             properties: {
               action: 'Metrics Option',
               legacy_event: true,
@@ -65,10 +58,12 @@ export default function OnboardingMetametrics() {
       trackEvent(
         {
           category: EVENT.CATEGORIES.ONBOARDING,
-          event: firstTimeSelectionMetaMetricsName,
+          event: EVENT_NAMES.WALLET_SETUP_STARTED,
           properties: {
-            action: 'Import or Create',
-            legacy_event: true,
+            account_type:
+              firstTimeFlowType === 'create'
+                ? EVENT.ACCOUNT_TYPES.DEFAULT
+                : EVENT.ACCOUNT_TYPES.IMPORTED,
           },
         },
         {
@@ -93,7 +88,7 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: 'Metrics Opt Out',
+            event: EVENT_NAMES.METRICS_OPT_OUT,
             properties: {
               action: 'Metrics Option',
               legacy_event: true,

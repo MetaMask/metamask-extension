@@ -8,6 +8,7 @@ export const RestrictedMethods = Object.freeze({
   snap_confirm: 'snap_confirm',
   snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
+  snap_getBip32Entropy: 'snap_getBip32Entropy',
   'snap_getBip44Entropy_*': 'snap_getBip44Entropy_*',
   'wallet_snap_*': 'wallet_snap_*',
   ///: END:ONLY_INCLUDE_IN

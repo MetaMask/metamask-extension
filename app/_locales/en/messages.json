@@ -429,6 +429,9 @@
   "basic": {
     "message": "Basic"
   },
+  "beCareful": {
+    "message": "Be careful"
+  },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
@@ -831,6 +834,9 @@
   "customSpendLimit": {
     "message": "Custom spend limit"
   },
+  "customSpendingCap": {
+    "message": "Custom spending cap"
+  },
   "customToken": {
     "message": "Custom token"
   },
@@ -838,7 +844,7 @@
     "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
   },
   "customTokenWarningInTokenDetectionNetwork": {
-    "message": "Before manually importing a token, make sure you trust it. Learn about $1."
+    "message": "Before manually importing a token, make sure you trust it. Learn about $1"
   },
   "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
     "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
@@ -2396,9 +2402,12 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
-  "numberOfNewTokensDetected": {
+  "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
+  },
+  "numberOfNewTokensDetectedSingular": {
+    "message": "1 new token found in this account"
   },
   "ofTextNofM": {
     "message": "of"
@@ -2576,6 +2585,10 @@
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
+  },
+  "permission_manageBip32Keys": {
+    "message": "Control your accounts and assets under $1 ($2).",
+    "description": "The description for the `snap_getBip32Entropy_*` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
@@ -2833,6 +2846,9 @@
   "revokeApproveForAllDescription": {
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCapTooltipText": {
+    "message": "This contract will be unable to spend any more of your current or future tokens."
   },
   "rinkeby": {
     "message": "Rinkeby test network"
@@ -3862,6 +3878,9 @@
   "tokenDetectionDescription": {
     "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
   },
+  "tokenFoundTitle": {
+    "message": "1 new token found"
+  },
   "tokenId": {
     "message": "Token ID"
   },
@@ -4188,6 +4207,10 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "warningTooltipText": {
+    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Weak"

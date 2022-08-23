@@ -1,4 +1,7 @@
 import { constructPermission, PermissionType } from '@metamask/controllers';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -63,6 +66,10 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getIdentities),
     },
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ...snapsCaveatsSpecifications,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
