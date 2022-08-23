@@ -9,9 +9,7 @@ import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-
-const HELP_LINK =
-  'https://metamask.zendesk.com/hc/en-us/articles/360015489331-Importing-an-Account';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 class JsonImportSubview extends Component {
   state = {
@@ -30,7 +28,7 @@ class JsonImportSubview extends Component {
         <p>{this.context.t('usedByClients')}</p>
         <a
           className="new-account-import-form__help-link"
-          href={HELP_LINK}
+          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
           target="_blank"
           rel="noopener noreferrer"
         >

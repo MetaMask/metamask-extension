@@ -49,6 +49,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
@@ -58,10 +59,6 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
-const LEGACY_WEB3_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
-const INFURA_BLOCKAGE_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360059386712';
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -413,7 +410,7 @@ export default class Home extends PureComponent {
                 key="web3ShimUsageNotificationLink"
                 className="home-notification__text-link"
                 onClick={() =>
-                  global.platform.openTab({ url: LEGACY_WEB3_URL })
+                  global.platform.openTab({ url: ZENDESK_URLS.LEGACY_WEB3 })
                 }
               >
                 {t('here')}
@@ -474,7 +471,7 @@ export default class Home extends PureComponent {
                 key="infuraBlockedNotificationLink"
                 className="home-notification__text-link"
                 onClick={() =>
-                  global.platform.openTab({ url: INFURA_BLOCKAGE_URL })
+                  global.platform.openTab({ url: ZENDESK_URLS.INFURA_BLOCKAGE })
                 }
               >
                 {t('here')}
