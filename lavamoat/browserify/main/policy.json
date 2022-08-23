@@ -681,7 +681,6 @@
         "3box>ipfs>ipfs-unixfs": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-batch": true,
         "3box>ipfs>ipfs-unixfs-importer>async-iterator-first": true,
-        "3box>ipfs>ipfs-unixfs-importer>deep-extend": true,
         "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": true,
         "3box>ipfs>ipld-dag-pb": true,
         "3box>ipfs>ipld-raw>multihashing-async": true,
@@ -690,11 +689,6 @@
         "3box>ipfs>superstruct": true,
         "browserify>buffer": true,
         "madge>rc>deep-extend": true
-      }
-    },
-    "3box>ipfs>ipfs-unixfs-importer>deep-extend": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "3box>ipfs>ipfs-unixfs-importer>rabin-wasm": {
@@ -4469,6 +4463,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
+        "ActiveXObject": true,
         "AggregateError": true,
         "Buffer": true,
         "DO_NOT_EXPORT_CRC": true,
@@ -4484,6 +4479,7 @@
         "console": true,
         "crypto": true,
         "define": true,
+        "document": true,
         "intToBuffer": true,
         "location": true,
         "msCrypto": true,

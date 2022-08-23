@@ -1,4 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import React from 'react';
+///: END:ONLY_INCLUDE_IN
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -27,6 +30,20 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.snap_notify]: {
     leftIcon: 'fas fa-bell',
     label: (t) => t('permission_notifications'),
+    rightIcon: null,
+  },
+  [RestrictedMethods.snap_getBip32Entropy]: {
+    label: (t, _, permissionValue) => {
+      return permissionValue.caveats[0].value.map(({ path, curve }) =>
+        t('permission_manageBip32Keys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+      );
+    },
+    leftIcon: 'fas fa-door-open',
     rightIcon: null,
   },
   [RestrictedMethods['snap_getBip44Entropy_*']]: {
@@ -82,9 +99,14 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 /**
  * @param {Function} t - The translation function
  * @param {string} permissionName - The name of the permission to request
+ * @param {object} permissionValue - The value of the permission to request
  * @returns {(permissionName:string) => PermissionLabelObject}
  */
-export const getPermissionDescription = (t, permissionName) => {
+export const getPermissionDescription = (
+  t,
+  permissionName,
+  permissionValue,
+) => {
   let value = PERMISSION_DESCRIPTIONS[UNKNOWN_PERMISSION];
 
   if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
@@ -98,5 +120,5 @@ export const getPermissionDescription = (t, permissionName) => {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  return { ...value, label: value.label(t, permissionName) };
+  return { ...value, label: value.label(t, permissionName, permissionValue) };
 };

@@ -2,12 +2,14 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
+import { formatIconUrlWithProxy } from '@metamask/controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
+  getTokenList,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
@@ -15,6 +17,16 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import {
+  ETH_SYMBOL,
+  MATIC_SYMBOL,
+  BNB_SYMBOL,
+  AVALANCHE_SYMBOL,
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+} from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
@@ -23,7 +35,7 @@ export function getRenderableTokenData(
   conversionRate,
   currentCurrency,
   chainId,
-  shuffledTokenList,
+  tokenList,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
@@ -54,15 +66,19 @@ export function getRenderableTokenData(
       )
     : '';
 
-  const tokenMetadata = shuffledTokenList.find(
-    (tokenData) => tokenData.address === address?.toLowerCase(),
-  );
+  const tokenIconUrl =
+    (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
+    (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
+    (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
+    (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
+      ? iconUrl
+      : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
+  const usedIconUrl = tokenIconUrl || token?.image;
 
-  const usedIconUrl = iconUrl || tokenMetadata?.iconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
-    secondaryLabel: name || tokenMetadata?.name,
+    secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
       string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
@@ -70,7 +86,7 @@ export function getRenderableTokenData(
     identiconAddress: usedIconUrl ? null : address,
     balance,
     decimals,
-    name: name || tokenMetadata?.name,
+    name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
   };
 }
@@ -86,6 +102,7 @@ export function useTokensToSearch({
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
+  const tokenList = useSelector(getTokenList, isEqual);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
@@ -96,7 +113,7 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     chainId,
-    shuffledTokensList,
+    tokenList,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -136,7 +153,7 @@ export function useTokensToSearch({
         conversionRate,
         currentCurrency,
         chainId,
-        shuffledTokensList,
+        tokenList,
       );
       if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
         if (
@@ -192,7 +209,7 @@ export function useTokensToSearch({
     currentCurrency,
     memoizedDefaultToken,
     chainId,
-    shuffledTokensList,
+    tokenList,
     tokenBucketPriority,
   ]);
 }
