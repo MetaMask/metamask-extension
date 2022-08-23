@@ -49,10 +49,6 @@ module.exports = {
   // head of the file. So it may be worth while to switch to 'node' in any
   // background tests.
   testEnvironment: 'jsdom',
-  transform: {
-    '\\.[jt]sx?$': 'babel-jest',
-    '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx',
-  },
   // Our configuration somehow is calling into the esm folder / files of
   // some modules. Jest supports ESM but our code is not set to emit ESM files
   // so we are telling jest to use babel to transform the node_modules listed.
