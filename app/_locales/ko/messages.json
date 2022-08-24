@@ -1888,10 +1888,6 @@
   "metametricsTitle": {
     "message": "6백만 명 이상의 사용자와 함께 MetaMask 기능 향상에 동참하세요."
   },
-  "mismatchedChain": {
-    "message": "이 체인 ID의 네트워크 세부 정보가 기록과 일치하지 않습니다. 진행하기 전에 $1을(를) 권장합니다.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3873,10 +3869,6 @@
   "unrecognizedChain": {
     "message": "이 맞춤형 네트워크는 인식되지 않습니다. 진행하기 전에 $1을(를) 권장합니다.",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "네트워크 세부 정보 검증",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "수집 가능한(ERC-721) 토큰 전송은 현재 지원되지 않습니다.",

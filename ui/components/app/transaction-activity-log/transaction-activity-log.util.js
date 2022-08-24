@@ -44,7 +44,7 @@ const statusHash = {
 
 /**
  * @name getActivities
- * @param {Object} transaction - txMeta object
+ * @param {object} transaction - txMeta object
  * @param {boolean} isFirstTransaction - True if the transaction is the first created transaction
  * in the list of transactions with the same nonce. If so, we use this transaction to create the
  * transactionCreated activity.

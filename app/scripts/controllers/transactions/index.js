@@ -85,7 +85,7 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
 const METRICS_STATUS_FAILED = 'failed on-chain';
 
 /**
- * @typedef {Object} CustomGasSettings
+ * @typedef {object} CustomGasSettings
  * @property {string} [gas] - The gas limit to use for the transaction
  * @property {string} [gasPrice] - The gasPrice to use for a legacy transaction
  * @property {string} [maxFeePerGas] - The maximum amount to pay per gas on a
@@ -109,16 +109,16 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * - nonceTracker
  * calculating nonces
  *
- * @param {Object} opts
- * @param {Object} opts.initState - initial transaction list default is an empty array
- * @param {Object} opts.networkStore - an observable store for network number
- * @param {Object} opts.blockTracker - An instance of eth-blocktracker
- * @param {Object} opts.provider - A network provider.
+ * @param {object} opts
+ * @param {object} opts.initState - initial transaction list default is an empty array
+ * @param {object} opts.networkStore - an observable store for network number
+ * @param {object} opts.blockTracker - An instance of eth-blocktracker
+ * @param {object} opts.provider - A network provider.
  * @param {Function} opts.signTransaction - function the signs an @ethereumjs/tx
- * @param {Object} opts.getPermittedAccounts - get accounts that an origin has permissions for
+ * @param {object} opts.getPermittedAccounts - get accounts that an origin has permissions for
  * @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
- * @param {Object} opts.preferencesStore
+ * @param {object} opts.preferencesStore
  */
 
 export default class TransactionController extends EventEmitter {
@@ -313,8 +313,8 @@ export default class TransactionController extends EventEmitter {
    * Add a new unapproved transaction to the pipeline
    *
    * @returns {Promise<string>} the hash of the transaction after being submitted to the network
-   * @param {Object} txParams - txParams for the transaction
-   * @param {Object} opts - with the key origin to put the origin on the txMeta
+   * @param {object} txParams - txParams for the transaction
+   * @param {object} opts - with the key origin to put the origin on the txMeta
    */
   async newUnapprovedTransaction(txParams, opts = {}) {
     log.debug(
@@ -802,7 +802,7 @@ export default class TransactionController extends EventEmitter {
   /**
    * Adds the tx gas defaults: gas && gasPrice
    *
-   * @param {Object} txMeta - the txMeta object
+   * @param {object} txMeta - the txMeta object
    * @param getCodeResponse
    * @returns {Promise<object>} resolves with txMeta
    */
@@ -945,7 +945,7 @@ export default class TransactionController extends EventEmitter {
   /**
    * Gets default gas fees, or returns `undefined` if gas fees are already set
    *
-   * @param {Object} txMeta - The txMeta object
+   * @param {object} txMeta - The txMeta object
    * @param eip1559Compatibility
    * @returns {Promise<string|undefined>} The default gas price
    */
@@ -1005,8 +1005,8 @@ export default class TransactionController extends EventEmitter {
   /**
    * Gets default gas limit, or debug information about why gas estimate failed.
    *
-   * @param {Object} txMeta - The txMeta object
-   * @returns {Promise<Object>} Object containing the default gas limit, or the simulation failure object
+   * @param {object} txMeta - The txMeta object
+   * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
   async _getDefaultGasLimit(txMeta) {
     const chainId = this._getCurrentChainId();
@@ -1217,7 +1217,7 @@ export default class TransactionController extends EventEmitter {
   /**
    * updates the txMeta in the txStateManager
    *
-   * @param {Object} txMeta - the updated txMeta
+   * @param {object} txMeta - the updated txMeta
    */
   async updateTransaction(txMeta) {
     this.txStateManager.updateTransaction(
@@ -1229,7 +1229,7 @@ export default class TransactionController extends EventEmitter {
   /**
    * updates and approves the transaction
    *
-   * @param {Object} txMeta
+   * @param {object} txMeta
    */
   async updateAndApproveTransaction(txMeta) {
     this.txStateManager.updateTransaction(
@@ -1676,7 +1676,7 @@ export default class TransactionController extends EventEmitter {
   //
   /** maps methods for convenience*/
   _mapMethods() {
-    /** @returns {Object} the state in transaction controller */
+    /** @returns {object} the state in transaction controller */
     this.getState = () => this.memStore.getState();
 
     /** @returns {string|number} the network number stored in networkStore */
@@ -2106,8 +2106,8 @@ export default class TransactionController extends EventEmitter {
    * @param {TransactionMeta} txMeta - Transaction meta object
    * @param {TransactionMetaMetricsEventString} event - The event type that
    *  triggered fragment creation
-   * @param {Object} properties - properties to include in the fragment
-   * @param {Object} [sensitiveProperties] - sensitive properties to include in
+   * @param {object} properties - properties to include in the fragment
+   * @param {object} [sensitiveProperties] - sensitive properties to include in
    *  the fragment
    */
   _createTransactionEventFragment(
@@ -2220,9 +2220,9 @@ export default class TransactionController extends EventEmitter {
    * object and uses them to create and send metrics for various transaction
    * events.
    *
-   * @param {Object} txMeta - the txMeta object
+   * @param {object} txMeta - the txMeta object
    * @param {TransactionMetaMetricsEventString} event - the name of the transaction event
-   * @param {Object} extraParams - optional props and values to include in sensitiveProperties
+   * @param {object} extraParams - optional props and values to include in sensitiveProperties
    */
   async _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
     if (!txMeta) {

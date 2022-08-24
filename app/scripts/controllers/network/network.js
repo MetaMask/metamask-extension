@@ -142,7 +142,7 @@ export default class NetworkController extends EventEmitter {
   /**
    * Method to return the latest block for the current network
    *
-   * @returns {Object} Block header
+   * @returns {object} Block header
    */
   getLatestBlock() {
     return new Promise((resolve, reject) => {
@@ -270,6 +270,11 @@ export default class NetworkController extends EventEmitter {
   getCurrentChainId() {
     const { type, chainId: configChainId } = this.getProviderConfig();
     return NETWORK_TYPE_TO_ID_MAP[type]?.chainId || configChainId;
+  }
+
+  getCurrentRpcUrl() {
+    const { rpcUrl } = this.getProviderConfig();
+    return rpcUrl;
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {

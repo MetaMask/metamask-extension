@@ -29,7 +29,7 @@ class FirefoxDriver {
   /**
    * Builds a {@link FirefoxDriver} instance
    *
-   * @param {Object} options - the options for the build
+   * @param {object} options - the options for the build
    * @param options.responsive
    * @param options.port
    * @param options.type

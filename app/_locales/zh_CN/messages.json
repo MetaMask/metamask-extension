@@ -1597,10 +1597,6 @@
   "metametricsTitle": {
     "message": "加入 6M+ 用户来改进MetaMask"
   },
-  "mismatchedChain": {
-    "message": "此链路的网络详细信息与我们的记录不匹配。我们建议您在继续操作之前$1。",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "验证网络详细信息",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3156,10 +3152,6 @@
   "unrecognizedChain": {
     "message": "这个自定义网络无法识别。我们建议您在继续操作之前$1",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "验证网络详细信息",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "当前不支持发送可收藏的 (ERC-721) 代币",

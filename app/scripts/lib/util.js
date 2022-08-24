@@ -76,7 +76,7 @@ const getPlatform = () => {
  * Converts a hex string to a BN object
  *
  * @param {string} inputHex - A number represented as a hex string
- * @returns {Object} A BN object
+ * @returns {object} A BN object
  */
 function hexToBn(inputHex) {
   return new BN(stripHexPrefix(inputHex), 16);

@@ -8,10 +8,10 @@ import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
  * Result of gas analysis, including either a gas estimate for a successful analysis, or
  * debug information for a failed analysis.
  *
- * @typedef {Object} GasAnalysisResult
+ * @typedef {object} GasAnalysisResult
  * @property {string} blockGasLimit - The gas limit of the block used for the analysis
  * @property {string} estimatedGasHex - The estimated gas, in hexadecimal
- * @property {Object} simulationFails - Debug information about why an analysis failed
+ * @property {object} simulationFails - Debug information about why an analysis failed
  */
 
 /**
@@ -19,7 +19,7 @@ import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
  * its passed ethquery
  * and used to do things like calculate gas of a tx.
  *
- * @param {Object} provider - A network provider.
+ * @param {object} provider - A network provider.
  */
 
 export default class TxGasUtil {
@@ -28,7 +28,7 @@ export default class TxGasUtil {
   }
 
   /**
-   * @param {Object} txMeta - the txMeta object
+   * @param {object} txMeta - the txMeta object
    * @returns {GasAnalysisResult} The result of the gas analysis
    */
   async analyzeGasUsage(txMeta) {
@@ -56,7 +56,7 @@ export default class TxGasUtil {
   /**
    * Estimates the tx's gas usage
    *
-   * @param {Object} txMeta - the txMeta object
+   * @param {object} txMeta - the txMeta object
    * @returns {string} the estimated gas limit as a hex string
    */
   async estimateTxGas(txMeta) {

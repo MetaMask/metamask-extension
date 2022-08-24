@@ -73,7 +73,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 });
 
 /**
- * @typedef {Object} PermissionLabelObject
+ * @typedef {object} PermissionLabelObject
  * @property {string} label - The text label.
  * @property {string} leftIcon - The left icon.
  * @property {string} rightIcon - The right icon.

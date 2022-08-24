@@ -9,7 +9,6 @@ export default class MetaMetricsOptIn extends Component {
   static propTypes = {
     history: PropTypes.object,
     setParticipateInMetaMetrics: PropTypes.func,
-    firstTimeSelectionMetaMetricsName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool,
   };
 
@@ -23,7 +22,6 @@ export default class MetaMetricsOptIn extends Component {
     const {
       history,
       setParticipateInMetaMetrics,
-      firstTimeSelectionMetaMetricsName,
       participateInMetaMetrics,
     } = this.props;
 
@@ -109,50 +107,27 @@ export default class MetaMetricsOptIn extends Component {
               cancelText={t('noThanks')}
               hideCancel={false}
               onSubmit={async () => {
-                const [, metaMetricsId] = await setParticipateInMetaMetrics(
-                  true,
-                );
+                await setParticipateInMetaMetrics(true);
                 try {
-                  const metrics = [];
                   if (
                     participateInMetaMetrics === null ||
                     participateInMetaMetrics === false
                   ) {
-                    metrics.push(
-                      trackEvent(
-                        {
-                          category: EVENT.CATEGORIES.ONBOARDING,
-                          event: 'Metrics Opt In',
-                          properties: {
-                            action: 'Metrics Option',
-                            legacy_event: true,
-                          },
-                        },
-                        {
-                          isOptIn: true,
-                          flushImmediately: true,
-                        },
-                      ),
-                    );
-                  }
-                  metrics.push(
-                    trackEvent(
+                    await trackEvent(
                       {
                         category: EVENT.CATEGORIES.ONBOARDING,
-                        event: firstTimeSelectionMetaMetricsName,
+                        event: 'Metrics Opt In',
                         properties: {
-                          action: 'Import or Create',
+                          action: 'Metrics Option',
                           legacy_event: true,
                         },
                       },
                       {
                         isOptIn: true,
-                        metaMetricsId,
                         flushImmediately: true,
                       },
-                    ),
-                  );
-                  await Promise.all(metrics);
+                    );
+                  }
                 } finally {
                   history.push(INITIALIZE_SELECT_ACTION_ROUTE);
                 }

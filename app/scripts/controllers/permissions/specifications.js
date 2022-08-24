@@ -31,7 +31,7 @@ const CaveatFactories = Object.freeze({
 /**
  * A PreferencesController identity object.
  *
- * @typedef {Object} Identity
+ * @typedef {object} Identity
  * @property {string} address - The address of the identity.
  * @property {string} name - The name of the identity.
  * @property {number} [lastSelected] - Unix timestamp of when the identity was

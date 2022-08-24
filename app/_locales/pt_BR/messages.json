@@ -1627,10 +1627,6 @@
   "metametricsTitle": {
     "message": "Junte-se a mais de 6 milhões de usuários para melhorar a MetaMask"
   },
-  "mismatchedChain": {
-    "message": "Os detalhes da rede para esse ID da cadeia não correspondem aos dos nossos registros. Recomendamos que você $1 antes de continuar.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3198,10 +3194,6 @@
   "unrecognizedChain": {
     "message": "Essa rede personalizada não foi reconhecida. Recomendamos que você $1 antes de continuar",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedChainLinkText": {
-    "message": "verifique os detalhes da rede",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",

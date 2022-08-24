@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
-import * as tokenUtils from '../helpers/utils/token-util';
 import { ERC1155, ERC20, ERC721 } from '../helpers/constants/common';
+import * as Actions from '../store/actions';
 import { useAssetDetails } from './useAssetDetails';
 
 const renderUseAssetDetails = ({
@@ -33,13 +33,15 @@ const renderUseAssetDetails = ({
 };
 
 describe('useAssetDetails', () => {
-  let getAssetDetailsStub;
+  let getTokenStandardAndDetailsStub;
+
   beforeEach(() => {
-    getAssetDetailsStub = jest
-      .spyOn(tokenUtils, 'getAssetDetails')
+    getTokenStandardAndDetailsStub = jest
+      .spyOn(Actions, 'getTokenStandardAndDetails')
       .mockImplementation(() => Promise.resolve({}));
   });
-  it('should return object with tokenSymbol set to and empty string, when getAssetDetails returns and empty object', async () => {
+
+  it('should return object with tokenSymbol set to an empty string, when getAssetDetails returns and empty object', async () => {
     const toAddress = '000000000000000000000000000000000000dead';
     const tokenAddress = '0x1';
 
@@ -53,19 +55,12 @@ describe('useAssetDetails', () => {
 
     await waitForNextUpdate();
 
-    expect(result.current).toStrictEqual({
-      assetAddress: tokenAddress,
-      assetName: undefined,
-      assetStandard: undefined,
-      decimals: undefined,
-      toAddress: `0x${toAddress}`,
-      tokenAmount: undefined,
-      tokenId: undefined,
-      tokenImage: undefined,
-      tokenSymbol: '',
-      tokenValue: undefined,
-      userBalance: undefined,
-    });
+    expect(result.current).toStrictEqual(
+      expect.objectContaining({
+        assetAddress: tokenAddress,
+        tokenSymbol: '',
+      }),
+    );
   });
 
   it('should return object with correct tokenValues for an ERC20 token', async () => {
@@ -79,11 +74,11 @@ describe('useAssetDetails', () => {
     const balance = '1';
     const decimals = 18;
 
-    getAssetDetailsStub.mockImplementation(() =>
+    getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
-        symbol,
         balance,
+        symbol,
         decimals,
       }),
     );
@@ -106,7 +101,6 @@ describe('useAssetDetails', () => {
       tokenId: undefined,
       tokenImage: undefined,
       tokenSymbol: symbol,
-      tokenValue: undefined,
       userBalance: balance,
     });
   });
@@ -114,21 +108,22 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC721 token', async () => {
     const tokenAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
     const toAddress = '000000000000000000000000000000000000dead';
-    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000c`;
+    const tokenId = '12';
+    const transactionData = `0x23b872dd000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000${toAddress}000000000000000000000000000000000000000000000000000000000000000${Number(
+      tokenId,
+    ).toString(16)}`;
 
     const symbol = 'BAYC';
-    const tokenId = '12';
     const name = 'BoredApeYachtClub';
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
     const standard = ERC721;
 
-    getAssetDetailsStub.mockImplementation(() =>
+    getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
         symbol,
         name,
-        tokenId,
         image,
       }),
     );
@@ -149,7 +144,6 @@ describe('useAssetDetails', () => {
       tokenId,
       tokenImage: image,
       tokenSymbol: symbol,
-      tokenValue: undefined,
       userBalance: undefined,
       tokenAmount: undefined,
     });
@@ -158,17 +152,20 @@ describe('useAssetDetails', () => {
   it('should return object with correct tokenValues for an ERC1155 token', async () => {
     const tokenAddress = '0x76BE3b62873462d2142405439777e971754E8E77';
     const toAddress = '000000000000000000000000000000000000dead';
-    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000322000000000000000000000000000000000000000000000000000000000000009c00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000`;
+    const tokenId = '802';
+    const transactionData = `0xf242432a000000000000000000000000a544eebe103733f22ef62af556023bc918b73d36000000000000000000000000000000000000000000000000000000000000dead0000000000000000000000000000000000000000000000000000000000000${Number(
+      tokenId,
+    ).toString(
+      16,
+    )}000000000000000000000000000000000000000000000000000000000000009c00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000`;
 
-    const tokenId = '121';
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
     const standard = ERC1155;
 
-    getAssetDetailsStub.mockImplementation(() =>
+    getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
         standard,
-        tokenId,
         image,
       }),
     );
@@ -186,10 +183,9 @@ describe('useAssetDetails', () => {
       assetStandard: standard,
       decimals: undefined,
       toAddress: `0x${toAddress}`,
-      tokenId: undefined,
+      tokenId,
       tokenImage: image,
       tokenSymbol: '',
-      tokenValue: undefined,
       userBalance: undefined,
       tokenAmount: undefined,
     });

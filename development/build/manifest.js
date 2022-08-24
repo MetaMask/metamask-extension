@@ -132,7 +132,7 @@ async function writeJson(obj, file) {
  *
  * @param {BuildType} buildType - The build type.
  * @param {string} platform - The platform (i.e. the browser).
- * @returns {Object} The build modificantions for the given build type and platform.
+ * @returns {object} The build modificantions for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
   if (!Object.values(BuildType).includes(buildType)) {

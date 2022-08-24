@@ -10,7 +10,7 @@ const { BuildType } = require('../lib/build-type');
  *
  * @param {string[]} platforms - A list of browsers to generate versions for.
  * @param {string} version - The current version.
- * @returns {Object} An object with the browser as the key and the browser-specific version object
+ * @returns {object} An object with the browser as the key and the browser-specific version object
  * as the value.  For example, the version `9.6.0-beta.1` would return the object
  * `{ firefox: { version: '9.6.0.beta1' }, chrome: { version: '9.6.0.1', version_name: '9.6.0-beta.1' } }`.
  */

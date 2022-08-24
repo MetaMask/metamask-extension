@@ -8,7 +8,7 @@ import { useTokenData } from './useTokenData';
 /**
  * Defines the shape for the Token input parameter for useTokenDisplayValue
  *
- * @typedef {Object} Token
+ * @typedef {object} Token
  * @property {string} symbol - The string to use as a suffix for the token (eg. DAI)
  * @property {number} decimals - The number of decimals to show when displaying this type of token
  */

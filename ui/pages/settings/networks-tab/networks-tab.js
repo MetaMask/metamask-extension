@@ -43,7 +43,9 @@ const NetworksTab = ({ addNewNetwork }) => {
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
-    isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
+    isFullScreen ||
+    Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
+    window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);
