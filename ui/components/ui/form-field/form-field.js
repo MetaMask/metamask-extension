@@ -46,116 +46,114 @@ export default function FormField({
         'form-field__row--error': error,
       })}
     >
-      <label>
-        <div className="form-field__heading">
+      <div className="form-field__heading">
+        <Box
+          className="form-field__heading-title"
+          display={DISPLAY.FLEX}
+          alignItems={ALIGN_ITEMS.CENTER}
+        >
+          {TitleTextCustomComponent ||
+            (titleText && (
+              <Typography
+                tag="label"
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H6}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              >
+                {titleText}
+              </Typography>
+            ))}
+          {TitleUnitCustomComponent ||
+            (titleUnit && (
+              <Typography
+                tag={TYPOGRAPHY.H6}
+                variant={TYPOGRAPHY.H6}
+                color={COLORS.TEXT_ALTERNATIVE}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              >
+                {titleUnit}
+              </Typography>
+            ))}
+          {TooltipCustomComponent ||
+            (tooltipText && (
+              <InfoTooltip position="top" contentText={tooltipText} />
+            ))}
+        </Box>
+        {titleDetail && (
           <Box
-            className="form-field__heading-title"
-            display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
+            className="form-field__heading-detail"
+            textAlign={TEXT_ALIGN.END}
+            marginBottom={3}
+            marginRight={2}
+            {...titleDetailWrapperProps}
           >
-            {TitleTextCustomComponent ||
-              (titleText && (
-                <Typography
-                  tag={TYPOGRAPHY.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H6}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                >
-                  {titleText}
-                </Typography>
-              ))}
-            {TitleUnitCustomComponent ||
-              (titleUnit && (
-                <Typography
-                  tag={TYPOGRAPHY.H6}
-                  variant={TYPOGRAPHY.H6}
-                  color={COLORS.TEXT_ALTERNATIVE}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                >
-                  {titleUnit}
-                </Typography>
-              ))}
-            {TooltipCustomComponent ||
-              (tooltipText && (
-                <InfoTooltip position="top" contentText={tooltipText} />
-              ))}
+            {titleDetail}
           </Box>
-          {titleDetail && (
-            <Box
-              className="form-field__heading-detail"
-              textAlign={TEXT_ALIGN.END}
-              marginBottom={3}
-              marginRight={2}
-              {...titleDetailWrapperProps}
-            >
-              {titleDetail}
-            </Box>
-          )}
-        </div>
-        {numeric ? (
-          <NumericInput
-            error={error}
-            onChange={onChange}
-            value={value}
-            detailText={detailText}
-            autoFocus={autoFocus}
-            allowDecimals={allowDecimals}
-            disabled={disabled}
-            dataTestId={dataTestId}
-            placeholder={placeholder}
-          />
-        ) : (
-          <input
-            className={classNames('form-field__input', {
-              'form-field__input--error': error,
-              'form-field__input--warning': warning,
-            })}
-            onChange={(e) => onChange(e.target.value)}
-            value={value}
-            type={password ? 'password' : 'text'}
-            autoFocus={autoFocus}
-            disabled={disabled}
-            data-testid={dataTestId}
-            placeholder={placeholder}
-          />
         )}
-        {error && (
-          <Typography
-            color={COLORS.ERROR_DEFAULT}
-            variant={TYPOGRAPHY.H7}
-            className="form-field__error"
-          >
-            {error}
-          </Typography>
-        )}
-        {warning && (
-          <Typography
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H7}
-            className="form-field__warning"
-          >
-            {warning}
-          </Typography>
-        )}
-        {passwordStrength && (
-          <Typography
-            color={COLORS.TEXT_DEFAULT}
-            variant={TYPOGRAPHY.H7}
-            className="form-field__password-strength"
-          >
-            {passwordStrength}
-          </Typography>
-        )}
-        {passwordStrengthText && (
-          <Typography
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H8}
-            className="form-field__password-strength-text"
-          >
-            {passwordStrengthText}
-          </Typography>
-        )}
-      </label>
+      </div>
+      {numeric ? (
+        <NumericInput
+          error={error}
+          onChange={onChange}
+          value={value}
+          detailText={detailText}
+          autoFocus={autoFocus}
+          allowDecimals={allowDecimals}
+          disabled={disabled}
+          dataTestId={dataTestId}
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          className={classNames('form-field__input', {
+            'form-field__input--error': error,
+            'form-field__input--warning': warning,
+          })}
+          onChange={(e) => onChange(e.target.value)}
+          value={value}
+          type={password ? 'password' : 'text'}
+          autoFocus={autoFocus}
+          disabled={disabled}
+          data-testid={dataTestId}
+          placeholder={placeholder}
+        />
+      )}
+      {error && (
+        <Typography
+          color={COLORS.ERROR_DEFAULT}
+          variant={TYPOGRAPHY.H7}
+          className="form-field__error"
+        >
+          {error}
+        </Typography>
+      )}
+      {warning && (
+        <Typography
+          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TYPOGRAPHY.H7}
+          className="form-field__warning"
+        >
+          {warning}
+        </Typography>
+      )}
+      {passwordStrength && (
+        <Typography
+          color={COLORS.TEXT_DEFAULT}
+          variant={TYPOGRAPHY.H7}
+          className="form-field__password-strength"
+        >
+          {passwordStrength}
+        </Typography>
+      )}
+      {passwordStrengthText && (
+        <Typography
+          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TYPOGRAPHY.H8}
+          className="form-field__password-strength-text"
+        >
+          {passwordStrengthText}
+        </Typography>
+      )}
     </div>
   );
 }

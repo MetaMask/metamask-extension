@@ -46,6 +46,7 @@ export const ValidTags = [
   'span',
   'strong',
   'ul',
+  'label',
 ];
 
 export default function Typography({
