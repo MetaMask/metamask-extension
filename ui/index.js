@@ -191,10 +191,7 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  if (!window.rootGlobals) {
-    window.rootGlobals = {};
-  }
-  window.rootGlobals.getSentryState = function () {
+  window.sentryHooks.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject(fullState, SENTRY_STATE);
     return {
