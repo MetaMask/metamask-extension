@@ -403,7 +403,7 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.4.tgz#d5f92f57cf2c74ffe9b37981c0e72fee7311372e"
   integrity sha512-6V0qdPUaiVHH3RtZeLIsc+6pDhbYzHR8ogA8w+f+Wc77DuXto19g2QUwveINoS34Uw+W8/hQDGJCx+i4n7xcng==
 
-"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.5", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.14.7", "@babel/parser@^7.18.10", "@babel/parser@^7.18.11":
+"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.10.1", "@babel/parser@^7.12.0", "@babel/parser@^7.12.11", "@babel/parser@^7.12.7", "@babel/parser@^7.13.9", "@babel/parser@^7.14.7", "@babel/parser@^7.18.10", "@babel/parser@^7.18.11":
   version "7.18.11"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.11.tgz#68bb07ab3d380affa9a3f96728df07969645d2d9"
   integrity sha512-9JKn5vN+hDt0Hdqn1PiJ2guflwP+B6Ga8qbDuoF0PzzVhrzsKIJo8yGqVk6CmMHiMei9w1C1Bp9IMJSIK+HPIQ==
@@ -9988,12 +9988,12 @@ delimit-stream@0.1.0:
   resolved "https://registry.yarnpkg.com/delimit-stream/-/delimit-stream-0.1.0.tgz#9b8319477c0e5f8aeb3ce357ae305fc25ea1cd2b"
   integrity sha1-m4MZR3wOX4rrPONXrjBfwl6hzSs=
 
-depcheck@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/depcheck/-/depcheck-1.4.2.tgz#dedeb8729b8fdf990e2bc45a869d99cfb4460097"
-  integrity sha512-oYaBLRbF5NMkYxc5rltnqtuPAn25Lx5xPBIJXy5oUVBgrEDDtotCoYUfFH8lvcmSWzgk1Ts9H+f4Rk0oWL51LQ==
+depcheck@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/depcheck/-/depcheck-1.4.3.tgz#faa4c143921f3fe25d5a7a633f9864327c250843"
+  integrity sha512-vy8xe1tlLFu7t4jFyoirMmOR7x7N601ubU9Gkifyr9z8rjBFtEdWHDBMqXyk6OkK+94NXutzddVXJuo0JlUQKQ==
   dependencies:
-    "@babel/parser" "^7.12.5"
+    "@babel/parser" "7.16.4"
     "@babel/traverse" "^7.12.5"
     "@vue/compiler-sfc" "^3.0.5"
     camelcase "^6.2.0"
