@@ -786,7 +786,10 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.getSentryState = function () {
+  if (!global.rootGlobals) {
+    global.rootGlobals = {};
+  }
+  global.rootGlobals.getSentryState = function () {
     const fullState = store.getState();
     const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
     return {
