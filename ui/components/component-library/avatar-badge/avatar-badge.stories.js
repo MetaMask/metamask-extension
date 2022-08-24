@@ -5,8 +5,10 @@ import {
   SIZES,
 } from '../../../helpers/constants/design-system';
 import { ValidBackgroundColors, ValidBorderColors } from '../../ui/box';
-
+import { BaseAvatar } from '../base-avatar';
 import { AvatarToken } from '../avatar-token';
+import Box from '../../ui/box/box';
+import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import README from './README.mdx';
 import { AvatarBadge, badgePosition } from './avatar-badge';
 
@@ -87,20 +89,23 @@ export default {
     },
   },
   args: {
-    size: SIZES.MD,
+    badgeProps: {
+      tokenName: 'ast',
+      tokenImageUrl: './AST.png',
+    },
+    size: SIZES.XS,
     backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
     borderColor: COLORS.BORDER_DEFAULT,
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-    diameter: 32,
-    tokenName: 'ast',
-    tokenImageUrl: './AST.png',
+    // diameter: 32,
+
     badgePosition: badgePosition.top,
   },
 };
 
 export const DefaultStory = (args) => (
-  <AvatarBadge {...args} size={SIZES.MD}>
-    <AvatarToken {...args} />
+  <AvatarBadge {...args} BadgeVariant={AvatarToken}>
+    <Jazzicon address={args.address} />
   </AvatarBadge>
 );
 

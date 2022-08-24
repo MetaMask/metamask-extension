@@ -2,52 +2,45 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import { BaseAvatar } from '../base-avatar';
-import { AvatarToken } from '../avatar-token';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
-
-const getStyles = (diameter) => ({
-  height: diameter,
-  width: diameter,
-  borderRadius: diameter / 2,
-});
+import { SIZES } from '../../../helpers/constants/design-system';
 
 export const badgePosition = ['top', 'bottom'];
+
 export const AvatarBadge = ({
   size = SIZES.MD,
-  backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
-  borderColor = COLORS.BORDER_DEFAULT,
-  address,
+  children,
   className,
-  diameter,
-  tokenList,
-  tokenName,
-  tokenImageUrl,
+  badgeProps,
+  BadgeVariant,
   ...props
 }) => {
-  const avatarTokenClassName =
-    props.badgePosition === 'top'
-      ? 'avatar-badge-token-position-top'
-      : 'avatar-badge-token-position-bottom';
+  const style = { '--size': 'calc(var(--badge-container-size, 16px) / 2)' };
   return (
-    <Box className="avatar-badge__conatiner">
+    <Box
+      className={classnames(
+        'avatar-badge',
+        `avatar-badge--size-${size}`,
+        className,
+      )}
+    >
       <BaseAvatar
-        className={classnames('avatar-badge')}
-        {...{ backgroundColor, borderColor, ...props }}
+        className={classnames('avatar-badge__container')}
+        {...{ size, ...props }}
       >
-        <Jazzicon
-          address={address}
-          diameter={diameter}
-          className={classnames('identicon', className)}
-          style={getStyles(diameter)}
-          tokenList={tokenList}
-        />
+        {/* Jazzicon , Avatar Account */}
+        {children}
       </BaseAvatar>
-      <AvatarToken
-        tokenImageUrl={tokenImageUrl}
-        className={avatarTokenClassName}
-      />
+      <Box
+        className={
+          props.badgePosition === 'top'
+            ? 'avatar-badge-token-position-top'
+            : 'avatar-badge-token-position-bottom'
+        }
+      >
+        {/* Avatar Account, Avatar Network */}
+        <BadgeVariant style={style} {...badgeProps} />
+      </Box>
     </Box>
   );
 };
@@ -68,13 +61,9 @@ AvatarBadge.propTypes = {
    */
   children: PropTypes.node,
   /**
-   * The background color of the AvatarBadge
+   * The children to be rendered inside the AvatarBadge
    */
-  backgroundColor: Box.propTypes.backgroundColor,
-  /**
-   * The background color of the AvatarBadge
-   */
-  borderColor: Box.propTypes.borderColor,
+  BadgeVariant: PropTypes.func,
   /**
    * Address used for generating random image
    */
