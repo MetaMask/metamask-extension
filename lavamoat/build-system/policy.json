@@ -132,7 +132,7 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/template>@babel/parser": true,
+        "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -1846,12 +1846,12 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
+        "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>@babel/parser": true,
         "depcheck>@babel/traverse>globals": true,
         "eslint>debug": true
       }
@@ -5552,8 +5552,8 @@
         "console.log": true
       },
       "packages": {
-        "depcheck>@babel/traverse": true,
-        "lavamoat>lavamoat-tofu>@babel/parser": true
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "lavamoat>object.fromentries": {
