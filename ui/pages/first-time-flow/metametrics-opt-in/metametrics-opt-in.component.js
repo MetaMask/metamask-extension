@@ -19,8 +19,11 @@ export default class MetaMetricsOptIn extends Component {
 
   render() {
     const { trackEvent, t } = this.context;
-    const { history, setParticipateInMetaMetrics, participateInMetaMetrics } =
-      this.props;
+    const {
+      history,
+      setParticipateInMetaMetrics,
+      participateInMetaMetrics,
+    } = this.props;
 
     return (
       <div className="metametrics-opt-in">
