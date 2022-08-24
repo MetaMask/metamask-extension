@@ -39,7 +39,7 @@ import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
-import CopyContractDetails from './copy-contract-details';
+import IconCopy from './icon-copy';
 import IconBlockExplorer from './icon-block-explorer';
 
 const validColors = [
@@ -131,6 +131,8 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
+        <IconItem Component={<IconCopy {...args} />} />
+        <IconItem Component={<IconBlockExplorer {...args} />} />
       </div>
     </Box>
     <Typography
@@ -165,8 +167,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
         <IconItem Component={<IconEyeSlash {...args} />} />
-        <IconItem Component={<CopyContractDetails {...args} />} />
-        <IconItem Component={<IconBlockExplorer {...args} />} />
       </div>
     </Box>
   </div>
@@ -322,13 +322,11 @@ PreloaderStory.args = {
 };
 PreloaderStory.storyName = 'Preloader';
 
-export const CopyContractDetailsStory = (args) => (
-  <CopyContractDetails {...args} />
-);
-CopyContractDetailsStory.args = {
+export const IconCopyStory = (args) => <IconCopy {...args} />;
+IconCopyStory.args = {
   size: 40,
 };
-CopyContractDetailsStory.storyName = 'CopyContractDetails';
+IconCopyStory.storyName = 'IconCopy';
 
 export const IconBlockExplorerStory = (args) => <IconBlockExplorer {...args} />;
 IconBlockExplorerStory.args = {

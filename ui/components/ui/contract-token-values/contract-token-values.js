@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CopyContractDetails from '../icon/copy-contract-details';
+import IconCopy from '../icon/icon-copy';
 import IconBlockExplorer from '../icon/icon-block-explorer';
 import Box from '../box/box';
 import Tooltip from '../tooltip/tooltip';
@@ -29,53 +29,55 @@ export default function ContractTokenValues({ address, tokenName }) {
       justifyContent={JUSTIFY_CONTENT.CENTER}
       className="contract-token-values"
     >
-      <Box marginRight={2} marginTop={2} marginBottom={2}>
+      <Box marginRight={2}>
         <Identicon address={address} diameter={24} />
       </Box>
-      <Box>
-        <Typography
-          variant={TYPOGRAPHY.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
-          color={COLORS.TEXT_ALTERNATIVE}
-          marginTop={0}
-          marginBottom={0}
+      <Typography
+        variant={TYPOGRAPHY.H2}
+        fontWeight={FONT_WEIGHT.BOLD}
+        color={COLORS.TEXT_ALTERNATIVE}
+        marginTop={0}
+        marginBottom={0}
+      >
+        {tokenName}
+      </Typography>
+      <Box className="contract-token-values__copy-address">
+        <Tooltip
+          position="top"
+          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
         >
-          {tokenName}
-        </Typography>
-      </Box>
-      <Box display={DISPLAY.FLEX}>
-        <Box className="contract-token-values__copy-adress">
-          <Tooltip
-            position="top"
-            title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+          <Button
+            type="link"
+            className="contract-token-values__copy-address__button"
+            onClick={() => {
+              handleCopy(address);
+            }}
           >
-            <Button
-              type="link"
-              className="contract-token-values__copy-adress__button"
-              onClick={() => {
-                handleCopy(address);
-              }}
-            >
-              <CopyContractDetails />
-            </Button>
-          </Tooltip>
-        </Box>
-        <Box className="contract-token-values__block-explorer">
-          <Tooltip position="top" title={t('openInBlockExplorer')}>
-            <Button
-              type="link"
-              className="contract-token-values__block-explorer__button"
-            >
-              <IconBlockExplorer />
-            </Button>
-          </Tooltip>
-        </Box>
+            <IconCopy size={24} color="var(--color-icon-muted)" />
+          </Button>
+        </Tooltip>
+      </Box>
+      <Box className="contract-token-values__block-explorer">
+        <Tooltip position="top" title={t('openInBlockExplorer')}>
+          <Button
+            type="link"
+            className="contract-token-values__block-explorer__button"
+          >
+            <IconBlockExplorer size={16} color="var(--color-icon-muted)" />
+          </Button>
+        </Tooltip>
       </Box>
     </Box>
   );
 }
 
 ContractTokenValues.propTypes = {
+  /**
+   * Address used for generating token image
+   */
   address: PropTypes.string,
+  /**
+   * Displayed the token name currently tracked in state
+   */
   tokenName: PropTypes.string,
 };
