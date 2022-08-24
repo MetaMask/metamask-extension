@@ -63,7 +63,7 @@ export default function ContractTokenValues({ address, tokenName }) {
             type="link"
             className="contract-token-values__block-explorer__button"
           >
-            <IconBlockExplorer size={16} color="var(--color-icon-muted)" />
+            <IconBlockExplorer size={24} color="var(--color-icon-muted)" />
           </Button>
         </Tooltip>
       </Box>
