@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update `eth-lattice-keyring` to v0.10.0 which itself updates `gridplus-sdk` ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
   - `eth-lattice-keyring` changes: ([GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0])(https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
-  - `gridplus-sdk` changes: ([GridPlus/gridplus-sdk@v1.2.3...v2.2.0])(https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.0)
+  - `gridplus-sdk` changes: ([GridPlus/gridplus-sdk@v1.2.3...v2.2.4])(https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.4)
 - Update `eth-lattice-keyring` to v0.11.0 ([#15490](https://github.com/MetaMask/metamask-extension/pull/15490)). See changes [GridPlus/eth-lattice-keyring@v0.10.0...v0.11.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.10.0...v0.11.0)
 - Improve ERC721 Send screen by parsing the `tokenId` and refactor `useAssetDetails` hook to avoid unnecessary network calls ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
 
