@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/browser';
-import { Dedupe, ExtraErrorData } from '@sentry/integrations';
+import { Dedupe, ExtraErrorData, RewriteFrames } from '@sentry/integrations';
 
 import { BuildType } from '../../../shared/constants/app';
 import { FilterEvents } from './sentry-filter-events';
-import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { SimplifyErrorMessages } from './sentry-simplify-error-messages';
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
@@ -117,12 +117,30 @@ export default function setupSentry({ release, getState }) {
     return true;
   }
 
+  const originalFilenamePrefix = window.location.origin;
+  const normalizedFilenamePrefix = 'metamask';
+
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     environment,
     integrations: [
       new FilterEvents({ getMetaMetricsEnabled }),
+      new RewriteFrames({
+        iteratee: (frame) => {
+          if (
+            frame.filename &&
+            frame.filename.startsWith(originalFilenamePrefix)
+          ) {
+            const frameWithoutPrefix = frame.filename.slice(
+              originalFilenamePrefix.length,
+            );
+            frame.filename = `${normalizedFilenamePrefix}${frameWithoutPrefix}`;
+          }
+          return frame;
+        },
+      }),
+      new SimplifyErrorMessages(),
       new Dedupe(),
       new ExtraErrorData(),
     ],
@@ -148,10 +166,6 @@ export default function setupSentry({ release, getState }) {
 
   function rewriteReport(report) {
     try {
-      // simplify certain complex error messages (e.g. Ethjs)
-      simplifyErrorMessages(report);
-      // modify report urls
-      rewriteReportUrls(report);
       // append app state
       if (getState) {
         const appState = getState();
@@ -169,58 +183,3 @@ export default function setupSentry({ release, getState }) {
   return Sentry;
 }
 
-function simplifyErrorMessages(report) {
-  rewriteErrorMessages(report, (errorMessage) => {
-    // simplify ethjs error messages
-    let simplifiedErrorMessage = extractEthjsErrorMessage(errorMessage);
-    // simplify 'Transaction Failed: known transaction'
-    if (
-      simplifiedErrorMessage.indexOf(
-        'Transaction Failed: known transaction',
-      ) === 0
-    ) {
-      // cut the hash from the error message
-      simplifiedErrorMessage = 'Transaction Failed: known transaction';
-    }
-    return simplifiedErrorMessage;
-  });
-}
-
-function rewriteErrorMessages(report, rewriteFn) {
-  // rewrite top level message
-  if (typeof report.message === 'string') {
-    report.message = rewriteFn(report.message);
-  }
-  // rewrite each exception message
-  if (report.exception && report.exception.values) {
-    report.exception.values.forEach((item) => {
-      if (typeof item.value === 'string') {
-        item.value = rewriteFn(item.value);
-      }
-    });
-  }
-}
-
-function rewriteReportUrls(report) {
-  // update request url
-  report.request.url = toMetamaskUrl(report.request.url);
-  // update exception stack trace
-  if (report.exception && report.exception.values) {
-    report.exception.values.forEach((item) => {
-      if (item.stacktrace) {
-        item.stacktrace.frames.forEach((frame) => {
-          frame.filename = toMetamaskUrl(frame.filename);
-        });
-      }
-    });
-  }
-}
-
-function toMetamaskUrl(origUrl) {
-  const filePath = origUrl.split(window.location.origin)[1];
-  if (!filePath) {
-    return origUrl;
-  }
-  const metamaskUrl = `metamask${filePath}`;
-  return metamaskUrl;
-}
