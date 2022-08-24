@@ -3873,7 +3873,7 @@ export function setCustomNetworkListEnabled(customNetworkListEnabled) {
 }
 
 export function setFirstTimeUsedNetwork(chainId) {
-  return promisifiedBackground.setFirstTimeUsedNetwork(chainId);
+  return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
 
 // QR Hardware Wallets
