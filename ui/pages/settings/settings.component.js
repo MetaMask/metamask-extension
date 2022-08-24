@@ -211,6 +211,8 @@ class SettingsPage extends PureComponent {
 
     if (isPopup && isAddressEntryPage) {
       subheaderText = t('settings');
+    } else if (isAddressEntryPage) {
+      subheaderText = t('contacts');
     } else if (initialBreadCrumbKey) {
       subheaderText = t(initialBreadCrumbKey);
     } else {
