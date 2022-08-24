@@ -291,7 +291,7 @@
     "css-loader": "^2.1.1",
     "css-to-xpath": "^0.1.0",
     "del": "^3.0.0",
-    "depcheck": "^1.4.2",
+    "depcheck": "^1.4.3",
     "dependency-tree": "^8.1.1",
     "duplexify": "^4.1.1",
     "enzyme": "^3.10.0",
