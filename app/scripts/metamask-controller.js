@@ -1739,6 +1739,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateCollectibleDropDownState.bind(
           appStateController,
         ),
+      setFirstTimeUsedNetwork:
+        appStateController.setFirstTimeUsedNetwork.bind(appStateController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
