@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
-import CopyContractDetails from '../../../ui/icon/copy-contract-details';
+import IconCopy from '../../../ui/icon/icon-copy';
 import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -90,13 +90,13 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
             justifyContent={JUSTIFY_CONTENT.FLEX_END}
             className="contract-details-modal__content__contract__buttons"
           >
-            <Box marginTop={5} marginRight={5}>
+            <Box marginTop={4} marginRight={5}>
               <Tooltip position="top" title={t('copyToClipboard')}>
                 <Button
                   className="contract-details-modal__content__contract__buttons__copy"
                   type="link"
                 >
-                  <CopyContractDetails />
+                  <IconCopy color="var(--color-icon-muted)" />
                 </Button>
               </Tooltip>
             </Box>
@@ -106,7 +106,10 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                   className="contract-details-modal__content__contract__buttons__block-explorer"
                   type="link"
                 >
-                  <IconBlockExplorer />
+                  <IconBlockExplorer
+                    size={16}
+                    color="var(--color-icon-muted)"
+                  />
                 </Button>
               </Tooltip>
             </Box>
@@ -155,13 +158,13 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
             justifyContent={JUSTIFY_CONTENT.FLEX_END}
             className="contract-details-modal__content__contract__buttons"
           >
-            <Box marginTop={5} marginRight={5}>
+            <Box marginTop={4} marginRight={5}>
               <Tooltip position="top" title={t('copyToClipboard')}>
                 <Button
                   className="contract-details-modal__content__contract__buttons__copy"
                   type="link"
                 >
-                  <CopyContractDetails />
+                  <IconCopy color="var(--color-icon-muted)" />
                 </Button>
               </Tooltip>
             </Box>
@@ -171,7 +174,10 @@ export default function ContractDetailsModal({ onClose, address, tokenName }) {
                   className="contract-details-modal__content__contract__buttons__block-explorer"
                   type="link"
                 >
-                  <IconBlockExplorer />
+                  <IconBlockExplorer
+                    size={16}
+                    color="var(--color-icon-muted)"
+                  />
                 </Button>
               </Tooltip>
             </Box>
