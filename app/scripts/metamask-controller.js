@@ -146,6 +146,7 @@ import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
+import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
 
 import {
   CaveatMutatorFactories,
@@ -2791,7 +2792,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const serialized = await primaryKeyring.serialize();
-    const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
 
     const accounts = await primaryKeyring.getAccounts();
     if (accounts.length < 1) {
@@ -2799,8 +2799,11 @@ export default class MetamaskController extends EventEmitter {
     }
 
     try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
-      return Array.from(seedPhraseAsBuffer.values());
+      await seedPhraseVerifier.verifyAccounts(accounts, serialized.mnemonic);
+      const recoveredIndices = Array.from(
+        new Uint16Array(new Uint8Array(serialized.mnemonic).buffer),
+      );
+      return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
     } catch (err) {
       log.error(err.message);
       throw err;
