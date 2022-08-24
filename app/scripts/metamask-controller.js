@@ -6,7 +6,7 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import KeyringController from 'eth-keyring-controller';
+import { KeyringController } from 'eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -56,6 +56,8 @@ import {
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
+
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import browser from 'webextension-polyfill';
 import {
@@ -2850,7 +2852,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const serialized = await primaryKeyring.serialize();
-    const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
 
     const accounts = await primaryKeyring.getAccounts();
     if (accounts.length < 1) {
@@ -2858,8 +2859,11 @@ export default class MetamaskController extends EventEmitter {
     }
 
     try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
-      return Array.from(seedPhraseAsBuffer.values());
+      await seedPhraseVerifier.verifyAccounts(accounts, serialized.mnemonic);
+      const recoveredIndices = Array.from(
+        new Uint16Array(new Uint8Array(serialized.mnemonic).buffer),
+      );
+      return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
     } catch (err) {
       log.error(err.message);
       throw err;
