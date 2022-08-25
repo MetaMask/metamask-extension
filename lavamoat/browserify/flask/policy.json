@@ -3350,12 +3350,14 @@
       }
     },
     "@metamask/rpc-methods": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
         "@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>@metamask/snap-utils": true,
         "@metamask/rpc-methods>@metamask/utils": true,
-        "@metamask/snap-controllers": true,
         "eth-rpc-errors": true
       }
     },
@@ -3486,11 +3488,10 @@
       "packages": {
         "@metamask/controllers": true,
         "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods": true,
         "@metamask/rpc-methods>@metamask/snap-utils": true,
         "@metamask/rpc-methods>@metamask/utils": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
-        "@metamask/snap-controllers>@metamask/execution-environments": true,
-        "@metamask/snap-controllers>@metamask/obs-store": true,
         "@metamask/snap-controllers>@metamask/post-message-stream": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
@@ -3501,7 +3502,6 @@
         "@metamask/snap-controllers>tar-stream": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true
       }
     },
@@ -3516,46 +3516,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2": true,
-        "browserify>stream-browserify": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": true,
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/snap-controllers>@metamask/post-message-stream": {
