@@ -85,7 +85,7 @@ export function submitRequestToBackground(
 ) {
   if (isManifestV3) {
     return new Promise((resolve, reject) => {
-      executeActionOrAddtoRetryQueue({
+      executeActionOrAddToRetryQueue({
         actionId,
         request: { method, args },
         resolve,
@@ -117,7 +117,7 @@ export const callBackgroundMethod = (
   if (isManifestV3) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
-    executeActionOrAddtoRetryQueue({
+    executeActionOrAddToRetryQueue({
       actionId,
       request: { method, args },
       resolve,
