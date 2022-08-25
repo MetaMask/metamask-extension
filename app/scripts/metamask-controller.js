@@ -1174,7 +1174,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         handleSnapRpcRequest: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:handleRpcRequest',
+          'SnapController:handleRequest',
         ),
         getSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -1849,12 +1849,22 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // snaps
-      removeSnapError: this.snapController.removeSnapError.bind(
-        this.snapController,
+      removeSnapError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:removeSnapError',
       ),
-      disableSnap: this.snapController.disableSnap.bind(this.snapController),
-      enableSnap: this.snapController.enableSnap.bind(this.snapController),
-      removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      disableSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:disable',
+      ),
+      enableSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:enable',
+      ),
+      removeSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:remove',
+      ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
