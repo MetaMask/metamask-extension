@@ -54,7 +54,6 @@ export default class SettingsTab extends PureComponent {
     setHideZeroBalanceTokens: PropTypes.func,
     lastFetchedConversionDate: PropTypes.number,
     selectedAddress: PropTypes.string,
-    useTokenDetection: PropTypes.bool,
     tokenList: PropTypes.object,
   };
 
@@ -78,11 +77,8 @@ export default class SettingsTab extends PureComponent {
 
   renderCurrentConversion() {
     const { t } = this.context;
-    const {
-      currentCurrency,
-      setCurrentCurrency,
-      lastFetchedConversionDate,
-    } = this.props;
+    const { currentCurrency, setCurrentCurrency, lastFetchedConversionDate } =
+      this.props;
 
     return (
       <div ref={this.settingsRefs[0]} className="settings-page__content-row">
@@ -171,13 +167,8 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const {
-      useBlockie,
-      setUseBlockie,
-      selectedAddress,
-      useTokenDetection,
-      tokenList,
-    } = this.props;
+    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
+      this.props;
 
     const getIconStyles = () => ({
       display: 'block',
@@ -209,7 +200,8 @@ export default class SettingsTab extends PureComponent {
                 className={classnames(
                   'settings-page__content-item__identicon__item__icon',
                   {
-                    'settings-page__content-item__identicon__item__icon--active': !useBlockie,
+                    'settings-page__content-item__identicon__item__icon--active':
+                      !useBlockie,
                   },
                 )}
               >
@@ -217,7 +209,6 @@ export default class SettingsTab extends PureComponent {
                   id="jazzicon"
                   address={selectedAddress}
                   diameter={32}
-                  useTokenDetection={useTokenDetection}
                   tokenList={tokenList}
                   style={getIconStyles()}
                 />
@@ -225,7 +216,10 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={[0, 12, 0, 3]}
+                marginTop={0}
+                marginRight={12}
+                marginBottom={0}
+                marginLeft={3}
               >
                 {t('jazzicons')}
               </Typography>
@@ -239,7 +233,8 @@ export default class SettingsTab extends PureComponent {
                 className={classnames(
                   'settings-page__content-item__identicon__item__icon',
                   {
-                    'settings-page__content-item__identicon__item__icon--active': useBlockie,
+                    'settings-page__content-item__identicon__item__icon--active':
+                      useBlockie,
                   },
                 )}
               >
@@ -253,7 +248,10 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={[0, 0, 0, 3]}
+                marginTop={3}
+                marginRight={0}
+                marginBottom={3}
+                marginLeft={3}
               >
                 {t('blockies')}
               </Typography>

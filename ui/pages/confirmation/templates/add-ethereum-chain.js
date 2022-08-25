@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   SEVERITIES,
   TYPOGRAPHY,
@@ -7,8 +8,13 @@ import {
   JUSTIFY_CONTENT,
   DISPLAY,
   COLORS,
+  FLEX_DIRECTION,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -19,45 +25,25 @@ const UNRECOGNIZED_CHAIN = {
       element: 'MetaMaskTranslation',
       props: {
         translationKey: 'unrecognizedChain',
-        variables: [
-          {
-            element: 'a',
-            key: 'unrecognizedChainLink',
-            props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
-              target: '__blank',
-              tabIndex: 0,
-            },
-            children: {
-              element: 'MetaMaskTranslation',
-              props: {
-                translationKey: 'unrecognizedChainLinkText',
-              },
-            },
-          },
-        ],
       },
     },
   },
 };
 
-const INVALID_CHAIN = {
-  id: 'INVALID_CHAIN',
-  severity: SEVERITIES.DANGER,
+const MISMATCHED_CHAIN_RECOMMENDATION = {
+  id: 'MISMATCHED_CHAIN_RECOMMENDATION',
   content: {
     element: 'span',
     children: {
       element: 'MetaMaskTranslation',
       props: {
-        translationKey: 'mismatchedChain',
+        translationKey: 'mismatchedChainRecommendation',
         variables: [
           {
             element: 'a',
             key: 'mismatchedChainLink',
             props: {
-              href:
-                'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+              href: ZENDESK_URLS.VERIFY_CUSTOM_NETWORK,
               target: '__blank',
               tabIndex: 0,
             },
@@ -74,6 +60,48 @@ const INVALID_CHAIN = {
   },
 };
 
+const MISMATCHED_NETWORK_NAME = {
+  id: 'MISMATCHED_NETWORK_NAME',
+  severity: SEVERITIES.WARNING,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedNetworkName',
+      },
+    },
+  },
+};
+
+const MISMATCHED_NETWORK_SYMBOL = {
+  id: 'MISMATCHED_NETWORK_SYMBOL',
+  severity: SEVERITIES.DANGER,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedNetworkSymbol',
+      },
+    },
+  },
+};
+
+const MISMATCHED_NETWORK_RPC = {
+  id: 'MISMATCHED_NETWORK_RPC',
+  severity: SEVERITIES.DANGER,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'mismatchedRpcUrl',
+      },
+    },
+  },
+};
+
 async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
@@ -82,38 +110,43 @@ async function getAlerts(pendingApproval) {
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
   );
-  let validated = Boolean(matchedChain);
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
-  if (originIsMetaMask && validated) {
+  if (originIsMetaMask && Boolean(matchedChain)) {
     return [];
   }
 
   if (matchedChain) {
     if (
-      matchedChain.nativeCurrency?.decimals !== 18 ||
       matchedChain.name.toLowerCase() !==
-        pendingApproval.requestData.chainName.toLowerCase() ||
+      pendingApproval.requestData.chainName.toLowerCase()
+    ) {
+      alerts.push(MISMATCHED_NETWORK_NAME);
+    }
+    if (
       matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker
     ) {
-      validated = false;
+      alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
     if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
-      validated = false;
+      alerts.push(MISMATCHED_NETWORK_RPC);
     }
   }
 
   if (!matchedChain) {
     alerts.push(UNRECOGNIZED_CHAIN);
-  } else if (!validated) {
-    alerts.push(INVALID_CHAIN);
   }
+
+  if (alerts.length) {
+    alerts.push(MISMATCHED_CHAIN_RECOMMENDATION);
+  }
+
   return alerts;
 }
 
-function getValues(pendingApproval, t, actions) {
+function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
 
   return {
@@ -199,7 +232,7 @@ function getValues(pendingApproval, t, actions) {
                       {t('someNetworksMayPoseSecurity')}{' '}
                       <a
                         key="zendesk_page_link"
-                        href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: 'var(--color-primary-default)' }}
@@ -236,8 +269,7 @@ function getValues(pendingApproval, t, actions) {
                   children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
                   key: 'addEthereumChainConfirmationRisksLearnMoreLink',
                   props: {
-                    href:
-                      'https://metamask.zendesk.com/hc/en-us/articles/4404424659995',
+                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
                     target: '__blank',
                   },
                 },
@@ -247,9 +279,11 @@ function getValues(pendingApproval, t, actions) {
         ],
         props: {
           variant: TYPOGRAPHY.H7,
-          align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
+            display: DISPLAY.FLEX,
+            flexDirection: FLEX_DIRECTION.COLUMN,
+            alignItems: ALIGN_ITEMS.CENTER,
           },
         },
       },
@@ -267,24 +301,40 @@ function getValues(pendingApproval, t, actions) {
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
-            [t('networkURL')]: pendingApproval.requestData.rpcUrl,
+            [t('networkURL')]: pendingApproval.requestData.rpcUrl?.includes(
+              `/v3/${infuraProjectId}`,
+            )
+              ? pendingApproval.requestData.rpcUrl.replace(
+                  `/v3/${infuraProjectId}`,
+                  '',
+                )
+              : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
-            [t('blockExplorerUrl')]: pendingApproval.requestData
-              .blockExplorerUrl,
+            [t('blockExplorerUrl')]:
+              pendingApproval.requestData.blockExplorerUrl,
           },
-          prefaceKeys: [t('networkName'), t('networkURL'), t('chainId')],
+          prefaceKeys: [
+            t('networkName'),
+            t('networkURL'),
+            t('chainId'),
+            t('currencySymbol'),
+          ],
         },
       },
     ],
     approvalText: t('approveButtonText'),
     cancelText: t('cancel'),
-    onApprove: () =>
-      actions.resolvePendingApproval(
+    onApprove: async () => {
+      await actions.resolvePendingApproval(
         pendingApproval.id,
         pendingApproval.requestData,
-      ),
-
+      );
+      if (originIsMetaMask) {
+        actions.addCustomNetwork(pendingApproval.requestData);
+        history.push(DEFAULT_ROUTE);
+      }
+    },
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,

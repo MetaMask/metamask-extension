@@ -8,7 +8,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-require('./user-preferenced-token-input.container.js');
+require('./user-preferenced-token-input.container');
 
 describe('UserPreferencedTokenInput container', () => {
   describe('mapStateToProps()', () => {

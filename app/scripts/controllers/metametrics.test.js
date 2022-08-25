@@ -132,12 +132,10 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment,
-    getNetworkIdentifier: networkController.getNetworkIdentifier.bind(
-      networkController,
-    ),
-    getCurrentChainId: networkController.getCurrentChainId.bind(
-      networkController,
-    ),
+    getNetworkIdentifier:
+      networkController.getNetworkIdentifier.bind(networkController),
+    getCurrentChainId:
+      networkController.getCurrentChainId.bind(networkController),
     onNetworkDidChange: networkController.on.bind(
       networkController,
       NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -690,6 +688,7 @@ describe('MetaMetricsController', function () {
 
       assert.deepEqual(traits, {
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
+        [TRAITS.INSTALL_DATE_EXT]: '',
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID, '0xaf'],
         [TRAITS.NETWORKS_WITHOUT_TICKER]: ['0xaf'],

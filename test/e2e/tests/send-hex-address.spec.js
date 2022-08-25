@@ -174,7 +174,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+        await driver.clickElement({ text: 'Add token', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
@@ -198,6 +198,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           );
           return sendDialogMsgs.length === 1;
         }, 10000);
+        await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -272,7 +273,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+        await driver.clickElement({ text: 'Add token', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
@@ -296,6 +297,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           );
           return sendDialogMsgs.length === 1;
         }, 10000);
+        await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction

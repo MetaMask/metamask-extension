@@ -27,9 +27,8 @@ const DetectedTokenSelectionPopover = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
-  const { selected: selectedTokens = [] } = sortingBasedOnTokenSelection(
-    tokensListDetected,
-  );
+  const { selected: selectedTokens = [] } =
+    sortingBasedOnTokenSelection(tokensListDetected);
   const numOfTokensImporting =
     selectedTokens.length === detectedTokens.length
       ? `All`
@@ -72,7 +71,11 @@ const DetectedTokenSelectionPopover = ({
   return (
     <Popover
       className="detected-token-selection-popover"
-      title={t('tokensFoundTitle', [detectedTokens.length])}
+      title={
+        detectedTokens.length === 1
+          ? t('tokenFoundTitle')
+          : t('tokensFoundTitle', [detectedTokens.length])
+      }
       onClose={onClose}
       footer={footer}
     >

@@ -7,9 +7,9 @@ const cssToXPath = require('css-to-xpath');
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
- * @param {Object} element - Selenium Element
+ * @param {object} element - Selenium Element
  * @param driver
- * @returns {Object} modified Selenium Element
+ * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
@@ -395,6 +395,20 @@ class Driver {
       `${filepathBase}-state.json`,
       JSON.stringify(uiState, null, 2),
     );
+  }
+
+  async checkBrowserForLavamoatLogs() {
+    const browserLogs = (
+      await fs.readFile(
+        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
+      )
+    )
+      .toString('utf-8')
+      .split(/\r?\n/u);
+
+    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
+
+    return browserLogs;
   }
 
   async checkBrowserForConsoleErrors() {

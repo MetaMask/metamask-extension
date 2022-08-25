@@ -29,14 +29,14 @@ export default class PendingTransactionTracker extends EventEmitter {
   droppedBlocksBufferByHash = new Map();
 
   /**
-   * @param {Object} config - Configuration.
+   * @param {object} config - Configuration.
    * @param {Function} config.approveTransaction - Approves a transaction.
    * @param {Function} config.confirmTransaction - Set a transaction as confirmed.
    * @param {Function} config.getCompletedTransactions - Returns completed transactions.
    * @param {Function} config.getPendingTransactions - Returns an array of pending transactions,
-   * @param {Object} config.nonceTracker - see nonce tracker
-   * @param {Object} config.provider - A network provider.
-   * @param {Object} config.query - An EthQuery instance.
+   * @param {object} config.nonceTracker - see nonce tracker
+   * @param {object} config.provider - A network provider.
+   * @param {object} config.query - An EthQuery instance.
    * @param {Function} config.publishTransaction - Publishes a raw transaction,
    */
   constructor(config) {
@@ -119,7 +119,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    *
    * Will only attempt to retry the given tx every {@code 2**(txMeta.retryCount)} blocks.
    *
-   * @param {Object} txMeta - the transaction metadata
+   * @param {object} txMeta - the transaction metadata
    * @param {string} latestBlockNumber - the latest block number in hex
    * @returns {Promise<string|undefined>} the tx hash if retried
    * @fires tx:block-update
@@ -160,7 +160,7 @@ export default class PendingTransactionTracker extends EventEmitter {
   /**
    * Query the network to see if the given {@code txMeta} has been included in a block
    *
-   * @param {Object} txMeta - the transaction metadata
+   * @param {object} txMeta - the transaction metadata
    * @returns {Promise<void>}
    * @fires tx:confirmed
    * @fires tx:dropped
@@ -198,13 +198,8 @@ export default class PendingTransactionTracker extends EventEmitter {
     try {
       const transactionReceipt = await this.query.getTransactionReceipt(txHash);
       if (transactionReceipt?.blockNumber) {
-        const {
-          baseFeePerGas,
-          timestamp: blockTimestamp,
-        } = await this.query.getBlockByHash(
-          transactionReceipt?.blockHash,
-          false,
-        );
+        const { baseFeePerGas, timestamp: blockTimestamp } =
+          await this.query.getBlockByHash(transactionReceipt?.blockHash, false);
 
         this.emit(
           'tx:confirmed',
@@ -232,7 +227,7 @@ export default class PendingTransactionTracker extends EventEmitter {
   /**
    * Checks whether the nonce in the given {@code txMeta} is behind the network nonce
    *
-   * @param {Object} txMeta - the transaction metadata
+   * @param {object} txMeta - the transaction metadata
    * @returns {Promise<boolean>}
    * @private
    */
@@ -265,7 +260,7 @@ export default class PendingTransactionTracker extends EventEmitter {
   /**
    * Checks whether the nonce in the given {@code txMeta} is correct against the local set of transactions
    *
-   * @param {Object} txMeta - the transaction metadata
+   * @param {object} txMeta - the transaction metadata
    * @returns {Promise<boolean>}
    * @private
    */

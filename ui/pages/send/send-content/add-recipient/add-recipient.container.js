@@ -46,9 +46,8 @@ function mapStateToProps(state) {
     ensWarning: getEnsWarning(state),
     nonContacts: addressBook.filter(({ name }) => !name),
     ownedAccounts,
-    isUsingMyAccountsForRecipientSearch: getIsUsingMyAccountForRecipientSearch(
-      state,
-    ),
+    isUsingMyAccountsForRecipientSearch:
+      getIsUsingMyAccountForRecipientSearch(state),
     userInput: getRecipientUserInput(state),
     recipient: getRecipient(state),
   };
