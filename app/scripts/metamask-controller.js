@@ -3770,8 +3770,9 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
-        getSnaps: this.snapController.getPermittedSnaps.bind(
-          this.snapController,
+        getSnaps: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnaps',
           origin,
         ),
         requestPermissions: async (requestedPermissions) => {
@@ -3788,8 +3789,9 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        installSnaps: this.snapController.installSnaps.bind(
-          this.snapController,
+        installSnaps: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:install',
           origin,
         ),
       }),
