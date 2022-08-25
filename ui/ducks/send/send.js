@@ -116,6 +116,7 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
+import { prepareResolutionCall } from '../uns';
 // typedef import statements
 /**
  * @typedef {(
@@ -958,7 +959,6 @@ const slice = createSlice({
       draftTransaction.asset.type = asset.type;
       draftTransaction.asset.balance = asset.balance;
       draftTransaction.asset.error = asset.error;
-
       if (
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
         draftTransaction.asset.type === ASSET_TYPES.NFT
@@ -2127,6 +2127,7 @@ export function updateSendAsset(
     if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
     }
+    //prepareResolutionCall(state.uns.domainName);
   };
 }
 

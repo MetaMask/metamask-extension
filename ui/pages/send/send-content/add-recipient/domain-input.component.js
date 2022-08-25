@@ -5,7 +5,8 @@ import classnames from 'classnames';
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import { 
   isValidDomainName,
-  isValidUnstoppableDomainName 
+  isValidUnstoppableDomainName,
+  buildJson, 
 } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
@@ -77,11 +78,14 @@ export default class EnsInput extends Component {
     // Empty ENS state if input is empty
     // maybe scan ENS
     if (isValidUnstoppableDomainName(input) !== null) {
-      resetEnsResolution(); 
-      resolveUNS(input);
+      resetEnsResolution();
+      // if(prepareResolutionCall() === 'NATIVE'){
+         //console.log(resolveUNS(input));
+      // }
+      prepareResolutionCall(input);
       resetEnsResolution(); 
        
-    } else if (isValidDomainName(input) && !isValidUnstoppableDomainName(input)) {
+    } else if (!isValidUnstoppableDomainName(input) && isValidDomainName(input) ) {
         lookupEnsName(input);
     } else {
       resetDomainResolution();
