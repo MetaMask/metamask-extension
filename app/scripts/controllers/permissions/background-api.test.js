@@ -42,6 +42,9 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
+      getPermissionBackgroundApiMethods(
+        permissionController,
+      ).addPermittedAccount('foo.com', '0x1');
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',
@@ -129,6 +132,9 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
+      getPermissionBackgroundApiMethods(
+        permissionController,
+      ).removePermittedAccount('foo.com', '0x2');
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',
