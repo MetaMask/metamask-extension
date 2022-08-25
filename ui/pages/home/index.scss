@@ -250,15 +250,17 @@
       }
 
       &-text-bold {
-        font-weight: 700
+        font-weight: 700;
       }
     }
 
     &--tooltip-theme {
       background-color: var(--color-primary-default) !important;
+
       & .tippy-tooltip-content {
         color: var(--color-primary-inverse) !important;
       }
+
       & .arrow-regular {
         border-bottom-color: var(--color-primary-default) !important;
       }
