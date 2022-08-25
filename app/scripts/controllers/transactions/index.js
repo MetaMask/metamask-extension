@@ -685,7 +685,9 @@ export default class TransactionController extends EventEmitter {
     this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionSendFlowHistory');
     const txMeta = this._getTransaction(txId);
 
-    if (currentSendFlowHistoryLength === txMeta?.sendFlowHistory.length) {
+    if (
+      currentSendFlowHistoryLength === (txMeta?.sendFlowHistory?.length || 0)
+    ) {
       // only update what is defined
       const note = `Update sendFlowHistory for ${txId}`;
 
