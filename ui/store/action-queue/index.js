@@ -51,7 +51,7 @@ export function dropQueue(silently) {
 }
 
 // add action to queue
-const executeActionOrAddtoRetryQueue = (item) => {
+const executeActionOrAddToRetryQueue = (item) => {
   if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
