@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import jazzicon from '@metamask/jazzicon';
 import iconFactoryGenerator from '../../../helpers/utils/icon-factory';
@@ -17,23 +17,28 @@ function Jazzicon({
   style,
   tokenList = {},
 }) {
-  const image = useMemo(() => {
-    const imageNode = iconFactory.iconForAddress(
-      address,
-      diameter,
-      tokenList[address.toLowerCase()],
-    );
+  const container = useRef();
 
-    return imageNode.outerHTML;
+  useEffect(() => {
+    const addIcon = () => {
+      const imageNode = iconFactory.iconForAddress(
+        address,
+        diameter,
+        tokenList[address.toLowerCase()],
+      );
+
+      container.current?.appendChild(imageNode);
+    };
+
+    const removeIcon = () => {
+      container.current && (container.current.innerHTML = '');
+    };
+
+    removeIcon();
+    addIcon();
   }, [address, diameter, tokenList]);
 
-  return (
-    <div
-      className={className}
-      style={style}
-      dangerouslySetInnerHTML={{ __html: image }}
-    />
-  );
+  return <div ref={container} className={className} style={style} />;
 }
 
 Jazzicon.propTypes = {
