@@ -687,7 +687,7 @@ export default class Home extends PureComponent {
                     className="home__subheader-link"
                     onClick={async () => {
                       global.platform.openTab({
-                        url: process.env.METALABS_URL,
+                        url: process.env.PORTFOLIO_URL,
                       });
                     }}
                   >
