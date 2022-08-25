@@ -34,21 +34,21 @@ export async function getErrorHtml(supportLink, metamaskState) {
     <div class="critical-error">
       <div class="critical-error__alert">
         <p class="critical-error__alert__message">
-          ${t('troubleStarting')}        
-        </p>   
+          ${t('troubleStarting')}
+        </p>
         <button id='critical-error-button' class="critical-error__alert__button">
           ${t('restartMetamask')}
         </button>
-      </div>    
-      <p class="critical-error__paragraph">    
+      </div>
+      <p class="critical-error__paragraph">
         ${t('stillGettingMessage')}
-        <a           
-          href=${supportLink} 
-          class="critical-error__paragraph__link" 
-          target="_blank" 
+        <a
+          href=${supportLink}
+          class="critical-error__paragraph__link"
+          target="_blank"
           rel="noopener noreferrer">
             ${t('sendBugReport')}
-          </a>  
+          </a>
       </p>
     </div>
     `;
