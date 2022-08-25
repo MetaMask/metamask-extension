@@ -1038,6 +1038,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SENTRY_DSN_DEV: config.SENTRY_DSN_DEV,
     SIWE_V1: config.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
+    TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
   };
 }
 
