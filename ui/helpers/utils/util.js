@@ -16,6 +16,7 @@ import {
 } from '../../../shared/constants/network';
 import {
   ALLOWED_UNSTOPPABLE_TLDS,
+  RESPONSE_JSON,
 } from '../../../shared/constants/uns';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
@@ -115,12 +116,41 @@ export function isValidDomainName(address) {
 export function isValidUnstoppableDomainName(address) {
   let valid = null;
   ALLOWED_UNSTOPPABLE_TLDS.forEach((tld, i) => {
-  if (address.includes(tld)) {
+  if (address.toLowerCase().includes(tld)) {
     valid = address;
   }
   })
   return valid;
  }
+
+ export function buildJson(input=RESPONSE_JSON) {
+  let finalObject = {
+    "singleChain": [
+    ],
+    "multiChain": [
+    ]
+  };
+  let currencyArray = parseKeysArray(input.keys);
+  currencyArray.forEach(function (crypto) {
+    if (crypto.deprecatedKeyName.includes("_")){
+      finalObject.multiChain.push(crypto.deprecatedKeyName);
+    } else {
+      finalObject.singleChain.push(crypto.deprecatedKeyName);
+    }
+  })
+  return finalObject;
+ }
+
+ export function parseKeysArray(json){
+  var result = [];
+  var keys = Object.keys(json);
+  keys.forEach(function(key){
+      if (key.startsWith("crypto")) {
+        result.push(json[key]);
+      }
+  });
+  return result;
+}
 
 export function isOriginContractAddress(to, sendTokenAddress) {
   if (!to || !sendTokenAddress) {

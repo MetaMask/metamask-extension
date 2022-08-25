@@ -19,8 +19,9 @@ import {
   UNS_CONFUSING_ERROR,
   UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
-import { 
-  isValidUnstoppableDomainName
+import {
+  isValidUnstoppableDomainName,
+  buildJson,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
@@ -39,6 +40,7 @@ const initialState = {
   error: null,
   warning: null,
   network: null,
+  domainName: null,
 };
 
 export const unsInitialState = initialState;
@@ -56,6 +58,7 @@ const slice = createSlice({
       state.resolution = null;
       state.error = null;
       state.warning = null;
+      state.domainName = null;
       const { address, unsName, error } = action.payload;
 
       if (error) {
@@ -68,7 +71,7 @@ const slice = createSlice({
           state.error = UNS_RECORD_NOT_FOUND;
         } else if (error.code === 'UnspecifiedResolver') {
           state.error = UNS_UNSPECIFIED_RESOLVER;
-        }else {
+        } else {
           log.error(error);
           state.error = UNS_UNKNOWN_ERROR;
         }
@@ -79,6 +82,7 @@ const slice = createSlice({
           state.error = UNS_RESOLUTION_ERROR;
         } else {
           state.resolution = address;
+          state.domainName = unsName;
         }
         if (isValidUnstoppableDomainName(address) && isConfusing(address)) {
           state.warning = UNS_CONFUSING_ERROR;
@@ -88,35 +92,35 @@ const slice = createSlice({
       }
     },
     enableUnsLookup: (state, action) => {
-        state.stage = 'INITIALIZED';
-        state.error = null;
-        state.resolution = null;
-        state.warning = null;
-        state.network = action.payload;
-      },
-      disableUnsLookup: (state) => {
-        state.stage = 'NO_NETWORK_SUPPORT';
-        state.error = null;
-        state.warning = null;
-        state.resolution = null;
-        state.network = null;
-      },
-    
-      resetUnsResolution: (state) => {
-        state.resolution = null;
-        state.warning = null;
-        state.error = null;
-      },
+      state.stage = 'INITIALIZED';
+      state.error = null;
+      state.resolution = null;
+      state.warning = null;
+      state.network = action.payload;
     },
-    extraReducers: (builder) => {
-      builder.addCase(CHAIN_CHANGED, (state, action) => {
-        if (action.payload !== state.currentChainId) {
-          state.stage = 'UNINITIALIZED';
-          provider = null;
-        }
-      });
+    disableUnsLookup: (state) => {
+      state.stage = 'NO_NETWORK_SUPPORT';
+      state.error = null;
+      state.warning = null;
+      state.resolution = null;
+      state.network = null;
     },
-  });
+
+    resetUnsResolution: (state) => {
+      state.resolution = null;
+      state.warning = null;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(CHAIN_CHANGED, (state, action) => {
+      if (action.payload !== state.currentChainId) {
+        state.stage = 'UNINITIALIZED';
+        provider = null;
+      }
+    });
+  },
+});
 
 const { reducer, actions } = slice;
 export default reducer;
@@ -127,7 +131,7 @@ const {
   disableUnsLookup,
   resetUnsResolution,
 } = actions;
-export {resetUnsResolution}
+export { resetUnsResolution }
 
 export function initializeUnsSlice() {
   return (dispatch, getState) => {
@@ -150,31 +154,75 @@ export function initializeUnsSlice() {
     }
   };
 }
-
-export function resolveUNS(unsName){
-  return async (dispatch, getState) => {
+export async function resolveMultiChainUNS(unsName, symbol, version) {
+  let object = {}
+  const resolution = new Resolution();
+  object.unsName = unsName;
+  object.currency = symbol;
+  object.version = version;
+  object.address = await resolution
+    .multiChainAddr(unsName, symbol, version)
+    .catch((err) => {
+      object.error = err.code
+    });
+  return object
+}
+export function prepareResolutionCall(unsName) {
+  //decides between multi and single chain
+  //route between resolution calls
+  return async (dispatch, getState, result) => {
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeUnsSlice());
     }
-    let address;
-    let error;
-    const resolution = new Resolution();
-    console.log(resolution.addr(unsName, state.metamask.nativeCurrency));
-    address = await resolution
-      .addr(unsName, state.metamask.nativeCurrency)
-      .catch((err) => {
-        error = err.code
-      });
-    await dispatch(
-      unsLookup({
-        unsName,
-        address,
-        error,
-      }),
-    );
+    let json = buildJson();
+    for (let i = 0; i < json.singleChain.length; i++) {
+      if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
+        if (state.metamask.nativeCurrency === json.singleChain[i]) {
+          result = 'SINGLE_CHAIN';
+          break;
+        } else result = 'MULTI_CHAIN';
+      } else result = 'MULTI_CHAIN';
+    }
+    if (result === 'SINGLE_CHAIN') {
+      let object = await resolveUNS(unsName, state.metamask.nativeCurrency);
+      await dispatch(
+        unsLookup({
+          unsName: object.unsName,
+          address: object.address,
+          error: object.error,
+        }),
+      );
+    } else if (result === 'MULTI_CHAIN') {
+      let object = {};
+      if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
+        object = await resolveMultiChainUNS(unsName, state.metamask.nativeCurrency, state.metamask.nativeCurrency);
+      } else {
+        object = await resolveMultiChainUNS(unsName, state.send.draftTransactions[state.send.currentTransactionUUID].asset.details.symbol, state.send.draftTransactions[state.send.currentTransactionUUID].asset.details.standard);
+      }
+      await dispatch(
+        unsLookup({
+          unsName: object.unsName,
+          address: object.address,
+          error: object.error,
+        }),
+      );
+    }
   }
+}
+export async function resolveUNS(unsName, currency) {
+  let object = {}
+  const resolution = new Resolution();
+  object.unsName = unsName;
+  object.currency = currency;
+  object.address = await resolution
+    .addr(unsName, currency)
+    .catch((err) => {
+      object.error = err.code
+    });
+  return object
 };
+
 
 export function getUnsResolution(state) {
   return state[name].resolution;
