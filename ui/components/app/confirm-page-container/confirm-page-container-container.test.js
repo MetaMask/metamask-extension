@@ -4,7 +4,6 @@ import sinon from 'sinon';
 import { Provider } from 'react-redux';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
-import Dialog from '../../ui/dialog';
 import ConfirmPageContainer, {
   ConfirmPageContainerHeader,
   ConfirmPageContainerNavigation,
@@ -111,31 +110,6 @@ describe('Confirm Page Container Container Test', () => {
     expect(recipientWithAddress).toHaveLength(1);
 
     expect(wrapper.find('.sender-to-recipient__name')).toHaveLength(2);
-  });
-
-  it('should render add address to address book dialog', () => {
-    expect(wrapper.find(Dialog)).toHaveLength(1);
-    expect(wrapper.find(Dialog).getElements()[0].props.children).toStrictEqual(
-      'newAccountDetectedDialogMessage',
-    );
-  });
-
-  it('should not show add to address dialog if contact is not undefined', () => {
-    props.contact = {
-      address: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-      name: 'test saved name',
-      isEns: false,
-      chainId: 'test',
-    };
-
-    const wrapper2 = mountWithRouter(
-      <Provider store={store}>
-        <ConfirmPageContainer.WrappedComponent {...props} />,
-      </Provider>,
-      store,
-    );
-
-    expect(wrapper2.find(Dialog)).toHaveLength(0);
   });
 
   it('should render recipient as name', () => {

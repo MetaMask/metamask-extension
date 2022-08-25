@@ -578,9 +578,6 @@
   "newAccount": {
     "message": "Új fiók"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Új címet észleltünk! Kattints ide, ha szeretnéd feljegyezni címtáradba."
-  },
   "newAccountNumberName": {
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"

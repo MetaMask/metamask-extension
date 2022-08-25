@@ -578,9 +578,6 @@
   "newAccount": {
     "message": "Novi račun"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nova je adresa otkrivena! Ovdje kliknite za njezino dodavanje u vaš imenik."
-  },
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"

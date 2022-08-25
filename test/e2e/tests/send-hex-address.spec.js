@@ -39,12 +39,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -90,12 +84,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -192,12 +180,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -291,12 +273,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 

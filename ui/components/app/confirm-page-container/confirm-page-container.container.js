@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import {
-  getAccountsWithLabels,
   getAddressBookEntry,
   getIsBuyableChain,
   getNetworkIdentifier,
@@ -15,11 +14,7 @@ function mapStateToProps(state, ownProps) {
   const networkIdentifier = getNetworkIdentifier(state);
   return {
     isBuyableChain,
-    contact,
     toName: contact?.name || ownProps.toName,
-    isOwnedAccount: getAccountsWithLabels(state)
-      .map((accountWithLabel) => accountWithLabel.address)
-      .includes(to),
     to,
     networkIdentifier,
   };

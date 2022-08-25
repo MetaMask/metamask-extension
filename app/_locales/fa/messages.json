@@ -585,9 +585,6 @@
   "newAccount": {
     "message": "حساب جدید"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "آدرس جدید شناسایی شد! اینجا کلیک کنید تا به کتابچه آدرسهای شما اضافه شود."
-  },
   "newAccountNumberName": {
     "message": "حساب 1$1",
     "description": "Default name of next account to be created on create account screen"

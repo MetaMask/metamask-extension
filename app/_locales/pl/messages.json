@@ -582,9 +582,6 @@
   "newAccount": {
     "message": "Nowe konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Wykryto nowy adres! Kliknij tutaj, aby dodać go do książki adresowej."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"

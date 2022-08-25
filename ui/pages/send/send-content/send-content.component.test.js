@@ -69,17 +69,14 @@ describe('SendContent Component', () => {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
-        true,
-      );
       expect(
-        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        PageContainerContentChild.childAt(0).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        PageContainerContentChild.childAt(1).is(SendAmountRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(3).is(SendHexDataRow),
+        PageContainerContentChild.childAt(2).is(SendHexDataRow),
       ).toStrictEqual(true);
     });
 
@@ -88,14 +85,11 @@ describe('SendContent Component', () => {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
-        true,
-      );
       expect(
-        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        PageContainerContentChild.childAt(0).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        PageContainerContentChild.childAt(1).is(SendAmountRow),
       ).toStrictEqual(true);
       expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
     });
@@ -105,14 +99,11 @@ describe('SendContent Component', () => {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
-        true,
-      );
       expect(
-        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        PageContainerContentChild.childAt(0).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        PageContainerContentChild.childAt(1).is(SendAmountRow),
       ).toStrictEqual(true);
       expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
     });
@@ -172,11 +163,11 @@ describe('SendContent Component', () => {
     const PageContainerContentChild = wrapper
       .find(PageContainerContent)
       .children();
-    expect(PageContainerContentChild.childAt(1).is(SendAssetRow)).toStrictEqual(
+    expect(PageContainerContentChild.childAt(0).is(SendAssetRow)).toStrictEqual(
       true,
     );
     expect(
-      PageContainerContentChild.childAt(2).find(
+      PageContainerContentChild.childAt(1).find(
         'send-v2__asset-dropdown__single-asset',
       ),
     ).toHaveLength(0);

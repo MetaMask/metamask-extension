@@ -581,9 +581,6 @@
   "newAccount": {
     "message": "Нов акаунт"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Открит е нов адрес! Кликнете тук, за да го добавите към вашата адресна книга."
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"

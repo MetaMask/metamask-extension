@@ -585,9 +585,6 @@
   "newAccount": {
     "message": "Nauja paskyra"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Aptiktas naujas adresas! Spustelėkite čia, kad įtrauktumėte į savo adresų knygelę."
-  },
   "newAccountNumberName": {
     "message": "Paskyra $1",
     "description": "Default name of next account to be created on create account screen"

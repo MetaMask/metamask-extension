@@ -2012,9 +2012,6 @@
   "newAccount": {
     "message": "Neuer Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Neue Adresse erkannt! Klicken Sie hier, um sie zu Ihrem Adressbuch hinzuzufügen."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"

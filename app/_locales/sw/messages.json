@@ -563,9 +563,6 @@
   "newAccount": {
     "message": "Akaunti Mpya"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Anwani mpya zimegunduliwa! Bofya hapa ili uongeze kitabu chako cha anwani."
-  },
   "newAccountNumberName": {
     "message": "Akaunti $1",
     "description": "Default name of next account to be created on create account screen"

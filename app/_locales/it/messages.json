@@ -917,9 +917,6 @@
   "newAccount": {
     "message": "Nuovo Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Rilevato un nuovo indirizzo! Clicca qui per aggiungerlo alla tua rubrica."
-  },
   "newContact": {
     "message": "Nuovo contatto"
   },

@@ -569,9 +569,6 @@
   "newAccount": {
     "message": "Nou compte"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nova adreça detectada! Clica aquí per afegir la teva llibreta d'adreces."
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
