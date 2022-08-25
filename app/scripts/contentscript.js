@@ -104,7 +104,7 @@ function setupPhishingPageStreams() {
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
 }
 
-const setupPhishingExtStream = () => {
+const setupPhishingExtStreams = () => {
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
@@ -168,7 +168,7 @@ const resetPhishingStreamAndListeners = () => {
   browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
   destroyPhishingExtStreams();
-  setupPhishingExtStream();
+  setupPhishingExtStreams();
 
   phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
@@ -180,7 +180,7 @@ const resetPhishingStreamAndListeners = () => {
  */
 const initPhishingStreams = () => {
   setupPhishingPageStreams();
-  setupPhishingExtStream();
+  setupPhishingExtStreams();
 
   phishingExtPort.onDisconnect.addListener(resetPhishingStreamAndListeners);
 };
