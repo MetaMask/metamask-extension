@@ -569,9 +569,6 @@
   "newAccount": {
     "message": "Ny konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adresse fundet! Klik her for at tilføje til din adressebog."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"

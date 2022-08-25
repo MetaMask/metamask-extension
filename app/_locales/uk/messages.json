@@ -585,9 +585,6 @@
   "newAccount": {
     "message": "Новий обліковий запис"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Виявлено нову адресу! Клацніть тут, щоб додати її до вашої адресної книги."
-  },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"

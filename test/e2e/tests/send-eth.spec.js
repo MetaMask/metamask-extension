@@ -43,12 +43,6 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
 
         await driver.assertElementNotPresent('.send-v2__error-amount');
 

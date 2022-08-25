@@ -576,9 +576,6 @@
   "newAccount": {
     "message": "Nov nalog"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Otkrivena je nova adresa! Kliknite ovde da biste je dodali u Vaš adresar."
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"

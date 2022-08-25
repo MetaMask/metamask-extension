@@ -572,9 +572,6 @@
   "newAccount": {
     "message": "Cont nou"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "A fost detectată o adresă nouă! Faceți clic aici pentru a o adăuga în agenda dvs."
-  },
   "newAccountNumberName": {
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"

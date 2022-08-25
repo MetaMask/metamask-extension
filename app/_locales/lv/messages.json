@@ -581,9 +581,6 @@
   "newAccount": {
     "message": "Jauns konts"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Konstatēta jauna adrese. Klikšķiniet šeit, lai pievienotu to adrešu grāmatai."
-  },
   "newAccountNumberName": {
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"

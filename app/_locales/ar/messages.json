@@ -586,9 +586,6 @@
   "newAccount": {
     "message": "حساب جديد"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "تم اكتشاف عنوان جديد! انقر هنا لإضافته إلى دفتر عناوينك."
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"

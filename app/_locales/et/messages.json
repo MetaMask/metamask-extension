@@ -575,9 +575,6 @@
   "newAccount": {
     "message": "Uus konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Leiti uus aadress! Klõpsake siia, et see oma aadressiraamatusse lisada."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"

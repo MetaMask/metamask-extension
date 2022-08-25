@@ -570,9 +570,6 @@
   "newAccount": {
     "message": "አዲስ መለያ"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "አዲስ አድራሻ ተገኝቷል! ወደ አድራሻ ደብተርዎ ለማከለ እዚህ ላይ ጠቅ ያድርጉ።"
-  },
   "newAccountNumberName": {
     "message": "መለያ$1",
     "description": "Default name of next account to be created on create account screen"

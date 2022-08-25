@@ -585,9 +585,6 @@
   "newAccount": {
     "message": "Uusi tili"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Uusi osoitettu tunnistettu! Lisää se osoitekirjaasi napsauttamalla tästä."
-  },
   "newAccountNumberName": {
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"

@@ -523,9 +523,6 @@
   "newAccount": {
     "message": "Bagong Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Naka-detect ng bagong address! Mag-click dito para idagdag ang iyong address book."
-  },
   "newContact": {
     "message": "Bagong Contact"
   },

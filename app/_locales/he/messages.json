@@ -582,9 +582,6 @@
   "newAccount": {
     "message": "חשבון חדש"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "זוהתה כתובת חדש! נא להקיש כאן כדי להוסיף לפנקס הכתובות שלך."
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"

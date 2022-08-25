@@ -579,9 +579,6 @@
   "newAccount": {
     "message": "新帳戶"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "偵測到新位址！點擊此處將其新增到你的位址簿。"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
