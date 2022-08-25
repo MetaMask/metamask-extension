@@ -15,13 +15,7 @@ import {
   getWeiHexFromDecimalValue,
   hexWEIToDecETH,
 } from '../../helpers/utils/conversions.util';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-  ETH,
-  PRIMARY,
-} from '../../helpers/constants/common';
+import { ETH, PRIMARY } from '../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -30,6 +24,7 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
+import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
 
 export default function ConfirmTokenTransactionBase({
   image = '',

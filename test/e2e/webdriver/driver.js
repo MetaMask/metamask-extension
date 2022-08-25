@@ -397,6 +397,20 @@ class Driver {
     );
   }
 
+  async checkBrowserForLavamoatLogs() {
+    const browserLogs = (
+      await fs.readFile(
+        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
+      )
+    )
+      .toString('utf-8')
+      .split(/\r?\n/u);
+
+    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
+
+    return browserLogs;
+  }
+
   async checkBrowserForConsoleErrors() {
     const ignoredLogTypes = ['WARNING'];
     const ignoredErrorMessages = [

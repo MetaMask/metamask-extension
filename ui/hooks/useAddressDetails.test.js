@@ -77,8 +77,8 @@ describe('useAddressDetails', () => {
       {
         useTokenDetection: true,
         tokenList: {
-          '0x06195827297c7A80a443b6894d3BDB8824b43896': {
-            address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
+          '0x06195827297c7a80a443b6894d3bdb8824b43896': {
+            address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
             symbol: 'LINK',
             decimals: 18,
             name: 'TOKEN-ABC',

@@ -101,7 +101,7 @@ describe('TransactionListItem', () => {
     });
 
     afterAll(() => {
-      useGasFeeEstimates.restore();
+      useGasFeeEstimates.mockRestore();
     });
 
     it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {

@@ -90,7 +90,8 @@ const initialState = {
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime:
+      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsFeatureFlags: {},
   },
@@ -336,10 +337,8 @@ export default class SwapsController {
     if (Object.values(newQuotes).length === 0) {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
-      const [
-        _topAggId,
-        quotesWithSavingsAndFeeData,
-      ] = await this._findTopQuoteAndCalculateSavings(newQuotes);
+      const [_topAggId, quotesWithSavingsAndFeeData] =
+        await this._findTopQuoteAndCalculateSavings(newQuotes);
       topAggId = _topAggId;
       newQuotes = quotesWithSavingsAndFeeData;
     }
@@ -486,10 +485,8 @@ export default class SwapsController {
 
     const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
 
-    const {
-      gasLimit: newGasEstimate,
-      simulationFails,
-    } = await this.timedoutGasReturn(quoteToUpdate.trade);
+    const { gasLimit: newGasEstimate, simulationFails } =
+      await this.timedoutGasReturn(quoteToUpdate.trade);
 
     if (newGasEstimate && !simulationFails) {
       const gasEstimateWithRefund = calculateGasEstimateWithRefund(
@@ -637,9 +634,8 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const {
-      contractExchangeRates: tokenConversionRates,
-    } = this.getTokenRatesState();
+    const { contractExchangeRates: tokenConversionRates } =
+      this.getTokenRatesState();
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
@@ -652,10 +648,8 @@ export default class SwapsController {
 
     const newQuotes = cloneDeep(quotes);
 
-    const {
-      gasFeeEstimates,
-      gasEstimateType,
-    } = await this._getEIP1559GasFeeEstimates();
+    const { gasFeeEstimates, gasEstimateType } =
+      await this._getEIP1559GasFeeEstimates();
 
     let usedGasPrice = '0x0';
 
@@ -756,9 +750,8 @@ export default class SwapsController {
       const tokenPercentageOfPreFeeDestAmount = new BigNumber(100, 10)
         .minus(metaMaskFee, 10)
         .div(100);
-      const destinationAmountBeforeMetaMaskFee = decimalAdjustedDestinationAmount.div(
-        tokenPercentageOfPreFeeDestAmount,
-      );
+      const destinationAmountBeforeMetaMaskFee =
+        decimalAdjustedDestinationAmount.div(tokenPercentageOfPreFeeDestAmount);
       const metaMaskFeeInTokens = destinationAmountBeforeMetaMaskFee.minus(
         decimalAdjustedDestinationAmount,
       );

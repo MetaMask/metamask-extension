@@ -9,7 +9,7 @@ import {
   TYPOGRAPHY,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
-import Box, { MultipleSizes } from '../box';
+import Box, { MultipleSizesAndAuto } from '../box';
 
 const { H6, H7, H8, H9 } = TYPOGRAPHY;
 
@@ -20,12 +20,11 @@ export const ValidColors = [
   COLORS.OVERLAY_INVERSE,
   COLORS.PRIMARY_DEFAULT,
   COLORS.PRIMARY_INVERSE,
-  COLORS.SECONDARY_DEFAULT,
-  COLORS.SECONDARY_INVERSE,
   COLORS.ERROR_DEFAULT,
   COLORS.ERROR_INVERSE,
   COLORS.SUCCESS_DEFAULT,
   COLORS.SUCCESS_INVERSE,
+  COLORS.WARNING_DEFAULT,
   COLORS.WARNING_INVERSE,
   COLORS.INFO_DEFAULT,
   COLORS.INFO_INVERSE,
@@ -57,13 +56,17 @@ export default function Typography({
   align,
   overflowWrap,
   title,
-  tag,
-  margin = [1, 0],
+  as,
+  margin,
+  marginTop = 1,
+  marginRight,
+  marginBottom = 1,
+  marginLeft,
   boxProps = {},
   className,
   children,
 }) {
-  let Tag = tag ?? variant;
+  let Tag = as ?? variant;
   let strongTagFontWeight;
 
   if (Tag === 'strong') {
@@ -90,7 +93,16 @@ export default function Typography({
   }
 
   return (
-    <Box margin={margin} {...boxProps}>
+    <Box
+      {...{
+        margin,
+        marginTop,
+        marginRight,
+        marginBottom,
+        marginLeft,
+        ...boxProps,
+      }}
+    >
       {(boxClassName) => (
         <Tag
           className={classnames(boxClassName, computedClassName)}
@@ -134,14 +146,17 @@ Typography.propTypes = {
    */
   overflowWrap: PropTypes.oneOf(Object.values(OVERFLOW_WRAP)),
   /**
-   * Changes the root html element tag of the Typography component.
+   * Changes the root html element of the Typography component.
    */
-  tag: PropTypes.oneOf(ValidTags),
+  as: PropTypes.oneOf(ValidTags),
   /**
-   * Adds margin to the Typography component should use valid sizes
-   * 1,2,4,6,8 or an array of those values
+   * Adds margin to the Typography component should use valid size
    */
-  margin: MultipleSizes,
+  margin: MultipleSizesAndAuto,
+  marginTop: MultipleSizesAndAuto,
+  marginBottom: MultipleSizesAndAuto,
+  marginRight: MultipleSizesAndAuto,
+  marginLeft: MultipleSizesAndAuto,
   /**
    * Used to pass any valid Box component props such as margin or padding
    * to the Typography component

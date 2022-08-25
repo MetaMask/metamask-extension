@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const { promises: fs } = require('fs');
 const path = require('path');
+// Fetch is part of node js in future versions, thus triggering no-shadow
+// eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
 const VERSION = require('../package.json').version;
@@ -91,9 +93,22 @@ async function start() {
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
+  const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
+  const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
+
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
+  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
+  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
+  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
+  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
+  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
+  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
+  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -103,8 +118,14 @@ async function start() {
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
+    `mv3: ${moduleInitStatsBackgroundLink}`,
+    `mv3: ${moduleInitStatsUILink}`,
+    `mv3: ${moduleLoadStatsLink}`,
+    `mv3: ${bundleSizeStatsLink}`,
+    `mv2: ${userActionsStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
+    `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>

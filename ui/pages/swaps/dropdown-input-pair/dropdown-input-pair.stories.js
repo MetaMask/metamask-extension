@@ -150,10 +150,8 @@ const tokensToSearch = tokens.map((token) => ({
 }));
 
 export const DefaultStory = (args) => {
-  const [
-    { inputValue, selectedItem = tokensToSearch[0] },
-    updateArgs,
-  ] = useArgs();
+  const [{ inputValue, selectedItem = tokensToSearch[0] }, updateArgs] =
+    useArgs();
   return (
     <DropdownInputPair
       {...args}

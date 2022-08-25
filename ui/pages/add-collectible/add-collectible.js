@@ -17,7 +17,7 @@ import PageContainer from '../../components/ui/page-container';
 import {
   addCollectibleVerifyOwnership,
   getTokenStandardAndDetails,
-  removeToken,
+  ignoreTokens,
   setNewCollectibleAddedMessage,
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
@@ -63,7 +63,10 @@ export default function AddCollectible() {
     }
     if (contractAddressToConvertFromTokenToCollectible) {
       await dispatch(
-        removeToken(contractAddressToConvertFromTokenToCollectible),
+        ignoreTokens({
+          tokensToIgnore: contractAddressToConvertFromTokenToCollectible,
+          dontShowLoadingIndicator: true,
+        }),
       );
     }
     dispatch(setNewCollectibleAddedMessage('success'));

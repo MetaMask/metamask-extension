@@ -1,4 +1,5 @@
 const path = require('path');
+const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
@@ -9,12 +10,18 @@ const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { ensureXServerIsRunning } = require('./x-server');
+const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
 const dappBasePort = 8080;
+
+const createDownloadFolder = async (downloadsFolder) => {
+  await fs.rm(downloadsFolder, { recursive: true, force: true });
+  await fs.mkdir(downloadsFolder, { recursive: true });
+};
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
@@ -23,6 +30,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     ganacheOptions,
+    smartContract,
     driverOptions,
     dappOptions,
     title,
@@ -46,6 +54,14 @@ async function withFixtures(options, testSuite) {
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
+    let contractRegistry;
+
+    if (smartContract) {
+      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+      await ganacheSeeder.deploySmartContract(smartContract);
+      contractRegistry = ganacheSeeder.getContractRegistry();
+    }
+
     if (ganacheOptions?.concurrent) {
       const { port, chainId } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
@@ -100,6 +116,7 @@ async function withFixtures(options, testSuite) {
     await testSuite({
       driver,
       mockServer,
+      contractRegistry,
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -319,4 +336,5 @@ module.exports = {
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
+  createDownloadFolder,
 };

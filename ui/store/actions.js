@@ -353,7 +353,9 @@ export function addNewAccount() {
 
     let newIdentities;
     try {
-      const { identities } = await promisifiedBackground.addNewAccount();
+      const { identities } = await promisifiedBackground.addNewAccount(
+        Object.keys(oldIdentities).length,
+      );
       newIdentities = identities;
     } catch (error) {
       dispatch(displayWarning(error.message));
@@ -718,10 +720,11 @@ export function updateSwapApprovalTransaction(txId, txSwapApproval) {
   return async (dispatch) => {
     let updatedTransaction;
     try {
-      updatedTransaction = await promisifiedBackground.updateSwapApprovalTransaction(
-        txId,
-        txSwapApproval,
-      );
+      updatedTransaction =
+        await promisifiedBackground.updateSwapApprovalTransaction(
+          txId,
+          txSwapApproval,
+        );
     } catch (error) {
       dispatch(txError(error));
       log.error(error.message);
@@ -762,10 +765,11 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
   return async (dispatch) => {
     let updatedTransaction;
     try {
-      updatedTransaction = await promisifiedBackground.updateTransactionSendFlowHistory(
-        txId,
-        sendFlowHistory,
-      );
+      updatedTransaction =
+        await promisifiedBackground.updateTransactionSendFlowHistory(
+          txId,
+          sendFlowHistory,
+        );
     } catch (error) {
       dispatch(txError(error));
       log.error(error.message);
@@ -774,6 +778,29 @@ export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
 
     return updatedTransaction;
   };
+}
+
+export async function backupUserData() {
+  let backedupData;
+  try {
+    backedupData = await promisifiedBackground.backupUserData();
+  } catch (error) {
+    log.error(error.message);
+    throw error;
+  }
+
+  return backedupData;
+}
+
+export async function restoreUserData(jsonString) {
+  try {
+    await promisifiedBackground.restoreUserData(jsonString);
+  } catch (error) {
+    log.error(error.message);
+    throw error;
+  }
+
+  return true;
 }
 
 export function updateTransactionGasFees(txId, txGasFees) {
@@ -1522,14 +1549,12 @@ export function showAccountDetail(address) {
     log.debug(`background.setSelectedAddress`);
 
     const state = getState();
-    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
-      state,
-    );
+    const unconnectedAccountAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
     const selectedAddress = getSelectedAddress(state);
-    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
-      state,
-    );
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(state);
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
       permittedAccountsForCurrentTab.includes(selectedAddress);
@@ -1654,10 +1679,10 @@ export function addDetectedTokens(newDetectedTokens) {
  *
  * @param tokensToImport
  */
-export function importTokens(tokensToImport) {
+export function addImportedTokens(tokensToImport) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.importTokens(tokensToImport);
+      await promisifiedBackground.addImportedTokens(tokensToImport);
     } catch (error) {
       log.error(error);
     } finally {
@@ -1667,18 +1692,32 @@ export function importTokens(tokensToImport) {
 }
 
 /**
- * To add ignored tokens to state
+ * To add ignored token addresses to state
  *
- * @param tokensToIgnore
+ * @param options
+ * @param options.tokensToIgnore
+ * @param options.dontShowLoadingIndicator
  */
-export function ignoreTokens(tokensToIgnore) {
+export function ignoreTokens({
+  tokensToIgnore,
+  dontShowLoadingIndicator = false,
+}) {
+  const _tokensToIgnore = Array.isArray(tokensToIgnore)
+    ? tokensToIgnore
+    : [tokensToIgnore];
+
   return async (dispatch) => {
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
     try {
-      await promisifiedBackground.ignoreTokens(tokensToIgnore);
+      await promisifiedBackground.ignoreTokens(_tokensToIgnore);
     } catch (error) {
       log.error(error);
+      dispatch(displayWarning(error.message));
     } finally {
       await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
     }
   };
 }
@@ -1837,21 +1876,6 @@ export async function getTokenStandardAndDetails(
     userAddress,
     tokenId,
   );
-}
-
-export function removeToken(address) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await promisifiedBackground.removeToken(address);
-    } catch (error) {
-      log.error(error);
-      dispatch(displayWarning(error.message));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(hideLoadingIndication());
-    }
-  };
 }
 
 export function addTokens(tokens) {
@@ -2807,13 +2831,11 @@ export function setSwapsFeatureFlags(featureFlags) {
 
 export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
-    const [
-      quotes,
-      selectedAggId,
-    ] = await promisifiedBackground.fetchAndSetQuotes(
-      fetchParams,
-      fetchParamsMetaData,
-    );
+    const [quotes, selectedAggId] =
+      await promisifiedBackground.fetchAndSetQuotes(
+        fetchParams,
+        fetchParamsMetaData,
+      );
     await forceUpdateMetamaskState(dispatch);
     return [quotes, selectedAggId];
   };
@@ -3358,7 +3380,8 @@ export function setRequestAccountTabIds(requestAccountTabIds) {
 
 export function getRequestAccountTabIds() {
   return async (dispatch) => {
-    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds();
+    const requestAccountTabIds =
+      await promisifiedBackground.getRequestAccountTabIds();
     dispatch(setRequestAccountTabIds(requestAccountTabIds));
   };
 }
@@ -3372,7 +3395,8 @@ export function setOpenMetamaskTabsIDs(openMetaMaskTabIDs) {
 
 export function getOpenMetamaskTabsIds() {
   return async (dispatch) => {
-    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds();
+    const openMetaMaskTabIDs =
+      await promisifiedBackground.getOpenMetamaskTabsIds();
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
   };
 }
@@ -3566,6 +3590,10 @@ export async function setSmartTransactionsOptInStatus(
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
+export function clearSmartTransactionFees() {
+  promisifiedBackground.clearSmartTransactionFees();
+}
+
 export function fetchSmartTransactionFees(
   unsignedTransaction,
   approveTxParams,
@@ -3575,17 +3603,23 @@ export function fetchSmartTransactionFees(
       approveTxParams.value = '0x0';
     }
     try {
-      return await promisifiedBackground.fetchSmartTransactionFees(
-        unsignedTransaction,
-        approveTxParams,
-      );
+      const smartTransactionFees =
+        await promisifiedBackground.fetchSmartTransactionFees(
+          unsignedTransaction,
+          approveTxParams,
+        );
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+        payload: null,
+      });
+      return smartTransactionFees;
     } catch (e) {
       log.error(e);
       if (e.message.startsWith('Fetch error:')) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3614,9 +3648,10 @@ const createSignedTransactions = async (
     }
     return unsignedTransactionWithFees;
   });
-  const signedTransactions = await promisifiedBackground.approveTransactionsWithSameNonce(
-    unsignedTransactionsWithFees,
-  );
+  const signedTransactions =
+    await promisifiedBackground.approveTransactionsWithSameNonce(
+      unsignedTransactionsWithFees,
+    );
   return signedTransactions;
 };
 
@@ -3647,7 +3682,7 @@ export function signAndSendSmartTransaction({
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3668,7 +3703,7 @@ export function updateSmartTransaction(uuid, txData) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3696,7 +3731,7 @@ export function cancelSmartTransaction(uuid) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj.type,
+          payload: errorObj,
         });
       }
       throw e;
@@ -3750,6 +3785,10 @@ export function setCustomNetworkListEnabled(customNetworkListEnabled) {
   };
 }
 
+export function setFirstTimeUsedNetwork(chainId) {
+  return promisifiedBackground.setFirstTimeUsedNetwork(chainId);
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
@@ -3789,10 +3828,10 @@ export function addCustomNetwork(customRpc) {
   };
 }
 
-export function requestUserApproval(customRpc, originIsMetaMask) {
+export function requestAddNetworkApproval(customRpc, originIsMetaMask) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.requestUserApproval(
+      await promisifiedBackground.requestAddNetworkApproval(
         customRpc,
         originIsMetaMask,
       );

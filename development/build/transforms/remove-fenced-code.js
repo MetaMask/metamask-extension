@@ -320,9 +320,8 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
   let currentCommand;
 
   for (let i = 0; i < parsedDirectives.length; i++) {
-    const { line, indices, terminus, command, parameters } = parsedDirectives[
-      i
-    ];
+    const { line, indices, terminus, command, parameters } =
+      parsedDirectives[i];
     if (i % 2 === 0) {
       if (terminus !== DirectiveTerminuses.BEGIN) {
         throw new Error(
@@ -368,9 +367,8 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
       }
 
       // Forbid empty fences
-      const { line: previousLine, indices: previousIndices } = parsedDirectives[
-        i - 1
-      ];
+      const { line: previousLine, indices: previousIndices } =
+        parsedDirectives[i - 1];
       if (fileContent.substring(previousIndices[1], indices[0]).trim() === '') {
         throw new Error(
           `Empty fence found in file "${filePath}":\n${previousLine}\n${line}\n`,

@@ -2,8 +2,11 @@ import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import { TOKEN_STANDARDS } from '../../ui/helpers/constants/common';
-import { ASSET_TYPES, TRANSACTION_TYPES } from '../constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+  TRANSACTION_TYPES,
+} from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -154,10 +157,8 @@ export async function determineTransactionType(txParams, query) {
   if (data && !to) {
     result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
   } else {
-    const {
-      contractCode: resultCode,
-      isContractAddress,
-    } = await readAddressAsContract(query, to);
+    const { contractCode: resultCode, isContractAddress } =
+      await readAddressAsContract(query, to);
 
     contractCode = resultCode;
 

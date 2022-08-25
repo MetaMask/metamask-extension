@@ -190,6 +190,24 @@ export const SMART_TRANSACTION_STATUSES = {
 };
 
 /**
+ * Types that are specific to the transaction approval amount.
+ *
+ * @typedef {object} TransactionApprovalAmountType
+ * @property {'custom'} CUSTOM - The user has edited the token amount.
+ * @property {'revoke'} REVOKE - The selected amount (either CUSTOM or DAPP_PROPOSED) is 0.
+ * @property {'dapp_proposed'} DAPP_PROPOSED - The dapp proposed token amount.
+ */
+
+/**
+ * @type {TransactionApprovalAmountType}
+ */
+export const TRANSACTION_APPROVAL_AMOUNT_TYPE = {
+  CUSTOM: 'custom',
+  REVOKE: 'revoke',
+  DAPP_PROPOSED: 'dapp_proposed',
+};
+
+/**
  * Transaction Group Category is a MetaMask construct to categorize the intent
  * of a group of transactions for purposes of displaying in the UI
  *
@@ -252,8 +270,23 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {number} id - An internally unique tx identifier.
  * @property {number} time - Time the transaction was first suggested, in unix
  *  epoch time (ms).
+ * @property {string} contractMethodName - A string representing a name of
+ * transaction contract method.
+ * @property {string} customTokenAmount - The custom token amount is the amount
+ * set by the user
+ * @property {string} dappProposedTokenAmount - The dapp proposed token amount
+ * @property {string} currentTokenBalance - The balance of the token that is
+ * being send
+ * @property {string} originalApprovalAmount - The original approval amount
+ * is the originally dapp proposed token amount
+ * @property {string} finalApprovalAmount - The chosen amount which will be the
+ * same as the originally proposed token amount if the user does not edit the
+ * amount or will be a custom token amount set by the user
  * @property {TransactionTypeString} type - The type of transaction this txMeta
  *  represents.
+ * @property {string} originalType - When we speed up a transaction,
+ *  we set the type as Retry and we lose information about type of transaction
+ *  that is being set up, so we use original type to track that information.
  * @property {TransactionStatusString} status - The current status of the
  *  transaction.
  * @property {string} metamaskNetworkId - The transaction's network ID, used
@@ -354,4 +387,37 @@ export const ASSET_TYPES = {
   TOKEN: 'TOKEN',
   COLLECTIBLE: 'COLLECTIBLE',
   UNKNOWN: 'UNKNOWN',
+};
+
+export const ERC20 = 'ERC20';
+export const ERC721 = 'ERC721';
+export const ERC1155 = 'ERC1155';
+
+/**
+ * @typedef {object} TokenStandards
+ * @property {'ERC20'} ERC20 - A token that conforms to the ERC20 standard.
+ * @property {'ERC721'} ERC721 - A token that conforms to the ERC721 standard.
+ * @property {'ERC1155'} ERC1155 - A token that conforms to the ERC1155
+ *  standard.
+ * @property {'NONE'} NONE - Not a token, but rather the base asset of the
+ *  selected chain.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above statuses
+ *
+ * @typedef {TokenStandards[keyof TokenStandards]} TokenStandardStrings
+ */
+
+/**
+ * Describes the standard which a token conforms to.
+ *
+ * @type {TokenStandards}
+ */
+export const TOKEN_STANDARDS = {
+  ERC20,
+  ERC721,
+  ERC1155,
+  NONE: 'NONE',
 };

@@ -55,6 +55,9 @@
         },
         "12": {
           "isShown": true
+        },
+        "13": {
+          "isShown": true
         }
       }
     },
@@ -132,7 +135,7 @@
       "useBlockie": false,
       "useNonceField": false,
       "usePhishDetect": true,
-      "useTokenDetection": true
+      "useTokenDetection": false
     },
     "config": {},
     "firstTimeInfo": {

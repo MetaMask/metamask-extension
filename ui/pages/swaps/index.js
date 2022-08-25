@@ -76,7 +76,7 @@ import {
 import {
   resetBackgroundSwapsState,
   setSwapsTokens,
-  removeToken,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
@@ -137,7 +137,7 @@ export default function Swap() {
   );
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const tokenList = useSelector(getTokenList, isEqual);
-  const listTokenValues = shuffle(Object.values(tokenList));
+  const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
@@ -173,10 +173,8 @@ export default function Swap() {
   // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
 
-  const {
-    balance: ethBalance,
-    address: selectedAccountAddress,
-  } = selectedAccount;
+  const { balance: ethBalance, address: selectedAccountAddress } =
+    selectedAccount;
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
 
@@ -214,7 +212,12 @@ export default function Swap() {
         destinationTokenAddedForSwap &&
         (!isAwaitingSwapRoute || conversionError)
       ) {
-        dispatch(removeToken(destinationTokenInfo?.address));
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: destinationTokenInfo?.address,
+            dontShowLoadingIndicator: true,
+          }),
+        );
       }
     };
   }, [
@@ -471,7 +474,7 @@ export default function Swap() {
                   <BuildQuote
                     ethBalance={ethBalance}
                     selectedAccountAddress={selectedAccountAddress}
-                    shuffledTokensList={listTokenValues}
+                    shuffledTokensList={shuffledTokensList}
                   />
                 );
               }}

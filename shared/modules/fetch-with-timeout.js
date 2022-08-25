@@ -1,6 +1,7 @@
 import { memoize } from 'lodash';
+import { SECOND } from '../constants/time';
 
-const getFetchWithTimeout = memoize((timeout) => {
+const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
   if (!Number.isInteger(timeout) || timeout < 1) {
     throw new Error('Must specify positive integer timeout.');
   }

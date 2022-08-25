@@ -7,6 +7,7 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 import { EVENT } from '../../../shared/constants/metametrics';
+import { detectSIWE } from '../../../shared/modules/siwe';
 import { addHexPrefix } from './util';
 
 const hexRe = /^[0-9A-Fa-f]+$/gu;
@@ -135,6 +136,11 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams.origin = req.origin;
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
+
+    // check for SIWE message
+    const siwe = detectSIWE(msgParams);
+    msgParams.siwe = siwe;
+
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();
@@ -314,8 +320,9 @@ export default class PersonalMessageManager extends EventEmitter {
    */
   _saveMsgList() {
     const unapprovedPersonalMsgs = this.getUnapprovedMsgs();
-    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs)
-      .length;
+    const unapprovedPersonalMsgCount = Object.keys(
+      unapprovedPersonalMsgs,
+    ).length;
     this.memStore.updateState({
       unapprovedPersonalMsgs,
       unapprovedPersonalMsgCount,

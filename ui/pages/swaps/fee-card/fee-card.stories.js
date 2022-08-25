@@ -103,13 +103,8 @@ export default {
 export const DefaultStory = (args) => {
   // Please note, currently nested arg types are not possible, but discussions are open:
   // https://github.com/storybookjs/storybook/issues/11486
-  const {
-    primaryFee,
-    primaryMaxFee,
-    secondaryFee,
-    secondaryMaxFee,
-    ...rest
-  } = args;
+  const { primaryFee, primaryMaxFee, secondaryFee, secondaryMaxFee, ...rest } =
+    args;
 
   return (
     <div style={containerStyle}>

@@ -23,13 +23,16 @@ function transformState(state) {
   if (
     state?.IncomingTransactionsController?.incomingTxLastFetchedBlocksByNetwork
   ) {
-    state.IncomingTransactionsController.incomingTxLastFetchedBlockByChainId = mapKeys(
-      state.IncomingTransactionsController.incomingTxLastFetchedBlocksByNetwork,
-      // using optional chaining in case user's state has fetched blocks for
-      // RPC network types (which don't map to a single chainId). This should
-      // not be possible, but it's safer
-      (_, key) => NETWORK_TYPE_TO_ID_MAP[key]?.chainId ?? UNKNOWN_CHAIN_ID_KEY,
-    );
+    state.IncomingTransactionsController.incomingTxLastFetchedBlockByChainId =
+      mapKeys(
+        state.IncomingTransactionsController
+          .incomingTxLastFetchedBlocksByNetwork,
+        // using optional chaining in case user's state has fetched blocks for
+        // RPC network types (which don't map to a single chainId). This should
+        // not be possible, but it's safer
+        (_, key) =>
+          NETWORK_TYPE_TO_ID_MAP[key]?.chainId ?? UNKNOWN_CHAIN_ID_KEY,
+      );
     // Now that mainnet and test net last fetched blocks are keyed by their
     // respective chainIds, we can safely delete anything we had for custom
     // networks. Any custom network that shares a chainId with one of the

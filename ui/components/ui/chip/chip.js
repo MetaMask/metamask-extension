@@ -55,7 +55,7 @@ export default function Chip({
         <Typography
           className="chip__label"
           variant={TYPOGRAPHY.H6}
-          tag="span"
+          as="span"
           color={COLORS.TEXT_ALTERNATIVE}
           {...labelProps}
         >

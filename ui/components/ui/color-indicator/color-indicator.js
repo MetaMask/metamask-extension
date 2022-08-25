@@ -19,7 +19,10 @@ export default function ColorIndicator({
   });
 
   return (
-    <div className={colorIndicatorClassName}>
+    <div
+      className={colorIndicatorClassName}
+      data-testid={`color-icon-${color}`}
+    >
       {iconClassName ? (
         <i className={classnames('color-indicator__icon', iconClassName)} />
       ) : (

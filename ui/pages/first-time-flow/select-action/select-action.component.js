@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
@@ -37,10 +37,9 @@ export default class SelectAction extends PureComponent {
     trackEvent(
       {
         category: EVENT.CATEGORIES.ONBOARDING,
-        event: 'Selected Create New Wallet',
+        event: EVENT_NAMES.WALLET_SETUP_STARTED,
         properties: {
-          action: 'Import or Create',
-          legacy_event: true,
+          account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
         },
       },
       {
@@ -59,10 +58,9 @@ export default class SelectAction extends PureComponent {
     trackEvent(
       {
         category: EVENT.CATEGORIES.ONBOARDING,
-        event: 'Selected Import Wallet',
+        event: EVENT_NAMES.WALLET_SETUP_STARTED,
         properties: {
-          action: 'Import or Create',
-          legacy_event: true,
+          account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
         },
       },
       {
@@ -103,6 +101,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleImport}
+                  data-testid="import-wallet-button"
                 >
                   {t('importWallet')}
                 </Button>
@@ -123,6 +122,7 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
+                  data-testid="create-wallet-button"
                 >
                   {t('createAWallet')}
                 </Button>

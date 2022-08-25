@@ -116,6 +116,9 @@ export default class ConfirmTransactionBase extends Component {
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
+    customTokenAmount: PropTypes.string,
+    dappProposedTokenAmount: PropTypes.string,
+    currentTokenBalance: PropTypes.string,
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
@@ -804,10 +807,15 @@ export default class ConfirmTransactionBase extends Component {
       mostRecentOverviewPage,
       updateCustomNonce,
       maxFeePerGas,
+      customTokenAmount,
+      dappProposedTokenAmount,
+      currentTokenBalance,
       maxPriorityFeePerGas,
       baseFeePerGas,
+      methodData,
     } = this.props;
     const { submitting } = this.state;
+    const { name } = methodData;
 
     if (submitting) {
       return;
@@ -815,6 +823,26 @@ export default class ConfirmTransactionBase extends Component {
 
     if (baseFeePerGas) {
       txData.estimatedBaseFee = baseFeePerGas;
+    }
+
+    if (name) {
+      txData.contractMethodName = name;
+    }
+
+    if (dappProposedTokenAmount) {
+      txData.dappProposedTokenAmount = dappProposedTokenAmount;
+      txData.originalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (customTokenAmount) {
+      txData.customTokenAmount = customTokenAmount;
+      txData.finalApprovalAmount = customTokenAmount;
+    } else if (dappProposedTokenAmount !== undefined) {
+      txData.finalApprovalAmount = dappProposedTokenAmount;
+    }
+
+    if (currentTokenBalance) {
+      txData.currentTokenBalance = currentTokenBalance;
     }
 
     if (maxFeePerGas) {

@@ -27,6 +27,8 @@ import {
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_APPROVAL_AMOUNT_TYPE,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
@@ -174,9 +176,8 @@ export default class TransactionController extends EventEmitter {
         );
         return [...pendingTransactions, ...externalPendingTransactions];
       },
-      getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
-        this.txStateManager,
-      ),
+      getConfirmedTransactions:
+        this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -189,9 +190,8 @@ export default class TransactionController extends EventEmitter {
         return [...pending, ...approved];
       },
       approveTransaction: this.approveTransaction.bind(this),
-      getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(
-        this.txStateManager,
-      ),
+      getCompletedTransactions:
+        this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
 
     this.txStateManager.store.subscribe(() =>
@@ -227,10 +227,10 @@ export default class TransactionController extends EventEmitter {
   }
 
   async getEIP1559Compatibility(fromAddress) {
-    const currentNetworkIsCompatible = await this._getCurrentNetworkEIP1559Compatibility();
-    const fromAccountIsCompatible = await this._getCurrentAccountEIP1559Compatibility(
-      fromAddress,
-    );
+    const currentNetworkIsCompatible =
+      await this._getCurrentNetworkEIP1559Compatibility();
+    const fromAccountIsCompatible =
+      await this._getCurrentAccountEIP1559Compatibility(fromAddress);
     return currentNetworkIsCompatible && fromAccountIsCompatible;
   }
 
@@ -815,10 +815,8 @@ export default class TransactionController extends EventEmitter {
       maxFeePerGas: defaultMaxFeePerGas,
       maxPriorityFeePerGas: defaultMaxPriorityFeePerGas,
     } = await this._getDefaultGasFees(txMeta, eip1559Compatibility);
-    const {
-      gasLimit: defaultGasLimit,
-      simulationFails,
-    } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
+    const { gasLimit: defaultGasLimit, simulationFails } =
+      await this._getDefaultGasLimit(txMeta, getCodeResponse);
 
     // eslint-disable-next-line no-param-reassign
     txMeta = this.txStateManager.getTransaction(txMeta.id);
@@ -960,10 +958,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     try {
-      const {
-        gasFeeEstimates,
-        gasEstimateType,
-      } = await this._getEIP1559GasFeeEstimates();
+      const { gasFeeEstimates, gasEstimateType } =
+        await this._getEIP1559GasFeeEstimates();
       if (
         eip1559Compatibility &&
         gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
@@ -1025,11 +1021,8 @@ export default class TransactionController extends EventEmitter {
       return { gasLimit: GAS_LIMITS.SIMPLE };
     }
 
-    const {
-      blockGasLimit,
-      estimatedGasHex,
-      simulationFails,
-    } = await this.txGasUtil.analyzeGasUsage(txMeta);
+    const { blockGasLimit, estimatedGasHex, simulationFails } =
+      await this.txGasUtil.analyzeGasUsage(txMeta);
 
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.txGasUtil.addGasBuffer(
@@ -1203,6 +1196,7 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
+      originalType: originalTxMeta.type,
     });
 
     if (estimatedBaseFee) {
@@ -1531,9 +1525,8 @@ export default class TransactionController extends EventEmitter {
       const metricsParams = { gas_used: gasUsed };
 
       if (submittedTime) {
-        metricsParams.completion_time = this._getTransactionCompletionTime(
-          submittedTime,
-        );
+        metricsParams.completion_time =
+          this._getTransactionCompletionTime(submittedTime);
       }
 
       if (txReceipt.status === '0x0') {
@@ -1592,9 +1585,8 @@ export default class TransactionController extends EventEmitter {
       const metricsParams = { gas_used: gasUsed };
 
       if (submittedTime) {
-        metricsParams.completion_time = this._getTransactionCompletionTime(
-          submittedTime,
-        );
+        metricsParams.completion_time =
+          this._getTransactionCompletionTime(submittedTime);
       }
 
       if (txReceipt.status === '0x0') {
@@ -1659,10 +1651,8 @@ export default class TransactionController extends EventEmitter {
    */
   async createTransactionEventFragment(transactionId, event) {
     const txMeta = this.txStateManager.getTransaction(transactionId);
-    const {
-      properties,
-      sensitiveProperties,
-    } = await this._buildEventFragmentProperties(txMeta);
+    const { properties, sensitiveProperties } =
+      await this._buildEventFragmentProperties(txMeta);
     this._createTransactionEventFragment(
       txMeta,
       event,
@@ -1840,6 +1830,7 @@ export default class TransactionController extends EventEmitter {
         return;
       }
       otherTxMeta.replacedBy = txMeta.hash;
+      otherTxMeta.replacedById = txMeta.id;
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
@@ -1976,8 +1967,64 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
+  /**
+   * The allowance amount in relation to the dapp proposed amount for specific token
+   *
+   * @param {string} transactionApprovalAmountType - The transaction approval amount type
+   * @param {string} originalApprovalAmount - The original approval amount is the originally dapp proposed token amount
+   * @param {string} finalApprovalAmount - The final approval amount is the chosen amount which will be the same as the
+   * originally dapp proposed token amount if the user does not edit the amount or will be a custom token amount set by the user
+   */
+  _allowanceAmountInRelationToDappProposedValue(
+    transactionApprovalAmountType,
+    originalApprovalAmount,
+    finalApprovalAmount,
+  ) {
+    if (
+      transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM &&
+      originalApprovalAmount &&
+      finalApprovalAmount
+    ) {
+      return `${new BigNumber(originalApprovalAmount, 10)
+        .div(finalApprovalAmount, 10)
+        .times(100)
+        .round(2)}`;
+    }
+    return null;
+  }
+
+  /**
+   * The allowance amount in relation to the balance for that specific token
+   *
+   * @param {string} transactionApprovalAmountType - The transaction approval amount type
+   * @param {string} dappProposedTokenAmount - The dapp proposed token amount
+   * @param {string} currentTokenBalance - The balance of the token that is being send
+   */
+  _allowanceAmountInRelationToTokenBalance(
+    transactionApprovalAmountType,
+    dappProposedTokenAmount,
+    currentTokenBalance,
+  ) {
+    if (
+      (transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM ||
+        transactionApprovalAmountType ===
+          TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED) &&
+      dappProposedTokenAmount &&
+      currentTokenBalance
+    ) {
+      return `${new BigNumber(dappProposedTokenAmount, 16)
+        .div(currentTokenBalance, 10)
+        .times(100)
+        .round(2)}`;
+    }
+    return null;
+  }
+
   async _buildEventFragmentProperties(txMeta, extraParams) {
     const {
+      id,
       type,
       time,
       status,
@@ -1992,8 +2039,11 @@ export default class TransactionController extends EventEmitter {
         estimateUsed,
       },
       defaultGasEstimates,
+      originalType,
+      replacedById,
       metamaskNetworkId: network,
     } = txMeta;
+    const { transactions } = this.store.getState();
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
     const { assetType, tokenStandard } = await determineTransactionAssetType(
@@ -2035,7 +2085,8 @@ export default class TransactionController extends EventEmitter {
           if (gasFeeEstimates?.[estimateType]?.suggestedMaxPriorityFeePerGas) {
             defaultMaxPriorityFeePerGas =
               gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas;
-            gasParams.default_max_priority_fee_per_gas = defaultMaxPriorityFeePerGas;
+            gasParams.default_max_priority_fee_per_gas =
+              defaultMaxPriorityFeePerGas;
           }
         }
       }
@@ -2068,12 +2119,93 @@ export default class TransactionController extends EventEmitter {
       eip1559Version = eip1559V2Enabled ? '2' : '1';
     }
 
-    const properties = {
+    const contractInteractionTypes = [
+      TRANSACTION_TYPES.CONTRACT_INTERACTION,
+      TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+      TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
+      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL,
+      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+      TRANSACTION_TYPES.SMART,
+      TRANSACTION_TYPES.SWAP,
+      TRANSACTION_TYPES.SWAP_APPROVAL,
+    ].includes(type);
+
+    const contractMethodNames = {
+      APPROVE: 'Approve',
+    };
+
+    const customTokenAmount = transactions[id]?.customTokenAmount;
+    const dappProposedTokenAmount = transactions[id]?.dappProposedTokenAmount;
+    const currentTokenBalance = transactions[id]?.currentTokenBalance;
+    const originalApprovalAmount = transactions[id]?.originalApprovalAmount;
+    const finalApprovalAmount = transactions[id]?.finalApprovalAmount;
+    let transactionApprovalAmountType;
+    let transactionContractMethod;
+    let transactionApprovalAmountVsProposedRatio;
+    let transactionApprovalAmountVsBalanceRatio;
+    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    if (type === TRANSACTION_TYPES.CANCEL) {
+      transactionType = TRANSACTION_TYPES.CANCEL;
+    } else if (type === TRANSACTION_TYPES.RETRY) {
+      transactionType = originalType;
+    } else if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
+      transactionType = TRANSACTION_TYPES.DEPLOY_CONTRACT;
+    } else if (contractInteractionTypes) {
+      transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
+      transactionContractMethod = transactions[id]?.contractMethodName;
+      if (
+        transactionContractMethod === contractMethodNames.APPROVE &&
+        tokenStandard === TOKEN_STANDARDS.ERC20
+      ) {
+        if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.REVOKE;
+        } else if (customTokenAmount) {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM;
+        } else if (dappProposedTokenAmount) {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED;
+        }
+        transactionApprovalAmountVsProposedRatio =
+          this._allowanceAmountInRelationToDappProposedValue(
+            transactionApprovalAmountType,
+            originalApprovalAmount,
+            finalApprovalAmount,
+          );
+        transactionApprovalAmountVsBalanceRatio =
+          this._allowanceAmountInRelationToTokenBalance(
+            transactionApprovalAmountType,
+            dappProposedTokenAmount,
+            currentTokenBalance,
+          );
+      }
+    }
+
+    const replacedTxMeta = this._getTransaction(replacedById);
+
+    const TRANSACTION_REPLACEMENT_METHODS = {
+      RETRY: TRANSACTION_TYPES.RETRY,
+      CANCEL: TRANSACTION_TYPES.CANCEL,
+      SAME_NONCE: 'other',
+    };
+
+    let transactionReplaced;
+    if (extraParams?.dropped) {
+      transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.SAME_NONCE;
+      if (replacedTxMeta?.type === TRANSACTION_TYPES.CANCEL) {
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.CANCEL;
+      } else if (replacedTxMeta?.type === TRANSACTION_TYPES.RETRY) {
+        transactionReplaced = TRANSACTION_REPLACEMENT_METHODS.RETRY;
+      }
+    }
+
+    let properties = {
       chain_id: chainId,
       referrer,
       source,
       network,
-      type,
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
       gas_edit_attempted: 'none',
@@ -2081,18 +2213,39 @@ export default class TransactionController extends EventEmitter {
       device_model: await this.getDeviceModel(this.getSelectedAddress()),
       asset_type: assetType,
       token_standard: tokenStandard,
+      transaction_type: transactionType,
+      transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
     };
 
-    const sensitiveProperties = {
+    if (transactionContractMethod === contractMethodNames.APPROVE) {
+      properties = {
+        ...properties,
+        transaction_approval_amount_type: transactionApprovalAmountType,
+      };
+    }
+
+    let sensitiveProperties = {
       status,
       transaction_envelope_type: isEIP1559Transaction(txMeta)
         ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
       first_seen: time,
       gas_limit: gasLimit,
+      transaction_contract_method: transactionContractMethod,
+      transaction_replaced: transactionReplaced,
       ...extraParams,
       ...gasParamsInGwei,
     };
+
+    if (transactionContractMethod === contractMethodNames.APPROVE) {
+      sensitiveProperties = {
+        ...sensitiveProperties,
+        transaction_approval_amount_vs_balance_ratio:
+          transactionApprovalAmountVsBalanceRatio,
+        transaction_approval_amount_vs_proposed_ratio:
+          transactionApprovalAmountVsProposedRatio,
+      };
+    }
 
     return { properties, sensitiveProperties };
   }
@@ -2228,10 +2381,8 @@ export default class TransactionController extends EventEmitter {
     if (!txMeta) {
       return;
     }
-    const {
-      properties,
-      sensitiveProperties,
-    } = await this._buildEventFragmentProperties(txMeta, extraParams);
+    const { properties, sensitiveProperties } =
+      await this._buildEventFragmentProperties(txMeta, extraParams);
 
     // Create event fragments for event types that spawn fragments, and ensure
     // existence of fragments for event types that act upon them.
@@ -2300,6 +2451,8 @@ export default class TransactionController extends EventEmitter {
   _dropTransaction(txId) {
     this.txStateManager.setTxStatusDropped(txId);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED, {
+      dropped: true,
+    });
   }
 }

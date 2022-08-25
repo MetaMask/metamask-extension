@@ -1,7 +1,9 @@
 import { addHexPrefix } from 'ethereumjs-util';
-import { MIN_GAS_LIMIT_HEX } from '../../ui/pages/send/send.constants';
 
 const ONE_HUNDRED_THOUSAND = 100000;
+const MIN_GAS_LIMIT_DEC = '21000';
+
+export const MIN_GAS_LIMIT_HEX = parseInt(MIN_GAS_LIMIT_DEC, 10).toString(16);
 
 export const GAS_LIMITS = {
   // maximum gasLimit of a simple send

@@ -6,16 +6,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
 import Button from '../button';
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import {
-  getUseTokenDetection,
-  getTokenList,
-  getBlockExplorerLinkText,
-} from '../../../selectors';
-
+import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 
 const NicknamePopover = ({
@@ -33,7 +28,6 @@ const NicknamePopover = ({
   }, [onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
-  const useTokenDetection = useSelector(getUseTokenDetection);
   const tokenList = useSelector(getTokenList);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
@@ -54,8 +48,7 @@ const NicknamePopover = ({
           address={address}
           diameter={36}
           className="nickname-popover__identicon"
-          useTokenDetection={useTokenDetection}
-          tokenList={tokenList}
+          image={tokenList[address.toLowerCase()]?.iconUrl}
         />
         <div className="nickname-popover__address">
           {nickname || shortenAddress(address)}

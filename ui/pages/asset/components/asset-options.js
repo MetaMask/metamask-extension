@@ -17,9 +17,8 @@ const AssetOptions = ({
   isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
-  const [assetOptionsButtonElement, setAssetOptionsButtonElement] = useState(
-    null,
-  );
+  const [assetOptionsButtonElement, setAssetOptionsButtonElement] =
+    useState(null);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const history = useHistory();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);

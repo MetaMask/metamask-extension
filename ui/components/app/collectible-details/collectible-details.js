@@ -47,11 +47,10 @@ import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
-import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { ASSET_TYPES, ERC721 } from '../../../../shared/constants/transaction';
 import CollectibleDefaultImage from '../collectible-default-image';
 
 export default function CollectibleDetails({ collectible }) {

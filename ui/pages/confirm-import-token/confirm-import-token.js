@@ -13,9 +13,11 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
-import { TOKEN_STANDARDS } from '../../helpers/constants/common';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import {
+  ASSET_TYPES,
+  TOKEN_STANDARDS,
+} from '../../../shared/constants/transaction';
 
 const getTokenName = (name, symbol) => {
   return name === undefined ? symbol : `${name} (${symbol})`;

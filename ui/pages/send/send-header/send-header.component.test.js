@@ -85,7 +85,7 @@ describe('SendHeader Component', () => {
           history: { mostRecentOverviewPage: 'activity' },
         }),
       );
-      expect(getByText('Send Tokens')).toBeTruthy();
+      expect(getByText('Send tokens')).toBeTruthy();
     });
 
     it('should render "Edit" for EDIT stage', () => {
@@ -117,7 +117,7 @@ describe('SendHeader Component', () => {
       expect(getByText('Cancel')).toBeTruthy();
     });
 
-    it('has button label changed to Cancel Edit in editing stage', () => {
+    it('has button label changed to Cancel edit in editing stage', () => {
       const { getByText } = renderWithProvider(
         <SendHeader />,
         configureMockStore(middleware)({
@@ -129,7 +129,7 @@ describe('SendHeader Component', () => {
           history: { mostRecentOverviewPage: 'activity' },
         }),
       );
-      expect(getByText('Cancel Edit')).toBeTruthy();
+      expect(getByText('Cancel edit')).toBeTruthy();
     });
 
     it('resets send state when clicked', () => {

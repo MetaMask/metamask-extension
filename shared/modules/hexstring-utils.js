@@ -71,5 +71,5 @@ export function toChecksumHexAddress(address) {
     // closely mimics the original behavior.
     return hexPrefixed;
   }
-  return toChecksumAddress(addHexPrefix(address));
+  return toChecksumAddress(hexPrefixed);
 }

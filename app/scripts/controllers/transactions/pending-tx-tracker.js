@@ -198,13 +198,8 @@ export default class PendingTransactionTracker extends EventEmitter {
     try {
       const transactionReceipt = await this.query.getTransactionReceipt(txHash);
       if (transactionReceipt?.blockNumber) {
-        const {
-          baseFeePerGas,
-          timestamp: blockTimestamp,
-        } = await this.query.getBlockByHash(
-          transactionReceipt?.blockHash,
-          false,
-        );
+        const { baseFeePerGas, timestamp: blockTimestamp } =
+          await this.query.getBlockByHash(transactionReceipt?.blockHash, false);
 
         this.emit(
           'tx:confirmed',

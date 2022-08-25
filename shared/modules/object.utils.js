@@ -8,7 +8,7 @@
  * masked according to that sub-mask.
  *
  * @param {object} object - The object to mask
- * @param {object<object|boolean>} mask - The mask to apply to the object
+ * @param {Object<object | boolean>} mask - The mask to apply to the object
  */
 export function maskObject(object, mask) {
   return Object.keys(object).reduce((state, key) => {
