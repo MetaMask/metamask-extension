@@ -11573,16 +11573,16 @@ eth-keyring-controller@^7.0.2:
     eth-simple-keyring "^4.2.0"
     obs-store "^4.0.3"
 
-eth-lattice-keyring@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.11.0.tgz#7df63dc55d168f2a104ef469db78687fc181cb66"
-  integrity sha512-eFVP4uTvnNYLI3KbpPxqVv/AY9swbCH4ZfqDMsYEZ+vg1UQjnsXAxy4iIUuKR+cF4e8kCKK6hFtALEGxuilcJA==
+eth-lattice-keyring@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.12.0.tgz#d71bfd2dec031de2b63fc45a8c19d22953e82a3d"
+  integrity sha512-f3w1H3nRbwi5gD/ivdeLlAv3mC5/bGigwHM7WRGV99pDi8nVLxaQQx11n+XFB5f7/4CcNNi0gbFP6JJurN2oRw==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
     bn.js "^5.2.0"
     ethereumjs-util "^7.0.10"
-    gridplus-sdk "^2.2.0"
+    gridplus-sdk "^2.2.7"
     rlp "^3.0.0"
     secp256k1 "4.0.2"
 
@@ -13851,10 +13851,10 @@ graphviz@0.0.9:
   dependencies:
     temp "~0.4.0"
 
-gridplus-sdk@^2.2.0:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-2.2.4.tgz#1d05fcb460b1670cc4b051796f93cbea1fbce2f4"
-  integrity sha512-zjG5w5t3mLwBwMPHmfg6AlfaHoV5hKHQE7tFM7IEYnxQYwQG0MSgFghIZFNcp2R0SnG3A8coFhLoSaX/+9SdPA==
+gridplus-sdk@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-2.2.7.tgz#d916b25a77358aed8d6fc5f1ed887ba32d51efb4"
+  integrity sha512-acpMxOkqubJRGcCRrYm1DA40utwIATjpWj/Wyismw16nAF3wGeQ79zUo5KwddtA+OYcwmqfPQMaAQ58qE0VpYg==
   dependencies:
     "@ethereumjs/common" "2.4.0"
     "@ethereumjs/tx" "3.3.0"
