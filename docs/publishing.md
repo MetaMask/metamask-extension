@@ -54,4 +54,3 @@ For this reason, when an urgent change is needed in production, its pull request
 - Should be proposed against the `master` branch.
 
 The version and changelog bump should then be made off the `master` branch, and then merged to `develop` to bring the two branches back into sync. Further time can be saved by incorporating the version/changelog bump into the PR against `master`, since we rely on @MetaMaskBot to run tests before merging.
-
