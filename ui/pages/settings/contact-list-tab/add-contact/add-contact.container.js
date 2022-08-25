@@ -12,6 +12,11 @@ import {
   getEnsResolution,
   resetEnsResolution,
 } from '../../../../ducks/ens';
+import {
+  getUnsError,
+  getUnsResolution,
+  resetUnsResolution,
+} from '../../../../ducks/uns';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {
@@ -19,6 +24,8 @@ const mapStateToProps = (state) => {
     qrCodeData: getQrCodeData(state),
     ensError: getEnsError(state),
     ensResolution: getEnsResolution(state),
+    unsError: getUnsError(state),
+    unsResolution: getUnsResolution(state),
   };
 };
 
@@ -29,6 +36,7 @@ const mapDispatchToProps = (dispatch) => {
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     resetEnsResolution: () => dispatch(resetEnsResolution()),
+    resetUnsResolution: () => dispatch(resetUnsResolution()),
   };
 };
 

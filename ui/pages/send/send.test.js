@@ -164,7 +164,7 @@ describe('Send Page', () => {
       expect(getByText('Send to')).toBeTruthy();
     });
 
-    it('should render the EnsInput field', () => {
+    it('should render the DomainInput field', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
@@ -208,7 +208,7 @@ describe('Send Page', () => {
       expect(getByText('Send')).toBeTruthy();
     });
 
-    it('should render the EnsInput field', () => {
+    it('should render the DomainInput field', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(

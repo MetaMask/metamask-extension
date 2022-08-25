@@ -13,7 +13,7 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 
-export default class EnsInput extends Component {
+export default class DomainInput extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -110,16 +110,16 @@ export default class EnsInput extends Component {
     const hasSelectedAddress = Boolean(selectedAddress);
 
     return (
-      <div className={classnames('ens-input', className)}>
+      <div className={classnames('domain-input', className)}>
         <div
-          className={classnames('ens-input__wrapper', {
-            'ens-input__wrapper__status-icon--error': false,
-            'ens-input__wrapper__status-icon--valid': false,
-            'ens-input__wrapper--valid': hasSelectedAddress,
+          className={classnames('domain-input__wrapper', {
+            'domain-input__wrapper__status-icon--error': false,
+            'domain-input__wrapper__status-icon--valid': false,
+            'domain-input__wrapper--valid': hasSelectedAddress,
           })}
         >
           <i
-            className={classnames('ens-input__wrapper__status-icon', 'fa', {
+            className={classnames('domain-input__wrapper__status-icon', 'fa', {
               'fa-check-circle': hasSelectedAddress,
               'fa-search': !hasSelectedAddress,
             })}
@@ -131,19 +131,19 @@ export default class EnsInput extends Component {
           />
           {hasSelectedAddress ? (
             <>
-              <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
-                <div className="ens-input__selected-input__title">
+              <div className="domain-input__wrapper__input domain-input__wrapper__input--selected">
+                <div className="domain-input__selected-input__title">
                   {selectedName || selectedAddress}
                 </div>
                 {selectedName !== selectedAddress && (
-                  <div className="ens-input__selected-input__subtitle">
+                  <div className="domain-input__selected-input__subtitle">
                     {selectedAddress}
                   </div>
                 )}
               </div>
               <button
                 onClick={this.props.onReset}
-                className="ens-input__wrapper__action-icon-button"
+                className="domain-input__wrapper__action-icon-button"
               >
                 <i
                   className="fa fa-times"
@@ -157,7 +157,7 @@ export default class EnsInput extends Component {
           ) : (
             <>
               <input
-                className="ens-input__wrapper__input"
+                className="domain-input__wrapper__input"
                 type="text"
                 dir="auto"
                 placeholder={t('recipientAddressPlaceholder')}
@@ -166,10 +166,10 @@ export default class EnsInput extends Component {
                 spellCheck="false"
                 value={selectedAddress || userInput}
                 autoFocus
-                data-testid="ens-input"
+                data-testid="domain-input"
               />
               <button
-                className="ens-input__wrapper__action-icon-button"
+                className="domain-input__wrapper__action-icon-button"
                 onClick={() => {
                   if (userInput) {
                     this.props.onReset();

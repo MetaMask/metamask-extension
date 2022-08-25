@@ -19,7 +19,7 @@ describe('Simple send', function () {
         await driver.press('#password', driver.Key.ENTER);
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
-          '[data-testid="ens-input"]',
+          '[data-testid="domain-input"]',
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
         );
         await driver.fill('.unit-input__input', '1');
