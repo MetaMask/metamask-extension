@@ -3289,9 +3289,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Si le prix fluctue entre le passage de votre ordre et sa confirmation, on parle alors d’un « effet de glissement » (slippage). Votre swap sera automatiquement annulé si ce phénomène dépasse votre paramètre de « glissement maximal »."
-  },
   "swapAggregator": {
     "message": "Agrégateur"
   },
@@ -3454,9 +3451,6 @@
   },
   "swapQuoteDetails": {
     "message": "Détails de la cotation"
-  },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Si le prix fluctue entre le passage de votre ordre et sa confirmation, on parle alors d’un « effet de glissement » (slippage). Votre swap sera automatiquement annulé si ce phénomène dépasse votre paramètre de « tolérance de glissement »."
   },
   "swapQuoteSource": {
     "message": "Origine de la cotation"

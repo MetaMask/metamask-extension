@@ -3289,9 +3289,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Se o preço varia entre o momento em que a sua ordem é efetuada e o momento em que é confirmada, isso recebe o nome de \"slippage\". Sua troca será automaticamente cancelada se o slippage exceder a sua configuração de \"slippage máximo\"."
-  },
   "swapAggregator": {
     "message": "Agregador"
   },
@@ -3454,9 +3451,6 @@
   },
   "swapQuoteDetails": {
     "message": "Detalhes da cotação"
-  },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Se o preço varia entre o momento em que a sua ordem é efetuada e o momento em que é confirmada, isso recebe o nome de \"slippage\". Sua troca será automaticamente cancelada se o slippage for superior à configuração de \"tolerância a slippage\"."
   },
   "swapQuoteSource": {
     "message": "Fonte da cotação"

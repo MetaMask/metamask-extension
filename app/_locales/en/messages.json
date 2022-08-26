@@ -3457,9 +3457,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -3623,9 +3620,6 @@
   "swapQuoteDetails": {
     "message": "Quote details"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
-  },
   "swapQuoteSource": {
     "message": "Quote source"
   },
@@ -3677,6 +3671,9 @@
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageTooltip": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSource": {
     "message": "Liquidity source"
