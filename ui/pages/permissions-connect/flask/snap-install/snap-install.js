@@ -58,7 +58,9 @@ export default function SnapInstall({
       .map(([, value]) => value);
 
   const shouldShowWarning =
-    bip32EntropyPermissions?.length > 0 || bip44EntropyPermissions?.length > 0;
+    bip32EntropyPermissions?.length > 0 ||
+    bip44EntropyPermissions?.length > 0 ||
+    bip44LegacyEntropyPermissions?.length > 0;
 
   const getCoinType = (bip44EntropyPermission) =>
     bip44EntropyPermission?.split('_').slice(-1);
