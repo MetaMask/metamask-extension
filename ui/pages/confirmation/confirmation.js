@@ -19,7 +19,6 @@ import {
   FLEX_DIRECTION,
   SIZES,
 } from '../../helpers/constants/design-system';
-import { stripHttpsScheme } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { getUnapprovedTemplatedConfirmations } from '../../selectors';
@@ -219,8 +218,8 @@ export default function ConfirmationPage({
           >
             <SiteOrigin
               chip
-              siteOrigin={stripHttpsScheme(originMetadata.origin)}
-              title={stripHttpsScheme(originMetadata.origin)}
+              siteOrigin={originMetadata.origin}
+              title={originMetadata.origin}
               iconSrc={originMetadata.iconUrl}
               iconName={originMetadata.hostname}
             />
