@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.18.4]
+### Changed
+- Update `eth-lattice-keyring` to v0.10.0 which itself updates `gridplus-sdk` ([#15261](https://github.com/MetaMask/metamask-extension/pull/15261))
+  - `eth-lattice-keyring` changes: ([GridPlus/eth-lattice-keyring@v0.7.3...v0.10.0])(https://github.com/GridPlus/eth-lattice-keyring/compare/v0.7.3...v0.10.0)
+  - `gridplus-sdk` changes: ([GridPlus/gridplus-sdk@v1.2.3...v2.2.4])(https://github.com/GridPlus/gridplus-sdk/compare/v1.2.3...v2.2.4)
+- Update `eth-lattice-keyring` to v0.11.0 ([#15490](https://github.com/MetaMask/metamask-extension/pull/15490)). See changes [GridPlus/eth-lattice-keyring@v0.10.0...v0.11.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.10.0...v0.11.0)
+- Improve ERC721 Send screen by parsing the `tokenId` and refactor `useAssetDetails` hook to avoid unnecessary network calls ([#15304](https://github.com/MetaMask/metamask-extension/pull/15304))
+
+### Fixed
+- Fix GDrive incompatibility with the Extension by stop injecting provider on docs.google.com ([#15459](https://github.com/MetaMask/metamask-extension/pull/15459))
+- Fix default currency symbol for `wallet_addEthereumChain` + improve warnings for data that doesn't match our validation expectations ([#15201](https://github.com/MetaMask/metamask-extension/pull/15201))
+- Fix block explorer link on custom networks for the cases when link is invalid or left empty ([#13870](https://github.com/MetaMask/metamask-extension/pull/13870))
+- Fix signature parsing errors re-surfaced due to 4byte function signature directory being down, by removing the directory([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
+- Fix intermitent failure when performing a Send tx in non-EIP-1559 networks (like Optimism) by setting the `gasPrice` ([#15628](https://github.com/MetaMask/metamask-extension/pull/15628))
+
 ## [10.18.3]
 ### Fixed
 - Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
@@ -31,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.18.0]
 ### Added
-- Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010)) 
+- Add setApprovalForAll confirmation view so granted permissions are displayed in a digested manner, instead of a simple contract interaction([#15010](https://github.com/MetaMask/metamask-extension/pull/15010))
 - Add warning when performing a Send directly to a token contract([#13588](https://github.com/MetaMask/metamask-extension/pull/13588))
 
 ### Changed
@@ -116,7 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix switching between ETH and USD in the amount field on the send screen ([#13827](https://github.com/MetaMask/metamask-extension/pull/13827))
 - Fix addition of 'add recipient' events to the send flow change logs so that 'contact' and 'recent' recipient are correctly distinguished ([#14771](https://github.com/MetaMask/metamask-extension/pull/14771))
 - Fix lock button sizing for text exceeding button boundaries ([#14335](https://github.com/MetaMask/metamask-extension/pull/14335))
-- Fix all "MetaMask" instances wrongly written as "Metamask" 
+- Fix all "MetaMask" instances wrongly written as "Metamask"
   - ([#14851](https://github.com/MetaMask/metamask-extension/pull/14851))
   - ([#14848](https://github.com/MetaMask/metamask-extension/pull/14848))
 - Fix design break on the Settings navbar for certain locales ([#14012](https://github.com/MetaMask/metamask-extension/pull/14012))
@@ -3107,7 +3122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.18.4...HEAD
+[10.18.4]: https://github.com/MetaMask/metamask-extension/compare/v10.18.3...v10.18.4
 [10.18.3]: https://github.com/MetaMask/metamask-extension/compare/v10.18.2...v10.18.3
 [10.18.2]: https://github.com/MetaMask/metamask-extension/compare/v10.18.1...v10.18.2
 [10.18.1]: https://github.com/MetaMask/metamask-extension/compare/v10.18.0...v10.18.1

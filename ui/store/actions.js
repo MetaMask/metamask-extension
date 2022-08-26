@@ -3798,6 +3798,10 @@ export function setCustomNetworkListEnabled(customNetworkListEnabled) {
   };
 }
 
+export function setFirstTimeUsedNetwork(chainId) {
+  return promisifiedBackground.setFirstTimeUsedNetwork(chainId);
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);

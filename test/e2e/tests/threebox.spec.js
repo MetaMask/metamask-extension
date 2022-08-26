@@ -19,6 +19,7 @@ describe('Threebox', function () {
   after(async function () {
     await threeboxServer.stop();
   });
+
   it('Set up data to be restored by 3box', async function () {
     await withFixtures(
       {

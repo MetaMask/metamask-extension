@@ -193,6 +193,7 @@
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
         "@babel/core>@babel/types>to-fast-properties": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
@@ -218,7 +219,8 @@
         "@babel/eslint-parser>semver": true,
         "@babel/parser": true,
         "depcheck>@babel/parser": true,
-        "eslint": true
+        "eslint": true,
+        "lavamoat>lavamoat-tofu>@babel/parser": true
       }
     },
     "@babel/eslint-parser>eslint-scope": {
@@ -1085,7 +1087,7 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@sentry/browser>tslib": {
+    "@sentry/utils>tslib": {
       "globals": {
         "define": true
       }
@@ -1188,7 +1190,7 @@
     },
     "@typescript-eslint/eslint-plugin>tsutils": {
       "packages": {
-        "@sentry/browser>tslib": true,
+        "@sentry/utils>tslib": true,
         "typescript": true
       }
     },
@@ -2050,6 +2052,7 @@
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/types": true,
+        "babel/preset-env>b@babel/types": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
@@ -2078,8 +2081,8 @@
       "packages": {
         "@babel/code-frame": true,
         "depcheck>cosmiconfig>parse-json>error-ex": true,
-        "depcheck>cosmiconfig>parse-json>lines-and-columns": true,
-        "webpack>json-parse-better-errors": true
+        "depcheck>cosmiconfig>parse-json>json-parse-even-better-errors": true,
+        "depcheck>cosmiconfig>parse-json>lines-and-columns": true
       }
     },
     "depcheck>cosmiconfig>parse-json>error-ex": {
@@ -2088,6 +2091,11 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
+      }
+    },
+    "depcheck>cosmiconfig>parse-json>json-parse-even-better-errors": {
+      "globals": {
+        "Buffer.isBuffer": true
       }
     },
     "depcheck>cosmiconfig>yaml": {
@@ -2791,10 +2799,10 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>strip-json-comments": true,
         "eslint>ajv": true,
         "eslint>globals": true,
         "eslint>minimatch": true,
+        "eslint>strip-json-comments": true,
         "globby>ignore": true,
         "madge>debug": true
       }
@@ -3678,7 +3686,7 @@
       "packages": {
         "gulp-rtlcss>rtlcss>@choojs/findup": true,
         "gulp-rtlcss>rtlcss>postcss": true,
-        "mocha>strip-json-comments": true
+        "gulp-rtlcss>rtlcss>strip-json-comments": true
       }
     },
     "gulp-rtlcss>rtlcss>@choojs/findup": {

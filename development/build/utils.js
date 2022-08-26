@@ -1,5 +1,30 @@
 const semver = require('semver');
 const { BuildType } = require('../lib/build-type');
+const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
+
+/**
+ * Returns whether the current build is a development build or not.
+ *
+ * @param {BUILD_TARGETS} buildTarget - The current build target.
+ * @returns Whether the current build is a development build.
+ */
+function isDevBuild(buildTarget) {
+  return (
+    buildTarget === BUILD_TARGETS.DEV || buildTarget === BUILD_TARGETS.TEST_DEV
+  );
+}
+
+/**
+ * Returns whether the current build is an e2e test build or not.
+ *
+ * @param {BUILD_TARGETS} buildTarget - The current build target.
+ * @returns Whether the current build is an e2e test build.
+ */
+function isTestBuild(buildTarget) {
+  return (
+    buildTarget === BUILD_TARGETS.TEST || buildTarget === BUILD_TARGETS.TEST_DEV
+  );
+}
 
 /**
  * Map the current version to a format that is compatible with each browser.
@@ -52,6 +77,33 @@ function getBrowserVersionMap(platforms, version) {
 }
 
 /**
+ * Get the environment of the current build.
+ *
+ * @param {object} options - Build options.
+ * @param {BUILD_TARGETS} options.buildTarget - The target of the current build.
+ * @returns {ENVIRONMENT} The current build environment.
+ */
+function getEnvironment({ buildTarget }) {
+  // get environment slug
+  if (buildTarget === BUILD_TARGETS.PROD) {
+    return ENVIRONMENT.PRODUCTION;
+  } else if (isDevBuild(buildTarget)) {
+    return ENVIRONMENT.DEVELOPMENT;
+  } else if (isTestBuild(buildTarget)) {
+    return ENVIRONMENT.TESTING;
+  } else if (
+    /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
+  ) {
+    return ENVIRONMENT.RELEASE_CANDIDATE;
+  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+    return ENVIRONMENT.STAGING;
+  } else if (process.env.CIRCLE_PULL_REQUEST) {
+    return ENVIRONMENT.PULL_REQUEST;
+  }
+  return ENVIRONMENT.OTHER;
+}
+
+/**
  * Log an error to the console.
  *
  * This function includes a workaround for a SES bug that results in errors
@@ -67,5 +119,8 @@ function logError(error) {
 
 module.exports = {
   getBrowserVersionMap,
+  getEnvironment,
+  isDevBuild,
+  isTestBuild,
   logError,
 };

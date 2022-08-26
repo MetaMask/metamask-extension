@@ -2308,10 +2308,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
   },
-  "numberOfNewTokensDetected": {
-    "message": "$1 nouveaux jetons trouvés dans ce compte",
-    "description": "$1 is the number of new tokens detected"
-  },
   "ofTextNofM": {
     "message": "de"
   },
