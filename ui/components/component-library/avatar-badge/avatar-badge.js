@@ -15,7 +15,6 @@ export const AvatarBadge = ({
   BadgeVariant,
   ...props
 }) => {
-  const style = { '--size': 'calc(var(--badge-container-size, 16px) / 2)' };
   return (
     <Box
       className={classnames(
@@ -39,18 +38,13 @@ export const AvatarBadge = ({
         }
       >
         {/* Avatar Account, Avatar Network */}
-        <BadgeVariant style={style} {...badgeProps} />
+        <BadgeVariant className="avatar-badge--token-badge" {...badgeProps} />
       </Box>
     </Box>
   );
 };
 
 AvatarBadge.propTypes = {
-  /**
-   * The size of the AvatarBadge.
-   * Possible values could be 'xs', 'sm', 'md', 'lg', 'xl',
-   */
-  size: PropTypes.oneOf(Object.values(SIZES)),
   /**
    * The position of the AvatarBadge
    * Possible values could be 'top', 'bottom',
@@ -72,17 +66,6 @@ AvatarBadge.propTypes = {
    * Add custom css class
    */
   className: PropTypes.string,
-  /**
-   * Add list of token in object
-   */
-  tokenList: PropTypes.object,
-  /**
-   * Sets the width and height of the inner img element
-   * If addBorder is true will increase components height and width by 8px
-   */
-  diameter: PropTypes.number,
-  /**
-   * AvatarBadge accepts all the props from Box
-   */
-  ...Box.propTypes,
+
+
 };
