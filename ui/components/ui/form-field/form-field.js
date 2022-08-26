@@ -18,27 +18,30 @@ import InfoTooltip from '../info-tooltip/info-tooltip';
 
 export default function FormField({
   dataTestId,
-  titleText,
+  titleText = '',
   TitleTextCustomComponent,
-  titleUnit,
+  titleUnit = '',
   TitleUnitCustomComponent,
-  tooltipText,
+  tooltipText = '',
   TooltipCustomComponent,
-  titleDetail,
+  titleDetail = '',
   titleDetailWrapperProps,
   error,
-  onChange,
-  value,
+  onChange = undefined,
+  value = 0,
   numeric,
-  detailText,
-  autoFocus,
-  password,
-  allowDecimals,
-  disabled,
+  detailText = '',
+  autoFocus = false,
+  password = false,
+  allowDecimals = false,
+  disabled = false,
   placeholder,
   warning,
   passwordStrength,
   passwordStrengthText,
+  id,
+  inputProps,
+  wrappingLabelProps,
 }) {
   return (
     <div
@@ -46,114 +49,121 @@ export default function FormField({
         'form-field__row--error': error,
       })}
     >
-      <div className="form-field__heading">
-        <Box
-          className="form-field__heading-title"
-          display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
-        >
-          {TitleTextCustomComponent ||
-            (titleText && (
-              <Typography
-                tag="label"
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H6}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {titleText}
-              </Typography>
-            ))}
-          {TitleUnitCustomComponent ||
-            (titleUnit && (
-              <Typography
-                tag={TYPOGRAPHY.H6}
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {titleUnit}
-              </Typography>
-            ))}
-          {TooltipCustomComponent ||
-            (tooltipText && (
-              <InfoTooltip position="top" contentText={tooltipText} />
-            ))}
-        </Box>
-        {titleDetail && (
+      <Box as="label" {...wrappingLabelProps}>
+        <div className="form-field__heading">
           <Box
-            className="form-field__heading-detail"
-            textAlign={TEXT_ALIGN.END}
-            marginBottom={3}
-            marginRight={2}
-            {...titleDetailWrapperProps}
+            className="form-field__heading-title"
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
           >
-            {titleDetail}
+            {TitleTextCustomComponent ||
+              (titleText && (
+                <Typography
+                  tag="label"
+                  htmlFor={id}
+                  html
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H6}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {titleText}
+                </Typography>
+              ))}
+            {TitleUnitCustomComponent ||
+              (titleUnit && (
+                <Typography
+                  tag={TYPOGRAPHY.H6}
+                  variant={TYPOGRAPHY.H6}
+                  color={COLORS.TEXT_ALTERNATIVE}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {titleUnit}
+                </Typography>
+              ))}
+            {TooltipCustomComponent ||
+              (tooltipText && (
+                <InfoTooltip position="top" contentText={tooltipText} />
+              ))}
           </Box>
+          {titleDetail && (
+            <Box
+              className="form-field__heading-detail"
+              textAlign={TEXT_ALIGN.END}
+              marginBottom={3}
+              marginRight={2}
+              {...titleDetailWrapperProps}
+            >
+              {titleDetail}
+            </Box>
+          )}
+        </div>
+        {numeric ? (
+          <NumericInput
+            error={error}
+            onChange={onChange}
+            value={value}
+            detailText={detailText}
+            autoFocus={autoFocus}
+            allowDecimals={allowDecimals}
+            disabled={disabled}
+            dataTestId={dataTestId}
+            placeholder={placeholder}
+            id={id}
+          />
+        ) : (
+          <input
+            className={classNames('form-field__input', {
+              'form-field__input--error': error,
+              'form-field__input--warning': warning,
+            })}
+            onChange={(e) => onChange(e.target.value)}
+            value={value}
+            type={password ? 'password' : 'text'}
+            autoFocus={autoFocus}
+            disabled={disabled}
+            data-testid={dataTestId}
+            placeholder={placeholder}
+            id={id}
+            {...inputProps}
+          />
         )}
-      </div>
-      {numeric ? (
-        <NumericInput
-          error={error}
-          onChange={onChange}
-          value={value}
-          detailText={detailText}
-          autoFocus={autoFocus}
-          allowDecimals={allowDecimals}
-          disabled={disabled}
-          dataTestId={dataTestId}
-          placeholder={placeholder}
-        />
-      ) : (
-        <input
-          className={classNames('form-field__input', {
-            'form-field__input--error': error,
-            'form-field__input--warning': warning,
-          })}
-          onChange={(e) => onChange(e.target.value)}
-          value={value}
-          type={password ? 'password' : 'text'}
-          autoFocus={autoFocus}
-          disabled={disabled}
-          data-testid={dataTestId}
-          placeholder={placeholder}
-        />
-      )}
-      {error && (
-        <Typography
-          color={COLORS.ERROR_DEFAULT}
-          variant={TYPOGRAPHY.H7}
-          className="form-field__error"
-        >
-          {error}
-        </Typography>
-      )}
-      {warning && (
-        <Typography
-          color={COLORS.TEXT_ALTERNATIVE}
-          variant={TYPOGRAPHY.H7}
-          className="form-field__warning"
-        >
-          {warning}
-        </Typography>
-      )}
-      {passwordStrength && (
-        <Typography
-          color={COLORS.TEXT_DEFAULT}
-          variant={TYPOGRAPHY.H7}
-          className="form-field__password-strength"
-        >
-          {passwordStrength}
-        </Typography>
-      )}
-      {passwordStrengthText && (
-        <Typography
-          color={COLORS.TEXT_ALTERNATIVE}
-          variant={TYPOGRAPHY.H8}
-          className="form-field__password-strength-text"
-        >
-          {passwordStrengthText}
-        </Typography>
-      )}
+        {error && (
+          <Typography
+            color={COLORS.ERROR_DEFAULT}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__error"
+          >
+            {error}
+          </Typography>
+        )}
+        {warning && (
+          <Typography
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__warning"
+          >
+            {warning}
+          </Typography>
+        )}
+        {passwordStrength && (
+          <Typography
+            color={COLORS.TEXT_DEFAULT}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__password-strength"
+          >
+            {passwordStrength}
+          </Typography>
+        )}
+        {passwordStrengthText && (
+          <Typography
+            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TYPOGRAPHY.H8}
+            className="form-field__password-strength-text"
+          >
+            {passwordStrengthText}
+          </Typography>
+        )}
+      </Box>
     </div>
   );
 }
@@ -253,20 +263,18 @@ FormField.propTypes = {
    * Show password strength description
    */
   passwordStrengthText: PropTypes.string,
-};
-
-FormField.defaultProps = {
-  titleText: '',
-  titleUnit: '',
-  tooltipText: '',
-  titleDetail: '',
-  error: '',
-  onChange: undefined,
-  value: 0,
-  detailText: '',
-  autoFocus: false,
-  numeric: false,
-  password: false,
-  allowDecimals: true,
-  disabled: false,
+  /**
+   * The id of the input element. Should be used when the wrapping label is changed to a div to ensure accessibility.
+   */
+  id: PropTypes.string,
+  /**
+   * Any additional input attributes or overrides not provided by exposed props
+   */
+  inputProps: PropTypes.object,
+  /**
+   * The FormField is wrapped in a Box component that is rendered as a <label/> using the polymorphic "as" prop.
+   * This object allows you to override the rendering of the label by using the wrapperProps={{ as: 'div' }} prop.
+   * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
+   */
+  wrappingLabelProps: PropTypes.object,
 };
