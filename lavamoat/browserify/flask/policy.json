@@ -3350,12 +3350,14 @@
       }
     },
     "@metamask/rpc-methods": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
         "@metamask/controllers": true,
         "@metamask/rpc-methods>@metamask/key-tree": true,
-        "@metamask/rpc-methods>@metamask/snap-utils": true,
-        "@metamask/rpc-methods>@metamask/utils": true,
-        "@metamask/snap-controllers": true,
+        "@metamask/snap-utils": true,
+        "@metamask/snap-utils>@metamask/utils": true,
         "eth-rpc-errors": true
       }
     },
@@ -3402,34 +3404,6 @@
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree>@noble/hashes": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/base": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/snap-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@babel/core": true,
-        "@babel/core>@babel/types": true,
-        "@metamask/rpc-methods>@metamask/snap-utils>ajv": true,
-        "@metamask/rpc-methods>@metamask/snap-utils>rfdc": true,
-        "browserify": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>events": true,
-        "browserify>path-browserify": true,
-        "eslint>fast-deep-equal": true,
-        "semver": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/snap-utils>rfdc": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/utils": {
-      "packages": {
-        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -3486,11 +3460,8 @@
       "packages": {
         "@metamask/controllers": true,
         "@metamask/providers>@metamask/object-multiplex": true,
-        "@metamask/rpc-methods>@metamask/snap-utils": true,
-        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/rpc-methods": true,
         "@metamask/snap-controllers>@metamask/browser-passworder": true,
-        "@metamask/snap-controllers>@metamask/execution-environments": true,
-        "@metamask/snap-controllers>@metamask/obs-store": true,
         "@metamask/snap-controllers>@metamask/post-message-stream": true,
         "@metamask/snap-controllers>@xstate/fsm": true,
         "@metamask/snap-controllers>concat-stream": true,
@@ -3499,9 +3470,10 @@
         "@metamask/snap-controllers>nanoid": true,
         "@metamask/snap-controllers>readable-web-to-node-stream": true,
         "@metamask/snap-controllers>tar-stream": true,
+        "@metamask/snap-utils": true,
+        "@metamask/snap-utils>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "pump": true
       }
     },
@@ -3518,46 +3490,6 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/snap-controllers>@metamask/obs-store": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2": true,
-        "browserify>stream-browserify": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream": {
-      "packages": {
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": true,
-        "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": true,
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@storybook/api>util-deprecate": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>process": true,
-        "browserify>timers-browserify": true,
-        "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@metamask/snap-controllers>@metamask/obs-store>through2>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/snap-controllers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
     "@metamask/snap-controllers>@metamask/post-message-stream": {
       "globals": {
         "WorkerGlobalScope": true,
@@ -3568,8 +3500,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/rpc-methods>@metamask/utils": true,
-        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true
+        "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": true,
+        "@metamask/snap-utils>@metamask/utils": true
       }
     },
     "@metamask/snap-controllers>@metamask/post-message-stream>readable-stream": {
@@ -3782,6 +3714,34 @@
         "browserify>process": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
+      }
+    },
+    "@metamask/snap-utils": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/types": true,
+        "@metamask/snap-utils>ajv": true,
+        "@metamask/snap-utils>rfdc": true,
+        "browserify": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "browserify>events": true,
+        "browserify>path-browserify": true,
+        "eslint>fast-deep-equal": true,
+        "semver": true
+      }
+    },
+    "@metamask/snap-utils>@metamask/utils": {
+      "packages": {
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/snap-utils>rfdc": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@ngraveio/bc-ur": {
