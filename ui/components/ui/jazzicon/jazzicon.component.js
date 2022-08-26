@@ -20,22 +20,23 @@ function Jazzicon({
   const container = useRef();
 
   useEffect(() => {
-    const addIcon = () => {
-      const imageNode = iconFactory.iconForAddress(
-        address,
-        diameter,
-        tokenList[address.toLowerCase()],
-      );
+    const _container = container.current;
 
-      container.current?.appendChild(imageNode);
+    // add icon
+    const imageNode = iconFactory.iconForAddress(
+      address,
+      diameter,
+      tokenList[address?.toLowerCase()],
+    );
+
+    _container?.appendChild(imageNode);
+
+    // remove icon
+    return () => {
+      while (_container.firstChild) {
+        _container.firstChild.remove();
+      }
     };
-
-    const removeIcon = () => {
-      container.current && (container.current.innerHTML = '');
-    };
-
-    removeIcon();
-    addIcon();
   }, [address, diameter, tokenList]);
 
   return <div ref={container} className={className} style={style} />;
