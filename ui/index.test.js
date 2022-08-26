@@ -34,18 +34,6 @@ jest.mock('./helpers/utils/i18n-helper', () => ({
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));
 
-// jest.mock('../shared/lib/error-utils', () => {
-//   const originalModule = jest.requireActual('../shared/lib/error-utils');
-
-//   return {
-//     ...originalModule,
-//     fetchLocale: jest.fn((locale) =>
-//       locale === 'en' ? enMessages : esMessages,
-//     ),
-//     loadRelativeTimeFormatLocaleData: jest.fn(),
-//   };
-// });
-
 describe('Index Tests', () => {
   it('should get locale messages by calling setupLocale', async () => {
     let result = await setupLocale('en');
