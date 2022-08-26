@@ -54,15 +54,14 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
   // check if we are unlocked first
-  backgroundConnection.getState(function (err, metamaskState) {
+  backgroundConnection.getState(async function (err, metamaskState) {
     if (err) {
       cb(err, metamaskState);
       return;
     }
-    startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      setupDebuggingHelpers(store);
-      cb(null, store);
-    });
+    const store = await startApp(metamaskState, backgroundConnection, opts);
+    setupDebuggingHelpers(store);
+    cb(null, store);
   });
 }
 
@@ -195,16 +194,15 @@ function setupDebuggingHelpers(store) {
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
+
+  try {
+    state.platform = await browser.runtime.getPlatformInfo();
+    const stateString = JSON.stringify(state, null, 2);
+    cb(null, stateString);
+  }
+  catch (e) {
+    cb(e);
+  }
 };
 
 window.logState = function (toClipboard) {

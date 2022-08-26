@@ -12,8 +12,9 @@ export default class ConfirmResetAccount extends PureComponent {
     t: PropTypes.func,
   };
 
-  handleReset = () => {
-    this.props.resetAccount().then(() => this.props.hideModal());
+  handleReset = async () => {
+    await this.props.resetAccount();
+    this.props.hideModal();
   };
 
   render() {

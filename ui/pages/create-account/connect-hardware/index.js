@@ -145,94 +145,96 @@ class ConnectHardwareForm extends Component {
     }, SECOND * 5);
   }
 
-  getPage = (device, page, hdPath) => {
-    this.props
-      .connectHardware(device, page, hdPath, this.context.t)
-      .then((accounts) => {
-        if (accounts.length) {
-          // If we just loaded the accounts for the first time
-          // (device previously locked) show the global alert
-          if (this.state.accounts.length === 0 && !this.state.unlocked) {
-            this.showTemporaryAlert();
-          }
+  getPage = async (device, page, hdPath) => {
+    try {
+      const accounts = await this.props.connectHardware(
+        device,
+        page,
+        hdPath,
+        this.context.t,
+      );
 
-          // Map accounts with balances
-          const newAccounts = accounts.map((account) => {
-            const normalizedAddress = account.address.toLowerCase();
-            const balanceValue =
-              this.props.accounts[normalizedAddress]?.balance || null;
-            account.balance = balanceValue
-              ? formatBalance(balanceValue, 6)
-              : '...';
-            return account;
-          });
+      if (!accounts.length) {
+        return;
+      }
 
-          this.setState({
-            accounts: newAccounts,
-            unlocked: true,
-            device,
-            error: null,
-          });
-        }
-      })
-      .catch((e) => {
-        const errorMessage = typeof e === 'string' ? e : e.message;
-        if (errorMessage === 'Window blocked') {
-          this.setState({ browserSupported: false, error: null });
-        } else if (errorMessage.includes(U2F_ERROR)) {
-          this.setState({ error: U2F_ERROR });
-        } else if (
-          errorMessage === 'LEDGER_LOCKED' ||
-          errorMessage === 'LEDGER_WRONG_APP'
-        ) {
-          this.setState({
-            error: this.context.t('ledgerLocked'),
-          });
-        } else if (errorMessage.includes('timeout')) {
-          this.setState({
-            error: this.context.t('ledgerTimeout'),
-          });
-        } else if (
-          errorMessage
-            .toLowerCase()
-            .includes(
-              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
-            )
-        ) {
-          this.setState({
-            error: this.context.t('QRHardwarePubkeyAccountOutOfRange'),
-          });
-        } else if (
-          errorMessage !== 'Window closed' &&
-          errorMessage !== 'Popup closed' &&
-          errorMessage
-            .toLowerCase()
-            .includes('KeystoneError#sync_cancel'.toLowerCase()) === false
-        ) {
-          this.setState({
-            error: errorMessage,
-          });
-        }
+      // If we just loaded the accounts for the first time
+      // (device previously locked) show the global alert
+      if (this.state.accounts.length === 0 && !this.state.unlocked) {
+        this.showTemporaryAlert();
+      }
+
+      // Map accounts with balances
+      const newAccounts = accounts.map((account) => {
+        const normalizedAddress = account.address.toLowerCase();
+        const balanceValue =
+          this.props.accounts[normalizedAddress]?.balance || null;
+        account.balance = balanceValue ? formatBalance(balanceValue, 6) : '...';
+        return account;
       });
-  };
 
-  onForgetDevice = (device) => {
-    this.props
-      .forgetDevice(device)
-      .then((_) => {
+      this.setState({
+        accounts: newAccounts,
+        unlocked: true,
+        device,
+        error: null,
+      });
+    } catch (e) {
+      const errorMessage = typeof e === 'string' ? e : e.message;
+      if (errorMessage === 'Window blocked') {
+        this.setState({ browserSupported: false, error: null });
+      } else if (errorMessage.includes(U2F_ERROR)) {
+        this.setState({ error: U2F_ERROR });
+      } else if (
+        errorMessage === 'LEDGER_LOCKED' ||
+        errorMessage === 'LEDGER_WRONG_APP'
+      ) {
         this.setState({
-          error: null,
-          selectedAccounts: [],
-          accounts: [],
-          unlocked: false,
+          error: this.context.t('ledgerLocked'),
         });
-      })
-      .catch((e) => {
-        this.setState({ error: e.message });
-      });
+      } else if (errorMessage.includes('timeout')) {
+        this.setState({
+          error: this.context.t('ledgerTimeout'),
+        });
+      } else if (
+        errorMessage
+          .toLowerCase()
+          .includes(
+            'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
+          )
+      ) {
+        this.setState({
+          error: this.context.t('QRHardwarePubkeyAccountOutOfRange'),
+        });
+      } else if (
+        errorMessage !== 'Window closed' &&
+        errorMessage !== 'Popup closed' &&
+        errorMessage
+          .toLowerCase()
+          .includes('KeystoneError#sync_cancel'.toLowerCase()) === false
+      ) {
+        this.setState({
+          error: errorMessage,
+        });
+      }
+    }
   };
 
-  onUnlockAccounts = (device, path) => {
+  onForgetDevice = async (device) => {
+    try {
+      await this.props.forgetDevice(device);
+      this.setState({
+        error: null,
+        selectedAccounts: [],
+        accounts: [],
+        unlocked: false,
+      });
+    } catch (e) {
+      this.setState({ error: e.message });
+    }
+  };
+
+  onUnlockAccounts = async (device, path) => {
     const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
       this.props;
     const { selectedAccounts } = this.state;
@@ -245,35 +247,38 @@ class ConnectHardwareForm extends Component {
       MEW_PATH === path
         ? this.context.t('hardwareWalletLegacyDescription')
         : '';
-    return unlockHardwareWalletAccounts(
-      selectedAccounts,
-      device,
-      path || null,
-      description,
-    )
-      .then((_) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.ACCOUNTS,
-          event: EVENT_NAMES.ACCOUNT_ADDED,
-          properties: {
-            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
-            account_hardware_type: device,
-          },
-        });
-        history.push(mostRecentOverviewPage);
-      })
-      .catch((e) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.ACCOUNTS,
-          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
-          properties: {
-            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
-            account_hardware_type: device,
-            error: e.message,
-          },
-        });
-        this.setState({ error: e.message });
+
+    let result;
+    try {
+      result = await unlockHardwareWalletAccounts(
+        selectedAccounts,
+        device,
+        path || null,
+        description,
+      );
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ACCOUNTS,
+        event: EVENT_NAMES.ACCOUNT_ADDED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+          account_hardware_type: device,
+        },
       });
+      history.push(mostRecentOverviewPage);
+    } catch (e) {
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ACCOUNTS,
+        event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+          account_hardware_type: device,
+          error: e.message,
+        },
+      });
+      this.setState({ error: e.message });
+    }
+
+    return result;
   };
 
   onCancel = () => {

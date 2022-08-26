@@ -67,30 +67,32 @@ export default class RevealSeedPhrase extends PureComponent {
       onboardingInitiator,
     } = this.props;
 
-    await Promise.all([setCompletedOnboarding(), setSeedPhraseBackedUp(false)])
-      .then(() => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.ONBOARDING,
-          event: EVENT_NAMES.WALLET_CREATED,
-          properties: {
-            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
-            is_backup_skipped: true,
-          },
-        });
-      })
-      .catch((error) => {
-        console.error(error.message);
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.ONBOARDING,
-          event: EVENT_NAMES.WALLET_SETUP_FAILED,
-          properties: {
-            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
-            is_backup_skipped: true,
-            reason: 'Seed Phrase Creation Error',
-            error: error.message,
-          },
-        });
+    try {
+      await Promise.all([
+        setCompletedOnboarding(),
+        setSeedPhraseBackedUp(false),
+      ]);
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: EVENT_NAMES.WALLET_CREATED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+          is_backup_skipped: true,
+        },
       });
+    } catch (error) {
+      console.error(error.message);
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: EVENT_NAMES.WALLET_SETUP_FAILED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+          is_backup_skipped: true,
+          reason: 'Seed Phrase Creation Error',
+          error: error.message,
+        },
+      });
+    }
 
     if (onboardingInitiator) {
       await returnToOnboardingInitiatorTab(onboardingInitiator);

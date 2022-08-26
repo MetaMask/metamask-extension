@@ -27,32 +27,33 @@ class RevealSeedPage extends Component {
     }
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     this.setState({ seedWords: null, error: null });
-    this.props
-      .requestRevealSeedWords(this.state.password)
-      .then((seedWords) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
-          properties: {
-            key_type: EVENT.KEY_TYPES.SRP,
-          },
-        });
-        this.setState({ seedWords, screen: REVEAL_SEED_SCREEN });
-      })
-      .catch((error) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_FAILED,
-          properties: {
-            key_type: EVENT.KEY_TYPES.SRP,
-            reason: error.message, // 'incorrect_password',
-          },
-        });
-        this.setState({ error: error.message });
+
+    try {
+      const seedWords = await this.props.requestRevealSeedWords(
+        this.state.password,
+      );
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+        properties: {
+          key_type: EVENT.KEY_TYPES.SRP,
+        },
       });
+      this.setState({ seedWords, screen: REVEAL_SEED_SCREEN });
+    } catch (error) {
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.KEY_EXPORT_FAILED,
+        properties: {
+          key_type: EVENT.KEY_TYPES.SRP,
+          reason: error.message, // 'incorrect_password',
+        },
+      });
+      this.setState({ error: error.message });
+    }
   }
 
   renderWarning() {

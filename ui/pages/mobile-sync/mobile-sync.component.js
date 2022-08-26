@@ -60,23 +60,25 @@ export default class MobileSyncPage extends Component {
     }, IDLE_TIME);
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     this.setState({ seedWords: null, error: null });
-    this.props
-      .requestRevealSeedWords(this.state.password)
-      .then((seedWords) => {
-        this.startKeysGeneration();
-        this.startIdleTimeout();
-        this.exportAccounts().then((importedAccounts) => {
-          this.setState({
-            seedWords,
-            importedAccounts,
-            screen: REVEAL_SEED_SCREEN,
-          });
-        });
-      })
-      .catch((error) => this.setState({ error: error.message }));
+    try {
+      const seedWords = await this.props.requestRevealSeedWords(
+        this.state.password,
+      );
+      this.startKeysGeneration();
+      this.startIdleTimeout();
+
+      const importedAccounts = await this.exportAccounts();
+      this.setState({
+        seedWords,
+        importedAccounts,
+        screen: REVEAL_SEED_SCREEN,
+      });
+    } catch (error) {
+      this.setState({ error: error.message });
+    }
   }
 
   async exportAccounts() {

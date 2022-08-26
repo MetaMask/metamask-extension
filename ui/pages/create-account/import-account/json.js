@@ -91,7 +91,7 @@ class JsonImportSubview extends Component {
     }
   }
 
-  createNewKeychain() {
+  async createNewKeychain() {
     const {
       firstAddress,
       displayWarning,
@@ -111,33 +111,39 @@ class JsonImportSubview extends Component {
 
     const password = this.inputRef.current.value;
 
-    importNewJsonAccount([fileContents, password])
-      .then(({ selectedAddress }) => {
-        if (selectedAddress) {
-          history.push(mostRecentOverviewPage);
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADDED,
-            properties: {
-              account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
-              account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.JSON,
-            },
-          });
-          displayWarning(null);
-        } else {
-          displayWarning(t('importAccountError'));
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
-            properties: {
-              account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
-              account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.JSON,
-            },
-          });
-          setSelectedAddress(firstAddress);
-        }
-      })
-      .catch((err) => err && displayWarning(err.message || err));
+    try {
+      const { selectedAddress } = await importNewJsonAccount([
+        fileContents,
+        password,
+      ]);
+      if (selectedAddress) {
+        history.push(mostRecentOverviewPage);
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADDED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+            account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.JSON,
+          },
+        });
+        displayWarning(null);
+      } else {
+        displayWarning(t('importAccountError'));
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+            account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.JSON,
+          },
+        });
+        setSelectedAddress(firstAddress);
+      }
+    } catch (err) {
+      if (err) {
+        displayWarning(err.message || err);
+      }
+    }
   }
 
   checkInputEmpty() {

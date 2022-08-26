@@ -25,8 +25,9 @@ export default class NewAccountModal extends Component {
     });
   };
 
-  onSubmit = () => {
-    this.props.onSave(this.state.alias).then(this.props.hideModal);
+  onSubmit = async () => {
+    await this.props.onSave(this.state.alias);
+    this.props.hideModal();
   };
 
   onKeyPress = (e) => {

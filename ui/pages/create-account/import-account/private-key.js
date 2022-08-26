@@ -29,7 +29,7 @@ class PrivateKeyImportView extends Component {
 
   state = { isEmpty: true };
 
-  createNewKeychain() {
+  async createNewKeychain() {
     const privateKey = this.inputRef.current.value;
     const {
       importNewAccount,
@@ -41,33 +41,38 @@ class PrivateKeyImportView extends Component {
     } = this.props;
     const { t } = this.context;
 
-    importNewAccount('Private Key', [privateKey])
-      .then(({ selectedAddress }) => {
-        if (selectedAddress) {
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADDED,
-            properties: {
-              account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
-              account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
-            },
-          });
-          history.push(mostRecentOverviewPage);
-          displayWarning(null);
-        } else {
-          displayWarning(t('importAccountError'));
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
-            properties: {
-              account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
-              account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
-            },
-          });
-          setSelectedAddress(firstAddress);
-        }
-      })
-      .catch((err) => err && displayWarning(err.message || err));
+    try {
+      const { selectedAddress } = await importNewAccount('Private Key', [
+        privateKey,
+      ]);
+      if (selectedAddress) {
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADDED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+            account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
+          },
+        });
+        history.push(mostRecentOverviewPage);
+        displayWarning(null);
+      } else {
+        displayWarning(t('importAccountError'));
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+            account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
+          },
+        });
+        setSelectedAddress(firstAddress);
+      }
+    } catch (err) {
+      if (err) {
+        displayWarning(err.message || err);
+      }
+    }
   }
 
   createKeyringOnEnter = (event) => {

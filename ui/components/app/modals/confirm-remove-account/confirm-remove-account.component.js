@@ -21,10 +21,9 @@ export default class ConfirmRemoveAccount extends Component {
     trackEvent: PropTypes.func,
   };
 
-  handleRemove = () => {
-    this.props
-      .removeAccount(this.props.identity.address)
-      .then(() => this.props.hideModal());
+  handleRemove = async () => {
+    await this.props.removeAccount(this.props.identity.address);
+    this.props.hideModal();
   };
 
   handleCancel = () => {

@@ -293,17 +293,16 @@ export default function BuildQuote({
     [dispatch, fromToken, balanceError],
   );
 
-  const onFromSelect = (token) => {
+  const onFromSelect = async (token) => {
     if (
       token?.address &&
       !swapFromFiatValue &&
       fetchedTokenExchangeRate !== null
     ) {
-      fetchTokenPrice(token.address).then((rate) => {
-        if (rate !== null && rate !== undefined) {
-          setFetchedTokenExchangeRate(rate);
-        }
-      });
+      const rate = await fetchTokenPrice(token.address);
+      if (rate !== null && rate !== undefined) {
+        setFetchedTokenExchangeRate(rate);
+      }
     } else {
       setFetchedTokenExchangeRate(null);
     }
@@ -313,24 +312,24 @@ export default function BuildQuote({
         isEqualCaseInsensitive(usersToken.address, token.address),
       )
     ) {
-      fetchTokenBalance(token.address, selectedAccountAddress).then(
-        (fetchedBalance) => {
-          if (fetchedBalance?.balance) {
-            const balanceAsDecString = fetchedBalance.balance.toString(10);
-            const userTokenBalance = calcTokenAmount(
-              balanceAsDecString,
-              token.decimals,
-            );
-            dispatch(
-              setSwapsFromToken({
-                ...token,
-                string: userTokenBalance.toString(10),
-                balance: balanceAsDecString,
-              }),
-            );
-          }
-        },
+      const fetchedBalance = await fetchTokenBalance(
+        token.address,
+        selectedAccountAddress,
       );
+      if (fetchedBalance?.balance) {
+        const balanceAsDecString = fetchedBalance.balance.toString(10);
+        const userTokenBalance = calcTokenAmount(
+          balanceAsDecString,
+          token.decimals,
+        );
+        dispatch(
+          setSwapsFromToken({
+            ...token,
+            string: userTokenBalance.toString(10),
+            balance: balanceAsDecString,
+          }),
+        );
+      }
     }
     dispatch(setSwapsFromToken(token));
     onInputChange(

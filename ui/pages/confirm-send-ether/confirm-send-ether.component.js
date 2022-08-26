@@ -14,11 +14,10 @@ export default class ConfirmSendEther extends Component {
     txParams: PropTypes.object,
   };
 
-  handleEdit({ txData }) {
+  async handleEdit({ txData }) {
     const { editTransaction, history } = this.props;
-    editTransaction(txData).then(() => {
-      history.push(SEND_ROUTE);
-    });
+    await editTransaction(txData);
+    history.push(SEND_ROUTE);
   }
 
   shouldHideData() {

@@ -192,22 +192,21 @@ export default class ConfirmDecryptMessage extends Component {
               'request-decrypt-message__message-lock--pressed':
                 hasDecrypted || hasError,
             })}
-            onClick={(event) => {
-              decryptMessageInline(txData, event).then((result) => {
-                if (result.error) {
-                  this.setState({
-                    hasError: true,
-                    errorMessage: this.context.t('decryptInlineError', [
-                      result.error,
-                    ]),
-                  });
-                } else {
-                  this.setState({
-                    hasDecrypted: true,
-                    rawMessage: result.rawData,
-                  });
-                }
-              });
+            onClick={async (event) => {
+              const result = await decryptMessageInline(txData, event);
+              if (result.error) {
+                this.setState({
+                  hasError: true,
+                  errorMessage: this.context.t('decryptInlineError', [
+                    result.error,
+                  ]),
+                });
+              } else {
+                this.setState({
+                  hasDecrypted: true,
+                  rawMessage: result.rawData,
+                });
+              }
             }}
           >
             <div className="request-decrypt-message__message-lock__container">

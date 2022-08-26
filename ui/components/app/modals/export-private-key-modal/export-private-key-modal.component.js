@@ -47,36 +47,35 @@ export default class ExportPrivateKeyModal extends Component {
     this.props.hideWarning();
   }
 
-  exportAccountAndGetPrivateKey = (password, address) => {
+  exportAccountAndGetPrivateKey = async (password, address) => {
     const { exportAccount } = this.props;
 
-    exportAccount(password, address)
-      .then((privateKey) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
-          properties: {
-            key_type: EVENT.KEY_TYPES.PKEY,
-          },
-        });
-
-        this.setState({
-          privateKey,
-          showWarning: false,
-        });
-      })
-      .catch((e) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_FAILED,
-          properties: {
-            key_type: EVENT.KEY_TYPES.PKEY,
-            reason: 'incorrect_password',
-          },
-        });
-
-        log.error(e);
+    try {
+      const privateKey = await exportAccount(password, address);
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+        properties: {
+          key_type: EVENT.KEY_TYPES.PKEY,
+        },
       });
+
+      this.setState({
+        privateKey,
+        showWarning: false,
+      });
+    } catch (e) {
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.KEY_EXPORT_FAILED,
+        properties: {
+          key_type: EVENT.KEY_TYPES.PKEY,
+          reason: 'incorrect_password',
+        },
+      });
+
+      log.error(e);
+    }
   };
 
   renderPasswordLabel(privateKey) {

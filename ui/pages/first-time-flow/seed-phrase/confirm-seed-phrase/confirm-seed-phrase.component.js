@@ -80,18 +80,16 @@ export default class ConfirmSeedPhrase extends PureComponent {
     }
 
     try {
-      setSeedPhraseBackedUp(true).then(async () => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.ONBOARDING,
-          event: EVENT_NAMES.WALLET_CREATED,
-          properties: {
-            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
-            is_backup_skipped: false,
-          },
-        });
-
-        history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
+      await setSeedPhraseBackedUp(true);
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: EVENT_NAMES.WALLET_CREATED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+          is_backup_skipped: false,
+        },
       });
+      history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
     } catch (error) {
       console.error(error.message);
       this.context.trackEvent({

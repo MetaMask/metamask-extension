@@ -22,29 +22,28 @@ export default class NewAccountCreateForm extends Component {
     const { history, createAccount, mostRecentOverviewPage, accounts } =
       this.props;
 
-    const createClick = (event) => {
+    const createClick = async (event) => {
       event.preventDefault();
-      createAccount(newAccountName || defaultAccountName)
-        .then(() => {
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADDED,
-            properties: {
-              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
-            },
-          });
-          history.push(mostRecentOverviewPage);
-        })
-        .catch((e) => {
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.ACCOUNTS,
-            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
-            properties: {
-              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
-              error: e.message,
-            },
-          });
+      try {
+        await createAccount(newAccountName || defaultAccountName);
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADDED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+          },
         });
+        history.push(mostRecentOverviewPage);
+      } catch (e) {
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ACCOUNTS,
+          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+            error: e.message,
+          },
+        });
+      }
     };
 
     const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(

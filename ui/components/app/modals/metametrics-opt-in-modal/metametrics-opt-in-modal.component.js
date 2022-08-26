@@ -132,23 +132,22 @@ export default class MetaMetricsOptInModal extends Component {
               }}
               cancelText={t('noThanks')}
               hideCancel={false}
-              onSubmit={() => {
-                setParticipateInMetaMetrics(true).then(() => {
-                  trackEvent(
-                    {
-                      category: EVENT.CATEGORIES.ONBOARDING,
-                      event: EVENT_NAMES.METRICS_OPT_IN,
-                      properties: {
-                        action: 'Metrics Option',
-                        legacy_event: true,
-                      },
+              onSubmit={async () => {
+                await setParticipateInMetaMetrics(true);
+                trackEvent(
+                  {
+                    category: EVENT.CATEGORIES.ONBOARDING,
+                    event: EVENT_NAMES.METRICS_OPT_IN,
+                    properties: {
+                      action: 'Metrics Option',
+                      legacy_event: true,
                     },
-                    {
-                      isOptIn: true,
-                    },
-                  );
-                  hideModal();
-                });
+                  },
+                  {
+                    isOptIn: true,
+                  },
+                );
+                hideModal();
               }}
               submitText={t('affirmAgree')}
               disabled={false}
