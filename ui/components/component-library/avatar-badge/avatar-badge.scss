@@ -1,47 +1,20 @@
 .avatar-badge {
   position: relative;
-
-  &--size-xs {
-    --badge-container-size: 16px;
-  }
-
-  &--size-sm {
-    --badge-container-size: 24px;
-  }
-
-  &--size-md {
-    --badge-container-size: 32px;
-  }
-
-  &--size-lg {
-    --badge-container-size: 40px;
-  }
-
-  &--size-xl {
-    --badge-container-size: 48px;
-  }
-
-  height: var(--badge-container-size, 16px);
-  width: var(--badge-container-size, 16px);
-
+  width: fit-content;
   &-token-position-top {
     position: absolute;
-    height: 16px !important;
-    width: 16px !important;
     top: -4px;
     right: -4px;
   }
 
   &-token-position-bottom {
     position: absolute;
-    height: 16px !important;
-    width: 16px !important;
     bottom: -4px;
     right: -4px;
   }
   .avatar-badge--token-badge{
-height: 16px !important;
-width: 16px !important;
+  height: 16px !important;
+  width: 16px !important;
 
   }
 }

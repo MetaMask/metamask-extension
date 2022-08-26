@@ -4,19 +4,18 @@ import { AvatarToken } from '../avatar-token';
 
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import { AvatarNetwork } from '../avatar-network';
-import README from './README.mdx';
+// import README from './README.mdx';
 import { AvatarBadge, badgePosition } from './avatar-badge';
-
 
 export default {
   title: 'Components/ComponentLibrary/AvatarBadge',
   id: __filename,
   component: AvatarBadge,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
+  // parameters: {
+  //   docs: {
+  //     page: README,
+  //   },
+  // },
   argTypes: {
     address: { control: 'text' },
     badgePosition: { options: badgePosition, control: 'select' },
@@ -40,3 +39,11 @@ export const DefaultStory = (args) => (
 );
 
 DefaultStory.storyName = 'Default';
+
+export const AvatarTokenBadge = (args) => (
+  <AvatarBadge {...args} BadgeVariant={AvatarToken}>
+    <Jazzicon address={args.address} />
+  </AvatarBadge>
+);
+
+AvatarTokenBadge.storyName = 'Avatar Token Badge';
