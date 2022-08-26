@@ -4175,6 +4175,15 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
+    "enzyme>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "eslint>optionator>fast-levenshtein": {
       "globals": {
         "Intl": true,
@@ -4463,31 +4472,44 @@
     },
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
-        "ActiveXObject": true,
-        "AggregateError": true,
-        "Buffer": true,
-        "DO_NOT_EXPORT_CRC": true,
-        "FinalizationRegistry": true,
-        "HTMLElement": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "WeakRef": true,
-        "XMLHttpRequest": true,
-        "btoa": true,
-        "clearTimeout": true,
-        "console": true,
-        "crypto": true,
-        "define": true,
-        "document": true,
-        "intToBuffer": true,
-        "location": true,
-        "msCrypto": true,
+        "__values": true,
+        "console.log": true,
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
+        "3box>ethers>elliptic": true,
+        "@ethereumjs/common": true,
+        "@ethereumjs/common>crc-32": true,
+        "@ethereumjs/tx": true,
+        "bn.js": true,
         "browserify>buffer": true,
-        "browserify>process": true
+        "browserify>process": true,
+        "eth-lattice-keyring>gridplus-sdk>bech32": true,
+        "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
+        "eth-lattice-keyring>gridplus-sdk>bitwise": true,
+        "eth-lattice-keyring>gridplus-sdk>borc": true,
+        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
+        "eth-lattice-keyring>gridplus-sdk>rlp": true,
+        "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
+        "eth-lattice-keyring>gridplus-sdk>superagent": true,
+        "ethereumjs-wallet>aes-js": true,
+        "ethereumjs-wallet>bs58check": true,
+        "ethers>@ethersproject/abi": true,
+        "ethers>@ethersproject/keccak256>js-sha3": true,
+        "ethers>@ethersproject/sha2>hash.js": true,
+        "lodash": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>bitwise": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc": {
@@ -4505,6 +4527,60 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
+      "globals": {
+        "intToBuffer": true
+      },
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": true,
+        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true,
+        "ethers>@ethersproject/keccak256>js-sha3": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "base64-js": true,
+        "browserify>buffer>ieee754": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>secp256k1": {
+      "packages": {
+        "3box>ethers>elliptic": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>superagent": {
+      "globals": {
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "eth-rpc-errors>fast-safe-stringify": true,
+        "nock>qs": true,
+        "pubnub>superagent>component-emitter": true
       }
     },
     "eth-lattice-keyring>rlp": {
@@ -5594,6 +5670,11 @@
         "enzyme>is-regex>has-tostringtag": true
       }
     },
+    "nock>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "node-fetch": {
       "globals": {
         "Headers": true,
@@ -6188,6 +6269,13 @@
         "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
+      }
+    },
+    "string.prototype.matchall>side-channel": {
+      "packages": {
+        "enzyme>object-inspect": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "stylelint>write-file-atomic>typedarray-to-buffer": {
