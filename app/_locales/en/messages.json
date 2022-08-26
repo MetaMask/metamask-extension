@@ -3656,8 +3656,8 @@
   "swapReviewSwap": {
     "message": "Review swap"
   },
-  "swapSearchForAToken": {
-    "message": "Search for a token"
+  "swapSearchNameOrAddress": {
+    "message": "Search name or paste address"
   },
   "swapSelect": {
     "message": "Select"

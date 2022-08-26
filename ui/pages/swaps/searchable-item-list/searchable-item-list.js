@@ -19,6 +19,8 @@ export default function SearchableItemList({
   hideItemIf,
   listContainerClassName,
   shouldSearchForImports,
+  searchQuery,
+  setSearchQuery,
 }) {
   const itemListRef = useRef();
 
@@ -30,7 +32,6 @@ export default function SearchableItemList({
     setResults(initialResultsState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialResultsState.length]);
-  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className={className}>
@@ -48,6 +49,8 @@ export default function SearchableItemList({
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll={defaultToAll}
         shouldSearchForImports={shouldSearchForImports}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <ItemList
         searchQuery={searchQuery}
@@ -87,4 +90,6 @@ SearchableItemList.propTypes = {
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
   shouldSearchForImports: PropTypes.bool,
+  searchQuery: PropTypes.func,
+  setSearchQuery: PropTypes.func,
 };
