@@ -4962,8 +4962,11 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/common": true,
         "@ethereumjs/common>crc-32": true,
         "@metamask/controllers>@ethersproject/abi": true,
+        "@unstoppabledomains/resolution>@ethersproject/abi": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>process": true,
@@ -4978,6 +4981,7 @@
         "eth-lattice-keyring>gridplus-sdk>rlp": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
+        "ethers>@ethersproject/keccak256>js-sha3": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "ethers>@ethersproject/signing-key>elliptic": true,
         "ganache>secp256k1": true,
@@ -5073,7 +5077,7 @@
         "define": true
       },
       "packages": {
-        "browserify>process": true
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>js-sha3": {
