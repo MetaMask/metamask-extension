@@ -4532,10 +4532,11 @@
         "setTimeout": true
       },
       "packages": {
-        "3box>ethers>elliptic": true,
         "@ethereumjs/common": true,
         "@ethereumjs/common>crc-32": true,
         "@ethereumjs/tx": true,
+        "@unstoppabledomains/resolution>@ethersproject/abi": true,
+        "@unstoppabledomains/resolution>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>process": true,
@@ -4549,7 +4550,6 @@
         "eth-lattice-keyring>gridplus-sdk>superagent": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
-        "ethers>@ethersproject/abi": true,
         "ethers>@ethersproject/keccak256>js-sha3": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "lodash": true
@@ -4617,7 +4617,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
-        "3box>ethers>elliptic": true
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>superagent": {
