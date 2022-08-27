@@ -1,0 +1,40 @@
+.base-button {
+  // Should be token
+  height: 2.5rem;
+  // Should be token
+  border-radius: 999px;
+  cursor: pointer;
+  background-color: #dcdcdc;
+  vertical-align: middle;
+
+
+  &:active,
+  &:hover {
+    color: var(--color-text-default);
+  }
+
+  &--size-xs {
+    // Should be token
+    height: 1.375rem;
+  }
+
+  &--size-sm {
+    // Should be token
+    height: 2rem;
+  }
+
+  &--size-md {
+    // Should be token
+    height: 2.5rem;
+  }
+
+  &--size-lg {
+    // Should be token
+    height: 3rem;
+  }
+
+
+  &--block {
+    display: block;
+  }
+}

@@ -181,6 +181,14 @@ export const SIZES = {
   NONE,
 };
 
+export const BUTTON_SIZES = {
+  XS: 'xs',
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+  NONE,
+};
+
 export const BORDER_STYLE = {
   DASHED: 'dashed',
   SOLID: 'solid',

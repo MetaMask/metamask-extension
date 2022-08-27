@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export const ValidTags = [
+  'a',
   'dd',
   'div',
   'dt',

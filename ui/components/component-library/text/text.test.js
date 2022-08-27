@@ -19,6 +19,7 @@ describe('Text', () => {
   it('should render the Text with correct html elements', () => {
     const { getByText, container } = render(
       <>
+        <Text as="a">a</Text>
         <Text as="p">p</Text>
         <Text as="h1">h1</Text>
         <Text as="h2">h2</Text>
@@ -35,6 +36,8 @@ describe('Text', () => {
         <Text as="dd">dd</Text>
       </>,
     );
+    expect(container.querySelector('a')).toBeDefined();
+    expect(getByText('a')).toBeDefined();
     expect(container.querySelector('p')).toBeDefined();
     expect(getByText('p')).toBeDefined();
     expect(container.querySelector('h1')).toBeDefined();
