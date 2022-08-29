@@ -22,6 +22,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
+import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
@@ -181,6 +182,9 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
 
+    const isSetApprove =
+      currentTransaction.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
+
     const { t } = this.context;
 
     return (
@@ -198,23 +202,30 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          <ConfirmPageContainerHeader
-            showEdit={showEdit}
-            onEdit={() => onEdit()}
-            showAccountInHeader={showAccountInHeader}
-            accountAddress={fromAddress}
-          >
-            {hideSenderToRecipient ? null : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-              />
-            )}
-          </ConfirmPageContainerHeader>
+          {isSetApproveForAll || isSetApprove ? (
+            <NetworkAccountBalanceHeader
+              accountName={fromName}
+              accountAddress={fromAddress}
+            />
+          ) : (
+            <ConfirmPageContainerHeader
+              showEdit={showEdit}
+              onEdit={() => onEdit()}
+              showAccountInHeader={showAccountInHeader}
+              accountAddress={fromAddress}
+            >
+              {hideSenderToRecipient ? null : (
+                <SenderToRecipient
+                  senderName={fromName}
+                  senderAddress={fromAddress}
+                  recipientName={toName}
+                  recipientAddress={toAddress}
+                  recipientEns={toEns}
+                  recipientNickname={toNickname}
+                />
+              )}
+            </ConfirmPageContainerHeader>
+          )}
           <div>
             {showAddToAddressDialog && (
               <>

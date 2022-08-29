@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import Identicon from '../../ui/identicon/identicon.component';
 import {
   DISPLAY,
@@ -9,19 +10,29 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
   JUSTIFY_CONTENT,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography';
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import { getSwapsDefaultToken } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 export default function NetworkAccountBalanceHeader({
-  networkName,
   accountName,
-  accountBalance,
-  tokenName,
   accountAddress,
 }) {
   const t = useContext(I18nContext);
+
+  const accountBalance = useSelector(getSwapsDefaultToken);
+  const tokenName = useSelector(getNativeCurrency);
+  const currentNetwork = useSelector((state) => ({
+    nickname: state.metamask.provider.nickname,
+    type: state.metamask.provider.type,
+  }));
+
+  const { nickname: networkNickname, type: networkType } = currentNetwork;
 
   return (
     <Box
@@ -63,7 +74,9 @@ export default function NetworkAccountBalanceHeader({
             color={COLORS.TEXT_ALTERNATIVE}
             marginBottom={0}
           >
-            {networkName}
+            {networkType === NETWORK_TYPE_RPC
+              ? networkNickname ?? t('privateNetwork')
+              : t(networkType)}
           </Typography>
 
           <Typography
@@ -94,8 +107,9 @@ export default function NetworkAccountBalanceHeader({
           color={COLORS.TEXT_DEFAULT}
           fontWeight={FONT_WEIGHT.BOLD}
           marginTop={0}
+          align={TEXT_ALIGN.END}
         >
-          {accountBalance} {tokenName}
+          {accountBalance.string} {tokenName}
         </Typography>
       </Box>
     </Box>
@@ -103,9 +117,6 @@ export default function NetworkAccountBalanceHeader({
 }
 
 NetworkAccountBalanceHeader.propTypes = {
-  networkName: PropTypes.string,
   accountName: PropTypes.string,
-  accountBalance: PropTypes.number,
-  tokenName: PropTypes.string,
   accountAddress: PropTypes.string,
 };
