@@ -2,32 +2,26 @@ import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
-import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
-  MAINNET_NETWORK_ID,
   NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
-  UNS_NOT_REGISTERED,
-  UNS_RECORD_NOT_FOUND,
-  UNS_UNSPECIFIED_RESOLVER,
-  UNS_RESOLUTION_ERROR,
+  UNS_COMMON_ERROR,
   UNS_CONFUSING_ERROR,
+  UNS_CURRENCY_SPEC_ERROR,
+  UNS_CURRENCY_ERROR,
   UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
 import {
-  isValidUnstoppableDomainName,
   buildJson,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
   BURN_ADDRESS,
-  isBurnAddress,
-  isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
 import Resolution from "@unstoppabledomains/resolution";
 
@@ -62,33 +56,28 @@ const slice = createSlice({
       const { address, unsName, error } = action.payload;
 
       if (error) {
-        if (isValidUnstoppableDomainName(unsName)) {
-          state.error =
-            error.code === 'UnregisteredDomain'
-              ? UNS_NOT_REGISTERED
-              : UNS_RESOLUTION_ERROR;
-        } else if (error.code === 'RecordNotFound') {
-          state.error = UNS_RECORD_NOT_FOUND;
-        } else if (error.code === 'UnspecifiedResolver') {
-          state.error = UNS_UNSPECIFIED_RESOLVER;
+        if (error === 'UnregisteredDomain') {
+          state.error = UNS_COMMON_ERROR;
+        } else if (error === 'UnspecifiedCurrency' || error === 'RecordNotFound') {
+          state.error = UNS_CURRENCY_SPEC_ERROR;
+        } else if (error === 'UnsupportedCurrency') {
+          state.error = UNS_CURRENCY_ERROR;
         } else {
           log.error(error);
           state.error = UNS_UNKNOWN_ERROR;
         }
       } else if (address) {
-        if (address === BURN_ADDRESS) {
-          state.error = UNS_NOT_REGISTERED;
-        } else if (address === ZERO_X_ERROR_ADDRESS) {
-          state.error = UNS_RESOLUTION_ERROR;
+        if (address === BURN_ADDRESS || address === ZERO_X_ERROR_ADDRESS) {
+          state.error = UNS_COMMON_ERROR;
         } else {
           state.resolution = address;
           state.domainName = unsName;
         }
-        if (isValidUnstoppableDomainName(address) && isConfusing(address)) {
+        if (isConfusing(unsName)) {
           state.warning = UNS_CONFUSING_ERROR;
         }
       } else {
-        state.error = UNS_NOT_REGISTERED;
+        state.error = UNS_COMMON_ERROR;
       }
     },
     enableUnsLookup: (state, action) => {
