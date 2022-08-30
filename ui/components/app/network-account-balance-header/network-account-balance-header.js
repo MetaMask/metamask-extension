@@ -16,17 +16,15 @@ import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
-import { getSwapsDefaultToken } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 export default function NetworkAccountBalanceHeader({
   accountName,
+  accountBalance,
+  tokenName,
   accountAddress,
 }) {
   const t = useContext(I18nContext);
 
-  const accountBalance = useSelector(getSwapsDefaultToken);
-  const tokenName = useSelector(getNativeCurrency);
   const currentNetwork = useSelector((state) => ({
     nickname: state.metamask.provider.nickname,
     type: state.metamask.provider.type,
@@ -48,7 +46,6 @@ export default function NetworkAccountBalanceHeader({
         flexDirection={FLEX_DIRECTION.ROW}
         alignItems={ALIGN_ITEMS.CENTER}
         gap={2}
-        marginRight={5}
       >
         <Box
           display={DISPLAY.FLEX}
@@ -109,7 +106,7 @@ export default function NetworkAccountBalanceHeader({
           marginTop={0}
           align={TEXT_ALIGN.END}
         >
-          {accountBalance.string} {tokenName}
+          {accountBalance} {tokenName}
         </Typography>
       </Box>
     </Box>
@@ -118,5 +115,7 @@ export default function NetworkAccountBalanceHeader({
 
 NetworkAccountBalanceHeader.propTypes = {
   accountName: PropTypes.string,
+  accountBalance: PropTypes.number,
+  tokenName: PropTypes.string,
   accountAddress: PropTypes.string,
 };

@@ -51,6 +51,7 @@ export default class ConfirmPageContainer extends Component {
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    accountBalance: PropTypes.string,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -162,6 +163,7 @@ export default class ConfirmPageContainer extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
+      accountBalance,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -182,8 +184,9 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
 
-    const isSetApprove =
-      currentTransaction.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
+    const isSetNftApprove =
+      currentTransaction.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE &&
+      !currentTransaction.dappSuggestedGasFees.gasPrice;
 
     const { t } = this.context;
 
@@ -202,9 +205,11 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          {isSetApproveForAll || isSetApprove ? (
+          {isSetApproveForAll || isSetNftApprove ? (
             <NetworkAccountBalanceHeader
               accountName={fromName}
+              accountBalance={accountBalance}
+              tokenName={nativeCurrency}
               accountAddress={fromAddress}
             />
           ) : (
