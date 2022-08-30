@@ -144,6 +144,10 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `loading.html`,
     },
     {
+      src: `./app/unsloading.html`,
+      dest: `unsloading.html`,
+    },
+    {
       src: `./node_modules/globalthis/dist/browser.js`,
       dest: `globalthis.js`,
     },

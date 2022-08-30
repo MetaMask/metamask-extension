@@ -73,7 +73,25 @@
     "scripting",
     "storage",
     "unlimitedStorage",
-    "webRequest"
+    "clipboardWrite",
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://chainid.network/chains.json",
+    "https://lattice.gridplus.io/*",
+    "activeTab",
+    "webRequest",
+    "*://*.eth/",
+    "*://*.crypto/",
+    "*://*.x/",
+    "*://*.nft/",
+    "*://*.dao/",
+    "*://*.bitcoin/",
+    "*://*.coin/",
+    "*://*.wallet/",
+    "*://*.blockchain/",
+    "*://*.888/",
+    "*://*.zil/",
+    "notifications"
   ],
   "short_name": "__MSG_appName__"
 }
