@@ -45,10 +45,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
-    },
-    tryReverseResolveDomain: (address) => {
-      return dispatch(tryReverseResolveDomain(address));
-    },
+    }
   };
 };
 

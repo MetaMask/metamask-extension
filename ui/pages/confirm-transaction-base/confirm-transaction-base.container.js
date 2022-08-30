@@ -13,7 +13,6 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
-  tryReverseResolveDomain,
 } from '../../store/actions';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -257,9 +256,6 @@ export const mapDispatchToProps = (dispatch) => {
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
-    },
-    tryReverseResolveDomain: (address) => {
-      return dispatch(tryReverseResolveDomain(address));
     },
     updateCustomNonce: (value) => {
       customNonceValue = value;

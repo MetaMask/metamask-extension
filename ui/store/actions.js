@@ -252,19 +252,6 @@ export function tryReverseResolveAddress(address) {
   };
 }
 
-export function tryReverseResolveDomain(address) {
-  return () => {
-    return new Promise((resolve) => {
-      background.tryReverseResolveDomain(address, (err) => {
-        if (err) {
-          log.error(err);
-        }
-        resolve();
-      });
-    });
-  };
-}
-
 export function fetchInfoToSync() {
   return (dispatch) => {
     log.debug(`background.fetchInfoToSync`);
