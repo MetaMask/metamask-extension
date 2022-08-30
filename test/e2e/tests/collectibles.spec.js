@@ -108,6 +108,10 @@ describe('Collectibles', function () {
         const title = await driver.findElement(
           '[data-testid="confirm-approve-title"]',
         );
+        await driver.clickElement({
+          text: 'View full transaction details',
+          css: '.confirm-approve-content__small-blue-text',
+        });
         const data = await driver.findElements(
           '.confirm-approve-content__data .confirm-approve-content__small-text',
         );
@@ -170,6 +174,10 @@ describe('Collectibles', function () {
         const title = await driver.findElement(
           '[data-testid="confirm-approve-title"]',
         );
+        await driver.clickElement({
+          text: 'View full transaction details',
+          css: '.confirm-approve-content__small-blue-text',
+        });
         const data = await driver.findElements(
           '.confirm-approve-content__data .confirm-approve-content__small-text',
         );
