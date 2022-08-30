@@ -364,18 +364,11 @@ export default class Routes extends Component {
       browserEnvironmentBrowser: browser,
       isNetworkUsed,
       hasAnAccountWithNoFundsOnNetwork,
-      providerType,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
-
-    const showWarning =
-      isUnlocked &&
-      (providerType === 'ropsten' ||
-        providerType === 'kovan' ||
-        providerType === 'rinkeby');
 
     const shouldShowNetworkInfo =
       isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
@@ -395,7 +388,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {showWarning && <DeprecatedTestNetworks />}
+        {isUnlocked && <DeprecatedTestNetworks />}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />

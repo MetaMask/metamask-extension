@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Button from '../button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -10,10 +11,24 @@ import {
 import Box from '../box/box';
 import Typography from '../typography/typography';
 import ActionableMessage from '../actionable-message/actionable-message';
+import { getCurrentChainId } from '../../../selectors';
 
 export default function DeprecatedTestNetworks() {
-  const [isShowingWarning, setIsShowingWarning] = useState(true);
+  const currentChainID = useSelector(getCurrentChainId);
+  const [isShowingWarning, setIsShowingWarning] = useState(false);
   const t = useI18nContext();
+
+  useEffect(() => {
+    if (
+      currentChainID === '0x3' ||
+      currentChainID === '0x2a' ||
+      currentChainID === '0x4'
+    ) {
+      setIsShowingWarning(true);
+    } else {
+      setIsShowingWarning(false);
+    }
+  }, [currentChainID]);
 
   return (
     isShowingWarning && (
