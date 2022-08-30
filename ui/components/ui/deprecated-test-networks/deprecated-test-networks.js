@@ -12,23 +12,26 @@ import Box from '../box/box';
 import Typography from '../typography/typography';
 import ActionableMessage from '../actionable-message/actionable-message';
 import { getCurrentChainId } from '../../../selectors';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
   const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
 
   useEffect(() => {
     if (
-      currentChainID === '0x3' ||
-      currentChainID === '0x2a' ||
-      currentChainID === '0x4'
+      completedOnboarding &&
+      (currentChainID === '0x3' ||
+        currentChainID === '0x2a' ||
+        currentChainID === '0x4')
     ) {
       setIsShowingWarning(true);
     } else {
       setIsShowingWarning(false);
     }
-  }, [currentChainID]);
+  }, [currentChainID, completedOnboarding]);
 
   return (
     isShowingWarning && (
