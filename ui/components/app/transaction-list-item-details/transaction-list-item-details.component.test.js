@@ -47,7 +47,6 @@ describe('TransactionListItemDetails Component', () => {
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
-        tryReverseResolveDomain={() => undefined}
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
@@ -105,7 +104,6 @@ describe('TransactionListItemDetails Component', () => {
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
-        tryReverseResolveDomain={() => undefined}
         transactionGroup={transactionGroup}
         showSpeedUp
         senderNickname="sender-nickname"
@@ -160,7 +158,6 @@ describe('TransactionListItemDetails Component', () => {
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
-        tryReverseResolveDomain={() => undefined}
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
@@ -217,7 +214,6 @@ describe('TransactionListItemDetails Component', () => {
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
-        tryReverseResolveDomain={() => undefined}
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
