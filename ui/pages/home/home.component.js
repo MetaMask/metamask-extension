@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../helpers/constants/common';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
@@ -44,6 +49,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
@@ -53,10 +59,6 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
-const LEGACY_WEB3_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
-const INFURA_BLOCKAGE_URL =
-  'https://metamask.zendesk.com/hc/en-us/articles/360059386712';
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -73,6 +75,7 @@ function shouldCloseNotificationPopup({
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -407,7 +410,7 @@ export default class Home extends PureComponent {
                 key="web3ShimUsageNotificationLink"
                 className="home-notification__text-link"
                 onClick={() =>
-                  global.platform.openTab({ url: LEGACY_WEB3_URL })
+                  global.platform.openTab({ url: ZENDESK_URLS.LEGACY_WEB3 })
                 }
               >
                 {t('here')}
@@ -468,7 +471,7 @@ export default class Home extends PureComponent {
                 key="infuraBlockedNotificationLink"
                 className="home-notification__text-link"
                 onClick={() =>
-                  global.platform.openTab({ url: INFURA_BLOCKAGE_URL })
+                  global.platform.openTab({ url: ZENDESK_URLS.INFURA_BLOCKAGE })
                 }
               >
                 {t('here')}
@@ -608,6 +611,7 @@ export default class Home extends PureComponent {
         !completedOnboarding) &&
       announcementsToShow &&
       showWhatsNewPopup;
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -681,6 +685,22 @@ export default class Home extends PureComponent {
                     target="_blank"
                     rel="noopener noreferrer"
                     key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent(
+                        {
+                          category: EVENT.CATEGORIES.HOME,
+                          event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
+                        },
+                        {
+                          contextPropsIntoEventProperties: [
+                            CONTEXT_PROPS.PAGE_TITLE,
+                          ],
+                        },
+                      );
+                    }}
                   >
                     {t('needHelpLinkText')}
                   </a>,

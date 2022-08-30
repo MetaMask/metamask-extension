@@ -9,6 +9,7 @@ module.exports = {
     'builds/**/*',
     'development/chromereload.js',
     'development/charts/**',
+    'development/ts-migration-dashboard/build/**',
     'dist/**/*',
     'node_modules/**/*',
   ],
@@ -341,6 +342,12 @@ module.exports = {
       files: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
       parserOptions: {
         sourceType: 'script',
+      },
+    },
+    {
+      files: ['ui/pages/settings/*.js'],
+      rules: {
+        'sort-keys': ['error', 'asc', { natural: true }],
       },
     },
   ],

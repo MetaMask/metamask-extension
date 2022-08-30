@@ -12,6 +12,12 @@
   display: flex;
   flex-flow: column nowrap;
 
+  &__error-text {
+    @include H7;
+
+    color: var(--color-error-default);
+  }
+
   &__header {
     padding: 8px 24px 8px 24px;
     position: relative;
@@ -348,6 +354,10 @@
       max-width: 100%;
       width: 100%;
     }
+  }
+
+  &__button {
+    cursor: pointer;
   }
 
   &__copy-icon {

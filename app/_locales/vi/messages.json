@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Sử dụng $1 để tùy chỉnh giá gas. Việc này có thể gây nhầm lẫn nếu bạn không quen thuộc. Bạn phải tự chịu trách nhiệm nếu thực hiện.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Việc tăng phí có thể giúp giảm thời gian xử lý, nhưng điều này không được đảm bảo."
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Nạp $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Mô tả"
@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Đã xảy ra sự cố và chúng tôi không thể hoàn tất hành động"
   },
-  "fakeTokenWarning": {
-    "message": "Bất kỳ ai cũng có thể tạo token, bao gồm cả phiên bản giả mạo của các token hiện tại. Tìm hiểu thêm về $1"
-  },
   "fast": {
     "message": "Nhanh"
   },
@@ -1481,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Sử dụng $1 để bù đắp khi lưu lượng mạng lưới tăng vọt trong những trường hợp như phát hành NFT nổi tiếng.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "cao"
@@ -1787,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Sử dụng $1 để chờ mức giá rẻ hơn. Thời gian dự kiến sẽ kém chính xác hơn nhiều do mức giá tương đối khó dự đoán.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "thấp"
@@ -1831,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Sử dụng $1 để xử lý nhanh theo giá thị trường hiện tại.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "bản ghi nhớ"
@@ -2170,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "Xem trong cài đặt",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Tính năng phát hiện token cải tiến hiện đã có sẵn trên Mạng chính thức của Ethereum, mạng Polygon, BSC và Avalanche. Sẽ sớm có thêm nhiều mạng khác!"
@@ -2275,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "Đến Cài Đặt Nâng Cao",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Kể từ phiên bản MetaMask v10.4.0, bạn không cần phần mềm Ledger Live để kết nối thiết bị Ledger của mình với MetaMask nữa.",
@@ -2310,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Đánh dấu đã đọc tất cả"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "Tìm thấy $1 token mới trong tài khoản này",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "trên"
@@ -2520,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Dạng Kết Nối Ledger Ưu Tiên",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
@@ -3710,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 mạng thử nghiệm",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -3738,12 +3731,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token hiện có sẵn trên $1. $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Mới! Tính năng phát hiện token được cải tiến hiện đã có sẵn trên Mạng chính thức của Ethereum dưới dạng một tính năng thử nghiệm. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "API token của ConsenSys sẽ tổng hợp danh sách token từ các danh sách token của nhiều bên thứ ba khác nhau. Tắt tính năng này sẽ ngừng phát hiện token mới được thêm vào ví của bạn, nhưng sẽ giữ lại tùy chọn tìm kiếm token để nhập."
   },
   "tokenId": {
     "message": "ID Token"
@@ -3978,12 +3965,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Hiển thị cảnh báo đối với các tên miền lừa đảo nhắm đến người dùng Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Sử Dụng Phát Hiện Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị các token mới được gửi vào ví của bạn. Hãy tắt tính năng này nếu bạn không muốn MetaMask lấy dữ liệu từ các dịch vụ đó."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Tự động hiển thị các token được gửi vào tài khoản của bạn có liên quan đến hoạt động trao đổi thông tin với các máy chủ bên thứ ba để tìm nạp hình ảnh của token. Các máy chủ đó sẽ có quyền truy cập vào địa chỉ IP của bạn."

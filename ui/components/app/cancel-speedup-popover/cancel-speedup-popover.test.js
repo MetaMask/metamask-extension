@@ -118,9 +118,9 @@ describe('CancelSpeedupPopover', () => {
     expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
   });
 
-  it('should have 🚀Speed Up in header if editGasMode is speedup', async () => {
+  it('should have 🚀Speed up in header if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
-    expect(screen.queryByText('🚀Speed Up')).toBeInTheDocument();
+    expect(screen.queryByText('🚀Speed up')).toBeInTheDocument();
   });
 
   it('information tooltip should contain the correct text if editGasMode is cancel', async () => {
@@ -137,7 +137,7 @@ describe('CancelSpeedupPopover', () => {
     expect(
       InfoTooltip.mock.calls[0][0].contentText.props.children[0],
     ).toStrictEqual(
-      'To Speed Up a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
+      'To Speed up a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
     );
   });
 

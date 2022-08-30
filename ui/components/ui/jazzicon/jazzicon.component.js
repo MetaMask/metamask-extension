@@ -48,7 +48,11 @@ export default class Jazzicon extends PureComponent {
 
   appendJazzicon() {
     const { address, diameter, tokenList } = this.props;
-    const image = iconFactory.iconForAddress(address, diameter, tokenList);
+    const image = iconFactory.iconForAddress(
+      address,
+      diameter,
+      tokenList[address.toLowerCase()],
+    );
     this.container.current.appendChild(image);
   }
 

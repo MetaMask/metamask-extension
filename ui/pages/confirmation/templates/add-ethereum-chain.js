@@ -8,10 +8,13 @@ import {
   JUSTIFY_CONTENT,
   DISPLAY,
   COLORS,
+  FLEX_DIRECTION,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -40,7 +43,7 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
             element: 'a',
             key: 'mismatchedChainLink',
             props: {
-              href: 'https://metamask.zendesk.com/hc/en-us/articles/360057142392',
+              href: ZENDESK_URLS.VERIFY_CUSTOM_NETWORK,
               target: '__blank',
               tabIndex: 0,
             },
@@ -229,7 +232,7 @@ function getValues(pendingApproval, t, actions, history) {
                       {t('someNetworksMayPoseSecurity')}{' '}
                       <a
                         key="zendesk_page_link"
-                        href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                        href={ZENDESK_URLS.UNKNOWN_NETWORK}
                         rel="noreferrer"
                         target="_blank"
                         style={{ color: 'var(--color-primary-default)' }}
@@ -266,7 +269,7 @@ function getValues(pendingApproval, t, actions, history) {
                   children: t('addEthereumChainConfirmationRisksLearnMoreLink'),
                   key: 'addEthereumChainConfirmationRisksLearnMoreLink',
                   props: {
-                    href: 'https://metamask.zendesk.com/hc/en-us/articles/4404424659995',
+                    href: ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS,
                     target: '__blank',
                   },
                 },
@@ -276,9 +279,11 @@ function getValues(pendingApproval, t, actions, history) {
         ],
         props: {
           variant: TYPOGRAPHY.H7,
-          align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
+            display: DISPLAY.FLEX,
+            flexDirection: FLEX_DIRECTION.COLUMN,
+            alignItems: ALIGN_ITEMS.CENTER,
           },
         },
       },

@@ -35,14 +35,13 @@ export default class TokenList extends Component {
           {Array(6)
             .fill(undefined)
             .map((_, i) => {
-              const { iconUrl, symbol, name, address } = results[i] || {};
-              const iconPath = iconUrl;
+              const { symbol, name, address } = results[i] || {};
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens);
               const onClick = () =>
                 !tokenAlreadyAdded && onToggleToken(results[i]);
 
               return (
-                Boolean(iconUrl || symbol || name) && (
+                Boolean(results[i]?.iconUrl || symbol || name) && (
                   <div
                     className={classnames('token-list__token', {
                       'token-list__token--selected': selectedTokens[address],
@@ -56,7 +55,8 @@ export default class TokenList extends Component {
                     <div
                       className="token-list__token-icon"
                       style={{
-                        backgroundImage: iconUrl && `url(${iconPath})`,
+                        backgroundImage:
+                          results[i]?.iconUrl && `url(${results[i]?.iconUrl})`,
                       }}
                     />
                     <div className="token-list__token-data">

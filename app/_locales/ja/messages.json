@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "ガス代をカスタマイズするには$1を使用します。慣れていない場合はわかりにくい可能性があります。自己責任で操作してください。",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "手数料を増やすと処理時間は短くなる可能性がありますが、必ずそうなるとは限りません。"
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "$1 を入金",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "説明"
@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "問題が発生しました。アクションを完了させることができません"
   },
-  "fakeTokenWarning": {
-    "message": "既存のトークンの偽のバージョンの作成を含め、誰でもトークンを作成できます。$1に関する詳細をご覧ください"
-  },
   "fast": {
     "message": "高速"
   },
@@ -1481,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "人気のNFTドロップなどによるネットワークトラフィックの急増に備えるため、$1を使用してください。",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "高"
@@ -1787,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "値下がりを待つには$1を使用してください。価格がやや予測不能なため、予想時間はあまり正確ではありません。",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "低"
@@ -1831,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "現在の市場価格での迅速な処理には、$1を使用してください。",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "メモ"
@@ -2170,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "設定に移動",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "改善されたトークン検出は、現在 Ethereum Mainnet、Polygon、BSC、Avalanche ネットワークで利用できます。他のネットワークも追加される予定です！"
@@ -2275,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "高度な設定に移動",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "MetaMask v10.4.0以降では、LedgerデバイスのMetaMaskへの接続にLedger Liveが不要になりました。",
@@ -2310,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "すべて既読にする"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "$1 の新しいトークンがこのアカウントで見つかりました",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "中の"
@@ -2520,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "優先Ledger接続タイプ",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "スワップを準備しています..."
@@ -3710,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1テストネットワーク",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "トークン"
@@ -3738,12 +3731,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "トークン検出は現在 $1 で利用可能です。$2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "新機能! 実験的な機能として、Ethereum Mainnetでのトークン検出が改善されました。$1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys のトークン API は、さまざまなサードパーティのトークンリストからトークンのリストを集積します。これをオフにすると、ウォレットに追加された新しいトークンは検出されなくなりますが、引き続きトークンを検索してインポートすることは可能です。"
   },
   "tokenId": {
     "message": "トークン ID"
@@ -3978,12 +3965,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "イーサリアムユーザーを対象としたドメインのフィッシングに対して警告を表示します"
-  },
-  "useTokenDetection": {
-    "message": "トークン検出を使用"
-  },
-  "useTokenDetectionDescription": {
-    "message": "弊社はユーザーのウォレットに送信された新しいトークンを検出して表示するために、サードパーティーAPIを使用します。MetaMaskにこれらのサービスからデータを取得させたくない場合は、この機能をオフにしてください。"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "アカウントに送られたトークンを自動的に表示するには、サードパーティーサーバーと通信し、トークンの画像を取得する必要があります。これらのサーバーはユーザーの IP アドレスにアクセスできます。"

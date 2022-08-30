@@ -1,0 +1,302 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import ActionableMessage from '../../ui/actionable-message';
+import { Text } from './text';
+
+# Text
+
+> This Text (fka Typography) component has breaking changes in variant options and the line heights associated to each variant.
+
+Good typography improves readability, legibility and hierarchy of information.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Text} />
+
+### Variant
+
+Use the `variant` prop and the `TEXT` object from `./ui/helpers/constants/design-system.js` to change the font size of the component.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--variant" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { TEXT } from '../../../helpers/constants/design-system';
+
+<Text variant={TEXT.DISPLAY_MD}>display-md</Text>
+<Text variant={TEXT.HEADING_LG}>heading-lg</Text>
+<Text variant={TEXT.HEADING_MD}>heading-md</Text>
+<Text variant={TEXT.HEADING_SM}>heading-sm</Text>
+<Text variant={TEXT.BODY_MD}>body-md</Text>
+<Text variant={TEXT.BODY_SM}>body-sm</Text>
+<Text variant={TEXT.BODY_XS}>body-xs</Text>
+```
+
+### Color
+
+Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--color" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { COLORS } from '../../../helpers/constants/design-system';
+
+<Text color={COLORS.TEXT_DEFAULT}>
+  text-default
+</Text>
+<Text color={COLORS.TEXT_ALTERNATIVE}>
+  text-alternative
+</Text>
+<Text color={COLORS.TEXT_MUTED}>
+  text-muted
+</Text>
+<Text color={COLORS.OVERLAY_INVERSE} backgroundColor:{COLORS.OVERLAY_DEFAULT}>
+  overlay-inverse
+</Text>
+<Text color={COLORS.PRIMARY_DEFAULT}>
+  primary-default
+</Text>
+<Text color={COLORS.PRIMARY_INVERSE} backgroundColor:{COLORS.PRIMARY_DEFAULT}>
+  primary-inverse
+</Text>
+<Text color={COLORS.ERROR_DEFAULT}>
+  error-default
+</Text>
+<Text color={COLORS.ERROR_INVERSE} backgroundColor:{COLORS.ERROR_DEFAULT}>
+  error-inverse
+</Text>
+<Text color={COLORS.SUCCESS_DEFAULT}>
+  success-default
+</Text>
+<Text color={COLORS.SUCCESS_INVERSE} backgroundColor:{COLORS.SUCCESS_DEFAULT}>
+  success-inverse
+</Text>
+<Text color={COLORS.WARNING_INVERSE} backgroundColor:{COLORS.WARNING_DEFAULT}>
+  warning-inverse
+</Text>
+<Text color={COLORS.INFO_DEFAULT}>
+  info-default
+</Text>
+<Text color={COLORS.INFO_INVERSE} backgroundColor:{COLORS.INFO_DEFAULT}>
+  info-inverse
+</Text>
+```
+
+### Font Weight
+
+Use the `fontWeight` prop and the `FONT_WEIGHT` object from `./ui/helpers/constants/design-system.js` to change the font weight of the `Text` component. There are 3 font weights:
+
+- `FONT_WEIGHT.NORMAL` = `normal` || `400`
+- `FONT_WEIGHT.MEDIUM` = `medium` || `500`
+- `FONT_WEIGHT.BOLD` = `bold` || `700`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--font-weight" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { FONT_WEIGHT } from '../../../helpers/constants/design-system';
+
+<Text fontWeight={FONT_WEIGHT.NORMAL}>
+  normal
+</Text>
+<Text fontWeight={FONT_WEIGHT.MEDIUM}>
+  medium
+</Text>
+<Text fontWeight={FONT_WEIGHT.BOLD}>
+  bold
+</Text>
+```
+
+### Font Style
+
+Use the `fontStyle` prop and the `FONT_STYLE` object from `./ui/helpers/constants/design-system.js` to change the font style of the `Text` component. There are 2 font styles:
+
+- `FONT_STYLE.NORMAL`
+- `FONT_STYLE.ITALIC`
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--font-style" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { FONT_STYLE } from '../../../helpers/constants/design-system';
+
+<Text fontStyle={FONT_STYLE.NORMAL}>
+  normal
+</Text>
+<Text fontStyle={FONT_STYLE.ITALIC}>
+  bold
+</Text>
+```
+
+### Text Transform
+
+Use the `textTransform` prop and the `TEXT_TRANSFORM` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the `Text` component
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--text-transform" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { TEXT_TRANSFORM } from '../../../helpers/constants/design-system';
+
+<Text textAlign={TEXT_TRANSFORM.UPPERCASE}>
+  uppercase
+</Text>
+<Text textAlign={TEXT_TRANSFORM.LOWERCASE}>
+  lowercase
+</Text>
+<Text textAlign={TEXT_TRANSFORM.CAPITALIZE}>
+  capitalize
+</Text>
+```
+
+### Text Align
+
+Use the `textAlign` prop and the `TEXT_ALIGN` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the `Text` component
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--text-align" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
+
+<Text textAlign={TEXT_ALIGN.LEFT}>
+  left
+</Text>
+<Text textAlign={TEXT_ALIGN.CENTER}>
+  center
+</Text>
+<Text textAlign={TEXT_ALIGN.RIGHT}>
+  right
+</Text>
+<Text textAlign={TEXT_ALIGN.JUSTIFY}>
+  justify
+</Text>
+<Text textAlign={TEXT_ALIGN.END}>
+  end
+</Text>
+```
+
+### Overflow Wrap
+
+Use the `overflowWrap` prop and the `OVERFLOW_WRAP` object from `./ui/helpers/constants/design-system.js` to change the overflow wrap of the `Text` component
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--overflow-wrap" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
+
+<div
+  style={{
+    width: 250,
+    border: '1px solid var(--color-error-default)',
+    display: 'block',
+  }}
+>
+  <Text overflowWrap={OVERFLOW_WRAP.NORMAL}>
+    {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+  </Text>
+  <Text overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>
+    {OVERFLOW_WRAP.BREAK_WORD}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+  </Text>
+</div>;
+```
+
+### Ellipsis
+
+Use the boolean `ellipsis` prop to change the if the `Text` component to have an ellipsis.
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--ellipsis" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+
+<div
+  style={{
+    width: 250,
+    border: '1px solid var(--color-error-default)',
+    display: 'block',
+  }}
+>
+  <Text ellipsis>Ellipsis: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d</Text>
+  <Text>No Ellipsis: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d</Text>
+</div>;
+```
+
+### As
+
+Use the `as` prop to change the root html element of the `Text` component
+
+<Canvas>
+  <Story id="ui-components-component-library-text-text-stories-js--as" />
+</Canvas>
+
+```jsx
+import { Text } from '../../ui/component-library/text';
+
+<Text as="dd">dd</Text>
+<Text as="div">div</Text>
+<Text as="dt">dt</Text>
+<Text as="em">em</Text>
+<Text as="h1">h1</Text>
+<Text as="h2">h2</Text>
+<Text as="h3">h3</Text>
+<Text as="h4">h4</Text>
+<Text as="h5">h5</Text>
+<Text as="h6">h6</Text>
+<Text as="li">li</Text>
+<Text as="p">p</Text>
+<Text as="span">span</Text>
+<Text as="strong">strong</Text>
+```
+
+Renders the html:
+
+```html
+<dd>dd</dd>
+<div>div</div>
+<dt>dt</dt>
+<em>em</em>
+<h1>h1</h1>
+<h2>h2</h2>
+<h3>h3</h3>
+<h4>h4</h4>
+<h5>h5</h5>
+<h6>h6</h6>
+<li>li</li>
+<p>p</p>
+<span>span</span>
+<strong>strong</strong>
+```
+
+### Box Props
+
+Use any valid box props [Box](/?path=/story/ui-components-ui-box-box-stories-js--default-story) component props to the Text component.
+
+### Class Name
+
+Adds an additional class to the `Text` component
+
+### Children
+
+The text content of the `Text` component

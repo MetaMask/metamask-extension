@@ -183,6 +183,7 @@
  * @property {'theme'} THEME - when the user's theme changes we identify the theme trait
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
+ * @property {'install_date_ext'} INSTALL_DATE_EXT - when the user installed the extension
  */
 
 /**
@@ -192,6 +193,7 @@
 
 export const TRAITS = {
   ADDRESS_BOOK_ENTRIES: 'address_book_entries',
+  INSTALL_DATE_EXT: 'install_date_ext',
   LEDGER_CONNECTION_TYPE: 'ledger_connection_type',
   NETWORKS_ADDED: 'networks_added',
   NETWORKS_WITHOUT_TICKER: 'networks_without_ticker',
@@ -201,8 +203,8 @@ export const TRAITS = {
   NUMBER_OF_NFTS: 'number_of_nfts',
   NUMBER_OF_TOKENS: 'number_of_tokens',
   OPENSEA_API_ENABLED: 'opensea_api_enabled',
-  THREE_BOX_ENABLED: 'three_box_enabled',
   THEME: 'theme',
+  THREE_BOX_ENABLED: 'three_box_enabled',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
 };
 
@@ -276,33 +278,87 @@ export const REJECT_NOTFICIATION_CLOSE_SIG =
  */
 
 export const EVENT_NAMES = {
-  ENCRYPTION_PUBLIC_KEY_APPROVED: 'Encryption Public Key Approved',
-  ENCRYPTION_PUBLIC_KEY_REJECTED: 'Encryption Public Key Rejected',
-  ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Public Key Requested',
+  ACCOUNT_ADDED: 'Account Added',
+  ACCOUNT_ADD_SELECTED: 'Account Add Selected',
+  ACCOUNT_ADD_FAILED: 'Account Add Failed',
+  ACCOUNT_PASSWORD_CREATED: 'Wallet Password Created',
+  ACCOUNT_RESET: 'Account Reset',
+  APP_INSTALLED: 'App Installed',
+  APP_UNLOCKED: 'App Unlocked',
+  APP_UNLOCKED_FAILED: 'App Unlocked Failed',
+  APP_WINDOW_EXPANDED: 'App Window Expanded',
   DECRYPTION_APPROVED: 'Decryption Approved',
   DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
+  ENCRYPTION_PUBLIC_KEY_APPROVED: 'Encryption Approved',
+  ENCRYPTION_PUBLIC_KEY_REJECTED: 'Encryption Rejected',
+  ENCRYPTION_PUBLIC_KEY_REQUESTED: 'Encryption Requested',
+  EXTERNAL_LINK_CLICKED: 'External Link Clicked',
+  KEY_EXPORT_SELECTED: 'Key Export Selected',
+  KEY_EXPORT_REQUESTED: 'Key Export Requested',
+  KEY_EXPORT_FAILED: 'Key Export Failed',
+  KEY_EXPORT_CANCELED: 'Key Export Canceled',
+  KEY_EXPORT_REVEALED: 'Key Material Revealed',
+  KEY_EXPORT_COPIED: 'Key Material Copied',
+  METRICS_OPT_IN: 'Metrics Opt In',
+  METRICS_OPT_OUT: 'Metrics Opt Out',
+  NAV_ACCOUNT_MENU_OPENED: 'Account Menu Opened',
+  NAV_ACCOUNT_DETAILS_OPENED: 'Account Details Opened',
+  NAV_CONNECTED_SITES_OPENED: 'Connected Sites Opened',
+  NAV_MAIN_MENU_OPENED: 'Main Menu Opened',
+  NAV_NETWORK_MENU_OPENED: 'Network Menu Opened',
+  NAV_SETTINGS_OPENED: 'Settings Opened',
+  NAV_ACCOUNT_SWITCHED: 'Account Switched',
+  NAV_NETWORK_SWITCHED: 'Network Switched',
+  NAV_BUY_BUTTON_CLICKED: 'Buy Button Clicked',
+  NAV_SEND_BUTTON_CLICKED: 'Send Button Clicked',
+  NAV_SWAP_BUTTON_CLICKED: 'Swap Button Clicked',
+  SRP_TO_CONFIRM_BACKUP: 'SRP Backup Confirm Displayed',
+  WALLET_SETUP_STARTED: 'Wallet Setup Selected',
+  WALLET_SETUP_CANCELED: 'Wallet Setup Canceled',
+  WALLET_SETUP_FAILED: 'Wallet Setup Failed',
+  WALLET_CREATED: 'Wallet Created',
+  NFT_ADDED: 'NFT Added',
+  ONRAMP_PROVIDER_SELECTED: 'On-ramp Provider Selected',
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
   SIGNATURE_APPROVED: 'Signature Approved',
   SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',
+  TOKEN_IMPORT_BUTTON_CLICKED: 'Import Token Button Clicked',
+  TOKEN_SCREEN_OPENED: 'Token Screen Opened',
+  SUPPORT_LINK_CLICKED: 'Support Link Clicked',
   TOKEN_ADDED: 'Token Added',
   TOKEN_DETECTED: 'Token Detected',
   TOKEN_HIDDEN: 'Token Hidden',
-  NFT_ADDED: 'NFT Added',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
 };
 
 export const EVENT = {
+  ACCOUNT_TYPES: {
+    DEFAULT: 'metamask',
+    IMPORTED: 'imported',
+    HARDWARE: 'hardware',
+  },
+  ACCOUNT_IMPORT_TYPES: {
+    JSON: 'json',
+    PRIVATE_KEY: 'private_key',
+    SRP: 'srp',
+  },
   CATEGORIES: {
     ACCOUNTS: 'Accounts',
+    APP: 'App',
     AUTH: 'Auth',
     BACKGROUND: 'Background',
+    ERROR: 'Error',
+    FOOTER: 'Footer',
+    HOME: 'Home',
     INPAGE_PROVIDER: 'inpage_provider',
+    KEYS: 'Keys',
     MESSAGES: 'Messages',
     NAVIGATION: 'Navigation',
     NETWORK: 'Network',
@@ -314,29 +370,52 @@ export const EVENT = {
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
   },
+  EXTERNAL_LINK_TYPES: {
+    TRANSACTION_BLOCK_EXPLORER: 'Transaction Block Explorer',
+    BLOCK_EXPLORER: 'Block Explorer',
+    ACCOUNT_TRACKER: 'Account Tracker',
+    TOKEN_TRACKER: 'Token Tracker',
+  },
+  KEY_TYPES: {
+    PKEY: 'private_key',
+    SRP: 'srp',
+  },
+  ONRAMP_PROVIDER_TYPES: {
+    COINBASE: 'coinbase',
+    MOONPAY: 'moonpay',
+    WYRE: 'wyre',
+    TRANSAK: 'transak',
+    SELF_DEPOSIT: 'direct_deposit',
+  },
   SOURCE: {
     NETWORK: {
-      POPULAR_NETWORK_LIST: 'popular_network_list',
       CUSTOM_NETWORK_FORM: 'custom_network_form',
+      POPULAR_NETWORK_LIST: 'popular_network_list',
     },
     SWAPS: {
       MAIN_VIEW: 'Main View',
       TOKEN_VIEW: 'Token View',
     },
-    TRANSACTION: {
-      USER: 'user',
-      DAPP: 'dapp',
-    },
     TOKEN: {
       CUSTOM: 'custom',
-      DETECTED: 'detected',
       DAPP: 'dapp',
+      DETECTED: 'detected',
       LIST: 'list',
+    },
+    TRANSACTION: {
+      DAPP: 'dapp',
+      USER: 'user',
     },
   },
   LOCATION: {
+    TOKEN_DETAILS: 'token_details',
     TOKEN_DETECTION: 'token_detection',
     TOKEN_MENU: 'token_menu',
-    TOKEN_DETAILS: 'token_details',
   },
+};
+
+// Values below (e.g. 'location') can be used in the "properties"
+// tracking object as keys, e.g. { location: 'Home' }
+export const CONTEXT_PROPS = {
+  PAGE_TITLE: 'location',
 };

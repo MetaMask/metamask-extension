@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "inlineSources": true,
     "isolatedModules": true,
     "jsx": "react",
@@ -22,5 +23,8 @@
     "dist/**/*",
     "node_modules/**"
   ],
-  "extends": "@tsconfig/node14/tsconfig.json"
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "paths": {
+    "*": ["./types/*"]
+  }
 }

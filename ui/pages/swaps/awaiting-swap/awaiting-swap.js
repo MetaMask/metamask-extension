@@ -8,7 +8,11 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
 
 import {
   getCurrentChainId,
@@ -47,8 +51,11 @@ import {
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { stopPollingForQuotes } from '../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  stopPollingForQuotes,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -156,6 +163,20 @@ export default function AwaitingSwap({
         href={SUPPORT_LINK}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => {
+          trackEvent(
+            {
+              category: EVENT.CATEGORIES.SWAPS,
+              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              properties: {
+                url: SUPPORT_LINK,
+              },
+            },
+            {
+              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+            },
+          );
+        }}
       >
         {new URL(SUPPORT_LINK).hostname}
       </a>,
@@ -283,7 +304,8 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}

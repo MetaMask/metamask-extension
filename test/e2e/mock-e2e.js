@@ -26,6 +26,24 @@ async function setupMocking(server, testSpecificMock) {
   });
 
   await server
+    .forPost('https://sentry.io/api/0000000/envelope/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
+  await server
+    .forPost('https://sentry.io/api/0000000/store/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
+  await server
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .thenCallback(() => {
       return {
@@ -202,6 +220,18 @@ async function setupMocking(server, testSpecificMock) {
     .thenCallback(() => {
       return {
         statusCode: 200,
+      };
+    });
+
+  await server
+    .forGet('https://min-api.cryptocompare.com/data/price')
+    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          USD: '1700',
+        },
       };
     });
 

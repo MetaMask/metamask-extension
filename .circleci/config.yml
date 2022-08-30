@@ -65,6 +65,9 @@ workflows:
       - prep-build-storybook:
           requires:
             - test-storybook
+      - prep-build-ts-migration-dashboard:
+          requires:
+            - prep-deps
       - test-lint:
           requires:
             - prep-deps
@@ -136,6 +139,9 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
+      - user-actions-benchmark:
+          requires:
+            - prep-build-test
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
@@ -146,8 +152,10 @@ workflows:
             - prep-build-beta
             - prep-build-flask
             - prep-build-storybook
+            - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
             - benchmark
+            - user-actions-benchmark
             - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
@@ -165,6 +173,12 @@ workflows:
               only: develop
           requires:
             - prep-build-storybook
+      - job-publish-ts-migration-dashboard:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-ts-migration-dashboard
 
 jobs:
   create_release_pull_request:
@@ -232,9 +246,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -252,7 +282,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type beta prod
+          command: yarn build --build-type beta dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -276,7 +306,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type flask prod
+          command: yarn build --build-type flask dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -368,6 +398,20 @@ jobs:
           root: .
           paths:
             - storybook-build
+
+  prep-build-ts-migration-dashboard:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build TypeScript migration dashboard
+          command: yarn ts-migration:dashboard:build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - development/ts-migration-dashboard/build
 
   test-storybook:
     executor: node-browsers
@@ -600,6 +644,32 @@ jobs:
           root: .
           paths:
             - test-artifacts
+    
+  user-actions-benchmark:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Run page load benchmark
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
 
   stats-module-load-init:
     executor: node-browsers-medium-plus
@@ -686,6 +756,9 @@ jobs:
       - store_artifacts:
           path: storybook-build
           destination: storybook
+      - store_artifacts:
+          path: development/ts-migration-dashboard/build
+          destination: ts-migration-dashboard
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
@@ -721,6 +794,23 @@ jobs:
           command: |
             git remote add storybook git@github.com:MetaMask/metamask-storybook.git
             yarn storybook:deploy
+
+  job-publish-ts-migration-dashboard:
+    executor: node-browsers
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: ts-migration-dashboard:deploy
+          command: |
+            git remote add ts-migration-dashboard git@github.com:MetaMask/metamask-extension-ts-migration-dashboard.git
+            git config user.name "MetaMask Bot"
+            git config user.email metamaskbot@users.noreply.github.com
+            yarn ts-migration:dashboard:deploy
 
   test-unit:
     executor: node-browsers

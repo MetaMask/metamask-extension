@@ -17,7 +17,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -115,12 +115,10 @@ class NetworkDropdown extends Component {
 
     trackEvent({
       category: EVENT.CATEGORIES.NAVIGATION,
-      event: 'Switched Networks',
+      event: EVENT_NAMES.NAV_NETWORK_SWITCHED,
       properties: {
-        action: 'Home',
-        legacy_event: true,
-        fromNetwork: providerType,
-        toNetwork: newProviderType,
+        from_network: providerType,
+        to_network: newProviderType,
       },
     });
     setProviderType(newProviderType);

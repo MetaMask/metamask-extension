@@ -89,11 +89,11 @@ describe('NetworkForm Component', () => {
         'A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Network Name')).toBeInTheDocument();
+    expect(queryByText('Network name')).toBeInTheDocument();
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency Symbol')).toBeInTheDocument();
-    expect(queryByText('Block Explorer URL')).toBeInTheDocument();
+    expect(queryByText('Currency symbol')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL')).toBeInTheDocument();
     expect(queryAllByText('(Optional)')).toHaveLength(1);
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
@@ -123,11 +123,11 @@ describe('NetworkForm Component', () => {
   it('should render network form correctly', () => {
     const { queryByText, getByDisplayValue } =
       renderComponent(propNetworkDisplay);
-    expect(queryByText('Network Name')).toBeInTheDocument();
+    expect(queryByText('Network name')).toBeInTheDocument();
     expect(queryByText('New RPC URL')).toBeInTheDocument();
     expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency Symbol')).toBeInTheDocument();
-    expect(queryByText('Block Explorer URL')).toBeInTheDocument();
+    expect(queryByText('Currency symbol')).toBeInTheDocument();
+    expect(queryByText('Block explorer URL')).toBeInTheDocument();
     expect(queryByText('Delete')).toBeInTheDocument();
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
@@ -229,7 +229,7 @@ describe('NetworkForm Component', () => {
     renderComponent(propNewNetwork);
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
     const currencySymbolField = screen.getByRole('textbox', {
-      name: 'Currency Symbol',
+      name: 'Currency symbol',
     });
 
     fireEvent.change(chainIdField, {
@@ -252,10 +252,10 @@ describe('NetworkForm Component', () => {
     expect(await screen.findByText(secondExpectedWarning)).toBeInTheDocument();
   });
 
-  it('should validate block explorer url field correctly', async () => {
+  it('should validate block explorer URL field correctly', async () => {
     renderComponent(propNewNetwork);
     const blockExplorerUrlField = screen.getByRole('textbox', {
-      name: 'Block Explorer URL (Optional)',
+      name: 'Block explorer URL (Optional)',
     });
     fireEvent.change(blockExplorerUrlField, {
       target: { value: '1234' },

@@ -6,7 +6,9 @@ import { ERC20 } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({ metamask: {} });
+  const store = configureMockStore([])({
+    metamask: { provider: { chainId: '0x0' } },
+  });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
 
@@ -41,7 +43,9 @@ describe('ConfirmApproveContent Component', () => {
   it('should render Confirm approve page correctly', () => {
     const { queryByText, getByText, getAllByText, getByTestId } =
       renderComponent(props);
-    expect(queryByText('metamask.github.io')).toBeInTheDocument();
+    expect(
+      queryByText('https://metamask.github.io/test-dapp/'),
+    ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
       ' Give permission to access your TST? ',
     );
@@ -53,8 +57,8 @@ describe('ConfirmApproveContent Component', () => {
     expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
     expect(queryByText('Hide full transaction details')).toBeInTheDocument();
 
-    expect(queryByText('Edit Permission')).toBeInTheDocument();
-    const editPermission = getByText('Edit Permission');
+    expect(queryByText('Edit permission')).toBeInTheDocument();
+    const editPermission = getByText('Edit permission');
     fireEvent.click(editPermission);
     expect(props.showEditApprovalPermissionModal).toHaveBeenCalledTimes(1);
 

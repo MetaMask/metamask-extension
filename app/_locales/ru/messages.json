@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Использовать $1, чтобы настроить цену на газ. Это может сбивать с толку, если вы не знакомы с этим. Взаимодействуйте на свой страх и риск.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Увеличение комиссии может сократить время обработки, но это не гарантируется."
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Внесите $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Описание"
@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Что-то пошло не так, и мы не смогли завершить действие"
   },
-  "fakeTokenWarning": {
-    "message": "Кто угодно может создать токен, в том числе создать поддельные версии существующих токенов. Узнайте подробнее о $1"
-  },
   "fast": {
     "message": "Быстрый"
   },
@@ -1481,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Используйте $1, чтобы компенсировать скачки сетевого трафика из-за таких событий, как дропы популярных NFT.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "высокая"
@@ -1787,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Используйте $1, чтобы дождаться более низкой цены. Оценки времени намного менее точны, поскольку цены в некоторой степени непредсказуемы.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "низкая"
@@ -1831,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Используйте $1 для быстрой обработки по текущей рыночной цене.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "заметка"
@@ -2170,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "Смотреть в настройках",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Улучшенное обнаружение токенов в настоящее время доступно в сетях Ethereum Mainnet, Polygon, BSC и Avalanche. Это еще не все!"
@@ -2275,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "Перейти в Дополнительные настройки",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Начиная с версии MetaMask 10.4.0, вам больше не требуется Ledger Live для подключения леджера к MetaMask.",
@@ -2310,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Отметить все как прочитанные"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "$1 новых токена(-ов) найдены в этом аккаунте",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "из"
@@ -2520,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Предпочтительный тип подключения к леджеру",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Подготовка обмена..."
@@ -3710,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 тестовые сети",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Токен"
@@ -3738,12 +3731,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "Обнаружение токена в настоящее время доступно на $1. $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Новинка! Улучшенное обнаружение токенов доступно в сети Ethereum Mainnet в качестве экспериментальной функции. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "API токенов ConsenSys объединяет список токенов из различных списков сторонних токенов. Отключение этого параметра прекратит обнаружение новых токенов, добавляемых в ваш кошелек, но сохранит возможность поиска токенов для импорта."
   },
   "tokenId": {
     "message": "Ид. токена"
@@ -3978,12 +3965,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Показывать предупреждение для фишинговых доменов, нацеленных на пользователей Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Использовать обнаружение токенов"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Мы используем сторонние API для обнаружения и отображения новых токенов, отправленных в ваш кошелек. Отключите, если не хотите, чтобы MetaMask получал данные от этих служб."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Автоматическое отображение токенов, отправленных на ваш счет, требует обмена данными со сторонними серверами для получения изображений токенов. Эти серверы получат доступ к вашему IP-адресу."

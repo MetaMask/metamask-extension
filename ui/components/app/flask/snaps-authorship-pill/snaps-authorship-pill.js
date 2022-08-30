@@ -54,7 +54,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
                 color={COLORS.PRIMARY_INVERSE}
                 variant={TYPOGRAPHY.H7}
                 align={TEXT_ALIGN.CENTER}
-                tag="span"
+                as="span"
                 className="version"
               >
                 {t('shorthandVersion', [version])}
@@ -67,7 +67,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
         <Typography
           className="chip__label"
           variant={TYPOGRAPHY.H7}
-          tag="span"
+          as="span"
           color={COLORS.TEXT_ALTERNATIVE}
           title={packageName}
         >

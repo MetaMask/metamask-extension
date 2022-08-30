@@ -109,7 +109,7 @@ describe('Network Dropdown', () => {
     });
 
     it('checks that Add Network button is rendered', () => {
-      const addNetworkButton = screen.queryByText('Add Network');
+      const addNetworkButton = screen.queryByText('Add network');
       expect(addNetworkButton).toBeInTheDocument();
     });
 
@@ -157,7 +157,7 @@ describe('Network Dropdown', () => {
     });
 
     it('checks that Add Network button is rendered', () => {
-      const addNetworkButton = screen.queryByText('Add Network');
+      const addNetworkButton = screen.queryByText('Add network');
       expect(addNetworkButton).toBeInTheDocument();
     });
 

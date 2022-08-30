@@ -24,11 +24,14 @@
     margin-top: 15px;
   }
 
-  a,
-  a:hover {
+  a {
     @include H6;
 
     color: var(--color-primary-default);
     cursor: pointer;
+  }
+
+  a:hover {
+    color: var(--color-primary-alternative);
   }
 }

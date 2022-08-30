@@ -313,13 +313,13 @@ describe('Collectible Items', () => {
       ).toHaveBeenCalled();
     });
 
-    it('should render a link "Enable Autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+    it('should render a link "Enable autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
       });
       expect(historyPushMock).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Enable Autodetect'));
+      fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
     });

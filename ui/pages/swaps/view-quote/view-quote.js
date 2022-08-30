@@ -45,6 +45,7 @@ import {
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
   getSmartTransactionsEnabled,
+  getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
@@ -74,6 +75,7 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -91,6 +93,7 @@ import {
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
   addHexes,
+  decWEIToDecETH,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
@@ -184,6 +187,7 @@ export default function ViewQuote() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+  const smartTransactionsError = useSelector(getSmartTransactionsError);
   const currentSmartTransactionsErrorMessageDismissed = useSelector(
     getCurrentSmartTransactionsErrorMessageDismissed,
   );
@@ -443,15 +447,35 @@ export default function ViewQuote() {
       )
     : null;
 
-  const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
+  let ethBalanceNeededStx;
+  if (smartTransactionsError?.balanceNeededWei) {
+    ethBalanceNeededStx = decWEIToDecETH(
+      smartTransactionsError.balanceNeededWei -
+        smartTransactionsError.currentBalanceWei,
+    );
+  }
 
+  const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
-    if (insufficientTokens || insufficientEth) {
+    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+      if (insufficientTokens) {
+        dispatch(setBalanceError(true));
+      } else if (balanceError && !insufficientTokens) {
+        dispatch(setBalanceError(false));
+      }
+    } else if (insufficientTokens || insufficientEth) {
       dispatch(setBalanceError(true));
     } else if (balanceError && !insufficientTokens && !insufficientEth) {
       dispatch(setBalanceError(false));
     }
-  }, [insufficientTokens, insufficientEth, balanceError, dispatch]);
+  }, [
+    insufficientTokens,
+    insufficientEth,
+    balanceError,
+    dispatch,
+    currentSmartTransactionsEnabled,
+    smartTransactionsOptInStatus,
+  ]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -480,8 +504,24 @@ export default function ViewQuote() {
     }
   }, [originalApproveAmount, approveAmount]);
 
+  // If it's not a Smart Transaction and ETH balance is needed, we want to show a warning.
+  const isNotStxAndEthBalanceIsNeeded =
+    (!currentSmartTransactionsEnabled || !smartTransactionsOptInStatus) &&
+    ethBalanceNeeded;
+
+  // If it's a Smart Transaction and ETH balance is needed, we want to show a warning.
+  const isStxAndEthBalanceIsNeeded =
+    currentSmartTransactionsEnabled &&
+    smartTransactionsOptInStatus &&
+    ethBalanceNeededStx;
+
+  // Indicates if we should show to a user a warning about insufficient funds for swapping.
   const showInsufficientWarning =
-    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
+    (balanceError ||
+      tokenBalanceNeeded ||
+      isNotStxAndEthBalanceIsNeeded ||
+      isStxAndEthBalanceIsNeeded) &&
+    !warningHidden;
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -656,12 +696,11 @@ export default function ViewQuote() {
       }),
     );
   };
-
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
         <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
-          {tokenBalanceNeeded || ethBalanceNeeded}
+          {tokenBalanceNeeded || ethBalanceNeededStx || ethBalanceNeeded}
         </span>,
         tokenBalanceNeeded && !(sourceTokenSymbol === defaultSwapsToken.symbol)
           ? sourceTokenSymbol
@@ -755,14 +794,18 @@ export default function ViewQuote() {
         baseAndPriorityFeePerGas === undefined) ||
       (!networkAndAccountSupports1559 &&
         (gasPrice === null || gasPrice === undefined)) ||
-      (currentSmartTransactionsEnabled && currentSmartTransactionsError),
+      (currentSmartTransactionsEnabled &&
+        (currentSmartTransactionsError || smartTransactionsError)) ||
+      (currentSmartTransactionsEnabled &&
+        smartTransactionsOptInStatus &&
+        !smartTransactionFees?.tradeTxFees),
   );
 
   useEffect(() => {
     if (
       currentSmartTransactionsEnabled &&
       smartTransactionsOptInStatus &&
-      !isSwapButtonDisabled
+      !insufficientTokens
     ) {
       const unsignedTx = {
         from: unsignedTransaction.from,
@@ -774,10 +817,22 @@ export default function ViewQuote() {
       };
       intervalId = setInterval(() => {
         if (!swapsSTXLoading) {
-          dispatch(fetchSwapsSmartTransactionFees(unsignedTx, approveTxParams));
+          dispatch(
+            fetchSwapsSmartTransactionFees({
+              unsignedTransaction: unsignedTx,
+              approveTxParams,
+              fallbackOnNotEnoughFunds: false,
+            }),
+          );
         }
       }, swapsNetworkConfig.stxGetTransactionsRefreshTime);
-      dispatch(fetchSwapsSmartTransactionFees(unsignedTx, approveTxParams));
+      dispatch(
+        fetchSwapsSmartTransactionFees({
+          unsignedTransaction: unsignedTx,
+          approveTxParams,
+          fallbackOnNotEnoughFunds: false,
+        }),
+      );
     } else if (intervalId) {
       clearInterval(intervalId);
     }
@@ -794,7 +849,7 @@ export default function ViewQuote() {
     unsignedTransaction.to,
     chainId,
     swapsNetworkConfig.stxGetTransactionsRefreshTime,
-    isSwapButtonDisabled,
+    insufficientTokens,
   ]);
 
   useEffect(() => {
@@ -819,6 +874,16 @@ export default function ViewQuote() {
     currentSmartTransactionsError,
     submitClicked,
   ]);
+
+  useEffect(() => {
+    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+      // Removes a smart transactions error when the component loads.
+      dispatch({
+        type: SET_SMART_TRANSACTIONS_ERROR,
+        payload: null,
+      });
+    }
+  }, [currentSmartTransactionsEnabled, smartTransactionsOptInStatus, dispatch]);
 
   return (
     <div className="view-quote">
@@ -876,7 +941,8 @@ export default function ViewQuote() {
         />
         {currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&
-          !smartTransactionFees?.tradeTxFees && (
+          !smartTransactionFees?.tradeTxFees &&
+          !showInsufficientWarning && (
             <Box marginTop={0} marginBottom={10}>
               <PulseLoader />
             </Box>

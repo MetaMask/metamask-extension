@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε 1 $ για να προσαρμόσετε την τιμή του τέλους συναλλαγής. Αυτό μπορεί να προκαλέσει σύγχυση, αν δεν είστε εξοικειωμένοι. Επεξεργαστείτε το με δικό σας ρίσκο.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "Κατάθεση $1",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "Περιγραφή"
@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "Κάτι πήγε λάθος και δεν μπορέσαμε να ολοκληρώσουμε την ενέργεια"
   },
-  "fakeTokenWarning": {
-    "message": "Οποιοσδήποτε μπορεί να δημιουργήσει ένα token, συμπεριλαμβανομένης της δημιουργίας ψεύτικων εκδόσεων των υφιστάμενων tokens. Μάθετε περισσότερα γι'αυτό $1"
-  },
   "fast": {
     "message": "Γρήγορα"
   },
@@ -1481,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε $1 για να καλύψετε απότομες αυξήσεις της κίνησης του δικτύου λόγω των δημοφιλών ξεκινημάτων NFT.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "υψηλό"
@@ -1787,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε 1 $ για να περιμένετε για μια φθηνότερη τιμή. Οι εκτιμήσεις του χρόνου είναι πολύ λιγότερο ακριβείς καθώς οι τιμές είναι κάπως απρόβλεπτες.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "χαμηλό"
@@ -1831,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε $1 για γρήγορη επεξεργασία στην τρέχουσα τιμή της αγοράς.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "σημείωμα"
@@ -2170,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "Μετάβαση στις Ρυθμίσεις",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "Ο βελτιωμένος εντοπισμός token είναι προς το παρόν διαθέσιμος στα δίκτυα Ethereum Mainnet, Polygon, BSC και Avalanche. Περισσότερα προσεχώς!"
@@ -2275,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "Μεταβείτε στις Ρυθμίσεις για Προχωρημένους",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "Από τη MetaMask v10.4.0 και μετά, δεν χρειάζεστε πλέον το Ledger Live για να συνδέσετε τη συσκευή Ledger με το MetaMask.",
@@ -2310,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "Επισήμανση όλων ως αναγνωσμένων"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "$1 νέα token βρέθηκαν σε αυτόν τον λογαριασμό",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "από"
@@ -2520,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "Προτιμώμενος Τύπος Σύνδεσης Ledger",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
@@ -3710,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 δοκιμαστικά δίκτυα",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Διακριτικό"
@@ -3738,12 +3731,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "Ο εντοπισμός token είναι επί του παρόντος διαθέσιμος στο $1. $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "Νέο! Η βελτιωμένη ανίχνευση token είναι διαθέσιμη στο Ethereum Mainnet ως πειραματικό χαρακτηριστικό. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "Το token API της ConsenSys δημιουργεί μια λίστα με token από διάφορες λίστες token τρίτων. Εάν το απενεργοποιήσετε, θα σταματήσει ο εντοπισμός νέων token που προστίθενται στο πορτοφόλι σας, αλλά θα διατηρηθεί η επιλογή αναζήτησης token για εισαγωγή."
   },
   "tokenId": {
     "message": "Αναγνωριστικό token"
@@ -3978,12 +3965,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Εμφάνιση μιας προειδοποίησης για τομείς Απάτης Ηλεκτρονικού Ψαρέματος που στοχεύουν χρήστες του Ethereum"
-  },
-  "useTokenDetection": {
-    "message": "Χρήση Ανίχνευσης Token"
-  },
-  "useTokenDetectionDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για να εντοπίσουμε και να εμφανίσουμε νέα tokens που αποστέλλονται στο πορτοφόλι σας. Απενεργοποιήστε αν δεν θέλετε το MetaMask να τραβήξει δεδομένα από αυτές τις υπηρεσίες."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Η αυτόματη εμφάνιση των token που αποστέλλονται στον λογαριασμό σας συνεπάγεται επικοινωνία με διακομιστές τρίτων για τη λήψη εικόνων των token. Αυτοί οι διακομιστές θα έχουν πρόσβαση στη διεύθυνση IP σας."

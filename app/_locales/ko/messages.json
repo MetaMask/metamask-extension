@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "$1을(를) 사용하여 가스 가격을 맞춤설정하세요. 익숙하지 않은 경우 혼동될 수 있습니다. 자신의 책임하에 상호 작용하세요.",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "$1 입금",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "설명"
@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "문제가 발생했습니다. 작업을 완료할 수 없습니다."
   },
-  "fakeTokenWarning": {
-    "message": "기존 토큰의 가짜 버전 생성을 포함하여 누구나 토큰을 생성할 수 있습니다. $1에 대해 자세히 알아보기"
-  },
   "fast": {
     "message": "빠름"
   },
@@ -1481,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "인기 있는 NFT의 하락 등으로 인한 네트워크 트래픽 급증을 커버하려면 $1을 사용하세요.",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "높음"
@@ -1787,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "$1 사용을 통해 더 저렴한 가격을 기다리세요. 가격 예측이 힘들기 때문에 시간 추정은 더욱 부정확합니다.",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "낮음"
@@ -1831,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "현재 시장 가격으로 빠르게 처리할 수 있도록 $1을(를) 사용하세요.",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "메모"
@@ -2170,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "설정으로 이동하기",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "향상된 토큰 감지 기능을 현재 이더리움 메인넷과 Polygon, BSC, Avalanche 네트워크에서 이용할 수 있습니다. 더 많은 기능이 준비 중입니다!"
@@ -2275,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "고급 설정으로 이동하기",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "MetaMask v10.4.0부터는 Ledger 장치를 MetaMask에 연결할 때 더 이상 Ledger Live를 사용하지 않아도 됩니다.",
@@ -2310,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "계정에서 $1개의 새로운 토큰이 발견됨",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "/"
@@ -2520,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "선호하는 Ledger 연결 유형",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "스왑 준비 중..."
@@ -3710,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 테스트 네트워크",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "토큰"
@@ -3738,12 +3731,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "토큰 감지 기능은 현재 $1. $2에서 사용할 수 있습니다."
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "신규! 개선된 토큰 감지는 실험적 기능으로 이더리움 메인넷에서 사용할 수 있습니다. $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys의 토큰 API는 타사의 다양한 목록을 모아 하나의 토큰 목록을 작성합니다. 이 API를 끄면 신규 토큰을 감지해서 지갑에 추가하는 기능은 중단되지만 토큰을 검색해서 가져오는 기능은 계속 사용할 수 있습니다."
   },
   "tokenId": {
     "message": "토큰 ID"
@@ -3978,12 +3965,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "이더리움 사용자를 노리는 피싱 도메인에 대한 경고를 표시합니다"
-  },
-  "useTokenDetection": {
-    "message": "토큰 감지 사용"
-  },
-  "useTokenDetectionDescription": {
-    "message": "당사는 타사 API를 사용하여 지갑으로 전송된 새 토큰을 감지하고 표시합니다. MetaMask가 해당 서비스에서 데이터를 가져오는 것을 원하지 않으면 이 기능을 사용하지 마세요."
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "계정으로 전송된 토큰이 자동으로 표시되도록 하려면 타사 서버와의 통신을 통해 토큰 이미지를 불러와야 합니다. 이를 위해 타사 서버는 사용자의 IP 주소에 액세스하게 됩니다."

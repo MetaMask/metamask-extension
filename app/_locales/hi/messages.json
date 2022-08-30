@@ -747,7 +747,7 @@
   },
   "customGasSettingToolTipMessage": {
     "message": "गैस की कीमत को अनुकूलित करने के लिए $1 का उपयोग करें। यदि आप परिचित नहीं हैं तो ये भ्रामक हो सकता है। अपनी ज़िम्मेदारी पर बातचीत करें।",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
@@ -833,7 +833,7 @@
   },
   "depositCrypto": {
     "message": "$1 जमा करें",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
   },
   "description": {
     "message": "विवरण"
@@ -1211,9 +1211,6 @@
   "failureMessage": {
     "message": "कुछ गलत हुआ और हम कार्रवाई को पूरा करने में असमर्थ रहे"
   },
-  "fakeTokenWarning": {
-    "message": "कोई भी टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण को बनाना शामिल है। $1 के बारे में और अधिक जानें"
-  },
   "fast": {
     "message": "तेज"
   },
@@ -1481,7 +1478,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "लोकप्रिय NFT ड्रॉप जैसी चीज़ों की वजह से नेटवर्क ट्रैफिक में वृद्धि को कवर करने के लिए $1 का उपयोग करें।",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "उच्च"
@@ -1787,7 +1784,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "एक सस्ती कीमत की प्रतीक्षा के लिए $1 का उपयोग करें। समय का अनुमान बहुत कम सही होता है क्योंकि कीमतें कुछ हद तक अप्रत्याशित होती हैं।",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "निम्न"
@@ -1831,7 +1828,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "मौजूदा बाजार मूल्य पर तेजी से प्रोसेस करने के लिए $1का उपयोग करें।",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "मेमो"
@@ -2170,7 +2167,7 @@
   },
   "notifications10ActionText": {
     "message": "सेटिंग्स में जाएं",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "बेहतर टोकन डिटेक्शन वर्तमान में Ethereum Mainnet, Polygon, BSC और Avalanche के नेटवर्कों पर उपलब्ध है। और भी आने वाला है!"
@@ -2275,7 +2272,7 @@
   },
   "notifications8ActionText": {
     "message": "एडवांस सेटिंग्स पर जाएं",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "MetaMask v10.4.0 के अनुसार, अब आपको अपने लेजर डिवाइस को मेटामास्क से कनेक्ट करने के लिए लेजर लाइव की आवश्यकता नहीं है।",
@@ -2310,10 +2307,6 @@
   },
   "notificationsMarkAllAsRead": {
     "message": "सभी को पढ़ा हुआ चिन्हित करें"
-  },
-  "numberOfNewTokensDetected": {
-    "message": "इस खाते में $1 के नए टोकन पाए गए",
-    "description": "$1 is the number of new tokens detected"
   },
   "ofTextNofM": {
     "message": "का"
@@ -2520,7 +2513,7 @@
   },
   "preferredLedgerConnectionType": {
     "message": "वरीयता वाले लेजर कनेक्शन के प्रकार",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
@@ -3710,7 +3703,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 परीक्षण नेटवर्क",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "टोकन"
@@ -3738,12 +3731,6 @@
   },
   "tokenDetectionAlertMessage": {
     "message": "फिलहाल टोकन डिटेक्शन $1 पर उपलब्ध है। $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "नया! प्रायोगिक फीचर के रूप में Ethereum Mainnet पर बेहतर टोकन डिटेक्शन उपलब्ध है। $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys के टोकन का एपीआई विभिन्न थर्ड पार्टी टोकन सूचियों में से टोकन की एक सूची एकत्र करता है। इसे बंद करने से आपके वॉलेट में जोड़े गए नए टोकन का पता चलना बंद हो जाएगा, लेकिन इंपोर्ट करने के लिए टोकन खोजने का विकल्प बना रहेगा।"
   },
   "tokenId": {
     "message": "टोकन आइडी"
@@ -3978,12 +3965,6 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Ethereum उपयोगकर्ताओं को लक्षित करने वाले फिशिंग डोमेन के लिए एक चेतावनी प्रदर्शित करें"
-  },
-  "useTokenDetection": {
-    "message": "टोकन डिटेक्शन का उपयोग करें"
-  },
-  "useTokenDetectionDescription": {
-    "message": "हम आपके वॉलेट में भेजे गए नए टोकन का पता लगाने और प्रदर्शित करने के लिए तीसरे-पक्ष API का उपयोग करते हैं। बंद करें यदि आप नहीं चाहते कि MetaMask उन सेवाओं से डेटा पुल करे।"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "आपके खाते में भेजे गए टोकन को स्वचालित रूप से प्रदर्शित करने में थर्ड पार्टी के सर्वर्स के साथ संचार शामिल रहेगा, जो टोकन के चित्रों को लाने का काम करते हैं। वे सर्वर्स आपके IP एड्रेस को एक्सेस कर पाएंगे।"

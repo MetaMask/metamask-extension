@@ -54,7 +54,6 @@ export default class SettingsTab extends PureComponent {
     setHideZeroBalanceTokens: PropTypes.func,
     lastFetchedConversionDate: PropTypes.number,
     selectedAddress: PropTypes.string,
-    useTokenDetection: PropTypes.bool,
     tokenList: PropTypes.object,
   };
 
@@ -168,13 +167,8 @@ export default class SettingsTab extends PureComponent {
 
   renderBlockieOptIn() {
     const { t } = this.context;
-    const {
-      useBlockie,
-      setUseBlockie,
-      selectedAddress,
-      useTokenDetection,
-      tokenList,
-    } = this.props;
+    const { useBlockie, setUseBlockie, selectedAddress, tokenList } =
+      this.props;
 
     const getIconStyles = () => ({
       display: 'block',
@@ -215,7 +209,6 @@ export default class SettingsTab extends PureComponent {
                   id="jazzicon"
                   address={selectedAddress}
                   diameter={32}
-                  useTokenDetection={useTokenDetection}
                   tokenList={tokenList}
                   style={getIconStyles()}
                 />
@@ -255,8 +248,10 @@ export default class SettingsTab extends PureComponent {
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H7}
-                margin={0}
+                marginTop={3}
+                marginRight={0}
                 marginBottom={3}
+                marginLeft={3}
               >
                 {t('blockies')}
               </Typography>

@@ -32,6 +32,10 @@
     min-width: 0;
   }
 
+  &__subject-icon {
+    flex-shrink: 0;
+  }
+
   &__subject-name {
     max-width: 215px;
     margin-left: 6px;

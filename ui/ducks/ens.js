@@ -65,7 +65,7 @@ const slice = createSlice({
             network === MAINNET_NETWORK_ID
               ? ENS_NO_ADDRESS_FOR_NAME
               : ENS_NOT_FOUND_ON_NETWORK;
-        } else if (error.message === 'Illegal Character for ENS.') {
+        } else if (error.message === 'Illegal character for ENS.') {
           state.error = ENS_ILLEGAL_CHARACTER;
         } else {
           log.error(error);

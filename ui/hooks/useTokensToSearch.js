@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { isEqual, shuffle, uniqBy } from 'lodash';
+import { isEqual, uniqBy } from 'lodash';
+import { formatIconUrlWithProxy } from '@metamask/controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
-  getUseTokenDetection,
   getTokenList,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
@@ -18,17 +17,17 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import {
+  ETH_SYMBOL,
+  MATIC_SYMBOL,
+  BNB_SYMBOL,
+  AVALANCHE_SYMBOL,
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
+} from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
-
-/** TODO: Remove during TOKEN_DETECTION_V2 feature flag clean up */
-const shuffledContractMap = shuffle(
-  Object.entries(contractMap)
-    .map(([address, tokenData]) => ({
-      ...tokenData,
-      address: address.toLowerCase(),
-    }))
-    .filter((tokenData) => Boolean(tokenData.erc20)),
-);
 
 export function getRenderableTokenData(
   token,
@@ -37,14 +36,14 @@ export function getRenderableTokenData(
   currentCurrency,
   chainId,
   tokenList,
-  useTokenDetection,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
   if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
     contractExchangeRate = 1;
   } else if (string && conversionRate > 0) {
-    // This condition improves performance significantly.
+    // This condition improves performance significantly, because it only gets a contract exchange rate
+    // if a token amount is truthy and conversion rate is higher than 0.
     contractExchangeRate = contractExchangeRates[toChecksumHexAddress(address)];
   }
   const formattedFiat =
@@ -67,24 +66,19 @@ export function getRenderableTokenData(
       )
     : '';
 
-  // token from dynamic api list is fetched when useTokenDetection is true
-  // And since the token.address from allTokens is checksumaddress
-  // token Address have to be changed to lowercase when we are using dynamic list
-  const tokenAddress =
-    useTokenDetection || process.env.TOKEN_DETECTION_V2
-      ? address?.toLowerCase()
-      : address;
+  const tokenIconUrl =
+    (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
+    (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
+    (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
+    (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
+      ? iconUrl
+      : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
+  const usedIconUrl = tokenIconUrl || token?.image;
 
-  let tokenIconUrl = tokenList[tokenAddress]?.iconUrl;
-
-  if (!process.env.TOKEN_DETECTION_V2 && !useTokenDetection && tokenIconUrl) {
-    tokenIconUrl = `images/contract/${tokenIconUrl}`;
-  }
-  const usedIconUrl = iconUrl || tokenIconUrl || token?.image;
   return {
     ...token,
     primaryLabel: symbol,
-    secondaryLabel: name || tokenList[tokenAddress]?.name,
+    secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
       string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
@@ -92,7 +86,7 @@ export function getRenderableTokenData(
     identiconAddress: usedIconUrl ? null : address,
     balance,
     decimals,
-    name: name || tokenList[tokenAddress]?.name,
+    name: name || tokenList[address?.toLowerCase()]?.name,
     rawFiat,
   };
 }
@@ -109,14 +103,7 @@ export function useTokensToSearch({
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
-  const useTokenDetection = useSelector(getUseTokenDetection);
-  let shuffledTokenList = shuffledTokensList;
-  if (!process.env.TOKEN_DETECTION_V2) {
-    // token from dynamic api list is fetched when useTokenDetection is true
-    shuffledTokenList = useTokenDetection
-      ? shuffledTokensList
-      : shuffledContractMap;
-  }
+
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
 
@@ -127,7 +114,6 @@ export function useTokensToSearch({
     currentCurrency,
     chainId,
     tokenList,
-    useTokenDetection,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -137,7 +123,7 @@ export function useTokensToSearch({
     ? swapsTokens
     : [
         memoizedDefaultToken,
-        ...shuffledTokenList.filter(
+        ...shuffledTokensList.filter(
           (token) => token.symbol !== memoizedDefaultToken.symbol,
         ),
       ];
@@ -168,7 +154,6 @@ export function useTokensToSearch({
         currentCurrency,
         chainId,
         tokenList,
-        useTokenDetection,
       );
       if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
         if (
@@ -225,7 +210,6 @@ export function useTokensToSearch({
     memoizedDefaultToken,
     chainId,
     tokenList,
-    useTokenDetection,
     tokenBucketPriority,
   ]);
 }
