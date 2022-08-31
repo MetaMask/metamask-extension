@@ -177,7 +177,7 @@ export default class ConfirmPageContainer extends Component {
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
-        <div className="page-container">
+        <div className="page-container" data-testid="page-container">
           <ConfirmPageContainerNavigation
             totalTx={totalTx}
             positionOfCurrentTx={positionOfCurrentTx}
