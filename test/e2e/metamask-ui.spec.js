@@ -742,6 +742,10 @@ describe('MetaMask', function () {
     });
 
     it('shows the correct recipient', async function () {
+      await driver.clickElement({
+        text: 'View full transaction details',
+        css: '.confirm-approve-content__small-blue-text',
+      });
       const permissionInfo = await driver.findElements(
         '.confirm-approve-content__medium-text',
       );
