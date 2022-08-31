@@ -24,6 +24,7 @@ import {
   BURN_ADDRESS,
 } from '../../shared/modules/hexstring-utils';
 import Resolution from "@unstoppabledomains/resolution";
+import { result } from 'lodash';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -156,22 +157,44 @@ export async function resolveMultiChainUNS(unsName, symbol, version) {
     });
   return object
 }
+export async function swapToken(unsName, asset) {
+  let object = {}
+  if (typeof (asset) === 'string') {
+    object.chainType = determineChainType(asset)
+  } else if (typeof (asset) === 'object') {
+    object.chainType = determineChainType(asset);
+  }
+  if (object.chainType === 'SINGLE_CHAIN') {
+    object = await resolveUNS(unsName, asset);
+  } else if (object.chainType === 'MULTI_CHAIN') {
+    object = await resolveMultiChainUNS(unsName, asset.details.symbol, asset.details.standard);
+  }
+
+  return object
+}
+
+function determineChainType(asset) {
+  let json = buildJson();
+  let result;
+  for (let i = 0; i < json.singleChain.length; i++) {
+    if (asset === json.singleChain[i]) {
+      result = 'SINGLE_CHAIN';
+      break;
+    } else result = 'MULTI_CHAIN';
+  }
+  return result;
+}
 export function prepareResolutionCall(unsName) {
-  //decides between multi and single chain
-  //route between resolution calls
-  return async (dispatch, getState, result) => {
+  return async (dispatch, getState) => {
     let state = getState();
+    let result;
     if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeUnsSlice());
     }
-    let json = buildJson();
-    for (let i = 0; i < json.singleChain.length; i++) {
-      if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
-        if (state.metamask.nativeCurrency === json.singleChain[i]) {
-          result = 'SINGLE_CHAIN';
-          break;
-        } else result = 'MULTI_CHAIN';
-      } else result = 'MULTI_CHAIN';
+    if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
+      result = determineChainType(state.metamask.nativeCurrency);
+    } else {
+      result = 'MULTI_CHAIN';
     }
     if (result === 'SINGLE_CHAIN') {
       let object = await resolveUNS(unsName, state.metamask.nativeCurrency);

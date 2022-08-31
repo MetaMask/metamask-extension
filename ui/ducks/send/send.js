@@ -115,7 +115,7 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
-import { prepareResolutionCall } from '../uns';
+import { swapToken, unsLookup } from '../uns';
 // typedef import statements
 /**
  * @typedef {(
@@ -661,7 +661,7 @@ export const initializeSendState = createAsyncThunk(
     ) {
       gasLimit =
         draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-        draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
+          draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE
           ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
           : GAS_LIMITS.SIMPLE;
       // Run our estimateGasLimit logic to get a more accurate estimation of
@@ -1460,7 +1460,7 @@ const slice = createSlice({
             draftTransaction &&
             draftTransaction.fromAccount &&
             draftTransaction.fromAccount.address ===
-              action.payload.account.address
+            action.payload.account.address
           ) {
             draftTransaction.fromAccount.balance =
               action.payload.account.balance;
@@ -1785,10 +1785,10 @@ export function editExistingTransaction(assetType, transactionId) {
               address: transaction.txParams.to,
               ...(assetType === ASSET_TYPES.COLLECTIBLE
                 ? {
-                    tokenId:
-                      getTokenIdParam(tokenData) ??
-                      getTokenValueParam(tokenData),
-                  }
+                  tokenId:
+                    getTokenIdParam(tokenData) ??
+                    getTokenValueParam(tokenData),
+                }
                 : {}),
             },
           },
@@ -1958,9 +1958,8 @@ export function updateSendAmount(amount) {
         invertConversionRate: true,
       });
 
-      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
-        draftTransaction.asset.details?.symbol
-      }`;
+      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${draftTransaction.asset.details?.symbol
+        }`;
     } else {
       const ethValue = getValueFromWeiHex({
         value: amount,
@@ -2010,11 +2009,17 @@ export function updateSendAsset(
 
       await dispatch(
         addHistoryEntry(
-          `sendFlow - user set asset of type ${
-            ASSET_TYPES.NATIVE
+          `sendFlow - user set asset of type ${ASSET_TYPES.NATIVE
           } with symbol ${state.metamask.provider?.ticker ?? ETH}`,
         ),
       );
+      console.log(state);
+      if (state.UNS.domainName) {
+        let object = await swapToken(state.UNS.domainName, state.metamask.provider?.ticker ?? 'ETH');
+        console.log('object,', object);
+        await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
+      }
+
       await dispatch(
         actions.updateAsset({
           asset: {
@@ -2103,7 +2108,6 @@ export function updateSendAsset(
               dispatch(displayWarning(err.message));
             }
           }
-
           if (isCurrentOwner) {
             asset.error = null;
             asset.balance = '0x1';
@@ -2119,13 +2123,22 @@ export function updateSendAsset(
           );
         }
       }
+      console.log(state);
+      if (state.UNS.domainName) {
+        console.log(asset);
+        let object = await swapToken(state.UNS.domainName, asset);
+        if (object.error) {
+          asset.error = object.error;
+          throw new Error ('No address associated with this token');
+        }
+        await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
+      }
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
     if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
     }
-    //prepareResolutionCall(state.uns.domainName);
   };
 }
 
