@@ -86,7 +86,13 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetDomainResolution, swapToken } from '../domains';
+import { resetEnsResolution } from '../ens';
+import {
+  swapToken,
+  resetUnsResolution,
+  dispatchSwapState,
+  unsLookup,
+} from '../uns';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -2018,10 +2024,10 @@ export function updateSendAsset(
           } with symbol ${state.metamask.provider?.ticker ?? ETH}`,
         ),
       );
-            
-      if (state.UNS.domainName) {
+      if ((state.UNS.resolution === state.send.draftTransactions[state.send.currentTransactionUUID].recipient.address && state.UNS.domainName)) {
         let unsError = null;
         let object = await swapToken(state.UNS.domainName, state.metamask.provider?.ticker ?? 'ETH');
+        console.log('this is the object', object);
         if (object.error) {
           if (object.error === 'UnspecifiedCurrency' || object.error === 'RecordNotFound') {
             unsError = UNS_CURRENCY_SPEC_ERROR;
@@ -2041,8 +2047,9 @@ export function updateSendAsset(
               initialAssetSet,
             }),
           );
-          throw new Error ('No address associated with this token');
+          throw new Error('No address associated with this token');
         } else {
+          dispatch(unsLookup(object));
           await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
         }
       }
@@ -2150,8 +2157,9 @@ export function updateSendAsset(
           );
         }
       }
-      if (state.UNS.domainName) {
+      if ((state.UNS.resolution === state.send.draftTransactions[state.send.currentTransactionUUID].recipient.address && state.UNS.domainName)) {
         let object = await swapToken(state.UNS.domainName, asset);
+        console.log('this is the object', object);
         if (object.error) {
           if (object.error === 'UnspecifiedCurrency' || object.error === 'RecordNotFound') {
             asset.error = UNS_CURRENCY_SPEC_ERROR;
@@ -2161,14 +2169,15 @@ export function updateSendAsset(
             asset.error = UNS_UNKNOWN_ERROR;
           }
           await dispatch(actions.updateAsset({ asset, initialAssetSet }));
-          throw new Error ('No address associated with this token');
+          throw new Error('No address associated with this token');
         } else {
+          dispatch(unsLookup( object));
           await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
         }
       }
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
-      
+
     }
     if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
