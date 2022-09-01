@@ -20,6 +20,8 @@ import {
   NEGATIVE_ETH_ERROR,
   RECIPIENT_TYPES,
   UNS_CURRENCY_SPEC_ERROR,
+  UNS_CURRENCY_ERROR,
+  UNS_UNKNOWN_ERROR,
 } from '../../pages/send/send.constants';
 
 import {
@@ -84,7 +86,7 @@ import {
   getUnapprovedTxs,
 } from '../metamask/metamask';
 
-import { resetDomainResolution } from '../domains';
+import { resetDomainResolution, swapToken } from '../domains';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -117,7 +119,7 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
-import { swapToken, unsLookup } from '../uns';
+
 // typedef import statements
 /**
  * @typedef {(
@@ -2021,7 +2023,13 @@ export function updateSendAsset(
         let unsError = null;
         let object = await swapToken(state.UNS.domainName, state.metamask.provider?.ticker ?? 'ETH');
         if (object.error) {
-          unsError = UNS_CURRENCY_SPEC_ERROR;
+          if (object.error === 'UnspecifiedCurrency' || object.error === 'RecordNotFound') {
+            unsError = UNS_CURRENCY_SPEC_ERROR;
+          } else if (object.error === 'UnsupportedCurrency') {
+            unsError = UNS_CURRENCY_ERROR;
+          } else {
+            unsError = UNS_UNKNOWN_ERROR;
+          }
           await dispatch(
             actions.updateAsset({
               asset: {
@@ -2145,7 +2153,13 @@ export function updateSendAsset(
       if (state.UNS.domainName) {
         let object = await swapToken(state.UNS.domainName, asset);
         if (object.error) {
-          asset.error = UNS_CURRENCY_SPEC_ERROR;
+          if (object.error === 'UnspecifiedCurrency' || object.error === 'RecordNotFound') {
+            asset.error = UNS_CURRENCY_SPEC_ERROR;
+          } else if (object.error === 'UnsupportedCurrency') {
+            asset.error = UNS_CURRENCY_ERROR;
+          } else {
+            asset.error = UNS_UNKNOWN_ERROR;
+          }
           await dispatch(actions.updateAsset({ asset, initialAssetSet }));
           throw new Error ('No address associated with this token');
         } else {
