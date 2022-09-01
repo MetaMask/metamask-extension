@@ -19,6 +19,7 @@ import {
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
   RECIPIENT_TYPES,
+  UNS_CURRENCY_SPEC_ERROR,
 } from '../../pages/send/send.constants';
 
 import {
@@ -2013,11 +2014,27 @@ export function updateSendAsset(
           } with symbol ${state.metamask.provider?.ticker ?? ETH}`,
         ),
       );
-      console.log(state);
+            
       if (state.UNS.domainName) {
+        let unsError = null;
         let object = await swapToken(state.UNS.domainName, state.metamask.provider?.ticker ?? 'ETH');
-        console.log('object,', object);
-        await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
+        if (object.error) {
+          unsError = UNS_CURRENCY_SPEC_ERROR;
+          await dispatch(
+            actions.updateAsset({
+              asset: {
+                type,
+                details: null,
+                balance: account.balance,
+                error: unsError,
+              },
+              initialAssetSet,
+            }),
+          );
+          throw new Error ('No address associated with this token');
+        } else {
+          await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
+        }
       }
 
       await dispatch(
@@ -2123,18 +2140,19 @@ export function updateSendAsset(
           );
         }
       }
-      console.log(state);
       if (state.UNS.domainName) {
-        console.log(asset);
         let object = await swapToken(state.UNS.domainName, asset);
         if (object.error) {
-          asset.error = object.error;
+          asset.error = UNS_CURRENCY_SPEC_ERROR;
+          await dispatch(actions.updateAsset({ asset, initialAssetSet }));
           throw new Error ('No address associated with this token');
+        } else {
+          await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
         }
-        await dispatch(updateRecipient({ address: object.address, nickname: object.unsName }));
       }
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
+      
     }
     if (initialAssetSet === false) {
       await dispatch(computeEstimatedGasLimit());
