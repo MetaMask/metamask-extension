@@ -55,6 +55,12 @@ const slice = createSlice({
       state.warning = null;
       state.domainName = null;
       const { address, unsName, error } = action.payload;
+      if (!action.payload) {
+        address = action.address;
+        unsName = action.unsName;
+        error = action.error;
+      }
+      
 
       if (error) {
         if (error === 'UnregisteredDomain') {
@@ -121,7 +127,7 @@ const {
   disableUnsLookup,
   resetUnsResolution,
 } = actions;
-export { resetUnsResolution }
+export { resetUnsResolution, unsLookup }
 
 export function initializeUnsSlice() {
   return (dispatch, getState) => {
@@ -144,6 +150,7 @@ export function initializeUnsSlice() {
     }
   };
 }
+
 export async function resolveMultiChainUNS(unsName, symbol, version) {
   let object = {}
   const resolution = new Resolution();

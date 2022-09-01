@@ -6,10 +6,8 @@ import {
   resetEnsResolution,
 } from '../../../../ducks/ens';
 import {
-  resolveUNS,
   initializeUnsSlice,
   resetUnsResolution,
-  resolveMultiChainUNS,
   prepareResolutionCall,
 } from '../../../../ducks/uns';
 import DomainInput from './domain-input.component';
