@@ -49,12 +49,14 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // update estimates to medium
+        /*
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
         await driver.clickElement('[data-testid="edit-gas-fee-item-medium"]');
         await driver.waitForSelector({ text: '🦊' });
         await driver.waitForSelector({
           text: 'Market',
         });
+        */
 
         // update estimates to low
         await driver.clickElement('[data-testid="edit-gas-fee-button"]');
