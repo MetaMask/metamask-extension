@@ -8,7 +8,8 @@ export default function shouldInjectProvider() {
     doctypeCheck() &&
     suffixCheck() &&
     documentElementCheck() &&
-    !blockedDomainCheck()
+    !blockedDomainCheck() &&
+    window.isSecureContext
   );
 }
 
