@@ -44,6 +44,7 @@ let legacyExtMux,
   legacyPagePublicConfigChannel,
   notificationTransformStream;
 
+const WORKER_KEEP_ALIVE_INTERVAL = 1000;
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -160,12 +161,6 @@ const destroyPhishingExtStreams = () => {
  */
 const resetPhishingStreamAndListeners = () => {
   phishingExtPort.onDisconnect.removeListener(resetPhishingStreamAndListeners);
-
-  /**
-   * The message below will try to activate service worker.
-   * In MV3, a likely reason that a stream closes is when the service worker goes in-active
-   */
-  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
   destroyPhishingExtStreams();
   setupPhishingExtStreams();
@@ -340,12 +335,6 @@ const destroyLegacyExtensionStreams = () => {
 const resetStreamAndListeners = () => {
   extensionPort.onDisconnect.removeListener(resetStreamAndListeners);
 
-  /**
-   * The message below will try to activate service worker.
-   * In MV3, a likely reason that a stream closes is when the service worker goes in-active
-   */
-  browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
   destroyExtensionStreams();
   setupExtensionStreams();
 
@@ -437,14 +426,26 @@ function redirectToPhishingWarning(data = {}) {
   window.location.href = `${baseUrl}#${querystring}`;
 }
 
+const initKeepWorkerAlive = () => {
+  setInterval(() => {
+    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
+  }, WORKER_KEEP_ALIVE_INTERVAL);
+};
+
 const start = () => {
-  if (
+  const isDetectedPhishingSite =
     window.location.origin === phishingPageUrl.origin &&
-    window.location.pathname === phishingPageUrl.pathname
-  ) {
+    window.location.pathname === phishingPageUrl.pathname;
+
+  if (isDetectedPhishingSite) {
     initPhishingStreams();
-  } else if (shouldInjectProvider()) {
-    if (!isManifestV3) {
+    return;
+  }
+
+  if (shouldInjectProvider()) {
+    if (isManifestV3) {
+      initKeepWorkerAlive();
+    } else {
       injectScript(inpageBundle);
     }
     initStreams();
