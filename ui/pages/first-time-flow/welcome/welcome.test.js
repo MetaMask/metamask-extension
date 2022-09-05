@@ -22,7 +22,6 @@ describe('Welcome', () => {
 
     fireEvent.click(getStartedButton);
 
-    // getStartedButton.simulate('click');
     expect(props.history.push.getCall(0).args[0]).toStrictEqual(
       '/initialize/metametrics-opt-in',
     );
