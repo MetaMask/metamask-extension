@@ -940,20 +940,25 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   return (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('updateAndApproveTransaction', [txData], (err) => {
-        dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(resetSendState());
+      const actionId = Date.now() + Math.random();
+      callBackgroundMethod(
+        'updateAndApproveTransaction',
+        [txData, actionId],
+        (err) => {
+          dispatch(updateTransactionParams(txData.id, txData.txParams));
+          dispatch(resetSendState());
 
-        if (err) {
-          dispatch(txError(err));
-          dispatch(goHome());
-          log.error(err.message);
-          reject(err);
-          return;
-        }
+          if (err) {
+            dispatch(txError(err));
+            dispatch(goHome());
+            log.error(err.message);
+            reject(err);
+            return;
+          }
 
-        resolve(txData);
-      });
+          resolve(txData);
+        },
+      );
     })
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -1287,14 +1292,19 @@ export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('cancelTransaction', [txData.id], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+      const actionId = Date.now() + Math.random();
+      callBackgroundMethod(
+        'cancelTransaction',
+        [txData.id, actionId],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     })
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -1328,7 +1338,8 @@ export function cancelTxs(txDataList) {
       const cancellations = txIds.map(
         (id) =>
           new Promise((resolve, reject) => {
-            callBackgroundMethod('cancelTransaction', [id], (err) => {
+            const actionId = Date.now() + Math.random();
+            callBackgroundMethod('cancelTransaction', [id, actionId], (err) => {
               if (err) {
                 reject(err);
                 return;
@@ -1998,23 +2009,6 @@ export function createCancelTransaction(txId, customGasSettings, options) {
         },
         actionId,
       );
-      callBackgroundMethod(
-        'createCancelTransaction',
-        [txId, customGasSettings, { ...options, actionId }],
-        (err, newState) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
-
-          const { currentNetworkTxList } = newState;
-          const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
-          newTxId = id;
-          resolve(newState);
-        },
-        actionId,
-      );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId);
@@ -2055,9 +2049,10 @@ export function createRetryTransaction(txId, customGasSettings) {
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
+      const actionId = Date.now() + Math.random();
       callBackgroundMethod(
         'createSpeedUpTransaction',
-        [txId, customGasSettings],
+        [txId, customGasSettings, actionId],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -3621,13 +3616,18 @@ export function trackMetaMetricsEvent(payload, options) {
 }
 
 export function createEventFragment(options) {
-  return submitRequestToBackground('createEventFragment', [options]);
+  const actionId = Date.now() + Math.random();
+  return submitRequestToBackground('createEventFragment', [
+    { ...options, actionId },
+  ]);
 }
 
 export function createTransactionEventFragment(transactionId, event) {
+  const actionId = Date.now() + Math.random();
   return submitRequestToBackground('createTransactionEventFragment', [
     transactionId,
     event,
+    actionId,
   ]);
 }
 

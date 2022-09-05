@@ -36,7 +36,7 @@ const currentChainId = '0x2a';
 const providerConfig = {
   type: 'kovan',
 };
-
+const actionId = 'DUMMY_ACTION_ID';
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 
@@ -551,8 +551,8 @@ describe('Transaction Controller', function () {
       await txController.createCancelTransaction(
         txMeta.id,
         {},
-        undefined,
         12345,
+        undefined,
       );
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
@@ -1280,14 +1280,14 @@ describe('Transaction Controller', function () {
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 12345},
+        { actionId: 12345 },
       );
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 12345},
+        { actionId: 12345 },
       );
       const transactionCount2 =
         txController.txStateManager.getTransactions().length;
@@ -1303,14 +1303,14 @@ describe('Transaction Controller', function () {
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 12345},
+        { actionId: 12345 },
       );
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 11111},
+        { actionId: 11111 },
       );
       const transactionCount2 =
         txController.txStateManager.getTransactions().length;
@@ -1666,6 +1666,7 @@ describe('Transaction Controller', function () {
 
     describe('On transaction created by the user', function () {
       let txMeta;
+
       before(function () {
         txMeta = {
           id: 1,
@@ -1691,6 +1692,7 @@ describe('Transaction Controller', function () {
 
       it('should create an event fragment when transaction added', async function () {
         const expectedPayload = {
+          actionId,
           initialEvent: 'Transaction Added',
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
@@ -1728,6 +1730,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.ADDED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 1);
         assert.equal(finalizeEventFragmentSpy.callCount, 0);
@@ -1742,6 +1745,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 0);
         assert.equal(finalizeEventFragmentSpy.callCount, 1);
@@ -1759,6 +1763,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 0);
         assert.equal(finalizeEventFragmentSpy.callCount, 1);
@@ -1774,6 +1779,7 @@ describe('Transaction Controller', function () {
 
       it('should create an event fragment when transaction is submitted', async function () {
         const expectedPayload = {
+          actionId,
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
@@ -1810,6 +1816,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.SUBMITTED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 1);
         assert.equal(finalizeEventFragmentSpy.callCount, 0);
@@ -1824,6 +1831,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 0);
         assert.equal(finalizeEventFragmentSpy.callCount, 1);
@@ -1865,6 +1873,7 @@ describe('Transaction Controller', function () {
 
       it('should create an event fragment when transaction added', async function () {
         const expectedPayload = {
+          actionId,
           initialEvent: 'Transaction Added',
           successEvent: 'Transaction Approved',
           failureEvent: 'Transaction Rejected',
@@ -1902,6 +1911,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.ADDED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 1);
         assert.equal(finalizeEventFragmentSpy.callCount, 0);
@@ -1917,6 +1927,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 0);
         assert.equal(finalizeEventFragmentSpy.callCount, 1);
@@ -1935,6 +1946,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 0);
         assert.equal(finalizeEventFragmentSpy.callCount, 1);
@@ -1950,6 +1962,7 @@ describe('Transaction Controller', function () {
 
       it('should create an event fragment when transaction is submitted', async function () {
         const expectedPayload = {
+          actionId,
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
           uniqueIdentifier: 'transaction-submitted-1',
@@ -1986,6 +1999,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.SUBMITTED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 1);
         assert.equal(finalizeEventFragmentSpy.callCount, 0);
@@ -2001,6 +2015,7 @@ describe('Transaction Controller', function () {
         await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
+          actionId,
         );
         assert.equal(createEventFragmentSpy.callCount, 0);
         assert.equal(finalizeEventFragmentSpy.callCount, 1);
@@ -2034,6 +2049,7 @@ describe('Transaction Controller', function () {
       };
 
       const expectedPayload = {
+        actionId,
         successEvent: 'Transaction Approved',
         failureEvent: 'Transaction Rejected',
         uniqueIdentifier: 'transaction-added-1',
@@ -2067,6 +2083,7 @@ describe('Transaction Controller', function () {
       await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.APPROVED,
+        actionId,
       );
       assert.equal(createEventFragmentSpy.callCount, 1);
       assert.deepEqual(
@@ -2099,6 +2116,7 @@ describe('Transaction Controller', function () {
         metamaskNetworkId: currentNetworkId,
       };
       const expectedPayload = {
+        actionId,
         initialEvent: 'Transaction Added',
         successEvent: 'Transaction Approved',
         failureEvent: 'Transaction Rejected',
@@ -2136,6 +2154,7 @@ describe('Transaction Controller', function () {
       await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.ADDED,
+        actionId,
         {
           baz: 3.0,
           foo: 'bar',
@@ -2175,6 +2194,7 @@ describe('Transaction Controller', function () {
         },
       };
       const expectedPayload = {
+        actionId,
         initialEvent: 'Transaction Added',
         successEvent: 'Transaction Approved',
         failureEvent: 'Transaction Rejected',
@@ -2218,6 +2238,7 @@ describe('Transaction Controller', function () {
       await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.ADDED,
+        actionId,
         {
           baz: 3.0,
           foo: 'bar',
