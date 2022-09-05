@@ -9,6 +9,7 @@ import PageContainerFooter from '../../ui/page-container/page-container-footer/p
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SECOND } from '../../../../shared/constants/time';
 import EnhancedReader from './enhanced-reader';
+import { getURL } from 'ui/helpers/utils/util';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',
@@ -43,7 +44,7 @@ const BaseReader = ({
         !environmentReady &&
         getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
       ) {
-        const currentUrl = new URL(window.location.href);
+        const currentUrl = getURL(window.location.href);
         const currentHash = currentUrl.hash;
         const currentRoute = currentHash ? currentHash.substring(1) : null;
         global.platform.openExtensionInBrowser(currentRoute);

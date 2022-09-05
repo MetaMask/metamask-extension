@@ -15,12 +15,13 @@ import {
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { getURL } from 'ui/helpers/utils/util';
 
 /**
  * @see {@link getEnvironmentType}
  */
 const getEnvironmentTypeMemo = memoize((url) => {
-  const parsedUrl = new URL(url);
+  const parsedUrl = getURL(url);
   if (parsedUrl.pathname === '/popup.html') {
     return ENVIRONMENT_TYPE_POPUP;
   } else if (['/home.html'].includes(parsedUrl.pathname)) {

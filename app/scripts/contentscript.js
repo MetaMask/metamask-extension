@@ -12,6 +12,7 @@ import {
 } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { getURL } from 'ui/helpers/utils/util';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -49,7 +50,7 @@ let legacyExtMux,
   legacyPagePublicConfigChannel,
   notificationTransformStream;
 
-const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
+const phishingPageUrl = getURL(process.env.PHISHING_WARNING_PAGE_URL);
 
 let phishingExtChannel,
   phishingExtMux,

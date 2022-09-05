@@ -37,7 +37,7 @@ export default function setupEnsIpfsResolver({
       return;
     }
     // parse ens name
-    const { hostname: name, pathname, search, hash: fragment } = new URL(url);
+    const { hostname: name, pathname, search, hash: fragment } = getURL(url);
     const domainParts = name.split('.');
     const topLevelDomain = domainParts[domainParts.length - 1];
     // if unsupported TLD, abort

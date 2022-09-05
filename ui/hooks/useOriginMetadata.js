@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 import { getTargetSubjectMetadata } from '../selectors';
 import { SUBJECT_TYPES } from '../../shared/constants/app';
+import { getURL } from 'ui/helpers/utils/util';
 
 /**
  * @typedef {object} OriginMetadata
@@ -28,17 +29,13 @@ export function useOriginMetadata(origin) {
   }
 
   let minimumOriginMetadata = null;
-  try {
-    const url = new URL(origin);
-    minimumOriginMetadata = {
-      host: url.host,
-      hostname: url.hostname,
-      origin,
-      subjectType: SUBJECT_TYPES.UNKNOWN,
-    };
-  } catch (_) {
-    // do nothing
-  }
+  const url = getURL(origin);
+  minimumOriginMetadata = {
+    host: url.host,
+    hostname: url.hostname,
+    origin,
+    subjectType: SUBJECT_TYPES.UNKNOWN,
+  };
 
   if (targetSubjectMetadata && minimumOriginMetadata) {
     return {

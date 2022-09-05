@@ -42,6 +42,7 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
+import { getURL } from 'ui/helpers/utils/util';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -530,12 +531,7 @@ const NetworksForm = ({
       }
 
       if (addNewNetwork) {
-        let rpcUrlOrigin;
-        try {
-          rpcUrlOrigin = new URL(rpcUrl).origin;
-        } catch {
-          // error
-        }
+        const rpcUrlOrigin = getURL(rpcUrl).origin;
         trackEvent({
           event: 'Custom Network Added',
           category: EVENT.CATEGORIES.NETWORK,

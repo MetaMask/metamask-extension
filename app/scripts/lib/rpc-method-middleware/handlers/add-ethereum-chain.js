@@ -12,6 +12,7 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/network';
+import { getURL } from 'ui/helpers/utils/util';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -83,12 +84,8 @@ async function addEthereumChainHandler(
   }
 
   const isLocalhost = (strUrl) => {
-    try {
-      const url = new URL(strUrl);
-      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
-    } catch (error) {
-      return false;
-    }
+    const url = getURL(strUrl);
+    return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
   };
 
   const firstValidRPCUrl = Array.isArray(rpcUrls)
@@ -289,12 +286,7 @@ async function addEthereumChainHandler(
       }),
     );
 
-    let rpcUrlOrigin;
-    try {
-      rpcUrlOrigin = new URL(firstValidRPCUrl).origin;
-    } catch {
-      // ignore
-    }
+    const rpcUrlOrigin = getURL(firstValidRPCUrl).origin;
 
     sendMetrics({
       event: 'Custom Network Added',

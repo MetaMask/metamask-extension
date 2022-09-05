@@ -65,8 +65,10 @@ export default class AlertController {
 
   setAlertEnabledness(alertId, enabledness) {
     let { alertEnabledness } = this.store.getState();
-    alertEnabledness = { ...alertEnabledness };
-    alertEnabledness[alertId] = enabledness;
+    alertEnabledness = {
+      ...alertEnabledness,
+      [alertId]: enabledness,
+    };
     this.store.updateState({ alertEnabledness });
   }
 
@@ -79,8 +81,8 @@ export default class AlertController {
     let { unconnectedAccountAlertShownOrigins } = this.store.getState();
     unconnectedAccountAlertShownOrigins = {
       ...unconnectedAccountAlertShownOrigins,
+      [origin]: true,
     };
-    unconnectedAccountAlertShownOrigins[origin] = true;
     this.store.updateState({ unconnectedAccountAlertShownOrigins });
   }
 
@@ -123,8 +125,8 @@ export default class AlertController {
     let { web3ShimUsageOrigins } = this.store.getState();
     web3ShimUsageOrigins = {
       ...web3ShimUsageOrigins,
+      [origin]: value,
     };
-    web3ShimUsageOrigins[origin] = value;
     this.store.updateState({ web3ShimUsageOrigins });
   }
 }

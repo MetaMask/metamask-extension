@@ -111,12 +111,10 @@ export default class AppStateController extends EventEmitter {
    * Drains the waitingForUnlock queue, resolving all the related Promises.
    */
   handleUnlock() {
-    if (this.waitingForUnlock.length > 0) {
-      while (this.waitingForUnlock.length > 0) {
-        this.waitingForUnlock.shift().resolve();
-      }
-      this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
+    while (this.waitingForUnlock.length > 0) {
+      this.waitingForUnlock.shift().resolve();
     }
+    this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
   }
 
   /**
