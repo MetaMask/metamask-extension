@@ -28,7 +28,7 @@ export default function CreationSuccessful() {
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
   return (
-    <div className="creation-successful">
+    <div className="creation-successful" data-testid="creation-successful">
       <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
