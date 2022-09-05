@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getHasAnyAccountWithNoFundsOnNetwork,
+  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
@@ -40,6 +42,9 @@ function mapStateToProps(state) {
     providerType: state.metamask.provider?.type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
+    isNetworkUsed: getIsNetworkUsed(state),
+    hasAnAccountWithNoFundsOnNetwork:
+      getHasAnyAccountWithNoFundsOnNetwork(state),
   };
 }
 

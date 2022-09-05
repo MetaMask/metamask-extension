@@ -46,7 +46,7 @@ Events triggered whilst using the extension will be displayed in Segment's Debug
 
 To opt in to MetaMetrics;
 - Unlock the extension
-- Open the Account menu 
+- Open the Account menu
 - Click the `Settings` menu item
 - Click the `Security & Privacy` menu item
 - Toggle the `Participate in MetaMetrics` menu option to the `ON` position

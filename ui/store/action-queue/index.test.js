@@ -51,7 +51,7 @@ describe('ActionQueue', () => {
       };
 
       _setBackgroundConnection(background);
-      await submitRequestToBackground('backgroundFunction1');
+      submitRequestToBackground('backgroundFunction1');
       expect(background.backgroundFunction1.called).toStrictEqual(true);
     });
 

@@ -51,7 +51,7 @@ export function dropQueue(silently) {
 }
 
 // add action to queue
-const executeActionOrAddtoRetryQueue = (item) => {
+const executeActionOrAddToRetryQueue = (item) => {
   if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
@@ -85,7 +85,7 @@ export function submitRequestToBackground(
 ) {
   if (isManifestV3) {
     return new Promise((resolve, reject) => {
-      executeActionOrAddtoRetryQueue({
+      executeActionOrAddToRetryQueue({
         actionId,
         request: { method, args },
         resolve,
@@ -117,7 +117,7 @@ export const callBackgroundMethod = (
   if (isManifestV3) {
     const resolve = (value) => callback(null, value);
     const reject = (err) => callback(err);
-    executeActionOrAddtoRetryQueue({
+    executeActionOrAddToRetryQueue({
       actionId,
       request: { method, args },
       resolve,
@@ -165,7 +165,7 @@ async function processActionRetryQueue() {
       actionRetryQueue.length > 0
     ) {
       // If background disconnects and fails the action, the next one will not be taken off the queue.
-      // Retrying an action that failed because of connection loss while it was alreaedy ongoing is not supported.
+      // Retrying an action that failed because of connection loss while it was processing is not supported.
       const item = actionRetryQueue.shift();
       await executeAction({
         action: item,
