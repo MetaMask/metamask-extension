@@ -373,6 +373,8 @@ export default class Routes extends Component {
     const shouldShowNetworkInfo =
       isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
 
+    const windowType = getEnvironmentType();
+
     return (
       <div
         className={classnames('app', {
@@ -388,7 +390,9 @@ export default class Routes extends Component {
           }
         }}
       >
-        {isUnlocked && <DeprecatedTestNetworks />}
+        {windowType !== ENVIRONMENT_TYPE_NOTIFICATION && isUnlocked && (
+          <DeprecatedTestNetworks />
+        )}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
