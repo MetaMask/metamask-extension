@@ -28,7 +28,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const [hiddenPhrase, setHiddenPhrase] = useState(false);
 
   return (
-    <div className="recovery-phrase">
+    <div className="recovery-phrase" data-testid="recovery-phrase">
       <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
