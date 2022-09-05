@@ -769,7 +769,7 @@ export default class TransactionController extends EventEmitter {
         this.txStateManager.getTransactionWithActionId(actionId);
       if (existingTxMeta) {
         this.emit('newUnapprovedTx', existingTxMeta);
-        existingTxMeta = this.addTransactionGasDefaults(existingTxMeta);
+        existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
         return existingTxMeta;
       }
     }
@@ -793,6 +793,7 @@ export default class TransactionController extends EventEmitter {
     });
 
     // Add actionId to txMeta to check if same actionId is seen again
+    // IF request to create transaction with same actionId is submitted again, new transaction will not be added for it.
     if (actionId) {
       txMeta.actionId = actionId;
     }
@@ -829,7 +830,7 @@ export default class TransactionController extends EventEmitter {
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
-    txMeta = this.addTransactionGasDefaults(txMeta);
+    txMeta = await this.addTransactionGasDefaults(txMeta);
 
     return txMeta;
   }
