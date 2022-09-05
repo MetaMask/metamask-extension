@@ -344,5 +344,11 @@ module.exports = {
         sourceType: 'script',
       },
     },
+    {
+      files: ['ui/pages/settings/*.js'],
+      rules: {
+        'sort-keys': ['error', 'asc', { natural: true }],
+      },
+    },
   ],
 };

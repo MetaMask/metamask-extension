@@ -1,4 +1,5 @@
 require('@babel/register');
+require('ts-node/register');
 
 require('./helpers/setup-helper');
 

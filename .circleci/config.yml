@@ -139,6 +139,9 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
+      - user-actions-benchmark:
+          requires:
+            - prep-build-test
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
@@ -152,6 +155,7 @@ workflows:
             - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
             - benchmark
+            - user-actions-benchmark
             - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
@@ -242,9 +246,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -262,7 +282,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type beta prod
+          command: yarn build --build-type beta dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -286,7 +306,7 @@ jobs:
           at: .
       - run:
           name: build:dist
-          command: yarn build --build-type flask prod
+          command: yarn build --build-type flask dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -617,6 +637,32 @@ jobs:
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+    
+  user-actions-benchmark:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Run page load benchmark
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

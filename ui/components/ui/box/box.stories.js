@@ -21,8 +21,23 @@ import Box from './box';
 
 import README from './README.mdx';
 
-const sizeKnobOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
+const sizeControlOptions = [
+  undefined,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+];
+const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
   title: 'Components/UI/Box',
@@ -34,6 +49,9 @@ export default {
     },
   },
   argTypes: {
+    children: {
+      table: { category: 'children' },
+    },
     size: {
       control: { type: 'range', min: 50, max: 500, step: 10 },
       table: { category: 'children' },
@@ -62,6 +80,11 @@ export default {
       defaultValue: BLOCK_SIZES.HALF,
       table: { category: 'display' },
     },
+    gap: {
+      control: 'select',
+      options: sizeControlOptions,
+      table: { category: 'display' },
+    },
     backgroundColor: {
       options: Object.values(BACKGROUND_COLORS),
       control: 'select',
@@ -81,8 +104,8 @@ export default {
       table: { category: 'border' },
     },
     borderWidth: {
-      options: sizeKnobOptions,
-      control: 'number',
+      options: sizeControlOptions,
+      control: 'select',
       table: { category: 'border' },
     },
     borderColor: {
@@ -125,58 +148,59 @@ export default {
       table: { category: 'text' },
     },
     margin: {
-      options: marginSizeKnobOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     marginTop: {
-      options: marginSizeKnobOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     marginRight: {
-      options: marginSizeKnobOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     marginBottom: {
-      options: marginSizeKnobOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     marginLeft: {
-      options: marginSizeKnobOptions,
+      options: marginSizeControlOptions,
       control: 'select',
       table: { category: 'margin' },
     },
     padding: {
-      options: sizeKnobOptions,
+      options: sizeControlOptions,
       control: 'select',
       table: { category: 'padding' },
     },
     paddingTop: {
-      options: sizeKnobOptions,
+      options: sizeControlOptions,
       control: 'select',
       table: { category: 'padding' },
     },
     paddingRight: {
-      options: sizeKnobOptions,
+      options: sizeControlOptions,
       control: 'select',
       table: { category: 'padding' },
     },
     paddingBottom: {
-      options: sizeKnobOptions,
+      options: sizeControlOptions,
       control: 'select',
       table: { category: 'padding' },
     },
     paddingLeft: {
-      options: sizeKnobOptions,
+      options: sizeControlOptions,
       control: 'select',
       table: { category: 'padding' },
     },
     as: {
       control: 'select',
       options: ['div', 'ul', 'li', 'span', 'a', 'button'],
+      table: { category: 'as (root html element)' },
     },
   },
 };
@@ -186,7 +210,14 @@ export const DefaultStory = (args) => {
   const children = [];
   for (let $i = 0; $i < items; $i++) {
     children.push(
-      <img key={$i} width={size} height={size} src="./images/eth_logo.svg" />,
+      <Box
+        as="img"
+        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={COLORS.BORDER_MUTED}
+        key={$i}
+        style={{ width: size, height: size }}
+        src="./images/eth_logo.svg"
+      />,
     );
   }
   return <Box {...rest}>{children}</Box>;
@@ -194,10 +225,11 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 
-export const Margin = () => {
+export const Margin = (args) => {
   return (
     <Box borderColor={COLORS.BORDER_MUTED}>
       <Box
+        {...args}
         margin={2}
         padding={4}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
@@ -206,6 +238,7 @@ export const Margin = () => {
         Static margin
       </Box>
       <Box
+        {...args}
         margin={[2, 4, 8, 12]}
         padding={[4]}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
@@ -217,10 +250,11 @@ export const Margin = () => {
   );
 };
 
-export const Padding = () => {
+export const Padding = (args) => {
   return (
     <Box borderColor={COLORS.BORDER_MUTED}>
       <Box
+        {...args}
         padding={4}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_MUTED}
@@ -228,6 +262,7 @@ export const Padding = () => {
         Static padding
       </Box>
       <Box
+        {...args}
         padding={[4, 8, 12]}
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         borderColor={COLORS.BORDER_MUTED}
@@ -235,6 +270,83 @@ export const Padding = () => {
         Responsive padding changes based on breakpoint
       </Box>
     </Box>
+  );
+};
+
+export const Color = (args) => {
+  return (
+    <>
+      <Box {...args} padding={3} color={COLORS.TEXT_DEFAULT}>
+        COLORS.TEXT_DEFAULT
+      </Box>
+      <Box {...args} padding={3} color={COLORS.TEXT_ALTERNATIVE}>
+        COLORS.TEXT_ALTERNATIVE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.TEXT_MUTED}>
+        COLORS.TEXT_MUTED
+      </Box>
+      <Box {...args} padding={3} color={COLORS.PRIMARY_DEFAULT}>
+        COLORS.PRIMARY_DEFAULT
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        color={COLORS.PRIMARY_INVERSE}
+        backgroundColor={COLORS.PRIMARY_DEFAULT}
+      >
+        COLORS.PRIMARY_INVERSE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.ERROR_DEFAULT}>
+        COLORS.ERROR_DEFAULT
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        color={COLORS.ERROR_INVERSE}
+        backgroundColor={COLORS.ERROR_DEFAULT}
+      >
+        COLORS.ERROR_INVERSE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.SUCCESS_DEFAULT}>
+        COLORS.SUCCESS_DEFAULT
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        color={COLORS.SUCCESS_INVERSE}
+        backgroundColor={COLORS.SUCCESS_DEFAULT}
+        {...args}
+      >
+        COLORS.SUCCESS_INVERSE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT} {...args}>
+        COLORS.WARNING_DEFAULT
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        color={COLORS.WARNING_INVERSE}
+        backgroundColor={COLORS.WARNING_DEFAULT}
+        {...args}
+      >
+        COLORS.WARNING_INVERSE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT} {...args}>
+        COLORS.INFO_DEFAULT
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        color={COLORS.INFO_INVERSE}
+        backgroundColor={COLORS.INFO_DEFAULT}
+        {...args}
+      >
+        COLORS.INFO_INVERSE
+      </Box>
+      <Box {...args} padding={3} color={COLORS.INHERIT} {...args}>
+        COLORS.INHERIT
+      </Box>
+    </>
   );
 };
 
@@ -264,16 +376,6 @@ export const BackgroundColor = () => {
       <Box padding={3} backgroundColor={COLORS.PRIMARY_MUTED}>
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.PRIMARY_MUTED
-        </Typography>
-      </Box>
-      <Box padding={3} backgroundColor={COLORS.SECONDARY_DEFAULT}>
-        <Typography color={COLORS.SECONDARY_INVERSE}>
-          COLORS.SECONDARY_DEFAULT
-        </Typography>
-      </Box>
-      <Box padding={3} backgroundColor={COLORS.SECONDARY_MUTED}>
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.SECONDARY_MUTED
         </Typography>
       </Box>
       <Box padding={3} backgroundColor={COLORS.ERROR_DEFAULT}>
@@ -315,6 +417,8 @@ export const BorderColor = () => {
         padding={3}
         backgroundColor={COLORS.BACKGROUND_DEFAULT}
         borderColor={COLORS.BORDER_DEFAULT}
+        borderWidth={2}
+        marginBottom={1}
       >
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.BORDER_DEFAULT
@@ -324,12 +428,16 @@ export const BorderColor = () => {
         padding={3}
         backgroundColor={COLORS.BACKGROUND_DEFAULT}
         borderColor={COLORS.BORDER_MUTED}
+        borderWidth={2}
+        marginBottom={1}
       >
         <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BORDER_MUTED</Typography>
       </Box>
       <Box
         padding={3}
         borderColor={COLORS.PRIMARY_DEFAULT}
+        borderWidth={2}
+        marginBottom={1}
         backgroundColor={COLORS.PRIMARY_MUTED}
       >
         <Typography color={COLORS.TEXT_DEFAULT}>
@@ -338,17 +446,10 @@ export const BorderColor = () => {
       </Box>
       <Box
         padding={3}
-        backgroundColor={COLORS.SECONDARY_MUTED}
-        borderColor={COLORS.SECONDARY_DEFAULT}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.SECONDARY_DEFAULT
-        </Typography>
-      </Box>
-      <Box
-        padding={3}
         backgroundColor={COLORS.ERROR_MUTED}
         borderColor={COLORS.ERROR_DEFAULT}
+        borderWidth={2}
+        marginBottom={1}
       >
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.ERROR_DEFAULT
@@ -358,6 +459,8 @@ export const BorderColor = () => {
         padding={3}
         backgroundColor={COLORS.SUCCESS_MUTED}
         borderColor={COLORS.SUCCESS_DEFAULT}
+        borderWidth={2}
+        marginBottom={1}
       >
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.SUCCESS_DEFAULT
@@ -367,6 +470,7 @@ export const BorderColor = () => {
         padding={3}
         backgroundColor={COLORS.WARNING_MUTED}
         borderColor={COLORS.WARNING_DEFAULT}
+        borderWidth={2}
       >
         <Typography color={COLORS.TEXT_DEFAULT}>
           COLORS.WARNING_DEFAULT
@@ -431,28 +535,6 @@ export const As = (args) => {
       <Box as="li">li</Box>
       <Box as="button">button</Box>
       <Box as="header">header</Box>
-    </>
-  );
-};
-
-export const Color = () => {
-  return (
-    <>
-      <Box padding={3} color={COLORS.TEXT_DEFAULT}>
-        <Typography>COLORS.TEXT_DEFAULT</Typography>
-      </Box>
-      <Box padding={3} color={COLORS.PRIMARY_DEFAULT}>
-        COLORS.PRIMARY_DEFAULT
-      </Box>
-      <Box padding={3} color={COLORS.SECONDARY_DEFAULT}>
-        COLORS.SECONDARY_DEFAULT
-      </Box>
-      <Box padding={3} color={COLORS.ERROR_DEFAULT}>
-        COLORS.ERROR_DEFAULT
-      </Box>
-      <Box padding={3} color={COLORS.SUCCESS_DEFAULT}>
-        COLORS.SUCCESS_DEFAULT
-      </Box>
     </>
   );
 };

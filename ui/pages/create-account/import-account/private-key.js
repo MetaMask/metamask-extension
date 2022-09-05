@@ -7,7 +7,7 @@ import * as actions from '../../../store/actions';
 import { getMetaMaskAccounts } from '../../../selectors';
 import Button from '../../../components/ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 class PrivateKeyImportView extends Component {
   static contextTypes = {
@@ -46,10 +46,10 @@ class PrivateKeyImportView extends Component {
         if (selectedAddress) {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: 'Imported Account with Private Key',
+            event: EVENT_NAMES.ACCOUNT_ADDED,
             properties: {
-              action: 'Import account',
-              legacy_event: true,
+              account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+              account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
             },
           });
           history.push(mostRecentOverviewPage);
@@ -58,10 +58,10 @@ class PrivateKeyImportView extends Component {
           displayWarning(t('importAccountError'));
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: 'Error importing with Private Key',
+            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
             properties: {
-              action: 'Import account',
-              legacy_event: true,
+              account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+              account_import_type: EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY,
             },
           });
           setSelectedAddress(firstAddress);

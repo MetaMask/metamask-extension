@@ -6,9 +6,6 @@ import MetaMetricsOptIn from './metametrics-opt-in.container';
 
 describe('MetaMetricsOptIn', () => {
   it('opt out of MetaMetrics', () => {
-    afterEach(() => {
-      sinon.resetHistory();
-    });
     const props = {
       history: {
         push: sinon.spy(),
@@ -23,5 +20,6 @@ describe('MetaMetricsOptIn', () => {
     expect(
       props.setParticipateInMetaMetrics.calledOnceWithExactly(false),
     ).toStrictEqual(true);
+    sinon.resetHistory();
   });
 });

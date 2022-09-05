@@ -201,7 +201,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               usingWebHID &&
                 webHidConnectedStatus ===
                   WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
-              COLORS.SECONDARY_DEFAULT,
+              COLORS.WARNING_DEFAULT,
             )}
           </div>
         </Dialog>

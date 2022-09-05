@@ -9,6 +9,7 @@ import {
   BACKGROUND_COLORS,
   BORDER_COLORS,
   TEXT_COLORS,
+  ICON_COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
@@ -28,6 +29,7 @@ export const ValidBackgroundColors = PropTypes.oneOf(
 );
 export const ValidBorderColors = PropTypes.oneOf(Object.values(BORDER_COLORS));
 export const ValidTextColors = PropTypes.oneOf(Object.values(TEXT_COLORS));
+export const ValidIconColors = PropTypes.oneOf(Object.values(ICON_COLORS));
 
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
@@ -54,9 +56,12 @@ export const MultipleBackgroundColors = PropTypes.oneOfType([
 ]);
 
 const ArrayOfValidTextColors = PropTypes.arrayOf(ValidTextColors);
+const ArrayOfValidIconColors = PropTypes.arrayOf(ValidIconColors);
 export const MultipleTextColors = PropTypes.oneOfType([
   ValidTextColors,
   ArrayOfValidTextColors,
+  ValidIconColors,
+  ArrayOfValidIconColors,
 ]);
 
 function isValidSize(type, value) {
@@ -185,8 +190,8 @@ export default function Box({
   children,
   className,
   backgroundColor,
-  as = 'div',
   color,
+  as = 'div',
   ...props
 }) {
   const boxClassName = classnames(
@@ -227,7 +232,6 @@ export default function Box({
     borderColor &&
       generateClassNames('border-color', borderColor, isValidString),
     borderWidth && generateClassNames('border-width', borderWidth, isValidSize),
-
     {
       // Auto applied classes
       // ---Borders---
@@ -313,11 +317,15 @@ Box.propTypes = {
     PropTypes.arrayOf(PropTypes.oneOf(Object.values(BLOCK_SIZES))),
   ]),
   backgroundColor: MultipleBackgroundColors,
-  color: MultipleTextColors,
   className: PropTypes.string,
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Box component
    * Defaults to 'div'
    */
   as: PropTypes.string,
+  /**
+   * The color of the Typography component Should use the COLOR object from
+   * ./ui/helpers/constants/design-system.js
+   */
+  color: MultipleTextColors,
 };

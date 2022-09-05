@@ -20,9 +20,10 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../../shared/modules/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -165,10 +166,9 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const { showResultMessage, restoreSuccessful } = this.state;
 
-    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 14;
     return (
       <div
-        ref={this.settingsRefs[settingsRefIndex]}
+        ref={this.settingsRefs[15]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-restore"
       >
@@ -209,10 +209,9 @@ export default class AdvancedTab extends PureComponent {
 
   renderUserDataBackup() {
     const { t } = this.context;
-    const settingsRefIndex = process.env.TOKEN_DETECTION_V2 ? 15 : 13;
     return (
       <div
-        ref={this.settingsRefs[settingsRefIndex]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
       >
@@ -304,11 +303,8 @@ export default class AdvancedTab extends PureComponent {
                 event.preventDefault();
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Reset Account',
-                  properties: {
-                    action: 'Reset Account',
-                    legacy_event: true,
-                  },
+                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  properties: {},
                 });
                 showResetAccountConfirmationModal();
               }}
@@ -633,7 +629,7 @@ export default class AdvancedTab extends PureComponent {
               <Button
                 key="ledger-connection-settings-learn-more"
                 type="link"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+                href={ZENDESK_URLS.HARDWARE_CONNECTION}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="settings-page__inline-link"

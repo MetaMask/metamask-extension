@@ -34,6 +34,7 @@ import ConfirmationPage from '../../../pages/confirmation/confirmation';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);
@@ -216,7 +217,7 @@ const AddNetwork = () => {
                             {t('addNetworkTooltipWarning', [
                               <a
                                 key="zendesk_page_link"
-                                href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
+                                href={ZENDESK_URLS.UNKNOWN_NETWORK}
                                 rel="noreferrer"
                                 target="_blank"
                               >

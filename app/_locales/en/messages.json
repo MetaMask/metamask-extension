@@ -369,6 +369,9 @@
   "assets": {
     "message": "Assets"
   },
+  "attemptSendingAssets": {
+    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
+  },
   "attemptToCancel": {
     "message": "Attempt to cancel?"
   },
@@ -428,6 +431,9 @@
   },
   "basic": {
     "message": "Basic"
+  },
+  "beCareful": {
+    "message": "Be careful"
   },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
@@ -579,6 +585,9 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToManuallyAdd": {
+    "message": "Click here to manually add the tokens."
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
@@ -737,8 +746,20 @@
   "contractDeployment": {
     "message": "Contract deployment"
   },
+  "contractDescription": {
+    "message": "To protect yourself against scammers, take a moment to verify contract details."
+  },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "contractRequestingSpendingCap": {
+    "message": "Contract requesting spending cap"
+  },
+  "contractTitle": {
+    "message": "Contract details"
+  },
+  "contractToken": {
+    "message": "Token contract"
   },
   "convertTokenToNFTDescription": {
     "message": "We've detected that this asset is an NFT. MetaMask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
@@ -831,6 +852,9 @@
   "customSpendLimit": {
     "message": "Custom spend limit"
   },
+  "customSpendingCap": {
+    "message": "Custom spending cap"
+  },
   "customToken": {
     "message": "Custom token"
   },
@@ -838,7 +862,7 @@
     "message": "Token detection is not available on this network yet. Please import token manually and make sure you trust it. Learn about $1"
   },
   "customTokenWarningInTokenDetectionNetwork": {
-    "message": "Before manually importing a token, make sure you trust it. Learn about $1."
+    "message": "Before manually importing a token, make sure you trust it. Learn about $1"
   },
   "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
     "message": "Make sure you trust a token before you import it. Learn how to avoid $1. You can also enable token detection $2."
@@ -2035,6 +2059,10 @@
   "name": {
     "message": "Name"
   },
+  "nativeToken": {
+    "message": "The native token on this network is $1. It is the token used for gas fees.",
+    "description": "$1 represents the name of the native token on the current network"
+  },
   "needCryptoInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -2396,9 +2424,12 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
-  "numberOfNewTokensDetected": {
+  "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
+  },
+  "numberOfNewTokensDetectedSingular": {
+    "message": "1 new token found in this account"
   },
   "ofTextNofM": {
     "message": "of"
@@ -2478,6 +2509,9 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "openInBlockExplorer": {
+    "message": "Open in block explorer"
   },
   "optional": {
     "message": "Optional"
@@ -2576,6 +2610,10 @@
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
+  },
+  "permission_manageBip32Keys": {
+    "message": "Control your accounts and assets under $1 ($2).",
+    "description": "The description for the `snap_getBip32Entropy_*` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
@@ -2833,6 +2871,9 @@
   "revokeApproveForAllDescription": {
     "message": "By revoking permission, the following $1 will no longer be able to access your $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCapTooltipText": {
+    "message": "This contract will be unable to spend any more of your current or future tokens."
   },
   "rinkeby": {
     "message": "Rinkeby test network"
@@ -3746,6 +3787,9 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
+  "switchedTo": {
+    "message": "You have switched to"
+  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -3812,6 +3856,9 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "thingsToKeep": {
+    "message": "Things to keep in mind:"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -3862,6 +3909,9 @@
   "tokenDetectionDescription": {
     "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on  Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, you will still be able to search for tokens on Ethereum mainnet using MetaMask's legacy token list."
   },
+  "tokenFoundTitle": {
+    "message": "1 new token found"
+  },
   "tokenId": {
     "message": "Token ID"
   },
@@ -3870,6 +3920,9 @@
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
+  },
+  "tokenShowUp": {
+    "message": "Your tokens may not automatically show up in your wallet."
   },
   "tokenSymbol": {
     "message": "Token symbol"
@@ -4188,6 +4241,10 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "warningTooltipText": {
+    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Weak"
