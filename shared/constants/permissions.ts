@@ -9,6 +9,7 @@ export const RestrictedMethods = Object.freeze({
   snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
   snap_getBip32Entropy: 'snap_getBip32Entropy',
+  snap_getBip44Entropy: 'snap_getBip44Entropy',
   'snap_getBip44Entropy_*': 'snap_getBip44Entropy_*',
   'wallet_snap_*': 'wallet_snap_*',
   ///: END:ONLY_INCLUDE_IN
@@ -23,6 +24,7 @@ export const PermissionNamespaces = Object.freeze({
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:long-running': 'endowment:long-running',
+  'endowment:transaction-insight': 'endowment:transaction-insight',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.

@@ -11,6 +11,7 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
+const IN_TEST = process.env.IN_TEST;
 /* eslint-enable prefer-destructuring */
 
 // This describes the subset of Redux state attached to errors sent to Sentry
@@ -71,7 +72,13 @@ export const SENTRY_STATE = {
 export default function setupSentry({ release, getState }) {
   if (!release) {
     throw new Error('Missing release');
-  } else if (METAMASK_DEBUG) {
+  } else if (METAMASK_DEBUG && !IN_TEST) {
+    /**
+     * Workaround until the following issue is resolved
+     * https://github.com/MetaMask/metamask-extension/issues/15691
+     * The IN_TEST condition allows the e2e tests to run with both
+     * yarn start:test and yarn build:test
+     */
     return undefined;
   }
 

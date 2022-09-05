@@ -649,7 +649,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.6.0',
+        'https://metamask.github.io/iframe-execution-environment/0.7.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -1174,7 +1174,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         handleSnapRpcRequest: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:handleRpcRequest',
+          'SnapController:handleRequest',
         ),
         getSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -1849,12 +1849,22 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // snaps
-      removeSnapError: this.snapController.removeSnapError.bind(
-        this.snapController,
+      removeSnapError: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:removeSnapError',
       ),
-      disableSnap: this.snapController.disableSnap.bind(this.snapController),
-      enableSnap: this.snapController.enableSnap.bind(this.snapController),
-      removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      disableSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:disable',
+      ),
+      enableSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:enable',
+      ),
+      removeSnap: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:remove',
+      ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
@@ -3760,8 +3770,9 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
-        getSnaps: this.snapController.getPermittedSnaps.bind(
-          this.snapController,
+        getSnaps: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getSnaps',
           origin,
         ),
         requestPermissions: async (requestedPermissions) => {
@@ -3778,8 +3789,9 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         getAccounts: this.getPermittedAccounts.bind(this, origin),
-        installSnaps: this.snapController.installSnaps.bind(
-          this.snapController,
+        installSnaps: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:install',
           origin,
         ),
       }),
