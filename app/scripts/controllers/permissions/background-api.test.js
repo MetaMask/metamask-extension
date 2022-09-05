@@ -34,7 +34,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('does not call permissionController.updateCaveat if the specified account is already permitted', () => {
+    it('does not add a permitted account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementationOnce(() => {
           return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
