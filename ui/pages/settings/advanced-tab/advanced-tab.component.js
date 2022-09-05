@@ -23,6 +23,7 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../../shared/modules/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -628,7 +629,7 @@ export default class AdvancedTab extends PureComponent {
               <Button
                 key="ledger-connection-settings-learn-more"
                 type="link"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+                href={ZENDESK_URLS.HARDWARE_CONNECTION}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="settings-page__inline-link"

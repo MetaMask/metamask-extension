@@ -44,6 +44,8 @@ ignores:
   - 'css-loader'
   - 'sass-loader'
   - 'resolve-url-loader'
+  # jest environments
+  - 'jest-environment-jsdom'
 
 # files depcheck should not parse
 ignorePatterns:

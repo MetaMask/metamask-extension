@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
 import { BuildType } from '../../../shared/constants/app';
+import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 /* eslint-disable prefer-destructuring */
@@ -10,6 +11,7 @@ const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
+const IN_TEST = process.env.IN_TEST;
 /* eslint-enable prefer-destructuring */
 
 // This describes the subset of Redux state attached to errors sent to Sentry
@@ -70,7 +72,13 @@ export const SENTRY_STATE = {
 export default function setupSentry({ release, getState }) {
   if (!release) {
     throw new Error('Missing release');
-  } else if (METAMASK_DEBUG) {
+  } else if (METAMASK_DEBUG && !IN_TEST) {
+    /**
+     * Workaround until the following issue is resolved
+     * https://github.com/MetaMask/metamask-extension/issues/15691
+     * The IN_TEST condition allows the e2e tests to run with both
+     * yarn start:test and yarn build:test
+     */
     return undefined;
   }
 
@@ -97,23 +105,36 @@ export default function setupSentry({ release, getState }) {
     sentryTarget = SENTRY_DSN_DEV;
   }
 
+  /**
+   * A function that returns whether MetaMetrics is enabled. This should also
+   * return `false` if state has not yet been initialzed.
+   *
+   * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+   * is enabled, `false` otherwise.
+   */
+  function getMetaMetricsEnabled() {
+    if (getState) {
+      const appState = getState();
+      if (!appState?.store?.metamask?.participateInMetaMetrics) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
     environment,
-    integrations: [new Dedupe(), new ExtraErrorData()],
+    integrations: [
+      new FilterEvents({ getMetaMetricsEnabled }),
+      new Dedupe(),
+      new ExtraErrorData(),
+    ],
     release,
-    beforeSend: (report) => {
-      if (getState) {
-        const appState = getState();
-        if (!appState?.store?.metamask?.participateInMetaMetrics) {
-          return null;
-        }
-      } else {
-        return null;
-      }
-      return rewriteReport(report);
-    },
+    beforeSend: (report) => rewriteReport(report),
     beforeBreadcrumb(breadcrumb) {
       if (getState) {
         const appState = getState();
