@@ -56,19 +56,19 @@ import createInfuraClient from '../createInfuraClient';
  */
 
 /**
- * @typedef {{network: string}} InfuraCommunicationsOptions
+ * @typedef {{network: string}} MockingInfuraCommunicationsOptions
  *
  * The options bag that `mockingInfuraCommunications` takes.
  */
 
 /**
- * @typedef {(client: InfuraClient) => Promise<any>} InfuraCommunicationsOptionsCallback
+ * @typedef {(comms: InfuraCommunications) => Promise<any>} MockingInfuraCommunicationsCallback
  *
  * The callback that `mockingInfuraCommunications` takes.
  */
 
 /**
- * @typedef {[MockingInfuraCommunicationsOptions, MockingInfuraCommunicationsCallback] | [WithInfuraClientCallback]} MockingInfuraCommunicationsArgs
+ * @typedef {[MockingInfuraCommunicationsOptions, MockingInfuraCommunicationsCallback] | [MockingInfuraCommunicationsCallback]} MockingInfuraCommunicationsArgs
  *
  * The arguments to `mockingInfuraCommunications`.
  */
