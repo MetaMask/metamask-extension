@@ -334,11 +334,14 @@ describe('Transaction Controller', function () {
     const selectedAddress = '0x1678a085c290ebd122dc42cba69373b5953b831d';
     const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
-    let getSelectedAddress, getPermittedAccounts;
+    let getSelectedAddress, getPermittedAccounts, getDefaultGasFees;
     beforeEach(function () {
       getSelectedAddress = sinon
         .stub(txController, 'getSelectedAddress')
         .returns(selectedAddress);
+      getDefaultGasFees = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .returns({});
       getPermittedAccounts = sinon
         .stub(txController, 'getPermittedAccounts')
         .returns([selectedAddress]);
@@ -347,6 +350,7 @@ describe('Transaction Controller', function () {
     afterEach(function () {
       getSelectedAddress.restore();
       getPermittedAccounts.restore();
+      getDefaultGasFees.restore();
     });
 
     it('should add an unapproved transaction and return a valid txMeta', async function () {
@@ -370,6 +374,62 @@ describe('Transaction Controller', function () {
 
       const memTxMeta = txController.txStateManager.getTransaction(txMeta.id);
       assert.deepEqual(txMeta, memTxMeta);
+    });
+
+    it('should add only 1 unapproved transaction when called twice with same actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1, transactionCount2);
+    });
+
+    it('should add multiple transactions when called with different actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.addUnapprovedTransaction(
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '00000',
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1 + 1, transactionCount2);
     });
 
     it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
