@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
-import { 
+import {
   isValidDomainName,
   isValidUnstoppableDomainName,
-  buildJson, 
+  buildJson,
+  getUdTlds,
 } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
@@ -58,16 +59,14 @@ export default class DomainInput extends Component {
     }
   };
 
-  onChange = ({ target: { value } }) => {
+  onChange = async ({ target: { value } }) => {
     const {
       onValidAddressTyped,
       internalSearch,
       onChange,
       lookupEnsName,
-      resolveUNS,
       resetEnsResolution,
       resetUnsResolution,
-      resolveMultiChainUNS,
       prepareResolutionCall,
     } = this.props;
     const input = value.trim();
@@ -78,16 +77,13 @@ export default class DomainInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-    if (isValidUnstoppableDomainName(input) !== null) {
+    if (isValidDomainName(input) && await isValidUnstoppableDomainName(input)) {
       resetEnsResolution();
-      // if(prepareResolutionCall() === 'NATIVE'){
-         //console.log(resolveUNS(input));
-      // }
       prepareResolutionCall(input);
-      resetEnsResolution(); 
-       
-    } else if (!isValidUnstoppableDomainName(input) && isValidDomainName(input) ) {
-        lookupEnsName(input);
+
+    } else if (isValidDomainName(input)) {
+      resetUnsResolution();
+      lookupEnsName(input);
     } else {
       resetUnsResolution();
       resetEnsResolution();
@@ -101,6 +97,8 @@ export default class DomainInput extends Component {
     }
 
     return null;
+
+
   };
 
   render() {

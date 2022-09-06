@@ -95,35 +95,76 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-        checked.length - lastSegLength,
-      )}`
+      checked.length - lastSegLength,
+    )}`
     : '...';
 }
 
 export function isValidDomainName(address) {
   const match = punycode
-   .toASCII(address)
-   .toLowerCase()
-   // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
-   // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
-   // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
-   .match(
-     /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
-   );
+    .toASCII(address)
+    .toLowerCase()
+    // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
+    // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
+    // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
+    .match(
+      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
+    );
   return match !== null;
 }
 
-export function isValidUnstoppableDomainName(address) {
-  let valid = null;
-  ALLOWED_UNSTOPPABLE_TLDS.forEach((tld, i) => {
-  if (address.toLowerCase().includes(tld)) {
-    valid = address;
-  }
-  })
-  return valid;
- }
+// export function isValidUnstoppableDomainName(address) {
+//   let valid = null;
+//   ALLOWED_UNSTOPPABLE_TLDS.forEach((tld, i) => {
+//   if (address.toLowerCase().includes(tld)) {
+//     valid = address;
+//   }
+//   })
+//   return valid;
+//  }
+export async function isValidUnstoppableDomainName(address) {
+  let tlds = await getUdTlds();
+  let result = false; 
+    tlds.forEach((tld, i) => {
+      if (address.toLowerCase().includes(tld)) {
+        result = true;
+      }
+    })
+    return result;
+}
+export async function getUdTlds() {
+  let parsedResponse = "{}";
+  let result = [];
+  const url = 'https://resolve.unstoppabledomains.com/supported_tlds';
+  let response = await fetch(url);
+  let data = await response.text();
+  parsedResponse = JSON.parse(data);
+  result = parsedResponse.tlds
+  return result;
+}
 
- export function buildJson(input=RESPONSE_JSON) {
+export async function getAndParseUdCurrencies() {
+  let resultObject = {
+    "singleChain": [
+    ],
+    "multiChain": [
+    ]
+  };
+  const url = 'https://unstoppabledomains.com/api/uns-resolver-keys';
+  let response = await fetch(url);
+  let data = await response.text();
+  let currencyArray = parseKeysArray(JSON.parse(data).keys);
+  currencyArray.forEach(function (crypto) {
+    if (crypto.deprecatedKeyName.includes("_")) {
+      resultObject.multiChain.push(crypto.deprecatedKeyName);
+    } else {
+      resultObject.singleChain.push(crypto.deprecatedKeyName);
+    }
+  })
+  return resultObject;
+}
+
+export function buildJson(input = RESPONSE_JSON) {
   let finalObject = {
     "singleChain": [
     ],
@@ -132,22 +173,22 @@ export function isValidUnstoppableDomainName(address) {
   };
   let currencyArray = parseKeysArray(input.keys);
   currencyArray.forEach(function (crypto) {
-    if (crypto.deprecatedKeyName.includes("_")){
+    if (crypto.deprecatedKeyName.includes("_")) {
       finalObject.multiChain.push(crypto.deprecatedKeyName);
     } else {
       finalObject.singleChain.push(crypto.deprecatedKeyName);
     }
   })
   return finalObject;
- }
+}
 
- export function parseKeysArray(json){
+export function parseKeysArray(json) {
   var result = [];
   var keys = Object.keys(json);
-  keys.forEach(function(key){
-      if (key.startsWith("crypto")) {
-        result.push(json[key]);
-      }
+  keys.forEach(function (key) {
+    if (key.startsWith("crypto")) {
+      result.push(json[key]);
+    }
   });
   return result;
 }

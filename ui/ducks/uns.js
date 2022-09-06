@@ -17,7 +17,7 @@ import {
   UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
 import {
-  buildJson,
+  buildJson, getAndParseUdCurrencies,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
@@ -167,9 +167,9 @@ export async function resolveMultiChainUNS(unsName, symbol, version) {
 export async function swapToken(unsName, asset) {
   let object = {}
   if (typeof (asset) === 'string') {
-    object.chainType = determineChainType(asset)
+    object.chainType = await determineChainType(asset)
   } else if (typeof (asset) === 'object') {
-    object.chainType = determineChainType(asset);
+    object.chainType =  await determineChainType(asset);
   }
   if (object.chainType === 'SINGLE_CHAIN') {
     object = await resolveUNS(unsName, asset);
@@ -180,8 +180,8 @@ export async function swapToken(unsName, asset) {
   return object
 }
 
-function determineChainType(asset) {
-  let json = buildJson();
+async function determineChainType(asset) {
+  let json = await getAndParseUdCurrencies()//buildJson();
   let result;
   for (let i = 0; i < json.singleChain.length; i++) {
     if (asset === json.singleChain[i]) {
@@ -199,7 +199,7 @@ export function prepareResolutionCall(unsName) {
       await dispatch(initializeUnsSlice());
     }
     if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
-      result = determineChainType(state.metamask.nativeCurrency);
+      result = await determineChainType(state.metamask.nativeCurrency);
     } else {
       result = 'MULTI_CHAIN';
     }
