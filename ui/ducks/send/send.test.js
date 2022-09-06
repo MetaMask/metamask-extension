@@ -97,7 +97,7 @@ setBackgroundConnection({
   addUnapprovedTransaction: jest.fn((_v, _w, _x, _y, _z, cb) => {
     cb(null);
   }),
-  updateTransactionSendFlowHistory: jest.fn((_x, _y, cb) => cb(null)),
+  updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
 });
 
 const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];

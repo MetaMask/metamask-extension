@@ -761,17 +761,22 @@ export function updateEditableParams(txId, editableParams) {
  * Appends new send flow history to a transaction
  *
  * @param {string} txId - the id of the transaction to update
+ * @param {number} currentSendFlowHistoryLength - sendFlowHistory entries currently
  * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - the new send flow history to append to the
  *  transaction
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
-export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+export function updateTransactionSendFlowHistory(
+  txId,
+  currentSendFlowHistoryLength,
+  sendFlowHistory,
+) {
   return async (dispatch) => {
     let updatedTransaction;
     try {
       updatedTransaction = await submitRequestToBackground(
         'updateTransactionSendFlowHistory',
-        [txId, sendFlowHistory],
+        [txId, currentSendFlowHistoryLength, sendFlowHistory],
       );
     } catch (error) {
       dispatch(txError(error));
