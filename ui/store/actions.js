@@ -761,17 +761,22 @@ export function updateEditableParams(txId, editableParams) {
  * Appends new send flow history to a transaction
  *
  * @param {string} txId - the id of the transaction to update
+ * @param {number} currentSendFlowHistoryLength - sendFlowHistory entries currently
  * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - the new send flow history to append to the
  *  transaction
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
-export function updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+export function updateTransactionSendFlowHistory(
+  txId,
+  currentSendFlowHistoryLength,
+  sendFlowHistory,
+) {
   return async (dispatch) => {
     let updatedTransaction;
     try {
       updatedTransaction = await submitRequestToBackground(
         'updateTransactionSendFlowHistory',
-        [txId, sendFlowHistory],
+        [txId, currentSendFlowHistoryLength, sendFlowHistory],
       );
     } catch (error) {
       dispatch(txError(error));
@@ -889,11 +894,13 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
   sendFlowHistory,
 ) {
   return async (dispatch) => {
+    const actionId = Date.now() + Math.random();
     try {
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await submitRequestToBackground(
         'addUnapprovedTransaction',
-        [txParams, ORIGIN_METAMASK, type, sendFlowHistory],
+        [txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
+        actionId,
       );
       dispatch(showConfTxPage());
       return txMeta;
@@ -920,11 +927,12 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  */
 export async function addUnapprovedTransaction(txParams, type) {
   log.debug('background.addUnapprovedTransaction');
-  const txMeta = await submitRequestToBackground('addUnapprovedTransaction', [
-    txParams,
-    ORIGIN_METAMASK,
-    type,
-  ]);
+  const actionId = Date.now() + Math.random();
+  const txMeta = await submitRequestToBackground(
+    'addUnapprovedTransaction',
+    [txParams, ORIGIN_METAMASK, type, undefined, actionId],
+    actionId,
+  );
   return txMeta;
 }
 
