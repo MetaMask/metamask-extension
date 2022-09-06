@@ -10,7 +10,7 @@ import {
 } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
-import { generateUUID } from 'pubnub';
+import { v4 as uuidv4 } from 'uuid';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -190,7 +190,7 @@ export default class MetaMetricsController {
     }
     const { fragments } = this.store.getState();
 
-    const id = options.uniqueIdentifier ?? generateUUID();
+    const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
       id,
       ...options,
