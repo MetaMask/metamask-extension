@@ -20,8 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix block explorer link on custom networks for the cases when link is invalid or left empty ([#13870](https://github.com/MetaMask/metamask-extension/pull/13870))
 - Fix signature parsing errors re-surfaced due to 4byte function signature directory being down, by removing the directory([#15300](https://github.com/MetaMask/metamask-extension/pull/15300))
 - Fix intermitent failure when performing a Send tx in non-EIP-1559 networks (like Optimism) by setting the `gasPrice` ([#15628](https://github.com/MetaMask/metamask-extension/pull/15628))
-
-
+- Fix disabled label colors for Token Symbol and Token Decimal while in dark mode in 'Import Token Page'. ([#15590](https://github.com/MetaMask/metamask-extension/pull/15743))
+ 
 ## [10.18.3]
 ### Fixed
 - Prevent confirm screen from showing method name from contract registry for transactions created within MetaMask ([#15472](https://github.com/MetaMask/metamask-extension/pull/15472))
