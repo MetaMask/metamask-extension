@@ -213,7 +213,7 @@ export default class MetaMetricsController {
     });
 
     if (options.initialEvent) {
-      this.trackEvent({
+      this._trackEvent({
         event: fragment.initialEvent,
         category: fragment.category,
         properties: fragment.properties,
@@ -314,7 +314,7 @@ export default class MetaMetricsController {
 
     const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
 
-    this.trackEvent({
+    this._trackEvent({
       event: eventName,
       category: fragment.category,
       properties: fragment.properties,
@@ -392,7 +392,7 @@ export default class MetaMetricsController {
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
-      this.trackEventsAfterMetricsOptIn();
+      this._trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
     }
 
@@ -443,13 +443,18 @@ export default class MetaMetricsController {
     }
   }
 
+  // Track metametrics event by creating a fragment for it.
+  trackEvent(payload, options) {
+    this.createEventFragment({ ...payload, ...options });
+  }
+
   /**
    * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
    *
    * @param {MetaMetricsEventPayload} payload - details of the event
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    */
-  trackEvent(payload, options) {
+  _trackEvent(payload, options) {
     // validation is not caught and handled
     this.validatePayload(payload);
     this.submitEvent(payload, options).catch((err) =>
@@ -542,7 +547,7 @@ export default class MetaMetricsController {
   trackEventsAfterMetricsOptIn() {
     const { eventsBeforeMetricsOptIn } = this.store.getState();
     eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
-      this.trackEvent(eventBeforeMetricsOptIn);
+      this._trackEvent(eventBeforeMetricsOptIn);
     });
   }
 
