@@ -36,6 +36,9 @@
 
     &__label {
       flex: 0 0 auto;
+      &--disabled {
+        color: var(--color-text-muted);
+      }
     }
 
     &__edit {

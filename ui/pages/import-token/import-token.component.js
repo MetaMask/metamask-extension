@@ -501,7 +501,13 @@ class ImportToken extends Component {
           id="custom-symbol"
           label={
             <div className="import-token__custom-symbol__label-wrapper">
-              <span className="import-token__custom-symbol__label">
+              <span
+                className={
+                  symbolAutoFilled && !forceEditSymbol
+                    ? 'import-token__custom-symbol__label--disabled'
+                    : 'import-token__custom-symbol__label'
+                }
+              >
                 {t('tokenSymbol')}
               </span>
               {symbolAutoFilled && !forceEditSymbol && (
