@@ -764,7 +764,7 @@
         "3box>ipfs>ipld-raw>multihashing-async": true,
         "3box>ipfs>multicodec": true,
         "3box>ipfs>protons": true,
-        "@storybook/client-api>stable": true,
+        "@storybook/react>@storybook/store>stable": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true
@@ -3366,7 +3366,7 @@
         "localStorage": true
       }
     },
-    "@storybook/client-api>stable": {
+    "@storybook/react>@storybook/store>stable": {
       "globals": {
         "define": true
       }
@@ -6064,9 +6064,9 @@
     "react-router-dom>react-router>mini-create-react-context": {
       "packages": {
         "@babel/runtime": true,
-        "@storybook/api>@reach/router>create-react-context>gud": true,
         "prop-types": true,
         "react": true,
+        "react-router-dom>react-router>mini-create-react-context>gud": true,
         "react-router-dom>tiny-warning": true
       }
     },
