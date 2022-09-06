@@ -530,7 +530,17 @@ class ImportToken extends Component {
         />
         <TextField
           id="custom-decimals"
-          label={t('decimal')}
+          label={
+            <span
+              className={
+                decimalAutoFilled
+                  ? 'import-token__custom-decimals__label--disabled'
+                  : 'import-token__custom-decimals__label'
+              }
+            >
+              {t('decimal')}
+            </span>
+          }
           type="number"
           value={customDecimals}
           onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}

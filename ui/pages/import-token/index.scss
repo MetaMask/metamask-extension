@@ -50,6 +50,14 @@
     }
   }
 
+  &__custom-decimals {
+    &__label {
+      &--disabled {
+        color: var(--color-text-muted);
+      }
+    }
+  }
+
   &__link {
     @include H7;
 
