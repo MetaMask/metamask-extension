@@ -183,7 +183,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Give permission to access all of your TestDappCollectibles?',
+          'Allow access to and transfer of all your TestDappCollectibles?',
         );
         assert.equal(await data[0].getText(), 'Function: SetApprovalForAll');
         assert.equal(await data[1].getText(), 'Parameters: true');
