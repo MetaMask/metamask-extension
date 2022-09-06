@@ -3,25 +3,18 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
-import { 
+import {
   isValidDomainName,
   isValidUnstoppableDomainName,
-  buildJson, 
+  buildJson,
+  getUdTlds,
 } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-<<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
 
 export default class DomainInput extends Component {
-<<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
-=======
-import { isValidUnstoppableDomainName } from '../../../../helpers/utils/util';
-export default class EnsInput extends Component {
->>>>>>> f5e2cf334 (adds TLD constant, UNS domain validation, & updates the input logic to avoid ENS & UNS crossfire):ui/pages/send/send-content/add-recipient/ens-input.component.js
-=======
->>>>>>> c4dca2c53 (Rename files and add missing UNS references):ui/pages/send/send-content/add-recipient/ens-input.component.js
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
@@ -63,7 +56,7 @@ export default class EnsInput extends Component {
     }
   };
 
-  onChange = ({ target: { value } }) => {
+  onChange = async ({ target: { value } }) => {
     const {
       onValidAddressTyped,
       internalSearch,
@@ -80,17 +73,12 @@ export default class EnsInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-<<<<<<< HEAD:ui/pages/send/send-content/add-recipient/domain-input.component.js
-    if (isValidUnstoppableDomainName(input) !== null) {
+    if (isValidDomainName(input) && await isValidUnstoppableDomainName(input)) {
       resetEnsResolution();
-      // if(prepareResolutionCall() === 'NATIVE'){
-         //console.log(resolveUNS(input));
-      // }
       prepareResolutionCall(input);
       resetEnsResolution(); 
        
     } else if (!isValidUnstoppableDomainName(input) && isValidDomainName(input) ) {
-=======
     if (isValidUnstoppableDomainName(input)) {
       resetEnsResolution(); 
       resolveUNS(input);
@@ -98,7 +86,6 @@ export default class EnsInput extends Component {
        
     } else if (isValidDomainName(input) && !isValidUnstoppableDomainName(input)) {
         resetUnsResolution();
->>>>>>> c4dca2c53 (Rename files and add missing UNS references):ui/pages/send/send-content/add-recipient/ens-input.component.js
         lookupEnsName(input);
     } else {
       resetDomainResolution();
@@ -112,6 +99,8 @@ export default class EnsInput extends Component {
     }
 
     return null;
+
+
   };
 
   render() {
