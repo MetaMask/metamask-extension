@@ -1,9 +1,93 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Errore"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Dati incongruenti. Controlla i dati della transazione."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "Non ci sono altri account. Se desideri accedere a un altro account non elencato di seguito, ricollega il tuo portafoglio hardware e selezionalo."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Posiziona il codice QR davanti alla tua fotocamera. Se lo schermo è sfocato non preoccuparti, non influirà sulla lettura."
+  },
   "QRHardwareSignRequestCancel": {
     "message": "Annulla"
   },
+  "QRHardwareSignRequestDescription": {
+    "message": "Dopo aver firmato con il tuo portafoglio, fai click su 'Ottieni firma' per ricevere la firma"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Ottieni firma"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scansiona il QR code con il tuo wallet"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Richiedi firma"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Errore"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Codice QR non valido. Scansiona il codice QR di sincronizzazione del portafoglio hardware."
+  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scansiona Codice QR"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Collega un portafoglio hardware air-gapped che comunica tramite codici QR. I portafogli hardware air-gapped supportati ufficialmente includono:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "Portafoglio HW basato su QR"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "Ngrave (in arrivo)"
+  },
+  "SIWEAddressInvalid": {
+    "message": "L'indirizzo nella richiesta di accesso non corrisponde all'indirizzo dell'account che stai utilizzando per accedere."
+  },
+  "SIWEDomainInvalid": {
+    "message": "Il sito Web a cui stai tentando di accedere ($1) non corrisponde al dominio nella richiesta di accesso. Procedi con cautela.",
+    "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningBody": {
+    "message": "Il sito Web ($1) ti chiede di accedere al dominio sbagliato. Potrebbe trattarsi di un attacco di phishing.",
+    "description": "$1 represents the website domain"
+  },
+  "SIWELabelExpirationTime": {
+    "message": "Scade il:"
+  },
+  "SIWELabelIssuedAt": {
+    "message": "Rilasciato a:"
+  },
+  "SIWELabelMessage": {
+    "message": "Messaggio:"
+  },
+  "SIWELabelNonce": {
+    "message": "Nonce:"
+  },
+  "SIWELabelNotBefore": {
+    "message": "Non prima:"
+  },
+  "SIWELabelResources": {
+    "message": "Risorse: $1",
+    "description": "$1 represents the number of resources"
+  },
+  "SIWELabelVersion": {
+    "message": "Versione:"
+  },
+  "SIWESiteRequestSubtitle": {
+    "message": "Questo sito richiede l'accesso con"
+  },
+  "SIWESiteRequestTitle": {
+    "message": "Richiesta di accesso"
+  },
+  "SIWEWarningSubtitle": {
+    "message": "Per confermare di aver compreso, controlla:"
+  },
+  "SIWEWarningTitle": {
+    "message": "Sei sicuro?"
   },
   "about": {
     "message": "Informazioni"
@@ -19,6 +103,17 @@
     "message": "$1 può avere accesso e spendere al massimo",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 può accedere e spendere questa risorsa",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessYourWalletWithSRP": {
+    "message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
+  },
+  "accessYourWalletWithSRPDescription": {
+    "message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci sia tuo il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
   },
@@ -27,6 +122,10 @@
   },
   "accountName": {
     "message": "Nome Account"
+  },
+  "accountNameDuplicate": {
+    "message": "Questo nome è già in uso",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
   "accountOptions": {
     "message": "Opzioni Account"
@@ -43,11 +142,36 @@
   "activityLog": {
     "message": "log attività"
   },
+  "add": {
+    "message": "Aggiungi"
+  },
+  "addANetwork": {
+    "message": "Aggiungi una rete"
+  },
+  "addANetworkManually": {
+    "message": "Aggungi manualmente una rete"
+  },
+  "addANickname": {
+    "message": "Aggiungo un nickname"
+  },
   "addAcquiredTokens": {
     "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
   "addAlias": {
     "message": "Aggiungi alias"
+  },
+  "addBlockExplorer": {
+    "message": "Aggiungi un block explorer"
+  },
+  "addContact": {
+    "message": "Aggiungi contatto"
+  },
+  "addCustomToken": {
+    "message": "Aggiungi token personalizzato"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addNetwork": {
     "message": "Aggiungi Rete"
