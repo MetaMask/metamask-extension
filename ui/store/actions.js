@@ -889,11 +889,13 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
   sendFlowHistory,
 ) {
   return async (dispatch) => {
+    const actionId = Date.now() + Math.random();
     try {
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await submitRequestToBackground(
         'addUnapprovedTransaction',
-        [txParams, ORIGIN_METAMASK, type, sendFlowHistory],
+        [txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
+        actionId,
       );
       dispatch(showConfTxPage());
       return txMeta;
@@ -920,11 +922,12 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  */
 export async function addUnapprovedTransaction(txParams, type) {
   log.debug('background.addUnapprovedTransaction');
-  const txMeta = await submitRequestToBackground('addUnapprovedTransaction', [
-    txParams,
-    ORIGIN_METAMASK,
-    type,
-  ]);
+  const actionId = Date.now() + Math.random();
+  const txMeta = await submitRequestToBackground(
+    'addUnapprovedTransaction',
+    [txParams, ORIGIN_METAMASK, type, undefined, actionId],
+    actionId,
+  );
   return txMeta;
 }
 
