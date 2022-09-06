@@ -1,4 +1,8 @@
 module.exports = {
-    runtime: {},
-  };
+  runtime: {
+    getManifest: () => {
+      return { manifest_version: 2 };
+    }
+  },
+};
   
