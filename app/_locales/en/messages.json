@@ -606,7 +606,14 @@
     "message": "Confirm"
   },
   "confirmPageDialogSetApprovalForAll": {
-    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder1": {
+    "message": "all the NFTs on this contract"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder2": {
+    "message": "Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
