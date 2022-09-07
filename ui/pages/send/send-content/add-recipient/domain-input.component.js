@@ -6,8 +6,6 @@ import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import {
   isValidDomainName,
   isValidUnstoppableDomainName,
-  buildJson,
-  getUdTlds,
 } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
@@ -71,8 +69,7 @@ export default class DomainInput extends Component {
     if (internalSearch) {
       return null;
     }
-    // Empty ENS state if input is empty
-    // maybe scan ENS
+
     if (isValidDomainName(input) && await isValidUnstoppableDomainName(input)) {
       resetEnsResolution();
       prepareResolutionCall(input);

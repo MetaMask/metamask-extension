@@ -17,7 +17,7 @@ import {
   UNS_UNKNOWN_ERROR,
 } from '../pages/send/send.constants';
 import {
-  buildJson, getAndParseUdCurrencies,
+  getAndParseUdCurrencies,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
