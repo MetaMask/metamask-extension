@@ -61,7 +61,7 @@ export function testsForRpcMethodAssumingNoBlockParam(method) {
       const results = await withInfuraClient(async (client) => {
         const firstResult = await client.makeRpcCall(requests[0]);
         // Proceed to the next iteration of the block tracker so that a new
-        // block is fetched and the current block is updated
+        // block is fetched and the current block is updated.
         client.clock.runAll();
         const secondResult = await client.makeRpcCall(requests[1]);
         return [firstResult, secondResult];
@@ -155,7 +155,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
       const results = await withInfuraClient(async (client) => {
         const firstResult = await client.makeRpcCall(requests[0]);
         // Proceed to the next iteration of the block tracker so that a new
-        // block is fetched and the current block is updated
+        // block is fetched and the current block is updated.
         client.clock.runAll();
         const secondResult = await client.makeRpcCall(requests[1]);
         return [firstResult, secondResult];
@@ -401,7 +401,7 @@ export function testsForRpcMethodSupportingBlockParam(
         const results = await withInfuraClient(async (client) => {
           const firstResult = await client.makeRpcCall(requests[0]);
           // Proceed to the next iteration of the block tracker so that a
-          // new block is fetched and the current block is updated
+          // new block is fetched and the current block is updated.
           client.clock.runAll();
           const secondResult = await client.makeRpcCall(requests[1]);
           return [firstResult, secondResult];
@@ -528,7 +528,7 @@ export function testsForRpcMethodSupportingBlockParam(
         const results = await withInfuraClient(async (client) => {
           const firstResult = await client.makeRpcCall(requests[0]);
           // Proceed to the next iteration of the block tracker so that a
-          // new block is fetched and the current block is updated
+          // new block is fetched and the current block is updated.
           client.clock.runAll();
           const secondResult = await client.makeRpcCall(requests[1]);
           return [firstResult, secondResult];
