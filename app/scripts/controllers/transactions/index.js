@@ -27,6 +27,8 @@ import {
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_APPROVAL_AMOUNT_TYPE,
+  TOKEN_STANDARDS,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
@@ -50,6 +52,7 @@ import {
 } from '../../../../shared/constants/network';
 import {
   determineTransactionAssetType,
+  determineTransactionContractCode,
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
@@ -670,28 +673,69 @@ export default class TransactionController extends EventEmitter {
    * state is unapproved. Returns the updated transaction.
    *
    * @param {string} txId - transaction id
+   * @param {number} currentSendFlowHistoryLength - sendFlowHistory entries currently
    * @param {Array<{ entry: string, timestamp: number }>} sendFlowHistory -
    *  history to add to the sendFlowHistory property of txMeta.
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
-  updateTransactionSendFlowHistory(txId, sendFlowHistory) {
+  updateTransactionSendFlowHistory(
+    txId,
+    currentSendFlowHistoryLength,
+    sendFlowHistory,
+  ) {
     this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionSendFlowHistory');
     const txMeta = this._getTransaction(txId);
 
-    // only update what is defined
-    const note = `Update sendFlowHistory for ${txId}`;
+    if (
+      currentSendFlowHistoryLength === (txMeta?.sendFlowHistory?.length || 0)
+    ) {
+      // only update what is defined
+      const note = `Update sendFlowHistory for ${txId}`;
 
-    this.txStateManager.updateTransaction(
-      {
-        ...txMeta,
-        sendFlowHistory: [
-          ...(txMeta?.sendFlowHistory ?? []),
-          ...sendFlowHistory,
-        ],
-      },
-      note,
-    );
+      this.txStateManager.updateTransaction(
+        {
+          ...txMeta,
+          sendFlowHistory: [
+            ...(txMeta?.sendFlowHistory ?? []),
+            ...sendFlowHistory,
+          ],
+        },
+        note,
+      );
+    }
     return this._getTransaction(txId);
+  }
+
+  async addTransactionGasDefaults(txMeta) {
+    const contractCode = await determineTransactionContractCode(
+      txMeta.txParams,
+      this.query,
+    );
+
+    let updateTxMeta = txMeta;
+    try {
+      updateTxMeta = await this.addTxGasDefaults(txMeta, contractCode);
+    } catch (error) {
+      log.warn(error);
+      updateTxMeta = this.txStateManager.getTransaction(txMeta.id);
+      updateTxMeta.loadingDefaults = false;
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'Failed to calculate gas defaults.',
+      );
+      throw error;
+    }
+
+    updateTxMeta.loadingDefaults = false;
+
+    // The history note used here 'Added new unapproved transaction.' is confusing update call only updated the gas defaults.
+    // We need to improve `this.addTransaction` to accept history note and change note here.
+    this.txStateManager.updateTransaction(
+      updateTxMeta,
+      'Added new unapproved transaction.',
+    );
+
+    return updateTxMeta;
   }
 
   // ====================================================================================================================================================
@@ -700,10 +744,16 @@ export default class TransactionController extends EventEmitter {
    * Validates and generates a txMeta with defaults and puts it in txStateManager
    * store.
    *
+   * actionId is used to uniquely identify a request to create a transaction.
+   * Only 1 transaction will be created for multiple requests with same actionId.
+   * actionId is fix used for making this action idempotent to deal with scenario when
+   * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
+   *
    * @param txParams
    * @param origin
    * @param transactionType
    * @param sendFlowHistory
+   * @param actionId
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
@@ -711,6 +761,7 @@ export default class TransactionController extends EventEmitter {
     origin,
     transactionType,
     sendFlowHistory = [],
+    actionId,
   ) {
     if (
       transactionType !== undefined &&
@@ -719,6 +770,17 @@ export default class TransactionController extends EventEmitter {
       throw new Error(
         `TransactionController - invalid transactionType value: ${transactionType}`,
       );
+    }
+
+    // In transaction is found for same action id, do not create a new transaction.
+    if (actionId) {
+      let existingTxMeta =
+        this.txStateManager.getTransactionWithActionId(actionId);
+      if (existingTxMeta) {
+        this.emit('newUnapprovedTx', existingTxMeta);
+        existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
+        return existingTxMeta;
+      }
     }
 
     // validate
@@ -738,6 +800,12 @@ export default class TransactionController extends EventEmitter {
       origin,
       sendFlowHistory,
     });
+
+    // Add actionId to txMeta to check if same actionId is seen again
+    // IF request to create transaction with same actionId is submitted again, new transaction will not be added for it.
+    if (actionId) {
+      txMeta.actionId = actionId;
+    }
 
     if (origin === ORIGIN_METAMASK) {
       // Assert the from address is the selected address
@@ -760,10 +828,7 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const { type, getCodeResponse } = await determineTransactionType(
-      txParams,
-      this.query,
-    );
+    const { type } = await determineTransactionType(txParams, this.query);
     txMeta.type = transactionType || type;
 
     // ensure value
@@ -774,25 +839,7 @@ export default class TransactionController extends EventEmitter {
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
-    try {
-      txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse);
-    } catch (error) {
-      log.warn(error);
-      txMeta = this.txStateManager.getTransaction(txMeta.id);
-      txMeta.loadingDefaults = false;
-      this.txStateManager.updateTransaction(
-        txMeta,
-        'Failed to calculate gas defaults.',
-      );
-      throw error;
-    }
-
-    txMeta.loadingDefaults = false;
-    // save txMeta
-    this.txStateManager.updateTransaction(
-      txMeta,
-      'Added new unapproved transaction.',
-    );
+    txMeta = await this.addTransactionGasDefaults(txMeta);
 
     return txMeta;
   }
@@ -1965,6 +2012,61 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
+  /**
+   * The allowance amount in relation to the dapp proposed amount for specific token
+   *
+   * @param {string} transactionApprovalAmountType - The transaction approval amount type
+   * @param {string} originalApprovalAmount - The original approval amount is the originally dapp proposed token amount
+   * @param {string} finalApprovalAmount - The final approval amount is the chosen amount which will be the same as the
+   * originally dapp proposed token amount if the user does not edit the amount or will be a custom token amount set by the user
+   */
+  _allowanceAmountInRelationToDappProposedValue(
+    transactionApprovalAmountType,
+    originalApprovalAmount,
+    finalApprovalAmount,
+  ) {
+    if (
+      transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM &&
+      originalApprovalAmount &&
+      finalApprovalAmount
+    ) {
+      return `${new BigNumber(originalApprovalAmount, 10)
+        .div(finalApprovalAmount, 10)
+        .times(100)
+        .round(2)}`;
+    }
+    return null;
+  }
+
+  /**
+   * The allowance amount in relation to the balance for that specific token
+   *
+   * @param {string} transactionApprovalAmountType - The transaction approval amount type
+   * @param {string} dappProposedTokenAmount - The dapp proposed token amount
+   * @param {string} currentTokenBalance - The balance of the token that is being send
+   */
+  _allowanceAmountInRelationToTokenBalance(
+    transactionApprovalAmountType,
+    dappProposedTokenAmount,
+    currentTokenBalance,
+  ) {
+    if (
+      (transactionApprovalAmountType ===
+        TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM ||
+        transactionApprovalAmountType ===
+          TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED) &&
+      dappProposedTokenAmount &&
+      currentTokenBalance
+    ) {
+      return `${new BigNumber(dappProposedTokenAmount, 16)
+        .div(currentTokenBalance, 10)
+        .times(100)
+        .round(2)}`;
+    }
+    return null;
+  }
+
   async _buildEventFragmentProperties(txMeta, extraParams) {
     const {
       id,
@@ -2074,8 +2176,20 @@ export default class TransactionController extends EventEmitter {
       TRANSACTION_TYPES.SWAP_APPROVAL,
     ].includes(type);
 
-    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    const contractMethodNames = {
+      APPROVE: 'Approve',
+    };
+
+    const customTokenAmount = transactions[id]?.customTokenAmount;
+    const dappProposedTokenAmount = transactions[id]?.dappProposedTokenAmount;
+    const currentTokenBalance = transactions[id]?.currentTokenBalance;
+    const originalApprovalAmount = transactions[id]?.originalApprovalAmount;
+    const finalApprovalAmount = transactions[id]?.finalApprovalAmount;
+    let transactionApprovalAmountType;
     let transactionContractMethod;
+    let transactionApprovalAmountVsProposedRatio;
+    let transactionApprovalAmountVsBalanceRatio;
+    let transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
     if (type === TRANSACTION_TYPES.CANCEL) {
       transactionType = TRANSACTION_TYPES.CANCEL;
     } else if (type === TRANSACTION_TYPES.RETRY) {
@@ -2085,6 +2199,33 @@ export default class TransactionController extends EventEmitter {
     } else if (contractInteractionTypes) {
       transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
       transactionContractMethod = transactions[id]?.contractMethodName;
+      if (
+        transactionContractMethod === contractMethodNames.APPROVE &&
+        tokenStandard === TOKEN_STANDARDS.ERC20
+      ) {
+        if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.REVOKE;
+        } else if (customTokenAmount) {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.CUSTOM;
+        } else if (dappProposedTokenAmount) {
+          transactionApprovalAmountType =
+            TRANSACTION_APPROVAL_AMOUNT_TYPE.DAPP_PROPOSED;
+        }
+        transactionApprovalAmountVsProposedRatio =
+          this._allowanceAmountInRelationToDappProposedValue(
+            transactionApprovalAmountType,
+            originalApprovalAmount,
+            finalApprovalAmount,
+          );
+        transactionApprovalAmountVsBalanceRatio =
+          this._allowanceAmountInRelationToTokenBalance(
+            transactionApprovalAmountType,
+            dappProposedTokenAmount,
+            currentTokenBalance,
+          );
+      }
     }
 
     const replacedTxMeta = this._getTransaction(replacedById);
@@ -2105,7 +2246,7 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const properties = {
+    let properties = {
       chain_id: chainId,
       referrer,
       source,
@@ -2121,7 +2262,14 @@ export default class TransactionController extends EventEmitter {
       transaction_speed_up: type === TRANSACTION_TYPES.RETRY,
     };
 
-    const sensitiveProperties = {
+    if (transactionContractMethod === contractMethodNames.APPROVE) {
+      properties = {
+        ...properties,
+        transaction_approval_amount_type: transactionApprovalAmountType,
+      };
+    }
+
+    let sensitiveProperties = {
       status,
       transaction_envelope_type: isEIP1559Transaction(txMeta)
         ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
@@ -2133,6 +2281,16 @@ export default class TransactionController extends EventEmitter {
       ...extraParams,
       ...gasParamsInGwei,
     };
+
+    if (transactionContractMethod === contractMethodNames.APPROVE) {
+      sensitiveProperties = {
+        ...sensitiveProperties,
+        transaction_approval_amount_vs_balance_ratio:
+          transactionApprovalAmountVsBalanceRatio,
+        transaction_approval_amount_vs_proposed_ratio:
+          transactionApprovalAmountVsProposedRatio,
+      };
+    }
 
     return { properties, sensitiveProperties };
   }

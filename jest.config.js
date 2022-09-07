@@ -44,8 +44,19 @@ module.exports = {
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
   ],
   testTimeout: 2500,
-  transform: {
-    '^.+\\.[tj]sx?$': 'babel-jest',
-    '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx',
-  },
+  // We have to specify the environment we are running in, which is jsdom. The
+  // default is 'node'. This can be modified *per file* using a comment at the
+  // head of the file. So it may be worth while to switch to 'node' in any
+  // background tests.
+  testEnvironment: 'jsdom',
+  // Our configuration somehow is calling into the esm folder / files of
+  // some modules. Jest supports ESM but our code is not set to emit ESM files
+  // so we are telling jest to use babel to transform the node_modules listed.
+  // Note: for some reason I could not hammer down to the node_modules
+  // installed in @metamask/controllers so I had to just blanket specify all
+  // of the @metamask/controllers folder.
+  transformIgnorePatterns: [
+    '/node_modules/(?!(multiformats|uuid|nanoid|@metamask/controllers|@metamask/snap-controllers)/)',
+  ],
+  workerIdleMemoryLimit: '500MB',
 };

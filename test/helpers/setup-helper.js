@@ -6,7 +6,9 @@ import { JSDOM } from 'jsdom';
 
 process.env.IN_TEST = true;
 
-global.chrome = { runtime: { id: 'testid' } };
+global.chrome = {
+  runtime: { id: 'testid', getManifest: () => ({ manifest_version: 2 }) },
+};
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
@@ -54,6 +56,12 @@ global.navigator = window.navigator;
 global.Element = window.Element;
 // required by `react-popper`
 global.HTMLElement = window.HTMLElement;
+
+// Jest no longer adds the following timers so we use set/clear Timeouts
+global.setImmediate =
+  global.setImmediate || ((fn, ...args) => global.setTimeout(fn, 0, ...args));
+global.clearImmediate =
+  global.clearImmediate || ((id) => global.clearTimeout(id));
 
 // required by any components anchored on `popover-content`
 const popoverContent = window.document.createElement('div');

@@ -5,7 +5,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { exportAsFile } from '../../../../shared/modules/export-utils';
 
-function ExportTextContainer({ text = '' }) {
+function ExportTextContainer({
+  text = '',
+  onClickCopy = null,
+  onClickDownload = null,
+}) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -18,6 +22,9 @@ function ExportTextContainer({ text = '' }) {
         <div
           className="export-text-container__button export-text-container__button--copy"
           onClick={() => {
+            if (onClickCopy) {
+              onClickCopy();
+            }
             handleCopy(text);
           }}
         >
@@ -28,7 +35,12 @@ function ExportTextContainer({ text = '' }) {
         </div>
         <div
           className="export-text-container__button"
-          onClick={() => exportAsFile('', text)}
+          onClick={() => {
+            if (onClickDownload) {
+              onClickDownload();
+            }
+            exportAsFile('', text);
+          }}
         >
           <img src="images/download.svg" alt="" />
           <div className="export-text-container__button-text">
@@ -42,6 +54,8 @@ function ExportTextContainer({ text = '' }) {
 
 ExportTextContainer.propTypes = {
   text: PropTypes.string,
+  onClickCopy: PropTypes.func,
+  onClickDownload: PropTypes.func,
 };
 
 export default React.memo(ExportTextContainer);

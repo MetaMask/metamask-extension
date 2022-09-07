@@ -1,0 +1,33 @@
+.base-icon {
+  --icon-size: var(--size, 16px);
+
+  &--size-xxs {
+    --size: 10px;
+  }
+
+  &--size-xs {
+    --size: 12px;
+  }
+
+  &--size-sm {
+    --size: 16px;
+  }
+
+  &--size-md {
+    --size: 20px;
+  }
+
+  &--size-lg {
+    --size: 24px;
+  }
+
+  &--size-xl {
+    --size: 32px;
+  }
+
+  font-size: var(--icon-size);
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  fill: currentColor;
+}
