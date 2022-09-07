@@ -35,7 +35,6 @@ describe('Confirm Page Container Container Test', () => {
       metamaskNetworkId: '4',
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
-      // chainId: '0x4',
       loadingDefaults: false,
       dappSuggestedGasFees: null,
       sendFlowHistory: [],

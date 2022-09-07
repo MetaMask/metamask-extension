@@ -40,7 +40,6 @@ describe('Welcome', () => {
 
     const getStartedButton = screen.getByTestId('first-time-flow__button');
 
-    // getStartedButton.simulate('click');
     fireEvent.click(getStartedButton);
     expect(props.history.push.getCall(0).args[0]).toStrictEqual(
       '/initialize/select-action',
