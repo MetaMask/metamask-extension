@@ -106,7 +106,10 @@ export default function OnboardingMetametrics() {
   };
 
   return (
-    <div className="onboarding-metametrics">
+    <div
+      className="onboarding-metametrics"
+      data-testid="onboarding-metametrics"
+    >
       <Typography
         variant={TYPOGRAPHY.H2}
         align={TEXT_ALIGN.CENTER}

@@ -83,7 +83,7 @@ export default class ConfirmApproveContent extends Component {
   };
 
   state = {
-    showFullTxDetails: true,
+    showFullTxDetails: false,
     copied: false,
   };
 
