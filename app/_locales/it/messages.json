@@ -173,14 +173,53 @@
     "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1.",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask non verifica le reti personalizzate."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Maggiori informazioni su $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "truffe e rischi per la sicurezza della rete",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Consenti a questo sito di aggiungere una rete?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Aggiungi amici e indirizzi di cui ti fidi"
+  },
+  "addFromAListOfPopularNetworks": {
+    "message": "Aggiungi da un elenco di reti popolari o aggiungi una rete manualmente. Interagisci solo con le entità di cui ti fidi."
+  },
+  "addMemo": {
+    "message": "Aggiungi memo"
+  },
+  "addMoreNetworks": {
+    "message": "aggiungi più reti manualmente"
+  },
   "addNetwork": {
     "message": "Aggiungi Rete"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "Questarete si basa su terze parti. La connessione potrebbe essere meno affidabile o consentire a terzi di tracciare le tue attività. $1",
+    "description": "$1 is Learn more link"
   },
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },
   "addToken": {
     "message": "Aggiungi Token"
+  },
+  "address": {
+    "message": "Indirizzo"
+  },
+  "addressBookIcon": {
+    "message": "Icona rubrica indirizzo"
   },
   "advanced": {
     "message": "Avanzate"
