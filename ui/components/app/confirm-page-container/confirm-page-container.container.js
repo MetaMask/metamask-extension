@@ -6,7 +6,7 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
-import { showModal } from '../../../store/actions';
+import { getTokenStandardAndDetails, showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
@@ -16,6 +16,7 @@ function mapStateToProps(state, ownProps) {
   const networkIdentifier = getNetworkIdentifier(state);
   const defaultToken = getSwapsDefaultToken(state);
   const accountBalance = defaultToken.string;
+  const txTokenAddress = ownProps.currentTransaction.txParams.to;
 
   return {
     isBuyableChain,
@@ -27,12 +28,15 @@ function mapStateToProps(state, ownProps) {
     to,
     networkIdentifier,
     accountBalance,
+    txTokenAddress,
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+    getTokenStandardAndDetails: async (tokenAddress) =>
+      await getTokenStandardAndDetails(tokenAddress),
   };
 };
 

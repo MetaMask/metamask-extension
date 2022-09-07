@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import {
+  ERC721,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
@@ -33,6 +36,7 @@ import {
 export default class ConfirmPageContainer extends Component {
   state = {
     showNicknamePopovers: false,
+    tokenStandard: '',
   };
 
   static contextTypes = {
@@ -52,6 +56,8 @@ export default class ConfirmPageContainer extends Component {
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
     accountBalance: PropTypes.string,
+    txTokenAddress: PropTypes.string,
+    getTokenStandardAndDetails: PropTypes.func,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -104,6 +110,13 @@ export default class ConfirmPageContainer extends Component {
     isBuyableChain: PropTypes.bool,
     setApproveForAllArg: PropTypes.bool,
   };
+
+  async componentDidMount() {
+    const { standard } = await this.props.getTokenStandardAndDetails(
+      this.props.txTokenAddress,
+    );
+    this.setState({ tokenStandard: standard });
+  }
 
   render() {
     const {
@@ -185,8 +198,7 @@ export default class ConfirmPageContainer extends Component {
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
 
     const isSetNftApprove =
-      currentTransaction.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE &&
-      !currentTransaction.dappSuggestedGasFees.gasPrice;
+      currentTransaction.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
 
     const { t } = this.context;
 
@@ -205,7 +217,8 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          {isSetApproveForAll || isSetNftApprove ? (
+          {this.state.tokenStandard === ERC721 &&
+          (isSetApproveForAll || isSetNftApprove) ? (
             <NetworkAccountBalanceHeader
               accountName={fromName}
               accountBalance={accountBalance}
