@@ -1,5 +1,5 @@
 import {
-  mockingInfuraCommunications,
+  withMockedInfuraCommunications,
   withInfuraClient,
   buildMockParamsWithoutBlockParamAt,
   buildMockParamsWithBlockParamAt,
@@ -17,7 +17,7 @@ export function testsForRpcMethodThatDoesNotSupportParams(method) {
       const requests = [{ method }, { method }];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
         // matter what this is — it's just used as a cache key.
@@ -38,7 +38,7 @@ export function testsForRpcMethodThatDoesNotSupportParams(method) {
       const requests = [{ method }, { method }];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // Note that we have to mock these requests in a specific order. The
         // first block tracker request occurs because of the first RPC request.
         // The second block tracker request, however, does not occur because of
@@ -74,7 +74,7 @@ export function testsForRpcMethodThatDoesNotSupportParams(method) {
         const requests = [{ method }, { method }];
         const mockResults = [emptyValue, 'some result'];
 
-        await mockingInfuraCommunications(async (comms) => {
+        await withMockedInfuraCommunications(async (comms) => {
           // The first time a block-cacheable request is made, the latest block
           // number is retrieved through the block tracker first. It doesn't
           // matter what this is — it's just used as a cache key.
@@ -111,7 +111,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
       const requests = [{ method }, { method }];
       const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
         // matter what this is — it's just used as a cache key.
@@ -133,7 +133,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
       const requests = [{ method }, { method }];
       const mockResults = [{ blockHash: '0x100' }, { blockHash: '0x200' }];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // Note that we have to mock these requests in a specific order. The
         // first block tracker request occurs because of the first RPC
         // request. The second block tracker request, however, does not occur
@@ -169,7 +169,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
         const requests = [{ method }, { method }];
         const mockResults = [emptyValue, { blockHash: '0x100' }];
 
-        await mockingInfuraCommunications(async (comms) => {
+        await withMockedInfuraCommunications(async (comms) => {
           // The first time a block-cacheable request is made, the latest block
           // number is retrieved through the block tracker first. It doesn't
           // matter what this is — it's just used as a cache key.
@@ -199,7 +199,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
         { blockHash: '0x100', extra: 'some other value' },
       ];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
         // matter what this is — it's just used as a cache key.
@@ -228,7 +228,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
         { blockHash: '0x100', extra: 'some other value' },
       ];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
         // matter what this is — it's just used as a cache key.
@@ -261,7 +261,7 @@ export function testsForRpcMethodsThatCheckForBlockHashInResponse(method) {
         { blockHash: '0x100', extra: 'some other value' },
       ];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the latest block
         // number is retrieved through the block tracker first. It doesn't
         // matter what this is — it's just used as a cache key.
@@ -312,7 +312,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
       ];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the block-cache
         // middleware will request the latest block number through the block
         // tracker to determine the cache key. Later, the block-ref
@@ -353,7 +353,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
       ];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // Note that we have to mock these requests in a specific order.
         // The first block tracker request occurs because of the first RPC
         // request. The second block tracker request, however, does not
@@ -419,7 +419,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
         ];
         const mockResults = [emptyValue, 'some result'];
 
-        await mockingInfuraCommunications(async (comms) => {
+        await withMockedInfuraCommunications(async (comms) => {
           // The first time a block-cacheable request is made, the
           // block-cache middleware will request the latest block number
           // through the block tracker to determine the cache key. Later,
@@ -481,7 +481,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
       ];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the block-cache
         // middleware will request the latest block number through the block
         // tracker to determine the cache key. This block number doesn't
@@ -507,7 +507,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
       ];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // Note that we have to mock these requests in a specific order. The
         // first block tracker request occurs because of the first RPC
         // request. The second block tracker request, however, does not
@@ -546,7 +546,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
         ];
         const mockResults = [emptyValue, 'some result'];
 
-        await mockingInfuraCommunications(async (comms) => {
+        await withMockedInfuraCommunications(async (comms) => {
           // The first time a block-cacheable request is made, the latest block
           // number is retrieved through the block tracker first. It doesn't
           // matter what this is — it's just used as a cache key.
@@ -586,7 +586,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
         ];
         const mockResults = ['first result', 'second result'];
 
-        await mockingInfuraCommunications(async (comms) => {
+        await withMockedInfuraCommunications(async (comms) => {
           // The first time a block-cacheable request is made, the latest
           // block number is retrieved through the block tracker first. It
           // doesn't matter what this is — it's just used as a cache key.
@@ -607,7 +607,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
 
     if (blockParamType === 'block number') {
       it('does not reuse the result of a previous request if it was made with different arguments than this one', async () => {
-        await mockingInfuraCommunications(async (comms) => {
+        await withMockedInfuraCommunications(async (comms) => {
           const requests = [
             {
               method,
@@ -652,7 +652,7 @@ export function testsForRpcMethodThatSupportsMultipleParams(
       ];
       const mockResults = ['first result', 'second result'];
 
-      await mockingInfuraCommunications(async (comms) => {
+      await withMockedInfuraCommunications(async (comms) => {
         // The first time a block-cacheable request is made, the latest
         // block number is retrieved through the block tracker first. It
         // doesn't matter what this is — it's just used as a cache key.

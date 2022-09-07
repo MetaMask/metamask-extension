@@ -195,7 +195,7 @@ function makeRpcCall(ethQuery, request) {
  * is called with an object that allows you to mock different kinds of requests.
  * @returns {Promise<any>} The return value of the given function.
  */
-export async function mockingInfuraCommunications(...args) {
+export async function withMockedInfuraCommunications(...args) {
   const [options, fn] = args.length === 2 ? args : [{}, args[0]];
   const { network = 'mainnet' } = options;
 
@@ -204,12 +204,13 @@ export async function mockingInfuraCommunications(...args) {
     mockNextBlockTrackerRequest({ nockScope, ...localOptions });
   const curriedMockSuccessfulInfuraRpcCall = (localOptions) =>
     mockSuccessfulInfuraRpcCall({ nockScope, ...localOptions });
+  const comms = {
+    mockNextBlockTrackerRequest: curriedMockNextBlockTrackerRequest,
+    mockSuccessfulInfuraRpcCall: curriedMockSuccessfulInfuraRpcCall,
+  };
 
   try {
-    return await fn({
-      mockNextBlockTrackerRequest: curriedMockNextBlockTrackerRequest,
-      mockSuccessfulInfuraRpcCall: curriedMockSuccessfulInfuraRpcCall,
-    });
+    return await fn(comms);
   } finally {
     nock.isDone();
     nock.cleanAll();
@@ -240,8 +241,8 @@ export async function withInfuraClient(...args) {
   const engine = new JsonRpcEngine();
   engine.push(networkMiddleware);
   const provider = providerFromEngine(engine);
-
   const ethQuery = new EthQuery(provider);
+
   const curriedMakeRpcCall = (request) => makeRpcCall(ethQuery, request);
   const makeRpcCallsInSeries = async (requests) => {
     const responses = [];
@@ -250,20 +251,20 @@ export async function withInfuraClient(...args) {
     }
     return responses;
   };
-
   // Faking timers ends up doing two things:
   // 1. Halting the block tracker (which depends on `setTimeout` to periodically
   // request the latest block) set up in `eth-json-rpc-middleware`
   // 2. Halting the retry logic in `@metamask/eth-json-rpc-infura` (which also
   // depends on `setTimeout`)
   const clock = sinon.useFakeTimers();
+  const client = {
+    makeRpcCall: curriedMakeRpcCall,
+    makeRpcCallsInSeries,
+    clock,
+  };
 
   try {
-    return await fn({
-      makeRpcCall: curriedMakeRpcCall,
-      makeRpcCallsInSeries,
-      clock,
-    });
+    return await fn(client);
   } finally {
     await blockTracker.destroy();
 
