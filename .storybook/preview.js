@@ -11,7 +11,7 @@ import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { _setBackgroundConnection } from '../ui/store/actions';
+import { _setBackgroundConnection } from '../ui/store/action-queue';
 import MetaMaskStorybookTheme from './metamask-storybook-theme';
 import addons from '@storybook/addons';
 

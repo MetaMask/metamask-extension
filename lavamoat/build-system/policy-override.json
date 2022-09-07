@@ -91,12 +91,44 @@
       "packages": {
         "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>eslint-utils": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint>eslint-scope": true,
         "@babel/eslint-parser>eslint-scope": true,
         "eslint>eslint-utils": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "eslint>eslint-visitor-keys": true
+      }
+    },
+    "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "eslint>eslint-utils": true,
+        "@typescript-eslint/parser>@typescript-eslint/types": true,
+        "eslint": true,
+        "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
+        "@babel/eslint-parser>eslint-scope": true,
+        "@typescript-eslint/utils": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/experimental-utils": {
@@ -121,6 +153,7 @@
     "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils>debug": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
@@ -142,6 +175,7 @@
         "typescript": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
+        "@typescript-eslint/eslint-plugin>@typescript-eslint/utils": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint>debug": true,
