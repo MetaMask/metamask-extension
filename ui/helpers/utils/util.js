@@ -113,15 +113,6 @@ export function isValidDomainName(address) {
   return match !== null;
 }
 
-// export function isValidUnstoppableDomainName(address) {
-//   let valid = null;
-//   ALLOWED_UNSTOPPABLE_TLDS.forEach((tld, i) => {
-//   if (address.toLowerCase().includes(tld)) {
-//     valid = address;
-//   }
-//   })
-//   return valid;
-//  }
 export async function isValidUnstoppableDomainName(address) {
   let tlds = await getUdTlds();
   let result = false; 
@@ -162,24 +153,6 @@ export async function getAndParseUdCurrencies() {
     }
   })
   return resultObject;
-}
-
-export function buildJson(input = RESPONSE_JSON) {
-  let finalObject = {
-    "singleChain": [
-    ],
-    "multiChain": [
-    ]
-  };
-  let currencyArray = parseKeysArray(input.keys);
-  currencyArray.forEach(function (crypto) {
-    if (crypto.deprecatedKeyName.includes("_")) {
-      finalObject.multiChain.push(crypto.deprecatedKeyName);
-    } else {
-      finalObject.singleChain.push(crypto.deprecatedKeyName);
-    }
-  })
-  return finalObject;
 }
 
 export function parseKeysArray(json) {

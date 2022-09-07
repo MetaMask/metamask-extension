@@ -2155,7 +2155,6 @@ export function updateSendAsset(
       }
       if ((state.UNS.resolution === state.send.draftTransactions[state.send.currentTransactionUUID].recipient.address && state.UNS.domainName)) {
         let object = await swapToken(state.UNS.domainName, asset);
-        console.log('this is the object', object);
         if (object.error) {
           if (object.error === 'UnspecifiedCurrency' || object.error === 'RecordNotFound') {
             asset.error = UNS_CURRENCY_SPEC_ERROR;
