@@ -758,6 +758,12 @@
   "contractInteraction": {
     "message": "Contract interaction"
   },
+  "contractNFT": {
+    "message": "NFT contract"
+  },
+  "contractRequestingAccess": {
+    "message": "Contract requesting access"
+  },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"
   },
