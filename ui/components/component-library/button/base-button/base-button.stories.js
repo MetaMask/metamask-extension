@@ -3,8 +3,8 @@ import {
   BUTTON_SIZES,
   ALIGN_ITEMS,
   DISPLAY,
-} from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
+} from '../../../../helpers/constants/design-system';
+import Box from '../../../ui/box/box';
 
 import { BaseButton } from './base-button';
 import README from './README.mdx';
@@ -28,7 +28,7 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/BaseButton',
+  title: 'Components/ComponentLibrary/Button/BaseButton',
   id: __filename,
   component: BaseButton,
   parameters: {

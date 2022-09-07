@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Text } from '../text';
+import Box from '../../../ui/box';
+import { Text } from '../../text';
 
 import {
   ALIGN_ITEMS,
   BUTTON_SIZES,
   JUSTIFY_CONTENT,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
 export const BaseButton = ({
   className,
@@ -19,22 +20,29 @@ export const BaseButton = ({
   ...props
 }) => {
   return (
-    <Text
+    <Box
       as={as}
-      paddingLeft={4}
-      paddingRight={4}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      paddingLeft={size === BUTTON_SIZES.XS ? 0 : 4}
+      paddingRight={size === BUTTON_SIZES.XS ? 0 : 4}
       className={classnames(
         className,
         'base-button',
         `base-button--size-${size}`,
-        { [`base-button--block`]: Boolean(isBlock) },
+        {
+          [`base-button--block`]: Boolean(isBlock),
+        },
       )}
       {...props}
     >
-      {children}
-    </Text>
+      <Text
+        as="span"
+        className="base-button--content"
+        alignItems={ALIGN_ITEMS.CENTER}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+      >
+        {children}
+      </Text>
+    </Box>
   );
 };
 
@@ -64,5 +72,5 @@ BaseButton.propTypes = {
   /**
    * BaseButton accepts all the props from Box
    */
-  ...Text.propTypes,
+  ...Box.propTypes,
 };

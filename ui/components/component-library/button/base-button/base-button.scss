@@ -1,11 +1,13 @@
 .base-button {
-  // Should be token
+  display: inline-block;
   height: 2.5rem;
-  // Should be token
+  padding: 0;
   border-radius: 999px;
   cursor: pointer;
   background-color: #dcdcdc;
   vertical-align: middle;
+  user-select: none;
+
 
 
   &:active,
@@ -13,9 +15,15 @@
     color: var(--color-text-default);
   }
 
+  &--content {
+    height: 100%;
+  }
+
   &--size-xs {
     // Should be token
     height: 1.375rem;
+    background-color: none;
+    border-radius: 0;
   }
 
   &--size-sm {

@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { SIZES, COLORS } from '../../../../helpers/constants/design-system';
 import { BaseButton } from './base-button';
 
 describe('BaseButton', () => {

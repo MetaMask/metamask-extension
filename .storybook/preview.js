@@ -14,6 +14,7 @@ import { createBrowserHistory } from 'history';
 import { _setBackgroundConnection } from '../ui/store/actions';
 import MetaMaskStorybookTheme from './metamask-storybook-theme';
 import addons from '@storybook/addons';
+import { withPerformance } from 'storybook-addon-performance';
 
 addParameters({
   backgrounds: {
@@ -115,3 +116,4 @@ const metamaskDecorator = (story, context) => {
 };
 
 addDecorator(metamaskDecorator);
+addDecorator(withPerformance);
