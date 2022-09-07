@@ -2435,25 +2435,13 @@ export function showSendTokenPage() {
   };
 }
 
-export function buyEth(opts) {
+export function buy(opts) {
   return async (dispatch) => {
     const url = await getBuyUrl(opts);
     if (url) {
       global.platform.openTab({ url });
       dispatch({
-        type: actionConstants.BUY_ETH,
-      });
-    }
-  };
-}
-
-export function buyToken(opts) {
-  return async (dispatch) => {
-    const url = await getBuyUrl(opts);
-    if (url) {
-      global.platform.openTab({ url });
-      dispatch({
-        type: actionConstants.BUY_TOKEN,
+        type: actionConstants.BUY,
       });
     }
   };
