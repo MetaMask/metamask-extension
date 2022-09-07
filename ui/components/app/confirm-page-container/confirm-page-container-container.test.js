@@ -77,7 +77,6 @@ describe('Confirm Page Container Container Test', () => {
     it('should render navigation', () => {
       const navigationContainer = screen.queryByTestId('navigation-container');
       expect(navigationContainer).toBeInTheDocument();
-      // expect(wrapper.find(ConfirmPageContainerNavigation)).toHaveLength(1);
     });
 
     it('should render header', () => {
