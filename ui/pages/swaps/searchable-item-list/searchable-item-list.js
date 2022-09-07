@@ -29,9 +29,12 @@ export default function SearchableItemList({
   }, [defaultToAll, itemsToSearch]);
   const [results, setResults] = useState(initialResultsState);
   useEffect(() => {
-    setResults(initialResultsState);
+    if (!searchQuery) {
+      // Only if there is no searchQuery we want to show all tokens.
+      setResults(initialResultsState);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialResultsState.length]);
+  }, [initialResultsState.length, searchQuery]);
 
   return (
     <div className={className}>
