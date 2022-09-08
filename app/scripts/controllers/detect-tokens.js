@@ -48,13 +48,13 @@ export default class DetectTokensController {
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
-    this.interval = interval;
     this.network = network;
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
     this.selectedAddress = this.preferences?.store.getState().selectedAddress;
+    this.interval = interval;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });
@@ -192,6 +192,9 @@ export default class DetectTokensController {
       return;
     }
     this.detectNewTokens();
+    if (isManifestV3) {
+      chrome.alarms.clear(DETECT_TOKEN_ALARM);
+    }
     this.interval = DEFAULT_INTERVAL;
   }
 
@@ -205,17 +208,22 @@ export default class DetectTokensController {
     if (!(this.isActive && this.selectedAddress)) {
       return;
     }
-    chrome.alarms.clear(DETECT_TOKEN_ALARM);
-    chrome.alarms.create(DETECT_TOKEN_ALARM, {
-      delayInMinutes: DEFAULT_INTERVAL_MV3,
-      periodInMinutes: DEFAULT_INTERVAL_MV3,
-    });
-
-    chrome.alarms.onAlarm.addListener(() => {
-      const alarm = chrome.alarms.get(DETECT_TOKEN_ALARM);
-      if (alarm) {
-        this.detectNewTokens();
+    chrome.alarms.get(DETECT_TOKEN_ALARM, (alarm) => {
+      if (!alarm) {
+        // console.log('in rescheduleTokenDetectionPollingInMV3 ', alarm);
+        chrome.alarms.create(DETECT_TOKEN_ALARM, {
+          delayInMinutes: DEFAULT_INTERVAL_MV3,
+          periodInMinutes: DEFAULT_INTERVAL_MV3,
+        });
       }
+    });
+    chrome.alarms.onAlarm.addListener(() => {
+      chrome.alarms.get(DETECT_TOKEN_ALARM, (alarm) => {
+        // console.log('in triggered', alarm);
+        if (alarm) {
+          this.detectNewTokens();
+        }
+      });
     });
   }
 
