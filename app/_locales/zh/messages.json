@@ -3299,9 +3299,6 @@
   "swap": {
     "message": "交换"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "如果在您下订单和确认订单之间价格发生了变化，这就叫做“滑点”。如果滑点超过您的“最大滑点”设置，您的交换将自动取消。"
-  },
   "swapAggregator": {
     "message": "聚合器"
   },
@@ -3465,9 +3462,6 @@
   "swapQuoteDetails": {
     "message": "报价详情"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "如果在您下订单和确认订单之间价格发生了变化，这就叫做“滑点”。如果滑点超过您的“最大滑点”设置，您的交换将自动取消。"
-  },
   "swapQuoteSource": {
     "message": "报价来源"
   },
@@ -3497,9 +3491,6 @@
   },
   "swapReviewSwap": {
     "message": "审查交换"
-  },
-  "swapSearchForAToken": {
-    "message": "搜索代币"
   },
   "swapSelect": {
     "message": "选择"

@@ -151,7 +151,7 @@ export default function CreatePassword({
   };
 
   return (
-    <div className="create-password__wrapper">
+    <div className="create-password__wrapper" data-testid="create-password">
       {secretRecoveryPhrase &&
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
         <TwoStepProgressBar

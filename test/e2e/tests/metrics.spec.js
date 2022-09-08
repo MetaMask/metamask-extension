@@ -30,6 +30,7 @@ describe('Segment metrics', function () {
         fixtures: 'metrics-enabled',
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver, mockServer }) => {
         const mockedEndpoints = await mockSegment(mockServer);
