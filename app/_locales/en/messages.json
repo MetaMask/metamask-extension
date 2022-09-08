@@ -945,6 +945,12 @@
     "message": "Deposit $1",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "deprecatedTestNetworksLink": {
+    "message": "Learn more"
+  },
+  "deprecatedTestNetworksMsg": {
+    "message": "Due to the protocol changes of Ethereum: Rinkeby, Ropsten and Kovan test networks may not work as reliably and will be deprecated soon."
+  },
   "description": {
     "message": "Description"
   },
