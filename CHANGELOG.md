@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Add a link for "Create a new swap"
 - Swaps: add a tx details view for cancelled Swaps on the Activity tab ([#15273](https://github.com/MetaMask/metamask-extension/pull/15273))
 - [FLASK] Add snap update metrics ([#15206](https://github.com/MetaMask/metamask-extension/pull/15206))
+- [FLASK] Add `snap_getBip44Entropy` RPC method and deprecate `snap_getBip44Entropy_*` ([#15706](https://github.com/MetaMask/metamask-extension/pull/15706))
+- [FLASK] Add `snap_getBip32Entropy` JSON-RPC method ([#15619](https://github.com/MetaMask/metamask-extension/pull/15619))
+- [FLASK] Add DApp triggered Snap updates ([#15143](https://github.com/MetaMask/metamask-extension/pull/15143))
 
 ### Changed
 - Update Confirmation screen styling by adding a top margin and moving Site Icon next to the site URL ([#15136](https://github.com/MetaMask/metamask-extension/pull/15136))
@@ -65,11 +68,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swaps: fix displaying "No tokens available matching" when there are tokens available, by updating the `results` state if `initialResultsState` array length is different ([#15270](https://github.com/MetaMask/metamask-extension/pull/15270))
 - [FLASK] Fix missing snap hook for `getAppKey`, the `getUnlockPromise` hook was missing, breaking some snap examples ([#15354](https://github.com/MetaMask/metamask-extension/pull/15354))
 - [FLASK] Fix snaps authorship pill truncation, previously the authorship label would not be truncated and offset the UI ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
-
-### Uncategorized
-- [FLASK] Add `snap_getBip44Entropy` RPC method and deprecate `snap_getBip44Entropy_*` ([#15706](https://github.com/MetaMask/metamask-extension/pull/15706))
-- [FLASK] Add `snap_getBip32Entropy` JSON-RPC method ([#15619](https://github.com/MetaMask/metamask-extension/pull/15619))
-- [FLASK] Add DApp triggered Snap updates ([#15143](https://github.com/MetaMask/metamask-extension/pull/15143))
 - [FLASK] Fix Snaps key management permission copy ([#14849](https://github.com/MetaMask/metamask-extension/pull/14849))
 
 ## [10.18.4]
