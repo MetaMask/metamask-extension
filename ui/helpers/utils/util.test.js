@@ -49,61 +49,61 @@ describe('util', () => {
     });
   });
 
-  describe('isValidDomainName', () => {
+  describe('isValidENSDomainName', () => {
     it('should return true when given a valid domain name', () => {
-      expect(util.isValidDomainName('foo.bar')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('foo.bar')).toStrictEqual(true);
     });
 
     it('should return true when given a valid subdomain', () => {
-      expect(util.isValidDomainName('foo.foo.bar')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('foo.foo.bar')).toStrictEqual(true);
     });
 
     it('should return true when given a single-character domain', () => {
-      expect(util.isValidDomainName('f.bar')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('f.bar')).toStrictEqual(true);
     });
 
     it('should return true when given a unicode TLD', () => {
-      expect(util.isValidDomainName('台灣.中国')).toStrictEqual(true);
+      expect(util.isValidENSDomainName('台灣.中国')).toStrictEqual(true);
     });
 
     it('should return false when given a domain with unacceptable ASCII characters', () => {
-      expect(util.isValidDomainName('$.bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('$.bar')).toStrictEqual(false);
     });
 
     it('should return false when given a TLD that starts with a dash', () => {
-      expect(util.isValidDomainName('foo.-bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('foo.-bar')).toStrictEqual(false);
     });
 
     it('should return false when given a TLD that ends with a dash', () => {
-      expect(util.isValidDomainName('foo.bar-')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('foo.bar-')).toStrictEqual(false);
     });
 
     it('should return false when given a domain name with a chunk that starts with a dash', () => {
-      expect(util.isValidDomainName('-foo.bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('-foo.bar')).toStrictEqual(false);
     });
 
     it('should return false when given a domain name with a chunk that ends with a dash', () => {
-      expect(util.isValidDomainName('foo-.bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('foo-.bar')).toStrictEqual(false);
     });
 
     it('should return false when given a bare TLD', () => {
-      expect(util.isValidDomainName('bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('bar')).toStrictEqual(false);
     });
 
     it('should return false when given a domain that starts with a period', () => {
-      expect(util.isValidDomainName('.bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('.bar')).toStrictEqual(false);
     });
 
     it('should return false when given a subdomain that starts with a period', () => {
-      expect(util.isValidDomainName('.foo.bar')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('.foo.bar')).toStrictEqual(false);
     });
 
     it('should return false when given a domain that ends with a period', () => {
-      expect(util.isValidDomainName('bar.')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('bar.')).toStrictEqual(false);
     });
 
     it('should return false when given a 1-character TLD', () => {
-      expect(util.isValidDomainName('foo.b')).toStrictEqual(false);
+      expect(util.isValidENSDomainName('foo.b')).toStrictEqual(false);
     });
   });
 

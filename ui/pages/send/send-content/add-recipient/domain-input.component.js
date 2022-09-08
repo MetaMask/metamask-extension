@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import {
-  isValidDomainName,
+  isValidENSDomainName,
   isValidUnstoppableDomainName,
 } from '../../../../helpers/utils/util';
 import {
@@ -69,8 +69,7 @@ export default class DomainInput extends Component {
     if (internalSearch) {
       return null;
     }
-
-    if (isValidDomainName(input) && await isValidUnstoppableDomainName(input)) {
+    if (await isValidUnstoppableDomainName(input)) {
       resetEnsResolution();
       prepareResolutionCall(input);
       resetEnsResolution(); 

@@ -77,7 +77,7 @@ import {
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
-  isValidDomainName,
+  isValidENSDomainName,
   isValidUnstoppableDomainName,
 } from '../../helpers/utils/util';
 import {
@@ -1373,7 +1373,7 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
-              !isValidDomainName(state.recipientInput)
+              !isValidENSDomainName(state.recipientInput)
               &&
               !isValidUnstoppableDomainName(state.recipientInput))
           ) {
