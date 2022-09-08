@@ -692,6 +692,20 @@ export default class Home extends PureComponent {
                       global.platform.openTab({
                         url: process.env.PORTFOLIO_URL,
                       });
+                      this.context.trackEvent(
+                        {
+                          category: EVENT.CATEGORIES.HOME,
+                          event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                          properties: {
+                            url: process.env.PORTFOLIO_URL,
+                          },
+                        },
+                        {
+                          contextPropsIntoEventProperties: [
+                            CONTEXT_PROPS.PAGE_TITLE,
+                          ],
+                        },
+                      );
                     }}
                   >
                     <IconChart />
