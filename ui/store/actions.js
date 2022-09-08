@@ -3859,7 +3859,7 @@ export function hideTestNetMessage() {
 }
 
 export function hidePortfolioTooltip() {
-  return promisifiedBackground.setShowPortfolioTooltip(false);
+  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
 }
 
 export function setCollectiblesDetectionNoticeDismissed() {

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
 import CollectiblesTab from '../../components/app/collectibles-tab';
