@@ -1280,14 +1280,14 @@ describe('Transaction Controller', function () {
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 12345},
+        { actionId: 12345 },
       );
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 12345},
+        { actionId: 12345 },
       );
       const transactionCount2 =
         txController.txStateManager.getTransactions().length;
@@ -1303,14 +1303,14 @@ describe('Transaction Controller', function () {
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 12345},
+        { actionId: 12345 },
       );
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
-        {actionId: 11111},
+        { actionId: 11111 },
       );
       const transactionCount2 =
         txController.txStateManager.getTransactions().length;
