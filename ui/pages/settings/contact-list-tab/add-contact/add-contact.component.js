@@ -5,7 +5,7 @@ import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { 
-  isValidDomainName,
+  isValidENSDomainName,
   isValidUnstoppableDomainName 
 } from '../../../../helpers/utils/util';
 import DomainInput from '../../../send/send-content/add-recipient/domain-input';
@@ -70,7 +70,7 @@ export default class AddContact extends PureComponent {
     const valid =
       !isBurnAddress(address) &&
       isValidHexAddress(address, { mixedCaseUseChecksum: true });
-    const validEnsAddress = isValidDomainName(address);
+    const validEnsAddress = isValidENSDomainName(address);
     const validUnsAddress = isValidUnstoppableDomainName(address);
 
     if (valid || validEnsAddress || validUnsAddress || address === '') {

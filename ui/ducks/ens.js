@@ -22,7 +22,7 @@ import {
 
 } from '../pages/send/send.constants';
 import { 
-  isValidDomainName,
+  isValidENSDomainName,
 } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
@@ -61,7 +61,7 @@ const slice = createSlice({
 
       if (error) {
         if (
-          isValidDomainName(ensName) &&
+          isValidENSDomainName(ensName) &&
           error.message === 'ENS name not defined.'
         ) {
           state.error =
@@ -82,7 +82,7 @@ const slice = createSlice({
         } else {
           state.resolution = address;
         }
-        if (isValidDomainName(address) && isConfusing(address)) {
+        if (isValidENSDomainName(address) && isConfusing(address)) {
           state.warning = CONFUSING_ENS_ERROR;
         }
       } else {

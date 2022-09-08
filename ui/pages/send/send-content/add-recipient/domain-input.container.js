@@ -17,9 +17,9 @@ function mapDispatchToProps(dispatch) {
     lookupEnsName: debounce((ensName) => dispatch(lookupEnsName(ensName))),
     prepareResolutionCall: debounce((unsName) => dispatch(prepareResolutionCall(unsName))),
     initializeUnsSlice: () => dispatch(initializeUnsSlice()),
-    resetUnsResolution: debounce(() => dispatch(resetUnsResolution()), 300),
+    resetUnsResolution: debounce(() => dispatch(resetUnsResolution())),
     initializeEnsSlice: () => dispatch(initializeEnsSlice()),
-    resetEnsResolution: debounce(() => dispatch(resetEnsResolution()), 300),
+    resetEnsResolution: debounce(() => dispatch(resetEnsResolution())),
   };
  }
 
