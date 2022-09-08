@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Backup and Restore State functionalities for 3box replacement ([#15243](https://github.com/MetaMask/metamask-extension/pull/15243))(https://github.com/MetaMask/metamask-extension/pull/13846))
 - Add a Warning on the Confirmation screen, when user is performing a SetApprovalForAll transaction ([#15512](https://github.com/MetaMask/metamask-extension/pull/15512))
 - Add new translations for DE, EL, ES, FR, HI, ID, JA, KO, PT, RU, TL TR, VI and ZH ([#14975](https://github.com/MetaMask/metamask-extension/pull/14975))
-- Add Italian translation for "Forgot password" message([#15477](https://github.com/MetaMask/metamask-extension/pull/15477))
+- Add Italian translation for "Forgot password" message ([#15477](https://github.com/MetaMask/metamask-extension/pull/15477))
 - Swaps: on the STX status page ([#14995](https://github.com/MetaMask/metamask-extension/pull/14995))
   - Add a link to the Swap tx
   - Add a link for "Create a new swap"
@@ -32,10 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Avalanche RPC endpoint to point Infura, as it is now supported ([#15720](https://github.com/MetaMask/metamask-extension/pull/15720))
 - Update the main text on SetApprovalForAll confirmation screen ([#15724](https://github.com/MetaMask/metamask-extension/pull/15724))
 - Updated origin pill component to match the new design for Permissions and Switching Networks screens ([#15603](https://github.com/MetaMask/metamask-extension/pull/15603))
-- Set "View full transaction details" as default option on SetApprovalForAll Confirmation screen([#15726](https://github.com/MetaMask/metamask-extension/pull/15726))
+- Set "View full transaction details" as default option on SetApprovalForAll Confirmation screen ([#15726](https://github.com/MetaMask/metamask-extension/pull/15726))
 - Update `gridplus-sdk` ([#15711](https://github.com/MetaMask/metamask-extension/pull/15711))
-  - `eth-lattice-keyring` changes: ([GridPlus/eth-lattice-keyring@v0.11.0...v0.12.0])(https://github.com/GridPlus/eth-lattice-keyring/compare/v0.11.0...v0.12.0)
-  - `gridplus-sdk` changes: ([GridPlus/gridplus-sdk@v2.2.2...v2.2.7])(https://github.com/GridPlus/gridplus-sdk/compare/v2.2.2...v2.2.7)
+  - `eth-lattice-keyring` changes: [GridPlus/eth-lattice-keyring@v0.11.0...v0.12.0](https://github.com/GridPlus/eth-lattice-keyring/compare/v0.11.0...v0.12.0)
+  - `gridplus-sdk` changes: [GridPlus/gridplus-sdk@v2.2.2...v2.2.7](https://github.com/GridPlus/gridplus-sdk/compare/v2.2.2...v2.2.7)
 - Update title case to sentence case with some exceptions (names, companies, special terms and page navigation) ([#15285](https://github.com/MetaMask/metamask-extension/pull/15285))
 - Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
 - Swaps: Standardize the spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
