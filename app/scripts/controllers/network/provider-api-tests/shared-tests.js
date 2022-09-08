@@ -1,5 +1,6 @@
-/* eslint-disable jest/require-top-level-describe, jest/no-export */
+/* eslint-disable jest/require-top-level-describe, jest/no-export, jest/no-identical-title */
 
+import { fill } from 'lodash';
 import {
   withMockedInfuraCommunications,
   withInfuraClient,
@@ -7,6 +8,35 @@ import {
   buildMockParamsWithBlockParamAt,
   buildRequestWithReplacedBlockParam,
 } from './helpers';
+
+export function testsForRpcMethodNotHandledByMiddleware(
+  method,
+  { numberOfParameters },
+) {
+  it('attempts to pass the request off to Infura', async () => {
+    const request = {
+      method,
+      params: fill(Array(numberOfParameters), 'some value'),
+    };
+    const expectedResult = 'the result';
+
+    await withMockedInfuraCommunications(async (comms) => {
+      // The first time a block-cacheable request is made, the latest block
+      // number is retrieved through the block tracker first. It doesn't
+      // matter what this is — it's just used as a cache key.
+      comms.mockNextBlockTrackerRequest();
+      comms.mockSuccessfulInfuraRpcCall({
+        request,
+        response: { result: expectedResult },
+      });
+      const actualResult = await withInfuraClient(({ makeRpcCall }) =>
+        makeRpcCall(request),
+      );
+
+      expect(actualResult).toStrictEqual(expectedResult);
+    });
+  });
+}
 
 /**
  * Defines tests which exercise the behavior exhibited by an RPC method which is
