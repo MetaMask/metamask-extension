@@ -67,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix snaps authorship pill truncation, previously the authorship label would not be truncated and offset the UI ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
 
 ### Uncategorized
-- [FLASK] `snaps-skunkworks@0.20.0` ([#15706](https://github.com/MetaMask/metamask-extension/pull/15706))
+- [FLASK] Add `snap_getBip44Entropy` RPC method and deprecate `snap_getBip44Entropy_*` ([#15706](https://github.com/MetaMask/metamask-extension/pull/15706))
 - [FLASK] `snaps-skunkworks@0.19.0` ([#15619](https://github.com/MetaMask/metamask-extension/pull/15619))
 - [FLASK] Add update snap UI ([#15143](https://github.com/MetaMask/metamask-extension/pull/15143))
 - [FLASK] Fix key management permission copy ([#14849](https://github.com/MetaMask/metamask-extension/pull/14849))
