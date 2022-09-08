@@ -1998,23 +1998,6 @@ export function createCancelTransaction(txId, customGasSettings, options) {
         },
         actionId,
       );
-      callBackgroundMethod(
-        'createCancelTransaction',
-        [txId, customGasSettings, { ...options, actionId }],
-        (err, newState) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
-
-          const { currentNetworkTxList } = newState;
-          const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
-          newTxId = id;
-          resolve(newState);
-        },
-        actionId,
-      );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId);
