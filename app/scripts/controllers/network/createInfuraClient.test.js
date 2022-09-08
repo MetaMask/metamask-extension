@@ -318,9 +318,7 @@ describe('createInfuraClient', () => {
   // - eth_submitHashrate
   // - web3_sha3
 
-  describe('RPC methods not supported by Infura and not listed in the JSON-RPC spec', () => {
-    testsForRpcMethodNotHandledByMiddleware('custom_rpc_method', {
-      numberOfParameters: 1,
-    });
+  testsForRpcMethodNotHandledByMiddleware('custom_rpc_method', {
+    numberOfParameters: 1,
   });
 });
