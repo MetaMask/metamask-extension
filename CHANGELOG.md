@@ -45,13 +45,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
 - Swaps: only check if a user has enough balance before calling STX. If "Not enough funds" error is thrown, show a notification, but keep STX active ([#15218](https://github.com/MetaMask/metamask-extension/pull/15218))
 - [FLASK] Disable "Mark all as read button" when there are no notifications ([#15333](https://github.com/MetaMask/metamask-extension/pull/15333))
-- [FLASK] Update Snaps packages to version `^0.18.1` ([#15230](https://github.com/MetaMask/metamask-extension/pull/15230))
-  - Updates the following packages from `0.16.0` to `0.18.1`:
-    - `@metamask/execution-environments`
-    - `@metamask/rpc-methods`
-    - `@metamask/snap-controllers`
-    - `@metamask/snap-types`
-  - Serialization issues were fixed in `@metmask/execution-environments`. See the ([releases](https://github.com/MetaMask/snaps-skunkworks/releases)) of the Snaps monorepo for details.
 
 ### Fixed
 - Fix Amount set to 0 on Send page when editing an ERC20 tx by preserving its value ([#15275](https://github.com/MetaMask/metamask-extension/pull/15275))
