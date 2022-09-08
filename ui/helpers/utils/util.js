@@ -113,7 +113,7 @@ export async function isValidUnstoppableDomainName(address) {
   let tlds = await getUdTlds();
   let result = false; 
     tlds.forEach((tld, i) => {
-      if (address.toLowerCase().includes(tld)) {
+      if (address.toLowerCase().includes("."+tld)) {
         result = true;
       }
     })
