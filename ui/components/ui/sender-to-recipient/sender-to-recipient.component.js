@@ -187,7 +187,10 @@ export default function SenderToRecipient({
   const checksummedRecipientAddress = toChecksumHexAddress(recipientAddress);
 
   return (
-    <div className={classnames('sender-to-recipient', variantHash[variant])}>
+    <div
+      className={classnames('sender-to-recipient', variantHash[variant])}
+      data-testid="sender-to-recipient"
+    >
       <SenderAddress
         checksummedSenderAddress={checksummedSenderAddress}
         addressOnly={addressOnly}

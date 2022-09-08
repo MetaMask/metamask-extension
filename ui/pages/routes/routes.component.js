@@ -77,6 +77,7 @@ import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 
 export default class Routes extends Component {
@@ -372,6 +373,8 @@ export default class Routes extends Component {
     const shouldShowNetworkInfo =
       isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork;
 
+    const windowType = getEnvironmentType();
+
     return (
       <div
         className={classnames('app', {
@@ -387,6 +390,9 @@ export default class Routes extends Component {
           }
         }}
       >
+        {windowType !== ENVIRONMENT_TYPE_NOTIFICATION && isUnlocked && (
+          <DeprecatedTestNetworks />
+        )}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
