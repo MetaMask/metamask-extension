@@ -219,7 +219,12 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
+    const { setPortfolioTooltipWasShownInThisSession, showPortfolioTooltip } =
+      this.props;
     this.checkStatusAndNavigate();
+    if (showPortfolioTooltip) {
+      setPortfolioTooltipWasShownInThisSession();
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -603,7 +608,6 @@ export default class Home extends PureComponent {
       showPortfolioTooltip,
       hidePortfolioTooltip,
       portfolioTooltipWasShownInThisSession,
-      setPortfolioTooltipWasShownInThisSession,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
@@ -667,7 +671,6 @@ export default class Home extends PureComponent {
                           className="home__subheader-link--tooltip-content-header-button"
                           onClick={() => {
                             hidePortfolioTooltip();
-                            setPortfolioTooltipWasShownInThisSession();
                           }}
                         >
                           <i className="fa fa-times" />
