@@ -227,8 +227,23 @@
 	"advancedBaseGasFeeToolTip": {
 		"message": "Quando la tua transazione viene inclusa nel blocco, ogni differenza tra la tua offerta massima di gas e il gas effettivamente utilizzato viene restituita a te. Il totale viene calcolato come offerta massima di gas (in GEWI) * limite di gas."
 	},
+	"advancedGasFeeDefaultOptIn": {
+		"message": "Salva queste $1 come mie preferite per \"Avanzate\""
+	},
+	"advancedGasFeeDefaultOptOut": {
+		"message": "Utilizzare sempre questi valori e l'impostazione avanzata come predefiniti."
+	},
+	"advancedGasFeeModalTitle": {
+		"message": "Tariffa gas avanzata"
+	},
+	"advancedGasPriceTitle": {
+		"message": "Prezzo gas"
+	},
 	"advancedOptions": {
 		"message": "Opzioni Avanzate"
+	},
+	"advancedPriorityFeeToolTip": {
+		"message": "La commissione di priorità avanzata (nota anche come \"suggerimento del minatore\") va direttamente ai minatori e li incentiva a dare la priorità alla tua commissione di transazione."
 	},
 	"affirmAgree": {
 		"message": "Acconsento"
@@ -251,8 +266,16 @@
 	"alerts": {
 		"message": "Avvisi"
 	},
+	"allOfYour": {
+		"message": "Tutti i tuoi $1",
+		"description": "$1 is the symbol or name of the token that the user is approving spending"
+	},
 	"allowExternalExtensionTo": {
 		"message": "Permetti a questa estensione di:"
+	},
+	"allowSpendToken": {
+		"message": "Dai il permesso di spendere tuoi $1?",
+		"description": "$1 is the symbol of the token that are requesting to spend"
 	},
 	"allowThisSiteTo": {
 		"message": "Permetti a questo sito di:"
@@ -265,7 +288,7 @@
 		"message": "Importo"
 	},
 	"appDescription": {
-		"message": "Ethereum Browser Extension",
+		"message": "Estensione Browser Ethereum",
 		"description": "The description of the application"
 	},
 	"appName": {
@@ -283,6 +306,19 @@
 	"approve": {
 		"message": "Approva"
 	},
+	"approveAllTokensTitle": {
+		"message": "Consenti l'accesso e il trasferimento di tutti i tuoi $1?",
+		"description": "$1 is the symbol of the token for which the user is granting approval"
+	},
+	"approveAndInstall": {
+		"message": "Approva & installa"
+	},
+	"approveAndUpdate": {
+		"message": "Approva & aggiorna"
+	},
+	"approveButtonText": {
+		"message": "Approva"
+	},
 	"approveSpendLimit": {
 		"message": "Approva limite di spesa per $1",
 		"description": "The token symbol that is being approved"
@@ -290,8 +326,27 @@
 	"approved": {
 		"message": "Approvato"
 	},
+	"approvedAmountWithColon": {
+		"message": "Importo approvato:"
+	},
+	"approvedAsset": {
+		"message": "Asset approvato"
+	},
+	"approvedOn": {
+		"message": "Approvato il $1",
+		"description": "$1 is the approval date for a permission"
+	},
+	"areYouSure": {
+		"message": "Sei sicuro?"
+	},
+	"assetOptions": {
+		"message": "Opzioni asset"
+	},
 	"assets": {
 		"message": "Patrimonio"
+	},
+	"attemptSendingAssets": {
+		"message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
 	},
 	"attemptToCancel": {
 		"message": "Tentativo di Annullamento?"
@@ -333,16 +388,48 @@
 		"message": "Esegui il backup ora"
 	},
 	"balance": {
-		"message": "Bilancio:"
+		"message": "Bilancio"
 	},
 	"balanceOutdated": {
 		"message": "Il bilancio può essere non aggiornato"
 	},
+	"baseFee": {
+		"message": "Commissioni di base"
+	},
 	"basic": {
 		"message": "Base"
 	},
+	"beCareful": {
+		"message": "Presta attenzione"
+	},
+	"betaMetamaskDescription": {
+		"message": "Scelto da milioni di persone, MetaMask è un portafoglio sicuro che rende il mondo del web3 accessibile a tutti."
+	},
+	"betaMetamaskDescriptionExplanation": {
+		"message": "Usa questa versione per testare le funzionalità imminenti prima che vengano rilasciate. Il tuo utilizzo e il tuo feedback ci aiutano a creare la migliore versione possibile di MetaMask. L'utilizzo di MetaMask Beta è soggetto al nostro standard $1 e al nostro $2. Come versione beta, potrebbe esserci un aumento del rischio di bug. Procedendo, accetti e riconosci questi rischi, così come i rischi che si trovano nei nostri Termini e Termini beta.",
+		"description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+	},
+	"betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+		"message": "Termini beta supplementari"
+	},
+	"betaMetamaskDescriptionExplanationTermsLinkText": {
+		"message": "Termini"
+	},
+	"betaMetamaskVersion": {
+		"message": "MetaMask Versione Beta"
+	},
+	"betaWelcome": {
+		"message": "Benvenuto in MetaMask Beta"
+	},
+	"blockExplorerAccountAction": {
+		"message": "Profilo",
+		"description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+	},
 	"blockExplorerUrl": {
-		"message": "Block Explorer"
+		"message": "URL Block Explorer"
+	},
+	"blockExplorerUrlDefinition": {
+		"message": "L'URL usato come Block Explorer per questa rete."
 	},
 	"blockExplorerView": {
 		"message": "Visualizza account su $1",
