@@ -22,12 +22,6 @@ describe('Confirm Page Container Container Test', () => {
     toAddress: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
     origin: 'testOrigin', // required
     onNextTx: sinon.spy(),
-    txTokenAddress: '0x114352b0e1bf40f0b6aae8de4c974250de938c82',
-    getTokenStandardAndDetails: () => {
-      return {
-        standard: 'ERC721',
-      };
-    },
     // Footer
     onCancelAll: sinon.spy(),
     onCancel: sinon.spy(),

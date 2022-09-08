@@ -165,6 +165,7 @@ export default class ConfirmTransactionBase extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps: PropTypes.arrayOf(PropTypes.object),
     ///: END:ONLY_INCLUDE_IN
+    assetStandard: PropTypes.string,
   };
 
   state = {
@@ -1127,6 +1128,7 @@ export default class ConfirmTransactionBase extends Component {
       hardwareWalletRequiresConnection,
       image,
       setApproveForAllArg,
+      assetStandard,
     } = this.props;
     const {
       submitting,
@@ -1231,6 +1233,7 @@ export default class ConfirmTransactionBase extends Component {
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
           setApproveForAllArg={setApproveForAllArg}
+          assetStandard={assetStandard}
         />
       </TransactionModalContextProvider>
     );
