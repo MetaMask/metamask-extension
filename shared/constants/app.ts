@@ -6,9 +6,12 @@ import { RestrictedMethods } from './permissions';
  * notification - When the extension opens due to interaction with a Web3 enabled website
  * fullscreen - When the user clicks 'expand view' to open the extension in a new tab
  * background - The background process that powers the extension
- *
- * @typedef {'popup' | 'notification' | 'fullscreen' | 'background'} EnvironmentType
  */
+export type EnvironmentType =
+  | 'popup'
+  | 'notification'
+  | 'fullscreen'
+  | 'background';
 export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
@@ -23,7 +26,7 @@ export const BuildType = {
   beta: 'beta',
   flask: 'flask',
   main: 'main',
-};
+} as const;
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
@@ -52,7 +55,7 @@ export const MESSAGE_TYPE = {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAP_CONFIRM: RestrictedMethods.snap_confirm,
   ///: END:ONLY_INCLUDE_IN
-};
+} as const;
 
 /**
  * The different kinds of subjects that MetaMask may interact with, including
@@ -66,13 +69,13 @@ export const SUBJECT_TYPES = {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAP: 'snap',
   ///: END:ONLY_INCLUDE_IN
-};
+} as const;
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
-};
+} as const;
 
 export const ORIGIN_METAMASK = 'metamask';
 
@@ -84,7 +87,7 @@ export const CHROME_BUILD_IDS = [
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
-];
+] as const;
 
 const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';
 const METAMASK_PROD_FIREFOX_ID = 'webextension@metamask.io';
@@ -94,6 +97,6 @@ export const FIREFOX_BUILD_IDS = [
   METAMASK_BETA_FIREFOX_ID,
   METAMASK_PROD_FIREFOX_ID,
   METAMASK_FLASK_FIREFOX_ID,
-];
+] as const;
 
 export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';

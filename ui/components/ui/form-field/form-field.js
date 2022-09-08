@@ -10,6 +10,7 @@ import {
   DISPLAY,
   TYPOGRAPHY,
   FONT_WEIGHT,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 
 import NumericInput from '../numeric-input/numeric-input.component';
@@ -17,23 +18,30 @@ import InfoTooltip from '../info-tooltip/info-tooltip';
 
 export default function FormField({
   dataTestId,
-  titleText,
-  titleUnit,
-  tooltipText,
-  titleDetail,
+  titleText = '',
+  TitleTextCustomComponent,
+  titleUnit = '',
+  TitleUnitCustomComponent,
+  tooltipText = '',
+  TooltipCustomComponent,
+  titleDetail = '',
+  titleDetailWrapperProps,
   error,
-  onChange,
-  value,
+  onChange = undefined,
+  value = 0,
   numeric,
-  detailText,
-  autoFocus,
-  password,
-  allowDecimals,
-  disabled,
+  detailText = '',
+  autoFocus = false,
+  password = false,
+  allowDecimals = false,
+  disabled = false,
   placeholder,
   warning,
   passwordStrength,
   passwordStrengthText,
+  id,
+  inputProps,
+  wrappingLabelProps,
 }) {
   return (
     <div
@@ -41,39 +49,49 @@ export default function FormField({
         'form-field__row--error': error,
       })}
     >
-      <label>
+      <Box as="label" {...wrappingLabelProps}>
         <div className="form-field__heading">
-          <div className="form-field__heading-title">
-            {titleText && (
-              <Typography
-                tag={TYPOGRAPHY.H6}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H6}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {titleText}
-              </Typography>
-            )}
-            {titleUnit && (
-              <Typography
-                tag={TYPOGRAPHY.H6}
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {titleUnit}
-              </Typography>
-            )}
-            {tooltipText && (
-              <InfoTooltip position="top" contentText={tooltipText} />
-            )}
-          </div>
+          <Box
+            className="form-field__heading-title"
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+          >
+            {TitleTextCustomComponent ||
+              (titleText && (
+                <Typography
+                  tag="label"
+                  htmlFor={id}
+                  html
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H6}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {titleText}
+                </Typography>
+              ))}
+            {TitleUnitCustomComponent ||
+              (titleUnit && (
+                <Typography
+                  tag={TYPOGRAPHY.H6}
+                  variant={TYPOGRAPHY.H6}
+                  color={COLORS.TEXT_ALTERNATIVE}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {titleUnit}
+                </Typography>
+              ))}
+            {TooltipCustomComponent ||
+              (tooltipText && (
+                <InfoTooltip position="top" contentText={tooltipText} />
+              ))}
+          </Box>
           {titleDetail && (
             <Box
               className="form-field__heading-detail"
               textAlign={TEXT_ALIGN.END}
               marginBottom={3}
               marginRight={2}
+              {...titleDetailWrapperProps}
             >
               {titleDetail}
             </Box>
@@ -90,6 +108,7 @@ export default function FormField({
             disabled={disabled}
             dataTestId={dataTestId}
             placeholder={placeholder}
+            id={id}
           />
         ) : (
           <input
@@ -104,6 +123,8 @@ export default function FormField({
             disabled={disabled}
             data-testid={dataTestId}
             placeholder={placeholder}
+            id={id}
+            {...inputProps}
           />
         )}
         {error && (
@@ -142,7 +163,7 @@ export default function FormField({
             {passwordStrengthText}
           </Typography>
         )}
-      </label>
+      </Box>
     </div>
   );
 }
@@ -157,17 +178,39 @@ FormField.propTypes = {
    */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
+   * A custom component to replace the title text Typography component
+   * titleText will be ignored if this is provided
+   */
+  TitleTextCustomComponent: PropTypes.node,
+  /**
    * Show unit (eg. ETH)
    */
   titleUnit: PropTypes.string,
+  /**
+   * A custom component to replace the title unit Typography component
+   * titleUnit will be ignored if this is provided
+   */
+  TitleUnitCustomComponent: PropTypes.node,
   /**
    * Add Tooltip and text content
    */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
+   * A custom component to replace the tooltip component
+   * tooltipText will be ignored if this is provided
+   */
+  TooltipCustomComponent: PropTypes.node,
+  /**
    * Show content (text, image, component) in title
    */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Props to pass to wrapping Box component of the titleDetail component
+   * Accepts all props of the Box component
+   */
+  titleDetailWrapperProps: {
+    ...Box.PropTypes,
+  },
   /**
    * Show error message
    */
@@ -220,20 +263,18 @@ FormField.propTypes = {
    * Show password strength description
    */
   passwordStrengthText: PropTypes.string,
-};
-
-FormField.defaultProps = {
-  titleText: '',
-  titleUnit: '',
-  tooltipText: '',
-  titleDetail: '',
-  error: '',
-  onChange: undefined,
-  value: 0,
-  detailText: '',
-  autoFocus: false,
-  numeric: false,
-  password: false,
-  allowDecimals: true,
-  disabled: false,
+  /**
+   * The id of the input element. Should be used when the wrapping label is changed to a div to ensure accessibility.
+   */
+  id: PropTypes.string,
+  /**
+   * Any additional input attributes or overrides not provided by exposed props
+   */
+  inputProps: PropTypes.object,
+  /**
+   * The FormField is wrapped in a Box component that is rendered as a <label/> using the polymorphic "as" prop.
+   * This object allows you to override the rendering of the label by using the wrapperProps={{ as: 'div' }} prop.
+   * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
+   */
+  wrappingLabelProps: PropTypes.object,
 };

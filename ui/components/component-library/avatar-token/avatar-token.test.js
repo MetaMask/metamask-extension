@@ -36,7 +36,7 @@ describe('AvatarToken', () => {
     expect(image[1]).toHaveClass('avatar-token__token-image--size-reduced');
   });
 
-  it('should render text showHalo is true and no image url is provided', () => {
+  it('should render the first letter of the tokenName prop when showHalo is true and no image url is provided', () => {
     const { getByText } = render(
       <AvatarToken
         {...args}

@@ -4,3 +4,4 @@
 *                                    @MetaMask/extension-devs
 .circleci/                           @MetaMask/extension-devs @kumavis
 development/                         @MetaMask/extension-devs @kumavis
+lavamoat/                            @MetaMask/supply-chain
