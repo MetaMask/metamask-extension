@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
+  ERC1155,
   ERC721,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
@@ -189,9 +190,6 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction.type ===
       TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
 
-    const isSetNftApprove =
-      currentTransaction.type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE;
-
     const { t } = this.context;
 
     return (
@@ -209,8 +207,7 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          {assetStandard === ERC721 &&
-          (isSetApproveForAll || isSetNftApprove) ? (
+          {assetStandard === ERC721 || assetStandard === ERC1155 ? (
             <NetworkAccountBalanceHeader
               accountName={fromName}
               accountBalance={accountBalance}
