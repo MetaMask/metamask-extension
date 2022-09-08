@@ -38,6 +38,7 @@ export default function NetworkDisplay({
 
   return (
     <Chip
+      dataTestId="network-display"
       borderColor={onClick ? COLORS.BORDER_DEFAULT : COLORS.BORDER_MUTED}
       onClick={onClick}
       leftIcon={
