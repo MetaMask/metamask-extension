@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update the main text on SetApprovalForAll confirmation screen ([#15724](https://github.com/MetaMask/metamask-extension/pull/15724))
 - Updated origin pill component to match the new design for Permissions and Switching Networks screens ([#15603](https://github.com/MetaMask/metamask-extension/pull/15603))
 - Set "View full transaction details" as default option on SetApprovalForAll Confirmation screen([#15726](https://github.com/MetaMask/metamask-extension/pull/15726))
+- Update `gridplus-sdk` ([#15711](https://github.com/MetaMask/metamask-extension/pull/15711))
+  - `eth-lattice-keyring` changes: ([GridPlus/eth-lattice-keyring@v0.11.0...v0.12.0])(https://github.com/GridPlus/eth-lattice-keyring/compare/v0.11.0...v0.12.0)
+  - `gridplus-sdk` changes: ([GridPlus/gridplus-sdk@v2.2.2...v2.2.7])(https://github.com/GridPlus/gridplus-sdk/compare/v2.2.2...v2.2.7)
+- Update title case to sentence case with some exceptions (names, companies, special terms and page navigation) ([#15285](https://github.com/MetaMask/metamask-extension/pull/15285))
 - Swaps: show a block explorer URL and hide "Add token" prompt, if block explorer URL is not available on Build Quote screen ([#15198](https://github.com/MetaMask/metamask-extension/pull/15198))
 - Swaps: Standardize the spelling of 'cancelled' ([#15266](https://github.com/MetaMask/metamask-extension/pull/15266))
 - Swaps: Performance improvements for Swaps, especially on the Build Quote page (~7.2x faster) ([#15359](https://github.com/MetaMask/metamask-extension/pull/15359))
@@ -63,8 +67,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [FLASK] Fix snaps authorship pill truncation, previously the authorship label would not be truncated and offset the UI ([#15190](https://github.com/MetaMask/metamask-extension/pull/15190))
 
 ### Uncategorized
-- [GridPlus] Version bump ([#15711](https://github.com/MetaMask/metamask-extension/pull/15711))
-- Updating content to sentence case and updating tests ([#15285](https://github.com/MetaMask/metamask-extension/pull/15285))
 - [FLASK] `snaps-skunkworks@0.20.0` ([#15706](https://github.com/MetaMask/metamask-extension/pull/15706))
 - [FLASK] `snaps-skunkworks@0.19.0` ([#15619](https://github.com/MetaMask/metamask-extension/pull/15619))
 - [FLASK] Add update snap UI ([#15143](https://github.com/MetaMask/metamask-extension/pull/15143))
