@@ -1355,9 +1355,6 @@
   "swap": {
     "message": "Scambia"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Si chiama “slippage” la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il “massimo slippage” impostato."
-  },
   "swapAggregator": {
     "message": "Aggregatore"
   },
@@ -1445,9 +1442,6 @@
   "swapQuoteDetails": {
     "message": "Dettagli quotazione"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Si chiama \"slippage\" la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il \"massimo slippage\" impostato."
-  },
   "swapQuoteSource": {
     "message": "Sorgente della quota"
   },
@@ -1477,9 +1471,6 @@
   },
   "swapReviewSwap": {
     "message": "Verifica Scambio"
-  },
-  "swapSearchForAToken": {
-    "message": "Cerca un token"
   },
   "swapSelect": {
     "message": "Selezione"

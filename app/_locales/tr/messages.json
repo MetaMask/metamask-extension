@@ -3289,9 +3289,6 @@
   "swap": {
     "message": "Takas"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Emrinizin verildiği ve onaylandığı zamanlar arasında fiyat farkı oluşursa buna \"fark\" denir. Fark, \"maks. fark\" ayarınızı aşarsa takas işleminiz otomatik olarak iptal edilir."
-  },
   "swapAggregator": {
     "message": "Toplayıcı"
   },
@@ -3455,9 +3452,6 @@
   "swapQuoteDetails": {
     "message": "Teklif ayrıntıları"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Emrinizin verildiği ve onaylandığı zamanlar arasında fiyat farkı oluşursa buna \"fark\" denir. Fark, \"fark toleransı\" ayarınızı aşarsa Takas işleminiz otomatik olarak iptal edilir."
-  },
   "swapQuoteSource": {
     "message": "Teklif kaynağı"
   },
@@ -3487,9 +3481,6 @@
   },
   "swapReviewSwap": {
     "message": "Takası İncele"
-  },
-  "swapSearchForAToken": {
-    "message": "Bir token ara"
   },
   "swapSelect": {
     "message": "Seç"
