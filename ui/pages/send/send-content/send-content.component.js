@@ -13,7 +13,7 @@ import {
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import { hexWEIToDecETH } from '../../../helpers/utils/conversions.util';
-import GasDisplay from '../gas-display/gas-display.component';
+import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';

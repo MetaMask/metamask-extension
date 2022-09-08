@@ -18,6 +18,7 @@ import {
   getRecipient,
   acknowledgeRecipientWarning,
   getRecipientWarningAcknowledgement,
+  getCurrentDraftTransaction,
 } from '../../../ducks/send';
 
 import { showModal } from '../../../store/actions';
@@ -31,18 +32,39 @@ function mapStateToProps(state) {
   const recipientWarningAcknowledged =
     getRecipientWarningAcknowledgement(state);
   const isBuyableChain = getIsBuyableChain(state);
+  const draftTransaction = getCurrentDraftTransaction(state);
 
-  const { currentCurrency, nativeCurrency, provider } = state.metamask;
-  const { draftTransaction } = state.send;
-
+  const { currentCurrency, nativeCurrency, provider, unapprovedTxs } =
+    state.metamask;
   const { chainId } = provider;
+  const editingTransaction = unapprovedTxs[draftTransaction.id];
+  const txData = {
+    txParams: {
+      gasPrice:
+        editingTransaction?.txParams?.gasPrice ??
+        draftTransaction.gas?.gasPrice,
+      gas: editingTransaction?.userEditedGasLimit
+        ? editingTransaction?.txParams?.gas
+        : draftTransaction.gas?.gasLimit,
+      maxFeePerGas:
+        editingTransaction?.txParams?.maxFeePerGas ??
+        draftTransaction.gas?.maxFeePerGas,
+      maxPriorityFeePerGas:
+        editingTransaction?.txParams?.maxPriorityFeePerGas ??
+        draftTransaction.gas?.maxPriorityFeePerGas,
+      value: draftTransaction.amount?.value,
+      type:
+        editingTransaction?.txParams?.type ?? draftTransaction.transactionType,
+    },
+    userFeeLevel: editingTransaction?.userFeeLevel,
+  };
 
   const {
     hexTransactionAmount,
     hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
-  } = transactionFeeSelector(state, draftTransaction);
+  } = transactionFeeSelector(state, txData);
 
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
@@ -82,7 +104,6 @@ const mapDispatchToProps = (dispatch) => {
     showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
     showAccountDetails: () => dispatch(showModal({ name: 'ACCOUNT_DETAILS' })),
     acknowledgeRecipientWarning: () => dispatch(acknowledgeRecipientWarning()),
-
   };
 };
 
