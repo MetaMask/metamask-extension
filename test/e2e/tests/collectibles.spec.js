@@ -108,6 +108,10 @@ describe('Collectibles', function () {
         const title = await driver.findElement(
           '[data-testid="confirm-approve-title"]',
         );
+        await driver.clickElement({
+          text: 'View full transaction details',
+          css: '.confirm-approve-content__small-blue-text',
+        });
         const data = await driver.findElements(
           '.confirm-approve-content__data .confirm-approve-content__small-text',
         );
@@ -170,12 +174,16 @@ describe('Collectibles', function () {
         const title = await driver.findElement(
           '[data-testid="confirm-approve-title"]',
         );
+        await driver.clickElement({
+          text: 'View full transaction details',
+          css: '.confirm-approve-content__small-blue-text',
+        });
         const data = await driver.findElements(
           '.confirm-approve-content__data .confirm-approve-content__small-text',
         );
         assert.equal(
           await title.getText(),
-          'Give permission to access all of your TestDappCollectibles?',
+          'Allow access to and transfer of all your TestDappCollectibles?',
         );
         assert.equal(await data[0].getText(), 'Function: SetApprovalForAll');
         assert.equal(await data[1].getText(), 'Parameters: true');
