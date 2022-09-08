@@ -24,6 +24,7 @@ const ConfirmPageContainerNavigation = (props) => {
     >
       <div
         className="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
         style={{
           visibility: prevTxId ? 'initial' : 'hidden',
         }}
