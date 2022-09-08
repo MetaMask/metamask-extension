@@ -3289,9 +3289,6 @@
   "swap": {
     "message": "スワップ"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "注文した時点と注文が承認された時点で価格が変わることを 「スリッページ」 と呼びます。スリッページが「最大スリッページ」設定を超える場合、スワップは自動的にキャンセルされます。"
-  },
   "swapAggregator": {
     "message": "アグリゲーター"
   },
@@ -3455,9 +3452,6 @@
   "swapQuoteDetails": {
     "message": "見積もりの詳細"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "注文した時点と注文が承認された時点で価格が変わることを「スリッページ」と呼びます。スリッページが「最大スリッページ」設定を超える場合、スワップは自動的にキャンセルされます。"
-  },
   "swapQuoteSource": {
     "message": "見積もりのソース"
   },
@@ -3487,9 +3481,6 @@
   },
   "swapReviewSwap": {
     "message": "スワップの確認"
-  },
-  "swapSearchForAToken": {
-    "message": "トークンの検索"
   },
   "swapSelect": {
     "message": "選択"
