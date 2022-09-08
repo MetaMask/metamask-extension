@@ -1163,7 +1163,6 @@ export default class TransactionController extends EventEmitter {
    * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
    * @param {CustomGasSettings} [customGasSettings] - overrides to use for gas
    *  params instead of allowing this method to generate them
-   * @param actionId - actionId received from UI
    * @param options
    * @param options.estimatedBaseFee
    * @param options.actionId
@@ -1231,7 +1230,6 @@ export default class TransactionController extends EventEmitter {
    * @param {number} originalTxId - the id of the txMeta that you want to speed up
    * @param {CustomGasSettings} [customGasSettings] - overrides to use for gas
    *  params instead of allowing this method to generate them
-   * @param actionId
    * @param options
    * @param options.estimatedBaseFee
    * @param options.actionId
