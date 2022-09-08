@@ -308,7 +308,24 @@ export default class ConfirmPageContainer extends Component {
           )}
           {isSetApproveForAll && (
             <Dialog type="error" className="confirm-page-container__dialog">
-              {t('confirmPageDialogSetApprovalForAll')}
+              {/*
+                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
+                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
+              */}
+              {t('confirmPageDialogSetApprovalForAll', [
+                <b
+                  key="confirm-page-container__dialog-placeholder-1"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
+                </b>,
+                <b
+                  key="confirm-page-container__dialog-placeholder-2"
+                  style={{ fontWeight: 'bold' }}
+                >
+                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
+                </b>,
+              ])}
             </Dialog>
           )}
           {contentComponent && (
