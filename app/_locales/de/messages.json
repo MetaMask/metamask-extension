@@ -3233,9 +3233,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Wenn sich der Kurs zwischen der Aufgabe und der Bestätigung Ihres Auftrags ändert, nennt man das \"Slippage\". Ihr Swap wird automatisch storniert, wenn die Slippage Ihre Einstellung für die maximale Slippage überschreitet."
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -3399,9 +3396,6 @@
   "swapQuoteDetails": {
     "message": "Kursdetails"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Wenn sich der Kurs zwischen der Aufgabe und der Bestätigung Ihres Auftrags ändert, nennt man das \"Slippage\". Ihr Swap wird automatisch storniert, wenn die Slippage Ihre Einstellung für die \"Slippagetoleranz\" überschreitet."
-  },
   "swapQuoteSource": {
     "message": "Kursquelle"
   },
@@ -3431,9 +3425,6 @@
   },
   "swapReviewSwap": {
     "message": "Swap überprüfen"
-  },
-  "swapSearchForAToken": {
-    "message": "Nach einem Token suchen"
   },
   "swapSelect": {
     "message": "Auswählen"

@@ -3289,9 +3289,6 @@
   "swap": {
     "message": "스왑"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 '슬리패지'라고 합니다. 슬리패지가 '최대 슬리패지' 설정을 초과하면 스왑이 자동으로 취소됩니다."
-  },
   "swapAggregator": {
     "message": "애그리게이터"
   },
@@ -3455,9 +3452,6 @@
   "swapQuoteDetails": {
     "message": "견적 세부 정보"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
-  },
   "swapQuoteSource": {
     "message": "견적 소스"
   },
@@ -3487,9 +3481,6 @@
   },
   "swapReviewSwap": {
     "message": "스왑 검토"
-  },
-  "swapSearchForAToken": {
-    "message": "토큰 검색"
   },
   "swapSelect": {
     "message": "선택"

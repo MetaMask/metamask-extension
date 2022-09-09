@@ -328,7 +328,7 @@
     "message": "Approve spend limit"
   },
   "approveAllTokensTitle": {
-    "message": "Give permission to access all of your $1?",
+    "message": "Allow access to and transfer of all your $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approveAndInstall": {
@@ -606,7 +606,14 @@
     "message": "Confirm"
   },
   "confirmPageDialogSetApprovalForAll": {
-    "message": "By clicking approve, you are granting access to all of the NFTs you currently own on this contract and any NFTs on this contract you may acquire in the future until you revoke this approval. The party to whom you're granting approval will be able to transfer your NFTs from your wallet without further notice. Proceed with caution."
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder1": {
+    "message": "all the NFTs on this contract"
+  },
+  "confirmPageDialogSetApprovalForAllPlaceholder2": {
+    "message": "Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
@@ -937,6 +944,12 @@
   "depositCrypto": {
     "message": "Deposit $1",
     "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "deprecatedTestNetworksLink": {
+    "message": "Learn more"
+  },
+  "deprecatedTestNetworksMsg": {
+    "message": "Due to the protocol changes of Ethereum: Rinkeby, Ropsten and Kovan test networks may not work as reliably and will be deprecated soon."
   },
   "description": {
     "message": "Description"
@@ -3457,9 +3470,6 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -3623,9 +3633,6 @@
   "swapQuoteDetails": {
     "message": "Quote details"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
-  },
   "swapQuoteSource": {
     "message": "Quote source"
   },
@@ -3656,8 +3663,8 @@
   "swapReviewSwap": {
     "message": "Review swap"
   },
-  "swapSearchForAToken": {
-    "message": "Search for a token"
+  "swapSearchNameOrAddress": {
+    "message": "Search name or paste address"
   },
   "swapSelect": {
     "message": "Select"
@@ -3677,6 +3684,9 @@
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageTooltip": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSource": {
     "message": "Liquidity source"

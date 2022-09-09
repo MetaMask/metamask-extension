@@ -3289,9 +3289,6 @@
   "swap": {
     "message": "I-swap"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong “slippage”. Awtomatikong makakansela ang iyong pag-swap kung lalampas ang slippage sa iyong setting na “max slippage”."
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
@@ -3455,9 +3452,6 @@
   "swapQuoteDetails": {
     "message": "Mga detalye ng quote"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong Pag-swap kung lalampas ang slippage sa iyong setting na \"max slippage\"."
-  },
   "swapQuoteSource": {
     "message": "Pinagkunan ng quote"
   },
@@ -3487,9 +3481,6 @@
   },
   "swapReviewSwap": {
     "message": "I-review ang Pag-swap"
-  },
-  "swapSearchForAToken": {
-    "message": "Maghanap ng token"
   },
   "swapSelect": {
     "message": "Piliin"

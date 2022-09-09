@@ -75,7 +75,7 @@ export const MATIC_SYMBOL = 'MATIC';
 export const AVALANCHE_SYMBOL = 'AVAX';
 export const FANTOM_SYMBOL = 'FTM';
 export const CELO_SYMBOL = 'CELO';
-export const ARBITRUM_SYMBOL = 'AETH';
+export const ARBITRUM_SYMBOL = 'ETH';
 export const HARMONY_SYMBOL = 'ONE';
 export const PALM_SYMBOL = 'PALM';
 
@@ -356,7 +356,7 @@ export const FEATURED_RPCS = [
   {
     chainId: AVALANCHE_CHAIN_ID,
     nickname: AVALANCHE_DISPLAY_NAME,
-    rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+    rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: AVALANCHE_SYMBOL,
     rpcPrefs: {
       blockExplorerUrl: 'https://snowtrace.io/',

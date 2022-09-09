@@ -750,7 +750,6 @@ export default function BuildQuote({
           <DropdownSearchList
             startingItem={selectedToToken}
             itemsToSearch={tokensToSearchSwapTo}
-            searchPlaceholderText={t('swapSearchForAToken')}
             fuseSearchKeys={fuseSearchKeys}
             selectPlaceHolderText={t('swapSelectAToken')}
             maxListItems={30}
