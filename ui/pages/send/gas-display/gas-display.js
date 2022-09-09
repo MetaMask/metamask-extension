@@ -281,7 +281,7 @@ export default function GasDisplay({
         ) : null}
       </div>
       {!supportsEIP1559V2 && gasError && (
-        <div className="confirm-approve-content__warning">
+        <div className="gas-display__confirm-approve-content__warning">
           <ActionableMessage
             message={
               isBuyableChain ? (
@@ -312,6 +312,7 @@ export default function GasDisplay({
                   {t('insufficientCurrencyBuyOrReceive', [
                     nativeCurrency,
                     networkName,
+                    '',
                     <Button
                       type="inline"
                       className="gas-display__link"
