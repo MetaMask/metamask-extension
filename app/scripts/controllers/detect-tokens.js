@@ -48,13 +48,13 @@ export default class DetectTokensController {
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
+    this.interval = interval;
     this.network = network;
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
     this.selectedAddress = this.preferences?.store.getState().selectedAddress;
-    this.interval = interval;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });
@@ -208,9 +208,12 @@ export default class DetectTokensController {
     if (!(this.isActive && this.selectedAddress)) {
       return;
     }
-    chrome.alarms.get(DETECT_TOKEN_ALARM, (alarm) => {
-      if (!alarm) {
-        // console.log('in rescheduleTokenDetectionPollingInMV3 ', alarm);
+    chrome.alarms.getAll((alarms) => {
+      const hasAlarm = alarms.some(
+        (alarm) => alarm.name === DETECT_TOKEN_ALARM,
+      );
+      if (!hasAlarm) {
+        console.log('in rescheduleTokenDetectionPollingInMV3 ', hasAlarm);
         chrome.alarms.create(DETECT_TOKEN_ALARM, {
           delayInMinutes: DEFAULT_INTERVAL_MV3,
           periodInMinutes: DEFAULT_INTERVAL_MV3,
@@ -218,9 +221,12 @@ export default class DetectTokensController {
       }
     });
     chrome.alarms.onAlarm.addListener(() => {
-      chrome.alarms.get(DETECT_TOKEN_ALARM, (alarm) => {
-        // console.log('in triggered', alarm);
-        if (alarm) {
+      chrome.alarms.getAll((alarms) => {
+        const hasAlarm = alarms.some(
+          (alarm) => alarm.name === DETECT_TOKEN_ALARM,
+        );
+        if (hasAlarm) {
+          console.log('in triggered', hasAlarm);
           this.detectNewTokens();
         }
       });
