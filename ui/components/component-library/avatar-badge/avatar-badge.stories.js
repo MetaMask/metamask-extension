@@ -5,12 +5,12 @@ import { AvatarToken } from '../avatar-token';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import { AvatarNetwork } from '../avatar-network';
 // import README from './README.mdx';
-import { AvatarBadge, badgePosition } from './avatar-badge';
+import { AvatarWithBadge, badgePositions } from './avatar-badge';
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarBadge',
+  title: 'Components/ComponentLibrary/AvatarWithBadge',
   id: __filename,
-  component: AvatarBadge,
+  component: AvatarWithBadge,
   // parameters: {
   //   docs: {
   //     page: README,
@@ -18,7 +18,7 @@ export default {
   // },
   argTypes: {
     address: { control: 'text' },
-    badgePosition: { options: badgePosition, control: 'select' },
+    badgePosition: { options: badgePositions, control: 'select' },
   },
   args: {
     badgeProps: {
@@ -28,22 +28,22 @@ export default {
       networkImageUrl: './images/arbitrum.svg',
     },
     address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-    badgePosition: badgePosition.top,
+    badgePosition: badgePositions.top,
   },
 };
 
 export const DefaultStory = (args) => (
-  <AvatarBadge {...args} BadgeVariant={AvatarNetwork}>
+  <AvatarWithBadge {...args} BadgeVariant={AvatarNetwork}>
     <Jazzicon address={args.address} />
-  </AvatarBadge>
+  </AvatarWithBadge>
 );
 
 DefaultStory.storyName = 'Default';
 
 export const AvatarTokenBadge = (args) => (
-  <AvatarBadge {...args} BadgeVariant={AvatarToken}>
+  <AvatarWithBadge {...args} BadgeVariant={AvatarToken}>
     <Jazzicon address={args.address} />
-  </AvatarBadge>
+  </AvatarWithBadge>
 );
 
 AvatarTokenBadge.storyName = 'Avatar Token Badge';

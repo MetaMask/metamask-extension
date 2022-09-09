@@ -1,1 +1,1 @@
-import { AvatarBadge } from './avatar-badge';
+import { AvatarWithBadge } from './avatar-badge';

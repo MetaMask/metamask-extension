@@ -5,15 +5,6 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 
-export const SCALESIZE = {
-  XXS: 'xxs',
-  XS: 'xs',
-  SM: 'sm',
-  MD: 'md',
-  LG: 'lg',
-  XL: 'xl',
-};
-
 export const BaseAvatar = ({
   size = SIZES.MD,
   children,

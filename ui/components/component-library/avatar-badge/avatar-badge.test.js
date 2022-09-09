@@ -2,9 +2,9 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { AvatarNetwork } from '../avatar-network/avatar-network';
-import { AvatarBadge } from './avatar-badge';
+import { AvatarWithBadge } from './avatar-badge';
 
-describe('AvatarBadge', () => {
+describe('AvatarWithBadge', () => {
   const args = {
     badgeProps: {
       tokenName: 'ast',
@@ -17,7 +17,7 @@ describe('AvatarBadge', () => {
 
   it('should render correctly', () => {
     const { getByTestId } = render(
-      <AvatarBadge
+      <AvatarWithBadge
         data-testid="avatar-badge"
         BadgeVariant={AvatarNetwork}
         {...args}

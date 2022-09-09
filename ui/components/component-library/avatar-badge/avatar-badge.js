@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
 import { BaseAvatar } from '../base-avatar';
+import { SIZES } from '../../../helpers/constants/design-system';
 
-export const badgePosition = ['top', 'bottom'];
+export const badgePositions = ['top', 'bottom'];
 
-export const AvatarBadge = ({
+export const AvatarWithBadge = ({
   children,
   badgeProps,
+  badgePosition,
   BadgeVariant,
   ...props
 }) => {
@@ -19,33 +21,37 @@ export const AvatarBadge = ({
       </BaseAvatar>
       <Box
         className={
-          props.badgePosition === 'top'
+          badgePosition === 'top'
             ? 'avatar-badge-token-position-top'
             : 'avatar-badge-token-position-bottom'
         }
       >
-        <BadgeVariant className="avatar-badge--token-badge" {...badgeProps} />
+        <BadgeVariant
+          className="avatar-badge--token-badge"
+          size={SIZES.XS}
+          {...badgeProps}
+        />
       </Box>
     </Box>
   );
 };
 
-AvatarBadge.propTypes = {
+AvatarWithBadge.propTypes = {
   /**
-   * The position of the AvatarBadge
+   * The position of the AvatarWithBadge
    * Possible values could be 'top', 'bottom',
    */
-  badgePosition: PropTypes.oneOf(badgePosition),
+  badgePosition: PropTypes.oneOf(badgePositions),
   /**
-   * The children to be rendered inside the AvatarBadge
+   * The children to be rendered inside the AvatarWithBadge
    */
   children: PropTypes.node,
   /**
-   * The children to be rendered inside the AvatarBadge
+   * The children to be rendered inside the AvatarWithBadge
    */
   BadgeVariant: PropTypes.func,
   /**
-   * The children to be rendered inside the AvatarBadge
+   * The children to be rendered inside the AvatarWithBadge
    */
   badgeProps: PropTypes.object,
   /**
