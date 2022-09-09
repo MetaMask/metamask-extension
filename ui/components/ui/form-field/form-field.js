@@ -232,9 +232,9 @@ FormField.propTypes = {
    * Props to pass to wrapping Box component of the titleDetail component
    * Accepts all props of the Box component
    */
-  titleDetailWrapperProps: {
-    ...Box.PropTypes,
-  },
+  titleDetailWrapperProps: PropTypes.shape({
+    ...Box.propTypes,
+  }),
   /**
    * Show error message
    */
@@ -302,18 +302,18 @@ FormField.propTypes = {
    */
   wrappingLabelProps: PropTypes.object,
   /**
-  * Custom spending cup description
-  */
+   * Custom spending cup description
+   */
   customSpendingCapText: PropTypes.oneOfType([
-   PropTypes.string,
-   PropTypes.object,
- ]),
- /**
-  * Max button inside input in CustomSpendingCap component
-  */
- maxButton: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
- /**
-  * Show colored value
-  */
- coloredValue: PropTypes.bool,
+    PropTypes.string,
+    PropTypes.object,
+  ]),
+  /**
+   * Max button inside input in CustomSpendingCap component
+   */
+  maxButton: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show colored value in the input field
+   */
+  coloredValue: PropTypes.bool,
 };

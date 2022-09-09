@@ -20,6 +20,7 @@ export default function CustomSpendingCap({
   tokenName,
   currentTokenBalance,
   dappProposedValue,
+  onEdit,
 }) {
   const t = useContext(I18nContext);
   const [value, setValue] = useState('');
@@ -108,54 +109,60 @@ export default function CustomSpendingCap({
         display={DISPLAY.BLOCK}
         className="custom-spending-cap__input"
       >
-        <FormField
-          dataTestId="custom-spending-cap-input"
-          autoFocus
-          customSpendingCapText={
-            value ? customSpendingCapText : inputLogicEmptyStateText
-          }
-          customTooltipComponent={
-            <CustomSpendingCapTooltip
-              tooltipContentText={value ? chooseTooltipContentText : ''}
-              tooltipIcon={value ? value > currentTokenBalance : ''}
-            />
-          }
-          onChange={handleChange}
-          titleText={t('customSpendingCap')}
-          placeholder={t('enterANumber')}
-          error={error}
-          coloredValue={
-            value === dappProposedValue && value > currentTokenBalance
-          }
-          value={value}
-          titleDetail={
-            <button
-              className="custom-spending-cap__input--button"
-              type="link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleChange(dappProposedValue);
-                setValue(dappProposedValue);
-              }}
-            >
-              {value > currentTokenBalance ? t('edit') : t('useDefault')}
-            </button>
-          }
-          titleDetailProps={customSpendingCapMarginProps}
-          maxButton={
-            <button
-              className="custom-spending-cap__input--max-button"
-              type="link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleChange(currentTokenBalance);
-                setValue(currentTokenBalance);
-              }}
-            >
-              {t('max')}
-            </button>
-          }
-        />
+        <label htmlFor="custom-spending-cap">
+          <FormField
+            dataTestId="custom-spending-cap-input"
+            autoFocus
+            wrappingLabelProps={{ as: 'div' }}
+            id="custom-spending-cap"
+            customSpendingCapText={
+              value ? customSpendingCapText : inputLogicEmptyStateText
+            }
+            TooltipCustomComponent={
+              <CustomSpendingCapTooltip
+                tooltipContentText={value ? chooseTooltipContentText : ''}
+                tooltipIcon={value ? value > currentTokenBalance : ''}
+              />
+            }
+            onChange={handleChange}
+            titleText={t('customSpendingCap')}
+            placeholder={t('enterANumber')}
+            error={error}
+            coloredValue={value > currentTokenBalance}
+            value={value}
+            titleDetail={
+              <button
+                className="custom-spending-cap__input--button"
+                type="link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (value <= currentTokenBalance) {
+                    handleChange(dappProposedValue);
+                    setValue(dappProposedValue);
+                  } else {
+                    onEdit();
+                  }
+                }}
+              >
+                {value > currentTokenBalance ? t('edit') : t('useDefault')}
+              </button>
+            }
+            titleDetailWrapperProps={customSpendingCapMarginProps}
+            maxButton={
+              <button
+                className="custom-spending-cap__input--max-button"
+                type="link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleChange(currentTokenBalance);
+                  setValue(currentTokenBalance);
+                }}
+              >
+                {t('max')}
+              </button>
+            }
+          />
+        </label>
       </Box>
     </Box>
   );
@@ -165,4 +172,5 @@ CustomSpendingCap.propTypes = {
   tokenName: PropTypes.string,
   currentTokenBalance: PropTypes.number,
   dappProposedValue: PropTypes.number,
+  onEdit: PropTypes.func,
 };

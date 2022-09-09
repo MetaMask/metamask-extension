@@ -1712,8 +1712,8 @@
     "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
   },
   "inputLogicEqualOrSmallerNumber": {
-    "message": "This allows the contract to spend $1 $2 from your current balance.",
-    "description": "$1 is the current token balance in the account, $2 is the name of the current token"
+    "message": "This allows the contract to spend $1 from your current balance.",
+    "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
     "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."

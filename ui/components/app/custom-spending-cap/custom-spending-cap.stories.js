@@ -14,6 +14,9 @@ export default {
     dappProposedValue: {
       control: { type: 'number' },
     },
+    onEdit: {
+      action: 'onEdit',
+    },
   },
   args: {
     tokenName: 'DAI',
