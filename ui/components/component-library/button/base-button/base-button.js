@@ -40,6 +40,7 @@ export const BaseButton = ({
         className="base-button--content"
         alignItems={ALIGN_ITEMS.CENTER}
         justifyContent={JUSTIFY_CONTENT.CENTER}
+        gap={2}
         color={TEXT_COLORS.INHERIT}
       >
         {children}

@@ -44,6 +44,9 @@ export default {
     className: {
       control: 'text',
     },
+    isBlock: {
+      control: 'boolean',
+    },
     marginTop: {
       options: marginSizeControlOptions,
       control: 'select',
@@ -74,7 +77,6 @@ export default {
 export const DefaultStory = (args) => (
   <>
     <BaseButton {...args} />
-    {/* <BaseButton as="a" {...args} /> */}
   </>
 );
 

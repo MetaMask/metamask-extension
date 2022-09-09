@@ -12,6 +12,8 @@ delete primaryButtonSizes.XS;
 export const PrimaryButton = ({
   className,
   children,
+  leftIcon,
+  rightIcon,
   isDanger,
   isDisabled,
   isLoading,
@@ -26,16 +28,10 @@ export const PrimaryButton = ({
       })}
       {...props}
     >
-      {/* {children}
-      {isLoading && <div className="spinner"></div>} */}
-
-      {isLoading ? (
-        <div style={{ width: 20 }}>
-          <div className="spinner"></div>
-        </div>
-      ) : (
-        <>{children}</>
-      )}
+      {leftIcon && leftIcon}
+      {children}
+      {rightIcon}
+      {isLoading && <div className="spinner"></div>}
     </BaseButton>
   );
 };
