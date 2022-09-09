@@ -658,7 +658,7 @@ export default class Home extends PureComponent {
               subHeader={
                 <Tooltip
                   position="bottom"
-                  open={showPortfolioTooltip}
+                  open={!process.env.IN_TEST && showPortfolioTooltip}
                   interactive
                   theme="home__subheader-link--tooltip"
                   html={
