@@ -1236,7 +1236,7 @@ export default class TransactionController extends EventEmitter {
     customGasSettings,
     { estimatedBaseFee, actionId } = {},
   ) {
-    // If transaction is found for same action id, do not create a new cancel transaction.
+    // If transaction is found for same action id, do not create a new speed-up transaction.
     if (actionId) {
       const existingTxMeta =
         this.txStateManager.getTransactionWithActionId(actionId);
