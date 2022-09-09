@@ -50,12 +50,12 @@ const DepositModal = ({ onClose, token }) => {
   const isBuyableWyreChain = useSelector(getIsBuyableWyreChain);
   const isBuyableCoinbasePayChain = useSelector(getIsBuyableCoinbasePayChain);
 
-  const isTokenBuyableCoinbasePay = isTokenDeposit
-    ? (state) => getIsBuyableCoinbasePayToken(state, token.symbol)
-    : false;
-  const isTokenBuyableTransak = isTokenDeposit
-    ? (state) => getIsBuyableTransakToken(state, token.symbol)
-    : false;
+  const isTokenBuyableCoinbasePay = useSelector((state) =>
+    getIsBuyableCoinbasePayToken(state, token?.symbol),
+  );
+  const isTokenBuyableTransak = useSelector((state) =>
+    getIsBuyableTransakToken(state, token?.symbol),
+  );
 
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const symbol = token
