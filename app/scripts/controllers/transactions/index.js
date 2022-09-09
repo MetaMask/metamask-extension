@@ -1161,13 +1161,23 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @param options
    * @param options.estimatedBaseFee
+   * @param options.actionId
    * @returns {txMeta}
    */
   async createCancelTransaction(
     originalTxId,
     customGasSettings,
-    { estimatedBaseFee } = {},
+    { estimatedBaseFee, actionId } = {},
   ) {
+    // If transaction is found for same action id, do not create a new cancel transaction.
+    if (actionId) {
+      const existingTxMeta =
+        this.txStateManager.getTransactionWithActionId(actionId);
+      if (existingTxMeta) {
+        return existingTxMeta;
+      }
+    }
+
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
     const { from, nonce } = txParams;
@@ -1195,6 +1205,7 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.CANCEL,
+      actionId,
     });
 
     if (estimatedBaseFee) {
@@ -1293,6 +1304,7 @@ export default class TransactionController extends EventEmitter {
     // we need to keep track of what is currently being signed,
     // So that we do not increment nonce + resubmit something
     // that is already being incremented & signed.
+    const txMeta = this.txStateManager.getTransaction(txId);
     if (this.inProcessOfSigning.has(txId)) {
       return;
     }
@@ -1302,8 +1314,6 @@ export default class TransactionController extends EventEmitter {
       // approve
       this.txStateManager.setTxStatusApproved(txId);
       // get next nonce
-      const txMeta = this.txStateManager.getTransaction(txId);
-
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
       let { customNonceValue } = txMeta;
@@ -1793,10 +1803,9 @@ export default class TransactionController extends EventEmitter {
         },
       })
       .forEach((txMeta) => {
-        const txSignError = new Error(
-          'Transaction found as "approved" during boot - possibly stuck during signing',
-        );
-        this._failTransaction(txMeta.id, txSignError);
+        // Line below will try to publish transaction which is in
+        // APPROVED state at the time of controller bootup
+        this.approveTransaction(txMeta);
       });
   }
 
