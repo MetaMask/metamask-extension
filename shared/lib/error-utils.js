@@ -32,7 +32,7 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export async function getErrorHtml(supportLink, metamaskState) {
+export async function getErrorHtml(errorKey, supportLink, metamaskState) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
@@ -50,11 +50,18 @@ export async function getErrorHtml(supportLink, metamaskState) {
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
+  /**
+   * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
+   * is neccessary because we we need linter to see the string
+   * of the locale keys. If we use the variable directly, the linter will not
+   * see the string and will not be able to check if the locale key exists.
+   */
   return `
     <div class="critical-error">
       <div class="critical-error__alert">
         <p class="critical-error__alert__message">
-          ${t('troubleStarting')}
+          ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
+          ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
         </p>
         <button id='critical-error-button' class="critical-error__alert__button">
           ${t('restartMetamask')}

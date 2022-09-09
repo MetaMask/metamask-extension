@@ -9,6 +9,9 @@ const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
 
+const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -125,6 +128,15 @@ self.addEventListener('install', importAllScripts);
 chrome.runtime.onMessage.addListener(() => {
   importAllScripts();
   return false;
+});
+
+// Here respond to all clients with ACK_KEEP_ALIVE_MESSAGE
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
+    // eslint-disable-next-line no-undef
+    const channel = new BroadcastChannel('sw-messages');
+    channel.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+  }
 });
 
 /*
