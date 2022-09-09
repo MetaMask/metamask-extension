@@ -393,8 +393,6 @@ function logStreamDisconnectWarning(remoteLabel, error) {
  * Relies on obj-multiplex and post-message-stream implementation details.
  */
 function notifyInpageOfStreamFailure() {
-  console.log('Notifying Inpage of Stream Failure');
-
   window.postMessage(
     {
       target: INPAGE, // the post-message-stream "target"
