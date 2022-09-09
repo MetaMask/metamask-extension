@@ -9,6 +9,7 @@ import {
   ALIGN_ITEMS,
   BUTTON_SIZES,
   JUSTIFY_CONTENT,
+  TEXT_COLORS,
 } from '../../../../helpers/constants/design-system';
 
 export const BaseButton = ({
@@ -27,7 +28,7 @@ export const BaseButton = ({
       className={classnames(
         className,
         'base-button',
-        `base-button--size-${size}`,
+        `base-button-size--${size}`,
         {
           [`base-button--block`]: Boolean(isBlock),
         },
@@ -39,6 +40,7 @@ export const BaseButton = ({
         className="base-button--content"
         alignItems={ALIGN_ITEMS.CENTER}
         justifyContent={JUSTIFY_CONTENT.CENTER}
+        color={TEXT_COLORS.INHERIT}
       >
         {children}
       </Text>

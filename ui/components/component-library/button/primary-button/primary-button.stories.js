@@ -44,6 +44,12 @@ export default {
     className: {
       control: 'text',
     },
+    isDanger: {
+      control: 'boolean',
+    },
+    isDisabled: {
+      control: 'boolean',
+    },
     marginTop: {
       options: marginSizeControlOptions,
       control: 'select',
@@ -66,7 +72,6 @@ export default {
     },
   },
   args: {
-    size: BUTTON_SIZES.MD,
     children: 'Click Me',
   },
 };
@@ -74,7 +79,8 @@ export default {
 export const DefaultStory = (args) => (
   <>
     <PrimaryButton {...args} />
-    <PrimaryButton as="a" {...args} />
+    {/* Test Anchor tag to match exactly as button */}
+    {/* <PrimaryButton as="a" {...args} href="#" /> */}
   </>
 );
 

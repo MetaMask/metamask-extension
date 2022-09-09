@@ -1,48 +1,63 @@
-.base-button {
-  display: inline-block;
-  height: 2.5rem;
-  padding: 0;
-  border-radius: 999px;
-  cursor: pointer;
-  background-color: #dcdcdc;
-  vertical-align: middle;
-  user-select: none;
+.base-button-primary {
+  color: var(--color-primary-inverse);
+  background-color: var(--color-primary-default);
+  position: relative;
+  transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
 
-
-
-  &:active,
   &:hover {
-    color: var(--color-text-default);
+    color: var(--color-primary-inverse);
+    box-shadow: var(--component-button-primary-shadow);
   }
 
-  &--content {
-    height: 100%;
+  &:active {
+    color: var(--color-primary-inverse);
+    background-color: var(--color-primary-alternative);
   }
 
-  &--size-xs {
-    // Should be token
-    height: 1.375rem;
-    background-color: none;
-    border-radius: 0;
+  &--danger {
+    color: var(--color-error-inverse);
+    background-color: var(--color-error-default);
+
+    &:hover {
+      color: var(--color-error-inverse);
+      box-shadow: var(--component-button-danger-shadow);
+    }
+
+    &:active {
+      color: var(--color-error-inverse);
+      background-color: var(--color-error-alternative);
+    }
   }
 
-  &--size-sm {
-    // Should be token
-    height: 2rem;
+  &--disabled,
+  :disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
-  &--size-md {
-    // Should be token
-    height: 2.5rem;
+  &--loading .base-button--content {
+    color: transparent;
   }
-
-  &--size-lg {
-    // Should be token
-    height: 3rem;
-  }
+}
 
 
-  &--block {
-    display: block;
-  }
+.spinner::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 999px;
+  border: 2px solid var(--color-primary-inverse);
+  border-top-color: transparent;
+  animation: spinner 1.2s linear infinite;
+}
+
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
 }

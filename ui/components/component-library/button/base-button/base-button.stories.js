@@ -74,7 +74,7 @@ export default {
 export const DefaultStory = (args) => (
   <>
     <BaseButton {...args} />
-    <BaseButton as="a" {...args} />
+    {/* <BaseButton as="a" {...args} /> */}
   </>
 );
 

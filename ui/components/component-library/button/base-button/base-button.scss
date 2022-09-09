@@ -19,24 +19,24 @@
     height: 100%;
   }
 
-  &--size-xs {
+  &-size--xs {
     // Should be token
     height: 1.375rem;
-    background-color: none;
+    background-color: transparent;
     border-radius: 0;
   }
 
-  &--size-sm {
+  &-size--sm {
     // Should be token
     height: 2rem;
   }
 
-  &--size-md {
+  &-size--md {
     // Should be token
     height: 2.5rem;
   }
 
-  &--size-lg {
+  &-size--lg {
     // Should be token
     height: 3rem;
   }

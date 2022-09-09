@@ -186,7 +186,6 @@ export const BUTTON_SIZES = {
   SM: 'sm',
   MD: 'md',
   LG: 'lg',
-  NONE,
 };
 
 export const BORDER_STYLE = {
