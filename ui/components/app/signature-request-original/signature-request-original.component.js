@@ -7,13 +7,17 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
-import Identicon from '../../ui/identicon';
-import AccountListItem from '../account-list-item';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
-import SiteIcon from '../../ui/site-icon';
 import SiteOrigin from '../../ui/site-origin';
+import NetworkAccountBalanceHeader from '../network-account-balance-header';
+import Typography from '../../ui/typography/typography';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+} from '../../../helpers/constants/design-system';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -33,7 +37,6 @@ export default class SignatureRequestOriginal extends Component {
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-    requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
@@ -43,6 +46,7 @@ export default class SignatureRequestOriginal extends Component {
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
+    provider: PropTypes.object,
   };
 
   state = {
@@ -50,115 +54,24 @@ export default class SignatureRequestOriginal extends Component {
     showSignatureRequestWarning: false,
   };
 
-  renderHeader = () => {
-    return (
-      <div className="request-signature__header">
-        <div className="request-signature__header-background" />
-
-        <div className="request-signature__header__text">
-          {this.context.t('sigRequest')}
-        </div>
-
-        <div className="request-signature__header__tip-container">
-          <div className="request-signature__header__tip" />
-        </div>
-      </div>
-    );
-  };
-
-  renderAccount = () => {
-    const { fromAccount } = this.state;
-
-    return (
-      <div className="request-signature__account">
-        <div className="request-signature__account-text">
-          {`${this.context.t('account')}:`}
-        </div>
-
-        <div className="request-signature__account-item">
-          <AccountListItem account={fromAccount} />
-        </div>
-      </div>
-    );
-  };
-
-  renderBalance = () => {
-    const { conversionRate, nativeCurrency } = this.props;
-    const {
-      fromAccount: { balance },
-    } = this.state;
-
-    const balanceInBaseAsset = conversionUtil(balance, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromDenomination: 'WEI',
-      numberOfDecimals: 6,
-      conversionRate,
-    });
-
-    return (
-      <div className="request-signature__balance">
-        <div className="request-signature__balance-text">
-          {`${this.context.t('balance')}:`}
-        </div>
-        <div className="request-signature__balance-value">
-          {`${balanceInBaseAsset} ${nativeCurrency}`}
-        </div>
-      </div>
-    );
-  };
-
-  renderRequestIcon = () => {
-    const { requesterAddress } = this.props;
-
-    return (
-      <div className="request-signature__request-icon">
-        <Identicon diameter={40} address={requesterAddress} />
-      </div>
-    );
-  };
-
-  renderAccountInfo = () => {
-    return (
-      <div className="request-signature__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
-  };
-
-  renderOriginInfo = () => {
-    const { txData, subjectMetadata } = this.props;
+  getNetworkName() {
+    const { provider } = this.props;
+    const providerName = provider.type;
     const { t } = this.context;
 
-    const targetSubjectMetadata = txData.msgParams.origin
-      ? subjectMetadata?.[txData.msgParams.origin]
-      : null;
-
-    return (
-      <div className="request-signature__origin-row">
-        <div className="request-signature__origin-label">
-          {`${t('origin')}:`}
-        </div>
-        {targetSubjectMetadata?.iconUrl ? (
-          <SiteIcon
-            className="request-signature__origin-icon"
-            icon={targetSubjectMetadata.iconUrl}
-            name={
-              getURLHostName(targetSubjectMetadata.origin) ||
-              targetSubjectMetadata.origin
-            }
-            size={24}
-          />
-        ) : null}
-        <SiteOrigin
-          className="request-signature__origin"
-          siteOrigin={txData.msgParams.origin}
-        />
-      </div>
-    );
-  };
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('mainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('goerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('sepolia');
+      case NETWORK_TYPES.LOCALHOST:
+        return t('localhost');
+      default:
+        return provider.nickname || t('unknownNetwork');
+    }
+  }
 
   msgHexToText = (hex) => {
     try {
@@ -199,7 +112,7 @@ export default class SignatureRequestOriginal extends Component {
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
-    const { txData } = this.props;
+    const { txData, subjectMetadata } = this.props;
     const {
       type,
       msgParams: { data },
@@ -215,10 +128,32 @@ export default class SignatureRequestOriginal extends Component {
       rows = [{ name: this.context.t('message'), value: data }];
     }
 
+    const targetSubjectMetadata = txData.msgParams.origin
+      ? subjectMetadata?.[txData.msgParams.origin]
+      : null;
+
     return (
       <div className="request-signature__body">
-        {this.renderAccountInfo()}
-        {this.renderOriginInfo()}
+        <div className="request-signature__origin">
+          <SiteOrigin
+            siteOrigin={txData.msgParams.origin}
+            iconSrc={targetSubjectMetadata?.iconUrl}
+            iconName={
+              getURLHostName(targetSubjectMetadata?.origin) ||
+              targetSubjectMetadata?.origin
+            }
+            chip
+          />
+        </div>
+
+        <Typography
+          className="request-signature__content__title"
+          variant={TYPOGRAPHY.H3}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {this.context.t('sigRequest')}
+        </Typography>
+
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
@@ -367,13 +302,32 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   render = () => {
-    const { messagesCount } = this.props;
-    const { showSignatureRequestWarning, fromAccount } = this.state;
+    const { messagesCount, conversionRate, nativeCurrency } = this.props;
+    const { fromAccount, showSignatureRequestWarning } = this.state;
     const { t } = this.context;
+
     const rejectNText = t('rejectRequestsN', [messagesCount]);
+    const currentNetwork = this.getNetworkName();
+
+    const balanceInBaseAsset = conversionUtil(fromAccount.balance, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromDenomination: 'WEI',
+      numberOfDecimals: 6,
+      conversionRate,
+    });
+
     return (
       <div className="request-signature__container">
-        {this.renderHeader()}
+        <div className="request-signature__account">
+          <NetworkAccountBalanceHeader
+            networkName={currentNetwork}
+            accountName={fromAccount.name}
+            accountBalance={balanceInBaseAsset}
+            tokenName={nativeCurrency}
+            accountAddress={fromAccount.address}
+          />
+        </div>
         {this.renderBody()}
         {this.props.isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
