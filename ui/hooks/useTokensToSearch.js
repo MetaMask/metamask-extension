@@ -26,6 +26,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   AVALANCHE_CHAIN_ID,
+  GOERLI_CHAIN_ID,
 } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
@@ -66,13 +67,20 @@ export function getRenderableTokenData(
       )
     : '';
 
+  const chainIdForTokenIcons =
+    chainId === GOERLI_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
+
   const tokenIconUrl =
     (symbol === ETH_SYMBOL && chainId === MAINNET_CHAIN_ID) ||
+    (symbol === ETH_SYMBOL && chainId === GOERLI_CHAIN_ID) ||
     (symbol === BNB_SYMBOL && chainId === BSC_CHAIN_ID) ||
     (symbol === MATIC_SYMBOL && chainId === POLYGON_CHAIN_ID) ||
     (symbol === AVALANCHE_SYMBOL && chainId === AVALANCHE_CHAIN_ID)
       ? iconUrl
-      : formatIconUrlWithProxy({ chainId, tokenAddress: address || '' });
+      : formatIconUrlWithProxy({
+          chainId: chainIdForTokenIcons,
+          tokenAddress: address || '',
+        });
   const usedIconUrl = tokenIconUrl || token?.image;
 
   return {

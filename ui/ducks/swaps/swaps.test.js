@@ -5,7 +5,7 @@ import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
 import {
   MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
+  GOERLI_CHAIN_ID,
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
 } from '../../../shared/constants/network';
@@ -280,9 +280,9 @@ describe('Ducks - Swaps', () => {
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns true if feature flag is enabled, not a HW and is Rinkeby network', () => {
+    it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
       const state = createSwapsMockStore();
-      state.metamask.provider.chainId = RINKEBY_CHAIN_ID;
+      state.metamask.provider.chainId = GOERLI_CHAIN_ID;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 
