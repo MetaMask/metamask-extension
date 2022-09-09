@@ -2,7 +2,8 @@
   "data": {
     "AppStateController": {
       "swapsWelcomeMessageHasBeenShown": true,
-      "connectedStatusPopoverHasBeenShown": false
+      "connectedStatusPopoverHasBeenShown": false,
+      "showPortfolioTooltip": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
