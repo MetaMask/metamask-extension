@@ -53,9 +53,7 @@ describe('createInfuraClient', () => {
     });
 
     describe('eth_estimateGas', () => {
-      testsForRpcMethodAssumingNoBlockParam('eth_estimateGas', {
-        numberOfParameters: 0,
-      });
+      testsForRpcMethodAssumingNoBlockParam('eth_estimateGas');
     });
 
     describe('eth_feeHistory', () => {
