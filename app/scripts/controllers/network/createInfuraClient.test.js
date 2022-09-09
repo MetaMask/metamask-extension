@@ -89,6 +89,9 @@ describe('createInfuraClient', () => {
     });
 
     describe('eth_getBlockTransactionCountByNumber', () => {
+      // NOTE: eth_getBlockTransactionCountByNumber does take a block param at
+      // the 0th index, but this is not handled by our cache middleware
+      // currently
       testsForRpcMethodAssumingNoBlockParam(
         'eth_getBlockTransactionCountByNumber',
       );
@@ -129,6 +132,9 @@ describe('createInfuraClient', () => {
     });
 
     describe('eth_getTransactionByBlockNumberAndIndex', () => {
+      // NOTE: eth_getTransactionByBlockNumberAndIndex does take a block param
+      // at the 0th index, but this is not handled by our cache middleware
+      // currently
       testsForRpcMethodAssumingNoBlockParam(
         'eth_getTransactionByBlockNumberAndIndex',
       );
@@ -157,6 +163,8 @@ describe('createInfuraClient', () => {
     });
 
     describe('eth_getUncleByBlockNumberAndIndex', () => {
+      // NOTE: eth_getUncleByBlockNumberAndIndex does take a block param at the
+      // 0th index, but this is not handled by our cache middleware currently
       testsForRpcMethodAssumingNoBlockParam(
         'eth_getUncleByBlockNumberAndIndex',
       );
@@ -167,6 +175,8 @@ describe('createInfuraClient', () => {
     });
 
     describe('eth_getUncleCountByBlockNumber', () => {
+      // NOTE: eth_getUncleCountByBlockNumber does take a block param at the 0th
+      // index, but this is not handled by our cache middleware currently
       testsForRpcMethodAssumingNoBlockParam('eth_getUncleCountByBlockNumber');
     });
 
