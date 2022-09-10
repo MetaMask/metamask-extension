@@ -4,6 +4,7 @@ const blacklistedHosts = [
   'mainnet.infura.io',
   'rinkeby.infura.io',
   'ropsten.infura.io',
+  'sepolia.infura.io',
 ];
 
 async function setupMocking(server, testSpecificMock) {

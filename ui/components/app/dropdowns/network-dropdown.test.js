@@ -102,6 +102,11 @@ describe('Network Dropdown', () => {
     });
 
     it('checks background color for sixth ColorIndicator', () => {
+      const sepoliaColorIndicator = screen.queryByTestId('color-icon-sepolia');
+      expect(sepoliaColorIndicator).toBeInTheDocument();
+    });
+
+    it('checks background color for seventh ColorIndicator', () => {
       const localhostColorIndicator = screen.queryByTestId(
         'color-icon-localhost',
       );
@@ -116,7 +121,7 @@ describe('Network Dropdown', () => {
     it('shows test networks in the dropdown', () => {
       const networkItems = screen.queryAllByTestId(/network-item/u);
 
-      expect(networkItems).toHaveLength(8);
+      expect(networkItems).toHaveLength(9);
     });
   });
 

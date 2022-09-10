@@ -723,6 +723,9 @@
   "connectingToRopsten": {
     "message": "Connecting to Ropsten test network"
   },
+  "connectingToSepolia": {
+    "message": "Connecting to Sepolia test network"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -3092,6 +3095,9 @@
   "sendingToTokenContractWarning": {
     "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
     "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sepolia": {
+    "message": "Sepolia test network"
   },
   "setAdvancedPrivacySettings": {
     "message": "Set advanced privacy settings"
