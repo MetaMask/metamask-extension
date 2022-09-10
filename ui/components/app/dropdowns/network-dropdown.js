@@ -225,6 +225,8 @@ class NetworkDropdown extends Component {
       name = this.context.t('rinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli');
+    } else if (providerName === 'sepolia') {
+      name = this.context.t('sepolia');
     } else if (providerName === 'localhost') {
       name = this.context.t('localhost');
     } else {
@@ -358,6 +360,7 @@ class NetworkDropdown extends Component {
               {this.renderNetworkEntry('kovan')}
               {this.renderNetworkEntry('rinkeby')}
               {this.renderNetworkEntry('goerli')}
+              {this.renderNetworkEntry('sepolia')}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,
                 this.props.provider,

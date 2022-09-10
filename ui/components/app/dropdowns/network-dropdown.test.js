@@ -102,6 +102,11 @@ describe('Network Dropdown', () => {
     });
 
     it('checks background color for sixth ColorIndicator', () => {
+      const sepoliaColorIndicator = screen.queryByTestId('color-icon-sepolia');
+      expect(sepoliaColorIndicator).toBeInTheDocument();
+    });
+
+    it('checks background color for seventh ColorIndicator', () => {
       const localhostColorIndicator = screen.queryByTestId(
         'color-icon-localhost',
       );

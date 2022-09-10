@@ -105,6 +105,8 @@ const t = (key) => {
       return 'Rinkeby test network';
     case 'goerli':
       return 'Goerli test network';
+    case 'sepolia':
+      return 'Sepolia test network';
     case 'kovan':
       return 'Kovan test network';
     case 'localhost':

@@ -40,6 +40,7 @@ import {
   POLYGON_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  SEPOLIA_CHAIN_ID,
 } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -107,6 +108,7 @@ export default function CollectibleDetails({ collectible }) {
       case KOVAN_CHAIN_ID:
       case ROPSTEN_CHAIN_ID:
       case RINKEBY_CHAIN_ID:
+      case SEPOLIA_CHAIN_ID:
         return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:
         return null;
