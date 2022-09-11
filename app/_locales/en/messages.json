@@ -2348,7 +2348,7 @@
     "message": "Show backup settings"
   },
   "notifications14Description": {
-    "message": "We're deprecating our 3Box data feature soon. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
+    "message": "We're deprecating our 3Box data feature in early October. To backup and restore your wallet manually, use the \"Backup now\" button in Advanced Settings.",
     "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
   },
   "notifications14Title": {
