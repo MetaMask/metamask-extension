@@ -1,12 +1,12 @@
 {
   "QRHardwareInvalidTransactionTitle": {
-    "message": "非法交易"
+    "message": "无效交易"
   },
   "QRHardwareMismatchedSignId": {
     "message": "扫描的签名二维码不属于当前交易，请检查交易详情后重试。"
   },
   "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "暂无更多账户，若想切换到其他账户，请在硬件钱包中选择想要的账户重新同步。"
+    "message": "暂无更多账户，若想切换到其他未列出的账户，请在硬件钱包中选择该账户重新同步。"
   },
   "QRHardwareScanInstructions": {
     "message": "为了保护您的隐私，屏幕是模糊的，但不影响对二维码的读取。"
@@ -24,10 +24,10 @@
     "message": "用硬件钱包扫描二维码"
   },
   "QRHardwareSignRequestTitle": {
-    "message": "获取签名"
+    "message": "进行签名"
   },
   "QRHardwareUnknownQRCodeTitle": {
-    "message": "非法二维码"
+    "message": "无效二维码"
   },
   "QRHardwareUnknownWalletQRCode": {
     "message": "请扫描硬件钱包的同步二维码。"
@@ -39,23 +39,27 @@
     "message": "该类硬件钱包通过二维码实现通讯交互，做到完全脱网。官方支持的钱包有："
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "基于 QR 的硬件钱包"
+    "message": "基于二维码的硬件钱包"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault & Ngrave (即将上线)"
+    "message": "Ngrave (即将上线)"
   },
   "about": {
     "message": "关于"
   },
   "acceleratingATransaction": {
-    "message": "* 设定更高燃料价格，可以加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
+    "message": "* 设定更高燃料价格，有机会加快交易完成进度，增加网络快速处理机率，但无法保证每次均能实现提速。"
   },
   "acceptTermsOfUse": {
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
   },
   "accessAndSpendNotice": {
-    "message": "$1 可以访问并使用此最大数额",
+    "message": "授权 $1 使用金额上限",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessAndSpendNoticeNFT": {
+    "message": "授权 $1 使用该资产",
     "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
