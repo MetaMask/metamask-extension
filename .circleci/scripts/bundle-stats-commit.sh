@@ -16,11 +16,11 @@ then
     exit 1
 fi
 
-if [[ "${CIRCLE_BRANCH}" != "develop" ]]
-then
-    printf 'This is not develop branch'
-    exit 0
-fi
+# if [[ "${CIRCLE_BRANCH}" != "develop" ]]
+# then
+#     printf 'This is not develop branch'
+#     exit 0
+# fi
 
 if [[ -z "${GITHUB_TOKEN:-}" ]]
 then
@@ -50,7 +50,9 @@ fi
 
 cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
 
-echo " bundle_size_stats-${CIRCLE_SHA1}.json" >> temp/stats/fileList.txt
+echo " bundle_size_stats-${CIRCLE_SHA1}.json" >> temp/stats/fileList.js
+
+cat temp/stats/bundle_size_stats.json >> temp/stats/fileTemp.js
 
 mv temp/stats/bundle_size_stats.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
 
