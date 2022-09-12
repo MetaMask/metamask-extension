@@ -24,11 +24,6 @@ type CurrencySymbol = typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
 type SupportedCurrencySymbol =
   typeof SUPPORTED_CURRENCY_SYMBOLS[keyof typeof SUPPORTED_CURRENCY_SYMBOLS];
 /**
- * For certain specific situations we need the above type, but with all symbols
- * in lowercase format.
- */
-type LowercaseCurrencySymbol = Lowercase<CurrencySymbol>;
-/**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
@@ -40,7 +35,7 @@ export type TestNetworkCurrencySymbol =
  * inform the MoonPay API which network the user is attempting to onramp into.
  * This type reflects those possible values.
  */
-type MoonPayNetworkAbbreviation = 'bsc' | 'cchain' | 'polygon';
+type MoonPayNetworkAbbreviation = 'BSC' | 'CCHAIN' | 'POLYGON';
 
 /**
  * MoonPay requires some settings that are configured per network that it is
@@ -49,25 +44,21 @@ type MoonPayNetworkAbbreviation = 'bsc' | 'cchain' | 'polygon';
 type MoonPayChainSettings = {
   /**
    * What should the default onramp currency be, for example 'eth' on 'mainnet'
-   * This type matches a single LowercaseCurrencySymbol or a
-   * LowercaseCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
+   * This type matches a single SupportedCurrencySymbol or a
+   * SupportedCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
    */
   defaultCurrencyCode:
-    | LowercaseCurrencySymbol
-    | `${LowercaseCurrencySymbol}_${MoonPayNetworkAbbreviation}`;
+    | SupportedCurrencySymbol
+    | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`;
   /**
    * We must also configure all possible onramp currencies we wish to support.
-   * This type matches 1 to 3 LowercaseCurrencySymbols, joined by ','. It also
-   * matches 1 or 2 LowercaseCurrencySymbols with a
+   * This type matches 1 to 3 SupportedCurrencySymbol, joined by ','. It also
+   * matches 1 or 2 SupportedCurrencySymbol with a
    * MoonPayNetworkAbbreviation joined by a '_', and concatenated with ','.
    */
   showOnlyCurrencies:
-    | `${LowercaseCurrencySymbol}`
-    | `${LowercaseCurrencySymbol},${LowercaseCurrencySymbol}`
-    | `${LowercaseCurrencySymbol},${LowercaseCurrencySymbol},${LowercaseCurrencySymbol}`
-    | `${LowercaseCurrencySymbol},${LowercaseCurrencySymbol},${LowercaseCurrencySymbol},${LowercaseCurrencySymbol}`
-    | `${LowercaseCurrencySymbol}_${MoonPayNetworkAbbreviation}`
-    | `${LowercaseCurrencySymbol}_${MoonPayNetworkAbbreviation},${LowercaseCurrencySymbol}_${MoonPayNetworkAbbreviation}`;
+    | SupportedCurrencySymbol[]
+    | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`[];
 };
 
 /**
@@ -318,6 +309,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   ASM: 'ASM',
   AUCTION: 'AUCTION',
   AXS: 'AXS',
+  AVAX: 'AVAX',
   BADGER: 'BADGER',
   BAL: 'BAL',
   BAND: 'BAND',
@@ -351,6 +343,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   GTH: 'GTH',
   HEX: 'HEX',
   IOTX: 'IOTX',
+  IMX: 'IMX',
   JASMY: 'JASMY',
   KEEP: 'KEEP',
   KNC: 'KNC',
@@ -371,6 +364,7 @@ const SUPPORTED_CURRENCY_SYMBOLS = {
   NU: 'NU',
   OGN: 'OGN',
   OMG: 'OMG',
+  ORN: 'ORN',
   OXT: 'OXT',
   PAX: 'PAX',
   PERP: 'PERP',
@@ -685,8 +679,17 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.YLD,
     ],
     moonPay: {
-      defaultCurrencyCode: 'eth',
-      showOnlyCurrencies: 'eth,usdt,usdc,dai',
+      defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.ETH,
+      showOnlyCurrencies: [
+        SUPPORTED_CURRENCY_SYMBOLS.ETH,
+        SUPPORTED_CURRENCY_SYMBOLS.USDT,
+        SUPPORTED_CURRENCY_SYMBOLS.USDC,
+        SUPPORTED_CURRENCY_SYMBOLS.DAI,
+        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
+        SUPPORTED_CURRENCY_SYMBOLS.ORN,
+        SUPPORTED_CURRENCY_SYMBOLS.WETH,
+        SUPPORTED_CURRENCY_SYMBOLS.IMX,
+      ],
     },
     wyre: {
       srn: 'ethereum',
@@ -821,8 +824,11 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.BUSD,
     ],
     moonPay: {
-      defaultCurrencyCode: 'bnb_bsc',
-      showOnlyCurrencies: 'bnb_bsc,busd_bsc',
+      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
+      showOnlyCurrencies: [
+        `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
+        `${SUPPORTED_CURRENCY_SYMBOLS.BUSD}_BSC`,
+      ],
     },
   },
   [CHAIN_IDS.POLYGON]: {
@@ -835,8 +841,11 @@ export const BUYABLE_CHAINS_MAP: {
       SUPPORTED_CURRENCY_SYMBOLS.DAI,
     ],
     moonPay: {
-      defaultCurrencyCode: 'matic_polygon',
-      showOnlyCurrencies: 'matic_polygon,usdc_polygon',
+      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_POLYGON`,
+      showOnlyCurrencies: [
+        `${SUPPORTED_CURRENCY_SYMBOLS.MATIC}_POLYGON`,
+        `${SUPPORTED_CURRENCY_SYMBOLS.USDC}_POLYGON`,
+      ],
     },
     wyre: {
       srn: 'matic',
@@ -848,8 +857,8 @@ export const BUYABLE_CHAINS_MAP: {
     network: 'avaxcchain',
     transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
     moonPay: {
-      defaultCurrencyCode: 'avax_cchain',
-      showOnlyCurrencies: 'avax_cchain',
+      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`,
+      showOnlyCurrencies: [`${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`],
     },
     wyre: {
       srn: 'avalanche',
@@ -867,8 +876,8 @@ export const BUYABLE_CHAINS_MAP: {
     network: 'celo',
     transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
     moonPay: {
-      defaultCurrencyCode: 'celo',
-      showOnlyCurrencies: 'celo',
+      defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.CELO,
+      showOnlyCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
     },
   },
 };
