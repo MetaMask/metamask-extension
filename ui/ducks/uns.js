@@ -25,6 +25,7 @@ const initialState = {
   warning: null,
   network: null,
   domainName: null,
+  tlds: null,
 };
 
 export const unsInitialState = initialState;
@@ -41,7 +42,7 @@ const slice = createSlice({
       state.error = null;
       state.warning = null;
       state.domainName = null;
-      const { address, unsName, error } = action.payload;
+      let { address, unsName, error } = action.payload;
       if (!action.payload) {
         address = action.address;
         unsName = action.unsName;
@@ -84,6 +85,9 @@ const slice = createSlice({
       state.warning = null;
       state.error = null;
     },
+    updateUdTlds: (state, tlds) => {
+      state.tlds = tlds;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
@@ -101,8 +105,13 @@ const {
   unsLookup,
   enableUnsLookup,
   resetUnsResolution,
+  updateUdTlds,
 } = actions;
-export { resetUnsResolution, unsLookup }
+const SINGLE_CHAIN = 'SINGLE_CHAIN';
+const MULTI_CHAIN = 'MULTI_CHAIN';
+const NATIVE = 'NATIVE';
+
+export { resetUnsResolution, unsLookup, updateUdTlds }
 
 export function initializeUnsSlice() {
   return (dispatch, getState) => {
@@ -120,12 +129,12 @@ export function prepareResolutionCall(unsName) {
     if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeUnsSlice());
     }
-    if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
+    if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === NATIVE) {
       result = await determineChainType(state.metamask.nativeCurrency);
     } else {
-      result = 'MULTI_CHAIN';
+      result = MULTI_CHAIN;
     }
-    if (result === 'SINGLE_CHAIN') {
+    if (result === SINGLE_CHAIN) {
       let object = await resolveUNS(unsName, state.metamask.nativeCurrency);
       await dispatch(
         unsLookup({
@@ -134,9 +143,9 @@ export function prepareResolutionCall(unsName) {
           error: object.error,
         }),
       );
-    } else if (result === 'MULTI_CHAIN') {
+    } else if (result === MULTI_CHAIN) {
       let object = {};
-      if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === 'NATIVE') {
+      if (state.send.draftTransactions[state.send.currentTransactionUUID].asset.type === NATIVE) {
         object = await resolveMultiChainUNS(unsName, state.metamask.nativeCurrency, state.metamask.nativeCurrency);
       } else {
         object = await resolveMultiChainUNS(unsName, state.send.draftTransactions[state.send.currentTransactionUUID].asset.details.symbol, state.send.draftTransactions[state.send.currentTransactionUUID].asset.details.standard);
@@ -154,14 +163,13 @@ export function prepareResolutionCall(unsName) {
 
 export async function swapToken(unsName, asset) {
   let object = {}
-  if (typeof (asset) === 'string' || typeof (asset) === 'object') {
+  object.asset = asset;
     object.chainType = await determineChainType(asset);
-    if (object.chainType === 'SINGLE_CHAIN') {
+    if (object.chainType === SINGLE_CHAIN) {
       object = await resolveUNS(unsName, asset);
-    } else if (object.chainType === 'MULTI_CHAIN') {
+    } else if (object.chainType === MULTI_CHAIN) {
       object = await resolveMultiChainUNS(unsName, asset.details.symbol, asset.details.standard);
     }
-  }
   return object;
 }
 
@@ -193,15 +201,11 @@ async function resolveMultiChainUNS(unsName, symbol, version) {
 }
 
 async function determineChainType(asset) {
-  let json = await getAndParseUdCurrencies();
-  let result;
-  for (let i = 0; i < json.singleChain.length; i++) {
-    if (asset === json.singleChain[i]) {
-      result = 'SINGLE_CHAIN';
-      break;
-    } else result = 'MULTI_CHAIN';
+  if (typeof(asset) === 'object') {
+    return MULTI_CHAIN;
   }
-  return result;
+  const currencies = await getAndParseUdCurrencies();
+  return currencies.singleChain.includes(asset) ? SINGLE_CHAIN : MULTI_CHAIN;
 }
 
 export function getUnsResolution(state) {

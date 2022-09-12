@@ -5,6 +5,7 @@ import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { 
+  getUdTlds,
   isValidENSDomainName,
   isValidUnstoppableDomainName 
 } from '../../../../helpers/utils/util';

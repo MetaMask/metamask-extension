@@ -123,6 +123,7 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
+import { updateTokenProps } from '../confirm-transaction/confirm-transaction.duck';
 
 // typedef import statements
 /**
@@ -1364,8 +1365,8 @@ const slice = createSlice({
             tokens,
             tokenAddressList,
             isProbablyAnAssetContract,
+            udTlds,
           } = action.payload;
-
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
@@ -1373,8 +1374,9 @@ const slice = createSlice({
             }) &&
               !isValidENSDomainName(state.recipientInput)
               &&
-              !isValidUnstoppableDomainName(state.recipientInput))
+              !isValidUnstoppableDomainName(state.recipientInput, udTlds))
           ) {
+
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
@@ -1931,6 +1933,7 @@ export function updateRecipientUserInput(userInput) {
           useTokenDetection,
           tokenAddressList,
           isProbablyAnAssetContract,
+          udTlds: state.UNS.tlds.payload,
         },
         resolve,
       );

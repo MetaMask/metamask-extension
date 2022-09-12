@@ -107,8 +107,10 @@ export function isValidENSDomainName(address) {
  return result; 
 }
 
-export async function isValidUnstoppableDomainName(address) {
-  let tlds = await getUdTlds();
+export async function isValidUnstoppableDomainName(address, tlds) {
+  if (!tlds) {
+    tlds = await getUdTlds();
+  }
   let result = false; 
     tlds.forEach((tld, i) => {
       if (address.toLowerCase().endsWith("."+tld)) {
@@ -118,13 +120,11 @@ export async function isValidUnstoppableDomainName(address) {
     return result;
 }
 export async function getUdTlds() {
-  let parsedResponse = "{}";
   let result = [];
   const url = 'https://resolve.unstoppabledomains.com/supported_tlds';
   let response = await fetch(url);
-  let data = await response.text();
-  parsedResponse = JSON.parse(data);
-  result = parsedResponse.tlds
+  let data = await response.json();
+  result = data.tlds
   return result;
 }
 
@@ -140,10 +140,10 @@ export async function getAndParseUdCurrencies() {
   let data = await response.text();
   let currencyArray = parseKeysArray(JSON.parse(data).keys);
   currencyArray.forEach(function (crypto) {
-    if (crypto.deprecatedKeyName.includes("_")) {
-      resultObject.multiChain.push(crypto.deprecatedKeyName);
+    if (crypto.includes(".version.")) {
+      resultObject.multiChain.push(crypto.split(".")[1]);
     } else {
-      resultObject.singleChain.push(crypto.deprecatedKeyName);
+      resultObject.singleChain.push(crypto.split(".")[1]);
     }
   })
   return resultObject;
@@ -154,7 +154,7 @@ export function parseKeysArray(json) {
   var keys = Object.keys(json);
   keys.forEach(function (key) {
     if (key.startsWith("crypto")) {
-      result.push(json[key]);
+      result.push(key)
     }
   });
   return result;

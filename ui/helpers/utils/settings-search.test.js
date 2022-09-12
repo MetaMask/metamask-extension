@@ -64,7 +64,7 @@ const t = (key) => {
     case 'ipfsGateway':
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
-      return 'Enter the URL of the IPFS CID gateway to use for ENS content resolution.';
+      return 'Enter the URL of the IPFS CID gateway to use for ENS or UNS content resolution.';
     case 'preferredLedgerConnectionType':
       return 'Preferred ledger connection type';
     case 'dismissReminderField':
