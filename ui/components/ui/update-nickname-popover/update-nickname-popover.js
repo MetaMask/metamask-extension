@@ -8,7 +8,7 @@ import TextField from '../text-field';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
 
 export default function UpdateNicknamePopover({
