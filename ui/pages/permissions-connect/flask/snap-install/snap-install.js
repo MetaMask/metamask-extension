@@ -39,6 +39,8 @@ export default function SnapInstall({
     [request, approveSnapInstall],
   );
 
+  const hasPermissions = request?.permissions && Object.keys(request.permissions).length > 0;
+
   const bip44LegacyEntropyPermissions =
     request.permissions &&
     Object.keys(request.permissions).filter((v) =>
@@ -88,18 +90,22 @@ export default function SnapInstall({
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
-        <Typography
-          boxProps={{
-            padding: [4, 4, 0, 4],
-          }}
-          variant={TYPOGRAPHY.H7}
-          as="span"
-        >
-          {t('snapRequestsPermission')}
-        </Typography>
-        <PermissionsConnectPermissionList
-          permissions={request.permissions || {}}
-        />
+        {hasPermissions && (
+          <>
+            <Typography
+              boxProps={{
+                padding: [4, 4, 0, 4],
+              }}
+              variant={TYPOGRAPHY.H7}
+              as="span"
+            >
+              {t('snapRequestsPermission')}
+            </Typography>
+            <PermissionsConnectPermissionList
+              permissions={request.permissions || {}}
+            />
+          </>
+        )}
       </Box>
       <Box
         className="footers"
@@ -116,7 +122,7 @@ export default function SnapInstall({
           onSubmit={
             shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
           }
-          submitText={t('approveAndInstall')}
+          submitText={t(hasPermissions ? 'approveAndInstall' : 'install')}
         />
       </Box>
       {isShowingWarning && (
@@ -139,7 +145,7 @@ export default function SnapInstall({
                 message: t('snapInstallWarningKeyAccess', [
                   targetSubjectMetadata.name,
                   coinTypeToProtocolName(coinType) ||
-                    t('unrecognizedProtocol', [coinType]),
+                  t('unrecognizedProtocol', [coinType]),
                 ]),
               })),
             ),
@@ -150,7 +156,7 @@ export default function SnapInstall({
                 message: t('snapInstallWarningKeyAccess', [
                   targetSubjectMetadata.name,
                   coinTypeToProtocolName(coinType) ||
-                    t('unrecognizedProtocol', [coinType]),
+                  t('unrecognizedProtocol', [coinType]),
                 ]),
               };
             }),
