@@ -38,7 +38,7 @@ const QuoteDetails = ({
           {t('swapMaxSlippage')}
           <InfoTooltip
             position="bottom"
-            contentText={t('swapQuoteDetailsSlippageInfo')}
+            contentText={t('swapSlippageTooltip')}
           />
         </div>
         <div className="quote-details__detail-content">{`${slippage}%`}</div>

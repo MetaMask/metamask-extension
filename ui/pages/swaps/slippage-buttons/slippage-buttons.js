@@ -112,7 +112,7 @@ export default function SlippageButtons({
                   </div>
                   <InfoTooltip
                     position="top"
-                    contentText={t('swapAdvancedSlippageInfo')}
+                    contentText={t('swapSlippageTooltip')}
                   />
                 </div>
                 <ButtonGroup

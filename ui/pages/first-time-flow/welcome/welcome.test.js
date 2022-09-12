@@ -1,16 +1,10 @@
 import React from 'react';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Welcome from './welcome.container';
 
 describe('Welcome', () => {
-  const mockStore = {
-    metamask: {},
-  };
-
-  const store = configureMockStore()(mockStore);
-
   afterAll(() => {
     sinon.restore();
   });
@@ -22,15 +16,12 @@ describe('Welcome', () => {
       },
     };
 
-    const wrapper = mountWithRouter(
-      <Welcome.WrappedComponent {...props} />,
-      store,
-    );
+    renderWithProvider(<Welcome.WrappedComponent {...props} />);
 
-    const getStartedButton = wrapper.find(
-      '.btn-primary.first-time-flow__button',
-    );
-    getStartedButton.simulate('click');
+    const getStartedButton = screen.getByTestId('first-time-flow__button');
+
+    fireEvent.click(getStartedButton);
+
     expect(props.history.push.getCall(0).args[0]).toStrictEqual(
       '/initialize/metametrics-opt-in',
     );
@@ -45,15 +36,11 @@ describe('Welcome', () => {
       },
     };
 
-    const wrapper = mountWithRouter(
-      <Welcome.WrappedComponent {...props} />,
-      store,
-    );
+    renderWithProvider(<Welcome.WrappedComponent {...props} />);
 
-    const getStartedButton = wrapper.find(
-      '.btn-primary.first-time-flow__button',
-    );
-    getStartedButton.simulate('click');
+    const getStartedButton = screen.getByTestId('first-time-flow__button');
+
+    fireEvent.click(getStartedButton);
     expect(props.history.push.getCall(0).args[0]).toStrictEqual(
       '/initialize/select-action',
     );
