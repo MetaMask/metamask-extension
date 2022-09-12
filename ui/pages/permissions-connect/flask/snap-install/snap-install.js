@@ -39,7 +39,8 @@ export default function SnapInstall({
     [request, approveSnapInstall],
   );
 
-  const hasPermissions = request?.permissions && Object.keys(request.permissions).length > 0;
+  const hasPermissions =
+    request?.permissions && Object.keys(request.permissions).length > 0;
 
   const bip44LegacyEntropyPermissions =
     request.permissions &&
@@ -145,7 +146,7 @@ export default function SnapInstall({
                 message: t('snapInstallWarningKeyAccess', [
                   targetSubjectMetadata.name,
                   coinTypeToProtocolName(coinType) ||
-                  t('unrecognizedProtocol', [coinType]),
+                    t('unrecognizedProtocol', [coinType]),
                 ]),
               })),
             ),
@@ -156,7 +157,7 @@ export default function SnapInstall({
                 message: t('snapInstallWarningKeyAccess', [
                   targetSubjectMetadata.name,
                   coinTypeToProtocolName(coinType) ||
-                  t('unrecognizedProtocol', [coinType]),
+                    t('unrecognizedProtocol', [coinType]),
                 ]),
               };
             }),

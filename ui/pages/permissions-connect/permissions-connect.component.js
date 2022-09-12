@@ -316,12 +316,13 @@ export default class PermissionConnect extends Component {
                     approvePendingApproval(requestId, true);
                     this.redirect(true);
                   }}
-                  rejectSnapInstall={(requestId) =>
+                  rejectSnapInstall={(requestId) => {
                     rejectPendingApproval(
                       requestId,
                       serializeError(ethErrors.provider.userRejectedRequest()),
-                    )
-                  }
+                    );
+                    this.redirect(false);
+                  }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}
@@ -342,12 +343,13 @@ export default class PermissionConnect extends Component {
                     approvePendingApproval(requestId, true);
                     this.redirect(true);
                   }}
-                  rejectSnapUpdate={(requestId) =>
+                  rejectSnapUpdate={(requestId) => {
                     rejectPendingApproval(
                       requestId,
                       serializeError(ethErrors.provider.userRejectedRequest()),
-                    )
-                  }
+                    );
+                    this.redirect(false);
+                  }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}
