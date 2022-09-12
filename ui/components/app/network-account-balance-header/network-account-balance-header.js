@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import Identicon from '../../ui/identicon/identicon.component';
 import {
   DISPLAY,
@@ -15,22 +14,15 @@ import {
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 
 export default function NetworkAccountBalanceHeader({
+  networkName,
   accountName,
   accountBalance,
   tokenName,
   accountAddress,
 }) {
   const t = useContext(I18nContext);
-
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-  }));
-
-  const { nickname: networkNickname, type: networkType } = currentNetwork;
 
   return (
     <Box
@@ -67,13 +59,11 @@ export default function NetworkAccountBalanceHeader({
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
           <Typography
-            variant={TYPOGRAPHY.H7}
+            variant={TYPOGRAPHY.H6}
             color={COLORS.TEXT_ALTERNATIVE}
             marginBottom={0}
           >
-            {networkType === NETWORK_TYPE_RPC
-              ? networkNickname ?? t('privateNetwork')
-              : t(networkType)}
+            {networkName}
           </Typography>
 
           <Typography
@@ -92,7 +82,7 @@ export default function NetworkAccountBalanceHeader({
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TYPOGRAPHY.H6}
           color={COLORS.TEXT_ALTERNATIVE}
           marginBottom={0}
         >
@@ -114,6 +104,7 @@ export default function NetworkAccountBalanceHeader({
 }
 
 NetworkAccountBalanceHeader.propTypes = {
+  networkName: PropTypes.string,
   accountName: PropTypes.string,
   accountBalance: PropTypes.number,
   tokenName: PropTypes.string,

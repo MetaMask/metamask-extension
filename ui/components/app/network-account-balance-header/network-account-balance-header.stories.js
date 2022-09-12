@@ -5,6 +5,9 @@ export default {
   title: 'Components/App/NetworkAccountBalanceHeader',
   id: __filename,
   argTypes: {
+    networkName: {
+      control: { type: 'text' },
+    },
     accountName: {
       control: { type: 'text' },
     },
@@ -19,6 +22,7 @@ export default {
     },
   },
   args: {
+    networkName: 'Ethereum Network',
     accountName: 'Account 1',
     accountBalance: 200.12,
     tokenName: 'DAI',
