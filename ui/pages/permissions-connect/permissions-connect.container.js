@@ -19,6 +19,10 @@ import {
   showModal,
   getCurrentWindowTab,
   getRequestAccountTabIds,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  resolvePendingApproval,
+  rejectPendingApproval,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import {
   CONNECT_ROUTE,
@@ -139,6 +143,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(approvePermissionsRequest(request)),
     rejectPermissionsRequest: (requestId) =>
       dispatch(rejectPermissionsRequest(requestId)),
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    approvePendingApproval: (id, value) => dispatch(resolvePendingApproval(id, value)),
+    rejectPendingApproval: (id, error) => dispatch(rejectPendingApproval(id, error)),
+    ///: END:ONLY_INCLUDE_IN
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(
         showModal({

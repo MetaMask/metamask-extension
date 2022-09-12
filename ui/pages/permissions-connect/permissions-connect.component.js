@@ -11,6 +11,7 @@ import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapInstall from './flask/snap-install';
 import SnapUpdate from './flask/snap-update';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
@@ -235,6 +236,8 @@ export default class PermissionConnect extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
       snapUpdatePath,
+      approvePendingApproval,
+      rejectPendingApproval,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
@@ -305,12 +308,12 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapInstall
                   request={permissionsRequest || {}}
-                  approveSnapInstall={(...args) => {
-                    approvePermissionsRequest(...args);
+                  approveSnapInstall={(requestId) => {
+                    approvePendingApproval(requestId, true);
                     this.redirect(true);
                   }}
                   rejectSnapInstall={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
+                    rejectPendingApproval(requestId, serializeError(ethErrors.provider.userRejectedRequest()))
                   }
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -328,12 +331,12 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapUpdate
                   request={permissionsRequest || {}}
-                  approveSnapUpdate={(...args) => {
-                    approvePermissionsRequest(...args);
+                  approveSnapUpdate={(requestId) => {
+                    approvePendingApproval(requestId, true);
                     this.redirect(true);
                   }}
                   rejectSnapUpdate={(requestId) =>
-                    this.cancelPermissionsRequest(requestId)
+                    rejectPendingApproval(requestId, serializeError(ethErrors.provider.userRejectedRequest()))
                   }
                   targetSubjectMetadata={targetSubjectMetadata}
                 />

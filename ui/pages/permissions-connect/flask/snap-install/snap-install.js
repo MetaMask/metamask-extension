@@ -35,7 +35,7 @@ export default function SnapInstall({
   );
 
   const onSubmit = useCallback(
-    () => approveSnapInstall(request),
+    () => approveSnapInstall(request.metadata.id),
     [request, approveSnapInstall],
   );
 

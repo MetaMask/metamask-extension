@@ -33,7 +33,7 @@ export default function SnapUpdate({
   );
 
   const onSubmit = useCallback(
-    () => approveSnapUpdate(request),
+    () => approveSnapUpdate(request.metadata.id),
     [request, approveSnapUpdate],
   );
 
