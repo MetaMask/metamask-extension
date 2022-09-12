@@ -1,4 +1,7 @@
 {
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; frame-ancestors 'none'"
+  },
   "externally_connectable": {
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
