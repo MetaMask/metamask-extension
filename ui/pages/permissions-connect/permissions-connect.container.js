@@ -6,7 +6,7 @@ import {
   getPermissionsRequests,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getSnapUpdateRequests,
+  getSnapInstallOrUpdateRequests,
   ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
 } from '../../selectors';
@@ -42,7 +42,7 @@ const mapStateToProps = (state, ownProps) => {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   permissionsRequests = [
     ...permissionsRequests,
-    ...getSnapUpdateRequests(state),
+    ...getSnapInstallOrUpdateRequests(state),
   ];
   ///: END:ONLY_INCLUDE_IN
   const currentAddress = getSelectedAddress(state);

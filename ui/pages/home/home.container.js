@@ -6,7 +6,7 @@ import {
   getCurrentEthBalance,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getFirstSnapUpdateRequest,
+  getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
@@ -97,7 +97,7 @@ const mapStateToProps = (state) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   if (!firstPermissionsRequest) {
-    firstPermissionsRequest = getFirstSnapUpdateRequest(state);
+    firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
   ///: END:ONLY_INCLUDE_IN
