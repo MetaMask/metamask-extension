@@ -129,3 +129,13 @@ async function fetchRelativeTimeFormatData(languageTag) {
   );
   return await response.json();
 }
+
+export async function fetchContractMap() {
+  try {
+    const response = await fetchWithTimeout(`./contract-map.json`);
+    return await response.json();
+  } catch (error) {
+    log.error(`failed to fetch because of ${error}`);
+    return {};
+  }
+}

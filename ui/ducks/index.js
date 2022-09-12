@@ -10,6 +10,7 @@ import gasReducer from './gas/gas.duck';
 import { invalidCustomNetwork, unconnectedAccount } from './alerts';
 import swapsReducer from './swaps/swaps';
 import historyReducer from './history/history';
+import tokenListReducer from './token-list/token-list';
 
 export default combineReducers({
   [ALERT_TYPES.invalidCustomNetwork]: invalidCustomNetwork,
@@ -24,4 +25,5 @@ export default combineReducers({
   swaps: swapsReducer,
   gas: gasReducer,
   localeMessages: localeMessagesReducer,
+  tokens: tokenListReducer,
 });

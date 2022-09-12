@@ -13,6 +13,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
+  fetchContractMap,
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from './helpers/utils/i18n-helper';
@@ -99,6 +100,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     await switchDirection('rtl');
   }
 
+  const contractMap = await fetchContractMap();
+
   const draftInitialState = {
     activeTab: opts.activeTab,
 
@@ -112,6 +115,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
+
+    tokens: contractMap,
   };
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
