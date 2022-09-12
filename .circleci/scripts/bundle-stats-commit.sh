@@ -52,13 +52,10 @@ cp -R test-artifacts/chrome/mv3/bundle_size_stats.json temp/stats
 
 echo " bundle_size_stats-${CIRCLE_SHA1}.json" >> temp/stats/fileList.json
 
-echo " ${CIRCLE_SHA1}: " >> temp/stats/bundle_size_data.temp.js
-
-cat temp/stats/bundle_size_stats.json >> temp/stats/bundle_size_data.temp.js
-
-echo ", " >> temp/stats/bundle_size_data.temp.js
+{ echo " ${CIRCLE_SHA1}: ", cat temp/stats/bundle_size_stats.json, echo ", " } >> temp/stats/bundle_size_data.temp.js
 
 cp temp/stats/bundle_size_data.temp.js temp/stats/bundle_size_data.js
+
 echo " }" >> temp/stats/bundle_size_data.js
 
 mv temp/stats/bundle_size_stats.json "temp/stats/bundle_size_stats-${CIRCLE_SHA1}.json"
