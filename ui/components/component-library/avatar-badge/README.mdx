@@ -1,0 +1,33 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarWithBadge } from './avatar-badge';
+
+# AvatarWithBadge
+
+The `AvatarWithBadge` is a wrapper component that adds badge display options to avatars.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-badge-avatar-badge-stories-js--default-story" />
+</Canvas>
+
+## Props
+
+The `AvatarWithBadge` accepts all props below 
+
+<ArgsTable of={AvatarWithBadge} />
+
+### badgePosition
+
+Use the `badgePosition` prop to set the position of the badge, it can have two values `Top` and `Bottom`
+
+### badge
+
+Used to define the badge component to be rendered inside the `AvatarWithBadge`
+
+### badgeProps
+
+The required props to be passed to the badge.
+
+### children
+
+The children to be rendered inside the AvatarWithBadge. It could either be the `AvatartAccount` or `Jazzicon` component

@@ -1,6 +1,7 @@
 .avatar-badge {
   position: relative;
   width: fit-content;
+
   &-token-position-top {
     position: absolute;
     top: -4px;
@@ -12,5 +13,4 @@
     bottom: -4px;
     right: -4px;
   }
-
 }
