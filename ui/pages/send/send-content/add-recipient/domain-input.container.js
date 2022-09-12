@@ -9,6 +9,7 @@ import {
   initializeUnsSlice,
   resetUnsResolution,
   prepareResolutionCall,
+  updateUdTlds,
 } from '../../../../ducks/uns';
 import DomainInput from './domain-input.component';
 

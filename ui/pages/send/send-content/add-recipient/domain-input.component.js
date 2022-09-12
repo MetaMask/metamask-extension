@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import {
+  getUdTlds,
   isValidENSDomainName,
   isValidUnstoppableDomainName,
 } from '../../../../helpers/utils/util';
@@ -17,6 +18,11 @@ export default class DomainInput extends Component {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   };
+
+   udRequirements = {
+    tlds: [],
+    currencies: [],
+  }
 
   static propTypes = {
     className: PropTypes.string,
@@ -33,6 +39,7 @@ export default class DomainInput extends Component {
     resolveUNS: PropTypes.func.isRequired,
     initializeDomainSlice: PropTypes.func.isRequired,
     resetDomainResolution: PropTypes.func.isRequired,
+    updateUdTlds: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -62,6 +69,7 @@ export default class DomainInput extends Component {
       lookupEnsName,
       resolveUNS,
       resetDomainResolution,
+      updateUdTlds,
     } = this.props;
     const input = value.trim();
 
@@ -69,7 +77,11 @@ export default class DomainInput extends Component {
     if (internalSearch) {
       return null;
     }
-    if (await isValidUnstoppableDomainName(input)) {
+    if (this.udRequirements.tlds.length === 0){
+      this.udRequirements.tlds = await getUdTlds();
+      updateUdTlds(this.udRequirements.tlds);
+    }
+    if (await isValidUnstoppableDomainName(input, this.udRequirements.tlds)) {
       resetEnsResolution();
       prepareResolutionCall(input);
       resetEnsResolution(); 

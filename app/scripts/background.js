@@ -402,6 +402,9 @@ function setupController(initState, initLangCode, remoteSourcePort) {
     provider: controller.provider,
   });
   setupUnsIpfsResolver({
+    getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
+      controller.preferencesController,
+    ),
   });
 
   // setup state persistence

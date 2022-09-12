@@ -1826,7 +1826,7 @@
     "message": "IPFS Gateway"
   },
   "ipfsGatewayDescription": {
-    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+    "message": "Enter the URL of the IPFS CID gateway to use for ENS or UNS content resolution."
   },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
