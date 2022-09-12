@@ -144,8 +144,10 @@ const mapDispatchToProps = (dispatch) => {
     rejectPermissionsRequest: (requestId) =>
       dispatch(rejectPermissionsRequest(requestId)),
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    approvePendingApproval: (id, value) => dispatch(resolvePendingApproval(id, value)),
-    rejectPendingApproval: (id, error) => dispatch(rejectPendingApproval(id, error)),
+    approvePendingApproval: (id, value) =>
+      dispatch(resolvePendingApproval(id, value)),
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
     ///: END:ONLY_INCLUDE_IN
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(

@@ -283,7 +283,10 @@ export function getLastConnectedInfo(state) {
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
-    .filter(({ type }) => type === 'wallet_installSnap' || type === 'wallet_updateSnap')
+    .filter(
+      ({ type }) =>
+        type === 'wallet_installSnap' || type === 'wallet_updateSnap',
+    )
     .map(({ requestData }) => requestData);
 }
 
