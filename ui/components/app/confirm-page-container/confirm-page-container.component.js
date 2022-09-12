@@ -5,6 +5,7 @@ import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
   ERC1155,
+  ERC20,
   ERC721,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
@@ -207,7 +208,9 @@ export default class ConfirmPageContainer extends Component {
             ofText={ofText}
             requestsWaitingText={requestsWaitingText}
           />
-          {assetStandard === ERC721 || assetStandard === ERC1155 ? (
+          {assetStandard === ERC20 ||
+          assetStandard === ERC721 ||
+          assetStandard === ERC1155 ? (
             <NetworkAccountBalanceHeader
               accountName={fromName}
               accountBalance={accountBalance}
