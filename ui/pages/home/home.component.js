@@ -689,15 +689,16 @@ export default class Home extends PureComponent {
                   <div
                     className="home__subheader-link"
                     onClick={async () => {
+                      const portfolioUrl = process.env.PORTFOLIO_URL;
                       global.platform.openTab({
-                        url: process.env.PORTFOLIO_URL,
+                        url: `${portfolioUrl}?metamaskEntry=ext`,
                       });
                       this.context.trackEvent(
                         {
                           category: EVENT.CATEGORIES.HOME,
                           event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
                           properties: {
-                            url: process.env.PORTFOLIO_URL,
+                            url: portfolioUrl,
                           },
                         },
                         {
