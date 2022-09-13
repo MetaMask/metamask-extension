@@ -35,6 +35,9 @@ import {
   getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getInsightSnaps,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -197,27 +200,9 @@ const mapStateToProps = (state, ownProps) => {
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
-  // @TODO: Replace with insightSnaps selector;
-  const insightSnaps = [
-    {
-      id: 'Gnosis Insight',
-      manifest: {
-        proposedName: 'Gnosis Insight',
-      },
-    },
-    {
-      id: 'Test Snap',
-      manifest: {
-        proposedName: 'Gnosis Insight',
-      },
-    },
-    {
-      id: 'Another One',
-      manifest: {
-        proposedName: 'Gnosis Insight',
-      },
-    },
-  ];
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const insightSnaps = getInsightSnaps(state);
+  ///: END:ONLY_INCLUDE_IN
 
   return {
     balance,
@@ -271,7 +256,9 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     eip1559V2Enabled,
     isBuyableChain,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

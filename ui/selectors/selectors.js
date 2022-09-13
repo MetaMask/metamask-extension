@@ -72,6 +72,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -745,6 +746,17 @@ export function getShowWhatsNewPopup(state) {
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
+}
+
+export function getInsightSnaps(state) {
+  const snaps = Object.values(state.metamask.snaps);
+  const subjects = getPermissionSubjects(state);
+
+  const insightSnaps = snaps.filter(
+    ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+  );
+
+  return insightSnaps;
 }
 
 export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {

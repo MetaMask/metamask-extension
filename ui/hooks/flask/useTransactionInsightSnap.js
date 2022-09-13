@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { handleSnapRequest } from '../../store/actions';
 import { getPermissionSubjects } from '../../selectors';
 
-const INSIGHT_PERMISSION = 'endowment:tx-insight';
+const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
 export function useTransactionInsightSnap(transaction, snapId) {
   const subjects = useSelector(getPermissionSubjects);

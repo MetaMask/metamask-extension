@@ -11,29 +11,17 @@ import {
   COLORS,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
 
 export const SnapInsight = ({ transaction, snapId }) => {
-  const insight = {
-    test: 'An Insight',
-    test1: 'An Insight',
-    test2: 'An Insight',
-    test3: 'An Insight',
-    test4: 'An Insight',
-    test5: 'An Insight',
-    test6: 'An Insight',
-    test7: 'An Insight',
-    test8: 'An Insight',
-    test9: 'An Insight',
-    test10: 'An Insight',
-    test11: 'An Insight',
-    test12: 'An Insight',
-    test13: 'An Insight',
-    test14: 'An Insight',
-  }; /* useInsightSnap(transaction, snapId); */
+  const { insights } = useTransactionInsightSnap(transaction, snapId);
+
+  console.log(snapId);
+  console.log(insights);
 
   const t = useI18nContext();
 
-  if (insight && Object.keys(insight).length !== 0) {
+  if (insights && Object.keys(insights).length !== 0) {
     return (
       <Box
         paddingLeft={6}
@@ -41,15 +29,15 @@ export const SnapInsight = ({ transaction, snapId }) => {
         paddingBottom={3}
         style={{ overflowY: 'auto', height: '170px' }}
       >
-        {Object.keys(insight).map((key, i) => (
+        {Object.keys(insights).map((key, i) => (
           <Box key={i} paddingTop={3}>
             <Typography fontWeight="bold">{key}</Typography>
-            <p>{insight[key]}</p>
+            <p>{insights[key]}</p>
           </Box>
         ))}
       </Box>
     );
-  } else if (insight && Object.keys(insight).length === 0) {
+  } else if (insights && Object.keys(insights).length === 0) {
     return (
       <Box
         flexDirection={FLEX_DIRECTION.COLUMN}

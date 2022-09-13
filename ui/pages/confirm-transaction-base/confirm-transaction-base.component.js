@@ -749,27 +749,17 @@ export default class ConfirmTransactionBase extends Component {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   renderInsight() {
-    const { txData } = this.props;
+    const { txData, insightSnaps } = this.props;
     const { selectedInsightSnap } = this.state;
 
-    if (txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+    const snap = insightSnaps.find(({ id }) => id === selectedInsightSnap);
+
+    if (
+      txData.type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+      !insightSnaps
+    ) {
       return null;
     }
-
-    const insightSnaps = [
-      {
-        id: 'test snap',
-        manifest: {
-          proposedName: 'test snap',
-        },
-      },
-      {
-        id: 'Tenderly Insight',
-        manifest: {
-          proposedName: 'Tenderly Insight',
-        },
-      },
-    ];
 
     const dropdownOptions = insightSnaps.reduce(
       (prev, acc) => [
@@ -783,6 +773,7 @@ export default class ConfirmTransactionBase extends Component {
       <DropdownTab
         className="confirm-page-container-content__tab"
         options={dropdownOptions}
+        selectedOption={selectedInsightSnap}
       >
         <SnapInsight transaction={txData} snapId={selectedInsightSnap} />
       </DropdownTab>
