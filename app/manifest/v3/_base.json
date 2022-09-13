@@ -79,7 +79,7 @@
     "https://chainid.network/chains.json",
     "https://lattice.gridplus.io/*",
     "activeTab",
-    "webRequest",
+    "webRequest",,
     "*://*.eth/",
     "*://*.crypto/",
     "*://*.x/",
@@ -90,7 +90,7 @@
     "*://*.wallet/",
     "*://*.blockchain/",
     "*://*.888/",
-    "*://*.zil/",
+    "*://*.zil/"
     "notifications"
   ],
   "short_name": "__MSG_appName__"
