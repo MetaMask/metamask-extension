@@ -3854,6 +3854,10 @@ export function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
 }
 
+export function hidePortfolioTooltip() {
+  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
+}
+
 export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,
