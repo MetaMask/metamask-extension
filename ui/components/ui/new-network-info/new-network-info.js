@@ -92,7 +92,7 @@ const NewNetworkInfo = () => {
         backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
         maxContent={false}
         label={
-          currentProvider.type === NETWORK_TYPES
+          currentProvider.type === NETWORK_TYPES.RPC
             ? currentProvider.nickname ?? t('privateNetwork')
             : t(currentProvider.type)
         }
