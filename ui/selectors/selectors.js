@@ -817,6 +817,7 @@ function getAllowedAnnouncementIds(state) {
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
+  const { threeBoxSyncingAllowed } = state.metamask;
 
   return {
     1: false,
@@ -832,6 +833,7 @@ function getAllowedAnnouncementIds(state) {
     11: true,
     12: false,
     13: true,
+    14: threeBoxSyncingAllowed,
   };
 }
 
