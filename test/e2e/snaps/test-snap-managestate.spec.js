@@ -73,6 +73,7 @@ describe('Test Snap manageState', function () {
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.fill('#dataManageState', '23');
+        await driver.delay(1000);
         await driver.clickElement('#sendManageState');
 
         // check the results of the public key test
