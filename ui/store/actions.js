@@ -2004,19 +2004,16 @@ export function createCancelTransaction(txId, customGasSettings, options) {
   };
 }
 
-export function createSpeedUpTransaction(
-  txId,
-  customGasSettings,
-  newTxMetaProps,
-) {
+export function createSpeedUpTransaction(txId, customGasSettings, options) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
   return (dispatch) => {
+    const actionId = Date.now() + Math.random();
     return new Promise((resolve, reject) => {
       callBackgroundMethod(
         'createSpeedUpTransaction',
-        [txId, customGasSettings, newTxMetaProps],
+        [txId, customGasSettings, { ...options, actionId }],
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2028,6 +2025,7 @@ export function createSpeedUpTransaction(
           newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
           resolve(newState);
         },
+        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
