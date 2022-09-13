@@ -3,23 +3,26 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { BaseAvatar } from '../base-avatar';
 
-import {
-  SIZES,
-} from '../../../helpers/constants/design-system';
+import { SIZES } from '../../../helpers/constants/design-system';
+
+export const diameters = {
+  xs: '16',
+  sm: '24',
+  md: '32',
+  lg: '40',
+  xl: '48',
+};
 
 export const AvatarAccount = ({
   children,
   size,
-  address,
   className,
   ...props
 }) => {
   return (
     <BaseAvatar
-      className={classnames(
-        'avatar-account',
-        className,
-      )}
+      size={size}
+      className={classnames('avatar-account', className)}
       {...props}
     >
       {children}

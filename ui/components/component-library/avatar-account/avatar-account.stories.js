@@ -1,24 +1,20 @@
 import React from 'react';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
-import {
-  SIZES,
-} from '../../../helpers/constants/design-system';
+import { SIZES } from '../../../helpers/constants/design-system';
+import { diameters, AvatarAccount } from './avatar-account';
 
-import Box from '../../ui/box/box';
-
-// import README from './README.mdx';
-import { AvatarAccount } from './avatar-account';
+import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarAccount',
   id: __filename,
   component: AvatarAccount,
-  // parameters: {
-  //   docs: {
-  //     page: README,
-  //   },
-  // },
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
   argTypes: {
     size: {
       control: 'select',
@@ -42,9 +38,12 @@ DefaultStory.storyName = 'Default';
 
 export const BlockieStory = (args) => (
   <AvatarAccount {...args}>
-    <BlockieIdenticon address={args.address} />
+    <BlockieIdenticon
+      address={args.address}
+      diameter={diameters[args.size]}
+      borderRadius="50%"
+    />
   </AvatarAccount>
 );
 
 BlockieStory.storyName = 'Blockie';
-
