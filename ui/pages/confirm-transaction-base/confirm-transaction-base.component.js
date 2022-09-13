@@ -64,6 +64,7 @@ import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
+import { DropdownTab } from '../../components/ui/tabs';
 import TransactionAlerts from './transaction-alerts';
 
 const renderHeartBeatIfNotInTest = () =>
@@ -745,7 +746,37 @@ export default class ConfirmTransactionBase extends Component {
       return null;
     }
 
-    return <SnapInsight transaction={txData} snapId={selectedInsightSnap} />;
+    const insightSnaps = [
+      {
+        id: 'test snap',
+        manifest: {
+          proposedName: 'test snap',
+        },
+      },
+      {
+        id: 'Tenderly Insight',
+        manifest: {
+          proposedName: 'Tenderly Insight',
+        },
+      },
+    ];
+
+    const dropdownOptions = insightSnaps.reduce(
+      (prev, acc) => [
+        ...prev,
+        { value: acc.id, name: acc.manifest.proposedName },
+      ],
+      [],
+    );
+
+    return (
+      <DropdownTab
+        className="confirm-page-container-content__tab"
+        options={dropdownOptions}
+      >
+        <SnapInsight transaction={txData} snapId={selectedInsightSnap} />
+      </DropdownTab>
+    );
   }
 
   handleEdit() {

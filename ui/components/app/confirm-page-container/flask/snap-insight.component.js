@@ -10,7 +10,7 @@ import {
   FLEX_DIRECTION,
   COLORS,
 } from '../../../../helpers/constants/design-system';
-import { useI18nContext } from 'ui/hooks/useI18nContext';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const SnapInsight = ({ transaction, snapId }) => {
   const insight = {
