@@ -1056,6 +1056,15 @@ export async function removeSnapError(msgData) {
   return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
+export async function handleSnapRequest(snapId, origin, handler, request) {
+  return submitRequestToBackground('handleSnapRequest', [
+    snapId,
+    origin,
+    handler,
+    request,
+  ]);
+}
+
 export function dismissNotifications(ids) {
   return async (dispatch) => {
     await submitRequestToBackground('dismissNotifications', [ids]);
