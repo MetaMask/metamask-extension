@@ -259,7 +259,8 @@
     "AppStateController": {
       "connectedStatusPopoverHasBeenShown": true,
       "swapsWelcomeMessageHasBeenShown": false,
-      "defaultHomeActiveTabName": "Activity"
+      "defaultHomeActiveTabName": "Activity",
+      "showPortfolioTooltip": false
     }
   },
   "meta": {
