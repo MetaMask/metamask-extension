@@ -2295,7 +2295,7 @@
     "message": "Improved token detection is currently available on Ethereum Mainnet, Polygon, BSC, and Avalanche networks. More to come!"
   },
   "notifications10DescriptionThree": {
-    "message": "Token detection feature is ON by default. But you can disable it from Settings."
+    "message": "Token detection feature is currently OFF by default. You can enable it from Settings."
   },
   "notifications10DescriptionTwo": {
     "message": "We source tokens from third party tokens lists. Tokens listed on more than two token lists will be automatically detected."
