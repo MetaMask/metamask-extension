@@ -13,12 +13,7 @@ export const diameters = {
   xl: '48',
 };
 
-export const AvatarAccount = ({
-  children,
-  size,
-  className,
-  ...props
-}) => {
+export const AvatarAccount = ({ children, size, className, ...props }) => {
   return (
     <BaseAvatar
       size={size}
