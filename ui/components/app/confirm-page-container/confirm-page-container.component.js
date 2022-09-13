@@ -64,7 +64,9 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
@@ -154,7 +156,9 @@ export default class ConfirmPageContainer extends Component {
       showBuyModal,
       isBuyableChain,
       networkIdentifier,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     const showAddToAddressDialog =
@@ -242,7 +246,9 @@ export default class ConfirmPageContainer extends Component {
               detailsComponent={detailsComponent}
               dataComponent={dataComponent}
               dataHexComponent={dataHexComponent}
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
               insightComponent={insightComponent}
+              ///: END:ONLY_INCLUDE_IN
               errorMessage={errorMessage}
               errorKey={errorKey}
               tokenAddress={tokenAddress}

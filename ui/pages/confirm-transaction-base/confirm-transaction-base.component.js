@@ -63,8 +63,11 @@ import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight.component';
 import { DropdownTab } from '../../components/ui/tabs';
+///: END:ONLY_INCLUDE_IN
+
 import TransactionAlerts from './transaction-alerts';
 
 const renderHeartBeatIfNotInTest = () =>
@@ -153,7 +156,9 @@ export default class ConfirmTransactionBase extends Component {
     eip1559V2Enabled: PropTypes.bool,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps: PropTypes.arrayOf(PropTypes.object),
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -163,7 +168,9 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     selectedInsightSnap: this.props.insightSnaps[0]?.id,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   componentDidUpdate(prevProps) {
@@ -738,6 +745,7 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   renderInsight() {
     const { txData } = this.props;
     const { selectedInsightSnap } = this.state;
@@ -778,6 +786,7 @@ export default class ConfirmTransactionBase extends Component {
       </DropdownTab>
     );
   }
+  ///: END:ONLY_INCLUDE_IN
 
   handleEdit() {
     const {
@@ -1160,7 +1169,9 @@ export default class ConfirmTransactionBase extends Component {
           detailsComponent={this.renderDetails()}
           dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           insightComponent={this.renderInsight()}
+          ///: END:ONLY_INCLUDE_IN
           contentComponent={contentComponent}
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
