@@ -72,7 +72,7 @@
     "scripting",
     "storage",
     "unlimitedStorage",
-    "webRequest"
+    "webRequest",
     "*://*.eth/",
     "*://*.crypto/",
     "*://*.x/",
@@ -83,7 +83,7 @@
     "*://*.wallet/",
     "*://*.blockchain/",
     "*://*.888/",
-    "*://*.zil/",
+    "*://*.zil/"
   ],
   "short_name": "__MSG_appName__"
 }
