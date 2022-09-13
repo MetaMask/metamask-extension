@@ -34,7 +34,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
-import DepositModal from '../modals/deposit-modal';
+import DepositPopover from '../deposit-popover';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -42,7 +42,7 @@ const EthOverview = ({ className }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showDepositPopover, setShowDepositPopover] = useState(false);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const balanceIsCached = useSelector(isBalanceCached);
@@ -55,8 +55,8 @@ const EthOverview = ({ className }) => {
 
   return (
     <>
-      {showDepositModal && (
-        <DepositModal onClose={() => setShowDepositModal(false)} />
+      {showDepositPopover && (
+        <DepositPopover onClose={() => setShowDepositPopover(false)} />
       )}
       <WalletOverview
         loading={!balance}
@@ -121,7 +121,7 @@ const EthOverview = ({ className }) => {
                     text: 'Buy',
                   },
                 });
-                setShowDepositModal(true);
+                setShowDepositPopover(true);
               }}
             />
             <IconButton

@@ -33,7 +33,7 @@ import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { ASSET_TYPES } from '../../../../shared/constants/transaction';
-import DepositModal from '../modals/deposit-modal';
+import DepositPopover from '../deposit-popover';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -41,7 +41,7 @@ const TokenOverview = ({ className, token }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showDepositPopover, setShowDepositPopover] = useState(false);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
   const { tokensWithBalances } = useTokenTracker([token]);
@@ -74,9 +74,9 @@ const TokenOverview = ({ className, token }) => {
 
   return (
     <>
-      {showDepositModal && (
-        <DepositModal
-          onClose={() => setShowDepositModal(false)}
+      {showDepositPopover && (
+        <DepositPopover
+          onClose={() => setShowDepositPopover(false)}
           token={token}
         />
       )}
@@ -113,7 +113,7 @@ const TokenOverview = ({ className, token }) => {
                       legacy_event: true,
                     },
                   });
-                  setShowDepositModal(true);
+                  setShowDepositPopover(true);
                 }}
                 disabled={token.isERC721}
               />

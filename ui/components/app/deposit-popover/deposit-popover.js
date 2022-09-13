@@ -2,25 +2,22 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { I18nContext } from '../../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   NETWORK_TO_NAME_MAP,
   BUYABLE_CHAINS_MAP,
-} from '../../../../../shared/constants/network';
-import {
-  EVENT,
-  EVENT_NAMES,
-} from '../../../../../shared/constants/metametrics';
+} from '../../../../shared/constants/network';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
-import LogoMoonPay from '../../../ui/logo/logo-moonpay';
-import LogoWyre from '../../../ui/logo/logo-wyre';
-import LogoTransak from '../../../ui/logo/logo-transak';
-import LogoCoinbasePay from '../../../ui/logo/logo-coinbasepay';
-import LogoDepositEth from '../../../ui/logo/logo-deposit-eth';
-import Popover from '../../../ui/popover';
+import LogoMoonPay from '../../ui/logo/logo-moonpay';
+import LogoWyre from '../../ui/logo/logo-wyre';
+import LogoTransak from '../../ui/logo/logo-transak';
+import LogoCoinbasePay from '../../ui/logo/logo-coinbasepay';
+import LogoDepositEth from '../../ui/logo/logo-deposit-eth';
+import Popover from '../../ui/popover';
 
-import { buy, showModal, hideWarning } from '../../../../store/actions';
+import { buy, showModal, hideWarning } from '../../../store/actions';
 import {
   getIsTestnet,
   getCurrentChainId,
@@ -31,11 +28,11 @@ import {
   getIsBuyableCoinbasePayChain,
   getIsBuyableCoinbasePayToken,
   getIsBuyableTransakToken,
-} from '../../../../selectors/selectors';
+} from '../../../selectors/selectors';
 
 import OnRampItem from './on-ramp-item';
 
-const DepositModal = ({ onClose, token }) => {
+const DepositPopover = ({ onClose, token }) => {
   const isTokenDeposit = Boolean(token);
 
   const t = useContext(I18nContext);
@@ -209,7 +206,7 @@ const DepositModal = ({ onClose, token }) => {
   );
 };
 
-DepositModal.propTypes = {
+DepositPopover.propTypes = {
   onClose: PropTypes.func.isRequired,
   token: PropTypes.shape({
     address: PropTypes.string.isRequired,
@@ -221,4 +218,4 @@ DepositModal.propTypes = {
   }),
 };
 
-export default DepositModal;
+export default DepositPopover;

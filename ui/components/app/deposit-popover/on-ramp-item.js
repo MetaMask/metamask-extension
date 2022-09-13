@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../ui/button';
-import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
-import { COLORS, FRACTIONS } from '../../../../helpers/constants/design-system';
+import Button from '../../ui/button';
+import Box from '../../ui/box';
+import Typography from '../../ui/typography';
+import { COLORS, FRACTIONS } from '../../../helpers/constants/design-system';
 
 const OnRampItem = ({
   logo,

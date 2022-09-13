@@ -61,12 +61,12 @@ const createWyrePurchaseUrl = async (walletAddress, chainId) => {
  * @returns String
  */
 const createTransakUrl = (walletAddress, chainId, symbol) => {
-  const { transakCurrencies, network } = BUYABLE_CHAINS_MAP[chainId];
+  const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
 
   const queryParams = new URLSearchParams({
     apiKey: TRANSAK_API_KEY,
     hostURL: 'https://metamask.io',
-    defaultCryptoCurrency: symbol || transakCurrencies[0],
+    defaultCryptoCurrency: symbol || nativeCurrency,
     networks: network,
     walletAddress,
   });
