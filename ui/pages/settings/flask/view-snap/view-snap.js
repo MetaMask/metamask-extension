@@ -54,7 +54,9 @@ function ViewSnap() {
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithPermission(state, snap?.permissionName),
   );
-  const permissions = useSelector((state) => getPermissions(state, snap?.id));
+  const permissions = useSelector(
+    (state) => snap && getPermissions(state, snap.id),
+  );
   const dispatch = useDispatch();
   const onDisconnect = (connectedOrigin, snapPermissionName) => {
     dispatch(
@@ -142,7 +144,9 @@ function ViewSnap() {
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
             <Box width={FRACTIONS.TEN_TWELFTHS}>
-              <PermissionsConnectPermissionList permissions={permissions} />
+              <PermissionsConnectPermissionList
+                permissions={permissions ?? {}}
+              />
             </Box>
           </div>
           <div className="view-snap__section">
