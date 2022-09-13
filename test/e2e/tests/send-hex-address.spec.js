@@ -153,6 +153,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
+
+        // Using the line below to make wait time deterministic and avoid using a delay
+        // See more here https://github.com/MetaMask/metamask-extension/pull/15604/files#r949300551
         await driver.findClickableElement('#deployButton');
 
         // Add token
