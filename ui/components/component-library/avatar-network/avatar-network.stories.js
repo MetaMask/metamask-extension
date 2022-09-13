@@ -61,6 +61,7 @@ export default {
 const Template = (args) => {
   return <AvatarNetwork {...args} />;
 };
+
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
@@ -74,15 +75,15 @@ export const Size = (args) => (
   </Box>
 );
 
-export const networkName = Template.bind({});
-networkName.args = {
+export const NetworkName = Template.bind({});
+NetworkName.args = {
   networkImageUrl: '',
 };
 
-export const networkImageUrl = Template.bind({});
+export const NetworkImageUrl = Template.bind({});
 
-export const showHalo = Template.bind({});
-showHalo.args = {
+export const ShowHalo = Template.bind({});
+ShowHalo.args = {
   showHalo: true,
 };
 

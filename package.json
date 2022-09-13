@@ -232,7 +232,6 @@
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
-    "web3": "^0.20.7",
     "web3-stream-provider": "^4.0.0",
     "zxcvbn": "^4.4.2"
   },
@@ -473,7 +472,13 @@
       "eth-lattice-keyring>gridplus-sdk>secp256k1": false,
       "eth-lattice-keyring>secp256k1": false,
       "@storybook/react>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
-      "@testing-library/jest-dom>aria-query>@babel/runtime-corejs3>core-js-pure": false
+      "@testing-library/jest-dom>aria-query>@babel/runtime-corejs3>core-js-pure": false,
+      "web3": false,
+      "web3>web3-bzz": false,
+      "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>bufferutil": false,
+      "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>es5-ext": false,
+      "web3>web3-core>web3-core-requestmanager>web3-providers-ws>websocket>utf-8-validate": false,
+      "web3>web3-shh": false
     }
   }
 }
